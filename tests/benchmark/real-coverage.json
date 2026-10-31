@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "One real-input registry for43 commands:40 timing and3 explicit correctness-only dispositions. Requirements are finite mode/facet observations, not all options, workload-frequency weights, full compatibility or performance acceptance.",
+  "scope": "All80 packages accounted for:54 timing commands,3 explicit correctness-only dispositions and23 explained not-timed commands. Finite source, generated-output and bounded-tree operations; no application-frequency or massive-directory claim.",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "facet_vocabulary": [
     "bytes",
@@ -23,43 +23,222 @@
     "codec",
     "network"
   ],
-  "timing_command_count": 40,
+  "timing_command_count": 54,
   "correctness_only_command_count": 3,
   "commands": [
     {
-      "command": "base32",
+      "command": "cp",
       "disposition": "timing",
       "required_modes": [
-        "base32-binary-encode",
-        "base32-encode-unwrapped"
+        "cp-new-file",
+        "cp-new-tree"
       ],
       "required_facets": [
-        "binary",
         "bytes",
-        "codec",
-        "records"
+        "named-files",
+        "tree"
       ],
       "local_case_ids": [
-        "base32-rfc4648-foobar",
-        "base32-rfc4648-decode"
+        "phase4-cp-regular"
       ]
     },
     {
-      "command": "base64",
+      "command": "jq",
       "disposition": "timing",
       "required_modes": [
-        "base64-binary-encode",
-        "base64-encode-unwrapped"
+        "jq-compact-identity",
+        "jq-filter-selection",
+        "jq-property-missing-null-string",
+        "jq-slurp-aggregate",
+        "jq-slurp-group-cardinality",
+        "jq-slurp-sort-by-id"
       ],
       "required_facets": [
-        "binary",
         "bytes",
-        "codec",
+        "records",
+        "selection"
+      ],
+      "local_case_ids": [
+        "jq-stream-framing",
+        "jq-slurp-stream"
+      ]
+    },
+    {
+      "command": "ln",
+      "disposition": "correctness-only",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "compat-filesystem-symbolic-link",
+        "compat-filesystem-windows-ln-boundary",
+        "repair-fs-ln-no-dereference"
+      ],
+      "reason": "No meaningful bulk real-corpus timing row is declared. Exact local symbolic-link effects, alias spelling and Windows capability boundary remain required; do not infer hard-link fidelity or throughput."
+    },
+    {
+      "command": "ls",
+      "disposition": "timing",
+      "required_modes": [
+        "ls-tree-names",
+        "ls-tree-recursive"
+      ],
+      "required_facets": [
+        "bytes",
+        "tree",
+        "named-files",
+        "formatting"
+      ],
+      "local_case_ids": [
+        "phase3-ls-basic"
+      ]
+    },
+    {
+      "command": "mv",
+      "disposition": "timing",
+      "required_modes": [
+        "mv-new-path",
+        "mv-tree-rename"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "tree"
+      ],
+      "local_case_ids": [
+        "phase4-mv-regular"
+      ]
+    },
+    {
+      "command": "nl",
+      "disposition": "timing",
+      "required_modes": [
+        "nl-number-records"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
         "records"
       ],
       "local_case_ids": [
-        "base64-zero-wrap",
-        "compat-text-line-632"
+        "compat-text-line-623",
+        "compat-text-line-945"
+      ]
+    },
+    {
+      "command": "od",
+      "disposition": "timing",
+      "required_modes": [
+        "od-byte-display"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting"
+      ],
+      "local_case_ids": [
+        "od-hex-byte-address"
+      ]
+    },
+    {
+      "command": "rg",
+      "disposition": "timing",
+      "required_modes": [
+        "rg-early-exit",
+        "rg-empty",
+        "rg-literal-count",
+        "rg-literal-miss",
+        "rg-long-record-count",
+        "rg-regex-count",
+        "rg-regex-numbered-output",
+        "rg-regex-spans",
+        "rg-slow-output",
+        "rg-tree-files",
+        "rg-unterminated"
+      ],
+      "required_facets": [
+        "bytes",
+        "early-exit",
+        "empty",
+        "long-record",
+        "named-files",
+        "pipe-input",
+        "records",
+        "selection",
+        "slow-output",
+        "tree",
+        "unterminated"
+      ],
+      "local_case_ids": [
+        "rg-boundary-dfa-budget",
+        "rg-boundary-dfa-zero"
+      ]
+    },
+    {
+      "command": "rm",
+      "disposition": "timing",
+      "required_modes": [
+        "rm-file",
+        "rm-tree"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "tree"
+      ],
+      "local_case_ids": [
+        "phase4-rm-regular"
+      ]
+    },
+    {
+      "command": "sh",
+      "disposition": "correctness-only",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "sh-interactive-session",
+        "compat-shell-array-boundary",
+        "proof-sh-stdin-positional-contract"
+      ],
+      "reason": "The former5000-control-loop synthetic timing is retired. A safe genuine shell-program performance corpus is not registered; interactive, stdin/command language and unsupported-syntax boundaries remain local correctness only."
+    },
+    {
+      "command": "tr",
+      "disposition": "timing",
+      "required_modes": [
+        "tr-uppercase-ascii"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "compat-text-line-823",
+        "compat-text-line-824"
+      ]
+    },
+    {
+      "command": "wc",
+      "disposition": "timing",
+      "required_modes": [
+        "wc-all-counts",
+        "wc-empty",
+        "wc-named-bytes",
+        "wc-pipe-bytes",
+        "wc-regular-stdin-metadata",
+        "wc-scan-lines",
+        "wc-scan-words"
+      ],
+      "required_facets": [
+        "bytes",
+        "empty",
+        "named-files",
+        "pipe-input",
+        "records",
+        "utf8"
+      ],
+      "local_case_ids": [
+        "compat-text-line-495",
+        "compat-text-line-496"
       ]
     },
     {
@@ -92,88 +271,18 @@
       ]
     },
     {
-      "command": "cksum",
+      "command": "cmp",
       "disposition": "timing",
       "required_modes": [
-        "cksum-binary",
-        "cksum-crc"
-      ],
-      "required_facets": [
-        "binary",
-        "bytes",
-        "records"
-      ],
-      "local_case_ids": [
-        "p0-cksum-stdin",
-        "o9-default"
-      ]
-    },
-    {
-      "command": "column",
-      "disposition": "timing",
-      "required_modes": [
-        "column-delimited-table",
-        "column-grid-width80"
+        "cmp-equal",
+        "cmp-distinct"
       ],
       "required_facets": [
         "bytes",
-        "formatting",
-        "records"
+        "named-files"
       ],
       "local_case_ids": [
-        "p2-column-table",
-        "p2-column-delimiter"
-      ]
-    },
-    {
-      "command": "comm",
-      "disposition": "timing",
-      "required_modes": [
-        "comm-shared-and-unpaired"
-      ],
-      "required_facets": [
-        "bytes",
-        "named-files",
-        "records",
-        "sorting"
-      ],
-      "local_case_ids": [
-        "compat-text-comm-nul-records",
-        "compat-text-comm-check-order"
-      ]
-    },
-    {
-      "command": "csplit",
-      "disposition": "timing",
-      "required_modes": [
-        "csplit-repeated-interior-boundaries"
-      ],
-      "required_facets": [
-        "bytes",
-        "records"
-      ],
-      "local_case_ids": [
-        "p1-csplit-lines",
-        "p1-csplit-regex-repeat"
-      ]
-    },
-    {
-      "command": "curl",
-      "disposition": "timing",
-      "required_modes": [
-        "curl-download",
-        "curl-file-upload",
-        "curl-post-file"
-      ],
-      "required_facets": [
-        "bytes",
-        "named-files",
-        "network",
-        "records"
-      ],
-      "local_case_ids": [
-        "network-transfer-boundaries",
-        "network-auth-cookie"
+        "compat-text-cmp-equal-status"
       ]
     },
     {
@@ -196,6 +305,183 @@
       ]
     },
     {
+      "command": "env",
+      "disposition": "not-timed",
+      "reason": "Environment setup and child execution need a separately controlled child/environment workload.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "fmt",
+      "disposition": "timing",
+      "required_modes": [
+        "fmt-paragraphs"
+      ],
+      "required_facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ],
+      "local_case_ids": [
+        "p1-fmt-join-paragraph"
+      ]
+    },
+    {
+      "command": "pwd",
+      "disposition": "not-timed",
+      "reason": "Short working-directory lookup; no useful file-throughput claim.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "rev",
+      "disposition": "timing",
+      "required_modes": [
+        "rev-ascii-records",
+        "rev-long-record"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "long-record",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-rev-lines",
+        "o6-rev-unterminated"
+      ]
+    },
+    {
+      "command": "sed",
+      "disposition": "timing",
+      "required_modes": [
+        "sed-substitution-hit",
+        "sed-substitution-miss"
+      ],
+      "required_facets": [
+        "bytes",
+        "records",
+        "selection"
+      ],
+      "local_case_ids": [
+        "s1-sed-nullable-reference-address",
+        "p1-sed-substitution"
+      ]
+    },
+    {
+      "command": "seq",
+      "disposition": "timing",
+      "required_modes": [
+        "seq-integer-output"
+      ],
+      "required_facets": [
+        "empty",
+        "formatting"
+      ],
+      "local_case_ids": [
+        "p0-seq-separator"
+      ]
+    },
+    {
+      "command": "tac",
+      "disposition": "timing",
+      "required_modes": [
+        "tac-pipe-reversal",
+        "tac-reverse-records"
+      ],
+      "required_facets": [
+        "bytes",
+        "pipe-input",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-tac-lines",
+        "o6-tac-default-unterminated"
+      ]
+    },
+    {
+      "command": "tee",
+      "disposition": "timing",
+      "required_modes": [
+        "tee-file-and-stdout"
+      ],
+      "required_facets": [
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "phase0-tee-filesystem"
+      ]
+    },
+    {
+      "command": "xxd",
+      "disposition": "timing",
+      "required_modes": [
+        "xxd-byte-display"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting"
+      ],
+      "local_case_ids": [
+        "p7-xxd-include"
+      ]
+    },
+    {
+      "command": "yes",
+      "disposition": "not-timed",
+      "reason": "Unbounded output requires a byte-bounded consumer and cancellation/status relation; the finite completion runner cannot supply a fair ratio.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "comm",
+      "disposition": "timing",
+      "required_modes": [
+        "comm-shared-and-unpaired"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "records",
+        "sorting"
+      ],
+      "local_case_ids": [
+        "compat-text-comm-nul-records",
+        "compat-text-comm-check-order"
+      ]
+    },
+    {
+      "command": "curl",
+      "disposition": "timing",
+      "required_modes": [
+        "curl-download",
+        "curl-file-upload",
+        "curl-post-file"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "network",
+        "records"
+      ],
+      "local_case_ids": [
+        "network-transfer-boundaries",
+        "network-auth-cookie"
+      ]
+    },
+    {
+      "command": "date",
+      "disposition": "not-timed",
+      "reason": "Clock/time-zone formatting has no representative source-throughput workload in this round.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
       "command": "diff",
       "disposition": "timing",
       "required_modes": [
@@ -216,20 +502,20 @@
       ]
     },
     {
-      "command": "expand",
-      "disposition": "timing",
-      "required_modes": [
-        "expand-tabstop4"
-      ],
-      "required_facets": [
-        "bytes",
-        "formatting",
-        "records"
-      ],
-      "local_case_ids": [
-        "p0-expand-basic-tabs",
-        "p0-expand-initial"
-      ]
+      "command": "echo",
+      "disposition": "not-timed",
+      "reason": "Short argument output is outside the user-selected data-processing focus.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "expr",
+      "disposition": "not-timed",
+      "reason": "Short argument expressions; no representative large expression corpus is registered.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
     },
     {
       "command": "find",
@@ -295,25 +581,6 @@
       ]
     },
     {
-      "command": "gunzip",
-      "disposition": "timing",
-      "required_modes": [
-        "gunzip-concatenated-block-types",
-        "gunzip-first-dynamic-native",
-        "gunzip-fixed-literals",
-        "gunzip-stored-blocks"
-      ],
-      "required_facets": [
-        "bytes",
-        "codec",
-        "records"
-      ],
-      "local_case_ids": [
-        "p1-gunzip-concatenated",
-        "p1-gunzip-validate"
-      ]
-    },
-    {
       "command": "gzip",
       "disposition": "timing",
       "required_modes": [
@@ -367,39 +634,6 @@
       ]
     },
     {
-      "command": "jq",
-      "disposition": "timing",
-      "required_modes": [
-        "jq-compact-identity",
-        "jq-filter-selection",
-        "jq-property-missing-null-string",
-        "jq-slurp-aggregate",
-        "jq-slurp-group-cardinality",
-        "jq-slurp-sort-by-id"
-      ],
-      "required_facets": [
-        "bytes",
-        "records",
-        "selection"
-      ],
-      "local_case_ids": [
-        "jq-stream-framing",
-        "jq-slurp-stream"
-      ]
-    },
-    {
-      "command": "ln",
-      "disposition": "correctness-only",
-      "required_modes": [],
-      "required_facets": [],
-      "local_case_ids": [
-        "compat-filesystem-symbolic-link",
-        "compat-filesystem-windows-ln-boundary",
-        "repair-fs-ln-no-dereference"
-      ],
-      "reason": "No meaningful bulk real-corpus timing row is declared. Exact local symbolic-link effects, alias spelling and Windows capability boundary remain required; do not infer hard-link fidelity or throughput."
-    },
-    {
       "command": "make",
       "disposition": "correctness-only",
       "required_modes": [],
@@ -409,189 +643,6 @@
         "compat-text-make-include-cli-override"
       ],
       "reason": "The former5000-recipe synthetic timing is retired. Real project Makefile corpus not registered; exact ready/ACK DAG, shared prerequisite, controlled serial keep-going and include/CLI override scenarios remain correctness-only."
-    },
-    {
-      "command": "md5sum",
-      "disposition": "timing",
-      "required_modes": [
-        "md5sum-binary",
-        "md5sum-digest"
-      ],
-      "required_facets": [
-        "binary",
-        "bytes",
-        "records"
-      ],
-      "local_case_ids": [
-        "checksum-md5sum-stdin",
-        "checksum-md5sum-empty"
-      ]
-    },
-    {
-      "command": "nl",
-      "disposition": "timing",
-      "required_modes": [
-        "nl-number-records"
-      ],
-      "required_facets": [
-        "bytes",
-        "formatting",
-        "records"
-      ],
-      "local_case_ids": [
-        "compat-text-line-623",
-        "compat-text-line-945"
-      ]
-    },
-    {
-      "command": "paste",
-      "disposition": "timing",
-      "required_modes": [
-        "paste-parallel",
-        "paste-serial"
-      ],
-      "required_facets": [
-        "bytes",
-        "formatting",
-        "named-files",
-        "records"
-      ],
-      "local_case_ids": [
-        "compat-text-line-719",
-        "compat-text-paste-nul-records"
-      ]
-    },
-    {
-      "command": "rev",
-      "disposition": "timing",
-      "required_modes": [
-        "rev-ascii-records",
-        "rev-long-record"
-      ],
-      "required_facets": [
-        "bytes",
-        "formatting",
-        "long-record",
-        "records"
-      ],
-      "local_case_ids": [
-        "p0-rev-lines",
-        "o6-rev-unterminated"
-      ]
-    },
-    {
-      "command": "rg",
-      "disposition": "timing",
-      "required_modes": [
-        "rg-early-exit",
-        "rg-empty",
-        "rg-literal-count",
-        "rg-literal-miss",
-        "rg-long-record-count",
-        "rg-regex-count",
-        "rg-regex-numbered-output",
-        "rg-regex-spans",
-        "rg-slow-output",
-        "rg-tree-files",
-        "rg-unterminated"
-      ],
-      "required_facets": [
-        "bytes",
-        "early-exit",
-        "empty",
-        "long-record",
-        "named-files",
-        "pipe-input",
-        "records",
-        "selection",
-        "slow-output",
-        "tree",
-        "unterminated"
-      ],
-      "local_case_ids": [
-        "rg-boundary-dfa-budget",
-        "rg-boundary-dfa-zero"
-      ]
-    },
-    {
-      "command": "sed",
-      "disposition": "timing",
-      "required_modes": [
-        "sed-substitution-hit",
-        "sed-substitution-miss"
-      ],
-      "required_facets": [
-        "bytes",
-        "records",
-        "selection"
-      ],
-      "local_case_ids": [
-        "s1-sed-nullable-reference-address",
-        "p1-sed-substitution"
-      ]
-    },
-    {
-      "command": "sh",
-      "disposition": "correctness-only",
-      "required_modes": [],
-      "required_facets": [],
-      "local_case_ids": [
-        "sh-interactive-session",
-        "compat-shell-array-boundary",
-        "proof-sh-stdin-positional-contract"
-      ],
-      "reason": "The former5000-control-loop synthetic timing is retired. A safe genuine shell-program performance corpus is not registered; interactive, stdin/command language and unsupported-syntax boundaries remain local correctness only."
-    },
-    {
-      "command": "sha1sum",
-      "disposition": "timing",
-      "required_modes": [
-        "sha1sum-binary",
-        "sha1sum-digest"
-      ],
-      "required_facets": [
-        "binary",
-        "bytes",
-        "records"
-      ],
-      "local_case_ids": [
-        "checksum-sha1sum-stdin",
-        "checksum-sha1sum-empty"
-      ]
-    },
-    {
-      "command": "sha256sum",
-      "disposition": "timing",
-      "required_modes": [
-        "sha256sum-binary",
-        "sha256sum-digest"
-      ],
-      "required_facets": [
-        "binary",
-        "bytes",
-        "records"
-      ],
-      "local_case_ids": [
-        "compat-text-sha256sum-warn-malformed",
-        "compat-text-sha256sum-strict-status"
-      ]
-    },
-    {
-      "command": "sha512sum",
-      "disposition": "timing",
-      "required_modes": [
-        "sha512sum-binary",
-        "sha512sum-digest"
-      ],
-      "required_facets": [
-        "binary",
-        "bytes",
-        "records"
-      ],
-      "local_case_ids": [
-        "checksum-sha512sum-stdin",
-        "checksum-sha512sum-binary"
-      ]
     },
     {
       "command": "sort",
@@ -614,55 +665,6 @@
       ]
     },
     {
-      "command": "split",
-      "disposition": "timing",
-      "required_modes": [
-        "split-byte-chunks-1m"
-      ],
-      "required_facets": [
-        "bytes",
-        "records"
-      ],
-      "local_case_ids": [
-        "p1-split-lines",
-        "p1-split-binary"
-      ]
-    },
-    {
-      "command": "strings",
-      "disposition": "timing",
-      "required_modes": [
-        "strings-binary-all",
-        "strings-scan-all-bytes"
-      ],
-      "required_facets": [
-        "binary",
-        "bytes",
-        "records"
-      ],
-      "local_case_ids": [
-        "p2-strings-default",
-        "p2-strings-minimum-and-radix"
-      ]
-    },
-    {
-      "command": "tac",
-      "disposition": "timing",
-      "required_modes": [
-        "tac-pipe-reversal",
-        "tac-reverse-records"
-      ],
-      "required_facets": [
-        "bytes",
-        "pipe-input",
-        "records"
-      ],
-      "local_case_ids": [
-        "p0-tac-lines",
-        "o6-tac-default-unterminated"
-      ]
-    },
-    {
       "command": "tail",
       "disposition": "timing",
       "required_modes": [
@@ -681,20 +683,12 @@
       ]
     },
     {
-      "command": "tr",
-      "disposition": "timing",
-      "required_modes": [
-        "tr-uppercase-ascii"
-      ],
-      "required_facets": [
-        "bytes",
-        "formatting",
-        "records"
-      ],
-      "local_case_ids": [
-        "compat-text-line-823",
-        "compat-text-line-824"
-      ]
+      "command": "test",
+      "disposition": "not-timed",
+      "reason": "Short predicate checks; no genuine bulk predicate list is registered.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
     },
     {
       "command": "tree",
@@ -715,20 +709,12 @@
       ]
     },
     {
-      "command": "unexpand",
-      "disposition": "timing",
-      "required_modes": [
-        "unexpand-all-tabstop4"
-      ],
-      "required_facets": [
-        "bytes",
-        "formatting",
-        "records"
-      ],
-      "local_case_ids": [
-        "p0-unexpand-leading",
-        "p0-unexpand-all"
-      ]
+      "command": "true",
+      "disposition": "not-timed",
+      "reason": "Exit-status utility; no useful throughput ratio.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
     },
     {
       "command": "uniq",
@@ -745,31 +731,6 @@
       "local_case_ids": [
         "compat-text-line-476",
         "compat-text-line-485"
-      ]
-    },
-    {
-      "command": "wc",
-      "disposition": "timing",
-      "required_modes": [
-        "wc-all-counts",
-        "wc-empty",
-        "wc-named-bytes",
-        "wc-pipe-bytes",
-        "wc-regular-stdin-metadata",
-        "wc-scan-lines",
-        "wc-scan-words"
-      ],
-      "required_facets": [
-        "bytes",
-        "empty",
-        "named-files",
-        "pipe-input",
-        "records",
-        "utf8"
-      ],
-      "local_case_ids": [
-        "compat-text-line-495",
-        "compat-text-line-496"
       ]
     },
     {
@@ -807,6 +768,440 @@
       "local_case_ids": [
         "p1-zcat-concatenated",
         "p1-zcat-validate"
+      ]
+    },
+    {
+      "command": "chmod",
+      "disposition": "timing",
+      "required_modes": [
+        "chmod-numeric",
+        "chmod-recursive"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "tree"
+      ],
+      "local_case_ids": [
+        "phase4-chmod-numeric"
+      ]
+    },
+    {
+      "command": "cksum",
+      "disposition": "timing",
+      "required_modes": [
+        "cksum-binary",
+        "cksum-crc"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-cksum-stdin",
+        "o9-default"
+      ]
+    },
+    {
+      "command": "false",
+      "disposition": "not-timed",
+      "reason": "Exit-status utility; no useful throughput ratio.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "jqlog",
+      "disposition": "not-timed",
+      "reason": "Project-specific JSONL filtering has no same-command upstream executable; a jq-equivalent comparison needs an explicitly distinct reference contract.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "mkdir",
+      "disposition": "not-timed",
+      "reason": "Directory creation latency needs a genuine operation list; fake repeated directory trees are not introduced.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "paste",
+      "disposition": "timing",
+      "required_modes": [
+        "paste-parallel",
+        "paste-serial"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "named-files",
+        "records"
+      ],
+      "local_case_ids": [
+        "compat-text-line-719",
+        "compat-text-paste-nul-records"
+      ]
+    },
+    {
+      "command": "patch",
+      "disposition": "timing",
+      "required_modes": [
+        "patch-release-to-stdout",
+        "patch-release-dry-run"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files"
+      ],
+      "local_case_ids": [
+        "patch-unified-output-stdout",
+        "patch-unified-dry-run"
+      ]
+    },
+    {
+      "command": "rmdir",
+      "disposition": "not-timed",
+      "reason": "Empty-directory removal needs a genuine operation list; no generated directory repetition is introduced.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "sleep",
+      "disposition": "not-timed",
+      "reason": "Requested waiting time is not computation throughput; a ratio would mostly measure the requested delay.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "split",
+      "disposition": "timing",
+      "required_modes": [
+        "split-byte-chunks-1m"
+      ],
+      "required_facets": [
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-split-lines",
+        "p1-split-binary"
+      ]
+    },
+    {
+      "command": "touch",
+      "disposition": "not-timed",
+      "reason": "Existing timestamp updates are explicitly unsupported; new-file allocation needs a genuine operation list.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "which",
+      "disposition": "not-timed",
+      "reason": "PATH/executable lookup depends on a controlled installation tree, absent from the genuine source catalog.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "xargs",
+      "disposition": "timing",
+      "required_modes": [
+        "xargs-delimited-batches"
+      ],
+      "required_facets": [
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "phase4-xargs-lines-eof"
+      ]
+    },
+    {
+      "command": "base32",
+      "disposition": "timing",
+      "required_modes": [
+        "base32-binary-encode",
+        "base32-encode-unwrapped"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "codec",
+        "records"
+      ],
+      "local_case_ids": [
+        "base32-rfc4648-foobar",
+        "base32-rfc4648-decode"
+      ]
+    },
+    {
+      "command": "base64",
+      "disposition": "timing",
+      "required_modes": [
+        "base64-binary-encode",
+        "base64-encode-unwrapped"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "codec",
+        "records"
+      ],
+      "local_case_ids": [
+        "base64-zero-wrap",
+        "compat-text-line-632"
+      ]
+    },
+    {
+      "command": "column",
+      "disposition": "timing",
+      "required_modes": [
+        "column-delimited-table",
+        "column-grid-width80"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "p2-column-table",
+        "p2-column-delimiter"
+      ]
+    },
+    {
+      "command": "csplit",
+      "disposition": "timing",
+      "required_modes": [
+        "csplit-repeated-interior-boundaries"
+      ],
+      "required_facets": [
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-csplit-lines",
+        "p1-csplit-regex-repeat"
+      ]
+    },
+    {
+      "command": "expand",
+      "disposition": "timing",
+      "required_modes": [
+        "expand-tabstop4"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-expand-basic-tabs",
+        "p0-expand-initial"
+      ]
+    },
+    {
+      "command": "gunzip",
+      "disposition": "timing",
+      "required_modes": [
+        "gunzip-concatenated-block-types",
+        "gunzip-first-dynamic-native",
+        "gunzip-fixed-literals",
+        "gunzip-stored-blocks"
+      ],
+      "required_facets": [
+        "bytes",
+        "codec",
+        "records"
+      ],
+      "local_case_ids": [
+        "p1-gunzip-concatenated",
+        "p1-gunzip-validate"
+      ]
+    },
+    {
+      "command": "md5sum",
+      "disposition": "timing",
+      "required_modes": [
+        "md5sum-binary",
+        "md5sum-digest"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "checksum-md5sum-stdin",
+        "checksum-md5sum-empty"
+      ]
+    },
+    {
+      "command": "mktemp",
+      "disposition": "not-timed",
+      "reason": "Random path allocation needs a controlled collision/filesystem workload; output identities intentionally differ.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "printf",
+      "disposition": "not-timed",
+      "reason": "Ordinary argument formatting is outside this round; the fixed native tool is only an identical xargs child.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "unlink",
+      "disposition": "not-timed",
+      "reason": "Single-path removal is represented by rm controls; no separate genuine operation list is registered.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "dirname",
+      "disposition": "not-timed",
+      "reason": "Argument-only path formatting; no bulk workload is registered.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "hexdump",
+      "disposition": "timing",
+      "required_modes": [
+        "hexdump-byte-display"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting"
+      ],
+      "local_case_ids": [
+        "hexdump-one-byte-hex"
+      ]
+    },
+    {
+      "command": "sha1sum",
+      "disposition": "timing",
+      "required_modes": [
+        "sha1sum-binary",
+        "sha1sum-digest"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "checksum-sha1sum-stdin",
+        "checksum-sha1sum-empty"
+      ]
+    },
+    {
+      "command": "strings",
+      "disposition": "timing",
+      "required_modes": [
+        "strings-binary-all",
+        "strings-scan-all-bytes"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "p2-strings-default",
+        "p2-strings-minimum-and-radix"
+      ]
+    },
+    {
+      "command": "timeout",
+      "disposition": "not-timed",
+      "reason": "Local-only unpublished process wrapper; deadline semantics and child lifetime need a dedicated finite workload contract.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "basename",
+      "disposition": "not-timed",
+      "reason": "Argument-only path formatting; startup dominates ordinary calls and no bulk workload is registered.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "printenv",
+      "disposition": "not-timed",
+      "reason": "Small environment inspection outside the selected bulk-processing focus.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "realpath",
+      "disposition": "not-timed",
+      "reason": "Path resolution needs a genuine path/link collection; no such workload is registered.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "unexpand",
+      "disposition": "timing",
+      "required_modes": [
+        "unexpand-all-tabstop4"
+      ],
+      "required_facets": [
+        "bytes",
+        "formatting",
+        "records"
+      ],
+      "local_case_ids": [
+        "p0-unexpand-leading",
+        "p0-unexpand-all"
+      ]
+    },
+    {
+      "command": "sha256sum",
+      "disposition": "timing",
+      "required_modes": [
+        "sha256sum-binary",
+        "sha256sum-digest"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "compat-text-sha256sum-warn-malformed",
+        "compat-text-sha256sum-strict-status"
+      ]
+    },
+    {
+      "command": "sha512sum",
+      "disposition": "timing",
+      "required_modes": [
+        "sha512sum-binary",
+        "sha512sum-digest"
+      ],
+      "required_facets": [
+        "binary",
+        "bytes",
+        "records"
+      ],
+      "local_case_ids": [
+        "checksum-sha512sum-stdin",
+        "checksum-sha512sum-binary"
       ]
     }
   ],
@@ -1327,7 +1722,15 @@
       "mode": "diff-real-revision-pair",
       "allowed_invocations": [
         {
-          "args": ["--label", "left", "--label", "right", "-u", "left", "right"],
+          "args": [
+            "--label",
+            "left",
+            "--label",
+            "right",
+            "-u",
+            "left",
+            "right"
+          ],
           "recipe": "real-file-pair",
           "expected_status": 1
         }
@@ -2355,8 +2758,30 @@
     {
       "command": "sort",
       "mode": "sort-numeric-spill",
-      "allowed_invocations": [{"args": ["-n", "-S", "4M"], "recipe": "real-input", "expected_status": 0}, {"args": ["-k1,1n", "-S", "4M"], "recipe": "real-input", "expected_status": 0}],
-      "operation_facets": ["sorting", "spill"],
+      "allowed_invocations": [
+        {
+          "args": [
+            "-n",
+            "-S",
+            "4M"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        },
+        {
+          "args": [
+            "-k1,1n",
+            "-S",
+            "4M"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "sorting",
+        "spill"
+      ],
       "description": "Request numeric prefix sorting of the complete SQLite source under the four MiB budget, exercising prepared-key and external-run interaction."
     },
     {
@@ -2373,7 +2798,11 @@
           "expected_status": 0
         },
         {
-          "args": ["-t", ",", "-k7,7n"],
+          "args": [
+            "-t",
+            ",",
+            "-k7,7n"
+          ],
           "recipe": "real-input",
           "expected_status": 0
         }
@@ -2774,6 +3203,364 @@
         "codec"
       ],
       "description": "Decode to stdout the registered stored-block encoding of complete genuine bytes."
+    },
+    {
+      "command": "cmp",
+      "mode": "cmp-equal",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "left",
+            "right"
+          ],
+          "recipe": "real-file-pair",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "cmp",
+      "mode": "cmp-distinct",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "left",
+            "right"
+          ],
+          "recipe": "real-file-pair",
+          "expected_status": 1
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "cp",
+      "mode": "cp-new-file",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-preserve=mode",
+            "input",
+            "copy"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "cp",
+      "mode": "cp-new-tree",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-preserve=mode",
+            "-R",
+            "tree",
+            "copy"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "fmt",
+      "mode": "fmt-paragraphs",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w",
+            "72"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ]
+    },
+    {
+      "command": "hexdump",
+      "mode": "hexdump-byte-display",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-C"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ]
+    },
+    {
+      "command": "od",
+      "mode": "od-byte-display",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-Ax",
+            "-tx1"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ]
+    },
+    {
+      "command": "xxd",
+      "mode": "xxd-byte-display",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-g",
+            "1"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ]
+    },
+    {
+      "command": "ls",
+      "mode": "ls-tree-names",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-1",
+            "tree"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ]
+    },
+    {
+      "command": "ls",
+      "mode": "ls-tree-recursive",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-R",
+            "-1",
+            "tree"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ]
+    },
+    {
+      "command": "mv",
+      "mode": "mv-new-path",
+      "allowed_invocations": [
+        {
+          "args": [
+            "input",
+            "moved"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "mv",
+      "mode": "mv-tree-rename",
+      "allowed_invocations": [
+        {
+          "args": [
+            "tree",
+            "moved"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "patch",
+      "mode": "patch-release-to-stdout",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "-F",
+            "0",
+            "-o",
+            "-",
+            "-i",
+            "change.diff",
+            "left"
+          ],
+          "recipe": "real-patch-pair",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "patch",
+      "mode": "patch-release-dry-run",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "-F",
+            "0",
+            "--dry-run",
+            "-i",
+            "change.diff",
+            "left"
+          ],
+          "recipe": "real-patch-pair",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "seq",
+      "mode": "seq-integer-output",
+      "allowed_invocations": [
+        {
+          "args": [
+            "1",
+            "1000"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        },
+        {
+          "args": [
+            "1",
+            "1000000"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "formatting"
+      ]
+    },
+    {
+      "command": "tee",
+      "mode": "tee-file-and-stdout",
+      "allowed_invocations": [
+        {
+          "args": [
+            "copy"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "xargs",
+      "mode": "xargs-delimited-batches",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-d",
+            "\n",
+            "-n",
+            "128",
+            "-s",
+            "65536",
+            "printf",
+            "%s\n"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "rm",
+      "mode": "rm-file",
+      "allowed_invocations": [
+        {
+          "args": [
+            "input"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "rm",
+      "mode": "rm-tree",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-r",
+            "tree"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "chmod",
+      "mode": "chmod-numeric",
+      "allowed_invocations": [
+        {
+          "args": [
+            "600",
+            "input"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
+    },
+    {
+      "command": "chmod",
+      "mode": "chmod-recursive",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-R",
+            "700",
+            "tree"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": []
     }
   ],
   "untimed_regimes": [
@@ -2892,5 +3679,6 @@
         }
       ]
     }
-  ]
+  ],
+  "not_timed_command_count": 23
 }

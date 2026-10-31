@@ -64,6 +64,12 @@ fn benchmark_observers(workloads : Array[FunctionalWorkload]) -> Set[String] {
     observers.add("cut")
     observers.add("sort")
   }
+  if workloads.any(row => row.recipe == Some("real-patch-pair")) {
+    observers.add("diff")
+  }
+  if workloads.any(row => row.command == "xargs") {
+    observers.add("printf")
+  }
   observers
 }
 

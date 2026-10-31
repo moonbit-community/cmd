@@ -245,6 +245,13 @@ async fn execute_functional_side(
       bounded_capture(stdout) != @utf8.encode(expected) {
       errors.push("stdout differs from independent workload assertion")
     }
+    if workload.recipe == Some("real-patch-pair") &&
+      fixture.args.contains("-o") &&
+      !files_equal(stdout, root + "/right") {
+      errors.push(
+        "applied patch does not reproduce the complete genuine target release",
+      )
+    }
     if workload.facets.unwrap_or([]).contains("network") &&
       corpus is Some(prepared) {
       errors.append(real_http_output_errors(prepared.source, stdout))

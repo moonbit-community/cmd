@@ -2,6 +2,7 @@
 fn benchmark_file_recipe(recipe : String?) -> Bool {
   [
     Some("real-file-pair"),
+    Some("real-patch-pair"),
     Some("bench-join-natural-csv"),
     Some("bench-comm-natural-idsets"),
   ].contains(recipe)
@@ -43,7 +44,7 @@ async fn prepare_benchmark_recipe(
     fail("file-mode benchmark requires a declared input corpus")
   }
   let recipe = workload.recipe.unwrap()
-  if recipe == "real-file-pair" {
+  if recipe == "real-file-pair" || recipe == "real-patch-pair" {
     guard workload.other_source is Some(other) else {
       fail("real file pair requires two declared sources")
     }
@@ -58,9 +59,38 @@ async fn prepare_benchmark_recipe(
     let right = @fs.create(root + "/right")
     copy_recipe_range(secondary, right, 0L, @fs.file_size(secondary))
     right.close()
+    if recipe == "real-patch-pair" {
+      // Derive an exact patch from two complete genuine releases outside timing.
+      // Fixed labels make both sides' patch bytes independent of fixture paths.
+      corpus_observer(
+        oracle + "/diff",
+        [
+          "-u",
+          "--label",
+          "left",
+          "--label",
+          "left",
+          root + "/left",
+          root + "/right",
+        ],
+        prepared.source,
+        root + "/change.diff",
+        environment,
+        timeout_ms,
+        receipt_prefix=@path.Path(root).dirname().to_string() +
+          "/" +
+          @path.Path(root).basename().to_owned() +
+          "-prepare-patch",
+        expected_status=1,
+      )
+    }
     write_json(root + "/recipe-features.json", {
       "recipe": recipe,
-      "transformation": "distinct complete copies of declared genuine sources; no generated edits",
+      "transformation": if recipe == "real-patch-pair" {
+        "fixed native unified diff of complete genuine releases outside timing; no invented edits"
+      } else {
+        "distinct complete copies of declared genuine sources; no generated edits"
+      },
       "left_sha256": benchmark_file_sha256(root + "/left"),
       "right_sha256": benchmark_file_sha256(root + "/right"),
     })

@@ -2,11 +2,15 @@
 
 ## Current declared scope (2026-11-01)
 
-`real.json` is the single active timing inventory. Its 130 data-driven rows
-cover 40 commands. `real-coverage.json` records the full 43-command scope,
+`real.json` is the single active timing inventory. Its 162 data-driven rows
+cover 54 commands. `real-coverage.json` accounts for all 80 command packages,
 including explicit correctness-only dispositions for ln, make and sh. Those
 three commands have independent local contract witnesses; they have no
-real-source timing claim. These are inventory counts, not execution results.
+real-source timing claim. Another 23 packages have individual `not-timed`
+reasons, including short utilities, unsupported ordinary operations, missing
+fair upstream equivalents and unbounded-output lifecycle requirements. A reason
+cannot relabel a reviewed timing command to discard its rows. These are
+inventory counts, not execution results.
 
 The inventory reuses 33 complete source files totaling 31,450,998 unique
 payload bytes. Each measured source is at most 16 MiB, and the complete source
@@ -20,6 +24,15 @@ truncation or generated size-budget input.
 Diff includes complete same-file release pairs: CPython JSON encoder 3.13.0 to
 3.14.0 and SQLite amalgamation 3.50.3 to 3.50.4. These add natural source changes
 beside equal files and different modules; they do not model all AI tool calls.
+
+The wider inventory adds cmp, cp, chmod, fmt, hexdump, ls, mv, od, patch, rm,
+seq, tee, xargs and xxd. The directory collection remains a bounded selection of
+complete CPython files, not a massive-directory workload. A same-filesystem mv
+renames an entry/tree; source byte size does not make it a copy-throughput test.
+Seq explicitly measures argument-driven output at 1,000 and 1,000,000 integers;
+its genuine empty stdin file is only transport, not claimed source-processing
+work. Xargs uses complete line-delimited genuine files and the same frozen
+native printf child on both sides, including child-launch costs.
 
 Every verdict applies to the exact command mode, sources, input transport and
 output sink that ran. Reports retain `general_performance_acceptance: false`,
@@ -60,7 +73,9 @@ setup allowance; they are not measured payload files.
 Input collections map genuine files to declared fixture paths. Distinct copies
 preserve full bytes. Pair comparisons use complete genuine files. The only
 declared semantic preparations are sorting/key projection for join and comm,
-codec encoding and distinct-file copies. Decoder rows retain their genuine
+codec encoding, distinct-file copies and fixed native unified patches derived
+from complete genuine release pairs. Patch output must independently reproduce
+the complete target release; no edits are invented to shape timing. Decoder rows retain their genuine
 decoded source alongside registered stored, fixed-literal, dynamic or
 concatenated-member encodings. Synthetic distance/overlap stress remains a
 correctness regression rather than real-source timing evidence.
@@ -123,8 +138,8 @@ sample removal or aggregate score hides a failed row.
 Actual source observations include full-file SHA-256, bytes, LF and record
 counts, unterminated tails, record-length extrema, row/byte-weighted histograms,
 NUL/non-ASCII bytes and duplicate records. Declared data and transport facets
-require actual observations; a catalog label alone is insufficient. The 107
-reviewed command/mode contracts in `real-coverage.json` pin 111 distinct
+require actual observations; a catalog label alone is insufficient. The 128
+reviewed command/mode contracts in `real-coverage.json` pin 133 distinct
 argument/preparation/status combinations independently of workload row IDs.
 Operation facets must match those exact contracts as well as native calibration
 and independent local correctness. They describe requested operations rather
@@ -163,6 +178,10 @@ the 2026-10-31 product correction applies repeated-anchor filtering before
 Myers search. Its configured exact comparison remains in the inventory.
 See ADR-0003 for the correction and its finite validation scope.
 
+The expanded 2026-11-01 calibration also retains a `fmt -w 72` wrapping
+discrepancy on the complete Shakespeare source. Its RFC row passes; the book
+row remains an exact correctness failure and receives no qualified ratio.
+
 Seven legacy synthetic regimes remain untimed: two repeated diff edit shapes,
 two-sided duplicate join fan-out, and four codec distance/overlap regimes. Their
 exact local contracts or private mechanism regressions are bound in
@@ -172,8 +191,8 @@ complete command functionality or an application-frequency distribution.
 
 `protect.mbtx` compares all 80 command artifacts, requires real timing
 coverage for every changed command, and invokes this same inventory. Unchanged
-artifacts outside its 43-command declared scope gain no timing claim.
-Correctness-only dispositions cannot qualify a changed artifact's performance.
+artifacts with correctness-only or not-timed dispositions gain no timing claim.
+Neither disposition can qualify a changed artifact's performance.
 See [PROTECTION.md](PROTECTION.md) for the two-argument launcher and recovery
 requirements.
 

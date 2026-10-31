@@ -250,11 +250,19 @@
         "path": "openflights-airports.dat",
         "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
-      "args": ["-t", ",", "-k7,7n"],
+      "args": [
+        "-t",
+        ",",
+        "-k7,7n"
+      ],
       "mode": "sort-numeric",
       "expected_status": 0,
       "expected_stderr": "",
-      "facets": ["bytes", "records", "sorting"]
+      "facets": [
+        "bytes",
+        "records",
+        "sorting"
+      ]
     },
     {
       "id": "real-sort-source-numeric-key-spill",
@@ -265,11 +273,20 @@
         "path": "sqlite3-3.50.4.c",
         "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
-      "args": ["-k1,1n", "-S", "4M"],
+      "args": [
+        "-k1,1n",
+        "-S",
+        "4M"
+      ],
       "mode": "sort-numeric-spill",
       "expected_status": 0,
       "expected_stderr": "",
-      "facets": ["bytes", "records", "sorting", "spill"]
+      "facets": [
+        "bytes",
+        "records",
+        "sorting",
+        "spill"
+      ]
     },
     {
       "id": "real-sort-source-numeric-spill",
@@ -280,11 +297,20 @@
         "path": "sqlite3-3.50.4.c",
         "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
-      "args": ["-n", "-S", "4M"],
+      "args": [
+        "-n",
+        "-S",
+        "4M"
+      ],
       "mode": "sort-numeric-spill",
       "expected_status": 0,
       "expected_stderr": "",
-      "facets": ["bytes", "records", "sorting", "spill"]
+      "facets": [
+        "bytes",
+        "records",
+        "sorting",
+        "spill"
+      ]
     },
     {
       "id": "real-sort-source-spill",
@@ -1490,11 +1516,23 @@
         "path": "python/Lib/json/encoder.py",
         "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
       },
-      "args": ["--label", "left", "--label", "right", "-u", "left", "right"],
+      "args": [
+        "--label",
+        "left",
+        "--label",
+        "right",
+        "-u",
+        "left",
+        "right"
+      ],
       "expected_status": 1,
       "expected_stderr": "",
       "mode": "diff-real-revision-pair",
-      "facets": ["bytes", "records", "named-files"],
+      "facets": [
+        "bytes",
+        "records",
+        "named-files"
+      ],
       "other_source": {
         "path": "python-3.14.0/Lib/json/encoder.py",
         "sha256": "5ab0fbdd8b4927db9b6a0d1cbc16eecfadc89da8b305481586618415498d3e58"
@@ -1509,11 +1547,23 @@
         "path": "sqlite3-3.50.3.c",
         "sha256": "4946267f79081e3abbca035ec48a6ad95edab6a59c3c300224226e2689b852fe"
       },
-      "args": ["--label", "left", "--label", "right", "-u", "left", "right"],
+      "args": [
+        "--label",
+        "left",
+        "--label",
+        "right",
+        "-u",
+        "left",
+        "right"
+      ],
       "expected_status": 1,
       "expected_stderr": "",
       "mode": "diff-real-revision-pair",
-      "facets": ["bytes", "records", "named-files"],
+      "facets": [
+        "bytes",
+        "records",
+        "named-files"
+      ],
       "other_source": {
         "path": "sqlite3-3.50.4.c",
         "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
@@ -3390,6 +3440,1569 @@
         "bytes",
         "records",
         "selection"
+      ]
+    },
+    {
+      "id": "real-cmp-small-equal",
+      "command": "cmp",
+      "reference_behavior_id": "case:compat-text-cmp-equal-status",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-file-pair",
+      "mode": "cmp-equal",
+      "args": [
+        "-s",
+        "left",
+        "right"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "other_source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      }
+    },
+    {
+      "id": "real-cmp-source-equal",
+      "command": "cmp",
+      "reference_behavior_id": "case:compat-text-cmp-equal-status",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-file-pair",
+      "mode": "cmp-equal",
+      "args": [
+        "-s",
+        "left",
+        "right"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "other_source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      }
+    },
+    {
+      "id": "real-cmp-python-revisions",
+      "command": "cmp",
+      "reference_behavior_id": "case:compat-text-cmp-equal-status",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-file-pair",
+      "mode": "cmp-distinct",
+      "args": [
+        "-s",
+        "left",
+        "right"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "other_source": {
+        "path": "python-3.14.0/Lib/json/encoder.py",
+        "sha256": "5ab0fbdd8b4927db9b6a0d1cbc16eecfadc89da8b305481586618415498d3e58"
+      }
+    },
+    {
+      "id": "real-cmp-sqlite-revisions",
+      "command": "cmp",
+      "reference_behavior_id": "case:compat-text-cmp-equal-status",
+      "source": {
+        "path": "sqlite3-3.50.3.c",
+        "sha256": "4946267f79081e3abbca035ec48a6ad95edab6a59c3c300224226e2689b852fe"
+      },
+      "recipe": "real-file-pair",
+      "mode": "cmp-distinct",
+      "args": [
+        "-s",
+        "left",
+        "right"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "other_source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      }
+    },
+    {
+      "id": "real-cp-small",
+      "command": "cp",
+      "reference_behavior_id": "case:phase4-cp-regular",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-input",
+      "mode": "cp-new-file",
+      "args": [
+        "--no-preserve=mode",
+        "input",
+        "copy"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "input"
+        }
+      ]
+    },
+    {
+      "id": "real-cp-source",
+      "command": "cp",
+      "reference_behavior_id": "case:phase4-cp-regular",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "mode": "cp-new-file",
+      "args": [
+        "--no-preserve=mode",
+        "input",
+        "copy"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "sqlite3-3.50.4.c",
+            "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+          },
+          "target": "input"
+        }
+      ]
+    },
+    {
+      "id": "real-cp-tree",
+      "command": "cp",
+      "reference_behavior_id": "case:phase4-cp-regular",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+      },
+      "recipe": "real-input",
+      "mode": "cp-new-tree",
+      "args": [
+        "--no-preserve=mode",
+        "-R",
+        "tree",
+        "copy"
+      ],
+      "facets": [
+        "bytes",
+        "tree",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ]
+    },
+    {
+      "id": "real-fmt-rfc",
+      "command": "fmt",
+      "reference_behavior_id": "case:p1-fmt-join-paragraph",
+      "source": {
+        "path": "rfc9110.txt",
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a"
+      },
+      "recipe": "real-input",
+      "mode": "fmt-paragraphs",
+      "args": [
+        "-w",
+        "72"
+      ],
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-fmt-book",
+      "command": "fmt",
+      "reference_behavior_id": "case:p1-fmt-join-paragraph",
+      "source": {
+        "path": "shakespeare.txt",
+        "sha256": "eb61e33cab23dbe712ad57091ded6c7292ba91ac3bb2764f51a3223ec0068fe5"
+      },
+      "recipe": "real-input",
+      "mode": "fmt-paragraphs",
+      "args": [
+        "-w",
+        "72"
+      ],
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-hexdump-png",
+      "command": "hexdump",
+      "reference_behavior_id": "case:hexdump-one-byte-hex",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
+      },
+      "recipe": "real-input",
+      "mode": "hexdump-byte-display",
+      "args": [
+        "-C"
+      ],
+      "facets": [
+        "bytes",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-hexdump-source",
+      "command": "hexdump",
+      "reference_behavior_id": "case:hexdump-one-byte-hex",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "mode": "hexdump-byte-display",
+      "args": [
+        "-C"
+      ],
+      "facets": [
+        "bytes",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-od-png",
+      "command": "od",
+      "reference_behavior_id": "case:od-hex-byte-address",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
+      },
+      "recipe": "real-input",
+      "mode": "od-byte-display",
+      "args": [
+        "-Ax",
+        "-tx1"
+      ],
+      "facets": [
+        "bytes",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-od-source",
+      "command": "od",
+      "reference_behavior_id": "case:od-hex-byte-address",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "mode": "od-byte-display",
+      "args": [
+        "-Ax",
+        "-tx1"
+      ],
+      "facets": [
+        "bytes",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-xxd-png",
+      "command": "xxd",
+      "reference_behavior_id": "case:p7-xxd-include",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
+      },
+      "recipe": "real-input",
+      "mode": "xxd-byte-display",
+      "args": [
+        "-g",
+        "1"
+      ],
+      "facets": [
+        "bytes",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-xxd-source",
+      "command": "xxd",
+      "reference_behavior_id": "case:p7-xxd-include",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "mode": "xxd-byte-display",
+      "args": [
+        "-g",
+        "1"
+      ],
+      "facets": [
+        "bytes",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-ls-tree-names",
+      "command": "ls",
+      "reference_behavior_id": "case:phase3-ls-basic",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+      },
+      "recipe": "real-input",
+      "mode": "ls-tree-names",
+      "args": [
+        "-1",
+        "tree"
+      ],
+      "facets": [
+        "bytes",
+        "tree",
+        "named-files",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ]
+    },
+    {
+      "id": "real-ls-tree-recursive",
+      "command": "ls",
+      "reference_behavior_id": "case:phase3-ls-basic",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+      },
+      "recipe": "real-input",
+      "mode": "ls-tree-recursive",
+      "args": [
+        "-R",
+        "-1",
+        "tree"
+      ],
+      "facets": [
+        "bytes",
+        "tree",
+        "named-files",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ]
+    },
+    {
+      "id": "real-mv-small",
+      "command": "mv",
+      "reference_behavior_id": "case:phase4-mv-regular",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-input",
+      "mode": "mv-new-path",
+      "args": [
+        "input",
+        "moved"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "input"
+        }
+      ]
+    },
+    {
+      "id": "real-mv-tree",
+      "command": "mv",
+      "reference_behavior_id": "case:phase4-mv-regular",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+      },
+      "recipe": "real-input",
+      "mode": "mv-tree-rename",
+      "args": [
+        "tree",
+        "moved"
+      ],
+      "facets": [
+        "bytes",
+        "tree",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ]
+    },
+    {
+      "id": "real-patch-python",
+      "command": "patch",
+      "reference_behavior_id": "case:patch-unified-output-stdout",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-patch-pair",
+      "mode": "patch-release-to-stdout",
+      "args": [
+        "-s",
+        "-F",
+        "0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "left"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "other_source": {
+        "path": "python-3.14.0/Lib/json/encoder.py",
+        "sha256": "5ab0fbdd8b4927db9b6a0d1cbc16eecfadc89da8b305481586618415498d3e58"
+      }
+    },
+    {
+      "id": "real-patch-sqlite",
+      "command": "patch",
+      "reference_behavior_id": "case:patch-unified-output-stdout",
+      "source": {
+        "path": "sqlite3-3.50.3.c",
+        "sha256": "4946267f79081e3abbca035ec48a6ad95edab6a59c3c300224226e2689b852fe"
+      },
+      "recipe": "real-patch-pair",
+      "mode": "patch-release-to-stdout",
+      "args": [
+        "-s",
+        "-F",
+        "0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "left"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "other_source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      }
+    },
+    {
+      "id": "real-patch-python-dry-run",
+      "command": "patch",
+      "reference_behavior_id": "case:patch-unified-dry-run",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-patch-pair",
+      "mode": "patch-release-dry-run",
+      "args": [
+        "-s",
+        "-F",
+        "0",
+        "--dry-run",
+        "-i",
+        "change.diff",
+        "left"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "other_source": {
+        "path": "python-3.14.0/Lib/json/encoder.py",
+        "sha256": "5ab0fbdd8b4927db9b6a0d1cbc16eecfadc89da8b305481586618415498d3e58"
+      }
+    },
+    {
+      "id": "real-seq-daily",
+      "command": "seq",
+      "reference_behavior_id": "case:p0-seq-separator",
+      "source": {
+        "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recipe": "real-input",
+      "mode": "seq-integer-output",
+      "args": [
+        "1",
+        "1000"
+      ],
+      "facets": [
+        "empty",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-seq-bulk",
+      "command": "seq",
+      "reference_behavior_id": "case:p0-seq-separator",
+      "source": {
+        "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recipe": "real-input",
+      "mode": "seq-integer-output",
+      "args": [
+        "1",
+        "1000000"
+      ],
+      "facets": [
+        "empty",
+        "formatting"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-tee-small",
+      "command": "tee",
+      "reference_behavior_id": "case:phase0-tee-filesystem",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-input",
+      "mode": "tee-file-and-stdout",
+      "args": [
+        "copy"
+      ],
+      "facets": [
+        "bytes",
+        "records"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-tee-source",
+      "command": "tee",
+      "reference_behavior_id": "case:phase0-tee-filesystem",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "mode": "tee-file-and-stdout",
+      "args": [
+        "copy"
+      ],
+      "facets": [
+        "bytes",
+        "records"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-xargs-options",
+      "command": "xargs",
+      "reference_behavior_id": "case:phase4-xargs-lines-eof",
+      "source": {
+        "path": "curl-options-in-versions.txt",
+        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b"
+      },
+      "recipe": "real-input",
+      "mode": "xargs-delimited-batches",
+      "args": [
+        "-d",
+        "\n",
+        "-n",
+        "128",
+        "-s",
+        "65536",
+        "printf",
+        "%s\n"
+      ],
+      "facets": [
+        "bytes",
+        "records"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-xargs-unicode",
+      "command": "xargs",
+      "reference_behavior_id": "case:phase4-xargs-lines-eof",
+      "source": {
+        "path": "UnicodeData-17.0.0.txt",
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
+      },
+      "recipe": "real-input",
+      "mode": "xargs-delimited-batches",
+      "args": [
+        "-d",
+        "\n",
+        "-n",
+        "128",
+        "-s",
+        "65536",
+        "printf",
+        "%s\n"
+      ],
+      "facets": [
+        "bytes",
+        "records"
+      ],
+      "expected_status": 0,
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-rm-small",
+      "command": "rm",
+      "reference_behavior_id": "case:phase4-rm-regular",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-input",
+      "mode": "rm-file",
+      "args": [
+        "input"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "input"
+        }
+      ]
+    },
+    {
+      "id": "real-rm-tree",
+      "command": "rm",
+      "reference_behavior_id": "case:phase4-rm-regular",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+      },
+      "recipe": "real-input",
+      "mode": "rm-tree",
+      "args": [
+        "-r",
+        "tree"
+      ],
+      "facets": [
+        "bytes",
+        "tree",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ]
+    },
+    {
+      "id": "real-chmod-small",
+      "command": "chmod",
+      "reference_behavior_id": "case:phase4-chmod-numeric",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-input",
+      "mode": "chmod-numeric",
+      "args": [
+        "600",
+        "input"
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "input"
+        }
+      ],
+      "observe": [
+        "mode"
+      ]
+    },
+    {
+      "id": "real-chmod-tree",
+      "command": "chmod",
+      "reference_behavior_id": "case:phase4-chmod-numeric",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+      },
+      "recipe": "real-input",
+      "mode": "chmod-recursive",
+      "args": [
+        "-R",
+        "700",
+        "tree"
+      ],
+      "facets": [
+        "bytes",
+        "tree",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ],
+      "observe": [
+        "mode"
       ]
     }
   ]

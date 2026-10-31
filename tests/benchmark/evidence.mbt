@@ -103,6 +103,7 @@ fn functional_workload_errors(
         Some("bench-join-natural-csv"),
         Some("bench-comm-natural-idsets"),
         Some("real-file-pair"),
+        Some("real-patch-pair"),
       ].contains(row.recipe) {
       errors.push(
         "second source requires an explicit two-source recipe: " + row.id,

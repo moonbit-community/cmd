@@ -11,6 +11,17 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 ## 2026-11-01
 
+Performance integration and post-CI measurement coverage; no publication.
+
+- Integrate retained performance work at `d12f317`; all required platforms pass
+  [CI run 41246902641](https://github.com/moonbit-community/cmd/actions/runs/41246902641).
+  Earlier unsuccessful performance trials keep their original verdicts.
+- Account for all 80 packages with 162 workload rows covering 54 timing commands,
+  three correctness-only dispositions and 23 explicit not-timed reasons. Reuse
+  the same complete genuine sources; add file operations, byte displays, patch
+  application, output generation and argument batching to the generic runner.
+  Inventory counts do not claim execution or timing success. See ADR-0003.
+
 Development sort and diff performance pilots; no publication.
 
 - Add complete CPython and SQLite release-pair diff workloads plus a genuine

@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-10-31
+Updated: 2026-11-01
 
 The 2026-10-30 release published `cli/core@0.9.0` and 43 command packages:
 42 updates and the first `cli/rg@0.1.0` release. Another 36 command coordinates
@@ -31,6 +31,12 @@ on the genuine source pair. See [ADR-0004](adr/0004-filesystem.md) and
 [ADR-0003](adr/0003-streams.md) for the bounded evidence and retained limits.
 Regular-file stdin alignment for wc still requires an unavailable public
 descriptor metadata API and remains explicitly outside acceptance.
+
+The 2026-11-01 wider native benchmark calibration adds a retained `fmt -w 72`
+wrapping discrepancy on the complete registered Shakespeare source. The RFC
+control agrees, and 31 of 32 newly registered invocations pass, but the book
+case cannot establish exact GNU compatibility or a qualified performance ratio.
+This diagnostic does not rewrite the dated published acceptance above.
 
 The final local macOS development run passes 2,260 functional checks with 21
 platform skips and zero failures, plus 1,723 Wasm package and 192 Native

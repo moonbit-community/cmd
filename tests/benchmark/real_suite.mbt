@@ -49,11 +49,24 @@ fn real_sources(row : FunctionalWorkload) -> Array[NaturalSource] {
 ///|
 fn real_command_scope() -> Set[String] {
   Set([
-    "base32", "base64", "cat", "cksum", "column", "comm", "csplit", "curl", "cut",
-    "diff", "expand", "find", "fold", "grep", "gunzip", "gzip", "head", "join", "jq",
-    "ln", "make", "md5sum", "nl", "paste", "rev", "rg", "sed", "sh", "sha1sum", "sha256sum",
-    "sha512sum", "sort", "split", "strings", "tac", "tail", "tr", "tree", "unexpand",
-    "uniq", "wc", "wget", "zcat",
+    "base32", "base64", "basename", "cat", "chmod", "cksum", "cmp", "column", "comm",
+    "cp", "csplit", "curl", "cut", "date", "diff", "dirname", "echo", "env", "expand",
+    "expr", "false", "find", "fmt", "fold", "grep", "gunzip", "gzip", "head", "hexdump",
+    "join", "jq", "jqlog", "ln", "ls", "make", "md5sum", "mkdir", "mktemp", "mv",
+    "nl", "od", "paste", "patch", "printenv", "printf", "pwd", "realpath", "rev",
+    "rg", "rm", "rmdir", "sed", "seq", "sh", "sha1sum", "sha256sum", "sha512sum",
+    "sleep", "sort", "split", "strings", "tac", "tail", "tee", "test", "timeout",
+    "touch", "tr", "tree", "true", "unexpand", "uniq", "unlink", "wc", "wget", "which",
+    "xargs", "xxd", "yes", "zcat",
+  ])
+}
+
+///|
+fn real_untimed_scope() -> Set[String] {
+  Set([
+    "basename", "date", "dirname", "echo", "env", "expr", "false", "jqlog", "mkdir",
+    "mktemp", "printenv", "printf", "pwd", "realpath", "rmdir", "sleep", "test",
+    "timeout", "touch", "true", "unlink", "which", "yes",
   ])
 }
 
@@ -151,6 +164,11 @@ fn real_suite_errors(
   let identities : Array[Json] = []
   let used : Map[String, Int64] = Map([])
   for row in rows {
+    if row.command == "chmod" && !row.observe.unwrap_or([]).contains("mode") {
+      errors.push(
+        "permission timing requires actual mode observations: " + row.id,
+      )
+    }
     if row.transport is Some(_) && row.sink is Some(_) {
       errors.push(
         "combined input/output pipe observations are not implemented: " + row.id,
@@ -222,6 +240,7 @@ fn real_suite_errors(
     if ![
         Some("real-input"),
         Some("real-file-pair"),
+        Some("real-patch-pair"),
         Some("gzip"),
         Some("bench-join-natural-csv"),
         Some("bench-comm-natural-idsets"),
@@ -295,6 +314,19 @@ fn real_suite_errors(
     commands.add(command)
     let selected = rows.filter(row => row.command == command)
     let disposition = real_text(real_field(spec, "disposition"))
+    if disposition == "not-timed" {
+      if !real_untimed_scope().contains(command) ||
+        !selected.is_empty() ||
+        real_text(real_field(spec, "reason")).trim().is_empty() ||
+        !real_array(real_field(spec, "required_modes")).is_empty() ||
+        !real_array(real_field(spec, "required_facets")).is_empty() {
+        errors.push(
+          "unreviewed not-timed disposition or concealed timing rows: " +
+          command,
+        )
+      }
+      continue
+    }
     if disposition == "correctness-only" {
       if !["ln", "make", "sh"].contains(command) {
         errors.push(
@@ -357,7 +389,7 @@ fn real_suite_errors(
   }
   if commands != real_command_scope() {
     errors.push(
-      "real coverage must account for every command in the reviewed43-command scope",
+      "real coverage must account for every command in the reviewed80-command scope",
     )
   }
   errors
@@ -608,7 +640,7 @@ fn real_observation_errors(
       "formatting" =>
         [
           "cat", "column", "expand", "unexpand", "fold", "nl", "paste", "rev", "rg",
-          "grep", "tr", "jq", "tree",
+          "grep", "tr", "jq", "tree", "fmt", "hexdump", "od", "xxd", "seq", "ls",
         ].contains(row.command) &&
         (row.command != "cat" || !row.args.unwrap_or([]).is_empty())
       "selection" =>

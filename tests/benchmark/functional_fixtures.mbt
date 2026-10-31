@@ -25,6 +25,7 @@ priv struct FunctionalWorkload {
   facets : Array[String]?
   expected_stderr : String?
   output_relation : String?
+  observe : Array[String]?
 } derive(FromJson, ToJson)
 
 ///|
@@ -53,6 +54,9 @@ fn functional_fixture(workload : FunctionalWorkload) -> @testkit.Case raise {
   }
   if workload.output_relation == Some("record-multiset") {
     value["stdout_order"] = "lines"
+  }
+  if workload.observe is Some(dimensions) {
+    value["observe"] = Json(dimensions)
   }
   @json.from_json(Json::object(value))
 }

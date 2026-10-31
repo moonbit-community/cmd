@@ -229,6 +229,66 @@
       "real-zcat-stored-source",
       "real-zcat-fixed-literals-source",
       "real-zcat-members-source"
+    ],
+    "cmp": [
+      "real-cmp-small-equal",
+      "real-cmp-source-equal",
+      "real-cmp-python-revisions",
+      "real-cmp-sqlite-revisions"
+    ],
+    "cp": [
+      "real-cp-small",
+      "real-cp-source",
+      "real-cp-tree"
+    ],
+    "fmt": [
+      "real-fmt-rfc",
+      "real-fmt-book"
+    ],
+    "hexdump": [
+      "real-hexdump-png",
+      "real-hexdump-source"
+    ],
+    "od": [
+      "real-od-png",
+      "real-od-source"
+    ],
+    "xxd": [
+      "real-xxd-png",
+      "real-xxd-source"
+    ],
+    "ls": [
+      "real-ls-tree-names",
+      "real-ls-tree-recursive"
+    ],
+    "mv": [
+      "real-mv-small",
+      "real-mv-tree"
+    ],
+    "patch": [
+      "real-patch-python",
+      "real-patch-sqlite",
+      "real-patch-python-dry-run"
+    ],
+    "seq": [
+      "real-seq-daily",
+      "real-seq-bulk"
+    ],
+    "tee": [
+      "real-tee-small",
+      "real-tee-source"
+    ],
+    "xargs": [
+      "real-xargs-options",
+      "real-xargs-unicode"
+    ],
+    "rm": [
+      "real-rm-small",
+      "real-rm-tree"
+    ],
+    "chmod": [
+      "real-chmod-small",
+      "real-chmod-tree"
     ]
   },
   "separate_required_evidence": {
@@ -396,105 +456,250 @@
     {
       "id": "base32-byte-encoding",
       "owner": "commands/base32",
-      "commands": ["base32"],
-      "status": "adopted",
-      "sources": ["commands/base32/main.mbt"],
-      "tests": [
-        {"file": "commands/base32/main_wbtest.mbt", "name": "base32 RFC 4648 vectors"},
-        {"file": "commands/base32/main_wbtest.mbt", "name": "base32 byte encoding preserves every byte and wrap boundaries"},
-        {"file": "commands/base32/main_wbtest.mbt", "name": "base32 whole input acceptance retains fragments and read failures"},
-        {"file": "commands/base32/main_wbtest.mbt", "name": "base32 complete group windows preserve padding across the 64 KiB boundary"}
+      "commands": [
+        "base32"
       ],
-      "profiles": ["real-base32-encode-unwrapped-source", "real-base32-binary"],
+      "status": "adopted",
+      "sources": [
+        "commands/base32/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/base32/main_wbtest.mbt",
+          "name": "base32 RFC 4648 vectors"
+        },
+        {
+          "file": "commands/base32/main_wbtest.mbt",
+          "name": "base32 byte encoding preserves every byte and wrap boundaries"
+        },
+        {
+          "file": "commands/base32/main_wbtest.mbt",
+          "name": "base32 whole input acceptance retains fragments and read failures"
+        },
+        {
+          "file": "commands/base32/main_wbtest.mbt",
+          "name": "base32 complete group windows preserve padding across the 64 KiB boundary"
+        }
+      ],
+      "profiles": [
+        "real-base32-encode-unwrapped-source",
+        "real-base32-binary"
+      ],
       "invariant": "Whole input acceptance precedes encoding or decoding. Byte encoding preserves all symbols, final padding, arbitrary positive wrap columns and zero-wrap termination; complete group windows cannot introduce padding at an interior boundary. Length arithmetic is checked before allocating output.",
       "measurement_scope": "Local selected-workload pilots only; phase decisions and limits are recorded in ADR-0003. Whole-input storage remains and peak RSS is unmeasured."
     },
     {
       "id": "base64-byte-encoding",
       "owner": "commands/base64",
-      "commands": ["base64"],
-      "status": "adopted",
-      "sources": ["commands/base64/encode.mbt", "commands/base64/main.mbt"],
-      "tests": [
-        {"file": "commands/base64/main_wbtest.mbt", "name": "base64 byte encoding preserves every byte across fragmented quanta and wraps"},
-        {"file": "commands/base64/main_wbtest.mbt", "name": "base64 emits complete quanta before later read errors and never replays failed writes"},
-        {"file": "commands/base64/main_wbtest.mbt", "name": "base64 stream carry crosses the full read boundary without inserting padding"}
+      "commands": [
+        "base64"
       ],
-      "profiles": ["real-base64-encode-unwrapped-source", "real-base64-binary"],
+      "status": "adopted",
+      "sources": [
+        "commands/base64/encode.mbt",
+        "commands/base64/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/base64/main_wbtest.mbt",
+          "name": "base64 byte encoding preserves every byte across fragmented quanta and wraps"
+        },
+        {
+          "file": "commands/base64/main_wbtest.mbt",
+          "name": "base64 emits complete quanta before later read errors and never replays failed writes"
+        },
+        {
+          "file": "commands/base64/main_wbtest.mbt",
+          "name": "base64 stream carry crosses the full read boundary without inserting padding"
+        }
+      ],
+      "profiles": [
+        "real-base64-encode-unwrapped-source",
+        "real-base64-binary"
+      ],
       "invariant": "A 64 KiB input read leaves at most two carry bytes. Complete quanta reach the writer before another read; only final carry receives padding. Wrap columns persist across chunks, and failed output never replays or finalizes carry.",
       "measurement_scope": "Local genuine-source encoding and binary controls; unchanged decoder behavior, no general throughput, RSS or publication claim."
     },
     {
       "id": "nl-record-output",
       "owner": "commands/nl",
-      "commands": ["nl"],
-      "status": "adopted",
-      "sources": ["commands/nl/main.mbt", "commands/nl/numbering.mbt"],
-      "tests": [
-        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering preserves sections binary bytes and an unterminated final record"},
-        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering retains completed output before an input failure"},
-        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering never replays bytes after a partial write failure"},
-        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering batches preserve blank grouping section resets and signed formatting"},
-        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering does not advance a declined oversized record after write failure"},
-        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering empty input does not allocate a requested number field"}
+      "commands": [
+        "nl"
       ],
-      "profiles": ["real-nl-source-records"],
+      "status": "adopted",
+      "sources": [
+        "commands/nl/main.mbt",
+        "commands/nl/numbering.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering preserves sections binary bytes and an unterminated final record"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering retains completed output before an input failure"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering never replays bytes after a partial write failure"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering batches preserve blank grouping section resets and signed formatting"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering does not advance a declined oversized record after write failure"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering empty input does not allocate a requested number field"
+        }
+      ],
+      "profiles": [
+        "real-nl-source-records"
+      ],
       "invariant": "Synchronous record batches preserve section and blank-line state. Complete coalesced output owns its bytes until admission or write completion; numbering advances only after that success. Earlier output survives a read failure, partial output is never replayed, and every emitted record retains its newline.",
       "measurement_scope": "One selected real-source workload qualifies locally; private boundary tests do not establish throughput generality. The RecordReader maximum read request is 1 MiB and coalescing adds transient record storage; RSS is unmeasured."
     },
     {
       "id": "sed-byte-prefilter",
       "owner": "commands/sed",
-      "commands": ["sed"],
-      "status": "adopted",
-      "sources": ["commands/sed/pattern.mbt", "commands/sed/parser.mbt", "commands/sed/execute.mbt"],
-      "tests": [
-        {"file": "commands/sed/pattern_wbtest.mbt", "name": "sed byte rejection preserves the full matcher for nullable alternatives captures and binary data"},
-        {"file": "commands/sed/pattern_wbtest.mbt", "name": "sed byte rejection updates executed pattern history without decoding a miss"},
-        {"file": "commands/sed/pattern_wbtest.mbt", "name": "sed byte rejection preserves previous regex errors branches captures and multiline spaces"}
+      "commands": [
+        "sed"
       ],
-      "profiles": ["real-sed-source-identifiers", "real-sed-source-miss"],
+      "status": "adopted",
+      "sources": [
+        "commands/sed/pattern.mbt",
+        "commands/sed/parser.mbt",
+        "commands/sed/execute.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/sed/pattern_wbtest.mbt",
+          "name": "sed byte rejection preserves the full matcher for nullable alternatives captures and binary data"
+        },
+        {
+          "file": "commands/sed/pattern_wbtest.mbt",
+          "name": "sed byte rejection updates executed pattern history without decoding a miss"
+        },
+        {
+          "file": "commands/sed/pattern_wbtest.mbt",
+          "name": "sed byte rejection preserves previous regex errors branches captures and multiline spaces"
+        }
+      ],
+      "profiles": [
+        "real-sed-source-identifiers",
+        "real-sed-source-miss"
+      ],
       "invariant": "A mandatory literal can only reject immutable raw byte spaces. Resolve executed-pattern history and validate replacement references before rejection; otherwise retain the full matcher, captures, empty matches, branching and multiline behavior.",
       "measurement_scope": "The incremental 2026-10-31 two-row panel qualifies; cumulative original-artifact evidence and limitations are recorded separately in ADR-0003. No general performance or publication acceptance."
     },
     {
       "id": "csplit-page-processing",
       "owner": "commands/csplit",
-      "commands": ["csplit"],
-      "status": "adopted",
-      "sources": ["commands/csplit/snapshot.mbt", "commands/csplit/main.mbt"],
-      "tests": [
-        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit flushes full index pages before an unterminated final boundary"},
-        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit index pages retain 64 bit offsets and never replay a failed flush"},
-        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit synchronous index scans resume before an uncommitted boundary"},
-        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit cached matching retains byte semantics and declines crossing records"},
-        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit cached scans stop at the first match or uncached record"},
-        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit byte matcher retains BRE assertions alternatives and backreferences"}
+      "commands": [
+        "csplit"
       ],
-      "profiles": ["real-csplit-source-api-boundaries"],
+      "status": "adopted",
+      "sources": [
+        "commands/csplit/snapshot.mbt",
+        "commands/csplit/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit flushes full index pages before an unterminated final boundary"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit index pages retain 64 bit offsets and never replay a failed flush"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit synchronous index scans resume before an uncommitted boundary"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit cached matching retains byte semantics and declines crossing records"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit cached scans stop at the first match or uncached record"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit byte matcher retains BRE assertions alternatives and backreferences"
+        }
+      ],
+      "profiles": [
+        "real-csplit-source-api-boundaries"
+      ],
       "invariant": "Bounded index pages preserve signed 64-bit offsets and data-before-index ordering; index scanning returns before a boundary that needs a flush, and little-endian word stores require a checked complete slot. Synchronous matching stops at the first match or uncached record; one byte matcher is reused per control; cached matching requires both offsets and the complete record, while cross-page records retain the original path, error and cleanup contracts.",
       "measurement_scope": "Locally adopted from the 2026-10-31 selected-workload panels; one genuine-source workload does not establish universal throughput, full protection or publication acceptance."
     },
     {
       "id": "sed-record-output",
       "owner": "commands/sed",
-      "commands": ["sed"],
-      "status": "adopted",
-      "sources": ["commands/sed/execute.mbt", "commands/sed/space.mbt"],
-      "tests": [
-        {"file": "commands/sed/sed_wbtest.mbt", "name": "sed output records preserve separators termination empty and byte values"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed delivers completed output before waiting for another input chunk"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed cached record admission never consumes a spanning record"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed synchronous output admission preserves slow path newline ownership"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output failure precedes a later script error without replay"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output failure precedes a failing input read"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output retains n N append and unterminated boundaries"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed record scanning preserves all bytes and fragmented final records"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed raw spaces preserve bytes without decoding and retain independent hold contents"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed raw spaces survive refills substitutions hold exchange and multiline restart"},
-        {"file": "commands/sed/output_wbtest.mbt", "name": "sed record output preserves separators and termination across buffer boundaries"}
+      "commands": [
+        "sed"
       ],
-      "profiles": ["real-sed-source-identifiers", "real-sed-source-miss"],
+      "status": "adopted",
+      "sources": [
+        "commands/sed/execute.mbt",
+        "commands/sed/space.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/sed/sed_wbtest.mbt",
+          "name": "sed output records preserve separators termination empty and byte values"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed delivers completed output before waiting for another input chunk"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed cached record admission never consumes a spanning record"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed synchronous output admission preserves slow path newline ownership"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed buffered output failure precedes a later script error without replay"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed buffered output failure precedes a failing input read"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed buffered output retains n N append and unterminated boundaries"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed record scanning preserves all bytes and fragmented final records"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed raw spaces preserve bytes without decoding and retain independent hold contents"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed raw spaces survive refills substitutions hold exchange and multiline restart"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed record output preserves separators and termination across buffer boundaries"
+        }
+      ],
+      "profiles": [
+        "real-sed-source-identifiers",
+        "real-sed-source-miss"
+      ],
       "invariant": "Immutable record views retain backing bytes across refills; cached admission consumes only complete newline-terminated records, spanning records own their buffer, and content changes create a new pattern/hold space. Record coalescing preserves separator, text, terminator and missing-newline state; a rejected synchronous output admission retains both its owned bytes and previous newline state for the async slow path. Batching must retain append/n/N ordering and deliver earlier output before input or runtime failures.",
       "measurement_scope": "Locally adopted record coalescing, block buffering, chunk scanning and lazy byte spaces each pass both selected 2026-10-31 substitution rows; no general throughput, memory or publication acceptance."
     },
@@ -1250,16 +1455,39 @@
     {
       "id": "diff-byte-pipeline",
       "owner": "commands/diff",
-      "commands": ["diff"],
-      "status": "adopted",
-      "sources": ["commands/diff/main.mbt", "commands/diff/compare.mbt", "commands/diff/output.mbt"],
-      "tests": [
-        {"file": "commands/diff/compare_wbtest.mbt", "name": "patch byte output preserves every byte and byte encoded labels"},
-        {"file": "commands/diff/compare_wbtest.mbt", "name": "compact diff retains hunk positions context and EOF across equal edges"},
-        {"file": "commands/diff/compare_wbtest.mbt", "name": "normal edits retain byte records and missing line terminators"},
-        {"file": "commands/diff/compare_wbtest.mbt", "name": "repeated records choose GNU-compatible aligned change groups"}
+      "commands": [
+        "diff"
       ],
-      "profiles": ["real-diff-source-distinct-equal", "real-diff-json-modules", "real-diff-json-revisions", "real-diff-sqlite-revisions"],
+      "status": "adopted",
+      "sources": [
+        "commands/diff/main.mbt",
+        "commands/diff/compare.mbt",
+        "commands/diff/output.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/diff/compare_wbtest.mbt",
+          "name": "patch byte output preserves every byte and byte encoded labels"
+        },
+        {
+          "file": "commands/diff/compare_wbtest.mbt",
+          "name": "compact diff retains hunk positions context and EOF across equal edges"
+        },
+        {
+          "file": "commands/diff/compare_wbtest.mbt",
+          "name": "normal edits retain byte records and missing line terminators"
+        },
+        {
+          "file": "commands/diff/compare_wbtest.mbt",
+          "name": "repeated records choose GNU-compatible aligned change groups"
+        }
+      ],
+      "profiles": [
+        "real-diff-source-distinct-equal",
+        "real-diff-json-modules",
+        "real-diff-json-revisions",
+        "real-diff-sqlite-revisions"
+      ],
       "invariant": "Both operands are read before exact equality. Binary detection and record splitting use byte search; compact scripts keep requested edge context and absolute hunk positions. Patch records preserve arbitrary bytes, labels, terminators, CR stripping and existing alignment. No source-size or corpus-specific route.",
       "measurement_scope": "Complete genuine equal, unrelated-module and same-file release pairs. AI invocation frequency, startup amortization and general diff throughput are not inferred."
     },

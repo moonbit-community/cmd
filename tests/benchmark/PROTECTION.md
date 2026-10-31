@@ -5,8 +5,9 @@
 `protect.mbtx` compares all 80 command artifacts against an immutable
 baseline and rejects any changed command without qualifying real timing
 coverage. It uses `real.json` schema 3 and its associated source and coverage
-registries. The declared scope is 130 workloads across 40 timing commands and
-three correctness-only commands, ln, make and sh. The 33 complete genuine
+registries. All 80 packages have a disposition: 162 workloads across 54 timing
+commands, three correctness-only commands (ln, make and sh), and 23 individually
+explained not-timed commands. The 33 complete genuine
 sources total 31,450,998 unique payload bytes, with a 16 MiB per-source cap and
 a 64 MiB suite budget. Counts describe the inventory; they do not establish
 execution or timing success.
@@ -23,7 +24,7 @@ reports retain their dated scope, rather than becoming current acceptance.
 Source, command artifacts, configuration, tools, runtime and actual input
 identities are preserved and checked before and after execution. Unchanged
 artifacts outside the declared scope need no new timing claim, and receive
-none. A correctness-only disposition cannot qualify a changed artifact's
+none. A correctness-only or not-timed disposition cannot qualify a changed artifact's
 performance. Missing profiles, missing required rows or an empty required
 selection fail closed.
 

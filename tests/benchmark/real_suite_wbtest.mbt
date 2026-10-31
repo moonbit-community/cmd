@@ -126,7 +126,7 @@ async test "real coverage cannot remove a required command together with all its
     real_test_replace(coverage, "commands", Json(reduced)),
     rows,
   )
-  assert_true(errors.any(error => error.contains("43-command scope")))
+  assert_true(errors.any(error => error.contains("80-command scope")))
 }
 
 ///|
@@ -161,6 +161,63 @@ async test "real timing command cannot be relabeled correctness-only to discard 
     rows.filter(row => row.command != command),
   )
   assert_true(!errors.is_empty())
+}
+
+///|
+async test "all command modules have an explicit performance disposition" {
+  let commands = @fs.readdir(real_registry_path("commands"))
+  assert_eq(Set(commands), real_command_scope())
+}
+
+///|
+async test "not-timed explanations cannot conceal a reviewed timing command" {
+  let (manifest, catalog, coverage, rows) = real_test_registry()
+  let commands = real_array(real_field(coverage, "commands"))
+  let modified = commands.map(spec => {
+    if real_field(spec, "command") == Json("sort") {
+      real_test_replace(
+        real_test_replace(spec, "disposition", Json("not-timed")),
+        "reason",
+        Json("A reason cannot remove required sort timing coverage"),
+      )
+    } else {
+      spec
+    }
+  })
+  let errors = real_suite_errors(
+    manifest,
+    catalog,
+    real_test_replace(coverage, "commands", Json(modified)),
+    rows.filter(row => row.command != "sort"),
+  )
+  assert_true(errors.any(error => error.contains("unreviewed not-timed")))
+}
+
+///|
+async test "permission timing cannot pass without observing actual mode effects" {
+  let (manifest, catalog, coverage, rows) = real_test_registry()
+  let modified = rows.map(row => {
+    if row.command == "chmod" {
+      { ..row, observe: None, }
+    } else {
+      row
+    }
+  })
+  assert_true(
+    real_suite_errors(manifest, catalog, coverage, modified).any(error => {
+      error.contains("permission timing requires actual mode observations")
+    }),
+  )
+}
+
+///|
+async test "patch preparation and xargs children remain frozen native observers" {
+  let (_, _, _, rows) = real_test_registry()
+  let patch = rows.filter(row => row.command == "patch")
+  let xargs = rows.filter(row => row.command == "xargs")
+  assert_true(!patch.is_empty() && !xargs.is_empty())
+  assert_true(benchmark_observers(patch).contains("diff"))
+  assert_true(benchmark_observers(xargs).contains("printf"))
 }
 
 ///|

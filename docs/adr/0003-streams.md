@@ -57,6 +57,49 @@ windows remain evidence; no automatic retries or sample removal qualify them.
 Publication continues to use `moon publish`; this decision adds no packaging,
 registry operation, platform acceptance or performance result.
 
+### Performance integration and complete package inventory (2026-11-01)
+
+Commit `d12f317` integrates the retained sed/csplit, base32/base64/nl and
+sort/diff implementations. Its required Linux, macOS and Windows checks passed
+in [run 41246902641](https://github.com/moonbit-community/cmd/actions/runs/41246902641).
+The earlier failed timing windows and rejected numeric-cache candidates retain
+their dated verdicts below; committing the source does not change those results.
+
+The requested post-CI survey accounts for all 80 packages: 54 timing commands,
+three existing correctness-only dispositions, and 23 explicit not-timed reasons.
+The single schema-3 inventory grows to 162 rows and 128 mode contracts covering
+133 argument/preparation/status combinations. All existing 130 rows remain.
+The same 33 genuine sources and 31,450,998 unique bytes are reused. No product
+code changes in this inventory expansion; all 80 artifacts are checked against
+the frozen CI-passed source.
+
+The added commands are chmod, cmp, cp, fmt, hexdump, ls, mv, od, patch, rm,
+seq, tee, xargs and xxd. Permission measurements explicitly observe resulting
+modes. Patch preparation uses a frozen native diff outside timing to derive
+the actual changes between complete CPython/SQLite releases; applying the patch
+must reproduce the complete target bytes independently of native agreement.
+Xargs uses the same frozen native printf child and includes child-launch cost.
+Seq is an explicit argument-driven output operation: the genuine empty stdin
+file is transport, not a source-throughput claim. Source copies/collections
+remain complete; generated-size inputs and synthetic edits are still excluded.
+
+The finite Python file collection does not establish massive-directory behavior.
+Same-filesystem mv is a rename operation, not byte-copy throughput. Short tools,
+waiting tools, unsupported ordinary operations and missing fair references have
+individual dispositions rather than invented ratios. In particular, jqlog has
+no same-command upstream oracle, touch lacks existing-file timestamp updates,
+and yes needs a byte-bounded consumer with a reviewed cancellation relation.
+Future coverage must preserve local contracts, exact effects, frozen references
+and all-package accountability before removing any of these limitations.
+
+The added-command untimed calibration passes 31 of 32 genuine invocations.
+The complete Shakespeare `fmt -w 72` row differs from fixed GNU output in line
+wrapping and remains a failing correctness control; it must not receive a
+qualified ratio or be removed to improve the survey. The RFC formatting row
+passes. All 63 benchmark/registry regressions and the unchanged-product hash
+check pass. The initial baseline launcher used the wrong direct artifact layout;
+its missing-file failure is retained, followed by a fresh `cli/` layout run.
+
 ### Sort input/comparison and diff byte/script pilots (2026-11-01)
 
 B6 freezes the preceding retained tree and all 80 Wasm artifacts at

@@ -13,6 +13,7 @@ async fn corpus_observer(
   environment : Map[String, String],
   timeout_ms : Int32,
   receipt_prefix? : String,
+  expected_status~ : Int32 = 0,
 ) -> Unit {
   let invocation : BenchmarkInvocation = {
     program,
@@ -31,7 +32,7 @@ async fn corpus_observer(
     timeout_ms,
   )
   write_json(receipt + ".observation.json", ToJson::to_json(observed))
-  guard observed.status == Some(0) &&
+  guard observed.status == Some(expected_status) &&
     !observed.timed_out &&
     observed.error is None &&
     finite_positive(observed.elapsed_us) &&
