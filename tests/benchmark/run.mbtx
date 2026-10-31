@@ -2,16 +2,28 @@
 import {
   "moonbitlang/async@0.22.5",
   "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/async@0.22.5/fs",
   "moonbitlang/core/env",
   "moonbitlang/x@0.5.5/sys",
 }
 
 ///|
-// Build explicitly before launching. Cache preparation is also a separate step.
+// Build before launching; published-cache and corpus preparation stay separate.
 async fn main {
+  // Refresh the tool before any timed invocation; this prevents a stale
+  // executable from silently ignoring changed workload declarations.
+  @shell.Cmd("moon", ["build", "--target", "native", "--release", "--deny-warn", "tests/benchmark", "tests/runner"], stdout=Inherit, stderr=Inherit).run()
+  let forwarded=@env.args()[1:].to_owned()
+  let driver=@fs.realpath("_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe")
+  for index in 0..<forwarded.length() {
+    if forwarded[index]=="--correctness-driver" {
+      guard forwarded.get(index+1) is Some(supplied) && @fs.realpath(supplied)==driver else {fail("run.mbtx requires its just-built current correctness driver; external overrides cannot establish source freshness")}
+    }
+  }
+  if !forwarded.contains("--correctness-driver") {forwarded.append(["--correctness-driver",driver])}
   let status = @shell.Cmd(
     "./_build/native/release/build/mooxCLI/cmd-tests/benchmark/benchmark.exe",
-    @env.args()[1:].to_owned(),
+    forwarded,
     stdout=Inherit,
     stderr=Inherit,
   ).status()

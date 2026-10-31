@@ -12,7 +12,21 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "nested",
+          "kind": "directory"
+        },
+        {
+          "path": "nested/dir",
+          "kind": "directory"
+        }
+      ]
     },
     {
       "id": "mkdir-parent-leaf-mode",
@@ -33,7 +47,25 @@
       "host_platforms": [
         "posix"
       ],
-      "source_version": "GNU coreutils 9.11"
+      "source_version": "GNU coreutils 9.11",
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "parent",
+          "kind": "directory",
+          "mode": 192,
+          "mode_mask": 192
+        },
+        {
+          "path": "parent/leaf",
+          "kind": "directory",
+          "mode": 448,
+          "different_identity_as": "parent"
+        }
+      ]
     },
     {
       "id": "compat-text-mkdir-partial-order",
@@ -64,22 +96,6 @@
       ]
     },
     {
-      "id": "compat-catalog-line-158",
-      "command": "mkdir",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
       "id": "release-metadata-mkdir-help",
       "command": "mkdir",
       "args": [
@@ -96,7 +112,12 @@
       ],
       "source_version": "workspace cli/mkdir@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-158"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-mkdir-version",
@@ -292,16 +313,18 @@
       "expected_status": 0,
       "expected_stdout_text": "",
       "expected_stderr_text": "",
-      "source_version": "GNU coreutils 9.11 fixed native development observations; immutable CI oracle still required",
+      "source_version": "GNU coreutils symbolic special-bit contract on Linux; this mask is not a portable POSIX outcome. Darwin uses a separately constrained independent native-reference witness.",
       "oracle": true,
-      "comparison": "exact",
+      "comparison": "contract",
       "host_platforms": [
-        "posix"
+        "linux"
       ],
       "expected_files": [
         {
           "path": "leaf",
-          "kind": "directory"
+          "kind": "directory",
+          "mode": 3584,
+          "mode_mask": 3584
         }
       ],
       "coverage": [
@@ -820,6 +843,46 @@
         "mode"
       ],
       "source_version": "GNU coreutils 9.11 Linux tmpfs development observations; fixed CI oracle still required. Sticky-only creation differs from explicit-all clause ordering."
+    },
+    {
+      "id": "quality-mkdir-symbolic-special-darwin",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "u+s,g+s,a+t",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "Fixed native GNU coreutils9.11 on Darwin independently creates01777 for u+s,g+s,a+t under the observed winter:wheel parent. This finite mask asserts sticky set and setuid clear; group-dependent setgid and ordinary rwx bits are deliberately outside its scope. Product05777 is a preserved compatibility failure, not a new golden.",
+      "oracle": false,
+      "comparison": "contract",
+      "host_platforms": [
+        "macos"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 512,
+          "mode_mask": 2560
+        }
+      ],
+      "coverage": [
+        "mode"
+      ],
+      "observe": [
+        "mode"
+      ]
     }
   ]
 }

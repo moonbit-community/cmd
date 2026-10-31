@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "retention": "append-only",
+  "classification": "ordinary-after-disclosure",
+  "purpose": "Complete sources remain known after every disclosed reserved evaluation, including failures. Append new identities; never relabel or remove earlier disclosures.",
+  "sources": [
+    {
+      "path": "tzdata2025b-europe",
+      "sha256": "a33695f21dff308ba3e900244a083450331d8aa215a641f612eb218e49b272d9",
+      "bytes": "182354",
+      "provider": "IANA tzdb",
+      "url": "https://data.iana.org/time-zones/releases/tzdata2025b.tar.gz",
+      "archive_member": "europe",
+      "provenance": "IANA tzdata2025b release; exact complete europe member",
+      "license": "Public domain, stated in original file and archive LICENSE",
+      "split": "ordinary",
+      "classification": "ordinary-after-disclosure",
+      "disclosure": {
+        "kind": "reserved-evaluation",
+        "observed_at_ms": "1793349748540",
+        "candidate_sha256": "15b016da3c481e67b13da3b56495d5b77b9d16c592060913ed44174a1b15070d",
+        "selection_sha256": "ccf39e2f82ce90254b802348057a0bcbef22e266c0073205a13c577024ed1a0e",
+        "manifest_sha256": "403a70f66628cd771ce8326e73bc2670a05450b4b48fafd458290cc894519a02",
+        "evidence_sha256": "647ccca2d8014ba7c00dd4ac20f04a0434150814275770ac7f7bcc2a615edfe3",
+        "outcome": "failed",
+        "scope": "Original reserved evaluation passed 21 of 22 rows; its failed receipt remains unchanged. Later calibrated replay is ordinary evidence only."
+      }
+    },
+    {
+      "path": "tzdata2025b-zone1970.tab",
+      "sha256": "57194e43b001b8f832987b21b82953d997aeeaebeb53a8520140bc12d7d8cfcc",
+      "bytes": "17597",
+      "provider": "IANA tzdb",
+      "url": "https://data.iana.org/time-zones/releases/tzdata2025b.tar.gz",
+      "archive_member": "zone1970.tab",
+      "provenance": "IANA tzdata2025b release; exact complete zone1970.tab member",
+      "license": "Public domain, stated in original file and archive LICENSE",
+      "split": "ordinary",
+      "classification": "ordinary-after-disclosure",
+      "disclosure": {
+        "kind": "reserved-evaluation",
+        "observed_at_ms": "1793349748540",
+        "candidate_sha256": "15b016da3c481e67b13da3b56495d5b77b9d16c592060913ed44174a1b15070d",
+        "selection_sha256": "ccf39e2f82ce90254b802348057a0bcbef22e266c0073205a13c577024ed1a0e",
+        "manifest_sha256": "403a70f66628cd771ce8326e73bc2670a05450b4b48fafd458290cc894519a02",
+        "evidence_sha256": "647ccca2d8014ba7c00dd4ac20f04a0434150814275770ac7f7bcc2a615edfe3",
+        "outcome": "failed",
+        "scope": "Original reserved evaluation passed 21 of 22 rows; its failed receipt remains unchanged. Later calibrated replay is ordinary evidence only."
+      }
+    },
+    {
+      "path": "kubernetes-v1.33.2-swagger.json",
+      "sha256": "2af5abf98554af1599e516f31f7f1698085e6faa12b816401f569c097b9f7ef6",
+      "bytes": "3710563",
+      "provider": "Kubernetes",
+      "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/a57b6f7709f6c2722b92f07b8b4c48210a51fc40/api/openapi-spec/swagger.json",
+      "archive_member": "",
+      "provenance": "Kubernetes v1.33.2 tag object d43821f9491a55bd544f7c7e894fc97f1eebedd0 resolves commit a57b6f7709f6c2722b92f07b8b4c48210a51fc40; exact complete OpenAPI2 schema",
+      "license": "Apache License2.0; https://github.com/kubernetes/kubernetes/blob/a57b6f7709f6c2722b92f07b8b4c48210a51fc40/LICENSE",
+      "split": "ordinary",
+      "classification": "ordinary-after-disclosure",
+      "disclosure": {
+        "kind": "reserved-evaluation",
+        "observed_at_ms": "1793349748540",
+        "candidate_sha256": "15b016da3c481e67b13da3b56495d5b77b9d16c592060913ed44174a1b15070d",
+        "selection_sha256": "ccf39e2f82ce90254b802348057a0bcbef22e266c0073205a13c577024ed1a0e",
+        "manifest_sha256": "403a70f66628cd771ce8326e73bc2670a05450b4b48fafd458290cc894519a02",
+        "evidence_sha256": "647ccca2d8014ba7c00dd4ac20f04a0434150814275770ac7f7bcc2a615edfe3",
+        "outcome": "failed",
+        "scope": "Original reserved evaluation passed 21 of 22 rows; its failed receipt remains unchanged. Later calibrated replay is ordinary evidence only."
+      }
+    }
+  ]
+}

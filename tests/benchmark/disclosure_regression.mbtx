@@ -1,0 +1,132 @@
+----
+import {
+  "moonbitlang/async@0.22.5", "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process", "moonbitlang/core/env",
+  "moonbitlang/core/json", "moonbitlang/x@0.5.5/crypto", "moonbitlang/x@0.5.5/path",
+}
+----
+
+///|
+fn field(value : Json,key : String) -> Json {match value {Object(fields)=>fields.get(key).unwrap_or(Json::null());_=>Json::null()}}
+///|
+fn object(value : Json) -> Map[String,Json] raise {guard value is Object(fields) else {fail("expected object")};fields.copy()}
+///|
+fn rows(value : Json) -> Array[Json] raise {guard value is Array(items) else {fail("expected array")};items.copy()}
+///|
+fn changed(value : Json,key : String,replacement : Json) -> Json raise {let fields=object(value);fields[key]=replacement;Json(fields)}
+///|
+async fn hash(path : String) -> String {let digest=@crypto.SHA256::new();digest.update(@fs.read_file(path).binary()[:]);@crypto.bytes_to_hex_string(digest.finalize())}
+///|
+async fn save(path : String,value : Json) -> Unit {@fs.write_file(path,value.stringify(indent=2)+"\n",create_mode=CreateNew)}
+
+///|
+async fn main {
+  let child_env : Map[String,String]=Map([])
+  if @env.get_env_var("MOON_HOME") is Some(account) && !account.is_empty() {
+    child_env["MOON_HOME"]=account
+  } else {
+    guard @env.get_env_var("CI")==Some("true") else {fail("run with the required local Moon account environment; CI inherits its installed toolchain environment")}
+  }
+  let args=@env.args()
+  guard args.length()==2 && @path.Path(args[1]).is_absolute() else {fail("Usage: disclosure_regression.mbtx FRESH_ABSOLUTE_REPORT_DIRECTORY; run from the repository root")}
+  let output=args[1]
+  @fs.mkdir(output,recursive=true,allow_exist=false)
+  let results : Array[Json]=[]
+  let run=async fn(name : String,script : String,args : Array[String],failure : String?) {
+    let stdout_path=output+"/"+name+".stdout.log"
+    let stderr_path=output+"/"+name+".stderr.log"
+    let stdout=@process.redirect_to_file(stdout_path)
+    let stderr=@process.redirect_to_file(stderr_path)
+    let status=@async.with_timeout_opt(120000,()=>@process.run("moon",["run",script,"--",..args],stdout~,stderr~,extra_env=child_env,cancel_handler=@process.hard_cancel()))
+    stdout.close();stderr.close()
+    let observed=@fs.read_file(stdout_path).text()+@fs.read_file(stderr_path).text()
+    let passed=match status {None=>false;Some(status)=>match failure {None=>status==0;Some(message)=>status!=0 && observed.contains(message)}}
+    results.push({"name":name,"passed":passed,"exit_status":status,"timed_out":status is None,"expected_failure_contains":failure,"stdout":stdout_path,"stderr":stderr_path})
+  }
+  let freezer="tests/benchmark/freeze_candidate.mbtx"
+  let controller="tests/benchmark/reserved.mbtx"
+  run("freezer-known-inventories",freezer,["--check-known-inventories"],None)
+  let known_inventory=@json.parse(@fs.read_file(output+"/freezer-known-inventories.stdout.log").text())
+  let ledger_path="tests/fixtures/benchmark/disclosed-sources.json"
+  let ledger_bytes=@fs.read_file(ledger_path).binary()
+  let ledger=@json.parse(@fs.read_file(ledger_path).text())
+  let sources=rows(field(ledger,"sources"))
+  let ledger_sha=hash(ledger_path)
+  let known=rows(field(known_inventory,"seen_sha256"))
+  let current=rows(field(@json.parse(@fs.read_file("tests/fixtures/benchmark/real-sources.json").text()),"files"))
+  let all_real_known=current.all(source=>known.contains(field(source,"sha256")))
+  results.push({"name":"all-current-real-sources-remain-known","passed":all_real_known})
+  guard current.filter(source=>field(source,"path")==Json("jquery-3.7.1.min.js")) is [new_real] else {fail("current real suite must retain the previously omitted jquery source control")}
+  let real_sha=field(new_real,"sha256")
+  assert_true(all_real_known && !sources.any(source=>field(source,"sha256")==real_sha))
+  let new_sha="0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  assert_false(known.contains(Json(new_sha)))
+  let fresh : Json={"path":"synthetic-recorder-metadata-only","sha256":new_sha,"bytes":"1","provider":"recorder-regression-fixture","url":"https://example.invalid/not-a-natural-corpus","archive_member":"","provenance":"Synthetic metadata for disclosure-recorder tests only; never eligible benchmark corpus evidence","license":"test fixture metadata"}
+  let candidate_sha="1111111111111111111111111111111111111111111111111111111111111111"
+  let manifest_sha="2222222222222222222222222222222222222222222222222222222222222222"
+  let selection : Json={"schema":1,"selected_at_ms":"1","complete_original_files":true,"candidate_sha256":candidate_sha,"manifest_sha256":manifest_sha,"sources":[fresh]}
+  let selection_path=output+"/new-selection.json"
+  save(selection_path,selection)
+  let selection_sha=hash(selection_path)
+  let failed : Json={"schema":1,"passed":false,"candidate_sha256":candidate_sha,"selection_sha256":selection_sha,"manifest_sha256":manifest_sha,"evaluation_started_at_ms":"2","completed_at_ms":"3","exit_status":1}
+  let intent : Json={"schema":1,"phase":"evaluation-started","candidate_sha256":candidate_sha,"selection_sha256":selection_sha,"manifest_sha256":manifest_sha,"evaluation_started_at_ms":"2"}
+  save(output+"/failed.json",failed)
+  save(output+"/intent.json",intent)
+  save(output+"/passed.json",changed(changed(failed,"passed",Json(true)),"exit_status",Json(0)))
+  save(output+"/mismatched.json",changed(failed,"selection_sha256",Json(manifest_sha)))
+  save(output+"/invalid-pass.json",changed(failed,"passed",Json(true)))
+  save(output+"/valid-ledger.json",ledger)
+  let duplicate=sources.copy();duplicate.push(sources[0])
+  save(output+"/duplicate-ledger.json",changed(ledger,"sources",Json(duplicate)))
+  let stale=sources.copy();stale[0]=changed(stale[0],"split",Json("holdout"))
+  save(output+"/stale-ledger.json",changed(ledger,"sources",Json(stale)))
+  let relabeled=sources.copy();relabeled[0]=changed(relabeled[0],"disclosure",changed(field(relabeled[0],"disclosure"),"outcome",Json("passed")))
+  save(output+"/relabeled-ledger.json",changed(ledger,"sources",Json(relabeled)))
+  save(output+"/missing-history-ledger.json",changed(ledger,"sources",Json(sources[1:].to_owned())))
+  let inventory : Json={"path":ledger_path,"snapshot_path":"disclosed-sources.json","sha256":ledger_sha,"sources":sources}
+  let candidate : Json={"disclosure_inventory":inventory,"seen_sha256":known}
+  for (name,value) in [("valid",candidate),("missing-union",changed(candidate,"seen_sha256",Json(known.filter(sha=>sha!=field(sources[0],"sha256"))))),("missing-real-union",changed(candidate,"seen_sha256",Json(known.filter(sha=>sha!=real_sha)))),("stale-freeze",changed(candidate,"disclosure_inventory",changed(inventory,"sha256",Json(manifest_sha)))),("duplicate-known",changed(candidate,"seen_sha256",Json([..known,known[0]]))),("changed-entries",changed(candidate,"disclosure_inventory",changed(inventory,"sources",Json(duplicate))))] {
+    @fs.mkdir(output+"/"+name)
+    save(output+"/"+name+"/candidate.json",value)
+    @fs.write_file(output+"/"+name+"/disclosed-sources.json",ledger_bytes,create_mode=CreateNew)
+  }
+  save(output+"/old-selection.json",{"sources":[sources[0]]})
+  save(output+"/duplicate-selection.json",changed(selection,"sources",Json([fresh,fresh])))
+  save(output+"/ordinary-selection.json",changed(selection,"sources",Json([changed(fresh,"split",Json("ordinary"))])))
+  save(output+"/classified-selection.json",changed(selection,"sources",Json([changed(fresh,"classification",Json("ordinary-after-disclosure"))])))
+  save(output+"/ordinary-failed.json",changed(failed,"selection_sha256",Json(hash(output+"/ordinary-selection.json"))))
+  for name in ["failed","intent","passed","stale-selection","mismatch","invalid-pass","pending","locked"] {@fs.write_file(output+"/record-"+name+".json",ledger_bytes,create_mode=CreateNew)}
+  @fs.write_file(output+"/record-pending.json.pending-"+selection_sha,"preserve interrupted update",create_mode=CreateNew)
+  @fs.mkdir(output+"/record-locked.json.lock")
+  run("freezer-valid",freezer,["--check-ledger",output+"/valid-ledger.json"],None)
+  run("controller-valid",controller,["--check-ledger",output+"/valid-ledger.json"],None)
+  for (name,message) in [("duplicate","invalid or duplicate disclosed source"),("stale","stale reserved/holdout classification"),("relabeled","relabeled an original failed evaluation"),("missing-history","original failed evaluation identity")] {
+    for (prefix,script) in [("freezer",freezer),("controller",controller)] {run(prefix+"-"+name,script,["--check-ledger",output+"/"+name+"-ledger.json"],Some(message))}
+  }
+  run("new-selection",controller,["--check-novelty",output+"/valid",selection_path],None)
+  run("bound-source-union",controller,["--check-known-inventories",output+"/valid"],None)
+  run("omitted-current-real-source",controller,["--check-known-inventories",output+"/missing-real-union"],Some("omits a bound source identity"))
+  for (name,snapshot,selected,message) in [("old-source","valid","old-selection.json","overlaps previously observed data"),("duplicate-selection","valid","duplicate-selection.json","duplicates selection"),("ordinary-selection","valid","ordinary-selection.json","stale ordinary classification"),("classified-selection","valid","classified-selection.json","stale ordinary classification"),("missing-union","missing-union","new-selection.json","omits a disclosed identity"),("stale-freeze","stale-freeze","new-selection.json","changed after freeze"),("duplicate-known","duplicate-known","new-selection.json","duplicate frozen known-source identity"),("changed-entries","changed-entries","new-selection.json","entries do not bind")] {
+    run(name,controller,["--check-novelty",output+"/"+snapshot,output+"/"+selected],Some(message))
+  }
+  for name in ["failed","intent","passed"] {run("record-"+name,controller,["--record-disclosure",output+"/record-"+name+".json",selection_path,output+"/"+name+".json",output+"/updated-"+name+".json"],None)}
+  run("record-stale-selection",controller,["--record-disclosure",output+"/record-stale-selection.json",output+"/ordinary-selection.json",output+"/ordinary-failed.json",output+"/updated-stale-selection.json"],None)
+  run("record-retry-overwrite",controller,["--record-disclosure",output+"/record-failed.json",selection_path,output+"/failed.json",output+"/updated-failed.json"],Some("preserve existing disclosure update evidence"))
+  run("record-retry-duplicate",controller,["--record-disclosure",output+"/record-failed.json",selection_path,output+"/failed.json",output+"/retry-receipt.json"],Some("overlaps previously observed data"))
+  for (name,evidence,message) in [("mismatch","mismatched","evidence must bind the exact"),("invalid-pass","invalid-pass","passing disclosure receipt has a nonzero exit"),("pending","failed","preserve pending disclosure update"),("locked","failed",".lock")] {
+    run("record-"+name,controller,["--record-disclosure",output+"/record-"+name+".json",selection_path,output+"/"+evidence+".json",output+"/updated-"+name+".json"],Some(message))
+  }
+  for (name,outcome) in [("failed","failed"),("intent","started-not-adjudicated"),("passed","passed"),("stale-selection","failed")] {
+    let actual=@json.parse(@fs.read_file(output+"/record-"+name+".json").text())
+    let actual_sources=rows(field(actual,"sources"))
+    let receipt=@json.parse(@fs.read_file(output+"/updated-"+name+".json").text())
+    let correct=actual_sources.length()==sources.length()+1 && actual_sources[:sources.length()]==sources[:] && field(actual_sources[sources.length()],"classification")==Json("ordinary-after-disclosure") && field(actual_sources[sources.length()],"split")==Json("ordinary") && field(field(actual_sources[sources.length()],"disclosure"),"outcome")==Json(outcome) && field(receipt,"after_sha256")==Json(hash(output+"/record-"+name+".json")) && !@fs.exists(output+"/record-"+name+".json.lock")
+    results.push({"name":"readback-"+name,"passed":correct})
+  }
+  for name in ["mismatch","invalid-pass","pending","locked"] {results.push({"name":"unchanged-"+name,"passed":hash(output+"/record-"+name+".json")==ledger_sha})}
+  let passed=results.all(row=>field(row,"passed")==Json(true)) && hash(ledger_path)==ledger_sha
+  save(output+"/report.json",{"schema":1,"passed":passed,"checks":results,"repository_ledger_unchanged":hash(ledger_path)==ledger_sha,"scope":"Black-box disclosure ledger and recorder regressions; synthetic metadata only; no product execution, natural-corpus result or benchmark acceptance"})
+  assert_true(passed,msg="novelty regression failure; complete logs retained")
+  println("Disclosure regression checks passed: "+results.length().to_string())
+}
+

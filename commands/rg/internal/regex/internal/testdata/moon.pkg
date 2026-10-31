@@ -5,3 +5,7 @@ import {
   "moonbitlang/core/json",
   "moonbitlang/core/encoding/hex",
 }
+
+import {
+  "moonbitlang/async",
+} for "wbtest"

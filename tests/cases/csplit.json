@@ -88,7 +88,7 @@
       "expected_status": 1,
       "expected_stdout_text": "2\n2\n",
       "expected_stderr_contains": "match not found",
-      "diagnostic_reason": "The diagnostic includes the failing pattern or command branding.",
+      "diagnostic_reason": "The second pattern /missing/ has no match: status 1, both exact two-byte pieces and the exact byte-count stream are retained by -k. Only diagnostic branding and pattern formatting vary.",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
@@ -98,10 +98,12 @@
       "expected_files": [
         {
           "path": "xx00",
+          "kind": "file",
           "content_text": "a\n"
         },
         {
           "path": "xx01",
+          "kind": "file",
           "content_text": "b\n"
         }
       ]

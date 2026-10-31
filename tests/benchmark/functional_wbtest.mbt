@@ -1,4 +1,24 @@
 ///|
+async test "new timing rejects unfrozen published launchers before reading manifests or invoking children" {
+  require_frozen_timing_backend(Map([("--moonx", "/published")]), false)
+  require_frozen_timing_backend(Map([("--wasm-root", "/frozen")]), true)
+  let reason = try {
+    ignore(
+      run_functional(
+        Map([("--moonx", "/must-not-run"), ("--manifest", "/must-not-read")]),
+        sample=true,
+      ),
+    )
+    "accepted"
+  } catch {
+    error => error.to_string()
+  }
+  assert_true(
+    reason.contains("new timing requires explicit frozen Wasm artifacts"),
+  )
+}
+
+///|
 test "benchmark direct Wasm invocation preserves program arguments" {
   let (wasm_root, wasm_artifact) = if @async.platform is Windows {
     ("C:\\artifacts", "C:\\artifacts\\cli\\diff\\diff.wasm")
@@ -104,27 +124,27 @@ async test "benchmark functional cases refuse metadata placeholders and retain d
     recipe: None,
     pending: None,
     corpus: None,
+    source: None,
+    other_source: None,
+    args: None,
+    expected_status: None,
+    expected_stdout: None,
+    transport: None,
+    chunk_bytes: None,
+    seed: None,
+    sink: None,
+    sink_chunk_bytes: None,
+    sink_delay_ms: None,
+    inputs: None,
+    mode: None,
+    facets: None,
+    expected_stderr: None,
+    output_relation: None,
   }
   let refused = Some(functional_fixture(workload, [metadata], "helper")) catch {
     _ => None
   }
   assert_true(refused is None)
-  // Package tests run from the enclosing tests module.
-  let manifest : FunctionalManifest = @json.from_json(
-    @json.parse(@fs.read_file("benchmark/functional.json").text()),
-  )
-  let cases = @testkit.load_cases("../" + manifest.case_corpus)
-  assert_eq(manifest.workloads.length(), 79)
-  for selected in manifest.workloads {
-    let fixture = functional_fixture(selected, cases, "helper")
-    assert_true(fixture.expected_status == 0 || fixture.expected_status == 1)
-    assert_true(fixture.expected_rejection is None)
-    if selected.recipe == Some("xargs-child") {
-      assert_eq(fixture.args, [
-        "-n", "1", "--", "helper", "--fixture-child", "emit",
-      ])
-    }
-  }
   let directory = @fs.tmpdir(prefix="cmd-functional-root-")
   defer @fs.rmdir(directory, recursive=true)
   let generated = {

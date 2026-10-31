@@ -1,4 +1,10 @@
 ///|
+priv struct RealInput {
+  source : NaturalSource
+  target : String
+} derive(FromJson, ToJson)
+
+///|
 priv struct FunctionalWorkload {
   id : String
   command : String
@@ -7,6 +13,22 @@ priv struct FunctionalWorkload {
   recipe : String?
   pending : String?
   corpus : CorpusSpec?
+  source : NaturalSource?
+  other_source : NaturalSource?
+  args : Array[String]?
+  expected_status : Int32?
+  expected_stdout : String?
+  transport : String?
+  chunk_bytes : Int32?
+  seed : Int32?
+  sink : String?
+  sink_chunk_bytes : Int32?
+  sink_delay_ms : Int32?
+  inputs : Array[RealInput]?
+  mode : String?
+  facets : Array[String]?
+  expected_stderr : String?
+  output_relation : String?
 } derive(FromJson, ToJson)
 
 ///|
@@ -14,9 +36,11 @@ priv struct FunctionalManifest {
   schema : Int32
   published_manifest : String
   case_corpus : String
+  workspace_case_corpus : String?
   workloads : Array[FunctionalWorkload]
   base_manifest : String?
   sweeps : Array[CorpusSweep]?
+  seeds : Array[Int32]?
 } derive(FromJson, ToJson)
 
 ///|
@@ -61,7 +85,9 @@ fn functional_fixture(
   let files : Array[Json] = []
   let mut stdin = ""
   let mut expected : String? = Some("")
+  let mut expected_status = 0
   match workload.recipe {
+    Some("real-input") | Some("real-file-pair") => expected = None
     Some("mktemp") => {
       args.push("tmp.XXXXXX")
       expected = None
@@ -113,6 +139,17 @@ fn functional_fixture(
       args.append(["1", helper, "--fixture-child", "emit", "child"])
       expected = Some("child")
     }
+    Some(recipe) => {
+      guard benchmark_recipe_command(recipe) == Some(workload.command) else {
+        fail("benchmark recipe command differs from workload: " + workload.id)
+      }
+      args.append(benchmark_recipe_args(recipe))
+      expected = None
+      if recipe == "bench-diff-sparse-edit" ||
+        recipe == "bench-diff-distributed-edit" {
+        expected_status = 1
+      }
+    }
     _ => fail("unknown functional recipe: " + workload.id)
   }
   let value : Map[String, Json] = {
@@ -123,12 +160,15 @@ fn functional_fixture(
     "stdin_text": Json(stdin),
     "environment": {},
     "normalizations": [],
-    "expected_status": 0,
-    "expected_stderr_text": "",
+    "expected_status": expected_status,
+    "expected_stderr_text": Json(workload.expected_stderr.unwrap_or("")),
     "comparison": "exact",
   }
   if expected is Some(text) {
     value["expected_stdout_text"] = Json(text)
+  }
+  if workload.output_relation == Some("record-multiset") {
+    value["stdout_order"] = "lines"
   }
   if workload.recipe == Some("realpath") {
     value["normalizations"] = [

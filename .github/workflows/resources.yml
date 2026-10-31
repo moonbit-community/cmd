@@ -6,7 +6,7 @@ on:
       profile:
         description: Resource profile
         type: choice
-        options: [all, records, long, heldout, kernel-rss-linux, performance, literal-planner, stability-diagnostic]
+        options: [all, records, long, mixed-synthetic, heldout, kernel-rss-linux, performance, literal-planner, stability-diagnostic]
         default: all
       commands:
         description: Optional comma-separated command names
@@ -75,7 +75,7 @@ jobs:
           load: true
           tags: mooncmd-oracle:phase0
           cache-from: type=gha,scope=mooncmd-oracle
-          cache-to: type=gha,mode=max,scope=mooncmd-oracle
+          cache-to: ${{ github.ref == 'refs/heads/main' && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
       - name: Observe selected resource profiles
         timeout-minutes: 120
         run: moon run tests/resources/ci.mbtx -- --image '${{ steps.oracle.outputs.imageid }}' 2>&1 | tee test-reports/resources.log

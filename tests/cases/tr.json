@@ -12,7 +12,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "HELLO\n"
     },
     {
       "id": "p9-tr-equivalence-repeat",
@@ -27,7 +31,11 @@
         "LC_ALL": "C"
       },
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "XXX"
     },
     {
       "id": "p9-tr-punctuation-class",
@@ -42,7 +50,11 @@
         "LC_ALL": "C"
       },
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "a b\n"
     },
     {
       "id": "p9-tr-truncate-set1",
@@ -58,7 +70,11 @@
         "LC_ALL": "C"
       },
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "Xbc"
     },
     {
       "id": "p9-tr-octal-escape",
@@ -73,7 +89,11 @@
         "LC_ALL": "C"
       },
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "X"
     },
     {
       "id": "p9-tr-octal-overflow-consumption",
@@ -88,7 +108,15 @@
         "LC_ALL": "C"
       },
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "XY",
+      "expected_stderr_contains_all": [
+        "octal",
+        "400"
+      ],
+      "diagnostic_reason": "The primary GNU tr source treats out-of-range octal 400 as space followed by literal zero and emits an ambiguity warning. Those two source bytes map to X and Y; status and stdout are exact while diagnostic formatting is not frozen."
     },
     {
       "id": "p9-tr-lower-upper-classes",
@@ -103,7 +131,11 @@
         "LC_ALL": "C"
       },
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "ABZ"
     },
     {
       "id": "p9-tr-middle-repeat",
@@ -118,7 +150,11 @@
         "LC_ALL": "C"
       },
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "WYYZ"
     },
     {
       "id": "compat-text-line-823",

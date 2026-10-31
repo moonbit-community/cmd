@@ -17,7 +17,22 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "nonempty",
+          "kind": "directory"
+        },
+        {
+          "path": "nonempty/kept",
+          "kind": "file",
+          "content_text": "x"
+        }
+      ]
     },
     {
       "id": "compat-text-rmdir-partial-order",
@@ -60,22 +75,6 @@
       ]
     },
     {
-      "id": "compat-catalog-line-210",
-      "command": "rmdir",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
       "id": "release-metadata-rmdir-help",
       "command": "rmdir",
       "args": [
@@ -92,7 +91,12 @@
       ],
       "source_version": "workspace cli/rmdir@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-210"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-rmdir-version",

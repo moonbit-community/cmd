@@ -21,30 +21,11 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-paste-zero-terminated",
-      "command": "paste",
-      "args": [
-        "-z",
-        "left",
-        "right"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "left",
-          "content_hex": "31003200"
-        },
-        {
-          "path": "right",
-          "content_hex": "61006200"
-        }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "1\ta\n2\tb\n"
     },
     {
       "id": "p9-paste-serial-empty",
@@ -56,21 +37,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-paste-escaped-delimiters",
-      "command": "paste",
-      "args": [
-        "-s",
-        "-d",
-        "\\n\\t"
-      ],
-      "stdin_text": "a\nb\nc\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "\n"
     },
     {
       "id": "compat-text-line-719",
@@ -114,7 +85,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_hex": "3109610032096200",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p9-paste-zero-terminated"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-merge-paste",
@@ -241,6 +217,32 @@
       "source_version": "workspace cli/paste@0.2.4 metadata contract",
       "expected_stdout_text": "paste 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-paste-serial-delimiter-cycle",
+      "command": "paste",
+      "args": [
+        "-s",
+        "-d",
+        "\\n\\t"
+      ],
+      "stdin_text": "a\nb\nc\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "a\nb\tc\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "serial",
+        "delimiters"
+      ],
+      "source_version": "Independent literal rendering for existing differential-only p9-paste-escaped-delimiters; nonempty input activates serial and delimiter cycling.",
+      "aliases": [
+        "p9-paste-escaped-delimiters"
+      ],
+      "oracle": true
     }
   ]
 }

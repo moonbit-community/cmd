@@ -8,6 +8,10 @@ moonx cli/sh@0.2.4 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]
 
 ## Supported scope
 
+The unreleased workspace accepts option parsing after `-s`, including `--`,
+before assigning stdin-script positional parameters. Dedicated exact cases
+cover both terminated and unterminated option lists.
+
 Supports quoting, variables/exports, substitutions, pipelines, redirections, conditionals, loops, functions and common builtins. Stdin sessions execute complete commands before EOF.
 
 ## Options

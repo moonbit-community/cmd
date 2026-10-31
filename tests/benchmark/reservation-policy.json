@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "purpose": "Fresh correctness evaluation after candidate freeze; not a universal performance or compatibility proof",
+  "candidate_freeze_required_before_source_selection": true,
+  "independent_selector": true,
+  "data_sources": {"minimum_new_providers": 2, "minimum_complete_files": 3, "maximum_file_bytes": 16777216, "disjoint_from_all_previously_observed_sources": true},
+  "selection": {"minimum_tasks": 12, "minimum_commands": 8, "allowed_commands": ["base32","base64","cat","cksum","column","comm","csplit","curl","cut","diff","expand","find","fold","grep","gunzip","gzip","head","join","jq","jqlog","md5sum","nl","paste","rev","rg","sed","sha1sum","sha256sum","sha512sum","sort","split","strings","tac","tail","tr","tree","unexpand","uniq","wc","wget","zcat"], "allowed_modes": "registered recipes in current real.json and retained abstract mode-definitions.json only; choose args from source schema before executing the candidate. Correctness-only ln/make/sh remain excluded from this explicit command allowlist", "no_padding_truncation_or_repetition": true},
+  "evaluation": {"same_frozen_candidate_before_and_after": true, "all_selected_tasks_required": true, "preserve_failures": true, "complete_output_and_file_effect_comparison": true, "invalid_reference_is_not_a_pass": true, "product_change_after_selection_invalidates_reservation": true},
+  "interpretation": {"blindness": "relative to this candidate and optimization process only", "not_model_training_blindness": true, "after_disclosure": "ordinary evaluation data for every later candidate; never relabel as blind"}
+}

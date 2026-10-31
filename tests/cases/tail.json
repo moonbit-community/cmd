@@ -12,7 +12,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "two\n"
     },
     {
       "id": "compat-tail-follow-stdin",
@@ -523,6 +527,33 @@
         "zero-terminated"
       ],
       "source_version": "GNU coreutils 9.11 / findutils 4.10.0 development observations; immutable Linux CI required"
+    },
+    {
+      "id": "proof-tail-verbose-single-file",
+      "command": "tail",
+      "args": [
+        "--verbose",
+        "-n1",
+        "one"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a\nz\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "==> one <==\nz\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "verbose",
+        "lines"
+      ],
+      "source_version": "Independent forced-header rendering and real tail selection for one file."
     }
   ]
 }

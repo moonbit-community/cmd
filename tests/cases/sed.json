@@ -2824,6 +2824,46 @@
         "absent-input"
       ],
       "expected_stderr_ends_with_newline": true
+    },
+    {
+      "id": "proof-sed-in-place-boundary-preserves-source",
+      "command": "sed",
+      "args": [
+        "--in-place",
+        "s/a/b/",
+        "source"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "a\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "sed:",
+      "diagnostic_reason": "The documented in-place API boundary must reject before touching the input; command-specific wording may vary.",
+      "expected_rejection": "CliError",
+      "observe": [
+        "content",
+        "type"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "a\n"
+        }
+      ],
+      "comparison": "contract",
+      "coverage": [
+        "in-place",
+        "no-mutation"
+      ],
+      "source_version": "Documented unsupported option must reject without mutation; current generic parser diagnostic is not a dedicated in-place diagnostic"
     }
   ]
 }

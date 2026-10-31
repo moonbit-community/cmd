@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-30
+Updated: 2026-10-31
 
 ## Decision
 
@@ -14,6 +14,18 @@ timestamp-setting, hard-link and readlink operations needed by the boundaries
 below. Host observers and private runtime interfaces do not expand product APIs.
 
 ## Mutation and identity boundaries
+
+The 2026-10-31 local regression audit exposed a finite Darwin compatibility
+difference for `mkdir -m u+s,g+s,a+t leaf`. Under the recorded winter:wheel
+parent, fixed native GNU coreutils 9.11 created mode01777 while the product
+created05777. A local Darwin regression independently requires the sticky bit
+and rejects the extra setuid bit (mask05000); group-dependent setgid and
+ordinary rwx bits remain outside that assertion. The prior requested07000
+mask is scoped to Linux and requires Linux execution before acceptance.
+Preserve this as a failing compatibility witness until the implementation is
+reconciled with the selected platform contract; do not replace it with the
+candidate's mode. This observation does not modify published expectations or
+establish immutable-oracle parity.
 
 | Operation | Supported behavior and deliberate limit | Condition for expansion |
 | --- | --- | --- |

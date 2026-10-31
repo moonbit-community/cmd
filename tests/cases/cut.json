@@ -16,24 +16,11 @@
       "coverage": [
         "delimiter",
         "fields"
-      ]
-    },
-    {
-      "id": "p9-cut-zero-terminated",
-      "command": "cut",
-      "args": [
-        "-z",
-        "-c1"
       ],
-      "stdin_hex": "6162006364",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "zero-terminated",
-        "characters"
-      ]
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "one\ntwo\n"
     },
     {
       "id": "p9-cut-bytes",
@@ -49,7 +36,11 @@
       "normalizations": [],
       "coverage": [
         "bytes"
-      ]
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "ac\n"
     },
     {
       "id": "compat-text-line-605",
@@ -89,7 +80,11 @@
       "coverage": [
         "zero-terminated",
         "characters"
-      ]
+      ],
+      "aliases": [
+        "p9-cut-zero-terminated"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-693",

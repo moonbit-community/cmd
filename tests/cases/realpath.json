@@ -2,22 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "p0-realpath-help",
-      "command": "realpath",
-      "args": [
-        "--help"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "expected_stdout_contains": "Usage: realpath",
-      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary.",
-      "expected_stderr_text": "",
-      "comparison": "contract",
-      "normalizations": []
-    },
-    {
       "id": "release-metadata-realpath-help",
       "command": "realpath",
       "args": [
@@ -34,7 +18,12 @@
       ],
       "source_version": "workspace cli/realpath@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: realpath [OPTION]... NAME...\n  -e, --canonicalize-existing  require every component to exist\n  -E, --canonicalize           allow a missing final component (default)\n  -m, --canonicalize-missing   allow missing or non-directory components\n  -s, --strip, --no-symlinks   do not expand symbolic links\n      --relative-to=DIR        print relative to DIR\n      --relative-base=DIR      use relative output only inside DIR\n  -q, --quiet                 suppress operand errors\n  -z, --zero                  terminate output with NUL\n      --help                  display this help and exit\n      --version               display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p0-realpath-help"
+      ],
+      "expected_stdout_contains": "Usage: realpath",
+      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary."
     },
     {
       "id": "release-metadata-realpath-version",

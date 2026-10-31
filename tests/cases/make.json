@@ -21,7 +21,11 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "cli\n"
     },
     {
       "id": "p7-make-conditional",
@@ -39,7 +43,11 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "yes"
     },
     {
       "id": "p7-make-unbounded-jobs-keeps-target",
@@ -58,7 +66,18 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "yes",
+      "expected_files": [
+        {
+          "path": "Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf yes\n"
+        }
+      ]
     },
     {
       "id": "p7-make-what-if-dependency",
@@ -87,7 +106,28 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "printf rebuilt\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "Makefile",
+          "kind": "file",
+          "content_text": "target: source\n\t@printf rebuilt\n"
+        },
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": ""
+        }
+      ]
     },
     {
       "id": "p7-make-unexpected-endif",
@@ -105,7 +145,20 @@
       ],
       "environment": {},
       "expected_status": 2,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "endif",
+      "diagnostic_reason": "An unmatched endif is a makefile parse error: exact status 2 and empty stdout, a diagnostic naming the unexpected directive, and unchanged Makefile bytes. Full GNU or project branding is not frozen.",
+      "expected_files": [
+        {
+          "path": "Makefile",
+          "kind": "file",
+          "content_text": "endif\n",
+          "unchanged": true
+        }
+      ]
     },
     {
       "id": "make-ready-ack",
@@ -147,22 +200,6 @@
       "expected_stderr_text": ""
     },
     {
-      "id": "compat-catalog-line-150",
-      "command": "make",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
       "id": "release-metadata-make-help",
       "command": "make",
       "args": [
@@ -179,7 +216,12 @@
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-150"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-make-version",

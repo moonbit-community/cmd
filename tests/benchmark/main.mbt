@@ -561,6 +561,7 @@ async fn run_pilot(options : Map[String, String]) -> Bool {
   write_json(output + "/report.json", {
     "schema": Json(1),
     "pilot": Json(true),
+    "evidence_scope": benchmark_evidence_scope(true),
     "role": Json("delivery"),
     "passed": Json(passed),
     "started_at_ms": Json(started_at.to_string()),
@@ -584,7 +585,7 @@ async fn main {
   }
   if args.is_empty() || args.contains("--help") {
     println(
-      "Usage: benchmark run|baseline --wasm-root ABS --moonrun ABS --oracle-bin ABS [--report-dir DIR] [--manifest FILE] [--profile FILE]\n       benchmark run|baseline --moonx ABS --oracle-bin ABS [other options]\n       benchmark report --report-dir DIR\n       Direct Wasm uses schema-2 workloads; baseline checks correctness without a performance verdict.",
+      "Usage: benchmark panels|baseline|run|probe --wasm-root ABS --moonrun ABS --oracle-bin ABS --correctness-driver ABS --corpus-root ABS --report-dir FRESH [--baseline-wasm-root ABS] [--commands NAMES]\n       benchmark inventory [--manifest FILE] [--commands NAMES]\n       benchmark report --report-dir DIR\n       Default manifest: real.json (schema3). One data-driven genuine-corpus suite for every measured command. Independent local contracts run before timing. Panels require two windows of nine pairs; run retains105pairs. Schema2 is retained only for historical inventory/correctness replay; new timing rejects it.",
     )
     return
   }
@@ -596,28 +597,41 @@ async fn main {
     }
     guard [
       "--moonx", "--moonrun", "--wasm-root", "--oracle-bin", "--report-dir", "--manifest",
-      "--profile",
+      "--profile", "--corpus-root", "--baseline-wasm-root", "--probe-pairs", "--window",
+      "--commands", "--gzip-observer", "--correctness-driver",
     ].contains(args[index]) else {
       fail("unknown option: " + args[index])
+    }
+    guard !options.contains(args[index]) else {
+      fail("duplicate option: " + args[index])
     }
     options[args[index]] = value
     index += 2
   }
   match args[0] {
+    "panels" => if !run_panels(options) { @sys.exit(1) }
+    "inventory" =>
+      println(Json(functional_inventory(options)).stringify(indent=2))
     "run" => {
+      require_frozen_timing_backend(options, true)
+      guard !options.contains("--probe-pairs") && !options.contains("--window") else {
+        fail(
+          "diagnostic sampling requires probe; run retains its full formal sampling",
+        )
+      }
       let manifest = options
         .get("--manifest")
-        .unwrap_or(
-          if options.contains("--wasm-root") {
-            "tests/benchmark/functional.json"
-          } else {
-            "tests/benchmark/manifest.json"
-          },
-        )
+        .unwrap_or("tests/benchmark/real.json")
       let value = @json.parse(@fs.read_file(manifest).text())
-      let passed = if value is { "schema": Number(2, ..), .. } {
+      let passed = if value is { "schema": Number(2, ..), .. } ||
+        value is { "schema": Number(3, ..), .. } {
         run_functional(options, sample=true)
       } else {
+        guard !(value is { "schema": Number(1, ..), .. }) else {
+          fail(
+            "new schema-1 pilot measurements are retired; use schema-2 manifests, or report to read historical results",
+          )
+        }
         run_pilot(options)
       }
       if !passed {
@@ -625,12 +639,20 @@ async fn main {
       }
     }
     "baseline" => if !run_functional(options, sample=false) { @sys.exit(1) }
+    "probe" => {
+      if !options.contains("--probe-pairs") {
+        options["--probe-pairs"] = "9"
+      }
+      if !run_functional(options, sample=true) {
+        @sys.exit(1)
+      }
+    }
     "report" => {
       guard options.get("--report-dir") is Some(directory) else {
         fail("report requires --report-dir")
       }
       println(@fs.read_file(directory + "/report.json").text())
     }
-    _ => fail("expected run, baseline or report")
+    _ => fail("expected run, baseline, probe, panels, inventory or report")
   }
 }

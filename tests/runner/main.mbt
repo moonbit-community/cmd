@@ -32,6 +32,9 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
   if manifest.schema != 1 && manifest.schema != 2 {
     failures.push("manifest: expected schema 1, got \{manifest.schema}")
   }
+  if manifest.cases.is_empty() {
+    failures.push("manifest: required case corpus is empty")
+  }
   let catalog = @contracts.command_catalog()
   if manifest.commands.length() != catalog.length() {
     failures.push(
@@ -83,13 +86,15 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
         failures.push("unknown observation: " + dimension)
       }
       if ["atime", "ctime"].contains(dimension) &&
-        fixture.expected_rejection is None {
+        fixture.expected_rejection is None &&
+        fixture.comparison != Some("contract") {
         failures.push(
           "time observations require a same-fixture boundary or scenario",
         )
       }
       if dimension == "mtime" &&
         fixture.expected_rejection is None &&
+        fixture.comparison != Some("contract") &&
         fixture.files.any(file => file.mtime is None) {
         failures.push(
           "differential mtime requires fixed timestamps on every input",
@@ -265,15 +270,24 @@ async fn run_case(
       .contains("247b485454505f424153457d") ||
       file.content_text.unwrap_or("").contains("${HTTP_BASE}")
     })
-  let candidate_before = if fixture.expected_rejection is Some(_) {
+  let candidate_before = if fixture.expected_rejection is Some(_) ||
+    fixture.expected_files
+    .unwrap_or([])
+    .any(file => file.unchanged == Some(true)) {
     snapshot(
       candidate_root,
-      observe=fixture.observe.unwrap_or([]),
+      observe=@testkit.contract_observations(fixture),
       baseline=true,
+      preserve_identity=true,
     )
   } else {
     []
   }
+  let assertion_fixture = @testkit.resolve_runtime_contract(
+    fixture,
+    candidate_root,
+    http_base~,
+  )
   let candidate_run = @testkit.run_with_deadline(
     @testkit.command_program(),
     @testkit.command_args(bin_root, fixture.command, args),
@@ -297,8 +311,25 @@ async fn run_case(
     return ["candidate-timeout: partial streams retained"]
   }
   if fixture.comparison == Some("contract") {
-    failures.append(@testkit.check_contract(fixture, candidate, candidate_root))
-    failures.append(@testkit.check_expected_files(fixture, candidate_root))
+    failures.append(
+      @testkit.check_contract(
+        assertion_fixture,
+        candidate,
+        candidate_root,
+        http_base~,
+      ),
+    )
+    failures.append(
+      @testkit.check_expected_files(
+        assertion_fixture,
+        candidate_root,
+        http_base~,
+        baseline=candidate_before,
+      ),
+    )
+    failures.append(
+      @testkit.check_runtime_contract(assertion_fixture, candidate),
+    )
   }
   let docker_args = [
     "run",

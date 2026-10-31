@@ -14,22 +14,11 @@
       "normalizations": [],
       "coverage": [
         "lines"
-      ]
-    },
-    {
-      "id": "p3-wc-max-line-length",
-      "command": "wc",
-      "args": [
-        "-L"
       ],
-      "stdin_text": "abc\n12345\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "max-line-length"
-      ]
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "2\n"
     },
     {
       "id": "p3-wc-files0-alignment",
@@ -59,6 +48,27 @@
       "coverage": [
         "lines",
         "files0-from"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": " 1 a\n10 b\n11 total\n",
+      "expected_files": [
+        {
+          "path": "a",
+          "kind": "file",
+          "content_text": "a\n"
+        },
+        {
+          "path": "b",
+          "kind": "file",
+          "content_text": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n"
+        },
+        {
+          "path": "names",
+          "kind": "file",
+          "content_hex": "61006200"
+        }
       ]
     },
     {
@@ -78,7 +88,11 @@
       "expected_stderr_text": "",
       "coverage": [
         "max-line-length"
-      ]
+      ],
+      "aliases": [
+        "p3-wc-max-line-length"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-496",
@@ -1103,6 +1117,51 @@
         "max-line-length",
         "total"
       ]
+    },
+    {
+      "id": "proof-wc-c-byte-nbsp-scalar",
+      "command": "wc",
+      "args": [
+        "-w"
+      ],
+      "stdin_hex": "61a0620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "words",
+        "c-byte-profile"
+      ],
+      "source_version": "Independent six-ASCII-whitespace word definition: byteA0 inside a word is not a separator. GNU default extension differs; POSIXLY_CORRECT=1 aligns reference."
+    },
+    {
+      "id": "proof-wc-c-byte-nbsp-vector",
+      "command": "wc",
+      "args": [
+        "-w"
+      ],
+      "stdin_hex": "616161616161616161616161616161a0620a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "words",
+        "c-byte-profile",
+        "simd-boundary"
+      ],
+      "source_version": "Independent C-byte word remains one across vector byte15 A0 and scalar tail; only09..0D and20 separate words"
     }
   ]
 }

@@ -11,7 +11,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "\"moon\"\n"
     },
     {
       "id": "p6-jq-sort-keys",
@@ -25,7 +29,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "{\"a\":2,\"z\":1}\n"
     },
     {
       "id": "p6-jq-slurp-raw-input",
@@ -40,7 +48,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "\"one\\ntwo\\n\"\n"
     },
     {
       "id": "p6-jq-exit-status",
@@ -54,7 +66,11 @@
       "files": [],
       "environment": {},
       "expected_status": 1,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "false\n"
     },
     {
       "id": "p6-jq-invalid-indent",
@@ -68,7 +84,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "null\n"
     },
     {
       "id": "p6-jq-invalid-argjson",
@@ -84,7 +104,15 @@
       "files": [],
       "environment": {},
       "expected_status": 2,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_contains_all": [
+        "argjson",
+        "JSON"
+      ],
+      "diagnostic_reason": "--argjson requires JSON text; literal not-json must fail argument validation with status 2 and no stdout. The diagnostic must identify the option and JSON failure, while its complete wording remains implementation-specific."
     },
     {
       "id": "jq-stream-framing",
@@ -1015,6 +1043,280 @@
       "source_version": "workspace cli/jq@0.2.5 metadata contract",
       "expected_stdout_text": "jq 0.2.5\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-jq-group-null-false-true",
+      "command": "jq",
+      "args": [
+        "-s",
+        "-c",
+        "group_by(.active) | map(length)"
+      ],
+      "stdin_text": "{\"active\":true}\n{\"active\":true}\n{\"active\":false}\n{}\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[1,1,2]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "slurp",
+        "compact-output",
+        "group-key-order"
+      ],
+      "source_version": "Independent jq 1.8 manual-derived group ordering expectation; current candidate execution pending"
+    },
+    {
+      "id": "proof-jq-group-member-order",
+      "command": "jq",
+      "args": [
+        "-s",
+        "-c",
+        "group_by(.active) | map(map(.id))"
+      ],
+      "stdin_text": "{\"active\":true,\"id\":\"t1\"}\n{\"active\":false,\"id\":\"f\"}\n{\"active\":true,\"id\":\"t2\"}\n{\"id\":\"n1\"}\n{\"active\":null,\"id\":\"n2\"}\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[[\"n1\",\"n2\"],[\"f\"],[\"t1\",\"t2\"]]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "slurp",
+        "compact-output",
+        "group-key-order",
+        "stable-group-members"
+      ],
+      "source_version": "Independent jq group ordering and stable same-key member expectation; current candidate execution pending"
+    },
+    {
+      "id": "proof-jq-group-numeric-order",
+      "command": "jq",
+      "args": [
+        "-s",
+        "-c",
+        "group_by(.k) | map(map(.k))"
+      ],
+      "stdin_text": "{\"k\":10}\n{\"k\":2}\n{\"k\":-1}\n{\"k\":1}\n{\"k\":2}\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[[-1],[1],[2,2],[10]]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "slurp",
+        "compact-output",
+        "group-key-order",
+        "numeric-key-order"
+      ],
+      "source_version": "Independent jq 1.8 manual-derived numeric sorting expectation; current candidate execution pending"
+    },
+    {
+      "id": "proof-jq-sort-stable-equal-keys",
+      "command": "jq",
+      "args": [
+        "-s",
+        "-c",
+        "sort_by(.k) | map(.id)"
+      ],
+      "stdin_text": "{\"k\":2,\"id\":\"two-a\"}\n{\"k\":1,\"id\":\"one\"}\n{\"k\":2,\"id\":\"two-b\"}\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[\"one\",\"two-a\",\"two-b\"]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "slurp",
+        "compact-output",
+        "sort-key-order",
+        "stable-equal-keys"
+      ],
+      "source_version": "Independent stable jq key sorting expectation; current candidate execution pending"
+    },
+    {
+      "id": "proof-jq-full-group-key-stream",
+      "command": "jq",
+      "args": [
+        "-c",
+        "group_by(.a,.b) | map(map(.id))"
+      ],
+      "stdin_text": "[{\"id\":\"x\",\"a\":1,\"b\":2},{\"id\":\"y\",\"a\":1,\"b\":1},{\"id\":\"z\",\"a\":1,\"b\":2}]\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[[\"y\"],[\"x\",\"z\"]]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "source_version": "Independent jq1.8 grouping by complete key streams and stable member order",
+      "coverage": [
+        "complete-group-keys",
+        "stable-group-members"
+      ]
+    },
+    {
+      "id": "proof-jq-arg-used",
+      "command": "jq",
+      "args": [
+        "-nr",
+        "--arg",
+        "x",
+        "outer",
+        "$x"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "outer\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "arg",
+        "null-input",
+        "raw-output"
+      ],
+      "source_version": "Independent variable injection; existing jq-variable-scope shadows x and cannot prove the --arg value is used."
+    },
+    {
+      "id": "proof-jq-argjson-used",
+      "command": "jq",
+      "args": [
+        "-nc",
+        "--argjson",
+        "x",
+        "{\"a\":2}",
+        "$x.a"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "argjson",
+        "null-input"
+      ],
+      "source_version": "Independent typed JSON variable injection; successful value use complements invalid-argjson rejection."
+    },
+    {
+      "id": "proof-jq-from-file-filter",
+      "command": "jq",
+      "args": [
+        "-c",
+        "--from-file",
+        "filter"
+      ],
+      "stdin_text": "{\"a\":2}\n",
+      "files": [
+        {
+          "path": "filter",
+          "content_text": ".a\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "Independent filter-file loading for jq; unlike jqlog -f this selects the filter source, not input JSON."
+    },
+    {
+      "id": "proof-jq-indent-one",
+      "command": "jq",
+      "args": [
+        "--indent",
+        "1",
+        "."
+      ],
+      "stdin_text": "{\"a\":1}\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "{\n \"a\": 1\n}\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "indent"
+      ],
+      "source_version": "Current README indentation support with an object whose member prefix distinguishes width1 from default2."
+    },
+    {
+      "id": "proof-jq-tab-indent",
+      "command": "jq",
+      "args": [
+        "--tab",
+        "."
+      ],
+      "stdin_text": "{\"a\":1}\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "{\n\t\"a\": 1\n}\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "tab"
+      ],
+      "source_version": "Current README tab indentation; exact TAB bytes cannot be satisfied by space indentation."
+    },
+    {
+      "id": "proof-jq-logs-skips-invalid-lines",
+      "command": "jq",
+      "args": [
+        "--logs",
+        "-c",
+        ".a"
+      ],
+      "stdin_text": "diagnostic\n{\"a\":2}\nnot-json\n{\"a\":3}\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "2\n3\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "logs"
+      ],
+      "source_version": "Current README project-extension contract: skip invalid JSON lines while evaluating valid lines. This is not a GNU jq upstream-parity claim."
+    },
+    {
+      "id": "proof-jq-exit-empty-result",
+      "command": "jq",
+      "args": [
+        "--exit-status",
+        "select(false)"
+      ],
+      "stdin_text": "1\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 4,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "exit-status",
+        "empty-result-status"
+      ],
+      "source_version": "Current README -e returns4 for no result; empty stderr distinguishes ordinary no-result from parse error status4."
     }
   ]
 }

@@ -12,59 +12,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-zero-records",
-      "command": "head",
-      "args": [
-        "-z",
-        "-n2"
-      ],
-      "stdin_hex": "616263006465660067686900",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-exclude-tail",
-      "command": "head",
-      "args": [
-        "-n",
-        "-2"
-      ],
-      "stdin_text": "1\n2\n3\n4\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-binary-prefix-count",
-      "command": "head",
-      "args": [
-        "-n",
-        "1KiB"
-      ],
-      "stdin_text": "1\n2\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p3-head-explicit-positive-count",
-      "command": "head",
-      "args": [
-        "-n",
-        "+3"
-      ],
-      "stdin_text": "1\n2\n3\n4\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "one\n"
     },
     {
       "id": "p3-head-multiple-file-headers",
@@ -87,7 +39,11 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "==> a <==\none\n\n==> b <==\nthree\n"
     },
     {
       "id": "compat-text-line-552",
@@ -104,7 +60,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_hex": "616263006465660067686900",
       "expected_stdout_hex": "6162630064656600",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p3-head-zero-records"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-561",
@@ -121,7 +81,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "1\n2\n3\n4\n",
       "expected_stdout_text": "1\n2\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p3-head-exclude-tail"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-570",
@@ -138,7 +102,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "1\n2\n3\n4\n",
       "expected_stdout_text": "1\n2\n3\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p3-head-explicit-positive-count"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-579",
@@ -187,7 +155,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "1\n2\n",
       "expected_stdout_text": "1\n2\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p3-head-binary-prefix-count"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-590",
@@ -311,6 +283,65 @@
       "source_version": "workspace cli/head@0.2.4 metadata contract",
       "expected_stdout_text": "head 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-head-quiet-real-multiple-files",
+      "command": "head",
+      "args": [
+        "--quiet",
+        "-n1",
+        "one",
+        "two"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a\nx\n"
+        },
+        {
+          "path": "two",
+          "content_text": "b\ny\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "a\nb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "quiet",
+        "lines"
+      ],
+      "source_version": "Independent no-header rendering where default multi-file headers would be observable."
+    },
+    {
+      "id": "proof-head-verbose-single-file",
+      "command": "head",
+      "args": [
+        "--verbose",
+        "-n1",
+        "one"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "one",
+          "content_text": "a\nx\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "==> one <==\na\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "verbose",
+        "lines"
+      ],
+      "source_version": "Independent forced-header rendering for one file; default single-file output has no header."
     }
   ]
 }

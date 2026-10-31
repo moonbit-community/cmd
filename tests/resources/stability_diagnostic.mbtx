@@ -261,6 +261,7 @@ async fn main {
         },
         log,
         env=Map([
+          ("CMD_SYNTHETIC_DIAGNOSTIC", "1"),
           ("CMD_BENCH_SETTLE_MS", settle),
           ("CMD_BENCH_PRELOAD", if preload { "1" } else { "0" }),
           ("CMD_BENCH_RUSAGE", if rusage { "1" } else { "0" }),

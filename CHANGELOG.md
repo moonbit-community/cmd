@@ -9,14 +9,120 @@ Full historical experiment reports remain in the
 [pre-simplification Git version](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/CHANGELOG.md).
 Their failed, incomplete and platform-limited results keep their original scope.
 
+## 2026-10-31
+
+Development test and benchmark replacement; no publication.
+
+- Replace generated performance matrices and the rg-specific timing launcher
+  with one schema-3 real-source engine: 125 rows, 105 reviewed modes, 40 timing
+  commands and explicit correctness-only dispositions for ln/make/sh. Pin 31
+  complete sources totaling 22,152,148 bytes; enforce 16 MiB per source and
+  64 MiB unique bytes without repetition, padding or trimming. Seven former
+  synthetic regimes retain finite correctness bindings rather than invented
+  real-source timing claims.
+- Consolidate 107 duplicate CLI invocations while retaining aliases, oracle
+  routes and independent assertions; add 13 activating companions and strengthen
+  existing stream, runtime and filesystem expectations. All 2,187 current JSON
+  definitions have source-bound exact/typed/finite assertion descriptors.
+  Imported rg data preserves all 751 original records/names through 726 unique
+  execution groups. Local gates supplement Linux pinned differential checks.
+- Independently correct bad supplemental expectations and unsupported benchmark
+  arguments exposed by actual execution. Preserve an actual Darwin mkdir
+  setuid-directory difference as a failing regression; see ADR-0004. Quality
+  descriptors alone do not prove option activation: 180 catalog labels still
+  require new scenario evidence, 32 strengthened labels require activation
+  review, and one yes lifecycle feature remains. The SHA256 per-line warning
+  facet is independently reconciled through exact diagnostics and its actual
+  local pass. Historical acceptance is not
+  broadened; publication continues to use `moon publish` only.
+- Current macOS evidence: 1,722 release-Wasm package tests and 208 Native
+  test-tool tests pass; 41 disclosure controls and six CLI failure gates pass.
+  The fresh real-source run records all 125 rows: 122 checked and three exact
+  native mismatches (two documented wc regular-stdin padding boundaries and
+  default-GNU versus minimal diff). Its independent local preflight passes88
+  with one platform skip. Full functional execution passes2,253, fails the
+  retained Darwin mkdir case and skips20. The uniform cksum A/A control passes
+  three workloads through two windows of nine pairs; this is pipeline
+  validation, not an improvement or full performance result. Independent final
+  readback confirms these scopes. One old diagnostic capture was accidentally
+  overwritten/reproduced and is excluded from final evidence; the fresh
+  complete run is authoritative. Full compatibility, three-platform, formal
+  performance and publication acceptance remain unestablished.
+
 ## 2026-10-30
 
-Development cleanup and release preparation.
+Development cleanup and publication.
 
-- Prepare core 0.9.0 with explicit public API migrations and 43 command uploads,
-  including the first rg 0.1.0 release. Unaffected published coordinates stay
-  unchanged; timeout remains local-only. Candidate coordinates and expectations
-  are separate from the accepted latest inventory until exact-version acceptance.
+- Development evidence reconciliation: repair 83 exact-contract and 23 typed
+  scenario registration omissions, narrow mixed-scope claims, and require every
+  named binding. Bind actual scenario values to current reviewed descriptors,
+  command ownership, complete result streams and the freshly built test driver.
+  The subsequent local macOS/Wasm run passes 2,167 functional checks with 19
+  skips and zero failures; 113 typed observations cover six executed scenes.
+  All 651 reviewed facets pass where applicable; four retain explicit platform
+  exclusions. Native test-tool tests pass 179/179 and twelve malformed/stale
+  evidence checks reject. Independent readback verifies these identities and
+  observations. The [remaining work index](tests/registry/coverage-gaps.md)
+  distinguishes 180 catalog labels requiring new activated fixtures/observers,
+  33 requiring stronger assertions on existing fixtures, and one supplemental
+  `yes` lifecycle feature. These are label counts, not test counts. Full
+  compatibility and three-platform, upstream, performance and publication
+  acceptance remain unestablished by this development run.
+
+- Further development evidence repair: add 53 independent CLI contracts,
+  183 seed variants, 60 complete-source tasks and 14 slow-output controls;
+  connect their applicable panels to performance protection. Add an ordinary
+  CI proof join for finite reviewed assertions, typed metadata versions,
+  source-case identity and complete observation dimensions. Current local
+  results are 1,718 release-Wasm package tests, 172 Native test-tool tests,
+  and 2,165 functional results with 19 platform skips and zero failures.
+  The proof profile executes 545 reviewed facets; 319 catalog labels and
+  one supplemental primary operation remain unresolved. New samples exposed
+  and repaired unreleased jq grouping/sorting, sh stdin-option and nl padding
+  defects. Independent reserved evaluation remains failed at 21/22 because
+  GNU-default wc whitespace differs from the documented C-byte profile;
+  an explicitly calibrated ordinary replay passes 22/22. Two canonical rev
+  rows retain invalid-reference status. No general compatibility, formal
+  performance, three-platform or publication acceptance is established;
+  package publication remains `moon publish` only.
+
+- Development benchmark repair: connect required command-mode, natural-file,
+  fragmented-pipe and original 89-query rg panels to protection and resource
+  timing. Verify aliases, freeze actual executables/inputs, retain per-row
+  feature observations and fail incomplete or unstable windows. Replace
+  self-input/early-exit fixtures with explicit diff, join, comm, csplit, jq and
+  codec regimes; compare gzip by decoded content. Previously used evaluation
+  files remain explicitly unblinded. Historical results and published
+  coordinates are unchanged; this does not establish general performance or
+  resource acceptance.
+
+- Development test-evidence repair: reject vacuous assertions and malformed
+  selection metadata before platform skips; strengthen one shell stderr
+  expectation, including its locally rechecked published coordinate. Add exact
+  per-engine regex corpus accounting, orthogonal record/file-size sweeps and
+  varied synthetic corpora. Reports explicitly scope timing claims; rename the
+  synthetic resource profile while retaining its legacy alias. These changes
+  do not retroactively broaden the release results below or establish general
+  performance acceptance.
+
+- Published core 0.9.0 and 43 command packages from source commit `4ca0e4d`:
+  42 updates and the first rg 0.1.0 release. All 44 uploads and registry builds
+  were verified. Thirty-six command coordinates remain unchanged; timeout remains
+  local-only. The latest inventory selects 79 commands and independent resolved
+  expectations. Core API migrations are explicit; C02 trial proposals remain
+  unadopted.
+- Source [development CI](https://github.com/moonbit-community/cmd/actions/runs/40984331217)
+  passed all three required hosts. Local exact-version MoonX acceptance passed
+  2,180 checks (2,048 semantic contract results, 79 startup availability checks
+  and 53 boundary results), with 19 skips and zero failures across all 79
+  coordinates.
+  [Initial startup attempts](https://github.com/moonbit-community/cmd/actions/runs/40985862616)
+  stopped while registry assets were queued; full acceptance restarted after all
+  builds succeeded. [Three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/40986324873):
+  passed Linux (2,369 checks, 16 skips, including 1,531 pinned differential results),
+  macOS (2,180 checks, 19 skips) and Windows (2,049 checks, 150 skips), all with
+  zero failures. Formal performance acceptance remains unresolved; no broader
+  upstream parity is inferred.
 
 - Made HTTP method expectations independent of the implementation, consolidated
   duplicate cases through selectable aliases, and removed redundant assertions
@@ -26,7 +132,8 @@ Development cleanup and release preparation.
   retain their existing assertions. Removed editorial wording locks.
 - Switched benchmark defaults to the latest accepted inventory and corpus.
   Removed retired release archives from the checkout; their complete contents
-  remain in Git at 234f960. Latest/candidate snapshot bytes are unchanged.
+  remain in Git at 234f960. At that cleanup stage, latest/candidate snapshot
+  bytes were unchanged.
   Test cleanup passed 1,706 Wasm tests, 118 tool tests and 2,112 functional
   checks with nineteen skips. All 80 product binaries match the baseline
   rebuilt with the same current toolchain.

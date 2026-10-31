@@ -1,0 +1,548 @@
+{
+  "schema": 1,
+  "limits": {
+    "max_source_bytes": "16777216",
+    "max_unique_source_bytes": "67108864"
+  },
+  "scope": "Complete registered real sources only; source and prepared-payload limits exclude immutable download containers, which are never measured input. No repetition, padding, trimming or generated-size input.",
+  "blind_holdout": false,
+  "unique_source_bytes": "22152148",
+  "files": [
+    {
+      "path": "rfc9110.txt",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+      "bytes": "502941",
+      "provenance": "RFC9110, June2022; complete published text",
+      "family": "network-standard",
+      "license_record": "RFC Trust Legal Provisions; https://trustee.ietf.org/documents/trust-legal-provisions/",
+      "cache_paths": [
+        "rfc9110.txt",
+        "ordinary/rfc9110.txt"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "UnicodeData-17.0.0.txt",
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt",
+      "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
+      "bytes": "2198209",
+      "provenance": "Unicode17.0.0 released UCD",
+      "family": "character-properties",
+      "license_record": "Unicode LicenseV3; https://www.unicode.org/license.txt",
+      "cache_paths": [
+        "UnicodeData-17.0.0.txt",
+        "ordinary/UnicodeData-17.0.0.txt"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "GraphemeBreakTest-17.0.0.txt",
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/GraphemeBreakTest.txt",
+      "sha256": "e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec",
+      "bytes": "126570",
+      "provenance": "Unicode17.0.0 released grapheme-conformance records",
+      "family": "unicode-conformance",
+      "license_record": "Unicode LicenseV3; https://www.unicode.org/license.txt",
+      "cache_paths": [
+        "GraphemeBreakTest-17.0.0.txt",
+        "ordinary/GraphemeBreakTest-17.0.0.txt"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "spdx-licenses-3.27.0.json",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/d46e94e2c78ceede1cfc63cfa0396472d2798d4c/json/licenses.json",
+      "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+      "bytes": "318777",
+      "provenance": "SPDX license-list-data v3.27.0; commit d46e94e2c78ceede1cfc63cfa0396472d2798d4c",
+      "family": "license-registry-json",
+      "license_record": "Generated SPDX data; upstream licensing record https://github.com/spdx/license-list-data/blob/d46e94e2c78ceede1cfc63cfa0396472d2798d4c/README.md#licensing-information",
+      "cache_paths": [
+        "spdx-licenses-3.27.0.json",
+        "ordinary/spdx-licenses-3.27.0.json"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "openflights-airports.dat",
+      "url": "https://raw.githubusercontent.com/jpatokal/openflights/e539814f664cf31e662710555b27e9688610a911/data/airports.dat",
+      "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+      "bytes": "1127225",
+      "provenance": "OpenFlights commit e539814f664cf31e662710555b27e9688610a911",
+      "family": "transportation-airports-csv",
+      "license_record": "ODbL and Database Contents License; https://openflights.org/data.php#license",
+      "cache_paths": [
+        "openflights-airports.dat",
+        "ordinary/openflights-airports.dat"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "openflights-routes.dat",
+      "url": "https://raw.githubusercontent.com/jpatokal/openflights/e539814f664cf31e662710555b27e9688610a911/data/routes.dat",
+      "sha256": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390",
+      "bytes": "2377148",
+      "provenance": "OpenFlights commit e539814f664cf31e662710555b27e9688610a911; historical route data frozen since2014",
+      "family": "transportation-routes-csv",
+      "license_record": "ODbL and Database Contents License; https://openflights.org/data.php#license",
+      "cache_paths": [
+        "openflights-routes.dat",
+        "ordinary/openflights-routes.dat"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "curl-options-in-versions.txt",
+      "url": "https://raw.githubusercontent.com/curl/curl/fdb8a789d2b446b77bd7cdd2eff95f6cbc814cf4/docs/options-in-versions",
+      "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b",
+      "bytes": "12123",
+      "provenance": "curl8.14.1; commit fdb8a789d2b446b77bd7cdd2eff95f6cbc814cf4",
+      "family": "software-option-version-table",
+      "license_record": "curl license; https://github.com/curl/curl/blob/fdb8a789d2b446b77bd7cdd2eff95f6cbc814cf4/COPYING",
+      "cache_paths": [
+        "curl-options-in-versions.txt",
+        "ordinary/curl-options-in-versions.txt"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "icu-ja-77.1.txt",
+      "url": "https://raw.githubusercontent.com/unicode-org/icu/457157a92aa053e632cc7fcfd0e12f8a943b2d11/icu4c/source/data/locales/ja.txt",
+      "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9",
+      "bytes": "92132",
+      "provenance": "ICU77.1; commit457157a92aa053e632cc7fcfd0e12f8a943b2d11",
+      "family": "japanese-locale-text",
+      "license_record": "Unicode LicenseV3 and retained file notice; https://github.com/unicode-org/icu/blob/457157a92aa053e632cc7fcfd0e12f8a943b2d11/LICENSE",
+      "cache_paths": [
+        "icu-ja-77.1.txt",
+        "ordinary/icu-ja-77.1.txt"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "sqlite3-3.50.4.c",
+      "url": "https://www.sqlite.org/2025/sqlite-amalgamation-3500400.zip",
+      "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+      "bytes": "9282866",
+      "provenance": "SQLite3.50.4; source-id 2025-07-30T19:33:53 4d8adfb30e03f9cf27f800a2c1ba3c48fb4ca1b08b0f5ed59a4d5ecbf45e20a3; exact sqlite3.c member",
+      "family": "database-engine-source",
+      "license_record": "SQLite deliverable source is public domain; https://www.sqlite.org/copyright.html",
+      "cache_paths": [
+        "sqlite3-3.50.4.c",
+        "ordinary/sqlite3-3.50.4.c"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "sqlite-amalgamation-3500400.zip",
+      "archive_format": "zip",
+      "archive_sha256": "1d3049dd0f830a025a53105fc79fd2ab9431aea99e137809d064d8ee8356b032",
+      "archive_member": "sqlite-amalgamation-3500400/sqlite3.c"
+    },
+    {
+      "path": "shakespeare.txt",
+      "url": "https://www.gutenberg.org/cache/epub/100/pg100.txt",
+      "sha256": "eb61e33cab23dbe712ad57091ded6c7292ba91ac3bb2764f51a3223ec0068fe5",
+      "bytes": "5638481",
+      "provenance": "Project Gutenberg eBook100 complete text, exact previously registered 2026-10-30 bytes; mutable endpoint must match the frozen hash",
+      "family": "literature",
+      "license_record": "Complete Project Gutenberg header and license retained in source; https://www.gutenberg.org/policy/license.html",
+      "cache_paths": [
+        "shakespeare.txt"
+      ],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "jquery-3.7.1.min.js",
+      "url": "https://code.jquery.com/jquery-3.7.1.min.js",
+      "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
+      "bytes": "87533",
+      "provenance": "Official jQuery3.7.1 complete minified distribution; release index https://releases.jquery.com/jquery/; two LF records, maximum payload record87443 bytes observed",
+      "family": "minified-web-library",
+      "license_record": "MIT; complete original OpenJS copyright/license header retained; https://jquery.org/license/",
+      "cache_paths": [
+        "jquery-3.7.1.min.js"
+      ],
+      "transformation": "none; complete upstream minified release, not a locally minified or padded input"
+    },
+    {
+      "path": "python/Lib/json/__init__.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+      "bytes": "14020",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/json/__init__.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/json/__init__.py",
+        "python/Lib/json/__init__.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/json/__init__.py"
+    },
+    {
+      "path": "python/Lib/json/decoder.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
+      "bytes": "12820",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/json/decoder.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/json/decoder.py",
+        "python/Lib/json/decoder.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/json/decoder.py"
+    },
+    {
+      "path": "python/Lib/json/encoder.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
+      "bytes": "16074",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/json/encoder.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/json/encoder.py",
+        "python/Lib/json/encoder.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/json/encoder.py"
+    },
+    {
+      "path": "python/Lib/json/scanner.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
+      "bytes": "2425",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/json/scanner.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/json/scanner.py",
+        "python/Lib/json/scanner.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/json/scanner.py"
+    },
+    {
+      "path": "python/Lib/json/tool.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
+      "bytes": "3370",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/json/tool.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/json/tool.py",
+        "python/Lib/json/tool.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/json/tool.py"
+    },
+    {
+      "path": "python/Lib/re/__init__.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
+      "bytes": "17876",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/re/__init__.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/re/__init__.py",
+        "python/Lib/re/__init__.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/re/__init__.py"
+    },
+    {
+      "path": "python/Lib/re/_casefix.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
+      "bytes": "5444",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/re/_casefix.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/re/_casefix.py",
+        "python/Lib/re/_casefix.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/re/_casefix.py"
+    },
+    {
+      "path": "python/Lib/re/_compiler.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
+      "bytes": "25980",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/re/_compiler.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/re/_compiler.py",
+        "python/Lib/re/_compiler.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/re/_compiler.py"
+    },
+    {
+      "path": "python/Lib/re/_constants.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
+      "bytes": "5939",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/re/_constants.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/re/_constants.py",
+        "python/Lib/re/_constants.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/re/_constants.py"
+    },
+    {
+      "path": "python/Lib/re/_parser.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
+      "bytes": "41237",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/re/_parser.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/re/_parser.py",
+        "python/Lib/re/_parser.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/re/_parser.py"
+    },
+    {
+      "path": "python/Lib/importlib/__init__.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
+      "bytes": "4757",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/importlib/__init__.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/importlib/__init__.py",
+        "python/Lib/importlib/__init__.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/importlib/__init__.py"
+    },
+    {
+      "path": "python/Lib/importlib/_abc.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
+      "bytes": "1354",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/importlib/_abc.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/importlib/_abc.py",
+        "python/Lib/importlib/_abc.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/importlib/_abc.py"
+    },
+    {
+      "path": "python/Lib/importlib/util.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
+      "bytes": "11199",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/importlib/util.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/importlib/util.py",
+        "python/Lib/importlib/util.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/importlib/util.py"
+    },
+    {
+      "path": "python/Lib/importlib/machinery.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
+      "bytes": "934",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/importlib/machinery.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/importlib/machinery.py",
+        "python/Lib/importlib/machinery.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/importlib/machinery.py"
+    },
+    {
+      "path": "python/Lib/asyncio/__init__.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
+      "bytes": "1220",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/asyncio/__init__.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/asyncio/__init__.py",
+        "python/Lib/asyncio/__init__.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/asyncio/__init__.py"
+    },
+    {
+      "path": "python/Lib/asyncio/base_events.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
+      "bytes": "79451",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/asyncio/base_events.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/asyncio/base_events.py",
+        "python/Lib/asyncio/base_events.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/asyncio/base_events.py"
+    },
+    {
+      "path": "python/Lib/asyncio/tasks.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
+      "bytes": "39757",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/asyncio/tasks.py archive member",
+      "family": "python-standard-library",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/asyncio/tasks.py",
+        "python/Lib/asyncio/tasks.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/asyncio/tasks.py"
+    },
+    {
+      "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": "0",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/test/test_import/data/circular_imports/subpkg2/__init__.py archive member",
+      "family": "released-empty-package",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+        "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py"
+    },
+    {
+      "path": "python/Lib/test/test_email/data/python.png",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+      "bytes": "1020",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/test/test_email/data/python.png archive member",
+      "family": "released-binary-image",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/test/test_email/data/python.png",
+        "python/Lib/test/test_email/data/python.png"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/test/test_email/data/python.png"
+    },
+    {
+      "path": "python/Lib/test/test_difflib_expect.html",
+      "url": "https://www.python.org/ftp/python/3.13.0/Python-3.13.0.tar.xz",
+      "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008",
+      "bytes": "103266",
+      "provenance": "CPython3.13.0 official release; exact complete Lib/test/test_difflib_expect.html archive member",
+      "family": "released-html-unterminated",
+      "license_record": "Python-3.13.0/LICENSE and retained archive notices; PSF License Version2 with distributed third-party notices; https://docs.python.org/3.13/license.html",
+      "cache_paths": [
+        "Python-3.13.0/Lib/test/test_difflib_expect.html",
+        "python/Lib/test/test_difflib_expect.html"
+      ],
+      "transformation": "exact original archive member",
+      "archive_name": "Python-3.13.0.tar.xz",
+      "archive_format": "tar",
+      "archive_sha256": "086de5882e3cb310d4dca48457522e2e48018ecd43da9cdf827f6a0759efb07d",
+      "archive_bytes": "22532980",
+      "archive_member": "Python-3.13.0/Lib/test/test_difflib_expect.html"
+    }
+  ]
+}

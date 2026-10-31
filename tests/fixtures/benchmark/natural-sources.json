@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "path": "rfc9110.txt",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
+      "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+      "bytes": "502941",
+      "provenance": "RFC9110, June2022; complete published text",
+      "family": "network-standard",
+      "license_record": "RFC Trust Legal Provisions; https://trustee.ietf.org/documents/trust-legal-provisions/"
+    },
+    {
+      "path": "UnicodeData-17.0.0.txt",
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/UnicodeData.txt",
+      "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
+      "bytes": "2198209",
+      "provenance": "Unicode17.0.0 released UCD",
+      "family": "character-properties",
+      "license_record": "Unicode LicenseV3; https://www.unicode.org/license.txt"
+    },
+    {
+      "path": "GraphemeBreakTest-17.0.0.txt",
+      "url": "https://www.unicode.org/Public/17.0.0/ucd/auxiliary/GraphemeBreakTest.txt",
+      "sha256": "e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec",
+      "bytes": "126570",
+      "provenance": "Unicode17.0.0 released grapheme-conformance records",
+      "family": "unicode-conformance",
+      "license_record": "Unicode LicenseV3; https://www.unicode.org/license.txt"
+    },
+    {
+      "path": "spdx-licenses-3.27.0.json",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/d46e94e2c78ceede1cfc63cfa0396472d2798d4c/json/licenses.json",
+      "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+      "bytes": "318777",
+      "provenance": "SPDX license-list-data v3.27.0; commit d46e94e2c78ceede1cfc63cfa0396472d2798d4c",
+      "family": "license-registry-json",
+      "license_record": "Generated SPDX data; upstream licensing record https://github.com/spdx/license-list-data/blob/d46e94e2c78ceede1cfc63cfa0396472d2798d4c/README.md#licensing-information"
+    },
+    {
+      "path": "openflights-airports.dat",
+      "url": "https://raw.githubusercontent.com/jpatokal/openflights/e539814f664cf31e662710555b27e9688610a911/data/airports.dat",
+      "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+      "bytes": "1127225",
+      "provenance": "OpenFlights commit e539814f664cf31e662710555b27e9688610a911",
+      "family": "transportation-airports-csv",
+      "license_record": "ODbL and Database Contents License; https://openflights.org/data.php#license"
+    },
+    {
+      "path": "openflights-routes.dat",
+      "url": "https://raw.githubusercontent.com/jpatokal/openflights/e539814f664cf31e662710555b27e9688610a911/data/routes.dat",
+      "sha256": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390",
+      "bytes": "2377148",
+      "provenance": "OpenFlights commit e539814f664cf31e662710555b27e9688610a911; historical route data frozen since2014",
+      "family": "transportation-routes-csv",
+      "license_record": "ODbL and Database Contents License; https://openflights.org/data.php#license"
+    },
+    {
+      "path": "curl-options-in-versions.txt",
+      "url": "https://raw.githubusercontent.com/curl/curl/fdb8a789d2b446b77bd7cdd2eff95f6cbc814cf4/docs/options-in-versions",
+      "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b",
+      "bytes": "12123",
+      "provenance": "curl8.14.1; commit fdb8a789d2b446b77bd7cdd2eff95f6cbc814cf4",
+      "family": "software-option-version-table",
+      "license_record": "curl license; https://github.com/curl/curl/blob/fdb8a789d2b446b77bd7cdd2eff95f6cbc814cf4/COPYING"
+    },
+    {
+      "path": "icu-ja-77.1.txt",
+      "url": "https://raw.githubusercontent.com/unicode-org/icu/457157a92aa053e632cc7fcfd0e12f8a943b2d11/icu4c/source/data/locales/ja.txt",
+      "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9",
+      "bytes": "92132",
+      "provenance": "ICU77.1; commit457157a92aa053e632cc7fcfd0e12f8a943b2d11",
+      "family": "japanese-locale-text",
+      "license_record": "Unicode LicenseV3 and retained file notice; https://github.com/unicode-org/icu/blob/457157a92aa053e632cc7fcfd0e12f8a943b2d11/LICENSE"
+    },
+    {
+      "path": "sqlite3-3.50.4.c",
+      "url": "https://www.sqlite.org/2025/sqlite-amalgamation-3500400.zip",
+      "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+      "bytes": "9282866",
+      "provenance": "SQLite3.50.4; source-id 2025-07-30T19:33:53 4d8adfb30e03f9cf27f800a2c1ba3c48fb4ca1b08b0f5ed59a4d5ecbf45e20a3; exact sqlite3.c member",
+      "family": "database-engine-source",
+      "license_record": "SQLite deliverable source is public domain; https://www.sqlite.org/copyright.html"
+    }
+  ],
+  "blind_holdout": false
+}

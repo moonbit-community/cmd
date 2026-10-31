@@ -97,8 +97,7 @@ async fn process_reader(
       output.write("\n")
       number.val += increment
     } else {
-      output.write(spaces(width))
-      output.write(separator)
+      output.write(spaces(width + @utf8.encode(separator).length()))
       output.write(line.data)
       output.write("\n")
     }

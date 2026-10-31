@@ -317,7 +317,11 @@
       "files": [],
       "environment": {},
       "expected_status": 22,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
     },
     {
       "id": "phase2-curl-output-file",
@@ -332,7 +336,18 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "response.bin",
+          "kind": "file",
+          "content_text": "hello"
+        }
+      ]
     },
     {
       "id": "phase2-curl-post-data",
@@ -347,7 +362,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "POST:alpha=one",
+      "expected_stderr_text": ""
     },
     {
       "id": "phase2-curl-upload-file",
@@ -367,7 +386,18 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "5055543a0062696e617279ff",
+      "expected_files": [
+        {
+          "path": "upload.bin",
+          "kind": "file",
+          "content_hex": "0062696e617279ff"
+        }
+      ]
     },
     {
       "id": "phase2-curl-multiple-urls",
@@ -381,7 +411,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "helloworld"
     },
     {
       "id": "phase2-curl-last-transfer-status",
@@ -395,7 +429,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "hello"
     },
     {
       "id": "phase2-curl-remote-name",
@@ -408,7 +446,18 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "named.txt",
+          "kind": "file",
+          "content_text": "hello"
+        }
+      ]
     },
     {
       "id": "p1-curl-explicit-method-redirect",
@@ -425,7 +474,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "POST:",
+      "expected_stderr_text": ""
     },
     {
       "id": "p1-curl-binary-data-file",
@@ -445,7 +498,18 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_hex": "504f53543a0062696e617279ff",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload.bin",
+          "kind": "file",
+          "content_hex": "0062696e617279ff"
+        }
+      ]
     },
     {
       "id": "p1-curl-redirect-limit-zero",
@@ -460,7 +524,11 @@
       "files": [],
       "environment": {},
       "expected_status": 47,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
     },
     {
       "id": "phase2-curl-https-insecure",
@@ -495,22 +563,6 @@
       "normalizations": [],
       "comparison": "scenario",
       "timeout_ms": 30000
-    },
-    {
-      "id": "compat-catalog-line-64",
-      "command": "curl",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "repair-final-curl-basic",
@@ -740,7 +792,12 @@
       ],
       "source_version": "workspace cli/curl@0.2.5 metadata contract",
       "expected_stdout_text": "Usage: curl [options...] <url>\n      --help      display this help and exit\n      --version   display version and exit\n  -s, --silent                 silent mode\n  -S, --show-error             show errors with --silent\n  -f, --fail                   fail on HTTP response codes >= 400\n  -o, --output <file>          write to file instead of stdout\n  -O, --remote-name            use the remote file name\n  -J, --remote-header-name     use Content-Disposition with -O\n  -L, --location               follow redirects\n      --max-redirs <num>       maximum redirects (default 50)\n  -I, --head                   show response headers only\n  -H, --header <header>        pass a custom header to the server\n  -u, --user <user:password>   HTTP Basic authentication\n  -b, --cookie <data|file>     send cookies or load a Netscape jar\n  -c, --cookie-jar <file>      write a Netscape cookie jar\n      -H 'Cookie: ...'       send a separate field after stored jar cookies\n  -X, --request <method>       specify a supported HTTP method\n  -d, --data <data>            HTTP POST data\n      --data-raw <data>        HTTP POST data without @ expansion\n      --data-binary <data>     HTTP POST data without conversion\n      --data-urlencode <data>  URL-encode HTTP POST data\n  -T, --upload-file <file>     stream file as an upload\n      --retry <num>            retry transient failures\n      --retry-delay <seconds>  wait between retries\n      --retry-max-time <secs>  maximum time spent retrying\n      --retry-connrefused      retry connection refused failures\n      --retry-all-errors       retry all transfer errors\n      --connect-timeout <secs> maximum connection setup time\n  -m, --max-time <seconds>     maximum time for one transfer\n      --idle-timeout <seconds> extension: inactivity timeout\n  -k, --insecure               allow insecure TLS connections\n  -x, --proxy <url>            use this proxy\n      --noproxy <list>         bypass proxy for matching hosts\n      --remove-on-error        remove opened output after final failure\nAlready written stdout remains; final partial files remain without cleanup.\nCookie values containing CR/LF are rejected before request bytes are sent.\nRaw space/TAB/CR/LF/DEL in an initial URL path or query exits 3 before connecting.\nRedirect spaces use %20 in paths and + in queries; TAB uses %09.\nSet-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.\nPositive decimal Max-Age overflow keeps the new cookie under a 400-day cap.\nAn empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.\nAn initial empty failure leaves ordinary unopened output untouched.\nAn accepted retry resets an opened regular file before the next request.\n-O -J creates valid Content-Disposition filenames exclusively for 2xx/3xx.\nAn existing selected filename exits 23 untouched; retries retain the first name.\nFile write errors exit 23; an earlier transfer failure keeps its exit status.\nA redirect requiring already uploaded stdin to rewind exits 65.\n-sS keeps each failed attempt's error visible even if a later retry succeeds.\nContent-coding bytes remain encoded; Accept-Encoding defaults to identity.\n\nCompatibility limits: HTTP/HTTPS only; -X accepts GET, HEAD, POST, PUT,\nDELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded by\nthe runtime millisecond timer range.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-64"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-curl-version",
@@ -760,6 +817,42 @@
       "source_version": "workspace cli/curl@0.2.5 metadata contract",
       "expected_stdout_text": "curl 0.2.5\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "quality-curl-data-raw-literal",
+      "command": "curl",
+      "args": [
+        "-s",
+        "--data-raw",
+        "@literal",
+        "${HTTP_BASE}/echo"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "literal",
+          "content_text": "DIFFERENT file bytes\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "POST:@literal",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "literal",
+          "kind": "file",
+          "content_text": "DIFFERENT file bytes\n",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "data-raw"
+      ],
+      "source_version": "Independent raw-body contract: --data-raw sends @literal literally and selects POST; a real literal file with different bytes rejects accidental -d file expansion. The hand-written echo endpoint returns method colon exact request body. Existing redirect case remains separate."
     }
   ]
 }

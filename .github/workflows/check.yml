@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       use_cache:
-        description: Restore dependency and compilation caches
+        description: Use dependency, compilation, and Docker caches (only main saves)
         type: boolean
         default: true
 
@@ -82,16 +82,18 @@ jobs:
       - name: Architecture and strategy registry
         run: moon run tests/architecture.mbtx -- test-reports/architecture.json
       - name: Check Native test tools
-        run: moon check --target native --deny-warn tests/runner tests/release_runner tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/benchmark
+        run: moon check --target native --deny-warn tests/runner tests/release_runner tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/benchmark tests/proofs
       - name: Build Wasm commands once
         run: moon build --target wasm --release --deny-warn
       - name: Build test driver
-        run: moon build --target native --deny-warn tests/runner
+        run: moon build --target native --deny-warn tests/runner tests/proofs
       - name: Wasm package tests
         timeout-minutes: 5
         run: moon test --target wasm --release --deny-warn --no-parallelize --verbose 2>&1 | tee test-reports/packages-wasm.log
       - name: Native test-tool regressions
-        run: moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark 2>&1 | tee test-reports/packages-harness.log
+        run: moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark tests/proofs 2>&1 | tee test-reports/packages-harness.log
+      - name: Disclosure ledger failure regressions
+        run: moon run tests/benchmark/disclosure_regression.mbtx -- "$PWD/test-reports/disclosure"
       - uses: docker/setup-buildx-action@v3
         if: runner.os == 'Linux'
         with:
@@ -107,7 +109,7 @@ jobs:
           load: true
           tags: mooncmd-oracle:phase0
           cache-from: ${{ (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,scope=mooncmd-oracle' || '' }}
-          cache-to: type=gha,mode=max,scope=mooncmd-oracle
+          cache-to: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
       - name: Record pinned oracle
         if: runner.os == 'Linux'
         run: moon run tests/oracle.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
@@ -139,7 +141,7 @@ jobs:
           retention-days: 7
           if-no-files-found: warn
       - name: Save dependency and compilation state
-        if: ${{ success() && steps.compilation-cache.outputs.cache-hit != 'true' }}
+        if: ${{ success() && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && steps.compilation-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
           path: |

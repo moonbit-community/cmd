@@ -21,15 +21,15 @@ dated changes and releases belong in [CHANGELOG.md](../../CHANGELOG.md).
 
 ## Scope and authorities
 
-The workspace contains 80 commands. The accepted 2026-10-27 inventory contains
-78 published commands and core 0.8.2, as defined by
-[latest.json](../../tests/release_runner/current/latest.json). The 2026-10-30
-candidate targets core 0.9.0 and 43 command uploads: 42 updates and the first
-release of rg 0.1.0. Another 36 command coordinates remain unchanged, producing
-a target inventory of 79 commands; timeout remains local-only.
-[Candidate coordinates](../../tests/release_runner/current/candidate.json) do not
-replace the accepted inventory or its frozen expectations before exact-version
-MoonX acceptance passes.
+The workspace contains 80 commands. The 2026-10-30 published inventory contains
+79 commands and core 0.9.0, as defined by
+[latest.json](../../tests/release_runner/current/latest.json) and its independent
+expected cases. The release uploaded 42 updated command packages and the first
+rg 0.1.0 package; 36 existing command coordinates remain unchanged. Timeout
+remains local-only. The [release summary](../../CHANGELOG.md#2026-10-30) records
+source CI, local exact-version MoonX results and three-platform published
+acceptance. Candidate coordinates remain preparation
+inputs and do not overwrite published expectations.
 
 Tests and implementation are the executable authorities. An ADR explains why
 a choice exists; it does not certify every input or convert a historical local

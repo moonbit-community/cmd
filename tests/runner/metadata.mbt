@@ -81,6 +81,7 @@ async fn metadata_report(
   backend : String,
   directory : String,
   retain_success~ : Bool = false,
+  fixture? : @testkit.Case,
 ) -> @testkit.CaseReport {
   let started = @async.now()
   let evidence = directory + "/metadata-" + name
@@ -101,24 +102,15 @@ async fn metadata_report(
   }
   try {
     @fs.mkdir(evidence)
-    let manifest_text = @fs.read_file("commands/" + name + "/moon.mod").text()
-    let mut version = ""
-    for line in manifest_text.split("\n") {
-      let normalized = line.trim()
-      if normalized.has_prefix("version = \"") {
-        version = normalized
-          .strip_prefix("version = \"")
-          .unwrap()
-          .strip_suffix("\"")
-          .unwrap()
-          .to_owned()
-      }
-    }
-    version = @testkit.command_version(name).unwrap_or(version)
-    guard version != "" else { fail("missing version for " + name) }
+    let version = @testkit.metadata_version(name)
     let help = invocation(name, root, ["--help"], evidence, "help")
     let help_text = @utf8.decode(help.stdout)
-    let help_ok = help.status == 0 &&
+    let declared_errors = match fixture {
+      Some(definition) => @testkit.check_contract(definition, help, root)
+      None => []
+    }
+    let help_ok = declared_errors.is_empty() &&
+      help.status == 0 &&
       help.stderr == b"" &&
       help_text.has_prefix("Usage: " + name) &&
       help_text.has_suffix("\n") &&
@@ -180,7 +172,12 @@ async fn metadata_report(
       } else {
         "assertion"
       },
-      detail: "help=\{help_ok} version=\{version_ok}",
+      detail: "help=\{help_ok} version=\{version_ok}" +
+      (if declared_errors.is_empty() {
+        ""
+      } else {
+        "; " + declared_errors.join("; ")
+      }),
       duration_ms: @async.now() - started,
       observations: ["status", "stdout", "stderr", "stdin-unread"],
       evidence: if help_ok && version_ok && !retain_success {

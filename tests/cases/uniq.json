@@ -10,47 +10,11 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "coverage": []
-    },
-    {
-      "id": "p3-uniq-field-character-selection",
-      "command": "uniq",
-      "args": [
-        "-c",
-        "-f1",
-        "-s1",
-        "-w1"
-      ],
-      "stdin_text": "1 xa\n2 xb\n3 yy\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "count",
-        "skip-fields",
-        "skip-chars",
-        "check-chars"
-      ]
-    },
-    {
-      "id": "p3-uniq-zero-records",
-      "command": "uniq",
-      "args": [
-        "-z",
-        "-s1",
-        "-w1"
-      ],
-      "stdin_hex": "6178310061783200627900",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "zero-terminated",
-        "skip-chars",
-        "check-chars"
-      ]
+      "coverage": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "a\nb\n"
     },
     {
       "id": "compat-text-line-476",
@@ -75,7 +39,11 @@
         "skip-fields",
         "skip-chars",
         "check-chars"
-      ]
+      ],
+      "aliases": [
+        "p3-uniq-field-character-selection"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-485",
@@ -98,7 +66,11 @@
         "zero-terminated",
         "skip-chars",
         "check-chars"
-      ]
+      ],
+      "aliases": [
+        "p3-uniq-zero-records"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-494",

@@ -77,11 +77,13 @@ async fn main {
     } else if options && argument == "-s" {
       stdin_script = true
       index += 1
-      break
     } else if options && argument.has_prefix("-") && argument != "-" {
       @stdio.stderr.write("sh: unsupported option '\{argument}'\n")
       @sys.exit(2)
     } else {
+      if stdin_script {
+        break
+      }
       script_path = Some(argument)
       index += 1
     }

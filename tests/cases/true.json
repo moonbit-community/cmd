@@ -2,16 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "phase3-true-status",
-      "command": "true",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
       "id": "p0-true-version",
       "command": "true",
       "args": [
@@ -82,7 +72,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase3-true-status"
+      ],
+      "stdin_text": "",
+      "oracle": true
     }
   ]
 }

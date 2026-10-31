@@ -2,22 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "p0-tree-help",
-      "command": "tree",
-      "args": [
-        "--help"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "expected_stdout_contains": "Usage: tree",
-      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary.",
-      "expected_stderr_text": "",
-      "comparison": "contract",
-      "normalizations": []
-    },
-    {
       "id": "release-metadata-tree-help",
       "command": "tree",
       "args": [
@@ -34,7 +18,12 @@
       ],
       "source_version": "workspace cli/tree@0.1.5 metadata contract",
       "expected_stdout_text": "Usage: tree [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]\n      --help      display this help and exit\n      --version   display version and exit\n  -J emits JSON; -H BASE emits escaped HTML; -T TITLE selects its title.\n  -P includes files; -I excludes names/subtrees; --ignore-case changes matching.\n  --matchdirs includes matching directory contents; --prune removes empty branches.\n  --filelimit N limits entries before traversal; --noreport omits totals.\n  -s, -h, --si and --du use public size metadata; unsupported host metadata reports an error.\n  -C forces explicit type/extension colors; -n disables unforced color.\n  Mode-based colors and symlink targets require unavailable public metadata APIs.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p0-tree-help"
+      ],
+      "expected_stdout_contains": "Usage: tree",
+      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary."
     },
     {
       "id": "release-metadata-tree-version",
@@ -5862,10 +5851,6 @@
       ],
       "expected_status": 0,
       "expected_stderr_text": "",
-      "expected_stdout_contains_all": [
-        "[          3]  a",
-        "2 directories, 2 files\n"
-      ],
       "files": [
         {
           "path": "sub",
@@ -5898,7 +5883,9 @@
       "oracle": true,
       "coverage": [
         "size"
-      ]
+      ],
+      "expected_stdout_text": "[${STAT_SIZE:.:11}]  .\n|-- [          3]  a\n`-- [${STAT_SIZE:sub:11}]  sub\n    `-- [          2]  b\n\n2 directories, 2 files\n",
+      "expected_stdout_ends_with_newline": true
     },
     {
       "id": "o12-linux-directory-human",
@@ -5909,10 +5896,6 @@
       ],
       "expected_status": 0,
       "expected_stderr_text": "",
-      "expected_stdout_contains_all": [
-        "[   3]  a",
-        "2 directories, 2 files\n"
-      ],
       "files": [
         {
           "path": "sub",
@@ -5945,7 +5928,9 @@
       "oracle": true,
       "coverage": [
         "human-readable"
-      ]
+      ],
+      "expected_stdout_text": "[${HUMAN_SIZE:.}]  .\n|-- [   3]  a\n`-- [${HUMAN_SIZE:sub}]  sub\n    `-- [   2]  b\n\n2 directories, 2 files\n",
+      "expected_stdout_ends_with_newline": true
     },
     {
       "id": "o12-linux-directory-si",
@@ -5956,10 +5941,6 @@
       ],
       "expected_status": 0,
       "expected_stderr_text": "",
-      "expected_stdout_contains_all": [
-        "[   3]  a",
-        "2 directories, 2 files\n"
-      ],
       "files": [
         {
           "path": "sub",
@@ -5992,7 +5973,9 @@
       "oracle": true,
       "coverage": [
         "si"
-      ]
+      ],
+      "expected_stdout_text": "[${SI_SIZE:.}]  .\n|-- [   3]  a\n`-- [${SI_SIZE:sub}]  sub\n    `-- [   2]  b\n\n2 directories, 2 files\n",
+      "expected_stdout_ends_with_newline": true
     },
     {
       "id": "o12-linux-directory-du",
@@ -6003,10 +5986,6 @@
       ],
       "expected_status": 0,
       "expected_stderr_text": "",
-      "expected_stdout_contains_all": [
-        "[          3]  a",
-        "bytes used in 2 directories, 2 files\n"
-      ],
       "files": [
         {
           "path": "sub",
@@ -6039,7 +6018,9 @@
       "oracle": true,
       "coverage": [
         "du"
-      ]
+      ],
+      "expected_stdout_text": "[${STAT_SUM:.,sub:5:11}]  .\n|-- [          3]  a\n`-- [${STAT_SUM:sub:2:11}]  sub\n    `-- [          2]  b\n\n ${STAT_SUM:.,sub:5:11} bytes used in 2 directories, 2 files\n",
+      "expected_stdout_ends_with_newline": true
     },
     {
       "id": "o12-linux-directory-du-json",
@@ -6051,12 +6032,6 @@
       ],
       "expected_status": 0,
       "expected_stderr_text": "",
-      "expected_stdout_contains_all": [
-        "\"name\":\".\",\"size\":",
-        "\"name\":\"sub\",\"size\":",
-        "\"type\":\"report\",\"size\":",
-        "\"directories\":2,\"files\":2"
-      ],
       "files": [
         {
           "path": "sub",
@@ -6090,7 +6065,68 @@
       "coverage": [
         "du",
         "json"
-      ]
+      ],
+      "expected_stdout_json": [
+        {
+          "type": "directory",
+          "name": ".",
+          "size": {
+            "$sum": [
+              {
+                "$stat_size": "."
+              },
+              {
+                "$stat_size": "sub"
+              },
+              5
+            ]
+          },
+          "contents": [
+            {
+              "type": "file",
+              "name": "a",
+              "size": 3
+            },
+            {
+              "type": "directory",
+              "name": "sub",
+              "size": {
+                "$sum": [
+                  {
+                    "$stat_size": "sub"
+                  },
+                  2
+                ]
+              },
+              "contents": [
+                {
+                  "type": "file",
+                  "name": "b",
+                  "size": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "report",
+          "size": {
+            "$sum": [
+              {
+                "$stat_size": "."
+              },
+              {
+                "$stat_size": "sub"
+              },
+              5
+            ]
+          },
+          "directories": 2,
+          "files": 2
+        }
+      ],
+      "stdout_json_lines": false,
+      "expected_stdout_ends_with_newline": true
     },
     {
       "id": "o12-linux-directory-du-level",
@@ -6103,10 +6139,6 @@
       ],
       "expected_status": 0,
       "expected_stderr_text": "",
-      "expected_stdout_contains_all": [
-        "[          3]  a",
-        "bytes used in 2 directories, 1 file\n"
-      ],
       "files": [
         {
           "path": "sub",
@@ -6140,7 +6172,9 @@
       "coverage": [
         "du",
         "level"
-      ]
+      ],
+      "expected_stdout_text": "[${STAT_SUM:.,sub:3:11}]  .\n|-- [          3]  a\n`-- [${STAT_SIZE:sub:11}]  sub\n\n ${STAT_SUM:.,sub:3:11} bytes used in 2 directories, 1 file\n",
+      "expected_stdout_ends_with_newline": true
     },
     {
       "id": "o12-linux-directory-du-prune",
@@ -6154,10 +6188,6 @@
       ],
       "expected_status": 0,
       "expected_stderr_text": "",
-      "expected_stdout_contains_all": [
-        "`-- [          3]  a",
-        "bytes used in 1 directory, 1 file\n"
-      ],
       "files": [
         {
           "path": "sub",
@@ -6192,7 +6222,9 @@
         "du",
         "pattern",
         "prune"
-      ]
+      ],
+      "expected_stdout_text": "[${STAT_SUM:.:3:11}]  .\n`-- [          3]  a\n\n ${STAT_SUM:.:3:11} bytes used in 1 directory, 1 file\n",
+      "expected_stdout_ends_with_newline": true
     }
   ]
 }

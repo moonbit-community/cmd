@@ -9,7 +9,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03  -\n"
     },
     {
       "id": "p9-sha256sum-quiet-check",
@@ -32,7 +36,23 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "kind": "file",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "kind": "file",
+          "content_text": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  payload\n"
+        }
+      ]
     },
     {
       "id": "compat-text-sha256sum-warn-malformed",
@@ -59,7 +79,20 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "payload: OK\n",
       "expected_stderr_contains": "improperly formatted",
-      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+      "diagnostic_reason": "The valid independently known SHA256 record for abc still produces exact payload: OK output with status 0; the malformed second line must produce the retained formatting diagnostic. Full host or version diagnostic wording is not frozen.",
+      "expected_files": [
+        {
+          "path": "payload",
+          "kind": "file",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "kind": "file",
+          "content_text": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  payload\nmalformed\n"
+        }
+      ],
+      "expected_stderr_text": "sha256sum: checks: 2: improperly formatted SHA256 checksum line\nsha256sum: WARNING: 1 line is improperly formatted\n"
     },
     {
       "id": "compat-text-sha256sum-strict-status",
@@ -158,22 +191,6 @@
       "expected_stderr_text": ""
     },
     {
-      "id": "compat-catalog-line-226",
-      "command": "sha256sum",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
       "id": "compat-stdin-sha256sum",
       "command": "sha256sum",
       "args": [],
@@ -212,7 +229,8 @@
       "source_version": "Same byte/status/side-effect contract as the retained short-option case; validates the public long alias.",
       "expected_stdout_text": "payload: OK\n",
       "expected_stderr_contains": "improperly formatted",
-      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
+      "expected_stderr_text": "sha256sum: checks: 2: improperly formatted SHA256 checksum line\nsha256sum: WARNING: 1 line is improperly formatted\n"
     },
     {
       "id": "release-metadata-sha256sum-help",
@@ -231,7 +249,12 @@
       ],
       "source_version": "workspace cli/sha256sum@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: sha256sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-226"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-sha256sum-version",

@@ -11,7 +11,18 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "created",
+          "kind": "file",
+          "content_text": ""
+        }
+      ]
     },
     {
       "id": "touch-existing-boundary",
@@ -30,7 +41,7 @@
       ],
       "environment": {},
       "normalizations": [],
-      "expected_status": 0,
+      "expected_status": 1,
       "expected_rejection": "timestamp setters are unavailable",
       "observe": [
         "mode",
@@ -41,7 +52,21 @@
       "host_platforms": [
         "posix"
       ],
-      "source_version": "GNU coreutils 9.11; candidate async 0.22.4 boundary"
+      "source_version": "GNU coreutils 9.11; candidate async 0.22.4 boundary",
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "timestamp setters are unavailable",
+      "diagnostic_reason": "The documented missing timestamp-setter API rejects before mutation with exact status 1 and empty stdout. Preserve all declared pre/post type, byte, mode, identity, atime and mtime observations; only full diagnostic wording varies.",
+      "expected_files": [
+        {
+          "path": "existing",
+          "kind": "file",
+          "content_text": "preserve\n",
+          "mtime": "1609459200:0",
+          "unchanged": true
+        }
+      ]
     },
     {
       "id": "compat-text-touch-date-rejected",
@@ -59,24 +84,14 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_contains": "timestamp",
-      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
-      "expected_rejection": "timestamp"
-    },
-    {
-      "id": "compat-catalog-line-285",
-      "command": "touch",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "diagnostic_reason": "The unsupported timestamp-setting operation must reject with exact status 1 and empty stdout before creating dated. Only host-dependent diagnostic wording is matched by its timestamp reason.",
+      "expected_rejection": "timestamp",
+      "expected_files": [
+        {
+          "path": "dated",
+          "exists": false
+        }
+      ]
     },
     {
       "id": "compat-catalog-line-358",
@@ -111,7 +126,12 @@
       ],
       "source_version": "workspace cli/touch@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\n      --help      display this help and exit\n      --version   display version and exit\nExisting files are unsupported, including with -c. This command creates missing files only; it cannot update timestamps.\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-285"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-touch-version",
@@ -131,6 +151,33 @@
       "source_version": "workspace cli/touch@0.2.3 metadata contract",
       "expected_stdout_text": "touch 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-touch-no-create-missing",
+      "command": "touch",
+      "args": [
+        "--no-create",
+        "absent"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "absent",
+          "exists": false
+        }
+      ],
+      "comparison": "contract",
+      "coverage": [
+        "no-create",
+        "absence-effect"
+      ],
+      "source_version": "Documented no-create mode on a missing pathname; existing-file timestamp updates remain unsupported"
     }
   ]
 }

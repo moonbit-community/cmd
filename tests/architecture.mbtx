@@ -46,6 +46,7 @@ struct Boundary {
 struct ProtectionRegistry {
   schema : Int32
   profiles : Map[String, Array[String]]
+  profile_aliases : Map[String, String]?
   boundaries : Array[Boundary]
   strategies : Array[Strategy]
 } derive(FromJson)
@@ -120,6 +121,11 @@ async fn check_strategies(markers : Map[String, String]) -> Int32 {
     }
   }
   assert_eq(strategy_errors(registry.strategies, registry.profiles), [])
+  let aliases = registry.profile_aliases.unwrap_or(Map([]))
+  for alias_id, target in aliases {
+    assert_true(alias_id != target && !aliases.contains(target), msg="invalid chained/cyclic profile alias: " + alias_id)
+    assert_true(registry.profiles.values().any(ids => ids.contains(alias_id) && ids.contains(target)), msg="alias must have a canonical profile in the same command: " + alias_id)
+  }
   assert_eq(markers.length(), registry.strategies.length(), msg="orphan or missing strategy registration")
   // Negative controls ensure incomplete and orphan registrations fail closed.
   let valid = registry.strategies[0]

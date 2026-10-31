@@ -20,6 +20,18 @@
       "normalizations": [],
       "host_platforms": [
         "posix"
+      ],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload\n",
+          "mode": 384
+        }
       ]
     },
     {
@@ -33,7 +45,8 @@
       "files": [
         {
           "path": "input",
-          "content_text": "x"
+          "content_text": "x",
+          "mode": 384
         }
       ],
       "environment": {},
@@ -41,7 +54,19 @@
         "posix"
       ],
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "x",
+          "mode": 511
+        }
+      ]
     },
     {
       "id": "compat-text-chmod-reference-rejected",
@@ -105,22 +130,6 @@
       "expected_rejection": "unsupported capability"
     },
     {
-      "id": "compat-catalog-line-32",
-      "command": "chmod",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
       "id": "release-metadata-chmod-help",
       "command": "chmod",
       "args": [
@@ -137,7 +146,12 @@
       ],
       "source_version": "workspace cli/chmod@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Symbolic assignments must cover u/g/o explicitly and apply only to regular files.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-32"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-chmod-version",
@@ -157,6 +171,60 @@
       "source_version": "workspace cli/chmod@0.2.4 metadata contract",
       "expected_stdout_text": "chmod 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-chmod-reference-boundary-preserves-mode",
+      "command": "chmod",
+      "args": [
+        "--reference=source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "reference\n",
+          "mode": 420
+        },
+        {
+          "path": "target",
+          "content_text": "preserve\n",
+          "mode": 384
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "diagnostic_reason": "The documented public-API reference boundary must reject before mode/content mutation; platform wording is allowed to vary.",
+      "expected_rejection": "cannot read permission bits",
+      "observe": [
+        "content",
+        "mode"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "reference\n",
+          "mode": 420
+        },
+        {
+          "path": "target",
+          "content_text": "preserve\n",
+          "mode": 384
+        }
+      ],
+      "comparison": "contract",
+      "coverage": [
+        "reference",
+        "mode-preservation",
+        "no-mutation"
+      ],
+      "source_version": "Documented unsupported --reference boundary, not GNU positive behavior",
+      "expected_stderr_text": "chmod: --reference is unavailable: the portable filesystem API cannot read permission bits\n"
     }
   ]
 }

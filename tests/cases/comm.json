@@ -22,33 +22,11 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "coverage": []
-    },
-    {
-      "id": "p9-comm-zero-terminated",
-      "command": "comm",
-      "args": [
-        "-z",
-        "left",
-        "right"
-      ],
-      "stdin_text": "",
-      "files": [
-        {
-          "path": "left",
-          "content_hex": "61006300"
-        },
-        {
-          "path": "right",
-          "content_hex": "62006300"
-        }
-      ],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "coverage": [
-        "zero-terminated"
-      ]
+      "coverage": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "a\n\t\tb\n\tc\n"
     },
     {
       "id": "compat-text-comm-nul-records",
@@ -77,7 +55,12 @@
       "expected_stderr_text": "",
       "coverage": [
         "zero-terminated"
-      ]
+      ],
+      "aliases": [
+        "p9-comm-zero-terminated"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-comm-check-order",
@@ -226,25 +209,6 @@
       ]
     },
     {
-      "id": "compat-catalog-line-48",
-      "command": "comm",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact.",
-      "coverage": [
-        "help"
-      ]
-    },
-    {
       "id": "compat-catalog-line-375",
       "command": "comm",
       "args": [
@@ -308,7 +272,12 @@
       ],
       "source_version": "workspace cli/comm@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: comm [-123] [-z] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n  -1  Suppress column 1 (lines unique to FILE1).\n  -2  Suppress column 2 (lines unique to FILE2).\n  -3  Suppress column 3 (lines in both files).\n      --output-delimiter=STR  Separate columns with STR (empty means NUL).\n      --total  Print counts for all three columns and a total label.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z, --zero-terminated  End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-48"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-comm-version",

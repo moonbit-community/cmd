@@ -1,0 +1,3517 @@
+{
+  "schema": 3,
+  "published_manifest": "tests/release_runner/current/latest.json",
+  "case_corpus": "tests/release_runner/current/latest-cases.json",
+  "workspace_case_corpus": "tests/release_runner/current/active-cases.json",
+  "source_catalog": "tests/fixtures/benchmark/real-sources.json",
+  "coverage_registry": "tests/benchmark/real-coverage.json",
+  "limits": {
+    "max_source_bytes": "16777216",
+    "max_unique_source_bytes": "67108864"
+  },
+  "scope": "One generic real-input suite. Whole immutable sources, explicit semantic preparation and independent mode/transport effects; no generated size budget, repetition, padding or synthetic record reshaping. Historical rg89 is retired, not relabeled as this suite.",
+  "blind_holdout": false,
+  "general_performance_acceptance": false,
+  "upstream_parity": false,
+  "workloads": [
+    {
+      "id": "real-cat-source",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "cat-copy",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-cat-rfc-numbered",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "rfc9110.txt",
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n"
+      ],
+      "mode": "cat-format",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-wc-source-lines",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-l"
+      ],
+      "mode": "wc-scan-lines",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-wc-rfc-words",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "rfc9110.txt",
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+        "split": "ordinary"
+      },
+      "args": [
+        "-w"
+      ],
+      "mode": "wc-scan-words",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-wc-japanese-bytes",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "icu-ja-77.1.txt",
+        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c"
+      ],
+      "mode": "wc-regular-stdin-metadata",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-cut-unicode-fields",
+      "command": "cut",
+      "reference_behavior_id": "case:phase3-cut-field",
+      "recipe": "real-input",
+      "source": {
+        "path": "UnicodeData-17.0.0.txt",
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
+        "split": "ordinary"
+      },
+      "args": [
+        "-d",
+        ";",
+        "-f",
+        "2,3"
+      ],
+      "mode": "cut-field-selection",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-cut-source-bytes",
+      "command": "cut",
+      "reference_behavior_id": "case:phase3-cut-field",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-b",
+        "1-20"
+      ],
+      "mode": "cut-byte-selection",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-sed-source-identifiers",
+      "command": "sed",
+      "reference_behavior_id": "case:p1-sed-substitution",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "s/SQLITE_/LIBSQL_/g"
+      ],
+      "mode": "sed-substitution-hit",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-sed-source-miss",
+      "command": "sed",
+      "reference_behavior_id": "case:p1-sed-substitution",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "s/UNLIKELY_SYMBOL_987654/REPLACED/g"
+      ],
+      "mode": "sed-substitution-miss",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-sort-source-lexical",
+      "command": "sort",
+      "reference_behavior_id": "case:phase3-sort-basic",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "sort-lexical",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "sorting"
+      ]
+    },
+    {
+      "id": "real-sort-airport-numeric",
+      "command": "sort",
+      "reference_behavior_id": "case:phase3-sort-basic",
+      "recipe": "real-input",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [
+        "-t",
+        ",",
+        "-k1,1n"
+      ],
+      "mode": "sort-numeric",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "sorting"
+      ]
+    },
+    {
+      "id": "real-sort-source-spill",
+      "command": "sort",
+      "reference_behavior_id": "case:phase3-sort-basic",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-S",
+        "4M"
+      ],
+      "mode": "sort-budget-4m",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "sorting",
+        "spill"
+      ]
+    },
+    {
+      "id": "real-uniq-source-runs",
+      "command": "uniq",
+      "reference_behavior_id": "case:phase3-uniq-adjacent",
+      "recipe": "real-input",
+      "source": {
+        "path": "shakespeare.txt",
+        "sha256": "eb61e33cab23dbe712ad57091ded6c7292ba91ac3bb2764f51a3223ec0068fe5",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c"
+      ],
+      "mode": "uniq-count-runs",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "duplicates"
+      ]
+    },
+    {
+      "id": "real-uniq-rfc-adjacent",
+      "command": "uniq",
+      "reference_behavior_id": "case:phase3-uniq-adjacent",
+      "recipe": "real-input",
+      "source": {
+        "path": "rfc9110.txt",
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "uniq-adjacent",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-jq-registry-identity",
+      "command": "jq",
+      "reference_behavior_id": "case:phase3-jq-property",
+      "recipe": "real-input",
+      "source": {
+        "path": "spdx-licenses-3.27.0.json",
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c",
+        "."
+      ],
+      "mode": "jq-compact-identity",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-jq-registry-identifiers",
+      "command": "jq",
+      "reference_behavior_id": "case:phase3-jq-property",
+      "recipe": "real-input",
+      "source": {
+        "path": "spdx-licenses-3.27.0.json",
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+        "split": "ordinary"
+      },
+      "args": [
+        "-r",
+        ".licenses[].licenseId"
+      ],
+      "mode": "jq-property-missing-null-string",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-jq-registry-filter",
+      "command": "jq",
+      "reference_behavior_id": "case:phase3-jq-property",
+      "recipe": "real-input",
+      "source": {
+        "path": "spdx-licenses-3.27.0.json",
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c",
+        ".licenses[] | select(.isOsiApproved == true)"
+      ],
+      "mode": "jq-filter-selection",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-jq-registry-sort",
+      "command": "jq",
+      "reference_behavior_id": "case:phase3-jq-property",
+      "recipe": "real-input",
+      "source": {
+        "path": "spdx-licenses-3.27.0.json",
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+        "split": "ordinary"
+      },
+      "args": [
+        "-s",
+        "-c",
+        "[.[] | .licenses[]] | sort_by(.licenseId)"
+      ],
+      "mode": "jq-slurp-sort-by-id",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-jq-registry-group",
+      "command": "jq",
+      "reference_behavior_id": "case:phase3-jq-property",
+      "recipe": "real-input",
+      "source": {
+        "path": "spdx-licenses-3.27.0.json",
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+        "split": "ordinary"
+      },
+      "args": [
+        "-s",
+        "-c",
+        "[.[] | .licenses[]] | group_by(.isDeprecatedLicenseId) | map(length)"
+      ],
+      "expected_stdout": "[667,32]\n",
+      "mode": "jq-slurp-group-cardinality",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-jq-registry-sum-references",
+      "command": "jq",
+      "reference_behavior_id": "case:phase3-jq-property",
+      "recipe": "real-input",
+      "source": {
+        "path": "spdx-licenses-3.27.0.json",
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+        "split": "ordinary"
+      },
+      "args": [
+        "-s",
+        "[.[] | .licenses[] | .referenceNumber] | add"
+      ],
+      "expected_stdout": "243951\n",
+      "mode": "jq-slurp-aggregate",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-diff-source-distinct-equal",
+      "command": "diff",
+      "reference_behavior_id": "case:p1-diff-unified",
+      "recipe": "real-file-pair",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "--label",
+        "left",
+        "--label",
+        "right",
+        "-u",
+        "left",
+        "right"
+      ],
+      "mode": "diff-distinct-equal",
+      "other_source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "named-files"
+      ]
+    },
+    {
+      "id": "real-join-airport-route-records",
+      "command": "join",
+      "reference_behavior_id": "case:phase3-join-unpaired-output-list",
+      "recipe": "bench-join-natural-csv",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [
+        "-t",
+        ",",
+        "-1",
+        "1",
+        "-2",
+        "4",
+        "-a1",
+        "-a2",
+        "left",
+        "right"
+      ],
+      "other_source": {
+        "path": "openflights-routes.dat",
+        "sha256": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390",
+        "split": "ordinary"
+      },
+      "mode": "join-shared-and-unpaired",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "sorting",
+        "named-files"
+      ]
+    },
+    {
+      "id": "real-comm-airport-route-idsets",
+      "command": "comm",
+      "reference_behavior_id": "case:phase3-comm-columns",
+      "recipe": "bench-comm-natural-idsets",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [
+        "left",
+        "right"
+      ],
+      "other_source": {
+        "path": "openflights-routes.dat",
+        "sha256": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390",
+        "split": "ordinary"
+      },
+      "mode": "comm-shared-and-unpaired",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "sorting",
+        "named-files"
+      ]
+    },
+    {
+      "id": "real-csplit-source-api-boundaries",
+      "command": "csplit",
+      "reference_behavior_id": "case:p1-csplit-lines",
+      "recipe": "bench-csplit-boundaries",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-s",
+        "-z",
+        "-n",
+        "6",
+        "-f",
+        "part-",
+        "-",
+        "/^SQLITE_API /",
+        "{*}"
+      ],
+      "mode": "csplit-repeated-interior-boundaries",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-gzip-default-compress-source",
+      "command": "gzip",
+      "reference_behavior_id": "case:p1-gzip-validate",
+      "recipe": "gzip",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n",
+        "-c"
+      ],
+      "mode": "gzip-default-compress",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-gunzip-first-dynamic-native-source",
+      "command": "gunzip",
+      "reference_behavior_id": "case:p1-gunzip-concatenated",
+      "recipe": "bench-gunzip-native-dynamic",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c"
+      ],
+      "mode": "gunzip-first-dynamic-native",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-zcat-first-dynamic-native-source",
+      "command": "zcat",
+      "reference_behavior_id": "case:p1-zcat-concatenated",
+      "recipe": "bench-zcat-native-dynamic",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "zcat-first-dynamic-native",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-rg-source-api-count",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-F",
+        "-c",
+        "SQLITE_API",
+        "-"
+      ],
+      "mode": "rg-literal-count",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-grep-source-api-count",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-F",
+        "-c",
+        "SQLITE_API"
+      ],
+      "mode": "grep-literal-count",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-rg-rfc-http-spans",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "rfc9110.txt",
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n",
+        "-o",
+        "HTTP/[0-9][.][0-9]",
+        "-"
+      ],
+      "mode": "rg-regex-spans",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-grep-source-api-lines",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-E",
+        "-n",
+        "^SQLITE_API "
+      ],
+      "mode": "grep-regex-numbered-output",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-rev-ascii-properties",
+      "command": "rev",
+      "reference_behavior_id": "case:p0-rev-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "UnicodeData-17.0.0.txt",
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "rev-ascii-records",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-rev-minified-long-record",
+      "command": "rev",
+      "reference_behavior_id": "case:p0-rev-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "jquery-3.7.1.min.js",
+        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "rev-long-record",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting",
+        "long-record"
+      ]
+    },
+    {
+      "id": "real-tac-rfc-records",
+      "command": "tac",
+      "reference_behavior_id": "case:p0-tac-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "rfc9110.txt",
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "tac-reverse-records",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-column-properties-table",
+      "command": "column",
+      "reference_behavior_id": "case:p2-column-table",
+      "recipe": "real-input",
+      "source": {
+        "path": "UnicodeData-17.0.0.txt",
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
+        "split": "ordinary"
+      },
+      "args": [
+        "-t",
+        "-s",
+        ";"
+      ],
+      "mode": "column-delimited-table",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-column-option-grid",
+      "command": "column",
+      "reference_behavior_id": "case:p2-column-table",
+      "recipe": "real-input",
+      "source": {
+        "path": "curl-options-in-versions.txt",
+        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c",
+        "80"
+      ],
+      "mode": "column-grid-width80",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-strings-source",
+      "command": "strings",
+      "reference_behavior_id": "case:p2-strings-default",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-a"
+      ],
+      "mode": "strings-scan-all-bytes",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-split-source-bytes",
+      "command": "split",
+      "reference_behavior_id": "case:p1-split-binary",
+      "recipe": "bench-split-byte-chunks",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-b",
+        "1M",
+        "-",
+        "part-"
+      ],
+      "mode": "split-byte-chunks-1m",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-nl-source-records",
+      "command": "nl",
+      "reference_behavior_id": "case:p9-nl-sections",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "nl-number-records",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-paste-rfc-serial",
+      "command": "paste",
+      "reference_behavior_id": "case:phase3-paste-parallel",
+      "recipe": "real-input",
+      "source": {
+        "path": "rfc9110.txt",
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
+        "split": "ordinary"
+      },
+      "args": [
+        "-s"
+      ],
+      "mode": "paste-serial",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-expand-real-tabs",
+      "command": "expand",
+      "reference_behavior_id": "case:p0-expand-basic-tabs",
+      "recipe": "real-input",
+      "source": {
+        "path": "GraphemeBreakTest-17.0.0.txt",
+        "sha256": "e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec",
+        "split": "ordinary"
+      },
+      "args": [
+        "-t",
+        "4"
+      ],
+      "mode": "expand-tabstop4",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-unexpand-source-indent",
+      "command": "unexpand",
+      "reference_behavior_id": "case:p0-unexpand-all",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-a",
+        "-t",
+        "4"
+      ],
+      "mode": "unexpand-all-tabstop4",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-fold-airport-records",
+      "command": "fold",
+      "reference_behavior_id": "case:fold-width-newline",
+      "recipe": "real-input",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [
+        "-w",
+        "80"
+      ],
+      "mode": "fold-width80",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-tail-source-records",
+      "command": "tail",
+      "reference_behavior_id": "case:phase3-tail-line-count",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n",
+        "10"
+      ],
+      "mode": "tail-regular-stdin-last10",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-head-source-records",
+      "command": "head",
+      "reference_behavior_id": "case:phase3-head-line-count",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n",
+        "10"
+      ],
+      "mode": "head-early-exit10",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection",
+        "early-exit"
+      ]
+    },
+    {
+      "id": "real-base64-encode-unwrapped-source",
+      "command": "base64",
+      "reference_behavior_id": "case:phase0-base64-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-w0"
+      ],
+      "mode": "base64-encode-unwrapped",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-base32-encode-unwrapped-source",
+      "command": "base32",
+      "reference_behavior_id": "case:base32-rfc4648-foobar",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-w0"
+      ],
+      "mode": "base32-encode-unwrapped",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-cksum-crc-source",
+      "command": "cksum",
+      "reference_behavior_id": "case:p0-cksum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "cksum-crc",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-cksum-crc-utf8-routes",
+      "command": "cksum",
+      "reference_behavior_id": "case:p0-cksum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "cksum-crc",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-md5sum-digest-source",
+      "command": "md5sum",
+      "reference_behavior_id": "case:checksum-md5sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "md5sum-digest",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-md5sum-digest-utf8-routes",
+      "command": "md5sum",
+      "reference_behavior_id": "case:checksum-md5sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "md5sum-digest",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-sha1sum-digest-source",
+      "command": "sha1sum",
+      "reference_behavior_id": "case:checksum-sha1sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "sha1sum-digest",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-sha1sum-digest-utf8-routes",
+      "command": "sha1sum",
+      "reference_behavior_id": "case:checksum-sha1sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "sha1sum-digest",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-sha256sum-digest-source",
+      "command": "sha256sum",
+      "reference_behavior_id": "case:compat-stdin-sha256sum",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "sha256sum-digest",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-sha256sum-digest-utf8-routes",
+      "command": "sha256sum",
+      "reference_behavior_id": "case:compat-stdin-sha256sum",
+      "recipe": "real-input",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "sha256sum-digest",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-sha512sum-digest-source",
+      "command": "sha512sum",
+      "reference_behavior_id": "case:checksum-sha512sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "sha512sum-digest",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-sha512sum-digest-utf8-routes",
+      "command": "sha512sum",
+      "reference_behavior_id": "case:checksum-sha512sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "sha512sum-digest",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records"
+      ]
+    },
+    {
+      "id": "real-tr-source-uppercase",
+      "command": "tr",
+      "reference_behavior_id": "case:phase3-tr-range",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "a-z",
+        "A-Z"
+      ],
+      "mode": "tr-uppercase-ascii",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "formatting"
+      ]
+    },
+    {
+      "id": "real-cat-utf8",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "icu-ja-77.1.txt",
+        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cat-utf8-copy",
+      "facets": [
+        "bytes",
+        "records",
+        "utf8"
+      ]
+    },
+    {
+      "id": "real-cat-binary-path",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [
+        "${INPUT}"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cat-binary-path",
+      "facets": [
+        "bytes",
+        "binary",
+        "named-files",
+        "unterminated"
+      ]
+    },
+    {
+      "id": "real-cat-empty",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cat-empty",
+      "facets": [
+        "empty"
+      ]
+    },
+    {
+      "id": "real-cat-unterminated",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_difflib_expect.html",
+        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cat-unterminated",
+      "facets": [
+        "bytes",
+        "records",
+        "unterminated"
+      ]
+    },
+    {
+      "id": "real-wc-counts-utf8",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "icu-ja-77.1.txt",
+        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-all-counts",
+      "facets": [
+        "bytes",
+        "records",
+        "utf8"
+      ]
+    },
+    {
+      "id": "real-wc-empty",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-empty",
+      "facets": [
+        "empty"
+      ]
+    },
+    {
+      "id": "real-wc-bytes-named",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c",
+        "${INPUT}"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-named-bytes",
+      "facets": [
+        "bytes",
+        "named-files"
+      ]
+    },
+    {
+      "id": "real-cut-long-record",
+      "command": "cut",
+      "reference_behavior_id": "case:phase3-cut-field",
+      "recipe": "real-input",
+      "source": {
+        "path": "jquery-3.7.1.min.js",
+        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
+        "split": "ordinary"
+      },
+      "args": [
+        "-b",
+        "1-80"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cut-long-record",
+      "facets": [
+        "bytes",
+        "records",
+        "long-record",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-jq-missing-property",
+      "command": "jq",
+      "reference_behavior_id": "case:phase3-jq-property",
+      "recipe": "real-input",
+      "source": {
+        "path": "spdx-licenses-3.27.0.json",
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c",
+        ".licenses[] | .missing_metadata_field"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "jq-property-missing-null-string",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-diff-json-modules",
+      "command": "diff",
+      "reference_behavior_id": "case:p1-diff-unified",
+      "recipe": "real-file-pair",
+      "source": {
+        "path": "python/Lib/json/decoder.py",
+        "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
+        "split": "ordinary"
+      },
+      "args": [
+        "--label",
+        "left",
+        "--label",
+        "right",
+        "-u",
+        "left",
+        "right"
+      ],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "mode": "diff-real-module-pair",
+      "facets": [
+        "bytes",
+        "records",
+        "named-files"
+      ],
+      "other_source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
+        "split": "ordinary"
+      }
+    },
+    {
+      "id": "real-strings-binary",
+      "command": "strings",
+      "reference_behavior_id": "case:p2-strings-default",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [
+        "-a"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "strings-binary-all",
+      "facets": [
+        "bytes",
+        "binary"
+      ]
+    },
+    {
+      "id": "real-paste-parallel-files",
+      "command": "paste",
+      "reference_behavior_id": "case:phase3-paste-parallel",
+      "recipe": "real-file-pair",
+      "source": {
+        "path": "python/Lib/json/decoder.py",
+        "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
+        "split": "ordinary"
+      },
+      "args": [
+        "left",
+        "right"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "paste-parallel",
+      "facets": [
+        "bytes",
+        "records",
+        "named-files"
+      ],
+      "other_source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
+        "split": "ordinary"
+      }
+    },
+    {
+      "id": "real-base64-binary",
+      "command": "base64",
+      "reference_behavior_id": "case:phase0-base64-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [
+        "-w0"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "base64-binary-encode",
+      "facets": [
+        "bytes",
+        "binary",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-base32-binary",
+      "command": "base32",
+      "reference_behavior_id": "case:base32-rfc4648-foobar",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [
+        "-w0"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "base32-binary-encode",
+      "facets": [
+        "bytes",
+        "binary",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-cksum-binary",
+      "command": "cksum",
+      "reference_behavior_id": "case:p0-cksum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cksum-binary",
+      "facets": [
+        "bytes",
+        "binary"
+      ]
+    },
+    {
+      "id": "real-md5sum-binary",
+      "command": "md5sum",
+      "reference_behavior_id": "case:checksum-md5sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "md5sum-binary",
+      "facets": [
+        "bytes",
+        "binary"
+      ]
+    },
+    {
+      "id": "real-sha1sum-binary",
+      "command": "sha1sum",
+      "reference_behavior_id": "case:checksum-sha1sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "sha1sum-binary",
+      "facets": [
+        "bytes",
+        "binary"
+      ]
+    },
+    {
+      "id": "real-sha256sum-binary",
+      "command": "sha256sum",
+      "reference_behavior_id": "case:compat-stdin-sha256sum",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "sha256sum-binary",
+      "facets": [
+        "bytes",
+        "binary"
+      ]
+    },
+    {
+      "id": "real-sha512sum-binary",
+      "command": "sha512sum",
+      "reference_behavior_id": "case:checksum-sha512sum-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_email/data/python.png",
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "sha512sum-binary",
+      "facets": [
+        "bytes",
+        "binary"
+      ]
+    },
+    {
+      "id": "real-rg-regex-count",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-c",
+        "^SQLITE_API ",
+        "-"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "rg-regex-count",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-rg-literal-miss",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-F",
+        "-c",
+        "UNLIKELY_SYMBOL_987654",
+        "-"
+      ],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "mode": "rg-literal-miss",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-rg-long-record-count",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "jquery-3.7.1.min.js",
+        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-c",
+        "function",
+        "-"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "rg-long-record-count",
+      "facets": [
+        "bytes",
+        "records",
+        "long-record",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-rg-unterminated-match",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_difflib_expect.html",
+        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-n",
+        "</html>",
+        "-"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "rg-unterminated",
+      "facets": [
+        "bytes",
+        "records",
+        "unterminated",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-rg-empty",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-c",
+        "SQLITE_API",
+        "-"
+      ],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "mode": "rg-empty",
+      "facets": [
+        "empty",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-rg-early-exit",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-m",
+        "1",
+        "SQLITE_API",
+        "-"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "rg-early-exit",
+      "facets": [
+        "bytes",
+        "records",
+        "selection",
+        "early-exit"
+      ]
+    },
+    {
+      "id": "real-grep-regex-count",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-E",
+        "-c",
+        "^SQLITE_API "
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "grep-regex-count",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-grep-literal-miss",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-F",
+        "-c",
+        "UNLIKELY_SYMBOL_987654"
+      ],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "mode": "grep-literal-miss",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-grep-long-record-count",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "jquery-3.7.1.min.js",
+        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
+        "split": "ordinary"
+      },
+      "args": [
+        "-E",
+        "-c",
+        "function"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "grep-long-record-count",
+      "facets": [
+        "bytes",
+        "records",
+        "long-record",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-grep-unterminated-match",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_difflib_expect.html",
+        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008",
+        "split": "ordinary"
+      },
+      "args": [
+        "-E",
+        "-n",
+        "</html>"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "grep-unterminated",
+      "facets": [
+        "bytes",
+        "records",
+        "unterminated",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-grep-empty",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "split": "ordinary"
+      },
+      "args": [
+        "-E",
+        "-c",
+        "SQLITE_API"
+      ],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "mode": "grep-empty",
+      "facets": [
+        "empty",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-grep-early-exit",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-E",
+        "-q",
+        "SQLITE_API"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "grep-early-exit",
+      "facets": [
+        "bytes",
+        "records",
+        "selection",
+        "early-exit"
+      ]
+    },
+    {
+      "id": "real-cat-copy-pipe257",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cat-copy",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-cat-copy-pipe65537",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cat-copy",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-wc-scan-lines-pipe257",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-l"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-scan-lines",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-wc-scan-lines-pipe65537",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-l"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-scan-lines",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-wc-scan-words-pipe257",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-w"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-scan-words",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-wc-scan-words-pipe65537",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-w"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-scan-words",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-wc-pipe-bytes-pipe257",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-pipe-bytes",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-wc-pipe-bytes-pipe65537",
+      "command": "wc",
+      "reference_behavior_id": "case:phase3-wc-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wc-pipe-bytes",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-grep-literal-sparse-count-pipe257",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-F",
+        "-c",
+        "SQLITE_API"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "grep-literal-count",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input",
+        "selection"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-grep-literal-sparse-count-pipe65537",
+      "command": "grep",
+      "reference_behavior_id": "case:phase3-grep-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-F",
+        "-c",
+        "SQLITE_API"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "grep-literal-count",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input",
+        "selection"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-rg-literal-sparse-count-pipe257",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-F",
+        "-c",
+        "SQLITE_API",
+        "-"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "rg-literal-count",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input",
+        "selection"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-rg-literal-sparse-count-pipe65537",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-F",
+        "-c",
+        "SQLITE_API",
+        "-"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "rg-literal-count",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input",
+        "selection"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-head-pipe-early-exit-pipe257",
+      "command": "head",
+      "reference_behavior_id": "case:phase3-head-line-count",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n",
+        "10"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "head-pipe-early-exit",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input",
+        "early-exit"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-head-pipe-early-exit-pipe65537",
+      "command": "head",
+      "reference_behavior_id": "case:phase3-head-line-count",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n",
+        "10"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "head-pipe-early-exit",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input",
+        "early-exit"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-tail-pipe-last10-pipe257",
+      "command": "tail",
+      "reference_behavior_id": "case:phase3-tail-line-count",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n",
+        "10"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "tail-pipe-last10",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-tail-pipe-last10-pipe65537",
+      "command": "tail",
+      "reference_behavior_id": "case:phase3-tail-line-count",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-n",
+        "10"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "tail-pipe-last10",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-tac-pipe-reversal-pipe257",
+      "command": "tac",
+      "reference_behavior_id": "case:p0-tac-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "tac-pipe-reversal",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-tac-pipe-reversal-pipe65537",
+      "command": "tac",
+      "reference_behavior_id": "case:p0-tac-lines",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "tac-pipe-reversal",
+      "facets": [
+        "bytes",
+        "records",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-cat-slow-output",
+      "command": "cat",
+      "reference_behavior_id": "case:phase3-cat-formatting",
+      "recipe": "real-input",
+      "source": {
+        "path": "curl-options-in-versions.txt",
+        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b",
+        "split": "ordinary"
+      },
+      "args": [],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "cat-slow-output",
+      "facets": [
+        "bytes",
+        "records",
+        "slow-output"
+      ],
+      "sink": "slow-pipe",
+      "sink_chunk_bytes": 257,
+      "sink_delay_ms": 1
+    },
+    {
+      "id": "real-rg-slow-output",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "curl-options-in-versions.txt",
+        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-n",
+        ".",
+        "-"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "rg-slow-output",
+      "facets": [
+        "bytes",
+        "records",
+        "selection",
+        "slow-output"
+      ],
+      "sink": "slow-pipe",
+      "sink_chunk_bytes": 257,
+      "sink_delay_ms": 1
+    },
+    {
+      "id": "real-rg-source-tree",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "--sort=path",
+        "-g",
+        "*.py",
+        "-F",
+        "-c",
+        "import",
+        "tree"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "rg-tree-files",
+      "facets": [
+        "bytes",
+        "records",
+        "tree",
+        "named-files",
+        "selection"
+      ],
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+            "split": "ordinary"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
+            "split": "ordinary"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
+            "split": "ordinary"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
+            "split": "ordinary"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
+            "split": "ordinary"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
+            "split": "ordinary"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "split": "ordinary"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ]
+    },
+    {
+      "id": "real-find-source-tree-names",
+      "command": "find",
+      "reference_behavior_id": "case:phase4-find-metadata",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+        "split": "ordinary"
+      },
+      "args": [
+        "tree",
+        "-type",
+        "f",
+        "-name",
+        "*.py"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "find-tree-names",
+      "facets": [
+        "bytes",
+        "records",
+        "tree",
+        "named-files",
+        "selection"
+      ],
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+            "split": "ordinary"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
+            "split": "ordinary"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
+            "split": "ordinary"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
+            "split": "ordinary"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
+            "split": "ordinary"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
+            "split": "ordinary"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "split": "ordinary"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ],
+      "output_relation": "record-multiset"
+    },
+    {
+      "id": "real-find-source-tree-size",
+      "command": "find",
+      "reference_behavior_id": "case:phase4-find-metadata",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+        "split": "ordinary"
+      },
+      "args": [
+        "tree",
+        "-type",
+        "f",
+        "-size",
+        "+10k"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "find-tree-size",
+      "facets": [
+        "bytes",
+        "records",
+        "tree",
+        "named-files",
+        "selection"
+      ],
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+            "split": "ordinary"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
+            "split": "ordinary"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
+            "split": "ordinary"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
+            "split": "ordinary"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
+            "split": "ordinary"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
+            "split": "ordinary"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "split": "ordinary"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ],
+      "output_relation": "record-multiset"
+    },
+    {
+      "id": "real-tree-source-json",
+      "command": "tree",
+      "reference_behavior_id": "case:o12-basic-2",
+      "recipe": "real-input",
+      "source": {
+        "path": "python/Lib/json/__init__.py",
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+        "split": "ordinary"
+      },
+      "args": [
+        "-J",
+        "--noreport",
+        "tree"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "tree-directory-json",
+      "facets": [
+        "bytes",
+        "records",
+        "tree",
+        "named-files",
+        "formatting"
+      ],
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/__init__.py",
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
+            "split": "ordinary"
+          },
+          "target": "tree/json/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/decoder.py",
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
+            "split": "ordinary"
+          },
+          "target": "tree/json/decoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
+            "split": "ordinary"
+          },
+          "target": "tree/json/encoder.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/scanner.py",
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
+            "split": "ordinary"
+          },
+          "target": "tree/json/scanner.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/json/tool.py",
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
+            "split": "ordinary"
+          },
+          "target": "tree/json/tool.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/__init__.py",
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
+            "split": "ordinary"
+          },
+          "target": "tree/re/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_casefix.py",
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_casefix.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_compiler.py",
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_compiler.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_constants.py",
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_constants.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/re/_parser.py",
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
+            "split": "ordinary"
+          },
+          "target": "tree/re/_parser.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/__init__.py",
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/_abc.py",
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/_abc.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/util.py",
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/util.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/importlib/machinery.py",
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
+            "split": "ordinary"
+          },
+          "target": "tree/importlib/machinery.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/__init__.py",
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/__init__.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/base_events.py",
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/base_events.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/asyncio/tasks.py",
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
+            "split": "ordinary"
+          },
+          "target": "tree/asyncio/tasks.py"
+        },
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "split": "ordinary"
+          },
+          "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
+        }
+      ],
+      "output_relation": "json"
+    },
+    {
+      "id": "real-curl-download",
+      "command": "curl",
+      "reference_behavior_id": "case:phase2-curl-post-data",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-sS",
+        "${HTTP_BASE}/real-source"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "curl-download",
+      "facets": [
+        "bytes",
+        "records",
+        "network"
+      ]
+    },
+    {
+      "id": "real-curl-file-upload",
+      "command": "curl",
+      "reference_behavior_id": "case:phase2-curl-post-data",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-sS",
+        "-T",
+        "${INPUT}",
+        "${HTTP_BASE}/real-upload/PUT"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "curl-file-upload",
+      "facets": [
+        "bytes",
+        "records",
+        "network",
+        "named-files"
+      ]
+    },
+    {
+      "id": "real-curl-post-file",
+      "command": "curl",
+      "reference_behavior_id": "case:phase2-curl-post-data",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-sS",
+        "--data-binary",
+        "@${INPUT}",
+        "${HTTP_BASE}/real-upload/POST"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "curl-post-file",
+      "facets": [
+        "bytes",
+        "records",
+        "network",
+        "named-files"
+      ]
+    },
+    {
+      "id": "real-wget-download",
+      "command": "wget",
+      "reference_behavior_id": "case:phase2-wget-request-body",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-qO-",
+        "${HTTP_BASE}/real-source"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wget-download",
+      "facets": [
+        "bytes",
+        "records",
+        "network"
+      ]
+    },
+    {
+      "id": "real-wget-post-file",
+      "command": "wget",
+      "reference_behavior_id": "case:phase2-wget-request-body",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-qO-",
+        "--method=POST",
+        "--body-file=${INPUT}",
+        "${HTTP_BASE}/real-upload/POST"
+      ],
+      "expected_status": 0,
+      "expected_stderr": "",
+      "mode": "wget-post-file",
+      "facets": [
+        "bytes",
+        "records",
+        "network",
+        "named-files"
+      ]
+    },
+    {
+      "id": "real-gunzip-stored-source",
+      "command": "gunzip",
+      "reference_behavior_id": "case:p1-gunzip-concatenated",
+      "recipe": "bench-gunzip-stored",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c"
+      ],
+      "mode": "gunzip-stored-blocks",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-gunzip-fixed-literals-source",
+      "command": "gunzip",
+      "reference_behavior_id": "case:p1-gunzip-concatenated",
+      "recipe": "bench-gunzip-fixed-literals",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c"
+      ],
+      "mode": "gunzip-fixed-literals",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-gunzip-members-source",
+      "command": "gunzip",
+      "reference_behavior_id": "case:p1-gunzip-concatenated",
+      "recipe": "bench-gunzip-members",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "-c"
+      ],
+      "mode": "gunzip-concatenated-block-types",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-zcat-stored-source",
+      "command": "zcat",
+      "reference_behavior_id": "case:p1-zcat-concatenated",
+      "recipe": "bench-zcat-stored",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "zcat-stored-blocks",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-zcat-fixed-literals-source",
+      "command": "zcat",
+      "reference_behavior_id": "case:p1-zcat-concatenated",
+      "recipe": "bench-zcat-fixed-literals",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "zcat-fixed-literals",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-zcat-members-source",
+      "command": "zcat",
+      "reference_behavior_id": "case:p1-zcat-concatenated",
+      "recipe": "bench-zcat-members",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [],
+      "mode": "zcat-concatenated-block-types",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-rg-source-api-numbered",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-explicit-stdin",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
+        "split": "ordinary"
+      },
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-n",
+        "^SQLITE_API ",
+        "-"
+      ],
+      "mode": "rg-regex-numbered-output",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    }
+  ]
+}

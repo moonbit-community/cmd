@@ -87,12 +87,19 @@ module and version before any release operation.
   `MOON_HOME="$HOME/.moon-accounts/cli" moon run <package>`, and
   `MOON_HOME="$HOME/.moon-accounts/cli" moon publish` from the verified module.
   Preparing a candidate does not authorize publication.
+  Package publication uses `moon publish` only. Do not add separate release
+  packaging, archive uploads, or another package publication mechanism.
 
 - Serialize workspace check/test/build/info/fmt commands: they share the build
   directory. Agent-authored automation must use pure MoonBit `.mbtx` files.
 
 - Shared high-performance changes follow `tests/benchmark/PROTECTION.md` and
-  the boundary/workload registry in `tests/benchmark/protection.json`. Save the
+  the boundary/workload registry in `tests/benchmark/protection.json`. New
+  timing uses one schema-3 inventory in `tests/benchmark/real.json`; its
+  complete hash-pinned genuine sources are limited to 16 MiB each and 64 MiB
+  unique bytes. Command-specific timing pipelines and generated-size timing
+  inputs are retired. Independent local regression assertions run before
+  timing; Linux differential evidence is additional. Save the
   current optimized source and Wasm artifacts before editing. Every changed
   command artifact needs a registered workload; missing coverage, incomplete
   windows and unstable results cannot pass. Keep specialized command loops and
@@ -174,26 +181,30 @@ module and version before any release operation.
   changed command packages one at a time in lexical command-name order. After
   every upload require `Server status: 200 OK` and verify the exact registry
   version before moving to the next package. Never run publishes in parallel.
+- Refresh the registry index after publishing a new core version. Before MoonX
+  acceptance, wait for the selected command versions' registry builds to succeed.
 - After all uploads, run exact published-consumer smoke and contract checks
   with `MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/<cmd>@<version> ...`.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-10-27 documentation release: core
-  is 0.8.2, reused without republishing after fetched-source comparison.
-  All 78 published commands have new versions: 34 at 0.2.3, 11 at 0.2.4,
-  three at 0.2.1, two at 0.2.2, 12 at 0.1.4, ten at 0.1.3, four at 0.1.5,
-  and one each at 0.2.5 and 0.3.2. Commands using core select 0.8.2;
-  echo/false/sleep/true remain independent. `rg` and `timeout` are unpublished
-  and excluded from the release inventory. Exact coordinates and accepted
-  cases are in tests/release_runner/current/latest.json and latest-cases.json.
-  Local MoonX acceptance passed 2,094 checks (1,963 semantic, 78 startup and
-  53 boundary results), with 18 platform skips and zero failures; 17 additional
-  README examples passed. Manual published acceptance run 40432031612 passed
-  Linux (2,287 checks, 15 skips, including 1,507 pinned differential results),
-  macOS (2,094 checks, 18 skips) and Windows (1,961 checks, 151 skips), all with
-  zero failures. See CHANGELOG.md under 2026-10-27. This does not establish
-  full GNU parity or formal performance acceptance.
+- Current registry baseline after the 2026-10-30 release: core is 0.9.0.
+  Published 43 command packages: 42 updates and the first cli/rg@0.1.0 release.
+  Thirty-six command coordinates remain unchanged, giving 79 published commands
+  among 80 local modules. The 43 new command coordinates select core 0.9.0;
+  32 retained commands select core 0.8.2; echo/false/sleep/true remain independent.
+  timeout remains unpublished and local-only. Exact coordinates and independent
+  expectations are in tests/release_runner/current/latest.json and latest-cases.json.
+  Source commit 4ca0e4d passed all three required development checks in
+  [CI run 40984331217](https://github.com/moonbit-community/cmd/actions/runs/40984331217).
+  All 44 uploads and registry builds were verified. Local exact-version MoonX
+  acceptance passed 2,180 checks (2,048 semantic contract results, 79 startup
+  availability checks and 53 boundary results), with 19 platform skips and zero
+  failures across all 79 coordinates. Published acceptance run 40986324873 passed
+  Linux (2,369 checks, 16 skips, including 1,531 pinned differential results),
+  macOS (2,180 checks, 19 skips) and Windows (2,049 checks, 150 skips), all with
+  zero failures. See CHANGELOG.md under 2026-10-30. This does not establish full
+  upstream parity or formal performance acceptance.
   Current latest/candidate snapshots remain independent. Retired published and
   historical archives are preserved in Git at 234f960, rather than duplicated
   in the active checkout. Prior acceptance results retain their dated scope

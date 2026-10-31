@@ -266,6 +266,146 @@ test "contract requires assertions and distinguishes status 124 from deadline" {
 }
 
 ///|
+test "contract metadata cannot hide a case or assert a vacuous fragment" {
+  let valid = {
+    ..sample_case("checked", "true"),
+    comparison: Some("contract"),
+    expected_stdout_text: Some(""),
+    expected_stderr_text: Some(""),
+  }
+  assert_eq(contract_errors(valid), [])
+  for comparison in ["", "contrcat", "scenario-typo"] {
+    assert_true(
+      contract_errors({ ..valid, comparison: Some(comparison), }).any(error => {
+        error.contains("unknown comparison")
+      }),
+    )
+  }
+  for platforms in [[], ["linx"], ["linux", "linux"]] {
+    assert_false(
+      contract_errors({ ..valid, host_platforms: Some(platforms), }).is_empty(),
+    )
+  }
+  for platforms in [["linux"], ["macos", "windows"], ["posix"]] {
+    assert_eq(contract_errors({ ..valid, host_platforms: Some(platforms), }), [])
+  }
+  for
+    invalid in [
+      { ..valid, expected_stdout_contains: Some(""), },
+      { ..valid, expected_stderr_contains: Some(""), },
+      { ..valid, expected_stdout_contains_all: Some([]), },
+      { ..valid, expected_stderr_contains_all: Some(["actual", ""]), },
+      { ..valid, forbidden_stderr: Some([""]), },
+      { ..valid, expected_rejection: Some("   "), },
+      { ..valid, comparison: Some("boundary"), },
+    ] {
+    assert_false(contract_errors(invalid).is_empty())
+    assert_false(
+      check_contract(invalid, { status: 0, stdout: b"", stderr: b"", }, "/tmp").is_empty(),
+    )
+  }
+  let vacuous = {
+    ..valid,
+    expected_status: 1,
+    expected_stderr_text: None,
+    expected_stderr_contains: Some(""),
+    diagnostic_reason: Some(
+      "An explanation does not make an empty fragment an assertion.",
+    ),
+  }
+  assert_false(
+    check_contract(
+      vacuous,
+      { status: 1, stdout: b"", stderr: b"unexpected diagnostic", },
+      "/tmp",
+    ).is_empty(),
+  )
+  let exact_empty = {
+    ..vacuous,
+    expected_stderr_contains: None,
+    expected_stderr_text: Some(""),
+  }
+  assert_eq(
+    check_contract(
+      exact_empty,
+      { status: 1, stdout: b"", stderr: b"", },
+      "/tmp",
+    ),
+    [],
+  )
+  assert_false(
+    check_contract(
+      exact_empty,
+      { status: 1, stdout: b"", stderr: b"unexpected diagnostic", },
+      "/tmp",
+    ).is_empty(),
+  )
+}
+
+///|
+async test "every workspace case has valid assertion and selection metadata" {
+  for
+    path in [
+      "release_runner/current/active-cases.json", "release_runner/current/latest-cases.json",
+    ] {
+    let cases = load_cases(path)
+    assert_false(cases.is_empty())
+    for fixture in cases {
+      assert_eq(contract_errors(fixture), [], msg=path + ":" + fixture.id)
+    }
+  }
+}
+
+///|
+test "absent file expectations cannot silently discard content or metadata assertions" {
+  let fixture = sample_case("absent", "true")
+  let absent : ExpectedFile = @json.from_json({
+    "path": "absent",
+    "exists": false,
+  })
+  assert_eq(contract_errors({ ..fixture, expected_files: Some([absent]), }), [])
+  for
+    file in [
+      { ..absent, content_hex: Some(""), },
+      { ..absent, content_text: Some(""), },
+      { ..absent, content_text: Some("unobserved"), },
+      { ..absent, kind: Some("file"), },
+      { ..absent, mode: Some(384), },
+      { ..absent, target: Some("target"), },
+      { ..absent, same_identity_as: Some("other"), },
+    ] {
+    assert_true(
+      contract_errors({ ..fixture, expected_files: Some([file]), }).any(error => {
+        error.contains("absent file expectation")
+      }),
+    )
+  }
+}
+
+///|
+async test "absence assertions reject an unexpected empty file after redundant content is removed" {
+  let root = @fs.tmpdir(prefix="mooncmd-absence-assertion-")
+  defer @fs.rmdir(root, recursive=true)
+  let fixture : Case = @json.from_json({
+    "id": "absent-file",
+    "command": "tee",
+    "args": [],
+    "files": [],
+    "environment": {},
+    "normalizations": [],
+    "expected_status": 0,
+    "comparison": "contract",
+    "expected_stdout_text": "",
+    "expected_stderr_text": "",
+    "expected_files": [{ "path": "later", "exists": false }],
+  })
+  assert_eq(contract_errors(fixture), [])
+  assert_eq(check_expected_files(fixture, root), [])
+  @fs.write_file(root + "/later", b"")
+  assert_eq(check_expected_files(fixture, root), ["later: unexpectedly exists"])
+}
+
+///|
 test "binary input and schema one fields remain lossless" {
   let old : Case = @json.from_json({
     "id": "old",

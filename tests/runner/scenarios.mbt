@@ -3,16 +3,30 @@ async fn scenario_read_exact(
   reader : &@io.Reader,
   trace : String,
   expected : String,
+  proof? : @testkit.ScenarioProof,
+  assertion_id? : String,
 ) -> Unit {
   let expected = @utf8.encode(expected)
+  let observed : Array[Byte] = []
   let mut offset = 0
   while offset < expected.length() {
     guard reader.read_some(max_len=expected.length() - offset) is Some(bytes) else {
       fail("unexpected stream EOF")
     }
     @fs.write_file(trace, bytes, append=true)
+    for byte in bytes {
+      observed.push(byte)
+    }
     assert_eq(bytes, expected[offset:offset + bytes.length()].to_owned())
     offset += bytes.length()
+  }
+  if proof is Some(proof) && assertion_id is Some(id) {
+    proof.observe_equal(
+      id,
+      "sh",
+      Json(@testkit.scenario_text(Bytes::from_array(observed))),
+      Json(@testkit.scenario_text(expected)),
+    )
   }
 }
 
@@ -98,6 +112,7 @@ async fn shell_interactive_scenario(
   root : String,
   wasm : Bool,
   work : String,
+  proof? : @testkit.ScenarioProof,
 ) -> Unit {
   let startup = work + "/startup.sh"
   @fs.write_file(startup, "STARTUP=loaded\n")
@@ -125,11 +140,23 @@ async fn shell_interactive_scenario(
       child.cancel()
       @async.protect_from_cancel(() => ignore(child.wait()))
     })
-    scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
+    scenario_read_exact(
+      stderr,
+      work + "/../stderr.bin",
+      "P> ",
+      proof?,
+      assertion_id="sh/prompt",
+    )
     writer.write("VALUE=kept\n")
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     writer.write("printf '%s|%s\\n' \"$VALUE\" \"$STARTUP\"\n")
-    scenario_read_exact(stdout, work + "/../stdout.bin", "kept|loaded\n")
+    scenario_read_exact(
+      stdout,
+      work + "/../stdout.bin",
+      "kept|loaded\n",
+      proof?,
+      assertion_id="sh/startup-state",
+    )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     for
       (line, prompt) in [
@@ -140,7 +167,13 @@ async fn shell_interactive_scenario(
       scenario_read_exact(stderr, work + "/../stderr.bin", prompt)
     }
     writer.write("fi\n")
-    scenario_read_exact(stdout, work + "/../stdout.bin", "multiline\n")
+    scenario_read_exact(
+      stdout,
+      work + "/../stdout.bin",
+      "multiline\n",
+      proof?,
+      assertion_id="sh/multiline",
+    )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     writer.write("read ANSWER\nhello foreground\n")
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
@@ -149,18 +182,32 @@ async fn shell_interactive_scenario(
       stdout,
       work + "/../stdout.bin",
       "read=<hello foreground>\n",
+      proof?,
+      assertion_id="sh/foreground-read",
     )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     writer.write(
       shell_quote(@fs.realpath(@env.args()[0])) +
       " --test-helper read-line\nchild input\n",
     )
-    scenario_read_exact(stdout, work + "/../stdout.bin", "child input\n")
+    scenario_read_exact(
+      stdout,
+      work + "/../stdout.bin",
+      "child input\n",
+      proof?,
+      assertion_id="sh/child-stdin",
+    )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     writer.write("f() { printf 'function:%s\\n' \"$VALUE\"; }\n")
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     writer.write("f\n")
-    scenario_read_exact(stdout, work + "/../stdout.bin", "function:kept\n")
+    scenario_read_exact(
+      stdout,
+      work + "/../stdout.bin",
+      "function:kept\n",
+      proof?,
+      assertion_id="sh/function-state",
+    )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     @fs.mkdir(work + "/sub")
     writer.write("cd sub\n")
@@ -179,14 +226,34 @@ async fn shell_interactive_scenario(
       "sh: unexpected closing token\nP> ",
     )
     writer.write("printf 'recovered\\n'\n")
-    scenario_read_exact(stdout, work + "/../stdout.bin", "recovered\n")
+    scenario_read_exact(
+      stdout,
+      work + "/../stdout.bin",
+      "recovered\n",
+      proof?,
+      assertion_id="sh/recovery",
+    )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
     writer.close()
     let status = child.wait()
     @fs.write_file(work + "/../interactive.status.txt", status.to_string())
     assert_eq(status, 0)
-    assert_eq(stdout.read_all().binary(), b"")
-    assert_eq(stderr.read_all().binary(), b"")
+    let remaining_stdout = stdout.read_all().binary()
+    let remaining_stderr = stderr.read_all().binary()
+    assert_eq(remaining_stdout, b"")
+    assert_eq(remaining_stderr, b"")
+    if proof is Some(proof) {
+      proof.observe_equal(
+        "sh/eof",
+        "sh",
+        {
+          "status": status,
+          "stdout": @testkit.scenario_text(remaining_stdout),
+          "stderr": @testkit.scenario_text(remaining_stderr),
+        },
+        { "status": 0, "stdout": "", "stderr": "" },
+      )
+    }
   })
   let exited = scenario_run(
     work,
@@ -201,6 +268,18 @@ async fn shell_interactive_scenario(
   assert_eq(exited.status, 7)
   assert_eq(exited.stdout, b"")
   assert_eq(exited.stderr, b"P> ")
+  if proof is Some(proof) {
+    proof.observe_equal(
+      "sh/exit",
+      "sh",
+      {
+        "status": exited.status,
+        "stdout": @testkit.scenario_text(exited.stdout),
+        "stderr": @testkit.scenario_text(exited.stderr),
+      },
+      { "status": 7, "stdout": "", "stderr": "P> " },
+    )
+  }
 }
 
 ///|
@@ -208,6 +287,7 @@ async fn make_concurrency_scenario(
   root : String,
   wasm : Bool,
   work : String,
+  proof? : @testkit.ScenarioProof,
 ) -> Unit {
   @fs.write_file(
     work + "/Makefile",
@@ -240,6 +320,24 @@ async fn make_concurrency_scenario(
     assert_eq(@fs.read_file(work + "/events").binary(), b"S")
     assert_false(@fs.exists(work + "/left.done"))
     assert_false(@fs.exists(work + "/right.done"))
+    if proof is Some(proof) {
+      proof.observe_equal(
+        "make/jobs-before-ack",
+        "make",
+        {
+          "ready": [
+            @fs.exists(work + "/left.ready"),
+            @fs.exists(work + "/right.ready"),
+          ],
+          "done": [
+            @fs.exists(work + "/left.done"),
+            @fs.exists(work + "/right.done"),
+          ],
+          "shared": @fs.read_file(work + "/events").text(),
+        },
+        { "ready": [true, true], "done": [false, false], "shared": "S" },
+      )
+    }
     @fs.write_file(work + "/left.ack", "ack")
     @fs.write_file(work + "/right.ack", "ack")
     let result = task.wait()
@@ -249,6 +347,29 @@ async fn make_concurrency_scenario(
     assert_true(@fs.exists(work + "/left.done"))
     assert_true(@fs.exists(work + "/right.done"))
     assert_eq(@fs.read_file(work + "/events").binary(), b"S")
+    if proof is Some(proof) {
+      proof.observe_equal(
+        "make/jobs-after-ack",
+        "make",
+        {
+          "status": result.status,
+          "stdout": @testkit.scenario_text(result.stdout),
+          "stderr": @testkit.scenario_text(result.stderr),
+          "done": [
+            @fs.exists(work + "/left.done"),
+            @fs.exists(work + "/right.done"),
+          ],
+          "shared": @fs.read_file(work + "/events").text(),
+        },
+        {
+          "status": 0,
+          "stdout": "",
+          "stderr": "",
+          "done": [true, true],
+          "shared": "S",
+        },
+      )
+    }
   })
   @fs.write_file(
     work + "/Makefile",
@@ -281,6 +402,59 @@ async fn make_concurrency_scenario(
   assert_eq(failed.stdout, b"")
   assert_false(@fs.exists(work + "/forbidden"))
   assert_eq(@fs.read_file(work + "/independent").binary(), b"done")
+  if proof is Some(proof) {
+    proof.observe_equal(
+      "make/keep-going",
+      "make",
+      {
+        "status": failed.status,
+        "stdout": @testkit.scenario_text(failed.stdout),
+        "forbidden": @fs.exists(work + "/forbidden"),
+        "independent": @fs.read_file(work + "/independent").text(),
+      },
+      { "status": 2, "stdout": "", "forbidden": false, "independent": "done" },
+    )
+  }
+  @fs.write_file(
+    work + "/Makefile",
+    ".PHONY: all broken independent\nall: broken independent\nbroken:\n\t@false\nindependent:\n\t@printf done > sequential-independent\n",
+  )
+  let stopped_sequential = scenario_run(work, root, wasm, "make", [
+    "-j1", "-C", work,
+  ])
+  assert_eq(stopped_sequential.status, 2)
+  assert_eq(stopped_sequential.stdout, b"")
+  assert_false(@fs.exists(work + "/sequential-independent"))
+  if proof is Some(proof) {
+    proof.observe_equal(
+      "make/stop-before-independent",
+      "make",
+      {
+        "status": stopped_sequential.status,
+        "stdout": @testkit.scenario_text(stopped_sequential.stdout),
+        "independent_exists": @fs.exists(work + "/sequential-independent"),
+      },
+      { "status": 2, "stdout": "", "independent_exists": false },
+    )
+  }
+  let continued_sequential = scenario_run(work, root, wasm, "make", [
+    "-j1", "-k", "-C", work,
+  ])
+  assert_eq(continued_sequential.status, 2)
+  assert_eq(continued_sequential.stdout, b"")
+  assert_eq(@fs.read_file(work + "/sequential-independent").text(), "done")
+  if proof is Some(proof) {
+    proof.observe_equal(
+      "make/keep-going-sequential",
+      "make",
+      {
+        "status": continued_sequential.status,
+        "stdout": @testkit.scenario_text(continued_sequential.stdout),
+        "independent": @fs.read_file(work + "/sequential-independent").text(),
+      },
+      { "status": 2, "stdout": "", "independent": "done" },
+    )
+  }
 }
 
 ///|
@@ -291,6 +465,8 @@ async fn execute_scenario(
   report_dir : String,
   oracle_image? : String,
   retain_success~ : Bool = false,
+  proof_catalog? : Json,
+  proof_receipts? : Array[Json],
 ) -> @testkit.CaseReport {
   let start = @async.now()
   let report_id = "scenario:" + fixture.id
@@ -326,6 +502,13 @@ async fn execute_scenario(
   let work = evidence + "/work"
   @fs.mkdir(work, recursive=true)
   let failures : Array[String] = []
+  let proof = match proof_catalog {
+    Some(catalog) =>
+      @testkit.scenario_definition(catalog, fixture.id).map(definition => {
+        @testkit.ScenarioProof::new(fixture.id, definition)
+      })
+    None => None
+  }
   let completed = @async.with_timeout_opt(
     fixture.timeout_ms.unwrap_or(
       if oracle_image is Some(_) {
@@ -342,23 +525,32 @@ async fn execute_scenario(
           tee_modes_scenario(root, wasm, work, tee_boundary, oracle_image?)
         "tee-default-pipe-boundary" =>
           tee_modes_scenario(root, wasm, work, tee_boundary, oracle_image?)
-        "sh-interactive-session" => shell_interactive_scenario(root, wasm, work)
-        "make-ready-ack" => make_concurrency_scenario(root, wasm, work)
-        "filesystem-fidelity" => filesystem_fidelity_scenario(root, wasm, work)
+        "sh-interactive-session" =>
+          shell_interactive_scenario(root, wasm, work, proof?)
+        "make-ready-ack" => make_concurrency_scenario(root, wasm, work, proof?)
+        "filesystem-fidelity" =>
+          filesystem_fidelity_scenario(root, wasm, work, proof?)
         "mktemp-option-effects" =>
-          mktemp_options_scenario(root, wasm, work, true, oracle_image?)
+          mktemp_options_scenario(root, wasm, work, true, oracle_image?, proof?)
         "mktemp-option-effects-oracle" =>
           mktemp_options_scenario(root, wasm, work, true, oracle_image?)
         "mktemp-option-effects-windows" =>
-          mktemp_options_scenario(root, wasm, work, false, oracle_image?)
+          mktemp_options_scenario(
+            root,
+            wasm,
+            work,
+            false,
+            oracle_image?,
+            proof?,
+          )
         "diff-directory-devices-boundary" =>
           diff_directory_devices_boundary_scenario(root, wasm, work)
         "process-lifecycle" => process_lifecycle_scenario(root, wasm, work)
-        "network-auth-cookie" => network_cli_scenario(root, wasm, work)
+        "network-auth-cookie" => network_cli_scenario(root, wasm, work, proof?)
         "network-auth-cookie-oracle" =>
           network_cli_scenario(root, wasm, work, oracle_image?)
         "network-transfer-boundaries" =>
-          network_transfer_scenario(root, wasm, work)
+          network_transfer_scenario(root, wasm, work, proof?)
         "network-transfer-boundaries-oracle" =>
           network_transfer_scenario(root, wasm, work, oracle_image?)
         "mv-windows-wasm-links-boundary" =>
@@ -374,6 +566,12 @@ async fn execute_scenario(
   }
   if completed is None {
     failures.push("scenario deadline expired")
+  }
+  if proof is Some(proof) {
+    failures.append(proof.errors())
+    if proof_receipts is Some(receipts) {
+      receipts.push(proof.receipt())
+    }
   }
   let report = suite_report(report_id, "wasm", start, failures)
   let mut cleanup_error = false

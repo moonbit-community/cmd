@@ -145,28 +145,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-base64-ignore-garbage",
-      "command": "base64",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/base64.json",
-      "case_id": "p9-base64-ignore-garbage",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-base64-wrap-boundary",
-      "command": "base64",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/base64.json",
-      "case_id": "p9-base64-wrap-boundary",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:base64-zero-wrap",
       "command": "base64",
       "status": "supported",
@@ -206,9 +184,12 @@
       "implementation": "json-case",
       "source": "tests/cases/base64.json",
       "case_id": "compat-text-line-641",
-      "aliases": [],
+      "aliases": [
+        "p9-base64-ignore-garbage",
+        "case:p9-base64-ignore-garbage"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-642",
@@ -228,9 +209,12 @@
       "implementation": "json-case",
       "source": "tests/cases/base64.json",
       "case_id": "compat-text-line-643",
-      "aliases": [],
+      "aliases": [
+        "p9-base64-wrap-boundary",
+        "case:p9-base64-wrap-boundary"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-652",
@@ -299,48 +283,18 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-basename-empty",
-      "command": "basename",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/basename.json",
-      "case_id": "p9-basename-empty",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-basename-repeated-separators",
-      "command": "basename",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/basename.json",
-      "case_id": "p9-basename-repeated-separators",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-basename-root",
-      "command": "basename",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/basename.json",
-      "case_id": "p9-basename-root",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:compat-text-line-653",
       "command": "basename",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/basename.json",
       "case_id": "compat-text-line-653",
-      "aliases": [],
+      "aliases": [
+        "p9-basename-empty",
+        "case:p9-basename-empty"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-654",
@@ -349,9 +303,12 @@
       "implementation": "json-case",
       "source": "tests/cases/basename.json",
       "case_id": "compat-text-line-654",
-      "aliases": [],
+      "aliases": [
+        "p9-basename-root",
+        "case:p9-basename-root"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-655",
@@ -360,20 +317,12 @@
       "implementation": "json-case",
       "source": "tests/cases/basename.json",
       "case_id": "compat-text-line-655",
-      "aliases": [],
+      "aliases": [
+        "p9-basename-repeated-separators",
+        "case:p9-basename-repeated-separators"
+      ],
       "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-14",
-      "command": "basename",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/basename.json",
-      "case_id": "compat-catalog-line-14",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:phase0-cat-double-dash",
@@ -382,17 +331,6 @@
       "implementation": "json-case",
       "source": "tests/cases/cat.json",
       "case_id": "phase0-cat-double-dash",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase3-cat-formatting",
-      "command": "cat",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/cat.json",
-      "case_id": "phase3-cat-formatting",
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
@@ -428,9 +366,12 @@
       "implementation": "json-case",
       "source": "tests/cases/cat.json",
       "case_id": "compat-text-line-33",
-      "aliases": [],
+      "aliases": [
+        "phase3-cat-formatting",
+        "case:phase3-cat-formatting"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-675",
@@ -538,17 +479,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-32",
-      "command": "chmod",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/chmod.json",
-      "case_id": "compat-catalog-line-32",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:p0-cksum-stdin",
       "command": "cksum",
       "status": "supported",
@@ -558,17 +488,6 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:phase3-cmp-equal",
-      "command": "cmp",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/cmp.json",
-      "case_id": "phase3-cmp-equal",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:p9-cmp-different",
@@ -599,9 +518,12 @@
       "implementation": "json-case",
       "source": "tests/cases/cmp.json",
       "case_id": "compat-text-cmp-equal-status",
-      "aliases": [],
+      "aliases": [
+        "phase3-cmp-equal",
+        "case:phase3-cmp-equal"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-cmp-different-status",
@@ -621,17 +543,6 @@
       "implementation": "json-case",
       "source": "tests/cases/cmp.json",
       "case_id": "compat-text-cmp-error-status",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-40",
-      "command": "cmp",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/cmp.json",
-      "case_id": "compat-catalog-line-40",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -838,26 +749,18 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-comm-zero-terminated",
-      "command": "comm",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/comm.json",
-      "case_id": "p9-comm-zero-terminated",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:compat-text-comm-nul-records",
       "command": "comm",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/comm.json",
       "case_id": "compat-text-comm-nul-records",
-      "aliases": [],
+      "aliases": [
+        "p9-comm-zero-terminated",
+        "case:p9-comm-zero-terminated"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-comm-check-order",
@@ -910,17 +813,6 @@
       "implementation": "json-case",
       "source": "tests/cases/comm.json",
       "case_id": "compat-merge-comm",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-48",
-      "command": "comm",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/comm.json",
-      "case_id": "compat-catalog-line-48",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -1042,17 +934,6 @@
       "implementation": "json-case",
       "source": "tests/cases/cp.json",
       "case_id": "compat-filesystem-nested-copy",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-56",
-      "command": "cp",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/cp.json",
-      "case_id": "compat-catalog-line-56",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -1293,17 +1174,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-64",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/curl.json",
-      "case_id": "compat-catalog-line-64",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:repair-final-curl-basic",
       "command": "curl",
       "status": "supported",
@@ -1392,17 +1262,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-cut-zero-terminated",
-      "command": "cut",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/cut.json",
-      "case_id": "p9-cut-zero-terminated",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p9-cut-bytes",
       "command": "cut",
       "status": "supported",
@@ -1431,9 +1290,12 @@
       "implementation": "json-case",
       "source": "tests/cases/cut.json",
       "case_id": "compat-text-line-684",
-      "aliases": [],
+      "aliases": [
+        "p9-cut-zero-terminated",
+        "case:p9-cut-zero-terminated"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-693",
@@ -1879,48 +1741,18 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-dirname-empty",
-      "command": "dirname",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/dirname.json",
-      "case_id": "p9-dirname-empty",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-dirname-repeated-separators",
-      "command": "dirname",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/dirname.json",
-      "case_id": "p9-dirname-repeated-separators",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-dirname-root",
-      "command": "dirname",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/dirname.json",
-      "case_id": "p9-dirname-root",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:compat-text-line-664",
       "command": "dirname",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/dirname.json",
       "case_id": "compat-text-line-664",
-      "aliases": [],
+      "aliases": [
+        "p9-dirname-empty",
+        "case:p9-dirname-empty"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-665",
@@ -1929,9 +1761,12 @@
       "implementation": "json-case",
       "source": "tests/cases/dirname.json",
       "case_id": "compat-text-line-665",
-      "aliases": [],
+      "aliases": [
+        "p9-dirname-root",
+        "case:p9-dirname-root"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-666",
@@ -1940,20 +1775,12 @@
       "implementation": "json-case",
       "source": "tests/cases/dirname.json",
       "case_id": "compat-text-line-666",
-      "aliases": [],
+      "aliases": [
+        "p9-dirname-repeated-separators",
+        "case:p9-dirname-repeated-separators"
+      ],
       "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-73",
-      "command": "dirname",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/dirname.json",
-      "case_id": "compat-catalog-line-73",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-catalog-line-340",
@@ -1989,17 +1816,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-echo-double-dash-literal",
-      "command": "echo",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/echo.json",
-      "case_id": "p9-echo-double-dash-literal",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p9-echo-octal-per-argument",
       "command": "echo",
       "status": "supported",
@@ -2019,7 +1835,9 @@
       "case_id": "p0-echo-version",
       "aliases": [
         "release-metadata-echo-version",
-        "case:release-metadata-echo-version"
+        "case:release-metadata-echo-version",
+        "compat-catalog-line-243",
+        "case:compat-catalog-line-243"
       ],
       "platforms": [],
       "oracle_profile": ""
@@ -2033,21 +1851,12 @@
       "case_id": "p0-echo-help",
       "aliases": [
         "release-metadata-echo-help",
-        "case:release-metadata-echo-help"
+        "case:release-metadata-echo-help",
+        "compat-catalog-line-81",
+        "case:compat-catalog-line-81"
       ],
       "platforms": [],
       "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:p0-echo-no-newline",
-      "command": "echo",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/echo.json",
-      "case_id": "p0-echo-no-newline",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:p0-echo-enable-escapes",
@@ -2078,9 +1887,12 @@
       "implementation": "json-case",
       "source": "tests/cases/echo.json",
       "case_id": "compat-text-line-717",
-      "aliases": [],
+      "aliases": [
+        "p9-echo-double-dash-literal",
+        "case:p9-echo-double-dash-literal"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-718",
@@ -2089,28 +1901,6 @@
       "implementation": "json-case",
       "source": "tests/cases/echo.json",
       "case_id": "compat-text-line-718",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-81",
-      "command": "echo",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/echo.json",
-      "case_id": "compat-catalog-line-81",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-243",
-      "command": "echo",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/echo.json",
-      "case_id": "compat-catalog-line-243",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -2133,28 +1923,6 @@
       "implementation": "json-case",
       "source": "tests/cases/env.json",
       "case_id": "phase5-env-chdir",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p2-env-long-aliases",
-      "command": "env",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/env.json",
-      "case_id": "p2-env-long-aliases",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p2-env-non-shell-assignment-name",
-      "command": "env",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/env.json",
-      "case_id": "p2-env-non-shell-assignment-name",
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
@@ -2188,9 +1956,12 @@
       "implementation": "json-case",
       "source": "tests/cases/env.json",
       "case_id": "compat-text-line-321",
-      "aliases": [],
+      "aliases": [
+        "p2-env-long-aliases",
+        "case:p2-env-long-aliases"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-330",
@@ -2199,9 +1970,12 @@
       "implementation": "json-case",
       "source": "tests/cases/env.json",
       "case_id": "compat-text-line-330",
-      "aliases": [],
+      "aliases": [
+        "p2-env-non-shell-assignment-name",
+        "case:p2-env-non-shell-assignment-name"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-331",
@@ -2265,7 +2039,10 @@
       "implementation": "json-case",
       "source": "tests/cases/env.json",
       "case_id": "compat-text-env-help",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-env-help",
+        "case:release-metadata-env-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -2490,17 +2267,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:phase0-false-status",
-      "command": "false",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/false.json",
-      "case_id": "phase0-false-status",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p0-false-version",
       "command": "false",
       "status": "supported",
@@ -2547,9 +2313,12 @@
       "implementation": "json-case",
       "source": "tests/cases/false.json",
       "case_id": "compat-catalog-line-90",
-      "aliases": [],
+      "aliases": [
+        "phase0-false-status",
+        "case:phase0-false-status"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:phase3-find-exec-status",
@@ -2607,17 +2376,6 @@
         "posix"
       ],
       "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-91",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "compat-catalog-line-91",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
     },
     {
       "behavior_id": "case:p1-fmt-width",
@@ -2862,50 +2620,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p2-grep-context-byte-offset",
-      "command": "grep",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/grep.json",
-      "case_id": "p2-grep-context-byte-offset",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p2-grep-zero-records",
-      "command": "grep",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/grep.json",
-      "case_id": "p2-grep-zero-records",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p2-grep-repeated-context",
-      "command": "grep",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/grep.json",
-      "case_id": "p2-grep-repeated-context",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p2-grep-binary-report",
-      "command": "grep",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/grep.json",
-      "case_id": "p2-grep-binary-report",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p2-grep-recursive-selection",
       "command": "grep",
       "status": "supported",
@@ -2956,9 +2670,12 @@
       "implementation": "json-case",
       "source": "tests/cases/grep.json",
       "case_id": "compat-text-line-209",
-      "aliases": [],
+      "aliases": [
+        "p2-grep-context-byte-offset",
+        "case:p2-grep-context-byte-offset"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-218",
@@ -2967,9 +2684,12 @@
       "implementation": "json-case",
       "source": "tests/cases/grep.json",
       "case_id": "compat-text-line-218",
-      "aliases": [],
+      "aliases": [
+        "p2-grep-repeated-context",
+        "case:p2-grep-repeated-context"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-227",
@@ -2978,9 +2698,12 @@
       "implementation": "json-case",
       "source": "tests/cases/grep.json",
       "case_id": "compat-text-line-227",
-      "aliases": [],
+      "aliases": [
+        "p2-grep-zero-records",
+        "case:p2-grep-zero-records"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-236",
@@ -3066,9 +2789,12 @@
       "implementation": "json-case",
       "source": "tests/cases/grep.json",
       "case_id": "compat-text-grep-binary-stderr",
-      "aliases": [],
+      "aliases": [
+        "p2-grep-binary-report",
+        "case:p2-grep-binary-report"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-grep-silent-missing",
@@ -3077,17 +2803,6 @@
       "implementation": "json-case",
       "source": "tests/cases/grep.json",
       "case_id": "compat-text-grep-silent-missing",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-99",
-      "command": "grep",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/grep.json",
-      "case_id": "compat-catalog-line-99",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -3236,50 +2951,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p3-head-zero-records",
-      "command": "head",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/head.json",
-      "case_id": "p3-head-zero-records",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-head-exclude-tail",
-      "command": "head",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/head.json",
-      "case_id": "p3-head-exclude-tail",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-head-binary-prefix-count",
-      "command": "head",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/head.json",
-      "case_id": "p3-head-binary-prefix-count",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-head-explicit-positive-count",
-      "command": "head",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/head.json",
-      "case_id": "p3-head-explicit-positive-count",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p3-head-multiple-file-headers",
       "command": "head",
       "status": "supported",
@@ -3297,9 +2968,12 @@
       "implementation": "json-case",
       "source": "tests/cases/head.json",
       "case_id": "compat-text-line-552",
-      "aliases": [],
+      "aliases": [
+        "p3-head-zero-records",
+        "case:p3-head-zero-records"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-561",
@@ -3308,9 +2982,12 @@
       "implementation": "json-case",
       "source": "tests/cases/head.json",
       "case_id": "compat-text-line-561",
-      "aliases": [],
+      "aliases": [
+        "p3-head-exclude-tail",
+        "case:p3-head-exclude-tail"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-570",
@@ -3319,9 +2996,12 @@
       "implementation": "json-case",
       "source": "tests/cases/head.json",
       "case_id": "compat-text-line-570",
-      "aliases": [],
+      "aliases": [
+        "p3-head-explicit-positive-count",
+        "case:p3-head-explicit-positive-count"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-579",
@@ -3352,9 +3032,12 @@
       "implementation": "json-case",
       "source": "tests/cases/head.json",
       "case_id": "compat-text-line-581",
-      "aliases": [],
+      "aliases": [
+        "p3-head-binary-prefix-count",
+        "case:p3-head-binary-prefix-count"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-590",
@@ -3557,28 +3240,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:phase3-join-unpaired-output-list",
-      "command": "join",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/join.json",
-      "case_id": "phase3-join-unpaired-output-list",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-join-zero-terminated",
-      "command": "join",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/join.json",
-      "case_id": "p9-join-zero-terminated",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p9-join-check-order",
       "command": "join",
       "status": "supported",
@@ -3596,9 +3257,12 @@
       "implementation": "json-case",
       "source": "tests/cases/join.json",
       "case_id": "compat-text-join-output-list",
-      "aliases": [],
+      "aliases": [
+        "phase3-join-unpaired-output-list",
+        "case:phase3-join-unpaired-output-list"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-join-nul-records",
@@ -3607,9 +3271,12 @@
       "implementation": "json-case",
       "source": "tests/cases/join.json",
       "case_id": "compat-text-join-nul-records",
-      "aliases": [],
+      "aliases": [
+        "p9-join-zero-terminated",
+        "case:p9-join-zero-terminated"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-join-check-order",
@@ -3640,17 +3307,6 @@
       "implementation": "json-case",
       "source": "tests/cases/join.json",
       "case_id": "compat-merge-join",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-108",
-      "command": "join",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/join.json",
-      "case_id": "compat-catalog-line-108",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -4212,7 +3868,14 @@
       "implementation": "json-case",
       "source": "tests/cases/jqlog.json",
       "case_id": "p0-jqlog-help-newline",
-      "aliases": [],
+      "aliases": [
+        "compat-text-jqlog-help-newline",
+        "case:compat-text-jqlog-help-newline",
+        "compat-catalog-line-126",
+        "case:compat-catalog-line-126",
+        "release-metadata-jqlog-help",
+        "case:release-metadata-jqlog-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -4223,7 +3886,10 @@
       "implementation": "json-case",
       "source": "tests/cases/jqlog.json",
       "case_id": "p0-jqlog-error-newline",
-      "aliases": [],
+      "aliases": [
+        "compat-text-jqlog-error-newline",
+        "case:compat-text-jqlog-error-newline"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -4234,39 +3900,6 @@
       "implementation": "json-case",
       "source": "tests/cases/jqlog.json",
       "case_id": "p0-jqlog-file",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-text-jqlog-help-newline",
-      "command": "jqlog",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/jqlog.json",
-      "case_id": "compat-text-jqlog-help-newline",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-text-jqlog-error-newline",
-      "command": "jqlog",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/jqlog.json",
-      "case_id": "compat-text-jqlog-error-newline",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-126",
-      "command": "jqlog",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/jqlog.json",
-      "case_id": "compat-catalog-line-126",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -4355,17 +3988,6 @@
       "platforms": [
         "windows"
       ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-134",
-      "command": "ln",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/ln.json",
-      "case_id": "compat-catalog-line-134",
-      "aliases": [],
-      "platforms": [],
       "oracle_profile": ""
     },
     {
@@ -4785,17 +4407,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:compat-catalog-line-142",
-      "command": "ls",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/ls.json",
-      "case_id": "compat-catalog-line-142",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:repair-alias-ls-dereference-command-line",
       "command": "ls",
       "status": "supported",
@@ -4925,17 +4536,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-150",
-      "command": "make",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/make.json",
-      "case_id": "compat-catalog-line-150",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:checksum-md5sum-stdin",
       "command": "md5sum",
       "status": "supported",
@@ -5052,7 +4652,10 @@
       "implementation": "json-case",
       "source": "tests/cases/md5sum.json",
       "case_id": "checksum-md5sum-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-md5sum-version",
+        "case:release-metadata-md5sum-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -5103,28 +4706,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-158",
-      "command": "mkdir",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/mkdir.json",
-      "case_id": "compat-catalog-line-158",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:p0-mktemp-help",
-      "command": "mktemp",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/mktemp.json",
-      "case_id": "p0-mktemp-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:phase4-mv-regular",
       "command": "mv",
       "status": "supported",
@@ -5153,17 +4734,6 @@
       "implementation": "json-case",
       "source": "tests/cases/mv.json",
       "case_id": "compat-filesystem-rename",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-166",
-      "command": "mv",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/mv.json",
-      "case_id": "compat-catalog-line-166",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -5335,28 +4905,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:phase3-nl-empty",
-      "command": "nl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/nl.json",
-      "case_id": "phase3-nl-empty",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-nl-sections",
-      "command": "nl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/nl.json",
-      "case_id": "p9-nl-sections",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p9-nl-number-format",
       "command": "nl",
       "status": "supported",
@@ -5385,9 +4933,12 @@
       "implementation": "json-case",
       "source": "tests/cases/nl.json",
       "case_id": "compat-text-line-945",
-      "aliases": [],
+      "aliases": [
+        "p9-nl-sections",
+        "case:p9-nl-sections"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-catalog-line-174",
@@ -5397,10 +4948,12 @@
       "source": "tests/cases/nl.json",
       "case_id": "compat-catalog-line-174",
       "aliases": [
-        "compat-stdin-nl"
+        "compat-stdin-nl",
+        "phase3-nl-empty",
+        "case:phase3-nl-empty"
       ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:od-default-partial-word",
@@ -5535,34 +5088,12 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-paste-zero-terminated",
-      "command": "paste",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/paste.json",
-      "case_id": "p9-paste-zero-terminated",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p9-paste-serial-empty",
       "command": "paste",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/paste.json",
       "case_id": "p9-paste-serial-empty",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-paste-escaped-delimiters",
-      "command": "paste",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/paste.json",
-      "case_id": "p9-paste-escaped-delimiters",
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
@@ -5585,9 +5116,12 @@
       "implementation": "json-case",
       "source": "tests/cases/paste.json",
       "case_id": "compat-text-paste-nul-records",
-      "aliases": [],
+      "aliases": [
+        "p9-paste-zero-terminated",
+        "case:p9-paste-zero-terminated"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-merge-paste",
@@ -5823,37 +5357,18 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-printenv-mixed-status",
-      "command": "printenv",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/printenv.json",
-      "case_id": "p9-printenv-mixed-status",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:compat-text-printenv-present-missing",
       "command": "printenv",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/printenv.json",
       "case_id": "compat-text-printenv-present-missing",
-      "aliases": [],
+      "aliases": [
+        "p9-printenv-mixed-status",
+        "case:p9-printenv-mixed-status"
+      ],
       "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-176",
-      "command": "printenv",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/printenv.json",
-      "case_id": "compat-catalog-line-176",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-catalog-line-350",
@@ -5878,26 +5393,18 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p9-printf-repeated-format",
-      "command": "printf",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/printf.json",
-      "case_id": "p9-printf-repeated-format",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:compat-text-line-695",
       "command": "printf",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/printf.json",
       "case_id": "compat-text-line-695",
-      "aliases": [],
+      "aliases": [
+        "p9-printf-repeated-format",
+        "case:p9-printf-repeated-format"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-704",
@@ -5955,34 +5462,12 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-194",
-      "command": "pwd",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/pwd.json",
-      "case_id": "compat-catalog-line-194",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:repair-alias-pwd-logical",
       "command": "pwd",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/pwd.json",
       "case_id": "repair-alias-pwd-logical",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:p0-realpath-help",
-      "command": "realpath",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/realpath.json",
-      "case_id": "p0-realpath-help",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -6081,17 +5566,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-202",
-      "command": "rm",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/rm.json",
-      "case_id": "compat-catalog-line-202",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:repair-alias-rm-recursive",
       "command": "rm",
       "status": "supported",
@@ -6123,17 +5597,6 @@
       "implementation": "json-case",
       "source": "tests/cases/rmdir.json",
       "case_id": "compat-text-rmdir-partial-order",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-210",
-      "command": "rmdir",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/rmdir.json",
-      "case_id": "compat-catalog-line-210",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -6337,39 +5800,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:phase3-seq-basic",
-      "command": "seq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/seq.json",
-      "case_id": "phase3-seq-basic",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p9-seq-descending",
-      "command": "seq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/seq.json",
-      "case_id": "p9-seq-descending",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p0-seq-two-operand-descending",
-      "command": "seq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/seq.json",
-      "case_id": "p0-seq-two-operand-descending",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p0-seq-version",
       "command": "seq",
       "status": "supported",
@@ -6378,7 +5808,9 @@
       "case_id": "p0-seq-version",
       "aliases": [
         "release-metadata-seq-version",
-        "case:release-metadata-seq-version"
+        "case:release-metadata-seq-version",
+        "compat-catalog-line-251",
+        "case:compat-catalog-line-251"
       ],
       "platforms": [],
       "oracle_profile": ""
@@ -6417,17 +5849,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p0-seq-two-number",
-      "command": "seq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/seq.json",
-      "case_id": "p0-seq-two-number",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p0-seq-three-number",
       "command": "seq",
       "status": "supported",
@@ -6446,10 +5867,12 @@
       "source": "tests/cases/seq.json",
       "case_id": "seq-descending-default",
       "aliases": [
-        "compat-text-line-706"
+        "compat-text-line-706",
+        "p0-seq-two-operand-descending",
+        "case:p0-seq-two-operand-descending"
       ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:seq-descending-explicit",
@@ -6459,10 +5882,12 @@
       "source": "tests/cases/seq.json",
       "case_id": "seq-descending-explicit",
       "aliases": [
-        "compat-text-line-708"
+        "compat-text-line-708",
+        "p9-seq-descending",
+        "case:p9-seq-descending"
       ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-707",
@@ -6471,9 +5896,14 @@
       "implementation": "json-case",
       "source": "tests/cases/seq.json",
       "case_id": "compat-text-line-707",
-      "aliases": [],
+      "aliases": [
+        "phase3-seq-basic",
+        "case:phase3-seq-basic",
+        "p0-seq-two-number",
+        "case:p0-seq-two-number"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-709",
@@ -6482,28 +5912,6 @@
       "implementation": "json-case",
       "source": "tests/cases/seq.json",
       "case_id": "compat-text-line-709",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-218",
-      "command": "seq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/seq.json",
-      "case_id": "compat-catalog-line-218",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-251",
-      "command": "seq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/seq.json",
-      "case_id": "compat-catalog-line-251",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -6553,134 +5961,16 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:phase5-sh-stdin-positional",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-stdin-positional",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-command-substitution",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-command-substitution",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-heredoc",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-heredoc",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-if",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-if",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-case",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-case",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-for",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-for",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-while-until",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-while-until",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-function-return",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-function-return",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-grouping",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-grouping",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-parameter-length",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-parameter-length",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase5-sh-shift",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "phase5-sh-shift",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p0-sh-public-error",
       "command": "sh",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "p0-sh-public-error",
-      "aliases": [],
+      "aliases": [
+        "compat-shell-array-boundary",
+        "case:compat-shell-array-boundary"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -6746,9 +6036,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-text-line-165",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-stdin-positional",
+        "case:phase5-sh-stdin-positional"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-catalog-line-234",
@@ -6768,9 +6061,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-3",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-command-substitution",
+        "case:phase5-sh-command-substitution"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-12",
@@ -6779,9 +6075,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-12",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-heredoc",
+        "case:phase5-sh-heredoc"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-21",
@@ -6790,9 +6089,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-21",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-if",
+        "case:phase5-sh-if"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-30",
@@ -6801,9 +6103,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-30",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-case",
+        "case:phase5-sh-case"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-39",
@@ -6812,9 +6117,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-39",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-for",
+        "case:phase5-sh-for"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-48",
@@ -6823,9 +6131,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-48",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-while-until",
+        "case:phase5-sh-while-until"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-59",
@@ -6834,9 +6145,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-59",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-function-return",
+        "case:phase5-sh-function-return"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-68",
@@ -6845,9 +6159,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-68",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-grouping",
+        "case:phase5-sh-grouping"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-77",
@@ -6856,9 +6173,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-77",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-parameter-length",
+        "case:phase5-sh-parameter-length"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-86",
@@ -6867,9 +6187,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-shell-line-86",
-      "aliases": [],
+      "aliases": [
+        "phase5-sh-shift",
+        "case:phase5-sh-shift"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-shell-line-95",
@@ -6900,17 +6223,6 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "compat-stdin-sh",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-shell-array-boundary",
-      "command": "sh",
-      "status": "boundary",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "compat-shell-array-boundary",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -6988,7 +6300,10 @@
       "implementation": "json-case",
       "source": "tests/cases/sha1sum.json",
       "case_id": "checksum-sha1sum-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-sha1sum-version",
+        "case:release-metadata-sha1sum-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -7070,17 +6385,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-226",
-      "command": "sha256sum",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sha256sum.json",
-      "case_id": "compat-catalog-line-226",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:compat-stdin-sha256sum",
       "command": "sha256sum",
       "status": "supported",
@@ -7153,7 +6457,10 @@
       "implementation": "json-case",
       "source": "tests/cases/sha512sum.json",
       "case_id": "checksum-sha512sum-version",
-      "aliases": [],
+      "aliases": [
+        "release-metadata-sha512sum-version",
+        "case:release-metadata-sha512sum-version"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -7203,7 +6510,9 @@
       "case_id": "p0-sleep-help",
       "aliases": [
         "release-metadata-sleep-help",
-        "case:release-metadata-sleep-help"
+        "case:release-metadata-sleep-help",
+        "compat-catalog-line-235",
+        "case:compat-catalog-line-235"
       ],
       "platforms": [],
       "oracle_profile": ""
@@ -7231,34 +6540,12 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-235",
-      "command": "sleep",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sleep.json",
-      "case_id": "compat-catalog-line-235",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:phase3-sort-basic",
       "command": "sort",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "phase3-sort-basic",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-sort-multiple-key-modifiers",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-multiple-key-modifiers",
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
@@ -7275,72 +6562,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p3-sort-general-numeric-classes",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-general-numeric-classes",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-sort-local-key-modifier-combination",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-local-key-modifier-combination",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-sort-blank-field-boundaries",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-blank-field-boundaries",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-sort-character-modifiers",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-character-modifiers",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-sort-unique-key-stability",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-unique-key-stability",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-sort-human-numeric",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-human-numeric",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p3-sort-month",
       "command": "sort",
       "status": "supported",
@@ -7352,45 +6573,12 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p3-sort-version",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-sort-zero-records",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-zero-records",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p3-sort-ignore-nonprinting",
       "command": "sort",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "p3-sort-ignore-nonprinting",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-sort-ignore-case-c-locale",
-      "command": "sort",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sort.json",
-      "case_id": "p3-sort-ignore-case-c-locale",
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
@@ -7413,9 +6601,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-372",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-multiple-key-modifiers",
+        "case:p3-sort-multiple-key-modifiers"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-381",
@@ -7424,9 +6615,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-381",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-general-numeric-classes",
+        "case:p3-sort-general-numeric-classes"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-390",
@@ -7435,9 +6629,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-390",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-local-key-modifier-combination",
+        "case:p3-sort-local-key-modifier-combination"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-399",
@@ -7446,9 +6643,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-399",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-blank-field-boundaries",
+        "case:p3-sort-blank-field-boundaries"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-408",
@@ -7457,9 +6657,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-408",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-unique-key-stability",
+        "case:p3-sort-unique-key-stability"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-417",
@@ -7468,9 +6671,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-417",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-human-numeric",
+        "case:p3-sort-human-numeric"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-426",
@@ -7479,9 +6685,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-426",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-character-modifiers",
+        "case:p3-sort-character-modifiers"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-435",
@@ -7490,9 +6699,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-435",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-ignore-case-c-locale",
+        "case:p3-sort-ignore-case-c-locale"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-436",
@@ -7501,9 +6713,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-436",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-version",
+        "case:p3-sort-version"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-445",
@@ -7512,9 +6727,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sort.json",
       "case_id": "compat-text-line-445",
-      "aliases": [],
+      "aliases": [
+        "p3-sort-zero-records",
+        "case:p3-sort-zero-records"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-454",
@@ -8096,17 +7314,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:compat-catalog-line-261",
-      "command": "tee",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/tee.json",
-      "case_id": "compat-catalog-line-261",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:compat-stdin-tee",
       "command": "tee",
       "status": "supported",
@@ -8153,17 +7360,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:compat-catalog-line-269",
-      "command": "test",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/test.json",
-      "case_id": "compat-catalog-line-269",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:compat-catalog-line-277",
       "command": "timeout",
       "status": "supported",
@@ -8205,17 +7401,6 @@
       "implementation": "json-case",
       "source": "tests/cases/touch.json",
       "case_id": "compat-text-touch-date-rejected",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-285",
-      "command": "touch",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/touch.json",
-      "case_id": "compat-catalog-line-285",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -8485,28 +7670,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:p0-tree-help",
-      "command": "tree",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/tree.json",
-      "case_id": "p0-tree-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:phase3-true-status",
-      "command": "true",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/true.json",
-      "case_id": "phase3-true-status",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p0-true-version",
       "command": "true",
       "status": "supported",
@@ -8554,9 +7717,12 @@
       "implementation": "json-case",
       "source": "tests/cases/true.json",
       "case_id": "compat-catalog-line-294",
-      "aliases": [],
+      "aliases": [
+        "phase3-true-status",
+        "case:phase3-true-status"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:p0-unexpand-leading",
@@ -8625,37 +7791,18 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p3-uniq-field-character-selection",
-      "command": "uniq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/uniq.json",
-      "case_id": "p3-uniq-field-character-selection",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:p3-uniq-zero-records",
-      "command": "uniq",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/uniq.json",
-      "case_id": "p3-uniq-zero-records",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:compat-text-line-476",
       "command": "uniq",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/uniq.json",
       "case_id": "compat-text-line-476",
-      "aliases": [],
+      "aliases": [
+        "p3-uniq-field-character-selection",
+        "case:p3-uniq-field-character-selection"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-485",
@@ -8664,9 +7811,12 @@
       "implementation": "json-case",
       "source": "tests/cases/uniq.json",
       "case_id": "compat-text-line-485",
-      "aliases": [],
+      "aliases": [
+        "p3-uniq-zero-records",
+        "case:p3-uniq-zero-records"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-494",
@@ -8721,17 +7871,6 @@
       "implementation": "json-case",
       "source": "tests/cases/uniq.json",
       "case_id": "repair-alias-uniq-zero-terminated",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:p0-unlink-help",
-      "command": "unlink",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/unlink.json",
-      "case_id": "p0-unlink-help",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -8794,17 +7933,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:p3-wc-max-line-length",
-      "command": "wc",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/wc.json",
-      "case_id": "p3-wc-max-line-length",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p3-wc-files0-alignment",
       "command": "wc",
       "status": "supported",
@@ -8822,9 +7950,12 @@
       "implementation": "json-case",
       "source": "tests/cases/wc.json",
       "case_id": "compat-text-line-495",
-      "aliases": [],
+      "aliases": [
+        "p3-wc-max-line-length",
+        "case:p3-wc-max-line-length"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-496",
@@ -9091,17 +8222,6 @@
         "posix"
       ],
       "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:compat-catalog-line-306",
-      "command": "wget",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/wget.json",
-      "case_id": "compat-catalog-line-306",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
     },
     {
       "behavior_id": "case:repair-final-wget-basic",
@@ -9441,28 +8561,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:phase3-xxd-seek",
-      "command": "xxd",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/xxd.json",
-      "case_id": "phase3-xxd-seek",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:phase3-xxd-reverse-seek",
-      "command": "xxd",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/xxd.json",
-      "case_id": "phase3-xxd-reverse-seek",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:p7-xxd-include",
       "command": "xxd",
       "status": "supported",
@@ -9502,9 +8600,12 @@
       "implementation": "json-case",
       "source": "tests/cases/xxd.json",
       "case_id": "compat-text-line-42",
-      "aliases": [],
+      "aliases": [
+        "phase3-xxd-seek",
+        "case:phase3-xxd-seek"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-text-line-51",
@@ -9513,9 +8614,12 @@
       "implementation": "json-case",
       "source": "tests/cases/xxd.json",
       "case_id": "compat-text-line-51",
-      "aliases": [],
+      "aliases": [
+        "phase3-xxd-reverse-seek",
+        "case:phase3-xxd-reverse-seek"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:compat-catalog-line-324",
@@ -9548,17 +8652,6 @@
       "implementation": "json-case",
       "source": "tests/cases/xxd.json",
       "case_id": "repair-alias-xxd-reverse",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:p0-yes-help",
-      "command": "yes",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/yes.json",
-      "case_id": "p0-yes-help",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -10675,7 +9768,10 @@
       "implementation": "json-case",
       "source": "tests/cases/cp.json",
       "case_id": "release-metadata-cp-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-56",
+        "case:compat-catalog-line-56"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -10719,7 +9815,10 @@
       "implementation": "json-case",
       "source": "tests/cases/ln.json",
       "case_id": "release-metadata-ln-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-134",
+        "case:compat-catalog-line-134"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -10741,7 +9840,10 @@
       "implementation": "json-case",
       "source": "tests/cases/ls.json",
       "case_id": "release-metadata-ls-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-142",
+        "case:compat-catalog-line-142"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -10763,7 +9865,10 @@
       "implementation": "json-case",
       "source": "tests/cases/mv.json",
       "case_id": "release-metadata-mv-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-166",
+        "case:compat-catalog-line-166"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -10829,7 +9934,10 @@
       "implementation": "json-case",
       "source": "tests/cases/rm.json",
       "case_id": "release-metadata-rm-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-202",
+        "case:compat-catalog-line-202"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -10939,7 +10047,10 @@
       "implementation": "json-case",
       "source": "tests/cases/cmp.json",
       "case_id": "release-metadata-cmp-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-40",
+        "case:compat-catalog-line-40"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -10972,17 +10083,6 @@
       "implementation": "json-case",
       "source": "tests/cases/cut.json",
       "case_id": "release-metadata-cut-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-env-help",
-      "command": "env",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/env.json",
-      "case_id": "release-metadata-env-help",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -11027,7 +10127,10 @@
       "implementation": "json-case",
       "source": "tests/cases/pwd.json",
       "case_id": "release-metadata-pwd-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-194",
+        "case:compat-catalog-line-194"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11093,7 +10196,10 @@
       "implementation": "json-case",
       "source": "tests/cases/seq.json",
       "case_id": "release-metadata-seq-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-218",
+        "case:compat-catalog-line-218"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11126,7 +10232,10 @@
       "implementation": "json-case",
       "source": "tests/cases/tee.json",
       "case_id": "release-metadata-tee-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-261",
+        "case:compat-catalog-line-261"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11170,7 +10279,10 @@
       "implementation": "json-case",
       "source": "tests/cases/yes.json",
       "case_id": "release-metadata-yes-help",
-      "aliases": [],
+      "aliases": [
+        "p0-yes-help",
+        "case:p0-yes-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11192,7 +10304,10 @@
       "implementation": "json-case",
       "source": "tests/cases/comm.json",
       "case_id": "release-metadata-comm-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-48",
+        "case:compat-catalog-line-48"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11214,7 +10329,10 @@
       "implementation": "json-case",
       "source": "tests/cases/curl.json",
       "case_id": "release-metadata-curl-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-64",
+        "case:compat-catalog-line-64"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11291,7 +10409,10 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "release-metadata-find-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-91",
+        "case:compat-catalog-line-91"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11335,7 +10456,10 @@
       "implementation": "json-case",
       "source": "tests/cases/grep.json",
       "case_id": "release-metadata-grep-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-99",
+        "case:compat-catalog-line-99"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11401,7 +10525,10 @@
       "implementation": "json-case",
       "source": "tests/cases/join.json",
       "case_id": "release-metadata-join-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-108",
+        "case:compat-catalog-line-108"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11423,7 +10550,10 @@
       "implementation": "json-case",
       "source": "tests/cases/make.json",
       "case_id": "release-metadata-make-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-150",
+        "case:compat-catalog-line-150"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11489,7 +10619,10 @@
       "implementation": "json-case",
       "source": "tests/cases/test.json",
       "case_id": "release-metadata-test-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-269",
+        "case:compat-catalog-line-269"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11511,7 +10644,10 @@
       "implementation": "json-case",
       "source": "tests/cases/tree.json",
       "case_id": "release-metadata-tree-help",
-      "aliases": [],
+      "aliases": [
+        "p0-tree-help",
+        "case:p0-tree-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11555,7 +10691,10 @@
       "implementation": "json-case",
       "source": "tests/cases/wget.json",
       "case_id": "release-metadata-wget-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-306",
+        "case:compat-catalog-line-306"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11599,7 +10738,10 @@
       "implementation": "json-case",
       "source": "tests/cases/chmod.json",
       "case_id": "release-metadata-chmod-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-32",
+        "case:compat-catalog-line-32"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11637,17 +10779,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:release-metadata-jqlog-help",
-      "command": "jqlog",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/jqlog.json",
-      "case_id": "release-metadata-jqlog-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:release-metadata-jqlog-version",
       "command": "jqlog",
       "status": "supported",
@@ -11665,7 +10796,10 @@
       "implementation": "json-case",
       "source": "tests/cases/mkdir.json",
       "case_id": "release-metadata-mkdir-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-158",
+        "case:compat-catalog-line-158"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11731,7 +10865,10 @@
       "implementation": "json-case",
       "source": "tests/cases/rmdir.json",
       "case_id": "release-metadata-rmdir-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-210",
+        "case:compat-catalog-line-210"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11775,7 +10912,10 @@
       "implementation": "json-case",
       "source": "tests/cases/touch.json",
       "case_id": "release-metadata-touch-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-285",
+        "case:compat-catalog-line-285"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -11956,24 +11096,16 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:release-metadata-md5sum-version",
-      "command": "md5sum",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/md5sum.json",
-      "case_id": "release-metadata-md5sum-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:release-metadata-mktemp-help",
       "command": "mktemp",
       "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/mktemp.json",
       "case_id": "release-metadata-mktemp-help",
-      "aliases": [],
+      "aliases": [
+        "p0-mktemp-help",
+        "case:p0-mktemp-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -12017,7 +11149,10 @@
       "implementation": "json-case",
       "source": "tests/cases/unlink.json",
       "case_id": "release-metadata-unlink-help",
-      "aliases": [],
+      "aliases": [
+        "p0-unlink-help",
+        "case:p0-unlink-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -12039,7 +11174,10 @@
       "implementation": "json-case",
       "source": "tests/cases/dirname.json",
       "case_id": "release-metadata-dirname-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-73",
+        "case:compat-catalog-line-73"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -12088,17 +11226,6 @@
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:release-metadata-sha1sum-version",
-      "command": "sha1sum",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sha1sum.json",
-      "case_id": "release-metadata-sha1sum-version",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
       "behavior_id": "case:release-metadata-strings-help",
       "command": "strings",
       "status": "supported",
@@ -12116,7 +11243,10 @@
       "implementation": "json-case",
       "source": "tests/cases/basename.json",
       "case_id": "release-metadata-basename-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-14",
+        "case:compat-catalog-line-14"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -12138,7 +11268,10 @@
       "implementation": "json-case",
       "source": "tests/cases/printenv.json",
       "case_id": "release-metadata-printenv-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-176",
+        "case:compat-catalog-line-176"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -12160,7 +11293,10 @@
       "implementation": "json-case",
       "source": "tests/cases/realpath.json",
       "case_id": "release-metadata-realpath-help",
-      "aliases": [],
+      "aliases": [
+        "p0-realpath-help",
+        "case:p0-realpath-help"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -12204,7 +11340,10 @@
       "implementation": "json-case",
       "source": "tests/cases/sha256sum.json",
       "case_id": "release-metadata-sha256sum-help",
-      "aliases": [],
+      "aliases": [
+        "compat-catalog-line-226",
+        "case:compat-catalog-line-226"
+      ],
       "platforms": [],
       "oracle_profile": ""
     },
@@ -12226,17 +11365,6 @@
       "implementation": "json-case",
       "source": "tests/cases/sha512sum.json",
       "case_id": "release-metadata-sha512sum-help",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:release-metadata-sha512sum-version",
-      "command": "sha512sum",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sha512sum.json",
-      "case_id": "release-metadata-sha512sum-version",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
@@ -26123,6 +25251,774 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-group-null-false-true",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-group-null-false-true",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-group-member-order",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-group-member-order",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-group-numeric-order",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-group-numeric-order",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-sort-stable-equal-keys",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-sort-stable-equal-keys",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jqlog-group-null-false-true",
+      "command": "jqlog",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "proof-jqlog-group-null-false-true",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-sh-stdin-positional-contract",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "proof-sh-stdin-positional-contract",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-base32-ignore-garbage",
+      "command": "base32",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/base32.json",
+      "case_id": "proof-base32-ignore-garbage",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-cat-number-empty-record",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "proof-cat-number-empty-record",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-cat-nonblank-overrides-number-first",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "proof-cat-nonblank-overrides-number-first",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-cat-nonblank-overrides-number-last",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "proof-cat-nonblank-overrides-number-last",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-cp-no-clobber-preserves-existing",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "proof-cp-no-clobber-preserves-existing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-touch-no-create-missing",
+      "command": "touch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "proof-touch-no-create-missing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-chmod-reference-boundary-preserves-mode",
+      "command": "chmod",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/chmod.json",
+      "case_id": "proof-chmod-reference-boundary-preserves-mode",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-sed-in-place-boundary-preserves-source",
+      "command": "sed",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sed.json",
+      "case_id": "proof-sed-in-place-boundary-preserves-source",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-rev-record-boundary-1024",
+      "command": "rev",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rev.json",
+      "case_id": "proof-rev-record-boundary-1024",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-rev-record-boundary-8192",
+      "command": "rev",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rev.json",
+      "case_id": "proof-rev-record-boundary-8192",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-cat-unicode-path-binary-tail",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "proof-cat-unicode-path-binary-tail",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-full-group-key-stream",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-full-group-key-stream",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-sort-dictionary-order-activation",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "proof-sort-dictionary-order-activation",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-nl-increment-activation",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "proof-nl-increment-activation",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-nl-zero-padded-number-format",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "proof-nl-zero-padded-number-format",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-paste-serial-delimiter-cycle",
+      "command": "paste",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/paste.json",
+      "case_id": "proof-paste-serial-delimiter-cycle",
+      "aliases": [
+        "p9-paste-escaped-delimiters",
+        "case:p9-paste-escaped-delimiters"
+      ],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:proof-jq-arg-used",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-arg-used",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-argjson-used",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-argjson-used",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-from-file-filter",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-from-file-filter",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-head-quiet-real-multiple-files",
+      "command": "head",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/head.json",
+      "case_id": "proof-head-quiet-real-multiple-files",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-head-verbose-single-file",
+      "command": "head",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/head.json",
+      "case_id": "proof-head-verbose-single-file",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-tail-verbose-single-file",
+      "command": "tail",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tail.json",
+      "case_id": "proof-tail-verbose-single-file",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-grep-fixed-metacharacter",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "proof-grep-fixed-metacharacter",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-grep-ignore-case-positive",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "proof-grep-ignore-case-positive",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-rg-ignore-case-positive",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "proof-rg-ignore-case-positive",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-rg-smart-case-lowercase",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "proof-rg-smart-case-lowercase",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-rg-smart-case-uppercase",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "proof-rg-smart-case-uppercase",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-rg-word-regexp-boundaries",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "proof-rg-word-regexp-boundaries",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-rg-line-regexp-boundaries",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "proof-rg-line-regexp-boundaries",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-echo-no-newline-literal",
+      "command": "echo",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/echo.json",
+      "case_id": "proof-echo-no-newline-literal",
+      "aliases": [
+        "p0-echo-no-newline",
+        "case:p0-echo-no-newline"
+      ],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:proof-echo-disable-escapes-precedence",
+      "command": "echo",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/echo.json",
+      "case_id": "proof-echo-disable-escapes-precedence",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-printenv-null-mixed-result",
+      "command": "printenv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/printenv.json",
+      "case_id": "proof-printenv-null-mixed-result",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-basename-multiple-operands",
+      "command": "basename",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/basename.json",
+      "case_id": "proof-basename-multiple-operands",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-basename-literal-suffix-implies-multiple",
+      "command": "basename",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/basename.json",
+      "case_id": "proof-basename-literal-suffix-implies-multiple",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-basename-zero-terminator",
+      "command": "basename",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/basename.json",
+      "case_id": "proof-basename-zero-terminator",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-dirname-zero-multiple",
+      "command": "dirname",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/dirname.json",
+      "case_id": "proof-dirname-zero-multiple",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-indent-one",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-indent-one",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-tab-indent",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-tab-indent",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-logs-skips-invalid-lines",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-logs-skips-invalid-lines",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-jq-exit-empty-result",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "proof-jq-exit-empty-result",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-seq-equal-width-nonempty",
+      "command": "seq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/seq.json",
+      "case_id": "proof-seq-equal-width-nonempty",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-nl-unnumbered-padding",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "proof-nl-unnumbered-padding",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-nl-unnumbered-custom-separator",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "proof-nl-unnumbered-custom-separator",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-sh-stdin-positional-no-terminator",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "proof-sh-stdin-positional-no-terminator",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-nl-unnumbered-utf8-separator",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "proof-nl-unnumbered-utf8-separator",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-wc-c-byte-nbsp-scalar",
+      "command": "wc",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "proof-wc-c-byte-nbsp-scalar",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-wc-c-byte-nbsp-vector",
+      "command": "wc",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wc.json",
+      "case_id": "proof-wc-c-byte-nbsp-vector",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-ls-dereference-directory-operand",
+      "command": "ls",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ls.json",
+      "case_id": "proof-ls-dereference-directory-operand",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:proof-ls-preserve-directory-symlink-operand",
+      "command": "ls",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ls.json",
+      "case_id": "proof-ls-preserve-directory-symlink-operand",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:quality-env-chdir-child",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "quality-env-chdir-child",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-env-chdir-control",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "quality-env-chdir-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-find-exec-false-or-print",
+      "command": "find",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "quality-find-exec-false-or-print",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:quality-find-exec-true-or-print",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "quality-find-exec-true-or-print",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-ln-relative-cross-directory",
+      "command": "ln",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "quality-ln-relative-cross-directory",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-ln-relative-control",
+      "command": "ln",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "quality-ln-relative-control",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-cp-recursive-command-line-link",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "quality-cp-recursive-command-line-link",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-cp-recursive-command-line-link-control",
+      "command": "cp",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "quality-cp-recursive-command-line-link-control",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:quality-cp-update-older-fixed-times",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "quality-cp-update-older-fixed-times",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-find-readable-negative",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "quality-find-readable-negative",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:quality-mkdir-symbolic-special-darwin",
+      "command": "mkdir",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mkdir.json",
+      "case_id": "quality-mkdir-symbolic-special-darwin",
+      "aliases": [],
+      "platforms": [
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:quality-curl-data-raw-literal",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "quality-curl-data-raw-literal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-wget-timestamping-control",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "quality-wget-timestamping-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ],
   "release_commands": [
@@ -26154,7 +26050,8 @@
         "release-metadata-base32-help",
         "release-metadata-base32-version",
         "base32-nonzero-tail-bits-accepted",
-        "base32-prefix-before-malformed-padding"
+        "base32-prefix-before-malformed-padding",
+        "proof-base32-ignore-garbage"
       ]
     },
     {
@@ -26291,7 +26188,6 @@
         "o10-mktemp-suffix-directory",
         "o10-mktemp-suffix-requires-final-X",
         "o10-mktemp-t-separator",
-        "p0-mktemp-help",
         "release-metadata-mktemp-help",
         "release-metadata-mktemp-version"
       ]
@@ -26336,7 +26232,6 @@
         "o10-realpath-strip-existing-link",
         "o10-realpath-strip-file-slash",
         "o10-realpath-strip-last-alias",
-        "p0-realpath-help",
         "release-metadata-realpath-help",
         "release-metadata-realpath-version",
         "o10-realpath-relative-root-self"
@@ -26362,7 +26257,9 @@
         "o6-rev-unterminated",
         "p0-rev-lines",
         "release-metadata-rev-help",
-        "release-metadata-rev-version"
+        "release-metadata-rev-version",
+        "proof-rev-record-boundary-1024",
+        "proof-rev-record-boundary-8192"
       ]
     },
     {
@@ -26542,7 +26439,6 @@
         "o12-more-8",
         "o12-more-9",
         "o12-text-byte-names",
-        "p0-tree-help",
         "release-metadata-tree-help",
         "release-metadata-tree-version"
       ]
@@ -26602,9 +26498,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p0-unlink-help",
-        "repair-unlink-one",
         "release-metadata-unlink-help",
+        "repair-unlink-one",
         "repair-edge-unlink-dash-name",
         "repair-unlink-extra-operands",
         "release-metadata-unlink-version",
@@ -26622,7 +26517,6 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p0-yes-help",
         "release-metadata-yes-help",
         "release-metadata-yes-version"
       ]
@@ -26649,8 +26543,6 @@
         "compat-text-line-652",
         "compat-catalog-line-4",
         "compat-catalog-line-366",
-        "p9-base64-wrap-boundary",
-        "p9-base64-ignore-garbage",
         "repair-alias-base64-decode",
         "release-metadata-base64-help",
         "release-metadata-base64-version"
@@ -26667,16 +26559,15 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p9-basename-root",
-        "p9-basename-empty",
-        "compat-text-line-653",
         "compat-text-line-654",
+        "compat-text-line-653",
         "compat-text-line-655",
-        "compat-catalog-line-14",
-        "phase3-basename-suffix",
         "release-metadata-basename-help",
-        "p9-basename-repeated-separators",
-        "release-metadata-basename-version"
+        "phase3-basename-suffix",
+        "release-metadata-basename-version",
+        "proof-basename-multiple-operands",
+        "proof-basename-literal-suffix-implies-multiple",
+        "proof-basename-zero-terminator"
       ]
     },
     {
@@ -26693,7 +26584,6 @@
         "compat-stdin-cat",
         "compat-text-line-33",
         "compat-text-line-675",
-        "phase3-cat-formatting",
         "compat-catalog-line-22",
         "phase0-cat-double-dash",
         "cat-fixed-mtime-hardlink",
@@ -26701,7 +26591,11 @@
         "release-metadata-cat-help",
         "repair-alias-cat-unbuffered",
         "release-metadata-cat-version",
-        "repair-alias-cat-number-nonblank"
+        "repair-alias-cat-number-nonblank",
+        "proof-cat-number-empty-record",
+        "proof-cat-nonblank-overrides-number-first",
+        "proof-cat-nonblank-overrides-number-last",
+        "proof-cat-unicode-path-binary-tail"
       ]
     },
     {
@@ -26716,12 +26610,12 @@
       "releasable": true,
       "case_ids": [
         "phase4-chmod-numeric",
-        "compat-catalog-line-32",
         "release-metadata-chmod-help",
         "p8-chmod-symbolic-assignment",
         "release-metadata-chmod-version",
         "compat-text-chmod-reference-rejected",
-        "compat-filesystem-windows-chmod-boundary"
+        "compat-filesystem-windows-chmod-boundary",
+        "proof-chmod-reference-boundary-preserves-mode"
       ]
     },
     {
@@ -26736,7 +26630,7 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-40",
+        "release-metadata-cmp-help",
         "compat-text-cmp-different-status",
         "compat-text-cmp-equal-status",
         "compat-text-cmp-error-status",
@@ -26749,8 +26643,6 @@
         "o7-cmp-quoted-eof-name",
         "p9-cmp-different",
         "p9-cmp-implicit-stdin",
-        "phase3-cmp-equal",
-        "release-metadata-cmp-help",
         "release-metadata-cmp-version"
       ]
     },
@@ -26774,17 +26666,15 @@
       "releasable": true,
       "case_ids": [
         "phase3-comm-columns",
-        "p9-comm-zero-terminated",
         "compat-text-comm-nul-records",
         "compat-text-comm-check-order",
         "compat-text-comm-nocheck-precedence",
         "compat-text-comm-default-order",
         "compat-text-comm-pairable-unsorted",
         "compat-merge-comm",
-        "compat-catalog-line-48",
+        "release-metadata-comm-help",
         "compat-catalog-line-375",
         "repair-alias-comm-zero-terminated",
-        "release-metadata-comm-help",
         "release-metadata-comm-version",
         "o1-comm-total",
         "o1-comm-total-123",
@@ -26813,13 +26703,16 @@
         "phase4-cp-regular",
         "p8-cp-update-older",
         "p8-cp-numbered-backup",
-        "compat-catalog-line-56",
+        "release-metadata-cp-help",
         "compat-filesystem-copy",
         "p8-cp-command-line-link",
-        "release-metadata-cp-help",
         "release-metadata-cp-version",
         "compat-filesystem-nested-copy",
-        "compat-text-cp-preserve-rejected"
+        "compat-text-cp-preserve-rejected",
+        "proof-cp-no-clobber-preserves-existing",
+        "quality-cp-recursive-command-line-link",
+        "quality-cp-recursive-command-line-link-control",
+        "quality-cp-update-older-fixed-times"
       ]
     },
     {
@@ -26835,7 +26728,7 @@
       "case_ids": [
         "phase2-curl-location",
         "phase2-curl-post-data",
-        "compat-catalog-line-64",
+        "release-metadata-curl-help",
         "phase2-curl-output-file",
         "phase2-curl-remote-name",
         "phase2-curl-upload-file",
@@ -26846,7 +26739,6 @@
         "transfer-curl-head-length",
         "phase2-curl-fail-status-22",
         "phase2-curl-https-insecure",
-        "release-metadata-curl-help",
         "transfer-curl-not-modified",
         "p1-curl-redirect-limit-zero",
         "phase2-curl-does-not-follow",
@@ -26871,7 +26763,8 @@
         "network-auth-cookie",
         "network-auth-cookie-oracle",
         "network-transfer-boundaries",
-        "network-transfer-boundaries-oracle"
+        "network-transfer-boundaries-oracle",
+        "quality-curl-data-raw-literal"
       ]
     },
     {
@@ -26894,10 +26787,9 @@
       "releasable": true,
       "case_ids": [
         "phase3-cut-field",
-        "p9-cut-zero-terminated",
+        "compat-text-line-684",
         "p9-cut-bytes",
         "compat-text-line-605",
-        "compat-text-line-684",
         "compat-text-line-693",
         "compat-text-line-694",
         "compat-catalog-line-72",
@@ -26930,18 +26822,15 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p9-dirname-root",
-        "p9-dirname-empty",
-        "compat-text-line-664",
         "compat-text-line-665",
+        "compat-text-line-664",
         "compat-text-line-666",
         "phase3-dirname-basic",
-        "compat-catalog-line-73",
+        "release-metadata-dirname-help",
         "compat-catalog-line-340",
         "compat-catalog-line-349",
-        "release-metadata-dirname-help",
-        "p9-dirname-repeated-separators",
-        "release-metadata-dirname-version"
+        "release-metadata-dirname-version",
+        "proof-dirname-zero-multiple"
       ]
     },
     {
@@ -26961,15 +26850,13 @@
         "p0-echo-help",
         "p0-echo-version",
         "phase3-echo-basic",
-        "p0-echo-no-newline",
+        "proof-echo-no-newline-literal",
         "compat-text-line-717",
         "compat-text-line-718",
-        "compat-catalog-line-81",
         "p0-echo-enable-escapes",
-        "compat-catalog-line-243",
         "p0-echo-disable-escapes",
         "p9-echo-octal-per-argument",
-        "p9-echo-double-dash-literal"
+        "proof-echo-disable-escapes-precedence"
       ]
     },
     {
@@ -27022,12 +26909,11 @@
         "o13-env-s-unset",
         "o13-env-s-unset-quoted",
         "o13-env-s-variables",
-        "p2-env-long-aliases",
-        "p2-env-non-shell-assignment-name",
         "phase5-env-chdir",
         "phase5-env-clean-null",
-        "release-metadata-env-help",
-        "release-metadata-env-version"
+        "release-metadata-env-version",
+        "quality-env-chdir-child",
+        "quality-env-chdir-control"
       ]
     },
     {
@@ -27043,9 +26929,8 @@
       "case_ids": [
         "p0-false-help",
         "p0-false-version",
-        "phase0-false-status",
-        "compat-text-line-745",
-        "compat-catalog-line-90"
+        "compat-catalog-line-90",
+        "compat-text-line-745"
       ]
     },
     {
@@ -27062,11 +26947,13 @@
         "p8-find-readable",
         "p8-find-xtype-link",
         "phase4-find-metadata",
-        "compat-catalog-line-91",
+        "release-metadata-find-help",
         "phase3-find-exec-status",
         "phase4-find-prune-depth",
-        "release-metadata-find-help",
-        "release-metadata-find-version"
+        "release-metadata-find-version",
+        "quality-find-exec-false-or-print",
+        "quality-find-exec-true-or-print",
+        "quality-find-readable-negative"
       ]
     },
     {
@@ -27091,20 +26978,15 @@
         "compat-text-line-278",
         "compat-text-line-286",
         "compat-text-line-312",
-        "p2-grep-zero-records",
-        "p2-grep-binary-report",
-        "compat-catalog-line-99",
+        "compat-text-grep-binary-stderr",
+        "release-metadata-grep-help",
         "grep-basic-plus-literal",
-        "p2-grep-repeated-context",
         "grep-no-context-separator",
         "grep-extended-longest-only",
-        "release-metadata-grep-help",
-        "p2-grep-context-byte-offset",
         "p2-grep-recursive-selection",
         "repair-alias-grep-recursive",
         "release-metadata-grep-version",
         "repair-alias-grep-line-number",
-        "compat-text-grep-binary-stderr",
         "compat-text-grep-silent-missing",
         "s1-grep-independent-backreferences",
         "s1-grep-word-endpoints",
@@ -27115,7 +26997,9 @@
         "s1-grep-ignore-case-upper-class",
         "s1-grep-ignore-case-negated-class",
         "s1-grep-ignore-case-negative-space-class",
-        "s1-grep-ignore-case-reference-original-bytes"
+        "s1-grep-ignore-case-reference-original-bytes",
+        "proof-grep-fixed-metacharacter",
+        "proof-grep-ignore-case-positive"
       ]
     },
     {
@@ -27137,17 +27021,15 @@
         "compat-text-line-581",
         "compat-text-line-590",
         "compat-text-line-591",
-        "p3-head-exclude-tail",
-        "p3-head-zero-records",
         "phase3-head-line-count",
         "compat-catalog-line-107",
         "repair-alias-head-lines",
         "release-metadata-head-help",
-        "p3-head-binary-prefix-count",
         "p3-head-multiple-file-headers",
         "release-metadata-head-version",
-        "p3-head-explicit-positive-count",
-        "repair-alias-head-zero-terminated"
+        "repair-alias-head-zero-terminated",
+        "proof-head-quiet-real-multiple-files",
+        "proof-head-verbose-single-file"
       ]
     },
     {
@@ -27173,18 +27055,15 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "phase3-join-unpaired-output-list",
-        "p9-join-zero-terminated",
-        "p9-join-check-order",
         "compat-text-join-output-list",
         "compat-text-join-nul-records",
+        "p9-join-check-order",
         "compat-text-join-check-order",
         "compat-text-join-nocheck-precedence",
         "compat-merge-join",
-        "compat-catalog-line-108",
+        "release-metadata-join-help",
         "repair-alias-join-after",
         "repair-alias-join-zero-terminated",
-        "release-metadata-join-help",
         "release-metadata-join-version",
         "o1-join-ignore-case",
         "o1-join-auto",
@@ -27267,7 +27146,19 @@
         "repair-alias-jq-compact-output",
         "repair-edge-jq-slice-type-error",
         "repair-edge-jq-open-empty-slices",
-        "repair-final-jq-issue4-expression"
+        "repair-final-jq-issue4-expression",
+        "proof-jq-group-null-false-true",
+        "proof-jq-group-member-order",
+        "proof-jq-group-numeric-order",
+        "proof-jq-sort-stable-equal-keys",
+        "proof-jq-full-group-key-stream",
+        "proof-jq-arg-used",
+        "proof-jq-argjson-used",
+        "proof-jq-from-file-filter",
+        "proof-jq-indent-one",
+        "proof-jq-tab-indent",
+        "proof-jq-logs-skips-invalid-lines",
+        "proof-jq-exit-empty-result"
       ]
     },
     {
@@ -27285,14 +27176,11 @@
         "p0-jqlog-file",
         "p0-jqlog-help-newline",
         "p0-jqlog-error-newline",
-        "compat-catalog-line-126",
         "repair-jqlog-slice-lines",
-        "release-metadata-jqlog-help",
-        "compat-text-jqlog-help-newline",
         "release-metadata-jqlog-version",
-        "compat-text-jqlog-error-newline",
         "repair-edge-jqlog-slice-type-error",
-        "repair-final-jqlog-non-json-whitespace"
+        "repair-final-jqlog-non-json-whitespace",
+        "proof-jqlog-group-null-false-true"
       ]
     },
     {
@@ -27309,9 +27197,8 @@
         "p8-ln-relative",
         "phase4-ln-symbolic",
         "repair-fs-ln-backup",
-        "compat-catalog-line-134",
-        "repair-fs-ln-force-last",
         "release-metadata-ln-help",
+        "repair-fs-ln-force-last",
         "repair-alias-ln-symbolic",
         "release-metadata-ln-version",
         "repair-fs-ln-no-dereference",
@@ -27319,7 +27206,9 @@
         "repair-fs-ln-interactive-last",
         "repair-fs-ln-target-directory",
         "compat-filesystem-symbolic-link",
-        "compat-filesystem-windows-ln-boundary"
+        "compat-filesystem-windows-ln-boundary",
+        "quality-ln-relative-cross-directory",
+        "quality-ln-relative-control"
       ]
     },
     {
@@ -27345,7 +27234,7 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-142",
+        "release-metadata-ls-help",
         "ls-links-times-0",
         "ls-links-times-1",
         "ls-links-times-10",
@@ -27447,12 +27336,13 @@
         "p8-ls-dangling-classify",
         "p8-ls-size-reverse",
         "phase3-ls-basic",
-        "release-metadata-ls-help",
         "release-metadata-ls-version",
         "repair-alias-ls-access-time",
         "repair-alias-ls-change-time",
         "repair-alias-ls-classify",
-        "repair-alias-ls-dereference-command-line"
+        "repair-alias-ls-dereference-command-line",
+        "proof-ls-dereference-directory-operand",
+        "proof-ls-preserve-directory-symlink-operand"
       ]
     },
     {
@@ -27467,10 +27357,9 @@
       "releasable": true,
       "case_ids": [
         "p7-make-conditional",
-        "compat-catalog-line-150",
+        "release-metadata-make-help",
         "p7-make-unexpected-endif",
         "p7-make-what-if-dependency",
-        "release-metadata-make-help",
         "release-metadata-make-version",
         "phase5-make-include-cli-variable",
         "p7-make-unbounded-jobs-keeps-target",
@@ -27491,12 +27380,11 @@
       "case_ids": [
         "phase4-mkdir-parents",
         "mkdir-parent-leaf-mode",
-        "compat-catalog-line-158",
+        "release-metadata-mkdir-help",
         "o10-mkdir-verbose-parents",
         "o10-mkdir-symbolic-special",
         "o10-mkdir-omitted-recovered",
         "o10-mkdir-symbolic-explicit",
-        "release-metadata-mkdir-help",
         "o10-mkdir-symbolic-X-directory",
         "o10-mkdir-symbolic-parent-leaf",
         "o10-mkdir-symbolic-sticky-only",
@@ -27512,7 +27400,8 @@
         "o10-mkdir-symbolic-sticky-before-all",
         "o10-mkdir-symbolic-existing-unchanged",
         "o10-mkdir-windows-existing-symbolic-noop",
-        "o10-mkdir-symbolic-invalid-before-operands"
+        "o10-mkdir-symbolic-invalid-before-operands",
+        "quality-mkdir-symbolic-special-darwin"
       ]
     },
     {
@@ -27530,9 +27419,8 @@
         "phase4-mv-regular",
         "repair-fs-mv-backup",
         "repair-fs-mv-same-path",
-        "compat-catalog-line-166",
-        "compat-filesystem-rename",
         "release-metadata-mv-help",
+        "compat-filesystem-rename",
         "repair-fs-mv-same-backup",
         "repair-fs-mv-same-update",
         "repair-fs-mv-update-older",
@@ -27564,14 +27452,17 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "p9-nl-sections",
-        "phase3-nl-empty",
-        "p9-nl-number-format",
-        "compat-text-line-623",
         "compat-text-line-945",
         "compat-catalog-line-174",
+        "p9-nl-number-format",
+        "compat-text-line-623",
         "release-metadata-nl-help",
-        "release-metadata-nl-version"
+        "release-metadata-nl-version",
+        "proof-nl-increment-activation",
+        "proof-nl-zero-padded-number-format",
+        "proof-nl-unnumbered-padding",
+        "proof-nl-unnumbered-custom-separator",
+        "proof-nl-unnumbered-utf8-separator"
       ]
     },
     {
@@ -27591,10 +27482,9 @@
         "phase3-paste-parallel",
         "compat-catalog-line-175",
         "compat-catalog-line-376",
-        "p9-paste-zero-terminated",
-        "p9-paste-escaped-delimiters",
-        "release-metadata-paste-help",
         "compat-text-paste-nul-records",
+        "proof-paste-serial-delimiter-cycle",
+        "release-metadata-paste-help",
         "release-metadata-paste-version",
         "repair-alias-paste-zero-terminated"
       ]
@@ -27610,13 +27500,12 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-176",
-        "compat-catalog-line-350",
-        "p9-printenv-mixed-status",
-        "phase3-printenv-selected",
         "release-metadata-printenv-help",
+        "compat-catalog-line-350",
+        "compat-text-printenv-present-missing",
+        "phase3-printenv-selected",
         "release-metadata-printenv-version",
-        "compat-text-printenv-present-missing"
+        "proof-printenv-null-mixed-result"
       ]
     },
     {
@@ -27631,7 +27520,6 @@
       "releasable": true,
       "case_ids": [
         "phase3-printf-format",
-        "p9-printf-repeated-format",
         "compat-text-line-695",
         "compat-text-line-704",
         "compat-text-line-705",
@@ -27670,9 +27558,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-194",
-        "repair-alias-pwd-logical",
         "release-metadata-pwd-help",
+        "repair-alias-pwd-logical",
         "phase3-pwd-working-directory",
         "release-metadata-pwd-version",
         "compat-text-pwd-invalid-logical-fallback"
@@ -27690,7 +27577,7 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-202",
+        "release-metadata-rm-help",
         "compat-filesystem-remove-link",
         "compat-filesystem-rm-current-directory",
         "compat-filesystem-rm-dash",
@@ -27722,7 +27609,6 @@
         "o10-rm-symlink-removal",
         "o10-rm-verbose-recursive",
         "phase4-rm-regular",
-        "release-metadata-rm-help",
         "release-metadata-rm-version",
         "repair-alias-rm-recursive",
         "rm-final-parent-backslash",
@@ -27740,7 +27626,6 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-210",
         "release-metadata-rmdir-help",
         "phase4-rmdir-ignore-nonempty",
         "release-metadata-rmdir-version",
@@ -27761,25 +27646,19 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "phase3-seq-basic",
-        "p9-seq-descending",
-        "p0-seq-two-operand-descending",
+        "compat-text-line-707",
+        "seq-descending-explicit",
+        "seq-descending-default",
         "p0-seq-version",
         "p0-seq-equal-width",
         "p0-seq-separator",
         "p0-seq-one-number",
-        "p0-seq-two-number",
         "p0-seq-three-number",
-        "seq-descending-default",
-        "seq-descending-explicit",
-        "compat-text-line-707",
         "compat-text-line-709",
-        "compat-catalog-line-218",
-        "compat-catalog-line-251",
+        "release-metadata-seq-help",
         "repair-edge-seq-long-aliases",
         "repair-edge-seq-precision-1e4097",
         "repair-edge-seq-precision-1e-4097",
-        "release-metadata-seq-help",
         "o3-seq-format-basic",
         "o3-seq-format-percent",
         "o3-seq-format-separator",
@@ -27808,7 +27687,8 @@
         "o3-extra-seq-format-underflow-zero",
         "o3-extra-seq-format-left-width-endpoint",
         "o3-extra-seq-format-signed-zero-pad",
-        "o3-extra-seq-format-empty-range"
+        "o3-extra-seq-format-empty-range",
+        "proof-seq-equal-width-nonempty"
       ]
     },
     {
@@ -27824,41 +27704,31 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
-        "phase5-sh-if",
-        "phase5-sh-for",
-        "phase5-sh-case",
+        "compat-shell-line-21",
+        "compat-shell-line-39",
+        "compat-shell-line-30",
         "compat-stdin-sh",
-        "phase5-sh-shift",
-        "phase5-sh-heredoc",
+        "compat-shell-line-86",
+        "compat-shell-line-12",
         "p0-sh-public-error",
         "p0-sh-stdin-script",
-        "phase5-sh-grouping",
+        "compat-shell-line-68",
         "compat-shell-line-3",
-        "compat-shell-line-12",
-        "compat-shell-line-21",
-        "compat-shell-line-30",
-        "compat-shell-line-39",
         "compat-shell-line-48",
         "compat-shell-line-59",
-        "compat-shell-line-68",
         "compat-shell-line-77",
-        "compat-shell-line-86",
         "compat-shell-line-95",
         "compat-text-line-165",
         "compat-shell-line-103",
-        "phase5-sh-while-until",
         "compat-catalog-line-234",
         "release-metadata-sh-help",
-        "phase5-sh-function-return",
-        "phase5-sh-parameter-length",
-        "phase5-sh-stdin-positional",
         "sh-arithmetic-error-status",
-        "compat-shell-array-boundary",
         "release-metadata-sh-version",
         "phase5-sh-command-positional",
-        "phase5-sh-command-substitution",
         "sh-substitution-failure-status",
-        "sh-command-substitution-trailing-newlines"
+        "sh-command-substitution-trailing-newlines",
+        "proof-sh-stdin-positional-contract",
+        "proof-sh-stdin-positional-no-terminator"
       ]
     },
     {
@@ -27873,7 +27743,7 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-226",
+        "release-metadata-sha256sum-help",
         "compat-stdin-sha256sum",
         "compat-text-sha256sum-ignore-missing",
         "compat-text-sha256sum-last-binary",
@@ -27884,7 +27754,6 @@
         "o9-sha256sum-tag",
         "p9-sha256sum-quiet-check",
         "phase3-sha256sum-stdin",
-        "release-metadata-sha256sum-help",
         "release-metadata-sha256sum-version",
         "repair-alias-sha256sum-check"
       ]
@@ -27905,8 +27774,7 @@
         "phase3-sleep-zero",
         "compat-text-line-727",
         "compat-text-line-728",
-        "p9-sleep-double-dash",
-        "compat-catalog-line-235"
+        "p9-sleep-double-dash"
       ]
     },
     {
@@ -27946,30 +27814,20 @@
       "releasable": true,
       "case_ids": [
         "phase3-sort-basic",
-        "p3-sort-multiple-key-modifiers",
-        "p3-sort-general-numeric",
-        "p3-sort-general-numeric-classes",
-        "p3-sort-local-key-modifier-combination",
-        "p3-sort-blank-field-boundaries",
-        "p3-sort-character-modifiers",
-        "p3-sort-unique-key-stability",
-        "p3-sort-human-numeric",
-        "p3-sort-month",
-        "p3-sort-version",
-        "p3-sort-zero-records",
-        "p3-sort-ignore-nonprinting",
-        "p3-sort-ignore-case-c-locale",
-        "p3-sort-check-quiet",
         "compat-text-line-372",
+        "p3-sort-general-numeric",
         "compat-text-line-381",
         "compat-text-line-390",
         "compat-text-line-399",
+        "compat-text-line-426",
         "compat-text-line-408",
         "compat-text-line-417",
-        "compat-text-line-426",
-        "compat-text-line-435",
+        "p3-sort-month",
         "compat-text-line-436",
         "compat-text-line-445",
+        "p3-sort-ignore-nonprinting",
+        "compat-text-line-435",
+        "p3-sort-check-quiet",
         "compat-text-line-454",
         "compat-text-line-467",
         "compat-text-line-468",
@@ -28046,7 +27904,8 @@
         "r3-sort-buffer-percent-boundary",
         "r3-sort-reverse",
         "r3-sort-zero-percent-unique-temporary",
-        "r3-sort-buffer-fanin-random"
+        "r3-sort-buffer-fanin-random",
+        "proof-sort-dictionary-order-activation"
       ]
     },
     {
@@ -28083,7 +27942,8 @@
         "release-metadata-tail-help",
         "release-metadata-tail-version",
         "repair-alias-tail-follow",
-        "repair-alias-tail-sleep-interval"
+        "repair-alias-tail-sleep-interval",
+        "proof-tail-verbose-single-file"
       ]
     },
     {
@@ -28098,7 +27958,7 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
-        "compat-catalog-line-261",
+        "release-metadata-tee-help",
         "compat-stdin-tee",
         "compat-text-tee-partial-output",
         "o13-tee-append-p",
@@ -28116,7 +27976,6 @@
         "o13-tee-repeat-p-last",
         "o13-tee-short-p",
         "phase0-tee-filesystem",
-        "release-metadata-tee-help",
         "release-metadata-tee-version",
         "tee-default-pipe-boundary",
         "tee-output-errors",
@@ -28137,7 +27996,6 @@
         "phase3-test-string",
         "p8-test-regular-size",
         "p8-test-dangling-link",
-        "compat-catalog-line-269",
         "release-metadata-test-help",
         "release-metadata-test-version"
       ]
@@ -28154,12 +28012,12 @@
       "releasable": true,
       "case_ids": [
         "phase4-touch-create",
-        "compat-catalog-line-285",
+        "release-metadata-touch-help",
         "compat-catalog-line-358",
         "touch-existing-boundary",
-        "release-metadata-touch-help",
         "release-metadata-touch-version",
-        "compat-text-touch-date-rejected"
+        "compat-text-touch-date-rejected",
+        "proof-touch-no-create-missing"
       ]
     },
     {
@@ -28213,9 +28071,8 @@
       "case_ids": [
         "p0-true-help",
         "p0-true-version",
-        "phase3-true-status",
-        "compat-text-line-744",
-        "compat-catalog-line-294"
+        "compat-catalog-line-294",
+        "compat-text-line-744"
       ]
     },
     {
@@ -28240,8 +28097,6 @@
       "releasable": true,
       "case_ids": [
         "phase3-uniq-adjacent",
-        "p3-uniq-field-character-selection",
-        "p3-uniq-zero-records",
         "compat-text-line-476",
         "compat-text-line-485",
         "compat-text-line-494",
@@ -28287,9 +28142,8 @@
       "releasable": true,
       "case_ids": [
         "phase3-wc-lines",
-        "p3-wc-max-line-length",
-        "p3-wc-files0-alignment",
         "compat-text-line-495",
+        "p3-wc-files0-alignment",
         "compat-text-line-496",
         "compat-text-line-536",
         "compat-text-line-596",
@@ -28328,7 +28182,9 @@
         "o1-wc-read-error",
         "o1-wc-c-profile-chars-binary",
         "o1-wc-c-profile-bytes-chars-binary",
-        "o1-wc-total-only-all-counters-binary"
+        "o1-wc-total-only-all-counters-binary",
+        "proof-wc-c-byte-nbsp-scalar",
+        "proof-wc-c-byte-nbsp-vector"
       ]
     },
     {
@@ -28344,7 +28200,7 @@
       "case_ids": [
         "p1-wget-continue-range",
         "phase2-wget-input-file",
-        "compat-catalog-line-306",
+        "release-metadata-wget-help",
         "phase2-wget-remote-file",
         "repair-final-wget-basic",
         "p1-wget-binary-body-file",
@@ -28353,7 +28209,6 @@
         "phase2-wget-http-status-8",
         "phase2-wget-multiple-urls",
         "transfer-wget-head-length",
-        "release-metadata-wget-help",
         "transfer-wget-not-modified",
         "transfer-wget-chunk-complete",
         "transfer-wget-close-complete",
@@ -28373,7 +28228,8 @@
         "p1-wget-content-disposition-collision",
         "phase2-wget-https-no-check-certificate",
         "transfer-wget-unsatisfied-without-resume",
-        "p1-wget-continue-new-file"
+        "p1-wget-continue-new-file",
+        "quality-wget-timestamping-control"
       ]
     },
     {
@@ -28506,8 +28362,6 @@
         "p7-xxd-addressed-reverse",
         "p7-xxd-include",
         "p7-xxd-malformed-address",
-        "phase3-xxd-reverse-seek",
-        "phase3-xxd-seek",
         "release-metadata-xxd-help",
         "release-metadata-xxd-version",
         "repair-alias-xxd-reverse",
@@ -28730,8 +28584,7 @@
         "o9-sum-status-warn",
         "o9-sum-status-wrong",
         "o9-sum-tag-escaped",
-        "release-metadata-md5sum-help",
-        "release-metadata-md5sum-version"
+        "release-metadata-md5sum-help"
       ]
     },
     {
@@ -28754,8 +28607,7 @@
         "checksum-sha1sum-wrong-length",
         "checksum-sha1sum-zero-check",
         "o9-sha1sum-tag",
-        "release-metadata-sha1sum-help",
-        "release-metadata-sha1sum-version"
+        "release-metadata-sha1sum-help"
       ]
     },
     {
@@ -28776,8 +28628,7 @@
         "checksum-sha512sum-stdin",
         "checksum-sha512sum-version",
         "o9-sha512sum-tag",
-        "release-metadata-sha512sum-help",
-        "release-metadata-sha512sum-version"
+        "release-metadata-sha512sum-help"
       ]
     },
     {
@@ -28907,7 +28758,8 @@
         "sed-spec-append-join-missing-default",
         "sed-spec-append-join-missing-quiet",
         "sed-spec-append-next-missing-default",
-        "sed-spec-append-next-missing-quiet"
+        "sed-spec-append-next-missing-quiet",
+        "proof-sed-in-place-boundary-preserves-source"
       ]
     },
     {
@@ -29610,7 +29462,12 @@
         "rg-compat-summary-count-matches",
         "rg-compat-summary-files-with-matches",
         "rg-compat-summary-files-with-matches-null",
-        "rg-compat-summary-files-without-match"
+        "rg-compat-summary-files-without-match",
+        "proof-rg-ignore-case-positive",
+        "proof-rg-smart-case-lowercase",
+        "proof-rg-smart-case-uppercase",
+        "proof-rg-word-regexp-boundaries",
+        "proof-rg-line-regexp-boundaries"
       ]
     }
   ]

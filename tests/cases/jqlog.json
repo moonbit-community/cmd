@@ -18,7 +18,14 @@
         "help"
       ],
       "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-text-jqlog-help-newline",
+        "compat-catalog-line-126",
+        "release-metadata-jqlog-help"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "p0-jqlog-error-newline",
@@ -37,7 +44,10 @@
         "error"
       ],
       "expected_stdout_text": "",
-      "expected_stderr_text": "Error: Unknown option: \"--bad\"\nUsage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n"
+      "expected_stderr_text": "Error: Unknown option: \"--bad\"\nUsage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
+      "aliases": [
+        "compat-text-jqlog-error-newline"
+      ]
     },
     {
       "id": "p0-jqlog-file",
@@ -63,52 +73,6 @@
       ],
       "expected_stdout_text": "1\n",
       "expected_stderr_text": ""
-    },
-    {
-      "id": "compat-text-jqlog-help-newline",
-      "command": "jqlog",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "compat-text-jqlog-error-newline",
-      "command": "jqlog",
-      "args": [
-        "--bad"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 2,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_text": "",
-      "expected_stderr_text": "Error: Unknown option: \"--bad\"\nUsage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n"
-    },
-    {
-      "id": "compat-catalog-line-126",
-      "command": "jqlog",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "repair-jqlog-slice-lines",
@@ -172,25 +136,6 @@
       "source_version": "2026-10-11 second review; pinned oracle where enabled"
     },
     {
-      "id": "release-metadata-jqlog-help",
-      "command": "jqlog",
-      "args": [
-        "--help"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "help"
-      ],
-      "source_version": "workspace cli/jqlog@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
-      "expected_stderr_text": ""
-    },
-    {
       "id": "release-metadata-jqlog-version",
       "command": "jqlog",
       "args": [
@@ -208,6 +153,26 @@
       "source_version": "workspace cli/jqlog@0.2.4 metadata contract",
       "expected_stdout_text": "jqlog 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-jqlog-group-null-false-true",
+      "command": "jqlog",
+      "args": [
+        "group_by(.active) | map(length)"
+      ],
+      "stdin_text": "[{\"active\":true},{\"active\":true},{\"active\":false},{}]\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "[1,1,2]\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "group-key-order",
+        "shared-evaluator"
+      ],
+      "source_version": "Independent jq group ordering expectation through jqlog JSONL contract; current candidate execution pending"
     }
   ]
 }

@@ -13,7 +13,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
     },
     {
       "id": "p8-test-regular-size",
@@ -31,7 +35,18 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "x"
+        }
+      ]
     },
     {
       "id": "p8-test-dangling-link",
@@ -54,23 +69,18 @@
       "normalizations": [],
       "host_platforms": [
         "posix"
-      ]
-    },
-    {
-      "id": "compat-catalog-line-269",
-      "command": "test",
-      "args": [
-        "--help"
       ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
+      "oracle": true,
+      "expected_stdout_text": "",
       "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "expected_files": [
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ]
     },
     {
       "id": "release-metadata-test-help",
@@ -89,7 +99,12 @@
       ],
       "source_version": "workspace cli/test@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-269"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-test-version",

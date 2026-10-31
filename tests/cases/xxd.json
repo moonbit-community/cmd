@@ -2,36 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "phase3-xxd-seek",
-      "command": "xxd",
-      "args": [
-        "-s",
-        "4",
-        "-l",
-        "4"
-      ],
-      "stdin_text": "0123456789",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-xxd-reverse-seek",
-      "command": "xxd",
-      "args": [
-        "-r",
-        "-p",
-        "-s",
-        "2"
-      ],
-      "stdin_text": "6162\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
       "id": "p7-xxd-include",
       "command": "xxd",
       "args": [
@@ -41,7 +11,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "  0x61, 0x62, 0x63\n"
     },
     {
       "id": "p7-xxd-addressed-reverse",
@@ -53,7 +27,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "00004142"
     },
     {
       "id": "p7-xxd-malformed-address",
@@ -65,7 +43,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "00000000000000000000"
     },
     {
       "id": "compat-text-line-42",
@@ -84,7 +66,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "0123456789",
       "expected_stdout_text": "00000004: 3435 3637                                4567\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase3-xxd-seek"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-51",
@@ -103,7 +89,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "6162\n",
       "expected_stdout_hex": "00006162",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase3-xxd-reverse-seek"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-catalog-line-324",

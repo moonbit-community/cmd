@@ -11,7 +11,18 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "side-effect\n",
+      "expected_files": [
+        {
+          "path": "copy.txt",
+          "kind": "file",
+          "content_text": "side-effect\n"
+        }
+      ]
     },
     {
       "id": "compat-text-tee-partial-output",
@@ -36,22 +47,6 @@
           "content_hex": "73747265616d0064617461"
         }
       ]
-    },
-    {
-      "id": "compat-catalog-line-261",
-      "command": "tee",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "compat-stdin-tee",
@@ -84,7 +79,12 @@
       ],
       "source_version": "workspace cli/tee@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: tee [-ap] [--output-error[=MODE]] [FILE...]\n  -a, --append             append instead of truncating output files\n  -p                       ignore broken output pipes; continue other sinks\n      --output-error[=MODE] warn, warn-nopipe, exit, exit-nopipe\n      --help               display this help and exit\n      --version            display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-261"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-tee-version",
@@ -132,8 +132,7 @@
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,
@@ -174,8 +173,7 @@
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,
@@ -211,13 +209,11 @@
       "expected_files": [
         {
           "path": "sink",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,
@@ -253,13 +249,11 @@
       "expected_files": [
         {
           "path": "sink",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,
@@ -299,8 +293,7 @@
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,
@@ -340,8 +333,7 @@
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,
@@ -381,8 +373,7 @@
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 0,
@@ -422,8 +413,7 @@
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 0,
@@ -465,8 +455,7 @@
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,
@@ -503,13 +492,11 @@
       "expected_files": [
         {
           "path": "sink",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,
@@ -544,13 +531,11 @@
       "expected_files": [
         {
           "path": "sink",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         },
         {
           "path": "later",
-          "exists": false,
-          "content_hex": ""
+          "exists": false
         }
       ],
       "expected_status": 1,

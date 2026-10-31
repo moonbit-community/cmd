@@ -31,6 +31,8 @@ fn add(
   status~ : Int32 = 0,
   compressed~ : Bool = false,
   stderr~ : String = "",
+  intent~ : String = "legacy-synthetic-regression",
+  unordered_lines~ : Bool = false,
 ) -> Unit {
   cases.push({
     id,
@@ -41,6 +43,8 @@ fn add(
     status,
     gzip: compressed,
     stderr,
+    intent,
+    unordered_lines,
   })
 }
 
@@ -60,7 +64,110 @@ struct Case {
   status : Int32
   gzip : Bool
   stderr : String
+  intent : String
+  unordered_lines : Bool
 } derive(ToJson)
+
+///|
+fn finite_duration(value : Double) -> Bool {
+  value > 0.0 && !value.is_inf()
+}
+
+///|
+// Required literals are deliberately present in every record. Candidate-miss
+// records place Q before the four digits, so verification must reject them.
+fn regex_route_byte(kind : String, offset : Int32) -> Byte {
+  let record = offset / 1024
+  let column = offset % 1024
+  let hit = kind == "hit" || (kind == "mixed" && record % 4 == 0)
+  let prefix = if hit { b"0001 alpha " } else { b"Q alpha 0001 " }
+  if column == 1023 {
+    b'\n'
+  } else if column < prefix.length() {
+    prefix[column]
+  } else if hit && column == 1022 {
+    b'Q'
+  } else {
+    (97 + ((record * 17 + column * 13) % 26)).to_byte()
+  }
+}
+
+///|
+async fn regex_route_corpora() -> Unit {
+  for kind in ["hit", "candidate-miss", "mixed"] {
+    let output = @fs.create(lab + "/regex-route-" + kind + "-8m")
+    defer output.close()
+    for block in 0..<128 {
+      output.write(Bytes::makei(65536, index =>
+        regex_route_byte(kind, block * 65536 + index)))
+    }
+  }
+}
+
+///|
+async fn mixed_tree_corpus() -> Unit {
+  let root = lab + "/mixed-tree"
+  @fs.mkdir(root, allow_exist=false)
+  @fs.write_file(root + "/.ignore", "ignored/\n*.skip\n")
+  for index in 0..<128 {
+    let depth = 1 + index % 5
+    let mut directory = root + "/group-" + (index % 11).to_string()
+    for level in 1..<depth {
+      directory += "/level-" + level.to_string()
+    }
+    @fs.mkdir(directory, recursive=true, allow_exist=true)
+    let size = [0, 31, 256, 4096, 65536, 1048576][index % 6]
+    let output = @fs.create(directory + "/record-" + index.to_string() + ".txt")
+    defer output.close()
+    let mut offset = 0
+    while offset < size {
+      let count = (size - offset).min(65536)
+      output.write(Bytes::makei(count, local => {
+        let at = offset + local
+        let marker = if index % 5 == 0 { b"alpha" } else { b"other" }
+        if at % 89 == 88 || at == size - 1 { b'\n' }
+        else if at % 89 < marker.length() { marker[at % 89] }
+        else { (97 + (at + index * 7) % 26).to_byte() }
+      }))
+      offset += count
+    }
+  }
+  @fs.mkdir(root + "/ignored")
+  @fs.write_file(root + "/ignored/hidden.txt", "alpha ignored\n")
+  @fs.write_file(root + "/excluded.skip", "alpha skipped\n")
+}
+
+///|
+fn assert_route_controls() -> Unit raise {
+  assert_true(finite_duration(1.0))
+  assert_false(finite_duration(0.0))
+  assert_false(finite_duration(-1.0))
+  for kind in ["hit", "candidate-miss", "mixed"] {
+    let bytes = Bytes::makei(8192, index => regex_route_byte(kind, index))
+    assert_eq(bytes.iter().filter(byte => byte == b'\n').count(), 8)
+    assert_eq(bytes.iter().filter(byte => byte == b'Q').count(), 8)
+    assert_eq(bytes.iter().filter(byte => byte == b'Z').count(), 0)
+    for record in 0..<8 {
+      let start = record * 1024
+      let hit = kind == "hit" || (kind == "mixed" && record % 4 == 0)
+      assert_eq(bytes[start], if hit { b'0' } else { b'Q' })
+      assert_eq(bytes[start + 1022] == b'Q', hit)
+    }
+  }
+}
+
+///|
+async fn assert_tree_relation() -> Unit {
+  let directory = @fs.tmpdir(prefix="cmd-tree-relation-")
+  defer @fs.rmdir(directory, recursive=true)
+  @fs.write_file(directory + "/left", "a:1\nb:2\na:1\n")
+  @fs.write_file(directory + "/right", "b:2\na:1\na:1\n")
+  assert_true(equal_line_multisets(directory + "/left", directory + "/right"))
+  @fs.write_file(directory + "/right", "b:2\na:1\n")
+  assert_false(equal_line_multisets(directory + "/left", directory + "/right"))
+  @fs.write_file(directory + "/right", "b:2\na:1\na:1")
+  assert_false(equal_line_multisets(directory + "/left", directory + "/right"))
+}
 
 ///|
 struct Sample {
@@ -221,6 +328,23 @@ async fn equal_files(a : String, b : String) -> Bool {
     offset += count.to_int64()
   }
   true
+}
+
+///|
+// Only controlled small tree listings declare unordered output. Preserve line
+// multiplicity and final terminators; never apply this to ordinary captures.
+async fn equal_line_multisets(a : String, b : String) -> Bool {
+  guard @fs.file_size(a) <= 1048576L && @fs.file_size(b) <= 1048576L else {
+    fail("declared tree output exceeds one-MiB normalization bound")
+  }
+  let left = @fs.read_file(a).text()
+  let right = @fs.read_file(b).text()
+  if left.has_suffix("\n") != right.has_suffix("\n") { return false }
+  let left = left.split("\n").map(StringView::to_owned).to_array()
+  let right = right.split("\n").map(StringView::to_owned).to_array()
+  left.sort()
+  right.sort()
+  left == right
 }
 
 ///|
@@ -407,14 +531,21 @@ async fn run_cases() -> Unit {
   let args = @env.args()
   guard args.length() >= 6 else {
     fail(
-      "Usage: explore.mbtx LAB WASM_CLI_ROOT prepare|prepare-growth|prepare-architecture|prepare-cache-pressure|profiles|prototype|ab|ci CASE_IDS PAIRS [BASELINE_CLI_ROOT|ORACLE_BIN]",
+      "Usage: explore.mbtx LAB WASM_CLI_ROOT prepare|prepare-growth|prepare-architecture|prepare-cache-pressure|self-test|profiles|prototype|ab|ci CASE_IDS PAIRS [BASELINE_CLI_ROOT|ORACLE_BIN]",
     )
   }
   let mode = args[3]
+  guard !["ab","prototype"].contains(mode) else {
+    fail("Retired synthetic timing entry; use the unified real.json panels")
+  }
+  guard mode!="ci" || @env.get_env_var("CMD_SYNTHETIC_DIAGNOSTIC")==Some("1") else {
+    fail("Synthetic ci mode is reserved for the explicit stability-diagnostic resource investigation; use real.json for performance testing")
+  }
   guard mode == "prepare" ||
     mode == "prepare-growth" ||
     mode == "prepare-architecture" ||
     mode == "prepare-cache-pressure" ||
+    mode == "self-test" ||
     mode == "profiles" ||
     mode == "prototype" ||
     mode == "ab" ||
@@ -426,6 +557,12 @@ async fn run_cases() -> Unit {
   }
   if mode == "ci" && args.length() != 7 {
     fail("ci requires an exported oracle bin directory")
+  }
+  if mode == "self-test" {
+    assert_route_controls()
+    assert_tree_relation()
+    println("search benchmark controls checked")
+    return
   }
   if mode == "prepare-cache-pressure" {
     cache_pressure_corpus()
@@ -465,6 +602,8 @@ async fn run_cases() -> Unit {
     adaptive_corpora()
     boolean_count_corpora()
     boolean_long_corpora()
+    regex_route_corpora()
+    assert_route_controls()
     @fs.write_file(lab + "/empty", b"")
     @fs.write_file(lab + "/overlap8k", Bytes::make(8192, b'a') + b"\n")
     @fs.write_file(lab + "/overlap16k", Bytes::make(16384, b'a') + b"\n")
@@ -585,6 +724,7 @@ async fn run_cases() -> Unit {
       )
     }
     @fs.write_file(lab + "/tree/.ignore", "7\n*.log\n")
+    mixed_tree_corpus()
     println("corpora prepared")
     return
   }
@@ -611,6 +751,14 @@ async fn run_cases() -> Unit {
     cu + "gzip"
   } else {
     lab + "/oracles/gzip-1.14/gzip"
+  }
+  let gzip = @env.get_env_var("CMD_BENCH_GZIP_OBSERVER").unwrap_or(
+    @env.get_env_var("CMD_BENCH_ORACLE_BIN").map(prefix => prefix + "/gzip").unwrap_or(gzip),
+  )
+  if @env.get_env_var("CMD_BENCH_GZIP_OBSERVER") is Some(path) {
+    guard path.has_prefix("/") || (path.length() > 2 && path[1] == ':') else {
+      fail("CMD_BENCH_GZIP_OBSERVER must be an absolute pinned native executable")
+    }
   }
   let wasmroot = args[2].trim_end(chars="/").to_owned() + "/"
   for (family, marker) in [("shared", 28), ("diverse", 0)] {
@@ -682,7 +830,10 @@ async fn run_cases() -> Unit {
     ("period-513", "stream-period-513", ["-a","-c","[ab]{32}Q"], 1),
     ("period-1009", "stream-period-1009", ["-a","-c","[ab]{32}Q"], 1),
   ] {
-    add("rg-stream-"+name, "rg", [..options,"-"], input, "unused", status~)
+    add("rg-stream-"+name, "rg", [..options,"-"], input,
+      if name.has_prefix("long") {
+        if mode == "ci" { cu + "rg" } else { lab + "/oracles/bin/rg" }
+      } else { "unused" }, status~)
   }
   for (name, input, options, status) in [
     ("repeat", "text8m", ["-E","^[0-9]+alpha"], 0),
@@ -1024,7 +1175,22 @@ async fn run_cases() -> Unit {
         lab + "/oracles/bin/rg"
       },
       status=1,
+      intent="mandatory-literal-miss; does not establish DFA scanning",
     )
+  }
+  for (id, input) in [
+    ("rg-prefilter-structured-long-miss", "long8m"),
+    ("rg-prefilter-entropy-long-miss", "ascii-entropy-long8m"),
+  ] {
+    add(id, "rg", ["-c", "[0-9]{4}.*Q|ZZ", "-"], input,
+      if mode == "ci" { cu + "rg" } else { lab + "/oracles/bin/rg" },
+      status=1, intent="mandatory-literal-miss; does not establish DFA scanning")
+  }
+  for (kind, status) in [("hit", 0), ("candidate-miss", 1), ("mixed", 0)] {
+    add("rg-regex-route-" + kind + "-8m", "rg", ["-a", "-c", "[0-9]{4}.*Q|ZZ", "-"],
+      "regex-route-" + kind + "-8m",
+      if mode == "ci" { cu + "rg" } else { lab + "/oracles/bin/rg" },
+      status~, intent="required literals and digit prefix present; separately verified boolean-count control")
   }
   for
     (name, needle, input) in [
@@ -1143,6 +1309,14 @@ async fn run_cases() -> Unit {
     "empty",
     "unused",
   )
+  for (name, options) in [
+    ("default", ["-F", "-c", "alpha"]),
+    ("sorted", ["--sort", "path", "-F", "-c", "alpha"]),
+  ] {
+    add("rg-mixed-tree-" + name, "rg", [..options, lab + "/mixed-tree"],
+      "empty", "unused", intent="mixed 0B..1MiB files, five depths, explicit ignores and sparse hit files",
+      unordered_lines=name == "default")
+  }
   add(
     "find-tree-names",
     "find",
@@ -1225,7 +1399,8 @@ async fn run_cases() -> Unit {
     "text1m",
     "unused",
   )
-  add("gzip-stream-8m", "gzip", ["-n", "-c"], "text8m", "unused")
+  add("gzip-stream-8m", "gzip", ["-n", "-c"], "text8m", "unused", compressed=true,
+    intent="decoded-source equivalence; compressed size is an independent observation")
   add("gunzip-stream-8m", "gunzip", ["-c"], "text8m.gz", "unused")
   add("zcat-stream-8m", "zcat", [], "text8m.gz", "unused")
   add("head-all-8m", "head", ["-n", "9999999"], "text8m", "unused")
@@ -1276,8 +1451,11 @@ async fn run_cases() -> Unit {
     if !selected.is_empty() && !selected.contains(case.id) {
       continue
     }
+    if case.gzip && !@fs.exists(gzip) {
+      fail("gzip semantic comparison requires the fixed native observer; set CMD_BENCH_GZIP_OBSERVER or CMD_BENCH_ORACLE_BIN")
+    }
     let candidate : Invocation = {
-      program: "moonrun",
+      program: @env.get_env_var("CMD_BENCH_MOONRUN").unwrap_or("moonrun"),
       args: [wasmroot + case.command + "/" + case.command + ".wasm", "--"],
     }
     candidate.args.append(case.args)
@@ -1317,6 +1495,7 @@ async fn run_cases() -> Unit {
       }
       let mut equivalent = a.status == Some(case.status) &&
         b.status == Some(case.status) &&
+        finite_duration(a.elapsed_us) && finite_duration(b.elapsed_us) &&
         @fs.read_file(left + ".err").binary() == @utf8.encode(case.stderr) &&
         @fs.read_file(right + ".err").binary() == @utf8.encode(case.stderr)
       if equivalent && case.gzip {
@@ -1328,8 +1507,12 @@ async fn run_cases() -> Unit {
           )
           equivalent = equivalent &&
             decoded.status == Some(0) &&
+            finite_duration(decoded.elapsed_us) &&
+            @fs.file_size(side + ".decoded.err") == 0L &&
             equal_files(case.input, side + ".decoded.out")
         }
+      } else if equivalent && case.unordered_lines {
+        equivalent = equal_line_multisets(left + ".out", right + ".out")
       } else if equivalent {
         equivalent = equal_files(left + ".out", right + ".out")
       }
@@ -1350,6 +1533,14 @@ async fn run_cases() -> Unit {
       }
     }
     let row : Json = {
+      "evidence_scope": {
+        "claim": "synthetic-regression-diagnostic",
+        "general_performance_acceptance": false,
+        "upstream_parity": false,
+        "blind_holdout": false,
+        "input_transport": "redirected-regular-file",
+        "startup_included": true,
+      },
       "settle_ms": @env.get_env_var("CMD_BENCH_SETTLE_MS").unwrap_or("0"),
       "preload": @env.get_env_var("CMD_BENCH_PRELOAD").unwrap_or("0"),
       "rusage": @env.get_env_var("CMD_BENCH_RUSAGE").unwrap_or("0"),

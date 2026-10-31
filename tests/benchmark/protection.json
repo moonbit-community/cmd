@@ -8,229 +8,222 @@
   "drift_limit": 0.1,
   "slowdown_limit": 1.05,
   "slowdown_policy": "The shared-foundation integration accepts the measured small abstraction costs. A ratio above this review boundary is never offset against another workload's gain.",
-  "coverage_policy": "Compare every built command artifact with a frozen baseline. Every changed artifact needs a registered command profile. Run all registered profiles, including unchanged controls. Missing, failed or unstable evidence cannot pass. Unchanged artifacts do not establish upstream parity.",
+  "coverage_policy": "Compare all80 releaseWasm artifacts. Changed artifacts require actual genuine-input timing rows; correctness-only dispositions cannot qualify a performance change. Every applicable required real mode and local boundary witness must complete. No synthetic or command-specific timing runner.",
+  "profile_aliases": {},
   "profiles": {
-    "ln": [
-      "ln-symbolic-validation"
+    "base32": [
+      "real-base32-encode-unwrapped-source",
+      "real-base32-binary"
     ],
-    "wc": [
-      "wc-l-64m",
-      "wc-w-64m",
-      "wc-all-64m"
+    "base64": [
+      "real-base64-encode-unwrapped-source",
+      "real-base64-binary"
     ],
-    "cut": [
-      "cut-8m",
-      "cut-fields-8m",
-      "cut-fields-tail-8m",
-      "cut-tiny-8m",
-      "cut-long-64m"
-    ],
-    "uniq": [
-      "uniq-8m",
-      "uniq-repeated-8m",
-      "uniq-tiny-8m",
-      "uniq-long-8m"
-    ],
-    "rev": [
-      "rev-8m",
-      "rev-long-8m",
-      "rev-tiny-1m"
-    ],
-    "tac": [
-      "tac-file-8m",
-      "tac-stream-8m",
-      "tac-multi-8m",
-      "tac-long-8m"
-    ],
-    "column": [
-      "column-table-8m",
-      "column-grid-1m",
-      "column-table-long-8m",
-      "column-cache-cap-8m",
-      "column-dense-fields-1m"
-    ],
-    "grep": [
-      "grep-many-count-64m",
-      "grep-set-short-64m",
-      "grep-miss-8m",
-      "grep-tree-search",
-      "grep-hotspot-output",
-      "grep-hotspot-dense",
-      "grep-hotspot-dense-count",
-      "grep-hotspot-sparse",
-      "grep-hotspot-sparse-count",
-      "grep-hotspot-numbered",
-      "grep-hotspot-context",
-      "grep-hotspot-only",
-      "grep-hotspot-invert",
-      "grep-hotspot-fixed-miss",
-      "grep-hotspot-regex-count",
-      "grep-hotspot-long-miss",
-      "grep-hotspot-many-states",
-      "grep-hotspot-empty",
-      "grep-onepass-repeat",
-      "grep-onepass-repeat-count",
-      "grep-onepass-branch",
-      "grep-onepass-false-positive",
-      "grep-onepass-ambiguous",
-      "grep-onepass-end",
-      "grep-onepass-empty",
-      "grep-onepass-only"
-    ],
-    "find": [
-      "find-tree-names",
-      "find-tree-size"
-    ],
-    "tree": [
-      "tree-directory"
-    ],
-    "rg": [
-      "rg-count-64m",
-      "rg-output-8m",
-      "rg-growth8m",
-      "rg-growth20m",
-      "rg-growth32m",
-      "rg-growth64m",
-      "rg-dfa-long",
-      "rg-file-count-64m",
-      "rg-tree-files",
-      "rg-tree-search",
-      "rg-color-1m",
-      "rg-replace-8m",
-      "rg-context-8m",
-      "rg-only-8m",
-      "rg-literal-long-64m-hit",
-      "rg-literal-long-64m-miss",
-      "rg-literal-text-64m",
-      "rg-miss-64m",
-      "rg-regex-count-64m",
-      "rg-regex-miss-64m",
-      "rg-short-collision-1m",
-      "rg-literal-entropy-8m",
-      "rg-numbered-8m",
-      "rg-empty-output",
-      "rg-line-buffered-1m",
-      "rg-output-sparse-8m",
-      "rg-output-dense-regex-8m",
-      "rg-output-miss-64m",
-      "rg-output-regex-miss-64m",
-      "rg-text-output-miss-64m",
-      "rg-text-output-regex-miss-64m",
-      "rg-text-output-8m",
-      "rg-text-sparse-8m",
-      "rg-text-dense-regex-8m",
-      "rg-null-long-output-8m",
-      "rg-boolean-density-shift",
-      "rg-boolean-false-positive",
-      "rg-boolean-sparse",
-      "rg-boolean-repetition",
-      "rg-boolean-unicode",
-      "rg-boolean-word-boundary",
-      "rg-boolean-budget",
-      "rg-boolean-long-hit",
-      "rg-boolean-long-miss",
-      "rg-startup-help",
-      "rg-startup-version",
-      "rg-types-list",
-      "rg-types-count-8m",
-      "rg-pilot-long-regex",
-      "rg-pilot-long-regex-64",
-      "rg-pilot-late-prefix-hit-output",
-      "rg-pilot-late-prefix-hit-count",
-      "rg-pilot-short-prefix-output",
-      "rg-pilot-frequent-exits",
-      "rg-pilot-frequent-exits-hit",
-      "rg-pilot-long-output-hit",
-      "rg-pilot-long-only-hit",
-      "rg-pilot-long-color-hit",
-      "rg-min-dfa-long-text",
-      "rg-min-constructor-chain",
-      "rg-min-constructor-many-states",
-      "rg-min-constructor-declined",
-      "rg-min-broad-frequent",
-      "rg-min-broad-sparse",
-      "rg-stream-long8",
-      "rg-stream-long20",
-      "rg-stream-long32",
-      "rg-stream-long64",
-      "rg-stream-dense64",
-      "rg-stream-miss64",
-      "rg-stream-chain",
-      "rg-stream-frequent",
-      "rg-stream-sparse",
-      "rg-stream-empty",
-      "rg-stream-phase-16",
-      "rg-stream-phase-4095",
-      "rg-stream-period-513",
-      "rg-stream-period-1009",
-      "rg-cache-pressure-spans",
-      "rg-regex-cold-empty"
-    ],
-    "sort": [
-      "sort-8m",
-      "sort-n-8m"
-    ],
-    "curl": [
-      "curl-loopback-8m",
-      "curl-loopback-bytes-upload-8m",
-      "curl-loopback-file-upload-8m",
-      "curl-loopback-stdin-upload-8m"
-    ],
-    "wget": [
-      "wget-loopback-8m",
-      "wget-loopback-file-upload-8m"
-    ],
-    "sh": [
-      "sh-control-5000"
-    ],
-    "make": [
-      "make-shell-5000"
-    ],
-    "split": [
-      "split-filter-1m"
-    ],
-    "gzip": [
-      "gzip-stream-8m"
-    ],
-    "gunzip": [
-      "gunzip-stream-8m"
-    ],
-    "zcat": [
-      "zcat-stream-8m"
-    ],
-    "head": [
-      "head-except-last-8m"
-    ],
-    "join": [
-      "join-ordered"
-    ],
-    "comm": [
-      "comm-ordered"
+    "cat": [
+      "real-cat-source",
+      "real-cat-rfc-numbered",
+      "real-cat-utf8",
+      "real-cat-binary-path",
+      "real-cat-empty",
+      "real-cat-unterminated",
+      "real-cat-copy-pipe257",
+      "real-cat-copy-pipe65537",
+      "real-cat-slow-output"
     ],
     "cksum": [
-      "cksum-8m"
+      "real-cksum-crc-source",
+      "real-cksum-crc-utf8-routes",
+      "real-cksum-binary"
     ],
-    "md5sum": [
-      "md5sum-8m"
+    "column": [
+      "real-column-properties-table",
+      "real-column-option-grid"
     ],
-    "sha1sum": [
-      "sha1sum-8m"
+    "comm": [
+      "real-comm-airport-route-idsets"
     ],
-    "sha256sum": [
-      "sha256sum-8m"
+    "csplit": [
+      "real-csplit-source-api-boundaries"
     ],
-    "sha512sum": [
-      "sha512sum-8m"
+    "curl": [
+      "real-curl-download",
+      "real-curl-file-upload",
+      "real-curl-post-file"
     ],
-    "nl": [
-      "nl-8m"
+    "cut": [
+      "real-cut-unicode-fields",
+      "real-cut-source-bytes",
+      "real-cut-long-record"
     ],
-    "paste": [
-      "paste-8m",
-      "paste-serial-8m"
+    "diff": [
+      "real-diff-source-distinct-equal",
+      "real-diff-json-modules"
+    ],
+    "expand": [
+      "real-expand-real-tabs"
+    ],
+    "find": [
+      "real-find-source-tree-names",
+      "real-find-source-tree-size"
+    ],
+    "fold": [
+      "real-fold-airport-records"
+    ],
+    "grep": [
+      "real-grep-source-api-count",
+      "real-grep-source-api-lines",
+      "real-grep-regex-count",
+      "real-grep-literal-miss",
+      "real-grep-long-record-count",
+      "real-grep-unterminated-match",
+      "real-grep-empty",
+      "real-grep-early-exit",
+      "real-grep-literal-sparse-count-pipe257",
+      "real-grep-literal-sparse-count-pipe65537"
+    ],
+    "gunzip": [
+      "real-gunzip-first-dynamic-native-source",
+      "real-gunzip-stored-source",
+      "real-gunzip-fixed-literals-source",
+      "real-gunzip-members-source"
+    ],
+    "gzip": [
+      "real-gzip-default-compress-source"
+    ],
+    "head": [
+      "real-head-source-records",
+      "real-head-pipe-early-exit-pipe257",
+      "real-head-pipe-early-exit-pipe65537"
+    ],
+    "join": [
+      "real-join-airport-route-records"
     ],
     "jq": [
-      "jq-identity-1m"
+      "real-jq-registry-identity",
+      "real-jq-registry-identifiers",
+      "real-jq-registry-filter",
+      "real-jq-registry-sort",
+      "real-jq-registry-group",
+      "real-jq-registry-sum-references",
+      "real-jq-missing-property"
+    ],
+    "ln": [
+      "correctness-only:ln"
+    ],
+    "make": [
+      "correctness-only:make"
+    ],
+    "md5sum": [
+      "real-md5sum-digest-source",
+      "real-md5sum-digest-utf8-routes",
+      "real-md5sum-binary"
+    ],
+    "nl": [
+      "real-nl-source-records"
+    ],
+    "paste": [
+      "real-paste-rfc-serial",
+      "real-paste-parallel-files"
+    ],
+    "rev": [
+      "real-rev-ascii-properties",
+      "real-rev-minified-long-record"
+    ],
+    "rg": [
+      "real-rg-source-api-count",
+      "real-rg-rfc-http-spans",
+      "real-rg-regex-count",
+      "real-rg-literal-miss",
+      "real-rg-long-record-count",
+      "real-rg-unterminated-match",
+      "real-rg-empty",
+      "real-rg-early-exit",
+      "real-rg-literal-sparse-count-pipe257",
+      "real-rg-literal-sparse-count-pipe65537",
+      "real-rg-slow-output",
+      "real-rg-source-tree",
+      "real-rg-source-api-numbered"
+    ],
+    "sed": [
+      "real-sed-source-identifiers",
+      "real-sed-source-miss"
+    ],
+    "sh": [
+      "correctness-only:sh"
+    ],
+    "sha1sum": [
+      "real-sha1sum-digest-source",
+      "real-sha1sum-digest-utf8-routes",
+      "real-sha1sum-binary"
+    ],
+    "sha256sum": [
+      "real-sha256sum-digest-source",
+      "real-sha256sum-digest-utf8-routes",
+      "real-sha256sum-binary"
+    ],
+    "sha512sum": [
+      "real-sha512sum-digest-source",
+      "real-sha512sum-digest-utf8-routes",
+      "real-sha512sum-binary"
+    ],
+    "sort": [
+      "real-sort-source-lexical",
+      "real-sort-airport-numeric",
+      "real-sort-source-spill"
+    ],
+    "split": [
+      "real-split-source-bytes"
+    ],
+    "strings": [
+      "real-strings-source",
+      "real-strings-binary"
+    ],
+    "tac": [
+      "real-tac-rfc-records",
+      "real-tac-pipe-reversal-pipe257",
+      "real-tac-pipe-reversal-pipe65537"
+    ],
+    "tail": [
+      "real-tail-source-records",
+      "real-tail-pipe-last10-pipe257",
+      "real-tail-pipe-last10-pipe65537"
+    ],
+    "tr": [
+      "real-tr-source-uppercase"
+    ],
+    "tree": [
+      "real-tree-source-json"
+    ],
+    "unexpand": [
+      "real-unexpand-source-indent"
+    ],
+    "uniq": [
+      "real-uniq-source-runs",
+      "real-uniq-rfc-adjacent"
+    ],
+    "wc": [
+      "real-wc-source-lines",
+      "real-wc-rfc-words",
+      "real-wc-japanese-bytes",
+      "real-wc-counts-utf8",
+      "real-wc-empty",
+      "real-wc-bytes-named",
+      "real-wc-scan-lines-pipe257",
+      "real-wc-scan-lines-pipe65537",
+      "real-wc-scan-words-pipe257",
+      "real-wc-scan-words-pipe65537",
+      "real-wc-pipe-bytes-pipe257",
+      "real-wc-pipe-bytes-pipe65537"
+    ],
+    "wget": [
+      "real-wget-download",
+      "real-wget-post-file"
+    ],
+    "zcat": [
+      "real-zcat-first-dynamic-native-source",
+      "real-zcat-stored-source",
+      "real-zcat-fixed-literals-source",
+      "real-zcat-members-source"
     ]
   },
   "separate_required_evidence": {
@@ -422,18 +415,29 @@
         }
       ],
       "profiles": [
-        "rg-count-64m",
-        "rg-context-8m",
-        "rg-numbered-8m",
-        "rg-only-8m",
-        "rg-replace-8m"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Count precedes coalesced, buffered, synchronous and ordinary execution. Buffered admission commits one complete event or declines without output; the pending event reaches async fallback exactly once. Binary scan ownership, raw multiline policy, stop conditions and sink capabilities remain distinct."
+      "invariant": "Count precedes coalesced, buffered, synchronous and ordinary execution. Buffered admission commits one complete event or declines without output; the pending event reaches async fallback exactly once. Binary scan ownership, raw multiline policy, stop conditions and sink capabilities remain distinct.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-directory-observations",
       "owner": "commands/rg/internal/sys",
-      "commands": ["rg"],
+      "commands": [
+        "rg"
+      ],
       "status": "adopted",
       "sources": [
         "commands/rg/internal/sys/filesystem.mbt",
@@ -450,13 +454,30 @@
           "name": "directory kind queries do not follow live or dangling links"
         }
       ],
-      "profiles": ["rg-tree-files", "rg-tree-search"],
-      "invariant": "Reuse only directory facts supplied by the public API. Unknown kinds require a non-following query; size and canonical path stay demand-driven."
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Reuse only directory facts supplied by the public API. Unknown kinds require a non-following query; size and canonical path stay demand-driven.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-file-read-ahead",
       "owner": "commands/rg/internal/driver",
-      "commands": ["rg"],
+      "commands": [
+        "rg"
+      ],
       "status": "adopted",
       "sources": [
         "commands/rg/internal/driver/file_read_buffer.mbt",
@@ -488,8 +509,23 @@
           "name": "physical file read expansion keeps short-file probes small and grows only after a full block"
         }
       ],
-      "profiles": ["rg-file-count-64m", "rg-tree-search"],
-      "invariant": "One reusable 1 MiB buffer per worker, only for opened regular files and full searches. Begin with 64 KiB physical refills and expand only after a full block. Keep logical decoder requests, retained errors and EOF distinct; stdin, preprocessors and explicit early exits bypass read-ahead."
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "One reusable 1 MiB buffer per worker, only for opened regular files and full searches. Begin with 64 KiB physical refills and expand only after a full block. Keep logical decoder requests, retained errors and EOF distinct; stdin, preprocessors and explicit early exits bypass read-ahead.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-literal-stream",
@@ -521,10 +557,22 @@
         }
       ],
       "profiles": [
-        "rg-literal-long-64m-hit",
-        "rg-literal-long-64m-miss"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Resolve delimiter exclusion and decoding before discarding bytes; retain the unmatched suffix until a delimiter or actual EOF."
+      "invariant": "Resolve delimiter exclusion and decoding before discarding bytes; retain the unmatched suffix until a delimiter or actual EOF.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-regex-probe-replay",
@@ -552,10 +600,22 @@
         }
       ],
       "profiles": [
-        "rg-stream-long64",
-        "rg-stream-phase-4095"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Probe uses nominal capacity independent of retained storage. Replay owns the original decoder, begins once and delivers complete records before later errors."
+      "invariant": "Probe uses nominal capacity independent of retained storage. Replay owns the original decoder, begins once and delivers complete records before later errors.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-boolean-count",
@@ -588,10 +648,22 @@
         }
       ],
       "profiles": [
-        "rg-boolean-budget",
-        "rg-boolean-density-shift"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Preparation distinguishes uninitialized, declined and ready. Mandatory-literal filtering continues throughout the block."
+      "invariant": "Preparation distinguishes uninitialized, declined and ready. Mandatory-literal filtering continues throughout the block.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-wide-boolean",
@@ -616,10 +688,22 @@
         }
       ],
       "profiles": [
-        "rg-pilot-frequent-exits",
-        "rg-stream-period-1009"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Exact transition and exit membership preserve delayed matches, EOF and chunk phase. Endpoint discovery replays transitions to recover the earliest endpoint."
+      "invariant": "Exact transition and exit membership preserve delayed matches, EOF and chunk phase. Endpoint discovery replays transitions to recover the earliest endpoint.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-generic-regex",
@@ -639,11 +723,22 @@
         }
       ],
       "profiles": [
-        "rg-dfa-long",
-        "rg-only-8m",
-        "rg-replace-8m"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Boolean discovery does not replace greedy span or capture semantics; fallback retains the original search interval and priority."
+      "invariant": "Boolean discovery does not replace greedy span or capture semantics; fallback retains the original search interval and priority.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "grep-execution",
@@ -663,11 +758,19 @@
         }
       ],
       "profiles": [
-        "grep-hotspot-context",
-        "grep-hotspot-only",
-        "grep-hotspot-invert"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
       ],
-      "invariant": "Static route selection preserves summary flag priority, span output with context, and dynamic binary transitions."
+      "invariant": "Static route selection preserves summary flag priority, span output with context, and dynamic binary transitions.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "grep-record-output",
@@ -690,10 +793,19 @@
         }
       ],
       "profiles": [
-        "grep-hotspot-output",
-        "grep-hotspot-sparse"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
       ],
-      "invariant": "Commit complete buffered records once; retain cross-chunk tails and never replay a partially failed write."
+      "invariant": "Commit complete buffered records once; retain cross-chunk tails and never replay a partially failed write.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "grep-span-output",
@@ -716,9 +828,19 @@
         }
       ],
       "profiles": [
-        "grep-hotspot-only"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
       ],
-      "invariant": "Span queue resets before writing; partial input record precedes its pending read error."
+      "invariant": "Span queue resets before writing; partial input record precedes its pending read error.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "grep-summary",
@@ -737,10 +859,19 @@
         }
       ],
       "profiles": [
-        "grep-hotspot-dense-count",
-        "grep-hotspot-sparse-count"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
       ],
-      "invariant": "Batch record accounting shares one commit operation without changing incremental cross-chunk accounting."
+      "invariant": "Batch record accounting shares one commit operation without changing incremental cross-chunk accounting.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "bytere-literal-adaptive",
@@ -761,10 +892,19 @@
         }
       ],
       "profiles": [
-        "grep-many-count-64m",
-        "grep-set-short-64m"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
       ],
-      "invariant": "Short literals use AC; shift plans carry explicit optional AC state and a typed handoff. Construction budget decline is cached."
+      "invariant": "Short literals use AC; shift plans carry explicit optional AC state and a typed handoff. Construction budget decline is cached.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "bytere-record-dfa",
@@ -796,10 +936,19 @@
         }
       ],
       "profiles": [
-        "grep-hotspot-long-miss",
-        "grep-hotspot-many-states"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
       ],
-      "invariant": "Certified self-loop skips preserve Boolean semantics; budget failure falls back to the span engine."
+      "invariant": "Certified self-loop skips preserve Boolean semantics; budget failure falls back to the span engine.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "bytere-anchored-linear",
@@ -818,9 +967,19 @@
         }
       ],
       "profiles": [
-        "grep-hotspot-regex-count"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
       ],
-      "invariant": "Only branch-free fixed-length anchored Boolean matching uses the linear plan; exact EOF acceptance is required."
+      "invariant": "Only branch-free fixed-length anchored Boolean matching uses the linear plan; exact EOF acceptance is required.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "grep-general-onepass-rejected",
@@ -840,11 +999,19 @@
         }
       ],
       "profiles": [
-        "grep-onepass-repeat",
-        "grep-onepass-ambiguous",
-        "grep-onepass-only"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
       ],
-      "invariant": "Historical onepass profile names are fallback controls. No general onepass implementation is adopted."
+      "invariant": "Historical onepass profile names are fallback controls. No general onepass implementation is adopted.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "bounded-output",
@@ -869,10 +1036,24 @@
         }
       ],
       "profiles": [
-        "rg-output-8m",
-        "column-table-8m"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered",
+        "real-column-properties-table",
+        "real-column-option-grid"
       ],
-      "invariant": "Output owns queued bytes, serializes borrowing and consumes failed or cancelled writes without replay. Synchronous admission never flushes or suspends; false leaves the queue unchanged and preserves line-buffered delivery."
+      "invariant": "Output owns queued bytes, serializes borrowing and consumes failed or cancelled writes without replay. Synchronous admission never flushes or suspends; false leaves the queue unchanged and preserves line-buffered delivery.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "column-table-plans",
@@ -897,10 +1078,11 @@
         }
       ],
       "profiles": [
-        "column-cache-cap-8m",
-        "column-dense-fields-1m"
+        "real-column-properties-table",
+        "real-column-option-grid"
       ],
-      "invariant": "Record retrieval and field traversal share mechanisms while row plans remain bounded and output retains original delimiter semantics."
+      "invariant": "Record retrieval and field traversal share mechanisms while row plans remain bounded and output retains original delimiter semantics.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "tac-spool",
@@ -924,10 +1106,12 @@
         }
       ],
       "profiles": [
-        "tac-stream-8m",
-        "tac-long-8m"
+        "real-tac-rfc-records",
+        "real-tac-pipe-reversal-pipe257",
+        "real-tac-pipe-reversal-pipe65537"
       ],
-      "invariant": "Close the file before directory cleanup, preserve the primary error, and report cleanup-only failure."
+      "invariant": "Close the file before directory cleanup, preserve the primary error, and report cleanup-only failure.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "sort-spill",
@@ -950,10 +1134,12 @@
         }
       ],
       "profiles": [
-        "sort-8m",
-        "sort-n-8m"
+        "real-sort-source-lexical",
+        "real-sort-airport-numeric",
+        "real-sort-source-spill"
       ],
-      "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio."
+      "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-lazy-cache",
@@ -985,11 +1171,22 @@
         }
       ],
       "profiles": [
-        "rg-cache-pressure-spans",
-        "rg-dfa-long",
-        "rg-boolean-word-boundary"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Retire only after repeated unproductive cache fills. Unicode quit is distinct; productive windows restart accounting. Forward and reverse fallback restart the original query."
+      "invariant": "Retire only after repeated unproductive cache fills. Unicode quit is distinct; productive windows restart accounting. Forward and reverse fallback restart the original query.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "rg-deferred-storage",
@@ -1017,11 +1214,22 @@
         }
       ],
       "profiles": [
-        "rg-regex-cold-empty",
-        "rg-only-8m",
-        "rg-replace-8m"
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Compile both NFAs eagerly to preserve constructor errors and metadata. Prepare non-raising reverse/PikeVM storage once on demand; retain all semantic fallback routes."
+      "invariant": "Compile both NFAs eagerly to preserve constructor errors and metadata. Prepare non-raising reverse/PikeVM storage once on demand; retain all semantic fallback routes.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
       "id": "exact-byte-membership",
@@ -1051,10 +1259,34 @@
         }
       ],
       "profiles": [
-        "grep-hotspot-long-miss",
-        "rg-min-broad-frequent"
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537",
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
       ],
-      "invariant": "Share immutable 256-byte membership packing and lane masks. Fixed-array/view loading, polarity and scalar tails stay with their consumers."
+      "invariant": "Share immutable 256-byte membership packing and lane masks. Fixed-array/view loading, polarity and scalar tails stay with their consumers.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     }
-  ]
+  ],
+  "measurement_suite": "tests/benchmark/real.json",
+  "coverage_registry": "tests/benchmark/real-coverage.json"
 }

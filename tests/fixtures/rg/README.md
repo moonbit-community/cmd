@@ -27,6 +27,19 @@ existing exclusions remain explicit in the drivers, including regex-lite,
 custom line terminators and anchored meta searches. Keeping all 751 records
 does not claim every engine executes every record.
 
+The corpus drivers check expected parse acceptance/rejection before admitting
+match cases. On 2026-10-31, exact execution specifications were consolidated:
+751 original records form 726 unique groups with 25 retained name aliases.
+Meta-regex executes 675 unique match groups and five compile rejections, with
+46 excluded groups; PikeVM and lazy DFA each execute 701 unique match groups
+and five rejections, with twenty excluded groups. Original-record accounting
+still requires 699/726 matches, five rejections and 47/20 named exclusions,
+respectively. Group identity includes all flags, bounds, captures, bytes,
+dialects and both engine exclusion decisions. Failures print every represented
+name. The lazy-DFA log separates cases handled
+without fallback, cases needing VM fallback and capture replays. Fallback
+success proves the composed engine result; it does not claim DFA-only coverage.
+
 The two files in `ignore/` preserve their original bytes, including the BOM.
 Their former command-local paths were missing at migration time; the files
 were recovered from repository commit `987cf02fc203b91b32e99dcd76da0802291bf454`

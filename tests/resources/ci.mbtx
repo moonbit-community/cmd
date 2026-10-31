@@ -71,7 +71,7 @@ async fn main {
   let profiles : Array[(String, Array[String])] = [
     ("records", ["--sizes", "8388608,67108864,536870912"]),
     ("long", ["--sizes", "67108864", "--long-record", "true"]),
-    ("heldout", ["--sizes", "8388608", "--distribution", "heldout"]),
+    ("mixed-synthetic", ["--sizes", "8388608", "--distribution", "mixed-synthetic"]),
     (
       "kernel-rss-linux",
       [
@@ -88,6 +88,7 @@ async fn main {
   let selected_profile = @env.get_env_var("CMD_RESOURCE_PROFILE").unwrap_or(
     "all",
   )
+  let selected_profile = if selected_profile == "heldout" { "mixed-synthetic" } else { selected_profile }
   let selected_commands = @env.get_env_var("CMD_RESOURCE_COMMANDS").unwrap_or(
     "",
   )
@@ -119,24 +120,11 @@ async fn main {
       )
       continue
     }
-    if name == "performance" &&
-      !selected_commands.is_empty() &&
-      !selected_commands
-      .split(",")
-      .any(command => ["cut", "uniq", "wc", "grep"].contains(command.to_owned())) {
-      guard selected_profile == "all" else {
-        fail("no applicable performance commands")
-      }
-      results.push({
-        "profile": name,
-        "status": Json::null(),
-        "skipped": "no applicable performance commands",
-      })
-      @fs.write_file(
-        reports + "/profiles.json",
-        Json(results).stringify(indent=2) + "\n",
-      )
-      continue
+    let corpus_parent = if name == "performance" { @fs.tmpdir(prefix="cmd-benchmark-corpora-") } else { "" }
+    let corpus = if name == "performance" { corpus_parent + "/inputs" } else { "" }
+    defer { if !corpus_parent.is_empty() { @fs.rmdir(corpus_parent,recursive=true) } }
+    if name == "performance" {
+      @shell.Cmd("moon",["run",workspace+"/tests/benchmark/prepare_real_corpora.mbtx","--",corpus,"--download"],stdout=Inherit,stderr=Inherit).run()
     }
     let options = if selected_commands.is_empty() {
       options
@@ -192,7 +180,7 @@ async fn main {
         [..common, "--report-dir", reports + "/" + name, ..options]
       },
       cwd=workspace,
-      env=Map([("LD_LIBRARY_PATH", libraries)]),
+      env=Map([("LD_LIBRARY_PATH", libraries),("CMD_BENCH_CORPUS_ROOT",corpus)]),
       stdout=Inherit,
       stderr=Inherit,
     ).status() catch {

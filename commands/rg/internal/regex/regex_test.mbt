@@ -6,8 +6,20 @@ fn is_char_boundary(hay : FixedArray[Byte], len : Int32, at : Int32) -> Bool {
 ///|
 async test "corpus: meta regex" {
   let failures = []
-  for tc in @testdata.load() {
-    if tc.name.has_prefix("regex-lite/") || tc.line_terminator is Some(_) {
+  let exclusions : Map[String, Int32] = Map([])
+  let mut ran = 0
+  let mut rejected = 0
+  let mut represented_matches = 0
+  let mut represented_rejections = 0
+  let mut represented_exclusions = 0
+  let groups = @testdata.load_execution_groups()
+  assert_eq(groups.length(), 726)
+  assert_eq(@testdata.alias_count(groups), 25)
+  for group in groups {
+    let tc = group.fixture
+    if @testdata.exclusion(tc, meta=true) is Some(reason) {
+      exclusions[reason] = exclusions.get(reason).unwrap_or(0) + 1
+      represented_exclusions += group.names.length()
       continue
     }
     let config = {
@@ -16,11 +28,31 @@ async test "corpus: meta regex" {
       unicode: tc.unicode,
       utf8: tc.utf8,
     }
-    let hir = @syntax.parse(tc.regex, config~) catch { _ => continue }
-    let re = @regex.Regex::from_hir(hir) catch { _ => abort("build") }
-    if tc.anchored {
+    let parsed = try @syntax.parse(tc.regex, config~) catch {
+      _ => None
+    } noraise {
+      hir => Some(hir)
+    }
+    if @testdata.compile_expectation(tc, parsed=parsed is Some(_)) is Some(f) {
+      failures.push(f + " [corpus names: " + group.names.join(", ") + "]")
       continue
     }
+    let hir = match parsed {
+      Some(hir) => hir
+      None => {
+        rejected += 1
+        represented_rejections += group.names.length()
+        continue
+      }
+    }
+    let re = @regex.Regex::from_hir(hir) catch {
+      error =>
+        fail(
+          "\{group.names.join(", ")}: meta-regex construction failed: \{error}",
+        )
+    }
+    ran += 1
+    represented_matches += group.names.length()
     let hay = tc.haystack.to_fixedarray()
     let len = hay.length()
     let (bstart, bend) = match tc.bounds {
@@ -65,7 +97,7 @@ async test "corpus: meta regex" {
     let expected = tc.matches.map(g => g.copy())
     if got != expected {
       failures.push(
-        "\{tc.name}: regex=\{tc.regex} want=\{Repr(expected)} got=\{Repr(got)}",
+        "\{group.names.join(", ")}: regex=\{tc.regex} want=\{Repr(expected)} got=\{Repr(got)}",
       )
     }
   }
@@ -73,6 +105,51 @@ async test "corpus: meta regex" {
     println(f)
   }
   inspect(failures.length(), content="0")
+  assert_eq(ran, 675)
+  assert_eq(rejected, 5)
+  assert_eq(exclusions.get("regex-lite dialect"), Some(9))
+  assert_eq(exclusions.get("custom line terminator"), Some(11))
+  assert_eq(exclusions.get("anchored meta search"), Some(26))
+  assert_eq(exclusions.length(), 3)
+  assert_eq(represented_matches, 699)
+  assert_eq(represented_rejections, 5)
+  assert_eq(represented_exclusions, 47)
+  println(
+    "meta regex corpus: \{ran} unique matches, \{rejected} unique compile rejections, 46 unique exclusions; all 751 original names retained, 25 aliases",
+  )
+}
+
+///|
+test "meta corpus reports a parser regression and an unexpected acceptance" {
+  let malformed : @testdata.TestCase = {
+    name: "coverage/malformed",
+    regex: "(",
+    haystack: b"",
+    matches: [],
+    compiles: true,
+    anchored: false,
+    case_insensitive: false,
+    unicode: true,
+    utf8: true,
+    match_limit: None,
+    bounds: None,
+    line_terminator: None,
+  }
+  let parsed = try @syntax.parse(malformed.regex) catch {
+    _ => false
+  } noraise {
+    _ => true
+  }
+  assert_eq(parsed, false)
+  assert_true(@testdata.compile_expectation(malformed, parsed~) is Some(_))
+  let mislabeled = { ..malformed, regex: "a", compiles: false, }
+  let parsed = try @syntax.parse(mislabeled.regex) catch {
+    _ => false
+  } noraise {
+    _ => true
+  }
+  assert_eq(parsed, true)
+  assert_true(@testdata.compile_expectation(mislabeled, parsed~) is Some(_))
 }
 
 ///|

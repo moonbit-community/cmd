@@ -8,6 +8,10 @@ moonx cli/nl@0.2.4 [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l 
 
 ## Supported scope
 
+The unreleased workspace pads unnumbered lines with spaces across the number
+field and separator width. Exact ordinary blank-line and custom-separator
+cases complement complete-source comparisons.
+
 Read files or stdin and number body, header and footer sections. Default body style numbers nonempty lines, with width 6 and TAB separation.
 
 ## Options
