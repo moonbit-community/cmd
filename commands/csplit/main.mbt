@@ -67,6 +67,10 @@ async fn partition(
   let mut first = 0L
   let mut searched = -1L
   for control in controls {
+    let matcher = match control.pattern {
+      Expression(pattern, _, _) => Some(pattern.record_matcher())
+      Line(_) => None
+    }
     let mut repetition = 0L
     while control.repeats is None ||
           (control.repeats is Some(n) && repetition <= n.to_int64()) {
@@ -84,11 +88,15 @@ async fn partition(
         Expression(regex, offset, ignored) => {
           let mut found = None
           let begin = @cmp.maximum(first, searched + 1)
-          for line = begin; line < count; line = line + 1 {
-            if data.matches(line, regex) {
+          let mut line = begin
+          while line < count {
+            let (next, matched) = data.search_cached(line, matcher.unwrap())
+            line = next
+            if matched || (line < count && data.matches(line, regex)) {
               found = Some(line)
               break
             }
+            line += 1
           }
           match found {
             None => {

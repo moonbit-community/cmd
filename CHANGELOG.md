@@ -11,6 +11,111 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 ## 2026-10-31
 
+Development integration of qualified performance changes; no publication.
+
+- Integrate the adopted sed record buffering, immutable byte spaces and
+  mandatory-literal rejection, together with csplit index pages and cached
+  byte matching. Their selected-workload results remain scoped to the recorded
+  real sources; no general throughput or upstream-parity claim is added.
+- Exclude the experimental gzip/gunzip/zcat implementation from delivery because
+  its cumulative timing gate remains incomplete. Preserve its complete source,
+  all failed trials and measured artifacts outside the integration tree. The
+  following dated pilot entries describe those archived candidates, not the
+  delivered codec. Package versions and published expectations are unchanged.
+- Local integration validation passes all 1,740 release-Wasm tests and the
+  functional/proof pipeline. Strict checking and the 80-command, 26-strategy
+  architecture inventory pass; generated interfaces are unchanged. All 80
+  artifacts are checked: sed and csplit match their qualified measured versions,
+  and the remaining 78 match the original baseline.
+
+Development byte-prefilter and CRC layout exploration; no publication.
+
+- Reuse bytere's mandatory literal to reject impossible sed byte records before
+  text conversion, preserving executed-regex history and replacement errors.
+  Both existing incremental rows qualify: identifiers save 20–21% and misses
+  26% against the preceding candidate. Keep the full capture-aware engine for
+  possible matches and uncertain or text-only spaces.
+- Reject a separate-fragment sed output trial: the miss row costs 5.36% in its
+  second window. Reject wider CRC16 slicing: the stable first stored window
+  regresses 52–62%. A flat CRC8 table trial remains unqualified because six of
+  nine rows fail stability. Restore coalesced sed output and the prior codec
+  implementation; preserve all trial source and measurements.
+- A zcat same-artifact diagnostic fails two of four rows, demonstrating timing
+  variability independent of source changes. It does not waive the previous
+  codec failure. [ADR-0003](docs/adr/0003-streams.md) records the exact limits.
+- Local correctness passes 1,749 release-Wasm tests and 2,260 functional checks,
+  with 21 platform skips and no failures. Strict checking and architecture
+  validation pass; generated interfaces are unchanged. All 80 artifacts are
+  verified: only sed changes from the preceding candidate, and all codec
+  artifacts are restored. Existing codec acceptance remains incomplete.
+- Cumulative sed validation qualifies both rows: identifiers use 5.09–5.14%
+  and misses 4.23–4.27% of original `55de9ec` time, approximately 19.5 and 23.5
+  times faster respectively. Locally adopt the byte prefilter. The claim is
+  limited to the existing selected workloads; no CI or publication is implied.
+
+Development byte-ownership and CRC trials; no publication.
+
+- Sed now scans immutable input chunks and retains raw byte pattern/hold
+  spaces with lazy text conversion. Both incremental phases qualify on the
+  unchanged real-source rows: record scanning saves about 9%, then byte spaces
+  save another 31% for substitution hits and 36% for misses. Private ownership,
+  fragmented-input and stateful-script regressions preserve byte semantics.
+- Two CRC variants are rejected for dynamic-decoding regressions of 10–14%
+  and 7–10%. The narrowed version applies slicing by eight only to existing
+  contiguous encoder/stored-block spans, retaining fused scalar CRC during
+  compressed expansion. All nine incremental rows qualify; stored decoding
+  saves 18–21%, concatenated members 11–15% and compression about 2%. Failed
+  variants remain in independent source and measurement archives.
+- Cumulative validation passes 11 of 12 rows. Sed qualifies at 0.056–0.063 of
+  original time (about 16–18 times faster), and the previous csplit change
+  remains qualified. Zcat stored is faster but fails the 10% drift limit at
+  11.00%; retain the complete codec as an experimental candidate. The failed
+  window is preserved without a retry or relaxed gate.
+- Local validation passes 1,745 release-Wasm tests, 2,260 functional checks and
+  architecture validation, with 21 platform skips and no failures. Generated
+  interfaces are unchanged. All 80 final artifacts match their measured phases;
+  five differ cumulatively from the original baseline and 75 remain identical.
+  [ADR-0003](docs/adr/0003-streams.md) records the scope and remaining gate.
+  No full protection, formal timing, resource, CI or release acceptance is claimed.
+
+Development adoption and follow-up performance trials; no publication.
+
+- Adopt the qualified sed record coalescing and csplit index/cache work, then
+  add bounded sed output buffering and csplit synchronous scans with the existing
+  byte matcher. Incremental phases and the cumulative original-artifact check
+  pass for both commands: sed uses 9.7–10.6% and csplit 68.6–68.8% of original
+  time on the existing selected rows. A cached fragment-copy trial is preserved
+  but not adopted because its observed benefit is small.
+- A packed Huffman table passes all nine incremental codec rows, with further
+  fixed-literal gains of 3.5–5.2% and one separately recorded 3.48% stored cost.
+  Cumulative validation passes seven codec rows but fails both stored controls
+  on first-window dispersion; zcat stored also observes a 5.12% cost there.
+  Keep the entire decoder experimental. Preserve every failed window and
+  recovery state; [ADR-0003](docs/adr/0003-streams.md) records the exact gates.
+- Local checks pass 1,739 release-Wasm tests, 2,260 functional checks and the
+  architecture inventory, with 21 platform skips and no failures. Interfaces,
+  versions and published expectations are unchanged. No full protection,
+  formal performance, CI or release acceptance is claimed.
+
+Development performance pilots after `55de9ec`; no publication.
+
+- Add a bounded synchronous DEFLATE token loop, csplit index-page encoding and
+  cached-record matching, and one-write sed record output. The existing genuine
+  corpus inventory remains unchanged; rg is outside this optimization batch.
+- Selected two-window comparisons qualify sed's two rows at 0.568–0.574 of
+  baseline time and csplit at 0.787–0.788. Five of nine corrected codec rows
+  qualify, with large compressed-decoding gains; four unstable rows keep the
+  entire codec candidate experimental. Retain the initial prototype's exact-full
+  buffer defect/reproducer, its correction, every failed window and the failing
+  same-artifact A/A control. [ADR-0003](docs/adr/0003-streams.md) records the
+  mechanisms, limitations and remaining work. No full protection or formal
+  performance acceptance is claimed.
+- Local validation passes 1,732 release-Wasm package tests and 2,260 functional
+  checks, with 21 platform skips and zero failures. Architecture and functional
+  evidence checks pass; interfaces are unchanged. Five command artifacts change,
+  and the other 75 remain identical to the saved baseline. No package versions
+  or published expectations change.
+
 Development test and benchmark replacement; no publication.
 
 - The follow-up Linux CI run passes every functional/upstream comparison but

@@ -352,6 +352,21 @@
     },
     {
       "sources": [
+        "commands/csplit/snapshot.mbt",
+        "commands/csplit/main.mbt"
+      ],
+      "retain": "Data spool precedes signed 64-bit index writes; index pages remain 64 KiB and failed writes are never replayed; synchronous regex matching requires both cached offsets and the entire cached record, otherwise retain the original long-record and page-refill path; preserve negative offsets, byte semantics, fragment cleanup and output order"
+    },
+    {
+      "sources": [
+        "commands/sed/execute.mbt",
+        "commands/sed/space.mbt",
+        "commands/sed/pattern.mbt"
+      ],
+      "retain": "Record scanning retains immutable backing bytes across refills and uses an owned buffer for spanning records; lazy text conversion only mutates a cache, and content changes create new pattern/hold spaces; mandatory-literal rejection follows executed-pattern resolution and replacement-reference validation, never establishes a match, and retains full matching on uncertainty; record coalescing and bounded output batching retain exact bytes, missing-newline state, append ordering and n/N lookahead; flush before external input reads or opens, on completion and before propagating later script failures; failed output is never replayed"
+    },
+    {
+      "sources": [
         "core/shell"
       ],
       "retain": "Typed incomplete/invalid syntax and loop control; independent exit, return and signal state; diagnostics, quoting, redirection and scope"
@@ -373,6 +388,59 @@
     }
   ],
   "strategies": [
+    {
+      "id": "sed-byte-prefilter",
+      "owner": "commands/sed",
+      "commands": ["sed"],
+      "status": "adopted",
+      "sources": ["commands/sed/pattern.mbt", "commands/sed/parser.mbt", "commands/sed/execute.mbt"],
+      "tests": [
+        {"file": "commands/sed/pattern_wbtest.mbt", "name": "sed byte rejection preserves the full matcher for nullable alternatives captures and binary data"},
+        {"file": "commands/sed/pattern_wbtest.mbt", "name": "sed byte rejection updates executed pattern history without decoding a miss"},
+        {"file": "commands/sed/pattern_wbtest.mbt", "name": "sed byte rejection preserves previous regex errors branches captures and multiline spaces"}
+      ],
+      "profiles": ["real-sed-source-identifiers", "real-sed-source-miss"],
+      "invariant": "A mandatory literal can only reject immutable raw byte spaces. Resolve executed-pattern history and validate replacement references before rejection; otherwise retain the full matcher, captures, empty matches, branching and multiline behavior.",
+      "measurement_scope": "The incremental 2026-10-31 two-row panel qualifies; cumulative original-artifact evidence and limitations are recorded separately in ADR-0003. No general performance or publication acceptance."
+    },
+    {
+      "id": "csplit-page-processing",
+      "owner": "commands/csplit",
+      "commands": ["csplit"],
+      "status": "adopted",
+      "sources": ["commands/csplit/snapshot.mbt", "commands/csplit/main.mbt"],
+      "tests": [
+        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit flushes full index pages before an unterminated final boundary"},
+        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit index pages retain 64 bit offsets and never replay a failed flush"},
+        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit cached matching retains byte semantics and declines crossing records"},
+        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit cached scans stop at the first match or uncached record"},
+        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit byte matcher retains BRE assertions alternatives and backreferences"}
+      ],
+      "profiles": ["real-csplit-source-api-boundaries"],
+      "invariant": "Bounded index pages preserve signed 64-bit offsets and data-before-index ordering; synchronous scanning stops at the first match or uncached record; one byte matcher is reused per control; cached matching requires both offsets and the complete record, while cross-page records retain the original path, error and cleanup contracts.",
+      "measurement_scope": "Locally adopted from the 2026-10-31 selected-workload panels; one genuine-source workload does not establish universal throughput, full protection or publication acceptance."
+    },
+    {
+      "id": "sed-record-output",
+      "owner": "commands/sed",
+      "commands": ["sed"],
+      "status": "adopted",
+      "sources": ["commands/sed/execute.mbt", "commands/sed/space.mbt"],
+      "tests": [
+        {"file": "commands/sed/sed_wbtest.mbt", "name": "sed output records preserve separators termination empty and byte values"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed delivers completed output before waiting for another input chunk"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output failure precedes a later script error without replay"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output failure precedes a failing input read"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output retains n N append and unterminated boundaries"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed record scanning preserves all bytes and fragmented final records"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed raw spaces preserve bytes without decoding and retain independent hold contents"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed raw spaces survive refills substitutions hold exchange and multiline restart"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed record output preserves separators and termination across buffer boundaries"}
+      ],
+      "profiles": ["real-sed-source-identifiers", "real-sed-source-miss"],
+      "invariant": "Immutable record views retain backing bytes across refills; spanning records own their buffer, and content changes create a new pattern/hold space. Record coalescing preserves separator, text, terminator and missing-newline state; batching must retain append/n/N ordering and deliver earlier output before input or runtime failures.",
+      "measurement_scope": "Locally adopted record coalescing, block buffering, chunk scanning and lazy byte spaces each pass both selected 2026-10-31 substitution rows; no general throughput, memory or publication acceptance."
+    },
     {
       "id": "rg-record-policy",
       "owner": "commands/rg/internal/searcher",
@@ -910,12 +978,14 @@
       "id": "bytere-record-dfa",
       "owner": "core/bytere",
       "commands": [
-        "grep"
+        "grep",
+        "csplit"
       ],
       "status": "adopted",
       "sources": [
         "core/bytere/record.mbt",
-        "core/bytere/record_skip.mbt"
+        "core/bytere/record_skip.mbt",
+        "commands/csplit/snapshot.mbt"
       ],
       "tests": [
         {
@@ -936,6 +1006,7 @@
         }
       ],
       "profiles": [
+        "real-csplit-source-api-boundaries",
         "real-grep-source-api-count",
         "real-grep-source-api-lines",
         "real-grep-regex-count",
@@ -954,7 +1025,8 @@
       "id": "bytere-anchored-linear",
       "owner": "core/bytere",
       "commands": [
-        "grep"
+        "grep",
+        "csplit"
       ],
       "status": "adopted",
       "sources": [
@@ -967,6 +1039,7 @@
         }
       ],
       "profiles": [
+        "real-csplit-source-api-boundaries",
         "real-grep-source-api-count",
         "real-grep-source-api-lines",
         "real-grep-regex-count",
@@ -1018,12 +1091,14 @@
       "owner": "core/stream",
       "commands": [
         "rg",
-        "column"
+        "column",
+        "sed"
       ],
       "status": "adopted",
       "sources": [
         "core/stream/output.mbt",
-        "commands/rg/internal/driver/stdout.mbt"
+        "commands/rg/internal/driver/stdout.mbt",
+        "commands/sed/execute.mbt"
       ],
       "tests": [
         {
@@ -1036,6 +1111,8 @@
         }
       ],
       "profiles": [
+        "real-sed-source-identifiers",
+        "real-sed-source-miss",
         "real-rg-source-api-count",
         "real-rg-rfc-http-spans",
         "real-rg-regex-count",

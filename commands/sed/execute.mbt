@@ -1,14 +1,15 @@
 ///|
 struct Runtime {
-  mut previous : @bytere.Pattern?
+  mut previous : PreparedPattern?
   mut missing_newline : Bool
+  output : @stream.BlockWriter
 }
 
 ///|
 fn PatternRef::resolve(
   self : PatternRef,
   runtime : Runtime,
-) -> @bytere.Pattern raise {
+) -> PreparedPattern raise {
   match self {
     Explicit(pattern) => {
       runtime.previous = Some(pattern)
@@ -26,13 +27,13 @@ fn PatternRef::resolve(
 async fn Address::matches(
   self : Address,
   input : Input,
-  text : String,
+  space : Space,
   runtime : Runtime,
 ) -> Bool {
   match self {
     Number(n) => n == input.number
     Last => !input.has_next()
-    Search(re) => re.resolve(runtime).is_match(text)
+    Search(re) => re.resolve(runtime).matches(space)
   }
 }
 
@@ -40,7 +41,7 @@ async fn Address::matches(
 async fn Command::selected(
   self : Command,
   input : Input,
-  text : String,
+  space : Space,
   runtime : Runtime,
 ) -> Bool {
   let mut selected = false
@@ -52,7 +53,7 @@ async fn Command::selected(
     } else if self.first is Some(Number(n)) {
       !self.closed && line >= n
     } else {
-      self.first.unwrap().matches(input, text, runtime)
+      self.first.unwrap().matches(input, space, runtime)
     }
     if !self.inside && starts {
       self.inside = true
@@ -62,20 +63,20 @@ async fn Command::selected(
       let ended = match end {
         Number(n) => line >= n
         Last => !input.has_next()
-        Search(_) => was_inside && end.matches(input, text, runtime)
+        Search(_) => was_inside && end.matches(input, space, runtime)
       }
       if ended {
         self.inside = false
         self.closed = true
         if end is Number(n) && line > n {
           selected = !was_inside &&
-            self.first.unwrap().matches(input, text, runtime)
+            self.first.unwrap().matches(input, space, runtime)
         }
       }
     }
   } else {
     selected = self.first is None ||
-      self.first.unwrap().matches(input, text, runtime)
+      self.first.unwrap().matches(input, space, runtime)
   }
   if self.invert {
     !selected
@@ -158,8 +159,40 @@ fn substitute(
     nonempty_end = if hit.end > hit.start { hit.end } else { -1 }
     search = if hit.end == hit.start { hit.end + 1 } else { hit.end }
   }
+  if !changed {
+    return (text, false)
+  }
   result.write_string(text[copied:].to_owned())
   (result.to_string(), changed)
+}
+
+///|
+// Strategy: sed-record-output
+
+///|
+fn output_record(
+  text : String,
+  terminated : Bool,
+  missing_newline : Bool,
+) -> Bytes {
+  let bytes = @bytere.bytes(text)
+  output_bytes_record(bytes[:], terminated, missing_newline)
+}
+
+///|
+fn output_bytes_record(
+  bytes : BytesView,
+  terminated : Bool,
+  missing_newline : Bool,
+) -> Bytes {
+  let prefix = if missing_newline { 1 } else { 0 }
+  let suffix = if terminated { 1 } else { 0 }
+  if prefix + suffix == 0 {
+    return bytes.to_owned()
+  }
+  let output = FixedArray::make(prefix + bytes.length() + suffix, b'\n')
+  output.blit_from_bytesview(prefix, bytes)
+  output.unsafe_reinterpret_as_bytes()
 }
 
 ///|
@@ -168,25 +201,20 @@ async fn Runtime::emit(
   text : String,
   terminated : Bool,
 ) -> Unit {
-  if self.missing_newline {
-    @stdio.stdout.write(b"\n")
-  }
-  @stdio.stdout.write(@bytere.bytes(text))
-  if terminated {
-    @stdio.stdout.write(b"\n")
-  }
+  self.output.write_bytes(output_record(text, terminated, self.missing_newline))
   self.missing_newline = !terminated
 }
 
 ///|
-struct Space {
-  text : String
-  terminated : Bool
-}
-
-///|
-fn Space::append(self : Space, other : Space) -> Space {
-  { text: self.text + "\n" + other.text, terminated: other.terminated, }
+async fn Runtime::emit_space(self : Runtime, space : Space) -> Unit {
+  let bytes = match space.data {
+    Some(data) => data
+    None => @bytere.bytes(space.text())[:]
+  }
+  self.output.write_bytes(
+    output_bytes_record(bytes, space.terminated, self.missing_newline),
+  )
+  self.missing_newline = !space.terminated
 }
 
 ///|
@@ -200,6 +228,7 @@ struct Input {
   mut position : Int32
   mut number : Int32
   mut status : Int32
+  output : @stream.BlockWriter
 }
 
 ///|
@@ -215,6 +244,7 @@ fn Input::close(self : Input) -> Unit {
 
 ///|
 async fn Input::open_next(self : Input) -> Bool {
+  self.output.flush()
   while self.index < self.paths.length() {
     self.path = self.paths[self.index]
     self.index += 1
@@ -243,6 +273,9 @@ async fn Input::fill(self : Input) -> Bool {
     return true
   }
   guard self.reader is Some(reader) else { return false }
+  // Commit earlier output before an external read can block or report an error.
+  // Already buffered input never introduces a new I/O boundary.
+  self.output.flush()
   let chunk = reader.read_some(max_len=@stream.chunk_size) catch {
     err => {
       @stdio.stderr.write("sed: \{self.path}: \{err}\n")
@@ -278,30 +311,39 @@ async fn Input::has_next(self : Input) -> Bool {
 }
 
 ///|
-async fn Input::next(self : Input) -> @stream.Line? {
+async fn Input::next(self : Input) -> @stream.RecordView? {
   guard self.has_next() else { return None }
-  let bytes : Array[Byte] = []
-  for ;; {
-    while self.position < self.buffer.length() {
-      let byte = self.buffer[self.position]
-      self.position += 1
-      if byte == b'\n' {
-        self.number += 1
-        return Some({ data: Bytes::from_array(bytes), terminated: true, })
-      }
-      bytes.push(byte)
-    }
-    if !self.fill() {
-      self.number += 1
-      return Some({ data: Bytes::from_array(bytes), terminated: false, })
-    }
+  let first = self.position
+  if self.buffer[first:].find(b"\n") is Some(length) {
+    self.position = first + length + 1
+    self.number += 1
+    return Some({ data: self.buffer[first:first + length], terminated: true, })
   }
+  // Complete records borrow the immutable chunk. A spanning record uses one buffer,
+  // so fragmented readers do not retain one allocation per input fragment.
+  let pending = @buffer.Buffer(size_hint=self.buffer.length() - first)
+  pending.write_bytes(self.buffer[first:])
+  self.position = self.buffer.length()
+  let mut terminated = false
+  for ;; {
+    guard self.fill() else { break }
+    if self.buffer[:].find(b"\n") is Some(length) {
+      pending.write_bytes(self.buffer[:length])
+      self.position = length + 1
+      terminated = true
+      break
+    }
+    pending.write_bytes(self.buffer[:])
+    self.position = self.buffer.length()
+  }
+  self.number += 1
+  Some({ data: pending.to_bytes()[:], terminated, })
 }
 
 ///|
 async fn Runtime::finish_line(self : Runtime) -> Unit {
   if self.missing_newline {
-    @stdio.stdout.write(b"\n")
+    self.output.write_bytes(b"\n")
     self.missing_newline = false
   }
 }
@@ -310,7 +352,7 @@ async fn Runtime::finish_line(self : Runtime) -> Unit {
 async fn Runtime::text(self : Runtime, text : String) -> Unit {
   if text != "" {
     self.finish_line()
-    @stdio.stdout.write(@bytere.bytes(text))
+    self.output.write_bytes(@bytere.bytes(text))
   }
 }
 
@@ -325,7 +367,7 @@ async fn flush_append(
   }
   runtime.finish_line()
   for text in queue {
-    @stdio.stdout.write(@bytere.bytes(text))
+    runtime.output.write_bytes(@bytere.bytes(text))
   }
   queue.clear()
 }
@@ -337,21 +379,32 @@ async fn execute(
   quiet : Bool,
   runtime : Runtime,
 ) -> Unit {
-  let mut hold = Space::{ text: "", terminated: true, }
+  // A pending write failure precedes a later script error. BlockWriter
+  // consumes failed writes, so this cannot replay a partially sent prefix.
+  errdefer runtime.output.flush()
+  execute_cycles(commands, input, quiet, runtime)
+  runtime.output.flush()
+}
+
+///|
+async fn execute_cycles(
+  commands : Array[Command],
+  input : Input,
+  quiet : Bool,
+  runtime : Runtime,
+) -> Unit {
+  let mut hold = Space::from_text("", true)
   let queue : Array[String] = []
   for ;; {
     flush_append(queue, runtime)
     guard input.next() is Some(line) else { break }
-    let mut pattern = Space::{
-      text: @bytere.text(line.data),
-      terminated: line.terminated,
-    }
+    let mut pattern = Space::from_bytes(line.data, line.terminated)
     let mut replaced = false
     let mut pc = 0
     let mut print_cycle = true
     while pc < commands.length() {
       let command = commands[pc]
-      let selected = command.selected(input, pattern.text, runtime)
+      let selected = command.selected(input, pattern, runtime)
       if !selected {
         pc = match command.action {
           Group(target) => target
@@ -375,11 +428,11 @@ async fn execute(
             continue
           }
         }
-        Print => runtime.emit(pattern.text, pattern.terminated)
+        Print => runtime.emit_space(pattern)
         PrintFirst =>
-          match pattern.text.find("\n") {
-            Some(end) => runtime.emit(pattern.text[:end].to_owned(), true)
-            None => runtime.emit(pattern.text, pattern.terminated)
+          match pattern.text().find("\n") {
+            Some(end) => runtime.emit(pattern.text()[:end].to_owned(), true)
+            None => runtime.emit_space(pattern)
           }
         Number => runtime.emit(input.number.to_string(), true)
         Delete => {
@@ -387,9 +440,12 @@ async fn execute(
           break
         }
         DeleteFirst =>
-          match pattern.text.find("\n") {
+          match pattern.text().find("\n") {
             Some(end) => {
-              pattern = { ..pattern, text: pattern.text[end + 1:].to_owned(), }
+              pattern = Space::from_text(
+                pattern.text()[end + 1:].to_owned(),
+                pattern.terminated,
+              )
               pc = 0
               continue
             }
@@ -400,7 +456,7 @@ async fn execute(
           }
         Quit => {
           if !quiet {
-            runtime.emit(pattern.text, pattern.terminated)
+            runtime.emit_space(pattern)
           }
           flush_append(queue, runtime, force=true)
           return
@@ -426,11 +482,11 @@ async fn execute(
         Next | Join => {
           let join = command.action is Join
           if !join && !quiet {
-            runtime.emit(pattern.text, pattern.terminated)
+            runtime.emit_space(pattern)
           }
           if !input.has_next() {
             if join && !quiet {
-              runtime.emit(pattern.text, pattern.terminated)
+              runtime.emit_space(pattern)
             }
             print_cycle = false
             break
@@ -440,15 +496,13 @@ async fn execute(
             print_cycle = false
             break
           }
-          let space = Space::{
-            text: @bytere.text(next.data),
-            terminated: next.terminated,
-          }
+          let space = Space::from_bytes(next.data, next.terminated)
           pattern = if join { pattern.append(space) } else { space }
           replaced = false
         }
         Substitute(reference, replacement, global, occurrence, print) => {
-          let re = reference.resolve(runtime)
+          let prepared = reference.resolve(runtime)
+          let re = prepared.pattern
           let mut r = 0
           while r < replacement.length() {
             if replacement[r] == '\\' && r + 1 < replacement.length() {
@@ -461,24 +515,30 @@ async fn execute(
             }
             r += 1
           }
-          let (value, changed) = substitute(
-            re,
-            pattern.text,
-            replacement,
-            global,
-            occurrence,
-          )
-          pattern = { ..pattern, text: value, }
-          replaced = replaced || changed
-          if print && changed {
-            runtime.emit(pattern.text, pattern.terminated)
+          // Resolve executed-pattern history and validate replacement references
+          // before a byte rejection can bypass text conversion or matching.
+          if !prepared.rejects(pattern) {
+            let (value, changed) = substitute(
+              re,
+              pattern.text(),
+              replacement,
+              global,
+              occurrence,
+            )
+            if changed {
+              pattern = Space::from_text(value, pattern.terminated)
+              replaced = true
+              if print {
+                runtime.emit_space(pattern)
+              }
+            }
           }
         }
       }
       pc += 1
     }
     if print_cycle && !quiet {
-      runtime.emit(pattern.text, pattern.terminated)
+      runtime.emit_space(pattern)
     }
   }
 }
