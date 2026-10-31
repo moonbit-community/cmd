@@ -11,9 +11,12 @@ sources total 22,152,148 unique payload bytes, with a 16 MiB per-source cap and
 a 64 MiB suite budget. Counts describe the inventory; they do not establish
 execution or timing success.
 
-`protection.json` binds strategy invariants to this inventory. The former
-generated timing matrices and separate rg launcher are retired; new timing
-does not accept schema 2. Synthetic adversarial fixtures remain private
+`protection.json` binds strategy invariants to this inventory. Its schema-2
+strategy metadata is distinct from the schema-3 executable workload format. The former
+generated timing matrices, pilot/schema-2 execution, reserved evaluator and
+separate rg/synthetic launchers have been removed. Their exact definitions and
+failed evidence are retained in Git checkpoint `8c4efe2`; new measurements use
+only the current real-source engine. Synthetic adversarial fixtures remain private
 command or test-tool correctness regressions. Historical definitions and
 reports retain their dated scope, rather than becoming current acceptance.
 

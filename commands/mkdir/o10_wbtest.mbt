@@ -49,3 +49,35 @@ test "mkdir rejects only symbolic results that require an unknown umask" {
     }
   }
 }
+
+///|
+test "mkdir creation capability preserves Linux and Darwin sticky staging" {
+  for mask in [0o000, 0o022, 0o077] {
+    assert_eq(
+      adjust_mode(compile_mode("+t"), mask, creation_retains_sticky=true),
+      0o1755,
+    )
+    assert_eq(
+      adjust_mode(compile_mode("+t"), mask, creation_retains_sticky=false),
+      0o1777,
+    )
+  }
+  for creation_retains_sticky in [true, false] {
+    for
+      (mode, expected) in [
+        ("a=rwx,+t", 0o1777),
+        ("+t,a=rwx", 0o777),
+        ("u+s,g+s,a+t", 0o7777),
+        ("u=rwx,go=rx", 0o755),
+      ] {
+      assert_eq(symbolic_mode(mode, creation_retains_sticky~), expected)
+    }
+    for mode in ["=rx", "-w", "+r-w"] {
+      try symbolic_mode(mode, creation_retains_sticky~) catch {
+        error => assert_true(error is NeedsUmask)
+      } noraise {
+        _ => fail("creation capability must not hide umask dependence")
+      }
+    }
+  }
+}

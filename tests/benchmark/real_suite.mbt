@@ -63,18 +63,10 @@ fn real_invocation_identity(row : FunctionalWorkload) -> Json {
     .unwrap_or([])
     .map(input => (input.target, input.source.sha256))
   inputs.sort_by((a, b) => a.0.lexical_compare(b.0))
-  let recipe = if [
-      Some("bench-gunzip-native-dynamic"),
-      Some("bench-zcat-native-dynamic"),
-    ].contains(row.recipe) {
-    Some("real-input")
-  } else {
-    row.recipe
-  }
   [
     Json(row.command),
     Json(row.args),
-    Json(recipe),
+    Json(row.recipe),
     Json(row.source.map(source => source.sha256)),
     Json(row.other_source.map(source => source.sha256)),
     Json(inputs),
@@ -96,7 +88,8 @@ fn real_suite_errors(
   let errors : Array[String] = []
   for
     name in [
-      "base_manifest", "sweeps", "seeds", "corpus_sweeps", "seed_variants",
+      "base_manifest", "sweeps", "seeds", "corpus_sweeps", "seed_variants", "published_manifest",
+      "workspace_case_corpus",
     ] {
     if real_field(manifest, name) != Json::null() {
       errors.push(
@@ -147,6 +140,13 @@ fn real_suite_errors(
       errors.push("real source size is missing or exceeds limit: " + path)
     }
     records[path] = source
+  }
+  for row in real_array(real_field(manifest, "workloads")) {
+    for name in ["case_id", "pending", "corpus", "seed"] {
+      if real_field(row, name) != Json::null() {
+        errors.push("real rows reject retired literal/generated field: " + name)
+      }
+    }
   }
   let identities : Array[Json] = []
   let used : Map[String, Int64] = Map([])
@@ -205,10 +205,6 @@ fn real_suite_errors(
       )
     }
     if row.source is None ||
-      row.corpus is Some(_) ||
-      row.seed is Some(_) ||
-      row.case_id is Some(_) ||
-      row.pending is Some(_) ||
       row.args is None ||
       row.expected_status is None ||
       row.mode.unwrap_or("").is_empty() ||
@@ -410,9 +406,7 @@ async fn validate_real_suite(
     }
   }
   let typed : FunctionalManifest = @json.from_json(manifest)
-  let cases = @testkit.load_cases(
-    real_registry_path(functional_case_corpus(typed, true)),
-  )
+  let cases = @testkit.load_cases(real_registry_path(typed.case_corpus))
   let index = @registry.load(real_registry_path("tests/registry/registry.json"))
   for row in rows {
     if !index.entries.any(entry => {

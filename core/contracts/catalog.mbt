@@ -190,6 +190,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "force", "no-target-directory", "symbolic", "verbose", "interactive", "relative",
       "no-dereference-target", "target-directory", "backup", "backup-control", "suffix",
     ]),
+    // Symbolic leaf permissions preserve platform creation semantics: sticky
+    // creation requires a final permission adjustment on Darwin.
     contract("mkdir", Extended, NoInput, LineStream, [FileWrite], [
       "mode", "parents", "verbose",
     ]),
@@ -409,6 +411,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("sed", Core, FileOrStdin, ByteStream, [FileRead], [
       "expression", "file", "extended-regexp", "quiet", "silent", "in-place",
     ]),
+    // Default diff alignment discards sparse repeated anchors before search;
+    // normal/unified/context output retains the same supported option surface.
     contract(
       "diff",
       Core,

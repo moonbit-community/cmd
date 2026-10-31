@@ -1,21 +1,15 @@
 ///|
-async test "new timing rejects unfrozen published launchers before reading manifests or invoking children" {
-  require_frozen_timing_backend(Map([("--moonx", "/published")]), false)
-  require_frozen_timing_backend(Map([("--wasm-root", "/frozen")]), true)
-  let reason = try {
-    ignore(
-      run_functional(
-        Map([("--moonx", "/must-not-run"), ("--manifest", "/must-not-read")]),
-        sample=true,
-      ),
-    )
-    "accepted"
-  } catch {
-    error => error.to_string()
+async test "real comparisons reject missing frozen artifacts before reading definitions" {
+  require_frozen_timing_backend(Map([("--wasm-root", "/frozen")]))
+  for sample in [false, true] {
+    let reason = try {
+      ignore(run_functional(Map([("--manifest", "/must-not-read")]), sample~))
+      "accepted"
+    } catch {
+      error => error.to_string()
+    }
+    assert_true(reason.contains("require explicit frozen Wasm artifacts"))
   }
-  assert_true(
-    reason.contains("new timing requires explicit frozen Wasm artifacts"),
-  )
 }
 
 ///|
@@ -32,7 +26,6 @@ test "benchmark direct Wasm invocation preserves program arguments" {
   let (program, args) = functional_candidate(
     "diff",
     ["-u", "a file", "b"],
-    Some("cli/diff@0.1.2"),
     options,
   )
   assert_eq(program, "/tools/moonrun")
@@ -63,8 +56,8 @@ async test "benchmark functional fixtures reset mutations and compare bounded ef
   assert_eq(@fs.read_file(left + "/f").text(), "original")
   assert_false(@fs.exists(left + "/extra"))
   assert_eq(compare_functional_effects(left, right, []), [])
-  prepare_input(left + "/large", 131073)
-  prepare_input(right + "/large", 131073)
+  write_observer_input(left + "/large", 131073)
+  write_observer_input(right + "/large", 131073)
   assert_eq(compare_functional_effects(left, right, []), [])
   let file = @fs.open(right + "/large", mode=WriteOnly)
   file.write_at(b"x", position=131072L)
@@ -75,109 +68,17 @@ async test "benchmark functional fixtures reset mutations and compare bounded ef
 }
 
 ///|
-async test "benchmark generated relations check mktemp identity and bounded yes prefixes" {
-  let directory = @fs.tmpdir(prefix="cmd-functional-relations-")
-  defer @fs.rmdir(directory, recursive=true)
-  let root = directory + "/fixture"
-  @fs.mkdir(root)
-  let output = directory + "/stdout"
-  if @testkit.host_platform() != "windows" {
-    @fs.write_file(root + "/tmp.abcdef", b"", permission=384)
-    @fs.write_file(output, "tmp.abcdef\n")
-    assert_eq(check_generated_effects(Some("mktemp"), root, output), [])
-    @fs.write_file(root + "/extra", "unexpected")
-    assert_false(
-      check_generated_effects(Some("mktemp"), root, output).is_empty(),
-    )
-  }
-  let input = directory + "/yes-input"
-  @fs.write_file(input, "y\n".repeat(3000))
-  let reader = @fs.open(input, mode=ReadOnly)
-  let capture = @fs.create(output)
-  consume_yes(reader, capture, 4096)
-  reader.close()
-  capture.close()
-  assert_eq(@fs.file_size(output), 4096L)
-  assert_eq(check_generated_effects(Some("yes"), root, output), [])
-  let changed = @fs.open(output, mode=WriteOnly)
-  changed.write_at(b"x", position=4095L)
-  changed.close()
-  assert_false(check_generated_effects(Some("yes"), root, output).is_empty())
-}
-
-///|
-async test "benchmark functional cases refuse metadata placeholders and retain declared root relations" {
-  let metadata : @testkit.Case = @json.from_json({
-    "id": "help",
-    "command": "cat",
-    "args": ["--help"],
-    "files": [],
-    "environment": {},
-    "expected_status": 0,
-    "normalizations": [],
-  })
-  let workload : FunctionalWorkload = {
-    id: "functional",
-    command: "cat",
-    reference_behavior_id: "case:help",
-    case_id: Some("help"),
-    recipe: None,
-    pending: None,
-    corpus: None,
-    source: None,
-    other_source: None,
-    args: None,
-    expected_status: None,
-    expected_stdout: None,
-    transport: None,
-    chunk_bytes: None,
-    seed: None,
-    sink: None,
-    sink_chunk_bytes: None,
-    sink_delay_ms: None,
-    inputs: None,
-    mode: None,
-    facets: None,
-    expected_stderr: None,
-    output_relation: None,
-  }
-  let refused = Some(functional_fixture(workload, [metadata], "helper")) catch {
-    _ => None
-  }
-  assert_true(refused is None)
-  let directory = @fs.tmpdir(prefix="cmd-functional-root-")
-  defer @fs.rmdir(directory, recursive=true)
-  let generated = {
-    ..workload,
-    command: "realpath",
-    case_id: None,
-    recipe: Some("realpath"),
-  }
-  let fixture = functional_fixture(generated, [], "helper")
-  let sides : Array[FunctionalSide] = []
-  for name in ["left", "right"] {
-    let root = directory + "/" + name
-    reset_functional_fixture(root, fixture, "")
-    let stdout = directory + "/" + name + ".stdout"
-    let stderr = directory + "/" + name + ".stderr"
-    @fs.write_file(stdout, root + "/f\n")
-    @fs.write_file(stderr, b"")
-    sides.push({
-      root,
-      stdout,
-      stderr,
-      errors: [],
-      observation: {
-        elapsed_us: 1.0,
-        status: Some(0),
-        timed_out: false,
-        error: None,
-      },
+test "real fixture builder rejects metadata operations" {
+  for args in [["--help"], ["--version"]] {
+    let row : FunctionalWorkload = @json.from_json({
+      "id": "metadata",
+      "command": "cat",
+      "reference_behavior_id": "case:cat",
+      "recipe": "real-input",
+      "args": Json(args),
+      "expected_status": 0,
     })
+    let accepted = Some(functional_fixture(row)) catch { _ => None }
+    assert_true(accepted is None)
   }
-  assert_eq(compare_functional_sides(generated, fixture, sides[0], sides[1]), [])
-  @fs.write_file(sides[1].stdout, sides[1].root + "/different\n")
-  assert_false(
-    compare_functional_sides(generated, fixture, sides[0], sides[1]).is_empty(),
-  )
 }

@@ -22,12 +22,25 @@ supplements this local gate; it does not replace it. The unified real-source
 benchmark and its explicit untimed boundaries are described in
 [the benchmark guide](../tests/benchmark/README.md). These policy changes alone
 do not establish a new compatibility, performance or publication result.
-The audit also retains an actual local Darwin `mkdir` special-bit failure:
-the product kept an extra directory setuid bit compared with fixed native GNU
-coreutils 9.11. The independent regression remains failing; see
-[ADR-0004](adr/0004-filesystem.md) for its exact input, mode mask and platform
-scope. A strengthened regression suite is not a claim that the candidate is
-compatible or ready to publish.
+The final audit corrects the earlier Darwin `mkdir` setuid diagnosis: the
+native and Wasm observations used different sandbox contexts. Paired execution
+under one unrestricted context agrees on those bits. It separately exposed
+and repaired sticky-only `+t` creation on Darwin; Linux keeps its existing
+result. Default diff alignment now follows GNU's sparse repeated-anchor rule
+on the genuine source pair. See [ADR-0004](adr/0004-filesystem.md) and
+[ADR-0003](adr/0003-streams.md) for the bounded evidence and retained limits.
+Regular-file stdin alignment for wc still requires an unavailable public
+descriptor metadata API and remains explicitly outside acceptance.
+
+The final local macOS development run passes 2,260 functional checks with 21
+platform skips and zero failures, plus 1,723 Wasm package and 188 Native
+test-tool tests. All 652 reviewed finite definitions join fresh receipts; four
+keep explicit platform-partial scopes. The real-source comparison checks 123
+of 125 rows and retains the two exact wc padding failures. Current evidence
+work remains 180 new-observer labels, 32 activation-review labels and one yes
+lifecycle feature. These are finite label counts, not test counts or complete
+option coverage. Three-platform CI and exact-version publication acceptance
+are separate gates.
 
 The following paragraphs retain development observations made before the
 2026-10-30 publication. Their local scope and exclusions remain unchanged;

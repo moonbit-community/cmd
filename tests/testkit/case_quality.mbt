@@ -13,12 +13,7 @@ fn quality_exact(fixture : Case, stream : String) -> Bool {
       fixture.expected_stdout_json is None &&
       (
         fixture.expected_stdout_hex is Some(_) ||
-        (
-          fixture.expected_stdout_text is Some(text) &&
-          !text.contains("${STAT_") &&
-          !text.contains("${HUMAN_SIZE:") &&
-          !text.contains("${SI_SIZE:")
-        )
+        (fixture.expected_stdout_text is Some(text) && !runtime_template(text))
       )
     "stderr" =>
       fixture.expected_stderr_text is Some(_) ||
@@ -40,6 +35,101 @@ fn quality_fragments(fixture : Case, stream : String) -> Array[String] {
     result.push(value)
   }
   result
+}
+
+///|
+// Keep the generator's typed-output classification aligned with the observers
+// the local runner can actually execute. A familiar case name is insufficient.
+fn quality_dynamic_observers(fixture : Case) -> Array[String] {
+  let observers = runtime_contract_observers(fixture)
+  if ["release-metadata-rg-help", "compat-catalog-line-277"].contains(
+      fixture.id,
+    ) &&
+    observers.is_empty() {
+    observers.push("dynamic:" + fixture.id)
+  }
+  observers
+}
+
+///|
+fn quality_wired_observers(
+  fixture : Case,
+  scenario_ids : Array[String],
+) -> Array[String] {
+  let wired = quality_dynamic_observers(fixture)
+  if scenario_ids.contains(fixture.id) {
+    wired.push("scenario:" + fixture.id)
+  }
+  wired
+}
+
+///|
+// Catalog generation classifies independent assertions; it does not execute or
+// certify them. Runtime validation still supplies its own observer inventory.
+fn quality_catalog_classification(fixture : Case) -> (String, Json, String) {
+  if [Some("scenario"), Some("oracle-scenario")].contains(fixture.comparison) {
+    return (
+      "typed-scenario",
+      {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": ["scenario:" + fixture.id],
+      },
+      "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence.",
+    )
+  }
+  if !quality_dynamic_observers(fixture).is_empty() {
+    return (
+      "typed-dynamic-output",
+      {
+        "kind": "dynamic",
+        "reason": fixture.diagnostic_reason.unwrap_or(""),
+        "required_observers": ["dynamic:" + fixture.id],
+        "streams": ["stdout"],
+      },
+      "Execute the named complete independent runtime or metadata assertion; the descriptor itself is not evidence.",
+    )
+  }
+  if case_quality_kind(fixture) == "exact" {
+    if fixture.comparison != Some("contract") &&
+      fixture.expected_rejection is None {
+      return (
+        "independent-expectations-not-locally-executed",
+        { "kind": "exact" },
+        "Execute the existing exact expectations locally before accepting this definition.",
+      )
+    }
+    return ("exact-local", { "kind": "exact" }, "")
+  }
+  if quality_exact(fixture, "stdout") {
+    if quality_fragments(fixture, "stderr").any(value => {
+        !value.trim().is_empty()
+      }) {
+      let supplied = fixture.diagnostic_reason.unwrap_or("")
+      return (
+        "finite-diagnostic",
+        {
+          "kind": "diagnostic-fragment",
+          "reason": if supplied.trim().is_empty() {
+            "The independently retained nonzero rejection status and exact stdout bind this finite failure; only the diagnostic's explicit rejection reason is matched."
+          } else {
+            supplied
+          },
+        },
+        "",
+      )
+    }
+    return (
+      "missing-independent-stderr-assertion",
+      Json::null(),
+      "Add a bounded diagnostic or exact stderr expectation derived independently from the candidate.",
+    )
+  }
+  (
+    "missing-independent-stream-assertions",
+    Json::null(),
+    "Add exact independently derived streams or an explicit typed observer before local acceptance.",
+  )
 }
 
 ///|

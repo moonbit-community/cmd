@@ -154,7 +154,7 @@ async fn main {
     coverage.push(row);if changed && !covered {missing.push(row)}
   }
   write_json(evidence+"/coverage.json",Json(coverage));write_json(evidence+"/missing-coverage.json",Json(missing))
-  let cases_path=match field(manifest,"workspace_case_corpus") {String(path)=>path;_=>text(field(manifest,"case_corpus"))}
+  let cases_path=text(field(manifest,"case_corpus"))
   for path in ["tests/benchmark/protection.json","tests/benchmark/real.json",coverage_path,text(field(manifest,"source_catalog")),cases_path] {identities.push((path,freeze(path,evidence+"/configuration/"+path)))}
   run_checked("moon",["version","--all"],evidence+"/toolchain.txt")
   run_checked("git",["status","--short"],evidence+"/source-status.txt")

@@ -1,8 +1,6 @@
 {
   "schema": 3,
-  "published_manifest": "tests/release_runner/current/latest.json",
-  "case_corpus": "tests/release_runner/current/latest-cases.json",
-  "workspace_case_corpus": "tests/release_runner/current/active-cases.json",
+  "case_corpus": "tests/release_runner/current/active-cases.json",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "coverage_registry": "tests/benchmark/real-coverage.json",
   "limits": {
@@ -21,8 +19,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "cat-copy",
@@ -40,8 +37,7 @@
       "recipe": "real-input",
       "source": {
         "path": "rfc9110.txt",
-        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
-        "split": "ordinary"
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a"
       },
       "args": [
         "-n"
@@ -62,8 +58,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-l"
@@ -83,8 +78,7 @@
       "recipe": "real-input",
       "source": {
         "path": "rfc9110.txt",
-        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
-        "split": "ordinary"
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a"
       },
       "args": [
         "-w"
@@ -104,8 +98,7 @@
       "recipe": "real-input",
       "source": {
         "path": "icu-ja-77.1.txt",
-        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9",
-        "split": "ordinary"
+        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9"
       },
       "args": [
         "-c"
@@ -125,8 +118,7 @@
       "recipe": "real-input",
       "source": {
         "path": "UnicodeData-17.0.0.txt",
-        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
-        "split": "ordinary"
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
       },
       "args": [
         "-d",
@@ -150,8 +142,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-b",
@@ -173,8 +164,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "s/SQLITE_/LIBSQL_/g"
@@ -195,8 +185,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "s/UNLIKELY_SYMBOL_987654/REPLACED/g"
@@ -217,8 +206,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "sort-lexical",
@@ -237,8 +225,7 @@
       "recipe": "real-input",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [
         "-t",
@@ -261,8 +248,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-S",
@@ -285,8 +271,7 @@
       "recipe": "real-input",
       "source": {
         "path": "shakespeare.txt",
-        "sha256": "eb61e33cab23dbe712ad57091ded6c7292ba91ac3bb2764f51a3223ec0068fe5",
-        "split": "ordinary"
+        "sha256": "eb61e33cab23dbe712ad57091ded6c7292ba91ac3bb2764f51a3223ec0068fe5"
       },
       "args": [
         "-c"
@@ -307,8 +292,7 @@
       "recipe": "real-input",
       "source": {
         "path": "rfc9110.txt",
-        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
-        "split": "ordinary"
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a"
       },
       "args": [],
       "mode": "uniq-adjacent",
@@ -326,8 +310,7 @@
       "recipe": "real-input",
       "source": {
         "path": "spdx-licenses-3.27.0.json",
-        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
-        "split": "ordinary"
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290"
       },
       "args": [
         "-c",
@@ -349,8 +332,7 @@
       "recipe": "real-input",
       "source": {
         "path": "spdx-licenses-3.27.0.json",
-        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
-        "split": "ordinary"
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290"
       },
       "args": [
         "-r",
@@ -372,8 +354,7 @@
       "recipe": "real-input",
       "source": {
         "path": "spdx-licenses-3.27.0.json",
-        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
-        "split": "ordinary"
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290"
       },
       "args": [
         "-c",
@@ -395,8 +376,7 @@
       "recipe": "real-input",
       "source": {
         "path": "spdx-licenses-3.27.0.json",
-        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
-        "split": "ordinary"
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290"
       },
       "args": [
         "-s",
@@ -419,8 +399,7 @@
       "recipe": "real-input",
       "source": {
         "path": "spdx-licenses-3.27.0.json",
-        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
-        "split": "ordinary"
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290"
       },
       "args": [
         "-s",
@@ -444,8 +423,7 @@
       "recipe": "real-input",
       "source": {
         "path": "spdx-licenses-3.27.0.json",
-        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
-        "split": "ordinary"
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290"
       },
       "args": [
         "-s",
@@ -468,8 +446,7 @@
       "recipe": "real-file-pair",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "--label",
@@ -483,8 +460,7 @@
       "mode": "diff-distinct-equal",
       "other_source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "expected_status": 0,
       "expected_stderr": "",
@@ -501,8 +477,7 @@
       "recipe": "bench-join-natural-csv",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [
         "-t",
@@ -518,8 +493,7 @@
       ],
       "other_source": {
         "path": "openflights-routes.dat",
-        "sha256": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390",
-        "split": "ordinary"
+        "sha256": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390"
       },
       "mode": "join-shared-and-unpaired",
       "expected_status": 0,
@@ -538,8 +512,7 @@
       "recipe": "bench-comm-natural-idsets",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [
         "left",
@@ -547,8 +520,7 @@
       ],
       "other_source": {
         "path": "openflights-routes.dat",
-        "sha256": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390",
-        "split": "ordinary"
+        "sha256": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390"
       },
       "mode": "comm-shared-and-unpaired",
       "expected_status": 0,
@@ -567,8 +539,7 @@
       "recipe": "bench-csplit-boundaries",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-s",
@@ -596,8 +567,7 @@
       "recipe": "gzip",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-n",
@@ -619,8 +589,7 @@
       "recipe": "bench-gunzip-native-dynamic",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-c"
@@ -641,8 +610,7 @@
       "recipe": "bench-zcat-native-dynamic",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "zcat-first-dynamic-native",
@@ -661,8 +629,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-F",
@@ -686,8 +653,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-F",
@@ -710,8 +676,7 @@
       "recipe": "real-input",
       "source": {
         "path": "rfc9110.txt",
-        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
-        "split": "ordinary"
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a"
       },
       "args": [
         "-n",
@@ -735,8 +700,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-E",
@@ -759,8 +723,7 @@
       "recipe": "real-input",
       "source": {
         "path": "UnicodeData-17.0.0.txt",
-        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
-        "split": "ordinary"
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
       },
       "args": [],
       "mode": "rev-ascii-records",
@@ -779,8 +742,7 @@
       "recipe": "real-input",
       "source": {
         "path": "jquery-3.7.1.min.js",
-        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
-        "split": "ordinary"
+        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a"
       },
       "args": [],
       "mode": "rev-long-record",
@@ -800,8 +762,7 @@
       "recipe": "real-input",
       "source": {
         "path": "rfc9110.txt",
-        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
-        "split": "ordinary"
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a"
       },
       "args": [],
       "mode": "tac-reverse-records",
@@ -819,8 +780,7 @@
       "recipe": "real-input",
       "source": {
         "path": "UnicodeData-17.0.0.txt",
-        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c",
-        "split": "ordinary"
+        "sha256": "2e1efc1dcb59c575eedf5ccae60f95229f706ee6d031835247d843c11d96470c"
       },
       "args": [
         "-t",
@@ -843,8 +803,7 @@
       "recipe": "real-input",
       "source": {
         "path": "curl-options-in-versions.txt",
-        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b",
-        "split": "ordinary"
+        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b"
       },
       "args": [
         "-c",
@@ -866,8 +825,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-a"
@@ -887,8 +845,7 @@
       "recipe": "bench-split-byte-chunks",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-b",
@@ -911,8 +868,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "nl-number-records",
@@ -931,8 +887,7 @@
       "recipe": "real-input",
       "source": {
         "path": "rfc9110.txt",
-        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a",
-        "split": "ordinary"
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a"
       },
       "args": [
         "-s"
@@ -953,8 +908,7 @@
       "recipe": "real-input",
       "source": {
         "path": "GraphemeBreakTest-17.0.0.txt",
-        "sha256": "e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec",
-        "split": "ordinary"
+        "sha256": "e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec"
       },
       "args": [
         "-t",
@@ -976,8 +930,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-a",
@@ -1000,8 +953,7 @@
       "recipe": "real-input",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [
         "-w",
@@ -1023,8 +975,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-n",
@@ -1046,8 +997,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-n",
@@ -1070,8 +1020,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-w0"
@@ -1092,8 +1041,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-w0"
@@ -1114,8 +1062,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "cksum-crc",
@@ -1133,8 +1080,7 @@
       "recipe": "real-input",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [],
       "mode": "cksum-crc",
@@ -1152,8 +1098,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "md5sum-digest",
@@ -1171,8 +1116,7 @@
       "recipe": "real-input",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [],
       "mode": "md5sum-digest",
@@ -1190,8 +1134,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "sha1sum-digest",
@@ -1209,8 +1152,7 @@
       "recipe": "real-input",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [],
       "mode": "sha1sum-digest",
@@ -1228,8 +1170,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "sha256sum-digest",
@@ -1247,8 +1188,7 @@
       "recipe": "real-input",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [],
       "mode": "sha256sum-digest",
@@ -1266,8 +1206,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "sha512sum-digest",
@@ -1285,8 +1224,7 @@
       "recipe": "real-input",
       "source": {
         "path": "openflights-airports.dat",
-        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
-        "split": "ordinary"
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
       },
       "args": [],
       "mode": "sha512sum-digest",
@@ -1304,8 +1242,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "a-z",
@@ -1327,8 +1264,7 @@
       "recipe": "real-input",
       "source": {
         "path": "icu-ja-77.1.txt",
-        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9",
-        "split": "ordinary"
+        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9"
       },
       "args": [],
       "expected_status": 0,
@@ -1347,8 +1283,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [
         "${INPUT}"
@@ -1370,8 +1305,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
-        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "split": "ordinary"
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
       "args": [],
       "expected_status": 0,
@@ -1388,8 +1322,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_difflib_expect.html",
-        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008",
-        "split": "ordinary"
+        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008"
       },
       "args": [],
       "expected_status": 0,
@@ -1408,8 +1341,7 @@
       "recipe": "real-input",
       "source": {
         "path": "icu-ja-77.1.txt",
-        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9",
-        "split": "ordinary"
+        "sha256": "d076b3d9ec07c37d5e9c5cff701227099312a5bf2b77b86f8db2787b02365bb9"
       },
       "args": [],
       "expected_status": 0,
@@ -1428,8 +1360,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
-        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "split": "ordinary"
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
       "args": [],
       "expected_status": 0,
@@ -1446,8 +1377,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-c",
@@ -1468,8 +1398,7 @@
       "recipe": "real-input",
       "source": {
         "path": "jquery-3.7.1.min.js",
-        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
-        "split": "ordinary"
+        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a"
       },
       "args": [
         "-b",
@@ -1492,8 +1421,7 @@
       "recipe": "real-input",
       "source": {
         "path": "spdx-licenses-3.27.0.json",
-        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290",
-        "split": "ordinary"
+        "sha256": "157789ba91984aecba5c67b84168dbbd41a235b910a7569aa64bf42a88b24290"
       },
       "args": [
         "-c",
@@ -1515,8 +1443,7 @@
       "recipe": "real-file-pair",
       "source": {
         "path": "python/Lib/json/decoder.py",
-        "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
-        "split": "ordinary"
+        "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
       },
       "args": [
         "--label",
@@ -1537,8 +1464,7 @@
       ],
       "other_source": {
         "path": "python/Lib/json/encoder.py",
-        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
-        "split": "ordinary"
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
       }
     },
     {
@@ -1548,8 +1474,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [
         "-a"
@@ -1569,8 +1494,7 @@
       "recipe": "real-file-pair",
       "source": {
         "path": "python/Lib/json/decoder.py",
-        "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
-        "split": "ordinary"
+        "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
       },
       "args": [
         "left",
@@ -1586,8 +1510,7 @@
       ],
       "other_source": {
         "path": "python/Lib/json/encoder.py",
-        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
-        "split": "ordinary"
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
       }
     },
     {
@@ -1597,8 +1520,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [
         "-w0"
@@ -1619,8 +1541,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [
         "-w0"
@@ -1641,8 +1562,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [],
       "expected_status": 0,
@@ -1660,8 +1580,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [],
       "expected_status": 0,
@@ -1679,8 +1598,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [],
       "expected_status": 0,
@@ -1698,8 +1616,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [],
       "expected_status": 0,
@@ -1717,8 +1634,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_email/data/python.png",
-        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c",
-        "split": "ordinary"
+        "sha256": "480ac039362a15a7738ba76dffe807fd03fa29f7edaa8eb21ca0057c44a1ee8c"
       },
       "args": [],
       "expected_status": 0,
@@ -1736,8 +1652,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "--no-config",
@@ -1762,8 +1677,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "--no-config",
@@ -1789,8 +1703,7 @@
       "recipe": "real-input",
       "source": {
         "path": "jquery-3.7.1.min.js",
-        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
-        "split": "ordinary"
+        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a"
       },
       "args": [
         "--no-config",
@@ -1816,8 +1729,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_difflib_expect.html",
-        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008",
-        "split": "ordinary"
+        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008"
       },
       "args": [
         "--no-config",
@@ -1843,8 +1755,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
-        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "split": "ordinary"
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
       "args": [
         "--no-config",
@@ -1868,8 +1779,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "--no-config",
@@ -1896,8 +1806,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-E",
@@ -1920,8 +1829,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-F",
@@ -1944,8 +1852,7 @@
       "recipe": "real-input",
       "source": {
         "path": "jquery-3.7.1.min.js",
-        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a",
-        "split": "ordinary"
+        "sha256": "fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a"
       },
       "args": [
         "-E",
@@ -1969,8 +1876,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_difflib_expect.html",
-        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008",
-        "split": "ordinary"
+        "sha256": "5eed467627fd3c0b899d57c79c6adb8469fa2922b25acea7fc88d9f580b17008"
       },
       "args": [
         "-E",
@@ -1994,8 +1900,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
-        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "split": "ordinary"
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       },
       "args": [
         "-E",
@@ -2017,8 +1922,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-E",
@@ -2042,8 +1946,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "expected_status": 0,
@@ -2064,8 +1967,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "expected_status": 0,
@@ -2086,8 +1988,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-l"
@@ -2110,8 +2011,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-l"
@@ -2134,8 +2034,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-w"
@@ -2158,8 +2057,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-w"
@@ -2182,8 +2080,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-c"
@@ -2206,8 +2103,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-c"
@@ -2230,8 +2126,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-F",
@@ -2257,8 +2152,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-F",
@@ -2284,8 +2178,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "--no-config",
@@ -2314,8 +2207,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "--no-config",
@@ -2344,8 +2236,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-n",
@@ -2370,8 +2261,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-n",
@@ -2396,8 +2286,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-n",
@@ -2421,8 +2310,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-n",
@@ -2446,8 +2334,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "expected_status": 0,
@@ -2468,8 +2355,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "expected_status": 0,
@@ -2490,8 +2376,7 @@
       "recipe": "real-input",
       "source": {
         "path": "curl-options-in-versions.txt",
-        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b",
-        "split": "ordinary"
+        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b"
       },
       "args": [],
       "expected_status": 0,
@@ -2513,8 +2398,7 @@
       "recipe": "real-input",
       "source": {
         "path": "curl-options-in-versions.txt",
-        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b",
-        "split": "ordinary"
+        "sha256": "f420d31b4515a5a757fa7fe4be409af8b5350f73eb1c16820bc5d2a30d12da1b"
       },
       "args": [
         "--no-config",
@@ -2543,8 +2427,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/json/__init__.py",
-        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
-        "split": "ordinary"
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
       },
       "args": [
         "--no-config",
@@ -2571,144 +2454,126 @@
         {
           "source": {
             "path": "python/Lib/json/__init__.py",
-            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
-            "split": "ordinary"
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
           },
           "target": "tree/json/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/json/decoder.py",
-            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
-            "split": "ordinary"
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
           },
           "target": "tree/json/decoder.py"
         },
         {
           "source": {
             "path": "python/Lib/json/encoder.py",
-            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
-            "split": "ordinary"
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
           },
           "target": "tree/json/encoder.py"
         },
         {
           "source": {
             "path": "python/Lib/json/scanner.py",
-            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
-            "split": "ordinary"
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
           },
           "target": "tree/json/scanner.py"
         },
         {
           "source": {
             "path": "python/Lib/json/tool.py",
-            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
-            "split": "ordinary"
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
           },
           "target": "tree/json/tool.py"
         },
         {
           "source": {
             "path": "python/Lib/re/__init__.py",
-            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
-            "split": "ordinary"
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
           },
           "target": "tree/re/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_casefix.py",
-            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
-            "split": "ordinary"
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
           },
           "target": "tree/re/_casefix.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_compiler.py",
-            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
-            "split": "ordinary"
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
           },
           "target": "tree/re/_compiler.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_constants.py",
-            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
-            "split": "ordinary"
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
           },
           "target": "tree/re/_constants.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_parser.py",
-            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
-            "split": "ordinary"
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
           },
           "target": "tree/re/_parser.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/__init__.py",
-            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
-            "split": "ordinary"
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
           },
           "target": "tree/importlib/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/_abc.py",
-            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
-            "split": "ordinary"
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
           },
           "target": "tree/importlib/_abc.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/util.py",
-            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
-            "split": "ordinary"
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
           },
           "target": "tree/importlib/util.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/machinery.py",
-            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
-            "split": "ordinary"
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
           },
           "target": "tree/importlib/machinery.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/__init__.py",
-            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
-            "split": "ordinary"
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
           },
           "target": "tree/asyncio/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/base_events.py",
-            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
-            "split": "ordinary"
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
           },
           "target": "tree/asyncio/base_events.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/tasks.py",
-            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
-            "split": "ordinary"
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
           },
           "target": "tree/asyncio/tasks.py"
         },
         {
           "source": {
             "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
-            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "split": "ordinary"
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
           },
           "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
         }
@@ -2721,8 +2586,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/json/__init__.py",
-        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
-        "split": "ordinary"
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
       },
       "args": [
         "tree",
@@ -2745,144 +2609,126 @@
         {
           "source": {
             "path": "python/Lib/json/__init__.py",
-            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
-            "split": "ordinary"
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
           },
           "target": "tree/json/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/json/decoder.py",
-            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
-            "split": "ordinary"
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
           },
           "target": "tree/json/decoder.py"
         },
         {
           "source": {
             "path": "python/Lib/json/encoder.py",
-            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
-            "split": "ordinary"
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
           },
           "target": "tree/json/encoder.py"
         },
         {
           "source": {
             "path": "python/Lib/json/scanner.py",
-            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
-            "split": "ordinary"
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
           },
           "target": "tree/json/scanner.py"
         },
         {
           "source": {
             "path": "python/Lib/json/tool.py",
-            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
-            "split": "ordinary"
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
           },
           "target": "tree/json/tool.py"
         },
         {
           "source": {
             "path": "python/Lib/re/__init__.py",
-            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
-            "split": "ordinary"
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
           },
           "target": "tree/re/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_casefix.py",
-            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
-            "split": "ordinary"
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
           },
           "target": "tree/re/_casefix.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_compiler.py",
-            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
-            "split": "ordinary"
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
           },
           "target": "tree/re/_compiler.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_constants.py",
-            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
-            "split": "ordinary"
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
           },
           "target": "tree/re/_constants.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_parser.py",
-            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
-            "split": "ordinary"
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
           },
           "target": "tree/re/_parser.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/__init__.py",
-            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
-            "split": "ordinary"
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
           },
           "target": "tree/importlib/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/_abc.py",
-            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
-            "split": "ordinary"
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
           },
           "target": "tree/importlib/_abc.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/util.py",
-            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
-            "split": "ordinary"
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
           },
           "target": "tree/importlib/util.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/machinery.py",
-            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
-            "split": "ordinary"
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
           },
           "target": "tree/importlib/machinery.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/__init__.py",
-            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
-            "split": "ordinary"
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
           },
           "target": "tree/asyncio/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/base_events.py",
-            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
-            "split": "ordinary"
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
           },
           "target": "tree/asyncio/base_events.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/tasks.py",
-            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
-            "split": "ordinary"
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
           },
           "target": "tree/asyncio/tasks.py"
         },
         {
           "source": {
             "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
-            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "split": "ordinary"
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
           },
           "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
         }
@@ -2896,8 +2742,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/json/__init__.py",
-        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
-        "split": "ordinary"
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
       },
       "args": [
         "tree",
@@ -2920,144 +2765,126 @@
         {
           "source": {
             "path": "python/Lib/json/__init__.py",
-            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
-            "split": "ordinary"
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
           },
           "target": "tree/json/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/json/decoder.py",
-            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
-            "split": "ordinary"
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
           },
           "target": "tree/json/decoder.py"
         },
         {
           "source": {
             "path": "python/Lib/json/encoder.py",
-            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
-            "split": "ordinary"
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
           },
           "target": "tree/json/encoder.py"
         },
         {
           "source": {
             "path": "python/Lib/json/scanner.py",
-            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
-            "split": "ordinary"
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
           },
           "target": "tree/json/scanner.py"
         },
         {
           "source": {
             "path": "python/Lib/json/tool.py",
-            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
-            "split": "ordinary"
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
           },
           "target": "tree/json/tool.py"
         },
         {
           "source": {
             "path": "python/Lib/re/__init__.py",
-            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
-            "split": "ordinary"
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
           },
           "target": "tree/re/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_casefix.py",
-            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
-            "split": "ordinary"
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
           },
           "target": "tree/re/_casefix.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_compiler.py",
-            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
-            "split": "ordinary"
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
           },
           "target": "tree/re/_compiler.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_constants.py",
-            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
-            "split": "ordinary"
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
           },
           "target": "tree/re/_constants.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_parser.py",
-            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
-            "split": "ordinary"
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
           },
           "target": "tree/re/_parser.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/__init__.py",
-            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
-            "split": "ordinary"
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
           },
           "target": "tree/importlib/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/_abc.py",
-            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
-            "split": "ordinary"
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
           },
           "target": "tree/importlib/_abc.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/util.py",
-            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
-            "split": "ordinary"
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
           },
           "target": "tree/importlib/util.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/machinery.py",
-            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
-            "split": "ordinary"
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
           },
           "target": "tree/importlib/machinery.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/__init__.py",
-            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
-            "split": "ordinary"
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
           },
           "target": "tree/asyncio/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/base_events.py",
-            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
-            "split": "ordinary"
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
           },
           "target": "tree/asyncio/base_events.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/tasks.py",
-            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
-            "split": "ordinary"
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
           },
           "target": "tree/asyncio/tasks.py"
         },
         {
           "source": {
             "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
-            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "split": "ordinary"
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
           },
           "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
         }
@@ -3071,8 +2898,7 @@
       "recipe": "real-input",
       "source": {
         "path": "python/Lib/json/__init__.py",
-        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
-        "split": "ordinary"
+        "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
       },
       "args": [
         "-J",
@@ -3093,144 +2919,126 @@
         {
           "source": {
             "path": "python/Lib/json/__init__.py",
-            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5",
-            "split": "ordinary"
+            "sha256": "d5d41e2c29049515d295d81a6d40b4890fbec8d8482cfb401630f8ef2f77e4d5"
           },
           "target": "tree/json/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/json/decoder.py",
-            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2",
-            "split": "ordinary"
+            "sha256": "0e756ee2194d865d6d12d0349a802c99f3baee73a7971f38a8a72f4a2c292af2"
           },
           "target": "tree/json/decoder.py"
         },
         {
           "source": {
             "path": "python/Lib/json/encoder.py",
-            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d",
-            "split": "ordinary"
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
           },
           "target": "tree/json/encoder.py"
         },
         {
           "source": {
             "path": "python/Lib/json/scanner.py",
-            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08",
-            "split": "ordinary"
+            "sha256": "8604d9d03786d0d509abb49e9f069337278ea988c244069ae8ca2c89acc2cb08"
           },
           "target": "tree/json/scanner.py"
         },
         {
           "source": {
             "path": "python/Lib/json/tool.py",
-            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a",
-            "split": "ordinary"
+            "sha256": "d8cc5326c37a495b45c7a448ff0dda3ebc7ccc1c94639861d989bfd56ad9160a"
           },
           "target": "tree/json/tool.py"
         },
         {
           "source": {
             "path": "python/Lib/re/__init__.py",
-            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93",
-            "split": "ordinary"
+            "sha256": "dbe158a677c6aaacf717ea2abc23c56233453d38024aef75b7c3d93612cabb93"
           },
           "target": "tree/re/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_casefix.py",
-            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8",
-            "split": "ordinary"
+            "sha256": "1b12d9136f23db6c3f6f26053fefc15ca964b886838c7b9c1fabf8d2efc1e5c8"
           },
           "target": "tree/re/_casefix.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_compiler.py",
-            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede",
-            "split": "ordinary"
+            "sha256": "991fb9c5c0fcf4015fc8fe43bf42003692e880fad292b410eb3f4e1aa4b8aede"
           },
           "target": "tree/re/_compiler.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_constants.py",
-            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb",
-            "split": "ordinary"
+            "sha256": "1dbe236d34fa934e3e7172ba9d6b0dcfab338ecf7717f370f1fd4a9d24b2ecdb"
           },
           "target": "tree/re/_constants.py"
         },
         {
           "source": {
             "path": "python/Lib/re/_parser.py",
-            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7",
-            "split": "ordinary"
+            "sha256": "c7a6c80b3b448f50684c320265a7b5efb5d0b1daf0a36fb5dee8dd83628359d7"
           },
           "target": "tree/re/_parser.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/__init__.py",
-            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f",
-            "split": "ordinary"
+            "sha256": "fa3881e319959a527916cef2a0b46e4d3b9fbf8dc631d4571bc930aaa2069f9f"
           },
           "target": "tree/importlib/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/_abc.py",
-            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8",
-            "split": "ordinary"
+            "sha256": "80aab7931dc999dee581c8b8b56fcd973fe156335a96ceeaf6acfc03cebf10e8"
           },
           "target": "tree/importlib/_abc.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/util.py",
-            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b",
-            "split": "ordinary"
+            "sha256": "47eed68cfc84cdb4950edc092fc1a81abf37b47cadd6ff68d3460b1c9f536e9b"
           },
           "target": "tree/importlib/util.py"
         },
         {
           "source": {
             "path": "python/Lib/importlib/machinery.py",
-            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a",
-            "split": "ordinary"
+            "sha256": "2e558d293587d18a5919f7093f8c5c10ea54dd9336f6b2c4ed9d6233c114652a"
           },
           "target": "tree/importlib/machinery.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/__init__.py",
-            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1",
-            "split": "ordinary"
+            "sha256": "61102f2b5f8fb832f0558cb66391f227970b3dd34ea2a621455587b4295e89a1"
           },
           "target": "tree/asyncio/__init__.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/base_events.py",
-            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354",
-            "split": "ordinary"
+            "sha256": "06368fda7fba857cedfa5dec24d907b1d04f0a3ac8313e9b059b5191734ea354"
           },
           "target": "tree/asyncio/base_events.py"
         },
         {
           "source": {
             "path": "python/Lib/asyncio/tasks.py",
-            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e",
-            "split": "ordinary"
+            "sha256": "821f2e08c8c33160250db98defbd5dc193b292ec057ae0565f372fbe6cfc5b5e"
           },
           "target": "tree/asyncio/tasks.py"
         },
         {
           "source": {
             "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
-            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "split": "ordinary"
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
           },
           "target": "tree/test/test_import/data/circular_imports/subpkg2/__init__.py"
         }
@@ -3244,8 +3052,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-sS",
@@ -3267,8 +3074,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-sS",
@@ -3293,8 +3099,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-sS",
@@ -3319,8 +3124,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-qO-",
@@ -3342,8 +3146,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-qO-",
@@ -3368,8 +3171,7 @@
       "recipe": "bench-gunzip-stored",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-c"
@@ -3390,8 +3192,7 @@
       "recipe": "bench-gunzip-fixed-literals",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-c"
@@ -3412,8 +3213,7 @@
       "recipe": "bench-gunzip-members",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "-c"
@@ -3434,8 +3234,7 @@
       "recipe": "bench-zcat-stored",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "zcat-stored-blocks",
@@ -3454,8 +3253,7 @@
       "recipe": "bench-zcat-fixed-literals",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "zcat-fixed-literals",
@@ -3474,8 +3272,7 @@
       "recipe": "bench-zcat-members",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [],
       "mode": "zcat-concatenated-block-types",
@@ -3494,8 +3291,7 @@
       "recipe": "real-input",
       "source": {
         "path": "sqlite3-3.50.4.c",
-        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8",
-        "split": "ordinary"
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
       },
       "args": [
         "--no-config",

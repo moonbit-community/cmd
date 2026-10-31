@@ -83,6 +83,87 @@
       ]
     },
     {
+      "id": "quality-test-false-string-equality",
+      "command": "test",
+      "args": [
+        "value",
+        "=",
+        "other"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "Independent unequal-literal equality predicate: value and other differ, so the exact result is false/status 1 with empty streams. This complements the retained equal-literal status 0 without broad expression-language claims."
+    },
+    {
+      "id": "quality-test-empty-file-size",
+      "command": "test",
+      "args": [
+        "-s",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": ""
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "",
+          "unchanged": true
+        }
+      ],
+      "source_version": "Independent empty-file -s negative: an actual zero-byte regular file is false/status 1 and remains empty. The stimulus differs from the retained one-byte positive."
+    },
+    {
+      "id": "quality-test-regular-is-not-link",
+      "command": "test",
+      "args": [
+        "-L",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "regular"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "regular",
+          "unchanged": true
+        }
+      ],
+      "source_version": "Independent file-kind negative: a newly created regular file is not a symbolic link, so -L returns 1 with empty streams. This vector requires no symbolic-link creation or privileged host prerequisite."
+    },
+    {
       "id": "release-metadata-test-help",
       "command": "test",
       "args": [

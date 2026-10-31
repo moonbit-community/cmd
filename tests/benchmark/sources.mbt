@@ -2,7 +2,6 @@
 priv struct NaturalSource {
   path : String
   sha256 : String
-  split : String
 } derive(FromJson, ToJson)
 
 ///|
@@ -16,9 +15,6 @@ fn natural_source_errors(source : NaturalSource) -> Array[String] {
     .iter()
     .all(c => (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')) {
     errors.push("natural source requires a lowercase SHA-256 identity")
-  }
-  if !["ordinary", "holdout"].contains(source.split) {
-    errors.push("natural source split must be ordinary or holdout")
   }
   errors
 }
@@ -145,9 +141,6 @@ async fn prepare_natural_source(
   completed : Map[String, Bool],
 ) -> PreparedCorpus? {
   guard workload.source is Some(source) else { return None }
-  guard workload.corpus is None else {
-    fail("a workload cannot mix generated and natural input")
-  }
   let errors = natural_source_errors(source)
   guard errors.is_empty() else { fail(errors.join("; ")) }
   let requested_root = options.get("--corpus-root").unwrap_or("")
@@ -188,7 +181,6 @@ async fn prepare_natural_source(
   } else {
     frozen
   }
-  // A split label records declared evaluation policy, not proof of blindness.
   guard @fs.file_size(measured) <= 16777216L else {
     fail("prepared real input exceeds16MiB")
   }
@@ -223,28 +215,4 @@ async fn prepare_natural_source(
     },
   })
   Some({ source: frozen, input: measured, })
-}
-
-///|
-fn natural_fixture(
-  fixture : @testkit.Case,
-  source : NaturalSource,
-) -> @testkit.Case raise {
-  let errors = natural_source_errors(source)
-  guard errors.is_empty() else { fail(errors.join("; ")) }
-  guard fixture.files.is_empty() else {
-    fail("natural stdin input cannot inherit literal fixture files")
-  }
-  {
-    ..fixture,
-    stdin_text: None,
-    stdin_hex: None,
-    expected_stdout_text: None,
-    expected_stdout_hex: None,
-    expected_stdout_contains: None,
-    expected_stdout_contains_all: None,
-    expected_stdout_ends_with_newline: None,
-    expected_files: None,
-    comparison: Some("exact"),
-  }
 }

@@ -4,20 +4,18 @@ fn natural_test_workload(source : NaturalSource) -> FunctionalWorkload raise {
     "id": "natural",
     "command": "cat",
     "reference_behavior_id": "case:cat",
-    "case_id": "cat",
+    "recipe": "real-input",
     "source": Json(source),
   })
 }
 
 ///|
-test "natural source identities and declared splits reject ambiguous inputs" {
+test "natural source identities reject ambiguous inputs" {
   let source : NaturalSource = {
     path: "original.bin",
     sha256: @testkit.sha256_bytes(b"original"),
-    split: "ordinary",
   }
   assert_eq(natural_source_errors(source), [])
-  assert_eq(natural_source_errors({ ..source, split: "holdout", }), [])
   for
     invalid in [
       { ..source, path: "../outside", },
@@ -26,7 +24,6 @@ test "natural source identities and declared splits reject ambiguous inputs" {
       { ..source, sha256: "", },
       { ..source, sha256: "a".repeat(63), },
       { ..source, sha256: "A".repeat(64), },
-      { ..source, split: "automatically-blind", },
     ] {
     assert_false(natural_source_errors(invalid).is_empty())
   }
@@ -81,7 +78,6 @@ async test "natural workload preparation rejects missing changed truncated and e
   let source : NaturalSource = {
     path: "original",
     sha256: @testkit.sha256_bytes(b"original\x00\xff\n"),
-    split: "ordinary",
   }
   let options = Map([("--corpus-root", corpus)])
   let workload = natural_test_workload(source)
@@ -179,32 +175,4 @@ async test "natural workload preparation rejects missing changed truncated and e
     }
     assert_false(accepted)
   }
-}
-
-///|
-test "natural fixture relations discard only stale literal output assertions" {
-  let fixture : @testkit.Case = @json.from_json({
-    "id": "small",
-    "command": "grep",
-    "args": ["-F", "needle"],
-    "stdin_text": "needle\n",
-    "files": [],
-    "environment": {},
-    "expected_status": 1,
-    "expected_stdout_text": "stale",
-    "expected_stderr_text": "",
-    "normalizations": [],
-    "comparison": "contract",
-  })
-  let source : NaturalSource = {
-    path: "text",
-    sha256: "a".repeat(64),
-    split: "ordinary",
-  }
-  let prepared = natural_fixture(fixture, source)
-  assert_eq(prepared.args, fixture.args)
-  assert_eq(prepared.expected_status, 1)
-  assert_eq(prepared.expected_stdout_text, None)
-  assert_eq(prepared.expected_stderr_text, Some(""))
-  assert_eq(prepared.comparison, Some("exact"))
 }

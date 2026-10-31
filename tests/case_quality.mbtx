@@ -1,133 +1,29 @@
 ----
 import {
   "moonbitlang/async@0.22.5", "moonbitlang/async@0.22.5/fs",
-  "moonbitlang/core/env", "moonbitlang/core/json",
-  "moonbitlang/core/encoding/utf8", "moonbitlang/x@0.5.5/crypto",
+  "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/core/env",
 }
 ----
 
-fn field(value : Json, name : String) -> Json {
-  match value { Object(fields) => fields.get(name).unwrap_or(Json::null()); _ => Json::null() }
-}
-
-fn exact(row : Json, stream : String) -> Bool {
-  if stream=="stdout" && field(row,"expected_stdout_json")!=Json::null() {return false}
-  field(row,"expected_"+stream+"_hex") is String(_) ||
-  (field(row,"expected_"+stream+"_text") is String(text) &&
-    !text.contains("${STAT_") && !text.contains("${HUMAN_SIZE:") && !text.contains("${SI_SIZE:"))
-}
-
-fn label(value : Json) -> String {
-  match value { String(text) => text; _ => "" }
-}
-
-fn rows(value : Json) -> Array[Json] {
-  match value { Array(items) => items; _ => [] }
-}
-
-fn stable(value : Json) -> Json {
-  match value {
-    Object(fields) => {
-      let keys=fields.keys().collect()
-      keys.sort()
-      let result : Map[String,Json]=Map([])
-      for key in keys {result[key]=stable(fields[key])}
-      Json(result)
-    }
-    Array(items) => Json(items.map(stable))
-    _ => value
-  }
-}
-
-fn digest(value : Json) -> String {
-  let hash=@crypto.SHA256::new()
-  hash.update(@utf8.encode(stable(value).stringify())[:])
-  @crypto.bytes_to_hex_string(hash.finalize())
-}
-
+///|
 async fn main {
-  let args=@env.args()[1:]
-  guard args is [output] && !@fs.exists(output) else {fail("Usage: emit_quality_descriptors.mbtx FRESH_JSON")}
-  let files=@fs.readdir("tests/cases").filter(name=>name.has_suffix(".json"))
-  files.sort()
-  let definitions : Array[Json]=[]
-  let counts : Map[String,Int]=Map([])
-  let descriptors : Map[String,Json]=Map([])
-  for name in files {
-    let source="tests/cases/"+name
-    for row in rows(field(@json.parse(@fs.read_file(source).text()),"cases")) {
-      let id=label(field(row,"id"))
-      guard !id.is_empty() && !descriptors.contains(id) else {fail("missing or duplicate case identity")}
-      let comparison=label(field(row,"comparison"))
-      let out=exact(row,"stdout")
-      let err=exact(row,"stderr")
-      let mut category=""
-      let mut descriptor : Json=Json::null()
-      let mut required_work=""
-      if comparison=="scenario" || comparison=="oracle-scenario" {
-        category="typed-scenario"
-        descriptor={
-          "kind":"scenario",
-          "reason":"Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
-          "required_observers":["scenario:"+id],
-        }
-        required_work="Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
-      } else if field(row,"expected_stdout_json")!=Json::null() ||
-        (field(row,"expected_stdout_text") is String(template) &&
-          (template.contains("${STAT_") || template.contains("${HUMAN_SIZE:") || template.contains("${SI_SIZE:"))) ||
-        id=="release-metadata-rg-help" || id=="compat-catalog-line-277" {
-        category="typed-dynamic-output"
-        descriptor={"kind":"dynamic","reason":label(field(row,"diagnostic_reason")),"required_observers":["dynamic:"+id],"streams":["stdout"]}
-        required_work="Execute the named complete independent runtime or metadata assertion; the descriptor itself is not evidence."
-      } else if out && err {
-        category="exact-local"
-        descriptor={"kind":"exact"}
-        if comparison!="contract" && field(row,"expected_rejection")==Json::null() {
-          category="independent-expectations-not-locally-executed"
-          required_work="Execute the existing exact expectations locally before accepting this definition."
-        }
-      } else if out {
-        let fragments=rows(field(row,"expected_stderr_contains_all"))
-        let single=field(row,"expected_stderr_contains")
-        let supplied_reason=label(field(row,"diagnostic_reason"))
-        if (single is String(text) && !text.trim().is_empty()) || !fragments.is_empty() {
-          category="finite-diagnostic"
-          let reason=if supplied_reason.trim().is_empty() {
-            "The independently retained nonzero rejection status and exact stdout bind this finite failure; only the diagnostic's explicit rejection reason is matched."
-          } else {supplied_reason}
-          descriptor={"kind":"diagnostic-fragment","reason":reason}
-        } else {
-          category="missing-independent-stderr-assertion"
-          required_work="Add a bounded diagnostic or exact stderr expectation derived independently from the candidate."
-        }
-      } else if id=="rg-json" || id.has_prefix("o12-linux-directory-") ||
-        id=="release-metadata-rg-help" || id=="compat-catalog-line-277" {
-        category="typed-dynamic-output"
-        descriptor={
-          "kind":"dynamic",
-          "reason":label(field(row,"diagnostic_reason")),
-          "required_observers":["dynamic:"+id],
-          "streams":["stdout"],
-        }
-        required_work="Wire the named independent observer: parse complete JSON records, derive directory sizes from public filesystem observations, or enforce the complete metadata interface contract as applicable."
-      } else {
-        category="missing-independent-stream-assertions"
-        required_work="Add exact independently derived streams or an explicit typed observer before local acceptance."
-      }
-      counts[category]=counts.get(category).unwrap_or(0)+1
-      descriptors[id]=descriptor
-      definitions.push({
-        "case_id":id,"source":source,"definition_sha256":digest(row),
-        "classification":category,"descriptor":descriptor,
-        "required_work":required_work,
-      })
-    }
+  let args = @env.args()[1:]
+  guard args is [output] && !@fs.exists(output) else {
+    fail("Usage: case_quality.mbtx FRESH_JSON")
   }
-  let report : Json={
-    "schema":1,
-    "scope":"Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
-    "counts":Json(counts),"definitions":Json(definitions),"descriptors":Json(descriptors),
-  }
-  @fs.write_file(output,report.stringify(indent=2)+"\n")
-  println("classified \{definitions.length()} current case definitions")
+  // Keep catalog generation in the current testkit classifier. The wrapper
+  // builds before forwarding so a stale driver cannot emit obsolete rules.
+  @shell.Cmd(
+    "moon",
+    ["build", "--target", "native", "--release", "--deny-warn", "tests/runner"],
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
+  @shell.Cmd(
+    "./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe",
+    ["--generate-quality-catalog", output],
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
 }

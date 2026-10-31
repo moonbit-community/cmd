@@ -905,900 +905,6 @@
       "scope": "Local cases must execute through the current frozen Wasm/contract driver before timing. Declared case IDs, corpus feature labels, timing success or profile counts alone are not correctness passes. Missing/skipped unsupported required applicable witnesses, observation mismatches, incomplete windows and unstable timing are not accepted."
     }
   ],
-  "legacy_mode_dispositions": [
-    {
-      "command": "cat",
-      "legacy_mode": "cat-copy",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-cat-source",
-        "real-cat-copy-pipe257",
-        "real-cat-copy-pipe65537"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "cat",
-      "legacy_mode": "cat-format",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-cat-rfc-numbered"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "wc",
-      "legacy_mode": "wc-scan-lines",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-wc-source-lines",
-        "real-wc-scan-lines-pipe257",
-        "real-wc-scan-lines-pipe65537"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "wc",
-      "legacy_mode": "wc-scan-words",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-wc-rfc-words",
-        "real-wc-scan-words-pipe257",
-        "real-wc-scan-words-pipe65537"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "wc",
-      "legacy_mode": "wc-regular-stdin-metadata",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-wc-japanese-bytes"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "cut",
-      "legacy_mode": "cut-byte-selection",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-cut-source-bytes"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "cut",
-      "legacy_mode": "cut-field-selection",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-cut-unicode-fields"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "sed",
-      "legacy_mode": "sed-substitution-sparse-hit",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-sed-source-identifiers"
-      ],
-      "reason": "Real sources and explicit argv replace generated size-budget inputs. Only current declared facets qualify; legacy names do not prove a route, density or generality."
-    },
-    {
-      "command": "sed",
-      "legacy_mode": "sed-substitution-miss",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-sed-source-miss"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "sort",
-      "legacy_mode": "sort-lexical",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-sort-source-lexical"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "sort",
-      "legacy_mode": "sort-numeric",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-sort-airport-numeric"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "sort",
-      "legacy_mode": "sort-forced-spill-4m",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-sort-source-spill"
-      ],
-      "reason": "Real sources and explicit argv replace generated size-budget inputs. Only current declared facets qualify; legacy names do not prove a route, density or generality."
-    },
-    {
-      "command": "uniq",
-      "legacy_mode": "uniq-adjacent",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-uniq-rfc-adjacent"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "uniq",
-      "legacy_mode": "uniq-count-runs",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-uniq-source-runs"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "jq",
-      "legacy_mode": "jq-compact-identity",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-jq-registry-identity"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "jq",
-      "legacy_mode": "jq-property-missing-null-string",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-jq-registry-identifiers",
-        "real-jq-missing-property"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "jq",
-      "legacy_mode": "jq-filter-selection",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-jq-registry-filter"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "jq",
-      "legacy_mode": "jq-slurp-aggregate",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-jq-registry-sum-references"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "diff",
-      "legacy_mode": "diff-distinct-equal",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-diff-source-distinct-equal"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "diff",
-      "legacy_mode": "diff-interior-insert-delete",
-      "disposition": "correctness-only-or-unmeasured-real-regime",
-      "workload_ids": [],
-      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
-      "correctness_bindings": [
-        {
-          "kind": "local-contract",
-          "case_ids": [
-            "d-diff-repeated-delete",
-            "d-diff-repeated-cross"
-          ],
-          "scope": "Exact small repeated-record deletion and crossed add/remove alignment, executed in the local Wasm preflight. These do not reproduce the old sparse/distributed large synthetic input."
-        },
-        {
-          "kind": "package-whitebox",
-          "source": "commands/diff/compare_wbtest.mbt",
-          "test_name": "edit scripts reconstruct both sides with minimum edit count",
-          "scope": "Exhaustive four-record binary choices reconstruct both sides and compare edit cost with dynamic programming. Requires separate package-test execution; not a real-source timing witness."
-        }
-      ]
-    },
-    {
-      "command": "diff",
-      "legacy_mode": "diff-distributed-edits",
-      "disposition": "correctness-only-or-unmeasured-real-regime",
-      "workload_ids": [],
-      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
-      "correctness_bindings": [
-        {
-          "kind": "local-contract",
-          "case_ids": [
-            "d-diff-repeated-delete",
-            "d-diff-repeated-cross"
-          ],
-          "scope": "Exact small repeated-record deletion and crossed add/remove alignment, executed in the local Wasm preflight. These do not reproduce the old sparse/distributed large synthetic input."
-        },
-        {
-          "kind": "package-whitebox",
-          "source": "commands/diff/compare_wbtest.mbt",
-          "test_name": "edit scripts reconstruct both sides with minimum edit count",
-          "scope": "Exhaustive four-record binary choices reconstruct both sides and compare edit cost with dynamic programming. Requires separate package-test execution; not a real-source timing witness."
-        }
-      ]
-    },
-    {
-      "command": "join",
-      "legacy_mode": "join-shared-and-unpaired",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-join-airport-route-records"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "join",
-      "legacy_mode": "join-duplicate-cartesian",
-      "disposition": "correctness-only-or-unmeasured-real-regime",
-      "workload_ids": [],
-      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
-      "correctness_bindings": [
-        {
-          "kind": "local-contract",
-          "case_ids": [
-            "o1-join-case-cartesian"
-          ],
-          "scope": "Exact two-by-two ASCII-folded duplicate-key Cartesian product plus both unpaired sides under -i -a1 -a2 -oauto. Executed in local Wasm preflight; no large duplicate-run timing claim."
-        }
-      ]
-    },
-    {
-      "command": "comm",
-      "legacy_mode": "comm-shared-and-unpaired",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-comm-airport-route-idsets"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "csplit",
-      "legacy_mode": "csplit-repeated-interior-boundaries",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-csplit-source-api-boundaries"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "gzip",
-      "legacy_mode": "gzip-default-compress",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-gzip-default-compress-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "gunzip",
-      "legacy_mode": "gunzip-stored-blocks",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-gunzip-stored-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "gunzip",
-      "legacy_mode": "gunzip-fixed-literals",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-gunzip-fixed-literals-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "gunzip",
-      "legacy_mode": "gunzip-first-dynamic-native",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-gunzip-first-dynamic-native-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "gunzip",
-      "legacy_mode": "gunzip-concatenated-block-types",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-gunzip-members-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "zcat",
-      "legacy_mode": "zcat-first-dynamic-native",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-zcat-first-dynamic-native-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "zcat",
-      "legacy_mode": "zcat-concatenated-block-types",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-zcat-members-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "rg",
-      "legacy_mode": "rg-literal-sparse-count",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-rg-source-api-count",
-        "real-rg-literal-sparse-count-pipe257",
-        "real-rg-literal-sparse-count-pipe65537"
-      ],
-      "reason": "Real sources and explicit argv replace generated size-budget inputs. Only current declared facets qualify; legacy names do not prove a route, density or generality."
-    },
-    {
-      "command": "rg",
-      "legacy_mode": "rg-regex-sparse-count",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-rg-regex-count"
-      ],
-      "reason": "Real sources and explicit argv replace generated size-budget inputs. Only current declared facets qualify; legacy names do not prove a route, density or generality."
-    },
-    {
-      "command": "rg",
-      "legacy_mode": "rg-regex-numbered-output",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-rg-source-api-numbered"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "grep",
-      "legacy_mode": "grep-literal-sparse-count",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-grep-source-api-count",
-        "real-grep-literal-sparse-count-pipe257",
-        "real-grep-literal-sparse-count-pipe65537"
-      ],
-      "reason": "Real sources and explicit argv replace generated size-budget inputs. Only current declared facets qualify; legacy names do not prove a route, density or generality."
-    },
-    {
-      "command": "grep",
-      "legacy_mode": "grep-regex-sparse-count",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-grep-regex-count"
-      ],
-      "reason": "Real sources and explicit argv replace generated size-budget inputs. Only current declared facets qualify; legacy names do not prove a route, density or generality."
-    },
-    {
-      "command": "grep",
-      "legacy_mode": "grep-regex-numbered-output",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-grep-source-api-lines"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "rev",
-      "legacy_mode": "rev-ascii-records",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-rev-ascii-properties"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "tac",
-      "legacy_mode": "tac-reverse-records",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-tac-rfc-records"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "column",
-      "legacy_mode": "column-delimited-table",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-column-properties-table"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "column",
-      "legacy_mode": "column-grid-width80",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-column-option-grid"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "strings",
-      "legacy_mode": "strings-scan-all-bytes",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-strings-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "split",
-      "legacy_mode": "split-byte-chunks-1m",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-split-source-bytes"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "nl",
-      "legacy_mode": "nl-number-records",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-nl-source-records"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "paste",
-      "legacy_mode": "paste-serial",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-paste-rfc-serial"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "expand",
-      "legacy_mode": "expand-tabstop4",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-expand-real-tabs"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "unexpand",
-      "legacy_mode": "unexpand-all-tabstop4",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-unexpand-source-indent"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "fold",
-      "legacy_mode": "fold-width80",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-fold-airport-records"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "tail",
-      "legacy_mode": "tail-regular-stdin-last10",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-tail-source-records"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "head",
-      "legacy_mode": "head-early-exit10",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-head-source-records"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "base64",
-      "legacy_mode": "base64-encode-unwrapped",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-base64-encode-unwrapped-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "base32",
-      "legacy_mode": "base32-encode-unwrapped",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-base32-encode-unwrapped-source"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "cksum",
-      "legacy_mode": "cksum-crc",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-cksum-crc-source",
-        "real-cksum-crc-utf8-routes"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "md5sum",
-      "legacy_mode": "md5sum-digest",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-md5sum-digest-source",
-        "real-md5sum-digest-utf8-routes"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "sha1sum",
-      "legacy_mode": "sha1sum-digest",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-sha1sum-digest-source",
-        "real-sha1sum-digest-utf8-routes"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "sha256sum",
-      "legacy_mode": "sha256sum-digest",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-sha256sum-digest-source",
-        "real-sha256sum-digest-utf8-routes"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "sha512sum",
-      "legacy_mode": "sha512sum-digest",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-sha512sum-digest-source",
-        "real-sha512sum-digest-utf8-routes"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "tr",
-      "legacy_mode": "tr-uppercase-ascii",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-tr-source-uppercase"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "gunzip",
-      "legacy_mode": "gunzip-fixed-distance1-overlap",
-      "disposition": "correctness-only-or-unmeasured-real-regime",
-      "workload_ids": [],
-      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
-      "correctness_bindings": [
-        {
-          "kind": "test-tool-whitebox",
-          "source": "tests/benchmark/coverage_wbtest.mbt",
-          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
-          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
-        }
-      ]
-    },
-    {
-      "command": "gunzip",
-      "legacy_mode": "gunzip-fixed-distance32768-window",
-      "disposition": "correctness-only-or-unmeasured-real-regime",
-      "workload_ids": [],
-      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
-      "correctness_bindings": [
-        {
-          "kind": "test-tool-whitebox",
-          "source": "tests/benchmark/coverage_wbtest.mbt",
-          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
-          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
-        }
-      ]
-    },
-    {
-      "command": "zcat",
-      "legacy_mode": "zcat-fixed-distance1-overlap",
-      "disposition": "correctness-only-or-unmeasured-real-regime",
-      "workload_ids": [],
-      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
-      "correctness_bindings": [
-        {
-          "kind": "test-tool-whitebox",
-          "source": "tests/benchmark/coverage_wbtest.mbt",
-          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
-          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
-        }
-      ]
-    },
-    {
-      "command": "zcat",
-      "legacy_mode": "zcat-fixed-distance32768-window",
-      "disposition": "correctness-only-or-unmeasured-real-regime",
-      "workload_ids": [],
-      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
-      "correctness_bindings": [
-        {
-          "kind": "test-tool-whitebox",
-          "source": "tests/benchmark/coverage_wbtest.mbt",
-          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
-          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
-        }
-      ]
-    },
-    {
-      "command": "jq",
-      "legacy_mode": "jq-slurp-sort-by-id",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-jq-registry-sort"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    },
-    {
-      "command": "jq",
-      "legacy_mode": "jq-slurp-group-cardinality",
-      "disposition": "represented-finite-mode",
-      "workload_ids": [
-        "real-jq-registry-group"
-      ],
-      "reason": "Complete real bytes with declared argv/semantic format encoding; actual correctness and route-preparation conditions must pass. No repeated or padded payload is introduced."
-    }
-  ],
-  "legacy_protection_profiles": {
-    "ln": [
-      "ln-symbolic-validation"
-    ],
-    "wc": [
-      "wc-l-64m",
-      "wc-w-64m",
-      "wc-all-64m"
-    ],
-    "cut": [
-      "cut-8m",
-      "cut-fields-8m",
-      "cut-fields-tail-8m",
-      "cut-tiny-8m",
-      "cut-long-64m"
-    ],
-    "uniq": [
-      "uniq-8m",
-      "uniq-repeated-8m",
-      "uniq-tiny-8m",
-      "uniq-long-8m"
-    ],
-    "rev": [
-      "rev-8m",
-      "rev-long-8m",
-      "rev-tiny-1m"
-    ],
-    "tac": [
-      "tac-file-8m",
-      "tac-stream-8m",
-      "tac-multi-8m",
-      "tac-long-8m"
-    ],
-    "column": [
-      "column-table-8m",
-      "column-grid-1m",
-      "column-table-long-8m",
-      "column-cache-cap-8m",
-      "column-dense-fields-1m"
-    ],
-    "grep": [
-      "grep-many-count-64m",
-      "grep-set-short-64m",
-      "grep-miss-8m",
-      "grep-tree-search",
-      "grep-hotspot-output",
-      "grep-hotspot-dense",
-      "grep-hotspot-dense-count",
-      "grep-hotspot-sparse",
-      "grep-hotspot-sparse-count",
-      "grep-hotspot-numbered",
-      "grep-hotspot-context",
-      "grep-hotspot-only",
-      "grep-hotspot-invert",
-      "grep-hotspot-fixed-miss",
-      "grep-hotspot-regex-count",
-      "grep-hotspot-long-miss",
-      "grep-hotspot-many-states",
-      "grep-hotspot-empty",
-      "grep-onepass-repeat",
-      "grep-onepass-repeat-count",
-      "grep-onepass-branch",
-      "grep-onepass-false-positive",
-      "grep-onepass-ambiguous",
-      "grep-onepass-end",
-      "grep-onepass-empty",
-      "grep-onepass-only"
-    ],
-    "find": [
-      "find-tree-names",
-      "find-tree-size"
-    ],
-    "tree": [
-      "tree-directory"
-    ],
-    "rg": [
-      "rg-count-64m",
-      "rg-output-8m",
-      "rg-growth8m",
-      "rg-growth20m",
-      "rg-growth32m",
-      "rg-growth64m",
-      "rg-dfa-long",
-      "rg-dfa-entropy-long",
-      "rg-prefilter-structured-long-miss",
-      "rg-prefilter-entropy-long-miss",
-      "rg-regex-route-hit-8m",
-      "rg-regex-route-candidate-miss-8m",
-      "rg-regex-route-mixed-8m",
-      "rg-file-count-64m",
-      "rg-tree-files",
-      "rg-tree-search",
-      "rg-mixed-tree-default",
-      "rg-mixed-tree-sorted",
-      "rg-color-1m",
-      "rg-replace-8m",
-      "rg-context-8m",
-      "rg-only-8m",
-      "rg-literal-long-64m-hit",
-      "rg-literal-long-64m-miss",
-      "rg-literal-text-64m",
-      "rg-miss-64m",
-      "rg-regex-count-64m",
-      "rg-regex-miss-64m",
-      "rg-short-collision-1m",
-      "rg-literal-entropy-8m",
-      "rg-numbered-8m",
-      "rg-empty-output",
-      "rg-line-buffered-1m",
-      "rg-output-sparse-8m",
-      "rg-output-dense-regex-8m",
-      "rg-output-miss-64m",
-      "rg-output-regex-miss-64m",
-      "rg-text-output-miss-64m",
-      "rg-text-output-regex-miss-64m",
-      "rg-text-output-8m",
-      "rg-text-sparse-8m",
-      "rg-text-dense-regex-8m",
-      "rg-null-long-output-8m",
-      "rg-boolean-density-shift",
-      "rg-boolean-false-positive",
-      "rg-boolean-sparse",
-      "rg-boolean-repetition",
-      "rg-boolean-unicode",
-      "rg-boolean-word-boundary",
-      "rg-boolean-budget",
-      "rg-boolean-long-hit",
-      "rg-boolean-long-miss",
-      "rg-startup-help",
-      "rg-startup-version",
-      "rg-types-list",
-      "rg-types-count-8m",
-      "rg-pilot-long-regex",
-      "rg-pilot-long-regex-64",
-      "rg-pilot-late-prefix-hit-output",
-      "rg-pilot-late-prefix-hit-count",
-      "rg-pilot-short-prefix-output",
-      "rg-pilot-frequent-exits",
-      "rg-pilot-frequent-exits-hit",
-      "rg-pilot-long-output-hit",
-      "rg-pilot-long-only-hit",
-      "rg-pilot-long-color-hit",
-      "rg-min-dfa-long-text",
-      "rg-min-constructor-chain",
-      "rg-min-constructor-many-states",
-      "rg-min-constructor-declined",
-      "rg-min-broad-frequent",
-      "rg-min-broad-sparse",
-      "rg-stream-long8",
-      "rg-stream-long20",
-      "rg-stream-long32",
-      "rg-stream-long64",
-      "rg-stream-dense64",
-      "rg-stream-miss64",
-      "rg-stream-chain",
-      "rg-stream-frequent",
-      "rg-stream-sparse",
-      "rg-stream-empty",
-      "rg-stream-phase-16",
-      "rg-stream-phase-4095",
-      "rg-stream-period-513",
-      "rg-stream-period-1009",
-      "rg-cache-pressure-spans",
-      "rg-regex-cold-empty"
-    ],
-    "sort": [
-      "sort-8m",
-      "sort-n-8m"
-    ],
-    "curl": [
-      "curl-loopback-8m",
-      "curl-loopback-bytes-upload-8m",
-      "curl-loopback-file-upload-8m",
-      "curl-loopback-stdin-upload-8m"
-    ],
-    "wget": [
-      "wget-loopback-8m",
-      "wget-loopback-file-upload-8m"
-    ],
-    "sh": [
-      "sh-control-5000"
-    ],
-    "make": [
-      "make-shell-5000"
-    ],
-    "split": [
-      "split-filter-1m"
-    ],
-    "gzip": [
-      "gzip-stream-8m"
-    ],
-    "gunzip": [
-      "gunzip-stream-8m"
-    ],
-    "zcat": [
-      "zcat-stream-8m"
-    ],
-    "head": [
-      "head-except-last-8m"
-    ],
-    "join": [
-      "join-ordered"
-    ],
-    "comm": [
-      "comm-ordered"
-    ],
-    "cksum": [
-      "cksum-8m"
-    ],
-    "md5sum": [
-      "md5sum-8m"
-    ],
-    "sha1sum": [
-      "sha1sum-8m"
-    ],
-    "sha256sum": [
-      "sha256sum-8m"
-    ],
-    "sha512sum": [
-      "sha512sum-8m"
-    ],
-    "nl": [
-      "nl-8m"
-    ],
-    "paste": [
-      "paste-8m",
-      "paste-serial-8m"
-    ],
-    "jq": [
-      "jq-identity-1m"
-    ]
-  },
   "mode_contract_scope": "Declared-operation contracts reviewed before candidate execution: exact allowed argv, preparation recipe and expected status per command/mode, independent of workload row IDs. Operation facets describe the requested operation and require actual input/transport observations plus native calibration and independent local correctness; argv does not prove data-feature activation, matcher route, internal fast path, temporary I/O or bytes read. Sorting for join/comm is untimed genuine-source preparation; spill is a requested sort run budget only. These finite definitions do not establish execution or performance acceptance.",
   "operation_facet_vocabulary": [
     "formatting",
@@ -3641,6 +2747,123 @@
         "codec"
       ],
       "description": "Decode to stdout the registered stored-block encoding of complete genuine bytes."
+    }
+  ],
+  "untimed_regimes": [
+    {
+      "command": "diff",
+      "regime": "diff-interior-insert-delete",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "local-contract",
+          "case_ids": [
+            "d-diff-repeated-delete",
+            "d-diff-repeated-cross"
+          ],
+          "scope": "Exact small repeated-record deletion and crossed add/remove alignment, executed in the local Wasm preflight. These do not reproduce the old sparse/distributed large synthetic input."
+        },
+        {
+          "kind": "package-whitebox",
+          "source": "commands/diff/compare_wbtest.mbt",
+          "test_name": "edit scripts reconstruct both sides with minimum edit count",
+          "scope": "Exhaustive four-record binary choices reconstruct both sides and compare edit cost with dynamic programming. Requires separate package-test execution; not a real-source timing witness."
+        }
+      ]
+    },
+    {
+      "command": "diff",
+      "regime": "diff-distributed-edits",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "local-contract",
+          "case_ids": [
+            "d-diff-repeated-delete",
+            "d-diff-repeated-cross"
+          ],
+          "scope": "Exact small repeated-record deletion and crossed add/remove alignment, executed in the local Wasm preflight. These do not reproduce the old sparse/distributed large synthetic input."
+        },
+        {
+          "kind": "package-whitebox",
+          "source": "commands/diff/compare_wbtest.mbt",
+          "test_name": "edit scripts reconstruct both sides with minimum edit count",
+          "scope": "Exhaustive four-record binary choices reconstruct both sides and compare edit cost with dynamic programming. Requires separate package-test execution; not a real-source timing witness."
+        }
+      ]
+    },
+    {
+      "command": "join",
+      "regime": "join-duplicate-cartesian",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "local-contract",
+          "case_ids": [
+            "o1-join-case-cartesian"
+          ],
+          "scope": "Exact two-by-two ASCII-folded duplicate-key Cartesian product plus both unpaired sides under -i -a1 -a2 -oauto. Executed in local Wasm preflight; no large duplicate-run timing claim."
+        }
+      ]
+    },
+    {
+      "command": "gunzip",
+      "regime": "gunzip-fixed-distance1-overlap",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "test-tool-whitebox",
+          "source": "tests/benchmark/compressed_inputs_wbtest.mbt",
+          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
+          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
+        }
+      ]
+    },
+    {
+      "command": "gunzip",
+      "regime": "gunzip-fixed-distance32768-window",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "test-tool-whitebox",
+          "source": "tests/benchmark/compressed_inputs_wbtest.mbt",
+          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
+          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
+        }
+      ]
+    },
+    {
+      "command": "zcat",
+      "regime": "zcat-fixed-distance1-overlap",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "test-tool-whitebox",
+          "source": "tests/benchmark/compressed_inputs_wbtest.mbt",
+          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
+          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
+        }
+      ]
+    },
+    {
+      "command": "zcat",
+      "regime": "zcat-fixed-distance32768-window",
+      "disposition": "not-timed",
+      "reason": "Not forced into timing using synthetic edits, repeated payloads or periodic backreferences. Retain existing mechanism/contract regressions and report the unmeasured natural regime explicitly.",
+      "correctness_bindings": [
+        {
+          "kind": "test-tool-whitebox",
+          "source": "tests/benchmark/compressed_inputs_wbtest.mbt",
+          "test_name": "fixed backreference controls preserve overlap full-window distances tails and checksums",
+          "scope": "Native benchmark-tool regression constructs fixed-Huffman distance1 and distance32768 sources, invokes the actual shared gzip decoder, checks decoded boundary/tail bytes and CRC rejection. Requires separate Native test execution; does not establish command-Wasm or real-source timing acceptance."
+        }
+      ]
     }
   ]
 }

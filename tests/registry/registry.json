@@ -20863,7 +20863,7 @@
       "case_id": "o10-mkdir-symbolic-special",
       "aliases": [],
       "platforms": [
-        "posix"
+        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -24133,7 +24133,7 @@
       "case_id": "o10-mkdir-symbolic-sticky-only",
       "aliases": [],
       "platforms": [
-        "posix"
+        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -24292,7 +24292,9 @@
       "source": "tests/cases/rg.json",
       "case_id": "rg-windows-backslash-path",
       "aliases": [],
-      "platforms": [],
+      "platforms": [
+        "windows"
+      ],
       "oracle_profile": ""
     },
     {
@@ -25392,7 +25394,9 @@
       "source": "tests/cases/chmod.json",
       "case_id": "proof-chmod-reference-boundary-preserves-mode",
       "aliases": [],
-      "platforms": [],
+      "platforms": [
+        "posix"
+      ],
       "oracle_profile": ""
     },
     {
@@ -25849,7 +25853,9 @@
       "source": "tests/cases/ls.json",
       "case_id": "proof-ls-dereference-directory-operand",
       "aliases": [],
-      "platforms": [],
+      "platforms": [
+        "posix"
+      ],
       "oracle_profile": ""
     },
     {
@@ -25860,7 +25866,9 @@
       "source": "tests/cases/ls.json",
       "case_id": "proof-ls-preserve-directory-symlink-operand",
       "aliases": [],
-      "platforms": [],
+      "platforms": [
+        "posix"
+      ],
       "oracle_profile": ""
     },
     {
@@ -26016,6 +26024,85 @@
       "implementation": "json-case",
       "source": "tests/cases/wget.json",
       "case_id": "quality-wget-timestamping-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-diff-sparse-repeated-anchors",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/diff.json",
+      "case_id": "quality-diff-sparse-repeated-anchors",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-diff-dense-repeated-anchors",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/diff.json",
+      "case_id": "quality-diff-dense-repeated-anchors",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-diff-scaled-repeated-anchors",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/diff.json",
+      "case_id": "quality-diff-scaled-repeated-anchors",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-mkdir-sticky-only-darwin",
+      "command": "mkdir",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mkdir.json",
+      "case_id": "quality-mkdir-sticky-only-darwin",
+      "aliases": [],
+      "platforms": [
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:quality-test-false-string-equality",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "quality-test-false-string-equality",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-test-empty-file-size",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "quality-test-empty-file-size",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:quality-test-regular-is-not-link",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "quality-test-regular-is-not-link",
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
@@ -27401,7 +27488,8 @@
         "o10-mkdir-symbolic-existing-unchanged",
         "o10-mkdir-windows-existing-symbolic-noop",
         "o10-mkdir-symbolic-invalid-before-operands",
-        "quality-mkdir-symbolic-special-darwin"
+        "quality-mkdir-symbolic-special-darwin",
+        "quality-mkdir-sticky-only-darwin"
       ]
     },
     {
@@ -27997,7 +28085,10 @@
         "p8-test-regular-size",
         "p8-test-dangling-link",
         "release-metadata-test-help",
-        "release-metadata-test-version"
+        "release-metadata-test-version",
+        "quality-test-false-string-equality",
+        "quality-test-empty-file-size",
+        "quality-test-regular-is-not-link"
       ]
     },
     {
@@ -28839,7 +28930,10 @@
         "d-diff-label-spaces",
         "d-diff-header-spaces",
         "d-diff-both-missing",
-        "diff-directory-devices-boundary"
+        "diff-directory-devices-boundary",
+        "quality-diff-sparse-repeated-anchors",
+        "quality-diff-dense-repeated-anchors",
+        "quality-diff-scaled-repeated-anchors"
       ]
     },
     {

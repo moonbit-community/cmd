@@ -13,6 +13,35 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 Development test and benchmark replacement; no publication.
 
+- Final cleanup removes the old pilot/schema2/synthetic benchmark engine and
+  unused reserved/disclosure/stability workflows; their source is preserved
+  at `8c4efe2`. The active benchmark has one genuine-source Wasm execution path.
+  Quality generation and runtime checks share one classifier. Add independent
+  false-result test predicates and require the sleep cancellation observer to
+  distinguish a waiting child from an immediate-success no-op.
+- Correction to the initial audit below: the claimed Darwin mkdir setuid
+  incompatibility came from mismatched sandbox contexts and was invalid.
+  Same-context native/Wasm controls agree on those bits. A separate sticky-only
+  `+t` Darwin creation discrepancy is repaired without changing Linux behavior.
+  Default diff now agrees with GNU on the genuine CPython source pair and160
+  bounded alignment controls. The documented wc descriptor-metadata boundary
+  remains; no package is published by this development update.
+- Final local verification passes 1,723 release-Wasm package tests, 188 Native
+  test-tool tests and 2,260 functional checks, with 21 platform skips and zero
+  failures. All 652 reviewed finite definitions join fresh execution receipts;
+  four retain explicit platform-partial scopes. The 125 real-source comparisons
+  check 123 rows and retain exactly two failed wc regular-stdin padding rows,
+  with artifact integrity intact. The genuine diff pair now agrees exactly;
+  24 same-context mkdir mode pairs agree after the Darwin fix. Seven new exact
+  CLI regressions bring the active JSON inventory to 2,194 definitions. The
+  remaining index still records 180 new-observer labels, 32 activation-review
+  labels and one yes lifecycle feature; these are label counts, not test counts.
+  This is finite development correctness evidence, not complete compatibility,
+  formal performance or exact-version published acceptance.
+
+Initial replacement audit (its original results and subsequent correction are
+recorded separately):
+
 - Replace generated performance matrices and the rg-specific timing launcher
   with one schema-3 real-source engine: 125 rows, 105 reviewed modes, 40 timing
   commands and explicit correctness-only dispositions for ln/make/sh. Pin 31

@@ -19,26 +19,13 @@ fn combine_panel_windows(
   second : Json,
   expected : Array[String],
   old_new : Bool,
-  real~ : Bool = false,
 ) -> Json {
-  let rows = fn(report : Json) {
-    match report {
-      { "rows": Array(rows), .. } => rows
-      _ => []
-    }
-  }
-  let left = rows(first)
-  let right = rows(second)
+  let left = real_array(real_field(first, "rows"))
+  let right = real_array(real_field(second, "rows"))
   let result : Array[Json] = []
-  let reports_passed = [first, second].all(report => {
-    if real {
-      report
-      is { "passed": True, "identities_rechecked": True, "complete": True, .. }
-    } else {
+  let mut passed = [first, second].all(report => {
       report is { "passed": True, "artifact_integrity": True, .. }
-    }
-  })
-  let mut passed = reports_passed &&
+    }) &&
     !expected.is_empty() &&
     left.length() == expected.length() &&
     right.length() == expected.length()
@@ -49,11 +36,7 @@ fn combine_panel_windows(
     }
     seen.add(id)
     let matches = fn(row : Json) {
-      if real {
-        row is { "id": String(value), .. } && value == id
-      } else {
-        row is { "workload": { "id": String(value), .. }, .. } && value == id
-      }
+      row is { "workload": { "id": String(value), .. }, .. } && value == id
     }
     let a = left.filter(matches)
     let b = right.filter(matches)
@@ -66,66 +49,22 @@ fn combine_panel_windows(
       })
       continue
     }
-    let correct = if real {
-      [a[0], b[0]].all(row => {
-        row is { "correctness_passed": True, "stable": True, .. }
-      })
-    } else {
-      [a[0], b[0]].all(row => {
+    let correct = [a[0], b[0]].all(row => {
         row
         is {
           "status": String("checked"),
           "probe": { "complete": True, "passed": True, .. },
           ..
         }
-      })
-    }
-    let same_workload = if real {
-      match (a[0], b[0]) {
-        (
-          { "case": x, "reference_role": xr, .. },
-          { "case": y, "reference_role": yr, .. },
-        ) => x == y && xr == yr
-        _ => false
-      }
-    } else {
-      match (a[0], b[0]) {
-        ({ "workload": x, .. }, { "workload": y, .. }) => x == y
-        _ => false
-      }
-    }
-    let correct = correct && same_workload
-    let metric = fn(row : Json) {
-      if real {
-        row
-      } else {
-        match row {
-          { "probe": value, .. } => value
-          _ => Json::null()
-        }
-      }
-    }
-    let am = metric(a[0])
-    let bm = metric(b[0])
+      }) &&
+      real_field(a[0], "workload") == real_field(b[0], "workload")
+    let am = real_field(a[0], "probe")
+    let bm = real_field(b[0], "probe")
     let verdict : Json = try {
       let ac = panel_number(am, "candidate_median_us")
       let bc = panel_number(bm, "candidate_median_us")
-      let ar = panel_number(
-        am,
-        if real {
-          "reference_median_us"
-        } else {
-          "upstream_median_us"
-        },
-      )
-      let br = panel_number(
-        bm,
-        if real {
-          "reference_median_us"
-        } else {
-          "upstream_median_us"
-        },
-      )
+      let ar = panel_number(am, "upstream_median_us")
+      let br = panel_number(bm, "upstream_median_us")
       let cd = panel_drift(ac, bc)
       let rd = panel_drift(ar, br)
       let qualified = correct &&
@@ -154,7 +93,7 @@ fn combine_panel_windows(
     "rows": result,
     "required_rows": expected.length(),
     "windows": 2,
-    "scope": "exact selected modes/corpora; no general performance or upstream parity claim",
+    "scope": "exact selected real-source rows; no general performance or upstream parity claim",
   }
 }
 
@@ -269,11 +208,7 @@ async fn run_panels(options : Map[String, String]) -> Bool {
     let suffix = "/" +
       name +
       (if @async.platform is Windows { ".exe" } else { "" })
-    let source = if name == "gzip" {
-      options.get("--gzip-observer").unwrap_or(options["--oracle-bin"] + suffix)
-    } else {
-      options["--oracle-bin"] + suffix
-    }
+    let source = options["--oracle-bin"] + suffix
     fixed.push(
       (
         output + "/tools/oracle" + suffix,
@@ -291,7 +226,6 @@ async fn run_panels(options : Map[String, String]) -> Bool {
     (field, name) in [
       ("source_catalog", "sources.json"),
       ("coverage_registry", "coverage.json"),
-      ("published_manifest", "published.json"),
     ] {
     let source = real_registry_path(real_text(real_field(original, field)))
     let target = output + "/" + name
@@ -299,7 +233,7 @@ async fn run_panels(options : Map[String, String]) -> Bool {
     frozen[field] = Json(target)
   }
   let manifest : FunctionalManifest = @json.from_json(original)
-  let cases = @testkit.load_cases(functional_case_corpus(manifest, true))
+  let cases = @testkit.load_cases(manifest.case_corpus)
   let case_path = output + "/cases.json"
   let command_catalog = @json.parse(
     @fs.read_file("tests/fixtures/runner/cases.json").text(),
@@ -322,7 +256,6 @@ async fn run_panels(options : Map[String, String]) -> Bool {
     )
   }
   fixed.push((case_path, benchmark_file_sha256(case_path)))
-  frozen["workspace_case_corpus"] = Json(case_path)
   frozen["case_corpus"] = Json(case_path)
   let frozen_manifest = output + "/manifest.json"
   write_json(frozen_manifest, Json(frozen))

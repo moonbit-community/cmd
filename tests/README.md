@@ -27,8 +27,8 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon check --target wasm --deny-warn
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --deny-warn tests/runner
 MOON_HOME="$HOME/.moon-accounts/cli" moon test --target wasm --release --deny-warn --no-parallelize
-MOON_HOME="$HOME/.moon-accounts/cli" moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/debug/build/mooxCLI/cmd-tests/runner/runner.exe --suite functional --report-dir test-reports/local-functional
+MOON_HOME="$HOME/.moon-accounts/cli" moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark tests/proofs
+MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_PROFILE=debug CMD_TEST_REPORT_ROOT=/absolute/fresh-report moon run tests/ci.mbtx -- functional
 ```
 
 Use a fresh report directory. `functional` includes metadata, contracts,
@@ -64,8 +64,13 @@ selections, timeouts and uncertain cleanup are failures.
 
 Reports contain `run.json`, `summary.jsonl`, `summary.md` and failure captures.
 They record the platform, revision label, selected coordinates and durations.
-There are no source-corpus hashes, artifact seals or cross-report proof chains.
-The upstream image and inventory remain fixed independently of these reports.
+The controller also binds selected cases, exact result hashes and typed scenario
+observations to current assertion sources and a freshly built driver receipt.
+The finite [proof verifier](proofs/README.md) joins those actual reports and
+rejects missing, stale or mismatched evidence. This verifies only reviewed
+facets; the separate gap index retains unresolved labels. It is neither an
+audit-before-push wrapper nor a performance or publication seal. The upstream
+image and inventory remain fixed independently of these reports.
 
 Successful fixtures are removed. Failed captures and cleanup diagnostics are
 retained; direct-child cancellation does not promise arbitrary grandchild

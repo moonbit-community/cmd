@@ -15,17 +15,40 @@ below. Host observers and private runtime interfaces do not expand product APIs.
 
 ## Mutation and identity boundaries
 
-The 2026-10-31 local regression audit exposed a finite Darwin compatibility
-difference for `mkdir -m u+s,g+s,a+t leaf`. Under the recorded winter:wheel
-parent, fixed native GNU coreutils 9.11 created mode01777 while the product
-created05777. A local Darwin regression independently requires the sticky bit
-and rejects the extra setuid bit (mask05000); group-dependent setgid and
-ordinary rwx bits remain outside that assertion. The prior requested07000
-mask is scoped to Linux and requires Linux execution before acceptance.
-Preserve this as a failing compatibility witness until the implementation is
-reconciled with the selected platform contract; do not replace it with the
-candidate's mode. This observation does not modify published expectations or
-establish immutable-oracle parity.
+Correction on 2026-10-31: the initial Darwin diagnosis for
+`mkdir -m u+s,g+s,a+t leaf` compared a restricted-sandbox native GNU probe
+(mode01777) with an unsandboxed Wasm run (mode05777). That comparison did not
+establish a product incompatibility. A fresh unsandboxed fixed native GNU
+coreutils 9.11 probe under the same winter:wheel conditions also created05777,
+matching the unchanged product. No product permission mask or behavior change
+is justified by the earlier result. Preserve the original observations with
+this correction rather than relabeling them as valid parity evidence.
+
+The Darwin regression now requires setuid and sticky together (mode05000,
+mask05000). Group-dependent setgid and ordinary rwx bits remain outside this
+finite assertion. The requested07000 Linux mask remains Linux-only and needs
+actual Linux execution. Special-bit comparisons must launch both programs in
+the same process security context and verify that the observer context permits
+native setuid changes; a sandbox that strips or denies them is a fixture
+precondition failure, not a different product golden. The same-context local
+diagnostic covers numeric and symbolic modes under inherited and primary-group
+parents. It does not modify published expectations or establish immutable-oracle
+parity. General mode/identity limitations below remain unchanged.
+
+The same unrestricted paired diagnostic exposed a separate `mkdir -m +t`
+difference under both parent groups: GNU produced01777 while the old Wasm
+artifact produced01755. This is a real creation-stage difference. Darwin's
+[`mkdir` implementation](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/vfs/vfs_syscalls.c#L9840-L9858)
+passes only regular access bits to directory creation, so GNU must reapply
+the requested sticky bit and the full symbolic mode after creation. Linux
+retains sticky during creation and leaves the unrequested group/other write
+bits restricted. The command's pure mode plan now takes this creation
+capability from the public async platform value. This preserves the Linux
+result1755 and selects the independently observed Darwin result1777, without
+a special setuid/setgid mask. Numeric modes, clause ordering, error ordering
+and existing-parent handling retain their existing paths. Focused private
+capability tests and separate Linux/macOS CLI expectations must execute before
+acceptance; the original published expectations remain frozen.
 
 | Operation | Supported behavior and deliberate limit | Condition for expansion |
 | --- | --- | --- |

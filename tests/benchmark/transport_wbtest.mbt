@@ -260,7 +260,7 @@ async test "pipe deadline cancels a backpressured producer and reaps its direct 
   let root = @fs.tmpdir(prefix="cmd-pipe-timeout-")
   defer @fs.rmdir(root, recursive=true)
   let input = root + "/input"
-  prepare_input(input, 8388608)
+  write_observer_input(input, 8388608)
   let read_bytes = Ref(0L)
   let stdout = root + "/stdout"
   let observed = measure_invocation_pipe_with_source(

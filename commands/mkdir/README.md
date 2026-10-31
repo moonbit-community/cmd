@@ -10,6 +10,12 @@ moonx cli/mkdir@0.2.4 [-p] [-m MODE] [-v] DIRECTORY...
 
 Create multiple directories and optional parents. Failed operands do not stop later attempts; -p preserves existing directory modes.
 
+Symbolic leaf modes follow the host's directory creation behavior. For a
+sticky-only `+t`, GNU's creation and permission-adjustment sequence yields
+`1755` on Linux and `1777` on macOS; explicitly assigning `a=rwx,+t` yields
+`1777` on both. Set-group-ID may be cleared when the caller does not belong
+to the inherited directory group.
+
 ## Options
 
 | Option | Description |

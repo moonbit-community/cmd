@@ -26,6 +26,15 @@ Read files or stdin and count lines, words and bytes by default. Supports select
 
 - Unicode character counting and other locale profiles are unsupported.
 - --files0-from cannot be combined with positional files.
+- Multi-counter stdin output uses a minimum field width of seven, including
+  regular-file redirection. GNU may derive a smaller width from the input
+  descriptor's physical file size, so exact regular-stdin column alignment is
+  not supported. The released `moonbitlang/async@0.22.5` API exposes
+  [`Input::fd`](https://mooncakes.io/docs/moonbitlang/async/stdio), but no public
+  query for that borrowed descriptor's kind and size. Lifting this limitation
+  requires a released public metadata API that neither consumes, reopens nor
+  closes stdin, followed by regular-file, pipe, empty-input and pre-positioned
+  input validation. Named-file widths already use public size metadata.
 
 ## Examples
 

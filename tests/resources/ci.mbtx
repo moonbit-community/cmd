@@ -81,14 +81,12 @@ async fn main {
     ),
     ("performance", []),
     ("literal-planner", []),
-    ("stability-diagnostic", []),
   ]
   let results : Array[Json] = []
   let mut failures = 0
   let selected_profile = @env.get_env_var("CMD_RESOURCE_PROFILE").unwrap_or(
     "all",
   )
-  let selected_profile = if selected_profile == "heldout" { "mixed-synthetic" } else { selected_profile }
   let selected_commands = @env.get_env_var("CMD_RESOURCE_COMMANDS").unwrap_or(
     "",
   )
@@ -97,9 +95,6 @@ async fn main {
     fail("unknown resource profile: " + selected_profile)
   }
   for (name, options) in profiles {
-    if name == "stability-diagnostic" && selected_profile == "all" {
-      continue
-    }
     if selected_profile != "all" && name != selected_profile {
       continue
     }
@@ -143,20 +138,7 @@ async fn main {
     }
     let status = @shell.Cmd(
       "moon",
-      if name == "stability-diagnostic" {
-        [
-          "run",
-          "--target",
-          "native",
-          "--release",
-          workspace + "/tests/resources/stability_diagnostic.mbtx",
-          "--",
-          reports + "/stability-diagnostic",
-          workspace + "/_build/wasm/release/build/cli",
-          prefix + "/bin",
-          selected_commands,
-        ]
-      } else if name == "literal-planner" {
+      if name == "literal-planner" {
         [
           "run",
           workspace + "/tests/resources/literal.mbtx",

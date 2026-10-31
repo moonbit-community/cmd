@@ -49,9 +49,11 @@ tests. Historical narrow-scope reminders add no unresolved labels and cannot
 override a newer typed scenario's current finite scope.
 
 The checked-in [readable index](../registry/coverage-gaps.md) and
-[JSON index](../registry/coverage-gaps.json) record the 2026-10-30 reconciliation:
-180 new fixture/observer labels, 33 existing-fixture assertion upgrades and one
-supplemental `yes` feature. They are dated evidence, not a live pass authority;
+[JSON index](../registry/coverage-gaps.json) record the 2026-10-31 reconciliation:
+180 new fixture/observer labels, 32 activation reviews of strengthened existing
+fixtures, zero remaining assertion-upgrade labels and one supplemental `yes`
+feature. These are label counts, not missing-test counts. They are dated
+evidence, not a live pass authority;
 regenerate against current definitions and optionally the actual proof report.
 Forty-four separate partial-facet reminders do not add unresolved labels.
 

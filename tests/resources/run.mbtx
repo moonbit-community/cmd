@@ -612,8 +612,7 @@ async fn main {
     fail("--long-record must be true or false")
   }
   let long = long_option == "true"
-  let requested_distribution = options.get("--distribution").unwrap_or("ascii")
-  let distribution = if requested_distribution == "heldout" { "mixed-synthetic" } else { requested_distribution }
+  let distribution = options.get("--distribution").unwrap_or("ascii")
   let literal = distribution.has_prefix("literal-")
   guard [
     "ascii", "mixed-synthetic", "literal-shared", "literal-diverse", "literal-sparse", "literal-budget",
@@ -656,7 +655,6 @@ async fn main {
     "moonrun": moonrun,
     "oracle_bin": oracle,
     "distribution": distribution,
-    "requested_distribution": requested_distribution,
     "blind_holdout": false,
     "general_performance_acceptance": false,
     "evidence_role": "synthetic-resource-regression",

@@ -78,11 +78,9 @@ use their separate short-byte-dominant mixed recipes. Byte profiles include NUL
 and invalid UTF-8; rev/diff keep ASCII input, and grep explicitly selects text
 handling with `-a`.
 
-`heldout` remains a legacy input/profile alias for `mixed-synthetic`. New
-metadata records both the requested name and canonical distribution, with
-`blind_holdout: false` and `general_performance_acceptance: false`. The mixed
-generator is public, deterministic synthetic stress; it is not a reserved
-natural corpus. Historical reports keep their original names and scope.
+The mixed generator is public deterministic resource stress, with
+`blind_holdout: false` and `general_performance_acceptance: false`. It is
+excluded from the genuine-source timing inventory.
 
 The default sampled mode records actual status, bytes/effects equivalence, stdout byte count,
 elapsed time and first observed output. Stdout timing begins at process launch
@@ -199,38 +197,12 @@ skips this profile only when grep is explicitly excluded. Previous stability
 failures and the maintainer's PR #60 integration exception do not grant a pass
 to this new candidate.
 
-`stability-diagnostic` is an explicit investigation profile and is excluded
-from `all`. It preserves two windows of the same selected workloads for the
-existing Wasm observer, a release Native observer, a Native observer with a
-100 ms pause before each arm, and (on Linux) a Native observer confined to one
-allowed CPU. Both candidate and reference inherit the same affinity. The
-second window reverses variant order. Product commands remain the same release
-Wasm files; pauses are outside the complete child-process interval. CPU
-topology, affinity, aggregate scheduler counters and pressure snapshots accompany
-the raw observations. These interventions test hypotheses about measurement
-interference; they do not change acceptance settings or establish stability.
-Completion requires every diagnostic window, and no failed sample is retried
-or discarded. `plan.json` and `runs.json` retain the diagnostic selection and
-report paths. The ordinary `performance` profile keeps its existing thresholds.
+## Historical observer diagnostics
 
-The `cache` diagnostic phase adds direct-Wasm `true` and empty-input grep as
-controls. It compares the Native observer with an explicit complete input read
-before each arm, outside timing. A separate Linux counter arm uses GNU time
-under GNU timeout's process-group deadline to retain CPU seconds, voluntary and
-involuntary switches, faults and kernel peak RSS for each invocation. Those
-wrapped elapsed times include observation overhead and are not acceptance
-measurements. GNU time's CPU-time fields have centisecond resolution; they
-cannot resolve a single millisecond-scale CPU difference. No MoonX invocation
-or startup subtraction is used. `diagnostic_phase` selects the hypothesis set
-only for the explicit diagnostic profile.
-
-The Linux-only `cpu` phase compares the unwrapped Native observer with
-`perf stat --null`, retaining high-resolution elapsed, user and system time
-for every invocation. Null mode does not request hardware counters or change
-kernel permissions. CI installs the distribution's Linux tools, and the report
-records the actual executable and version. A preflight and every sample require
-all three accounting fields. The outer process time includes the wrapper and
-remains separate from perf's child accounting; neither replaces acceptance time.
+The former independent stability timing implementation and its controls were
+removed during the single-engine cleanup. Their source and dated reports are
+preserved in Git checkpoint `8c4efe2`; the following observations retain their
+original negative scope and do not qualify the current real-source suite.
 
 The first Linux x64 diagnostic (run 40395472012, commit 87dc76b) retained all
 23 workloads in both windows. The existing Wasm observer and Native observer

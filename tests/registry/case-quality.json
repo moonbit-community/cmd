@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2047,
+    "exact-local": 2054,
     "finite-diagnostic": 114,
     "typed-scenario": 16,
     "typed-dynamic-output": 10
@@ -11268,6 +11268,36 @@
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
+      "case_id": "quality-diff-sparse-repeated-anchors",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "2898ce19297f91d58096964b8e1c3059dba2aa10b5af03af46dde1dc23a8cf98",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "quality-diff-dense-repeated-anchors",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "63be219f95d69c45230f6f269148ef0b6f645d45b618689ae3285c5a2da09402",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "quality-diff-scaled-repeated-anchors",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "0b7a01b7fe1d7164f3066dba62e7f3468496fec5ee12c576fa43e3e92fd77ffb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase3-echo-basic",
       "source": "tests/cases/echo.json",
       "definition_sha256": "ae2b2089309b897743ac17b654a6c2611db5520a600d514f3a5199f764b64a54",
@@ -14007,6 +14037,36 @@
       "required_work": ""
     },
     {
+      "case_id": "quality-test-false-string-equality",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "ca4a85f7d07132c6189ab2f62f147909e2c45806e4572317894b7cd4256749ff",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "quality-test-empty-file-size",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "f0d6cc21bf5f8f78eb79128988255a45bb695f5dbf6fe39468a485e217105a3c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "quality-test-regular-is-not-link",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "7c55fed40ed63fc03574a67ac505a0d33cfdc1c859fb7909ae3ffaa9c95af204",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "release-metadata-test-help",
       "source": "tests/cases/test.json",
       "definition_sha256": "19f9e6f54bdd28c1a5b410a246779e9a315dcf422fbd9919eccae042636ebe9d",
@@ -16364,7 +16424,7 @@
     {
       "case_id": "release-metadata-mkdir-help",
       "source": "tests/cases/mkdir.json",
-      "definition_sha256": "6994fa0225f9b0675626eb1ce3735d45ad44193fab4a5f0e4bbad092d336d952",
+      "definition_sha256": "bd13c6deed9dd0bab9a24eb9bbfac2940cafed8f98d7a59461a582d12ad98a2e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16534,7 +16594,7 @@
     {
       "case_id": "o10-mkdir-symbolic-sticky-only",
       "source": "tests/cases/mkdir.json",
-      "definition_sha256": "e4321f707f7ffa0c7fad7d18ed91d8531bee57e4945e398c94391d933c0b55fd",
+      "definition_sha256": "38a0c93da7587edccd3eacc9c98cb7959738f5a6bf9bc7823a9d222fa626c32b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16564,7 +16624,17 @@
     {
       "case_id": "quality-mkdir-symbolic-special-darwin",
       "source": "tests/cases/mkdir.json",
-      "definition_sha256": "c4542880918e075c360dd9e5f5ab82f35e7bbe8324b251332f01f73f01615078",
+      "definition_sha256": "bc4bb86e32140a41821558b825d30ddc4fb55f8df060baff31da36841f46a924",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "quality-mkdir-sticky-only-darwin",
+      "source": "tests/cases/mkdir.json",
+      "definition_sha256": "c388d048696ca55e550bc7fcb9907b2ce9ed206525e43714b0fa8decc224679c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -25596,6 +25666,15 @@
         "scenario:diff-directory-devices-boundary"
       ]
     },
+    "quality-diff-sparse-repeated-anchors": {
+      "kind": "exact"
+    },
+    "quality-diff-dense-repeated-anchors": {
+      "kind": "exact"
+    },
+    "quality-diff-scaled-repeated-anchors": {
+      "kind": "exact"
+    },
     "phase3-echo-basic": {
       "kind": "exact"
     },
@@ -26431,6 +26510,15 @@
     "p8-test-dangling-link": {
       "kind": "exact"
     },
+    "quality-test-false-string-equality": {
+      "kind": "exact"
+    },
+    "quality-test-empty-file-size": {
+      "kind": "exact"
+    },
+    "quality-test-regular-is-not-link": {
+      "kind": "exact"
+    },
     "release-metadata-test-help": {
       "kind": "exact"
     },
@@ -27237,6 +27325,9 @@
       "kind": "exact"
     },
     "quality-mkdir-symbolic-special-darwin": {
+      "kind": "exact"
+    },
+    "quality-mkdir-sticky-only-darwin": {
       "kind": "exact"
     },
     "phase3-paste-parallel": {

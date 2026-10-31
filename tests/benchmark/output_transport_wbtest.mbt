@@ -29,7 +29,7 @@ async test "slow consumer failure and deadline cannot supply a passing process o
   let root = @fs.tmpdir(prefix="cmd-slow-output-failure-")
   defer @fs.rmdir(root, recursive=true)
   let input = root + "/input"
-  prepare_input(input, 8388608)
+  write_observer_input(input, 8388608)
   let invocation = transport_observer_invocation(
     transport_copy_observer(),
     root,

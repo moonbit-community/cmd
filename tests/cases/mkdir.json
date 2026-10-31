@@ -111,7 +111,7 @@
         "help"
       ],
       "source_version": "workspace cli/mkdir@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
+      "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755 on Linux and 1777 on macOS; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-158"
@@ -749,7 +749,7 @@
       "oracle": true,
       "comparison": "contract",
       "host_platforms": [
-        "posix"
+        "linux"
       ],
       "expected_files": [
         {
@@ -863,7 +863,7 @@
       "expected_status": 0,
       "expected_stdout_text": "",
       "expected_stderr_text": "",
-      "source_version": "Fixed native GNU coreutils9.11 on Darwin independently creates01777 for u+s,g+s,a+t under the observed winter:wheel parent. This finite mask asserts sticky set and setuid clear; group-dependent setgid and ordinary rwx bits are deliberately outside its scope. Product05777 is a preserved compatibility failure, not a new golden.",
+      "source_version": "Dated correction: same-context unsandboxed GNU coreutils 9.11 and the unchanged Wasm command both create 05777 under the observed winter:wheel parent. The earlier native 01777 observation used a different restricted sandbox and was a false compatibility diagnosis. This finite mask independently requires setuid and sticky; group-dependent setgid and ordinary rwx bits remain outside its scope. Special-bit comparisons require the same execution security context and a verified setuid capability precondition.",
       "oracle": false,
       "comparison": "contract",
       "host_platforms": [
@@ -873,7 +873,7 @@
         {
           "path": "leaf",
           "kind": "directory",
-          "mode": 512,
+          "mode": 2560,
           "mode_mask": 2560
         }
       ],
@@ -883,6 +883,45 @@
       "observe": [
         "mode"
       ]
+    },
+    {
+      "id": "quality-mkdir-sticky-only-darwin",
+      "command": "mkdir",
+      "args": [
+        "-m",
+        "+t",
+        "leaf"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": false,
+      "host_platforms": [
+        "macos"
+      ],
+      "expected_files": [
+        {
+          "path": "leaf",
+          "kind": "directory",
+          "mode": 1023
+        }
+      ],
+      "coverage": [
+        "mode"
+      ],
+      "observe": [
+        "mode"
+      ],
+      "source_version": "Independent same-context unrestricted Darwin GNU coreutils 9.11 probes under both inherited-wheel and primary-staff parents require 01777 for symbolic +t. Darwin initial directory creation drops sticky, forcing GNU's post-creation chmod of the full symbolic result. This differs from Linux's retained-sticky 01755. The expected mode predates the product repair; an immutable Darwin oracle profile remains required for upstream parity."
     }
   ]
 }

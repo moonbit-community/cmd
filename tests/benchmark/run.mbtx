@@ -8,7 +8,7 @@ import {
 }
 
 ///|
-// Build before launching; published-cache and corpus preparation stay separate.
+// Build both observers before launching; genuine-source preparation stays separate.
 async fn main {
   // Refresh the tool before any timed invocation; this prevents a stale
   // executable from silently ignoring changed workload declarations.

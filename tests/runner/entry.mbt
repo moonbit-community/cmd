@@ -84,6 +84,13 @@ async fn run_driver() -> Unit {
     metadata_observer(raw[1:])
     return
   }
+  if raw.get(0) == Some("--generate-quality-catalog") {
+    guard raw is [_, output] else {
+      fail("Usage: cmd-test-runner --generate-quality-catalog FRESH_JSON")
+    }
+    @testkit.generate_local_quality_catalog(output)
+    return
+  }
   if raw.get(0) == Some("--option-test-helper") {
     let status = @testkit.run_option_child(raw[1:])
     if status != 0 {

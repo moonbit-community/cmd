@@ -219,13 +219,14 @@ RSS caps. Resource profiles and assertions remain in the existing
 - Wc cannot infer regular-file stdin alignment without descriptor kind/size
   APIs. Sort rejects nonzero percentage budgets without a public physical-memory
   query; 0% uses its minimum budget.
-- Genuine CPython JSON-module inputs expose a diff comparison-policy boundary:
-  the product's valid minimal script exactly matches fixed GNU diffutils 3.12
-  `--minimal`, while GNU's default heuristic emits a longer valid script.
-  Both independently reconstruct the complete right file. The configured
-  exact-default-GNU benchmark remains failed; do not normalize its output or
-  reinterpret the mismatch as a performance regression. Qualifying a different
-  reference profile requires an explicit reviewed policy and fresh evidence.
+- The genuine CPython JSON-module pair initially exposed default-versus-minimal
+  diff alignment: both scripts reconstructed the complete right file, but
+  default GNU selected different anchors. The final 2026-10-31 correction
+  applies the sparse repeated-anchor discard rule before Myers search.
+  Default GNU output now agrees on that pair and 160 bounded independent
+  normal/unified/context controls; small-input reconstruction/minimality tests
+  remain. No input-specific dispatch, output normalization, GNU `--minimal`
+  substitution or general performance/parity claim is introduced.
 - Tac regex needs a paged/seekable matcher before its O(input) storage can be
   removed. A long repeated-input difference for overlapping fixed separator
   `aa` remains documented; optimization does not establish full GNU parity.
@@ -290,11 +291,13 @@ engine coverage. Existing imported corpus values remain unchanged.
 Benchmark records separate total bytes and record width, retain explicit
 synthetic controls, and add versioned varied text, duplicate runs and valid
 JSONL. Reports distinguish selected-workload evidence from general acceptance.
-The resource `heldout` name is retained only as a legacy alias for
-`mixed-synthetic`; it has no blind-holdout status. The natural-corpus, transport,
-option, host and resource matrices still require separate execution. These
-repairs do not establish general performance acceptance or broaden supported
-command behavior. Preserve failed/noisy and historical evidence.
+At that repair stage, the resource `heldout` name was retained only as a legacy
+alias for `mixed-synthetic`; it had no blind-holdout status. The separate
+natural-corpus, transport, option, host and resource matrices then still required
+execution. The 2026-10-31 genuine-source replacement and final cleanup above
+supersede those active inventories and remove that alias. Neither the historical
+repair nor removal establishes general performance acceptance or broadens
+supported command behavior. Preserve failed/noisy and historical evidence.
 
 Lift the remaining representativeness limitation only with independently
 selected natural data and a reserved holdout, immutable corpus/query identities,

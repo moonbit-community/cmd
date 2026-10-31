@@ -129,7 +129,7 @@ async fn run_real_local_contracts(
       ).text(),
     ),
   )
-  let case_path = real_registry_path(functional_case_corpus(manifest, true))
+  let case_path = real_registry_path(manifest.case_corpus)
   let definitions = @testkit.load_cases(case_path)
   let cases : Set[String] = Set([])
   for spec in real_array(real_field(coverage, "commands")) {

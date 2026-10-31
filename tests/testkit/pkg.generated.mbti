@@ -81,6 +81,8 @@ pub fn expand_text(String, String, http_base? : String) -> String
 
 pub async fn file_digest(String) -> String
 
+pub async fn generate_local_quality_catalog(String) -> Unit
+
 pub fn host_platform() -> String
 
 pub fn input_bytes(String?, String?, String) -> Bytes raise Failure

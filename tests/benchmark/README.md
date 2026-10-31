@@ -26,13 +26,12 @@ and unstable timing cannot pass. Gains in other rows do not compensate for a
 loss.
 
 New timing accepts schema 3 only, with explicit frozen direct-Wasm artifacts.
-The former generated matrices and command-specific rg timing launcher are
-retired. Historical `natural.json` and `mode-definitions.json` remain available
-for recorded scope and policy migration; they are not active timing inputs.
-Historical schema-2 definitions and reports do not become schema-3 acceptance.
-The legacy `explore.mbtx` prototype/A-B entry points reject new runs. Its
-synthetic `ci` mode is accessible only as an explicitly marked resource
-stability investigation; it cannot qualify the real-source performance gate.
+The former pilot, generated matrices, schema-2 replay, command-specific rg
+launcher and independent synthetic timing system have been removed. Their
+definitions, tests, dated outcomes and disclosure workflow remain recoverable
+from Git checkpoint `8c4efe2` and the external B0 evidence. There is one active
+source catalog and one timing engine; resource observers have a separate
+measurement purpose.
 
 ## Prepare complete checked sources
 
@@ -64,19 +63,17 @@ correctness regression rather than real-source timing evidence.
 
 ## Run the generic suite
 
-Build the product Wasm and the independent Native correctness driver before
-starting. `run.mbtx` rebuilds the Native benchmark observer in release mode
-with warnings denied. Native is a test tool and calibration reference; product
+Build the product Wasm before starting. `run.mbtx` rebuilds both the Native
+benchmark observer and correctness driver in release mode with warnings denied,
+then supplies that just-built driver. External driver overrides are rejected. Native is a test tool and calibration reference; product
 correctness is exercised through frozen release Wasm.
 
 ```text
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny-warn tests/runner
 MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- panels \
   --wasm-root /absolute/current-artifacts \
   --baseline-wasm-root /absolute/frozen-baseline-artifacts \
   --moonrun /absolute/moonrun \
-  --correctness-driver /absolute/fresh-native-contract-driver \
   --oracle-bin /absolute/native-oracle/bin \
   --corpus-root /absolute/prepared-corpus \
   --report-dir /absolute/new-panel-report
@@ -154,11 +151,13 @@ reporting and cleanup occur outside timing.
 
 Exact native comparison also reports support/profile boundaries. Regular-file
 stdin gives GNU wc a physical-size-dependent field width unavailable to the
-product; complete counts can agree while padding differs. On the genuine
-CPython module pair, the product's valid minimal diff matches GNU `--minimal`
-but differs from GNU's default heuristic. These configured exact comparisons
-remain failures and block full-suite qualification. They are not normalized,
-deleted or converted into performance regressions. See ADR-0003.
+product; complete counts can agree while padding differs. These configured
+exact wc comparisons remain failures and block full-suite qualification. They
+are not normalized, deleted or converted into performance regressions. The
+genuine CPython module pair also exposed a default diff alignment discrepancy;
+the 2026-10-31 product correction applies repeated-anchor filtering before
+Myers search. Its configured exact comparison remains in the inventory.
+See ADR-0003 for the correction and its finite validation scope.
 
 Seven legacy synthetic regimes remain untimed: two repeated diff edit shapes,
 two-sided duplicate join fan-out, and four codec distance/overlap regimes. Their
@@ -189,7 +188,6 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- invent
   --manifest tests/benchmark/real.json
 MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- run \
   --wasm-root /absolute/current-artifacts --moonrun /absolute/moonrun \
-  --correctness-driver /absolute/fresh-native-contract-driver \
   --oracle-bin /absolute/native-oracle/bin \
   --corpus-root /absolute/prepared-corpus \
   --report-dir /absolute/new-formal-report
@@ -206,54 +204,10 @@ imply real-source coverage. Resource diagnostics, three-platform Wasm
 correctness, exact-version MoonX acceptance and publication remain separate.
 Publication uses `moon publish` only.
 
-## Historical correctness baselines (2026-10-24)
+## Retired evidence
 
-The first79-row macOS baseline recorded76 checked and3 failed rows. A focused
-xargs rerun passed after adding its standard `--` operand delimiter; the
-original report is unchanged. Tree still differs under `LC_ALL=C` (branch
-glyphs and the separator before its count). Yes produced the required4096-byte
-prefix on both sides, then exited0 for the publication versus GNU SIGPIPE
-status-13. Neither difference is normalized into success.
-
-The new scaled smoke checked9 of10 rows, including512 MiB cat input and a
-64 MiB single record. Gunzip exposed a stale small-literal contract rule;
-after the adapter correction, focused gunzip/zcat1 MiB entropy rows both
-checked using bounded source relations. These separately retained runs are
-correctness observations, with no statistical verdict. The292-row expansion
-has not been executed. Raw reports remain under
-`/private/tmp/cmd-b2-functional-baseline-20261024/` and
-`/private/tmp/cmd-b2-scaled-smoke-20261024/`; they are not coverage-audit proof
-for a future committed revision. The original pilot reports also remain
-unchanged. Full B2 scale/shape/options/effect/resource/host/formal requirements
-remain open.
-
-The initial 2026-10-24 macOS and Linux reports used the released filesystem
-writer's default truncate mode together with append. Their `trials.jsonl` files
-retain only the final observation; complete trial records and timing samples
-remain in `row.json` and `report.json`. Those historical files are unchanged.
-New runs explicitly open the JSONL file without truncation.
-
-## Historical initial published baseline (2026-10-24)
-
-The 2026-10-24 macOS pilot completed all 660 invocation checks. Median
-MoonX/GNU times were 96.0/2.57 ms for true, 97.2/2.56 ms for false, and
-262.9/4.10 ms for cat-8m: ratios 37.4, 38.0 and 64.1. All rows failed the
-performance gate. The two startup rows also marked the upstream samples noisy;
-cat-8m was stable. These are current published-package observations, not final
-optimized acceptance. Raw samples and the host profile remain at
-`/private/tmp/cmd-b1-pilot-20261024/report.json` and its sibling files.
-
-The separate small-input run completed all 3,300 invocation checks for the
-five additional commands, with 105 measured pairs per row. MoonX medians were
-97-106 ms; upstream medians were 1.5-3.2 ms. All 15 rows exceeded the performance
-limits and marked upstream samples noisy; these observations do not establish
-final accepted ratios. No row was automatically retried. Raw samples, output
-sizes and gzip roundtrip observations remain in
-`/private/tmp/cmd-b1-small-inputs-pilot-20261024/report.json` and its sibling files.
-
-Separate development controls found a large MoonX startup increment and an
-async copy-buffer effect: 64 KiB buffers reduced the observed cat process time
-from 98.81 to 4.77 ms Native and 180.12 to 13.44 ms Wasm (six samples per setting).
-These are causal diagnostics, not a shipped optimization or delivery acceptance.
-See `/private/tmp/cmd-b1-startup-diagnostic-20261024/source-attribution.md` and
-`/private/tmp/cmd-cat-buffer-{native,wasm}-20261024-run1/report.json`.
+Historical pilot correctness failures, noisy timing windows and disclosure
+records retain their original scope in Git checkpoint `8c4efe2` and saved
+external reports. Removing their execution paths does not turn those results
+into passes or qualify the current suite. The published acceptance snapshots
+and the original rg regression records remain independent of benchmark cleanup.

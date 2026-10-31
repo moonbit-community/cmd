@@ -6042,7 +6042,12 @@
     }
   ],
   "execution": {
-    "status": "definition-review-only; no execution pass inferred"
+    "status": "actual-profile-for-matching-coverage-definitions",
+    "source_freshness": "Source and build freshness were checked by the referenced verifier at verified_at_ms; this gap reporter does not revalidate current source identity.",
+    "verified_at_ms": "1793410264729",
+    "platform": "macos",
+    "executed_definitions_sha256": "753b8aaae8610dba4d57deb4059bc5e5956f69bcd222167d082457c9e904be90",
+    "executed_scenario_proofs_sha256": "5037d741de5baf91ecaf6f7c0b6f8cc5724402a560d30cc38cfd46dd5d21f147"
   },
   "counting_scope": "Counts are independently reviewed labels, not missing implementations or required test counts. Activation reviews already have strengthened assertions and must not be counted as missing fixtures. One new fixture may cover several labels. Partial reminders add no new unresolved labels.",
   "full_semantic_exhaustiveness": false

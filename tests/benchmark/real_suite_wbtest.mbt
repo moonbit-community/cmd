@@ -261,7 +261,7 @@ async test "actual unique source budget accepts64MiB rejects80MiB and counts rep
   for index in 0..<5 {
     let path = "budget/source-" + index.to_string()
     let sha = "0".repeat(63) + index.to_string()
-    let source : NaturalSource = { path, sha256: sha, split: "ordinary", }
+    let source : NaturalSource = { path, sha256: sha, }
     rows.push({
       ..examples[0],
       id: "actual-budget-" + index.to_string(),

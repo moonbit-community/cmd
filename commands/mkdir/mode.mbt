@@ -83,7 +83,11 @@ fn compile_mode(text : String) -> Array[ModeChange] raise ModeError {
 }
 
 ///|
-fn adjust_mode(changes : ArrayView[ModeChange], mask : Int32) -> Int32 {
+fn adjust_mode(
+  changes : ArrayView[ModeChange],
+  mask : Int32,
+  creation_retains_sticky~ : Bool = true,
+) -> Int32 {
   let mut mode = 0o777
   let mut mode_bits = 0
   for change in changes {
@@ -116,8 +120,11 @@ fn adjust_mode(changes : ArrayView[ModeChange], mask : Int32) -> Int32 {
   let mode = mode & 0o7777
   // GNU creates special-mode directories without group/other write access,
   // then applies chmod only when a requested bit differs from the new inode.
+  // Darwin mkdir also drops sticky at creation, so +t requires that chmod;
+  // Linux retains sticky and leaves unrequested write bits restricted.
   let created = if ((mode_bits & 0o6000) | (mode & 0o1000)) != 0 {
-    mode & (0o6022).lnot()
+    let removed = if creation_retains_sticky { 0o6022 } else { 0o7022 }
+    mode & removed.lnot()
   } else {
     mode
   }
@@ -129,13 +136,16 @@ fn adjust_mode(changes : ArrayView[ModeChange], mask : Int32) -> Int32 {
 }
 
 ///|
-fn symbolic_mode(text : String) -> Int32 raise ModeError {
+fn symbolic_mode(
+  text : String,
+  creation_retains_sticky~ : Bool = true,
+) -> Int32 raise ModeError {
   let changes = compile_mode(text)
-  let result = adjust_mode(changes, 0)
+  let result = adjust_mode(changes, 0, creation_retains_sticky~)
   if changes.any(change => change.who == 0) {
     // Establish independence from the unknown umask, rather than guessing it.
     for mask in 1..<512 {
-      if adjust_mode(changes, mask) != result {
+      if adjust_mode(changes, mask, creation_retains_sticky~) != result {
         raise NeedsUmask
       }
     }

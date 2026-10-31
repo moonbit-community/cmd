@@ -4,11 +4,11 @@ fn panel_test_report(metric : Json, args~ : Array[String] = []) -> Json raise {
     "id": "required",
     "command": "cat",
     "reference_behavior_id": "case:cat",
-    "recipe": "bench-cat-copy",
+    "recipe": "real-input",
     "args": Json(args),
   })
   let row = {
-    ..pending_functional_row(workload, None, ""),
+    ..failed_functional_row(workload, ""),
     status: "checked",
     probe: Some(metric),
   }

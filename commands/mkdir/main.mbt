@@ -20,17 +20,21 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
+      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755 on Linux and 1777 on macOS; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
     )
     return
   }
   let mut symbolic = false
+  let creation_retains_sticky = match @async.platform {
+    MacOS => false
+    Linux | Windows => true
+  }
   let permission = match parsed.last_value("mode") {
     Some(value) =>
       @mode.parse_octal_mode(value) catch {
         _ => {
           symbolic = true
-          symbolic_mode(value) catch {
+          symbolic_mode(value, creation_retains_sticky~) catch {
             InvalidMode => {
               @stdio.stderr.write("mkdir: invalid mode '\{value}'\n")
               @sys.exit(1)

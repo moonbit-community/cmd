@@ -1,7 +1,6 @@
 ///|
 priv struct FunctionalRow {
   workload : FunctionalWorkload
-  coordinate : String?
   role : String
   status : String
   detail : String
@@ -24,26 +23,21 @@ priv struct FunctionalSide {
 fn functional_candidate(
   command : String,
   args : Array[String],
-  coordinate : String?,
   options : Map[String, String],
 ) -> (String, Array[String]) raise {
-  if options.get("--wasm-root") is Some(root) {
-    (options["--moonrun"], [@testkit.wasm_path(root, command), "--", ..args])
-  } else if coordinate is Some(coordinate) {
-    (options["--moonx"], [coordinate, "--", ..args])
-  } else {
-    fail(
-      "functional candidate requires Wasm artifacts or an exact published coordinate",
-    )
+  guard options.get("--wasm-root") is Some(root) else {
+    fail("real-source comparisons require explicit Wasm artifacts")
   }
+  (options["--moonrun"], [@testkit.wasm_path(root, command), "--", ..args])
 }
+
+///|
 
 ///|
 async fn execute_functional_side(
   side : String,
   workload : FunctionalWorkload,
   fixture : @testkit.Case,
-  coordinate : String?,
   options : Map[String, String],
   oracle_bin : String,
   environment : Map[String, String],
@@ -63,19 +57,12 @@ async fn execute_functional_side(
     environment~,
     timeout_ms~,
   )
-  let input = match corpus {
-    Some(prepared) => prepared.input
-    None => {
-      let path = directory + "/" + side + ".stdin.bin"
-      @fs.write_file(path, fixture.input(root~, http_base~))
-      path
-    }
+  guard corpus is Some(prepared) else {
+    fail("real-source invocation has no frozen genuine input")
   }
+  let input = prepared.input
   let actual_args = fixture.args.map(arg => {
-    arg.replace_all(
-      old="${INPUT}",
-      new=corpus.map(value => value.input).unwrap_or(input),
-    )
+    arg.replace_all(old="${INPUT}", new=input)
   })
   let args = @testkit.expand_args(actual_args, root, http_base~)
   let extra = environment.copy()
@@ -94,7 +81,7 @@ async fn execute_functional_side(
     !candidate && !options.contains("--baseline-wasm-root"),
   )
   let (program, argv) = if candidate {
-    functional_candidate(fixture.command, args, coordinate, options)
+    functional_candidate(fixture.command, args, options)
   } else {
     match options.get("--baseline-wasm-root") {
       Some(baseline) =>
@@ -153,8 +140,6 @@ async fn execute_functional_side(
       workload.sink_chunk_bytes.unwrap(),
       workload.sink_delay_ms.unwrap(),
     )
-  } else if workload.recipe == Some("yes") {
-    observe_yes(invocation, stdout, stderr, timeout_ms)
   } else if workload.transport == Some("fragmented-pipe") {
     measure_invocation_pipe(
       invocation,
@@ -212,7 +197,7 @@ async fn execute_functional_side(
   if observation.status is Some(status) &&
     !observation.timed_out &&
     observation.error is None {
-    if workload.recipe != Some("yes") {
+    {
       errors.append(
         @testkit.check_contract(
           fixture,
@@ -232,25 +217,21 @@ async fn execute_functional_side(
     }
     if workload.recipe == Some("gzip") {
       let decoded = directory + "/" + side + ".decoded.bin"
-      let equal = match corpus {
-        Some(prepared) =>
-          try {
-            corpus_observer(
-              oracle_bin + "/gzip",
-              ["-d", "-c"],
-              stdout,
-              decoded,
-              environment,
-              timeout_ms,
-            )
-            files_equal(decoded, prepared.source)
-          } catch {
-            failure => {
-              errors.push("gzip observer: " + failure.to_string())
-              false
-            }
-          }
-        None => gzip_roundtrip(stdout, input, decoded)
+      let equal = try {
+        corpus_observer(
+          oracle_bin + "/gzip",
+          ["-d", "-c"],
+          stdout,
+          decoded,
+          environment,
+          timeout_ms,
+        )
+        files_equal(decoded, prepared.source)
+      } catch {
+        failure => {
+          errors.push("gzip observer: " + failure.to_string())
+          false
+        }
       }
       if !equal {
         errors.push("gzip output does not decode to the original input")
@@ -258,9 +239,8 @@ async fn execute_functional_side(
     } else if corpus is Some(prepared) &&
       (workload.command == "gunzip" || workload.command == "zcat") &&
       !files_equal(stdout, prepared.source) {
-      errors.push("decoded output differs from the generated corpus")
+      errors.push("decoded output differs from the genuine source")
     }
-    errors.append(check_generated_effects(workload.recipe, root, stdout))
     if workload.expected_stdout is Some(expected) &&
       bounded_capture(stdout) != @utf8.encode(expected) {
       errors.push("stdout differs from independent workload assertion")
@@ -305,78 +285,41 @@ async fn compare_functional_sides(
   if candidate.observation.status != upstream.observation.status {
     errors.push("candidate/upstream exit statuses differ")
   }
-  if workload.recipe != Some("mktemp") {
-    for
-      (field, left, right) in [
-        ("stdout", candidate.stdout, upstream.stdout),
-        ("stderr", candidate.stderr, upstream.stderr),
-      ] {
-      if field == "stdout" && workload.output_relation == Some("json") {
-        if @json.parse(@utf8.decode(bounded_capture(left))) !=
-          @json.parse(@utf8.decode(bounded_capture(right))) {
-          errors.push("complete JSON output values or array order differ")
-        }
-        continue
-      }
-      if field == "stdout" && workload.recipe == Some("gzip") {
-        continue
-      }
-      let rules = fixture.normalizations.copy()
-      let literal = if field == "stdout" {
-        fixture.expected_stdout_text
-      } else {
-        fixture.expected_stderr_text
-      }
-      if literal.unwrap_or("").contains("${WORK}") {
-        rules.push({
-          field,
-          rule: "temporary-path",
-          comment: "The fixture explicitly expects its own root.",
-        })
-      }
-      if rules.is_empty() && fixture.stdout_order != Some("lines") {
-        if !files_equal(left, right) {
-          errors.push(field + " bytes differ")
-        }
-      } else {
-        let left = @testkit.normalize_text(
-          bounded_capture(left),
-          field,
-          rules,
-          candidate.root,
+  if workload.recipe != Some("gzip") {
+    let same = match workload.output_relation {
+      Some("json") =>
+        @json.parse(@utf8.decode(bounded_capture(candidate.stdout))) ==
+        @json.parse(@utf8.decode(bounded_capture(upstream.stdout)))
+      Some("record-multiset") =>
+        @testkit.unordered_lines_equal(
+          bounded_capture(candidate.stdout),
+          bounded_capture(upstream.stdout),
         )
-        let right = @testkit.normalize_text(
-          bounded_capture(right),
-          field,
-          rules,
-          upstream.root,
-        )
-        let same = if field == "stdout" && fixture.stdout_order == Some("lines") {
-          @testkit.unordered_lines_equal(left, right)
-        } else {
-          left == right
-        }
-        if !same {
-          errors.push(field + " normalized bytes differ")
-        }
-      }
+      _ => files_equal(candidate.stdout, upstream.stdout)
     }
-    errors.append(
-      compare_functional_effects(
-        candidate.root,
-        upstream.root,
-        @testkit.contract_observations(fixture),
-      ),
-    )
+    if !same {
+      errors.push("stdout declared relation differs")
+    }
   }
+  if !files_equal(candidate.stderr, upstream.stderr) {
+    errors.push("stderr bytes differ")
+  }
+  errors.append(
+    compare_functional_effects(
+      candidate.root,
+      upstream.root,
+      @testkit.contract_observations(fixture),
+    ),
+  )
   errors
 }
+
+///|
 
 ///|
 async fn functional_pair(
   workload : FunctionalWorkload,
   fixture : @testkit.Case,
-  coordinate : String?,
   options : Map[String, String],
   environment : Map[String, String],
   directory : String,
@@ -399,7 +342,6 @@ async fn functional_pair(
       side,
       workload,
       fixture,
-      coordinate,
       options,
       options["--oracle-bin"],
       environment,
@@ -453,7 +395,6 @@ async fn functional_pair(
 async fn run_functional_row(
   workload : FunctionalWorkload,
   fixture : @testkit.Case,
-  coordinate : String?,
   options : Map[String, String],
   environment : Map[String, String],
   output : String,
@@ -483,57 +424,26 @@ async fn run_functional_row(
     "consumer_chunk_bytes": ToJson::to_json(workload.sink_chunk_bytes),
     "consumer_delay_ms": ToJson::to_json(workload.sink_delay_ms),
     "source_role": if benchmark_file_recipe(workload.recipe) {
-      if workload.command == "join" || workload.command == "comm" {
-        if workload.other_source is Some(_) {
-          "two complete natural sources; actual sorted/key-derived inputs and preparation recorded in recipe-features.json"
-        } else {
-          "size-budget; actual generated key files and regimes recorded in recipe-features.json"
-        }
-      } else {
-        "source for distinct named file copies/edits; recipe-features.json records transformations"
-      }
+      "complete genuine named sources; declared copies or sorted/key-derived preparation outside timing"
     } else {
-      "actual stdin content or declared compressed-input transform"
+      "complete genuine source or declared semantic codec encoding"
     },
-    "corpus": match workload.corpus {
-      Some(spec) => corpus_evidence(spec, variant=workload.seed.unwrap_or(0))
-      None =>
-        match workload.source {
-          Some(source) =>
-            ({ "natural_source": Json(source), "blind_holdout": false } : Json)
-          None =>
-            (
-              {
-                "generator": "literal-functional-fixture",
-                "representative_distribution": false,
-              } : Json)
-        }
-    },
+    "source": ToJson::to_json(workload.source),
+    "blind_holdout": false,
     "metadata_shortcut_possible": functional_metadata_shortcut(
       workload,
       fixture.args,
     ),
   })
-  let corpus = if workload.source is Some(_) {
-    prepare_natural_source(
-      workload,
-      directory,
-      options,
-      options["--oracle-bin"],
-      environment,
-      timeout_ms,
-      completed_corpora,
-    )
-  } else {
-    prepare_row_corpus(
-      workload,
-      directory,
-      options["--oracle-bin"],
-      environment,
-      timeout_ms,
-      completed_corpora,
-    )
-  }
+  let corpus = prepare_natural_source(
+    workload,
+    directory,
+    options,
+    options["--oracle-bin"],
+    environment,
+    timeout_ms,
+    completed_corpora,
+  )
   let input_identities : Array[(String, String)] = []
   if corpus is Some(prepared) {
     input_identities.push(
@@ -595,8 +505,8 @@ async fn run_functional_row(
   let mut correct = true
   let run = async fn(phase, pair, block, order) {
     let (observed, reason) = functional_pair(
-      workload, fixture, coordinate, options, environment, directory, http_base,
-      timeout_ms, phase, pair, block, order, trials, corpus,
+      workload, fixture, options, environment, directory, http_base, timeout_ms,
+      phase, pair, block, order, trials, corpus,
     )
     detail = reason
     observed
@@ -611,7 +521,6 @@ async fn run_functional_row(
     let (observed, reason) = functional_pair(
       workload,
       fixture,
-      coordinate,
       native,
       environment,
       directory,
@@ -682,14 +591,7 @@ async fn run_functional_row(
   }
   let row = {
     workload,
-    coordinate,
-    role: if options.contains("--wasm-root") {
-      "direct-wasm"
-    } else if coordinate is Some(_) {
-      "delivery"
-    } else {
-      "diagnostic-only"
-    },
+    role: "direct-wasm",
     status: if detail.contains("invalid-native-reference:") {
       "invalid-reference"
     } else if correct {
@@ -712,16 +614,14 @@ async fn run_functional_row(
 }
 
 ///|
-fn pending_functional_row(
+fn failed_functional_row(
   workload : FunctionalWorkload,
-  coordinate : String?,
   detail : String,
 ) -> FunctionalRow {
   {
     workload,
-    coordinate,
-    role: "pending",
-    status: "pending",
+    role: "direct-wasm",
+    status: "failed",
     detail,
     trials: [],
     samples: [],
@@ -732,87 +632,46 @@ fn pending_functional_row(
 
 ///|
 async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
-  require_frozen_timing_backend(options, sample)
+  require_frozen_timing_backend(options)
   let manifest_path = options
     .get("--manifest")
     .unwrap_or("tests/benchmark/real.json")
   let manifest : FunctionalManifest = @json.from_json(
     @json.parse(@fs.read_file(manifest_path).text()),
   )
-  guard manifest.schema == 2 || manifest.schema == 3 else {
-    fail("functional manifest requires schema3 real input")
-  }
-  guard !sample || manifest.schema == 3 else {
+  guard manifest.schema == 3 else {
     fail(
-      "new performance timing accepts only the unified real-corpus schema3 suite",
+      "functional comparisons require schema3 complete real-source workloads",
     )
   }
   let ordered = functional_inventory(options)
-  if manifest.schema == 3 {
-    validate_real_source_sizes(options, ordered)
-  }
+  validate_real_source_sizes(options, ordered)
   let workloads = if options.get("--window") == Some("1") {
     Array::makei(ordered.length(), i => ordered[ordered.length() - 1 - i])
   } else {
     ordered
   }
-  let configuration = match options.get("--profile") {
-    Some(path) => @json.parse(@fs.read_file(path).text())
-    None =>
-      (
-        {
-          "schema": 1,
-          "role": "delivery",
-          "cache": "warm",
-          "timeout_ms": 120000,
-          "oracle_build_record": "",
-          "locale": "C",
-          "timezone": "UTC",
-          "qualification": "Explicit reference binaries frozen and hashed for this diagnostic; not sealed-container parity",
-        } : Json)
+  let timeout_ms = 120000
+  let configuration : Json = {
+    "timeout_ms": timeout_ms,
+    "locale": "C",
+    "timezone": "UTC",
+    "qualification": "Actual frozen reference executable identities; not sealed-container parity",
   }
-  let profile : PilotProfile = @json.from_json(configuration)
-  guard profile.role == "delivery" &&
-    profile.cache == "warm" &&
-    profile.locale == "C" &&
-    profile.timezone == "UTC" else {
-    fail("expected warm delivery profile with C locale and UTC")
-  }
-  let wasm = options.contains("--wasm-root")
-  let launcher = options
-    .get(if wasm { "--moonrun" } else { "--moonx" })
-    .unwrap_or("")
+  let launcher = options.get("--moonrun").unwrap_or("")
   let oracle = options.get("--oracle-bin").unwrap_or("")
   guard @path.Path(launcher).is_absolute() && @path.Path(oracle).is_absolute() else {
-    fail(
-      "explicit absolute launcher (--moonrun or --moonx) and --oracle-bin are required",
-    )
+    fail("explicit absolute --moonrun and --oracle-bin are required")
   }
   if options.get("--wasm-root") is Some(root) && !@path.Path(root).is_absolute() {
     fail("--wasm-root requires an absolute release artifact directory")
   }
   if options.get("--baseline-wasm-root") is Some(root) {
-    guard wasm && @path.Path(root).is_absolute() else {
+    guard @path.Path(root).is_absolute() else {
       fail("baseline Wasm comparison requires two absolute artifact roots")
     }
   }
-  let record = if profile.oracle_build_record.is_empty() {
-    ({ "binding": "actual-executable-identities", "oracle_bin": oracle } : Json)
-  } else {
-    let record = @json.parse(@fs.read_file(profile.oracle_build_record).text())
-    let built : OracleBuildRoot = @json.from_json(record)
-    guard @fs.realpath(oracle) == @fs.realpath(built.prefix + "/bin") else {
-      fail("oracle directory differs from its build record")
-    }
-    record
-  }
-  let published : PublishedManifest = @json.from_json(
-    @json.parse(@fs.read_file(manifest.published_manifest).text()),
-  )
-  let registry = @registry.load("tests/registry/registry.json")
-  let case_corpus = functional_case_corpus(manifest, wasm)
-  let cases = @testkit.load_cases(case_corpus)
-  let helper = @fs.realpath(@env.args()[0])
+  let case_corpus = manifest.case_corpus
   let output = @path.Path(
       options
       .get("--report-dir")
@@ -829,7 +688,7 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
     options, workloads, output,
   )
   let oracle = options["--oracle-bin"]
-  if manifest.schema == 3 {
+  {
     run_real_local_contracts(options, workloads, output)
     artifact_identities.push(
       (
@@ -838,22 +697,13 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
       ),
     )
   }
-  let launcher = options
-    .get(if wasm { "--moonrun" } else { "--moonx" })
-    .unwrap()
+  let launcher = options["--moonrun"]
   let environment = @testkit.controlled_environment(Map([]))
   guard @env.get_env_var("MOON_HOME") is Some(account) && account != "" else {
     fail("MOON_HOME is required")
   }
   environment["MOON_HOME"] = account
   environment["PATH"] = oracle + ":" + @env.get_env_var("PATH").unwrap_or("")
-  let records : Array[Json] = [record]
-  if configuration is { "additional_oracle_build_records": paths, .. } {
-    let paths : Array[String] = @json.from_json(paths)
-    for path in paths {
-      records.push(@json.parse(@fs.read_file(path).text()))
-    }
-  }
   let probes = [
     observe_profile("moon", ["version", "--all"]),
     observe_profile(launcher, ["--version"]),
@@ -864,18 +714,21 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
   ]
   write_json(output + "/profile.json", {
     "configuration": configuration,
-    "native_build_records": Json(records),
+    "native_reference": {
+      "binding": "actual-frozen-executable-identities",
+      "oracle_bin": oracle,
+    },
     "environment": ToJson::to_json(environment),
     "platform": Json(@testkit.host_platform()),
-    "candidate_role": Json(if wasm { "direct-wasm" } else { "published-moonx" }),
+    "candidate_role": Json("direct-wasm"),
     "wasm_root": ToJson::to_json(options.get("--wasm-root")),
     "observations": ToJson::to_json(probes),
     "case_corpus": case_corpus,
     "evidence_scope": benchmark_evidence_scope(sample),
-    "input_policy": "Schema3 timing uses complete hash-pinned real sources, without repetition, padding or trimming. Legacy generator utilities are test-only and cannot qualify a new timing run.",
+    "input_policy": "Schema3 timing uses complete hash-pinned real sources, without repetition, padding or trimming. Generated timing inputs and legacy execution routes are absent.",
   })
   write_json(output + "/manifest.json", ToJson::to_json(manifest))
-  write_json(output + "/expanded-workloads.json", ToJson::to_json(workloads))
+  write_json(output + "/selected-workloads.json", ToJson::to_json(workloads))
   if sample && probe_pairs(options) == 0 {
     write_json(output + "/sampling-plan.json", ToJson::to_json(sampling_plan()))
   }
@@ -891,47 +744,7 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
     defer serving.cancel()
     let http_base = "http://127.0.0.1:" + server.addr.port().to_string()
     for workload in workloads {
-      guard @testkit.safe_relative_path(workload.id) &&
-        registry.entries.any(entry => {
-          (
-            entry.behavior_id == workload.reference_behavior_id ||
-            entry.aliases.contains(workload.reference_behavior_id)
-          ) &&
-          (entry.command == workload.command || entry.command == "all")
-        }) else {
-        fail("workload has no matching behavior reference: " + workload.id)
-      }
-      let matches = published.commands.filter(row => {
-        row.name == workload.command && row.published
-      })
-      let coordinate = if wasm || workload.command == "timeout" {
-        None
-      } else {
-        guard matches is [entry] else {
-          fail("exact publication is missing: " + workload.command)
-        }
-        Some(entry.package_name + "@" + entry.version)
-      }
-      let pending = if workload.pending is Some(reason) {
-        Some(reason)
-      } else if !wasm && coordinate is None {
-        Some("timeout is local-only; use workspace Wasm for its diagnostic")
-      } else {
-        None
-      }
-      if pending is Some(reason) {
-        rows.push(pending_functional_row(workload, coordinate, reason))
-        continue
-      }
-      let original = functional_fixture(workload, cases, helper)
-      let fixture = if workload.source is Some(source) {
-        natural_fixture(original, source)
-      } else {
-        match workload.corpus {
-          Some(spec) => corpus_fixture(original, spec)
-          None => original
-        }
-      }
+      let fixture = functional_fixture(workload)
       let fixture = {
         ..fixture,
         args: workload.args.unwrap_or(fixture.args),
@@ -939,31 +752,14 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
           fixture.expected_status,
         ),
       }
-      if !fixture.platform_applies() {
-        rows.push(
-          pending_functional_row(
-            workload, coordinate, "fixture is not applicable on this host",
-          ),
-        )
-        continue
-      }
       println("functional " + workload.id)
       let row = run_functional_row(
-        workload,
-        fixture,
-        coordinate,
-        options,
-        environment,
-        output,
-        http_base,
-        profile.timeout_ms,
-        sample,
-        completed_corpora,
-        real_http_payload,
+        workload, fixture, options, environment, output, http_base, timeout_ms, sample,
+        completed_corpora, real_http_payload,
       ) catch {
         error =>
           {
-            ..pending_functional_row(workload, coordinate, error.to_string()),
+            ..failed_functional_row(workload, error.to_string()),
             status: "failed",
           }
       }
@@ -996,11 +792,10 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
       })
     )
   write_json(output + "/report.json", {
-    "schema": 2,
+    "schema": 3,
     "sampled": Json(sample),
     "evidence_scope": benchmark_evidence_scope(sample),
     "passed": Json(passed),
-    "complete_b2": false,
     "scope": "selected command-mode/corpus rows only; diagnostic probe and formal statistics remain separate",
     "probe_pairs": probe_pairs(options),
     "artifact_integrity": artifact_integrity,

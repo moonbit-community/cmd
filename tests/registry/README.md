@@ -22,8 +22,8 @@ catalog facets to actual exact contracts and typed scenario assertions.
 `scenario-proofs.json` owns reviewed expected values and observation dimensions;
 scenario pass tags alone cannot qualify a facet. The generated
 [remaining work index](coverage-gaps.md) distinguishes new activated fixtures or
-observers from assertion upgrades on existing fixtures. It is a dated finite
-review, not a general compatibility or performance claim.
+observers from assertion upgrades and activation reviews on existing fixtures.
+It is a dated finite review, not a general compatibility or performance claim.
 
 Historical registry snapshots retain their original schemas. The current
 index does not backfill them, verify old sources or reconstruct old artifacts.

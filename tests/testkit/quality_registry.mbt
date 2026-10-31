@@ -108,23 +108,10 @@ pub async fn configure_local_quality(
         fixture.id,
       )
     }
-    let wired : Array[String] = []
-    if scenario_ids.contains(fixture.id) {
-      wired.push("scenario:" + fixture.id)
-    }
-    if fixture.expected_stdout_json is Some(_) ||
-      fixture.expected_stdout_text.unwrap_or("").contains("${STAT_") ||
-      fixture.expected_stdout_text.unwrap_or("").contains("${HUMAN_SIZE:") ||
-      fixture.expected_stdout_text.unwrap_or("").contains("${SI_SIZE:") ||
-      ["release-metadata-rg-help", "compat-catalog-line-277"].contains(
-        fixture.id,
-      ) {
-      wired.push("dynamic:" + fixture.id)
-    }
     let errors = case_quality_errors(
       fixture,
       descriptor~,
-      wired_observers=wired,
+      wired_observers=quality_wired_observers(fixture, scenario_ids),
     )
     guard errors.is_empty() else { fail(fixture.id + ": " + errors.join("; ")) }
   }
@@ -133,4 +120,61 @@ pub async fn configure_local_quality(
     fail("obsolete or extra local quality definitions")
   }
   active_quality_descriptors.val = Some(descriptors)
+}
+
+///|
+/// Generate schema-1 descriptors from the same classifier used by validation.
+/// Raw definitions retain their exact canonical hashes; this is definition
+/// inventory only and never substitutes for executing independent assertions.
+pub async fn generate_local_quality_catalog(output : String) -> Unit {
+  guard !@fs.exists(output) else {
+    fail("preserve existing quality catalog output")
+  }
+  let files = @fs.readdir("tests/cases").filter(name => name.has_suffix(".json"))
+  files.sort()
+  let definitions : Array[Json] = []
+  let counts : Map[String, Int32] = Map([])
+  let descriptors : Map[String, Json] = Map([])
+  let stimuli : Map[String, String] = Map([])
+  for name in files {
+    let source = "tests/cases/" + name
+    let document = @json.parse(@fs.read_file(source).text())
+    guard quality_field(document, "cases") is Array(rows) else {
+      fail("quality catalog source requires cases: " + source)
+    }
+    for raw in rows {
+      let fixture : Case = @json.from_json(raw)
+      let id = fixture.id
+      guard !id.is_empty() && !descriptors.contains(id) else {
+        fail("missing or duplicate case identity")
+      }
+      let stimulus = case_stimulus_digest(fixture)
+      guard stimuli.get(stimulus) is None else {
+        fail("duplicate regression stimulus: " + stimuli[stimulus] + " / " + id)
+      }
+      stimuli[stimulus] = id
+      let (category, descriptor, required_work) = quality_catalog_classification(
+        fixture,
+      )
+      counts[category] = counts.get(category).unwrap_or(0) + 1
+      descriptors[id] = descriptor
+      definitions.push({
+        "case_id": id,
+        "source": source,
+        "definition_sha256": json_digest(raw),
+        "classification": category,
+        "descriptor": descriptor,
+        "required_work": required_work,
+      })
+    }
+  }
+  let report : Json = {
+    "schema": 1,
+    "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
+    "counts": Json(counts),
+    "definitions": Json(definitions),
+    "descriptors": Json(descriptors),
+  }
+  @fs.write_file(output, report.stringify(indent=2) + "\n")
+  println("classified \{definitions.length()} current case definitions")
 }
