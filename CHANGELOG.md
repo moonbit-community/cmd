@@ -13,6 +13,16 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 Development test and benchmark replacement; no publication.
 
+- The first final-cleanup CI run exposed four Windows path-expectation failures
+  and two Linux env directory-output differential failures. Complete captures
+  show host separator spelling and the oracle's `/work` mount identity. Add
+  explicit native-path expectation templates without rewriting observed output;
+  declare the existing mount-identity relation for the two env cases. New
+  counterexamples retain exact child/control directory, filename, payload,
+  terminator and extra-record constraints. Frozen published expectations and
+  the original failed CI captures remain unchanged. The follow-up Native
+  test-tool run passes all 190 tests, including the two new counterexample tests.
+
 - Final cleanup removes the old pilot/schema2/synthetic benchmark engine and
   unused reserved/disclosure/stability workflows; their source is preserved
   at `8c4efe2`. The active benchmark has one genuine-source Wasm execution path.
@@ -26,7 +36,7 @@ Development test and benchmark replacement; no publication.
   Default diff now agrees with GNU on the genuine CPython source pair and160
   bounded alignment controls. The documented wc descriptor-metadata boundary
   remains; no package is published by this development update.
-- Final local verification passes 1,723 release-Wasm package tests, 188 Native
+- Pre-CI local verification passes 1,723 release-Wasm package tests, 188 Native
   test-tool tests and 2,260 functional checks, with 21 platform skips and zero
   failures. All 652 reviewed finite definitions join fresh execution receipts;
   four retain explicit platform-partial scopes. The 125 real-source comparisons

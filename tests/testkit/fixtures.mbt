@@ -1,10 +1,30 @@
 ///|
+fn expand_native_path_templates(
+  value : String,
+  root : String,
+  windows : Bool,
+) -> String {
+  let native_root = if windows {
+    root.replace_all(old="/", new="\\")
+  } else {
+    root
+  }
+  value
+  .replace_all(old="${WORK_NATIVE}", new=native_root)
+  .replace_all(old="${PATH_SEPARATOR}", new=if windows { "\\" } else { "/" })
+}
+
+///|
 pub fn expand_text(
   value : String,
   root : String,
   http_base? : String,
 ) -> String {
-  let expanded = value
+  let expanded = expand_native_path_templates(
+      value,
+      root,
+      @async.platform is Windows,
+    )
     .replace_all(old="${WORK}", new=root)
     .replace_all(old="${PRINTF_CHILD}", new=option_child_source("printf"))
     .replace_all(old="${PRINTENV_CHILD}", new=option_child_source("printenv"))

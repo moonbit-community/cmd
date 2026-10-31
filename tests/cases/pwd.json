@@ -19,7 +19,7 @@
       "comparison": "contract",
       "oracle": true,
       "expected_stderr_text": "",
-      "expected_stdout_text": "${WORK}\n"
+      "expected_stdout_text": "${WORK_NATIVE}\n"
     },
     {
       "id": "compat-text-pwd-invalid-logical-fallback",

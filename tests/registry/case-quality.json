@@ -6298,7 +6298,7 @@
     {
       "case_id": "quality-env-chdir-child",
       "source": "tests/cases/env.json",
-      "definition_sha256": "02f77dac6534fcb2dadd32528dbefad1c3b211c08df2574fb93a00a341eb2bc0",
+      "definition_sha256": "b42d9626c6b59d4b066e926f9e0f7bd7e39987beb6572c80d2322776b8819063",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6308,7 +6308,7 @@
     {
       "case_id": "quality-env-chdir-control",
       "source": "tests/cases/env.json",
-      "definition_sha256": "8a62409ec38e03f96841984898ee2ff32f59b15e67eca8cb607f99c24e14203d",
+      "definition_sha256": "b4dc14ebc54a1b12eac0e729101e2bbcf50962803cecc93755835fb9155e7e5a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6688,7 +6688,7 @@
     {
       "case_id": "phase3-pwd-working-directory",
       "source": "tests/cases/pwd.json",
-      "definition_sha256": "0e64cf94fa8871ac5e935cc903210d2a931f3b866fdae3c1765ec61c4e0c58fe",
+      "definition_sha256": "ac278f33fb9251670cfd4e424d128bd56e7b38ed70538a3d043457cba6cb57c3",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -11841,7 +11841,7 @@
     {
       "case_id": "p2-grep-recursive-selection",
       "source": "tests/cases/grep.json",
-      "definition_sha256": "ea7c5fc8740a738076410c60dbd6f16b3193a3c0b03dd822312f30f4578bfdbf",
+      "definition_sha256": "84d331ccaf6454236188e2613d263ee3dd6a5fd09ac65b882fefa2026b89835a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

@@ -48,7 +48,7 @@
       "comparison": "contract",
       "oracle": true,
       "expected_stderr_text": "",
-      "expected_stdout_text": "tree/keep.txt:needle\n"
+      "expected_stdout_text": "tree${PATH_SEPARATOR}keep.txt:needle\n"
     },
     {
       "id": "grep-no-context-separator",

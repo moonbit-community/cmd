@@ -72,6 +72,14 @@ facets; the separate gap index retains unresolved labels. It is neither an
 audit-before-push wrapper nor a performance or publication seal. The upstream
 image and inventory remain fixed independently of these reports.
 
+Exact expectations can render a known fixture path with `${WORK_NATIVE}` and
+`${PATH_SEPARATOR}`. The former formats only the supplied fixture root for the
+host; `${WORK}` keeps its existing bytes. These templates never rewrite observed
+output or literal payload backslashes. Directory-output differential cases
+declare the existing working-directory mapping for the host fixture versus its
+`/work` container mount; the exact relative suffix and complete output remain
+asserted.
+
 Successful fixtures are removed. Failed captures and cleanup diagnostics are
 retained; direct-child cancellation does not promise arbitrary grandchild
 cleanup. Tests and fixtures remain pure MoonBit. Host programs are restricted

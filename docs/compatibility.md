@@ -33,7 +33,7 @@ Regular-file stdin alignment for wc still requires an unavailable public
 descriptor metadata API and remains explicitly outside acceptance.
 
 The final local macOS development run passes 2,260 functional checks with 21
-platform skips and zero failures, plus 1,723 Wasm package and 188 Native
+platform skips and zero failures, plus 1,723 Wasm package and 190 Native
 test-tool tests. All 652 reviewed finite definitions join fresh receipts; four
 keep explicit platform-partial scopes. The real-source comparison checks 123
 of 125 rows and retains the two exact wc padding failures. Current evidence
