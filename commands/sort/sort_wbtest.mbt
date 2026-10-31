@@ -33,6 +33,58 @@ test "key parser handles character positions and local modifiers" {
 }
 
 ///|
+test "sort lexical plan matches general ordering for ties reverse and raw bytes" {
+  let records = [b"", b"a", b"a", b"\x80", b"a\x00", b"aa"]
+  for reverse in [false, true] {
+    let global = test_modifiers()
+    global.reverse = reverse
+    for last_resort in [false, true] {
+      let compare = entry_comparator([], global, last_resort)
+      let entries = records.mapi((i, record) => {
+        make_entry(record, i.to_int64(), [], global, None)
+      })
+      for left in entries {
+        for right in entries {
+          let order = compare_entries(left, right, [], global, last_resort)
+          assert_eq(
+            compare(left, right),
+            if order == 0 {
+              left.index.compare(right.index)
+            } else {
+              order
+            },
+          )
+        }
+      }
+    }
+  }
+}
+
+///|
+test "sort integral prefix preserves signed decimal tails and fallback rounding" {
+  for
+    (key, expected) in [
+      (b"  -00123suffix", -123.0),
+      (b"1e3", 1.0),
+      (b"+7", 0.0),
+      (b"--8", 0.0),
+      (b".5", 0.5),
+      (b"-0.125suffix", -0.125),
+      (b"999999999999999tail", 999999999999999.0),
+      (b"9007199254740993", 9007199254740992.0),
+      (b"-9007199254740993", -9007199254740992.0),
+      (b"2.", 2.0),
+      (b"-", 0.0),
+      (b" \xff", 0.0),
+    ] {
+    assert_eq(numeric_prefix(key, false), expected)
+  }
+  assert_true(integral_prefix(b"0.5") is None)
+  assert_true(integral_prefix(b"1000000000000000") is None)
+  assert_eq(numeric_prefix(b"1e3", true), 1000.0)
+}
+
+///|
 test "comparison modes cover numeric and text profiles" {
   let modifiers = test_modifiers()
   modifiers.mode = GeneralNumeric
@@ -357,6 +409,47 @@ async test "sort temporary entry writes propagate a partial writer failure" {
 }
 
 ///|
+async test "sort buffered output keeps unique representatives and failed writes are not replayed" {
+  let global = test_modifiers()
+  let sink : SortPrefixWriter = { bytes: [], remaining: 100, calls: 0, }
+  let output : SortedOutput = {
+    writer: @stream.BlockWriter::new(sink, size=4),
+    delimiter: b'\x00',
+    unique: true,
+    specs: [parse_key("1,1", global)],
+    global,
+    previous: None,
+  }
+  let entries = [
+    { record: b"a first", keys: [b"a"], index: 0L, },
+    { record: b"a second", keys: [b"a"], index: 1L, },
+    { record: b"b tail", keys: [b"b"], index: 2L, },
+  ]
+  output.emit_entries(entries[:])
+  output.writer.flush()
+  assert_eq(Bytes::from_array(sink.bytes), b"a first\x00b tail\x00")
+  let sink : SortPrefixWriter = { bytes: [], remaining: 3, calls: 0, }
+  let failed : SortedOutput = {
+    ..output,
+    writer: @stream.BlockWriter::new(sink, size=4),
+    previous: None,
+  }
+  assert_true(
+    try {
+      failed.emit_entries(entries[:])
+      false
+    } catch {
+      _ => true
+    },
+  )
+  assert_eq(Bytes::from_array(sink.bytes), b"a f")
+  assert_eq(sink.calls, 2)
+  assert_true(failed.previous is None)
+  failed.writer.flush()
+  assert_eq(sink.calls, 2)
+}
+
+///|
 async test "sort named merge output stays empty until all sources are safely spooled" {
   let root = @fs.tmpdir(prefix="sort-merge-output-safety-")
   defer @fs.rmdir(root, recursive=true)
@@ -488,6 +581,107 @@ async test "sort validates all sources before emitting records and streams check
   })
   defer check_output.close()
   assert_eq(check_output.read_all().binary(), b"")
+}
+
+///|
+async test "sort batch admission preserves overflow ownership sequence and unterminated records" {
+  let input : SortInput = {
+    specs: [],
+    global: test_modifiers(),
+    separator: None,
+    seed: b"",
+    sequence: 0,
+    retained: 0,
+    entries: [],
+  }
+  let source = @io.MemoryReader(writer => writer.write(b"b\x00a\x00\xff"))
+  defer source.close()
+  let reader = @stream.RecordReader::new(source, delimiter=b'\x00')
+  let batch = reader.next_batch().unwrap()
+  let pending = input.batch(batch, 129).unwrap()
+  assert_eq(input.entries.length(), 1)
+  assert_eq(input.entries[0].record, b"b")
+  assert_eq(input.entries[0].index, 0)
+  assert_eq(pending.record, b"a")
+  assert_eq(pending.index, 1)
+  input.entries = []
+  input.retained = 0
+  input.admit(pending)
+  assert_true(input.batch(batch, 129) is None)
+  let tail = reader.next_batch().unwrap()
+  let pending = input.batch(tail, 129).unwrap()
+  assert_eq(pending.record, b"\xff")
+  assert_eq(pending.index, 2)
+  assert_eq(input.sequence, 3)
+  assert_true(reader.next_batch() is None)
+}
+
+///|
+async test "sort cached run entries preserve refill boundaries ownership and truncation" {
+  let entries : Array[Entry] = [
+    { record: b"a\x00\xff", keys: [b"", b"first"], index: 17, },
+    {
+      record: @utf8.encode("x".repeat(97)),
+      keys: [b"second", b"\x80"],
+      index: 4294967301,
+    },
+  ]
+  let encoded = @io.MemoryReader(writer => {
+    for entry in entries {
+      write_entry(writer, entry)
+    }
+  })
+  defer encoded.close()
+  let bytes = encoded.read_all().binary()
+  let root = @fs.tmpdir(prefix="sort-run-cache-")
+  defer @fs.rmdir(root, recursive=true)
+  let path = root + "/run"
+  @fs.write_file(path, bytes)
+  for size in [1, 7, 12, 31, 65536] {
+    let file = @fs.open(path, mode=ReadOnly)
+    defer file.close()
+    let reader : RunReader = {
+      file,
+      buffer: FixedArray::make(size, b'\x00'),
+      position: 0,
+      available: 0,
+      limit: 512,
+      key_count: 2,
+    }
+    assert_true(reader.buffered_next() is None)
+    assert_eq(reader.position, 0)
+    let actual : Array[Entry] = []
+    while reader.next() is Some(entry) {
+      actual.push(entry)
+    }
+    assert_eq(actual.length(), 2)
+    for i in 0..<2 {
+      assert_eq(actual[i].record, entries[i].record)
+      assert_eq(actual[i].keys, entries[i].keys)
+      assert_eq(actual[i].index, entries[i].index)
+    }
+  }
+  @fs.write_file(path, bytes[:bytes.length() - 1])
+  let file = @fs.open(path, mode=ReadOnly)
+  defer file.close()
+  let reader : RunReader = {
+    file,
+    buffer: FixedArray::make(65536, b'\x00'),
+    position: 0,
+    available: 0,
+    limit: 512,
+    key_count: 2,
+  }
+  assert_eq(reader.next().unwrap().index, 17)
+  let position = reader.position
+  assert_true(reader.buffered_next() is None)
+  assert_eq(reader.position, position)
+  try reader.next() |> ignore catch {
+    CliError(_) => ()
+    error => raise error
+  } noraise {
+    _ => fail("truncated cached key must fail")
+  }
 }
 
 ///|

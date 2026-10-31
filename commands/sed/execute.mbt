@@ -190,9 +190,20 @@ fn output_bytes_record(
   if prefix + suffix == 0 {
     return bytes.to_owned()
   }
+  output_record_buffer(bytes, terminated, missing_newline).unsafe_reinterpret_as_bytes()
+}
+
+///|
+fn output_record_buffer(
+  bytes : BytesView,
+  terminated : Bool,
+  missing_newline : Bool,
+) -> FixedArray[Byte] {
+  let prefix = if missing_newline { 1 } else { 0 }
+  let suffix = if terminated { 1 } else { 0 }
   let output = FixedArray::make(prefix + bytes.length() + suffix, b'\n')
   output.blit_from_bytesview(prefix, bytes)
-  output.unsafe_reinterpret_as_bytes()
+  output
 }
 
 ///|
@@ -206,15 +217,33 @@ async fn Runtime::emit(
 }
 
 ///|
-async fn Runtime::emit_space(self : Runtime, space : Space) -> Unit {
+fn Runtime::buffer_space(
+  self : Runtime,
+  space : Space,
+) -> FixedArray[Byte]? raise {
   let bytes = match space.data {
     Some(data) => data
     None => @bytere.bytes(space.text())[:]
   }
-  self.output.write_bytes(
-    output_bytes_record(bytes, space.terminated, self.missing_newline),
+  let output = output_record_buffer(
+    bytes,
+    space.terminated,
+    self.missing_newline,
   )
-  self.missing_newline = !space.terminated
+  if self.output.try_write_slice(output, 0, output.length()) {
+    self.missing_newline = !space.terminated
+    None
+  } else {
+    Some(output)
+  }
+}
+
+///|
+async fn Runtime::emit_space(self : Runtime, space : Space) -> Unit {
+  if self.buffer_space(space) is Some(output) {
+    self.output.write_slice(output, 0, output.length())
+    self.missing_newline = !space.terminated
+  }
 }
 
 ///|
@@ -311,14 +340,24 @@ async fn Input::has_next(self : Input) -> Bool {
 }
 
 ///|
+fn Input::next_cached(self : Input) -> @stream.RecordView? {
+  let first = self.position
+  guard first < self.buffer.length() &&
+    self.buffer[first:].find(b"\n") is Some(length) else {
+    return None
+  }
+  self.position = first + length + 1
+  self.number += 1
+  Some({ data: self.buffer[first:first + length], terminated: true, })
+}
+
+///|
 async fn Input::next(self : Input) -> @stream.RecordView? {
   guard self.has_next() else { return None }
-  let first = self.position
-  if self.buffer[first:].find(b"\n") is Some(length) {
-    self.position = first + length + 1
-    self.number += 1
-    return Some({ data: self.buffer[first:first + length], terminated: true, })
+  if self.next_cached() is Some(record) {
+    return Some(record)
   }
+  let first = self.position
   // Complete records borrow the immutable chunk. A spanning record uses one buffer,
   // so fragmented readers do not retain one allocation per input fragment.
   let pending = @buffer.Buffer(size_hint=self.buffer.length() - first)
@@ -396,15 +435,28 @@ async fn execute_cycles(
   let mut hold = Space::from_text("", true)
   let queue : Array[String] = []
   for ;; {
-    flush_append(queue, runtime)
-    guard input.next() is Some(line) else { break }
+    if !queue.is_empty() {
+      flush_append(queue, runtime)
+    }
+    let line = match input.next_cached() {
+      Some(line) => line
+      None =>
+        match input.next() {
+          Some(line) => line
+          None => break
+        }
+    }
     let mut pattern = Space::from_bytes(line.data, line.terminated)
     let mut replaced = false
     let mut pc = 0
     let mut print_cycle = true
     while pc < commands.length() {
       let command = commands[pc]
-      let selected = command.selected(input, pattern, runtime)
+      let selected = if command.first is None && command.last is None {
+        !command.invert
+      } else {
+        command.selected(input, pattern, runtime)
+      }
       if !selected {
         pc = match command.action {
           Group(target) => target
@@ -538,7 +590,10 @@ async fn execute_cycles(
       pc += 1
     }
     if print_cycle && !quiet {
-      runtime.emit_space(pattern)
+      if runtime.buffer_space(pattern) is Some(output) {
+        runtime.output.write_slice(output, 0, output.length())
+        runtime.missing_newline = !pattern.terminated
+      }
     }
   }
 }

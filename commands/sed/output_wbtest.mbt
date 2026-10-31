@@ -32,6 +32,44 @@ impl @io.Writer for SedOutput with fn write_once(self, bytes, offset~, len~) {
 }
 
 ///|
+async test "sed synchronous output admission preserves slow path newline ownership" {
+  let output : SedOutput = { bytes: [], calls: 0, budget: 100, }
+  let runtime = {
+    ..sed_test_runtime(output),
+    output: @stream.BlockWriter::new(output, size=8),
+  }
+  assert_true(runtime.buffer_space(Space::from_bytes(b"abc"[:], false)) is None)
+  assert_true(runtime.missing_newline)
+  let second = Space::from_bytes(b"123456789"[:], true)
+  assert_true(runtime.buffer_space(second) is Some(_))
+  assert_true(runtime.missing_newline)
+  assert_eq(output.calls, 0)
+  runtime.emit_space(second)
+  runtime.output.flush()
+  assert_false(runtime.missing_newline)
+  assert_eq(Bytes::from_array(output.bytes), b"abc\n123456789\n")
+}
+
+///|
+test "sed cached record admission never consumes a spanning record" {
+  let input = { ..sed_address_input(7), buffer: b"a\n\x00\xff\ntail", }
+  let first = input.next_cached().unwrap()
+  assert_eq(first.data, b"a"[:])
+  assert_true(first.terminated)
+  assert_eq(input.number, 8)
+  let second = input.next_cached().unwrap()
+  assert_eq(second.data, b"\x00\xff"[:])
+  assert_eq(input.number, 9)
+  assert_eq(input.position, 5)
+  assert_true(input.next_cached() is None)
+  assert_eq(input.position, 5)
+  assert_eq(input.number, 9)
+  input.buffer = b"replacement"
+  assert_eq(first.data, b"a"[:])
+  assert_eq(second.data, b"\x00\xff"[:])
+}
+
+///|
 async test "sed delivers completed output before waiting for another input chunk" {
   let output : SedOutput = { bytes: [], calls: 0, budget: 1000, }
   let runtime = sed_test_runtime(output)

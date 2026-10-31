@@ -9,7 +9,84 @@ Full historical experiment reports remain in the
 [pre-simplification Git version](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/CHANGELOG.md).
 Their failed, incomplete and platform-limited results keep their original scope.
 
+## 2026-11-01
+
+Development sort and diff performance pilots; no publication.
+
+- Add complete CPython and SQLite release-pair diff workloads plus a genuine
+  fractional sort-key control, plus whole-record and field numeric spill controls.
+  Preserve the original rows and failed timing windows; the registry now has
+  130 workloads and 33 complete sources.
+- Sort batches source records, selects plain byte ordering once and decodes
+  complete cached run entries synchronously. A bounded integer-prefix shortcut
+  preserves the existing fractional and long-number conversion. The revised
+  pilot qualifies, with a separately accepted 3.30–3.71% decimal-key cost
+  against the preceding batch phase; its earlier lexical regression stays failed.
+- Reject three later numeric-cache trials: large decimal gains do not offset
+  integer/spill regressions or a failed stability gate. Restore the passing
+  implementation and retain all new controls and failed evidence for follow-up.
+- Diff uses byte scans/output and compact edge-trimmed scripts with absolute
+  hunk positions. The revised pilot qualifies all four old/new rows, preserving
+  alignment, arbitrary bytes and normal/unified/context output. Results and
+  limits are recorded in [ADR-0003](docs/adr/0003-streams.md).
+- Final correctness passes 1,759 release-Wasm tests and 2,260 functional checks
+  (21 skips, zero failures); all 80 restored artifacts match the pre-cache final
+  candidate. Expanded cumulative timing qualifies 9/10 rows, with all six sort
+  controls passing. The CPython diff row fails stability, so the final batch
+  remains unqualified. Expanded native sort timing qualifies 4/6 rows; retain
+  both native-reference dispersion failures. No unchanged timing retry, remote
+  CI, commit, publication or general performance acceptance is claimed.
+
+Development encoding, numbering and sort output pilots; no publication.
+
+- Continue from the retained sed/csplit work without changing either command
+  or rg. Replace base64 encoding's character/string intermediates with direct
+  byte groups and bounded carry; preserve wrapping and output/read ordering.
+- Base32 uses byte encoding, 64 KiB whole-input reads and a compact complete-group
+  kernel. Preserve final padding, arbitrary wrapping and read-before-output
+  behavior. Archive and reject the separate bounded-output trial, which added
+  cost without benefit.
+- Nl consumes immutable record batches and coalesces numbered output while
+  preserving sections, blank grouping and failure state. Sort buffers complete
+  records while preserving stable/unique selection and temporary-run algorithms.
+  Initial implementation phases qualify. Review fixes nl's eager padding on
+  empty input; that correction's incremental comparison fails drift and remains
+  unqualified separately from the final cumulative evidence.
+- Final cumulative timing passes all eight selected rows against B5: source
+  encoding time falls 87.6–87.8% for base32 and 78.9–79.0% for base64, numbering
+  falls 75.3–75.4%, and sort falls 21.0–21.5% for lexical order and 9.1–9.9% for
+  numeric/spill rows. Base32's small binary control costs 2.80% in one window;
+  retain that scoped tradeoff. Native timing qualifies only four of eight rows:
+  nl is 2.67 times native time and sort 8.90–9.80; encoding ratios remain
+  observations because their stability gates fail. Exact phase results, failed
+  identity/stability evidence and limitations are in [ADR-0003](docs/adr/0003-streams.md).
+- Final correctness passes 1,753 release-Wasm tests and 2,260 functional checks,
+  with 21 platform skips and no failures. The reviewed 652-claim profile, strict
+  checks and 80-command/29-strategy architecture checks pass. All 80 artifacts
+  are verified; only base32, base64, nl and sort change from B5. Public interfaces,
+  published expectations and the preceding sed/csplit artifacts stay unchanged.
+
 ## 2026-10-31
+
+Post-integration cache-loop and compression-table pilots; no publication.
+
+- Relative to integrated `7c9d1d2`, locally retain synchronous csplit index
+  scanning with checked word encoding (69–70% less time) and sed cached-record
+  admission with synchronous buffered output (36% less for substitution hits,
+  43–44% less for misses). All three selected real-source rows qualify; their
+  earlier unstable variants remain recorded separately in ADR-0003.
+- Reject a gzip comparison-unrolling trial that costs 2.09–2.61%. Direct
+  DEFLATE symbol maps save about 23% on compression but qualify only eight of
+  nine rows because gunzip stored exceeds the dispersion gate. Preserve that
+  experiment and its exhaustive symbol tests externally; keep delivered codec
+  source unchanged. The current original-tool comparisons still show material
+  gaps, with their stability limits recorded in ADR-0003.
+- Final local validation passes strict checking/building, all 1,743 release-Wasm
+  tests, and 2,260 functional checks (21 platform skips, zero failures). The
+  reviewed 652-claim profile and 80-command/26-strategy architecture checks pass.
+  All 80 final artifacts are verified: sed and csplit match their qualified
+  measured versions; the other 78 match integrated `7c9d1d2`. Interfaces remain
+  unchanged. This round has no remote CI or publication acceptance.
 
 Development integration of qualified performance changes; no publication.
 

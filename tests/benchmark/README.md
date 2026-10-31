@@ -1,14 +1,14 @@
 # Direct-Wasm benchmark workloads
 
-## Current declared scope (2026-10-31)
+## Current declared scope (2026-11-01)
 
-`real.json` is the single active timing inventory. Its 125 data-driven rows
+`real.json` is the single active timing inventory. Its 130 data-driven rows
 cover 40 commands. `real-coverage.json` records the full 43-command scope,
 including explicit correctness-only dispositions for ln, make and sh. Those
 three commands have independent local contract witnesses; they have no
 real-source timing claim. These are inventory counts, not execution results.
 
-The inventory reuses 31 complete source files totaling 22,152,148 unique
+The inventory reuses 33 complete source files totaling 31,450,998 unique
 payload bytes. Each measured source is at most 16 MiB, and the complete source
 budget is 64 MiB. `tests/fixtures/benchmark/real-sources.json` pins the byte
 counts, SHA-256 identities, provenance, immutable source locations and license
@@ -16,6 +16,10 @@ records. Sources include standards and Unicode data, ordinary source code,
 CSV/JSON data, a genuine PNG, an empty Python module, an unterminated HTML
 file and a genuine minified long record. There is no repetition, padding,
 truncation or generated size-budget input.
+
+Diff includes complete same-file release pairs: CPython JSON encoder 3.13.0 to
+3.14.0 and SQLite amalgamation 3.50.3 to 3.50.4. These add natural source changes
+beside equal files and different modules; they do not model all AI tool calls.
 
 Every verdict applies to the exact command mode, sources, input transport and
 output sink that ran. Reports retain `general_performance_acceptance: false`,
@@ -119,8 +123,8 @@ sample removal or aggregate score hides a failed row.
 Actual source observations include full-file SHA-256, bytes, LF and record
 counts, unterminated tails, record-length extrema, row/byte-weighted histograms,
 NUL/non-ASCII bytes and duplicate records. Declared data and transport facets
-require actual observations; a catalog label alone is insufficient. The 105
-reviewed command/mode contracts in `real-coverage.json` pin 107 distinct
+require actual observations; a catalog label alone is insufficient. The 107
+reviewed command/mode contracts in `real-coverage.json` pin 111 distinct
 argument/preparation/status combinations independently of workload row IDs.
 Operation facets must match those exact contracts as well as native calibration
 and independent local correctness. They describe requested operations rather

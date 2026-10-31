@@ -25,9 +25,10 @@ fn IndexPage::push(self : IndexPage, position : Int64) -> Unit raise {
   guard self.entries < 1152921504606846975L else {
     fail("line index exceeds signed 64-bit file offsets")
   }
-  for byte in 0..<8 {
-    self.bytes[self.used + byte] = ((position >> (byte * 8)) & 255L).to_byte()
+  guard self.used >= 0 && self.used <= self.bytes.length() - 8 else {
+    fail("index page has no complete offset slot")
   }
+  self.bytes.unsafe_write_uint64_le(self.used, position.reinterpret_as_uint64())
   self.used += 8
   self.entries += 1
 }
@@ -39,6 +40,33 @@ async fn IndexPage::flush(self : IndexPage, writer : &@io.Writer) -> Unit {
   if count > 0 {
     writer.write(self.bytes.unsafe_reinterpret_as_bytes()[:count])
   }
+}
+
+///|
+// Return before the first boundary that needs another page. The caller has
+// already written this input chunk, and owns the only asynchronous flush.
+fn IndexPage::scan(
+  self : IndexPage,
+  bytes : BytesView,
+  base : Int64,
+  start : Int32,
+  last : Int64,
+) -> (Int32, Int64) raise {
+  let mut position = start
+  let mut boundary = last
+  while position < bytes.length() {
+    guard bytes[position:].find(b"\n") is Some(relative) else {
+      return (bytes.length(), boundary)
+    }
+    let newline = position + relative
+    if self.used == self.bytes.length() {
+      return (newline, boundary)
+    }
+    position = newline + 1
+    boundary = base + position.to_int64()
+    self.push(boundary)
+  }
+  (position, boundary)
 }
 
 ///|
@@ -60,15 +88,13 @@ async fn snapshot(
       fail("input exceeds signed 64-bit file offsets")
     }
     data.write(bytes)
-    for position in 0..<bytes.length() {
-      if bytes[position] == b'\n' {
-        last = size + position.to_int64() + 1
-        // Encode boundaries synchronously; only full pages cross the I/O
-        // boundary. Input data still reaches the spool before its index.
-        if offsets.used == offsets.bytes.length() {
-          offsets.flush(index)
-        }
-        offsets.push(last)
+    let mut position = 0
+    while position < bytes.length() {
+      let (next, boundary) = offsets.scan(bytes[:], size, position, last)
+      position = next
+      last = boundary
+      if position < bytes.length() {
+        offsets.flush(index)
       }
     }
     size += bytes.length().to_int64()

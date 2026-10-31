@@ -5,9 +5,9 @@
 `protect.mbtx` compares all 80 command artifacts against an immutable
 baseline and rejects any changed command without qualifying real timing
 coverage. It uses `real.json` schema 3 and its associated source and coverage
-registries. The declared scope is 125 workloads across 40 timing commands and
-three correctness-only commands, ln, make and sh. The 31 complete genuine
-sources total 22,152,148 unique payload bytes, with a 16 MiB per-source cap and
+registries. The declared scope is 130 workloads across 40 timing commands and
+three correctness-only commands, ln, make and sh. The 33 complete genuine
+sources total 31,450,998 unique payload bytes, with a 16 MiB per-source cap and
 a 64 MiB suite budget. Counts describe the inventory; they do not establish
 execution or timing success.
 

@@ -81,6 +81,34 @@ priv struct FailedIndexWriter {
 }
 
 ///|
+test "csplit synchronous index scans resume before an uncommitted boundary" {
+  let page : IndexPage = {
+    bytes: FixedArray::make(16, b'\x00'),
+    used: 0,
+    entries: 0L,
+  }
+  let data = b"a\n\xff\x00\n\nlast"
+  let base = 0x0123456789abcd00L
+  assert_eq(page.scan(data[:], base, 0, base - 3), (5, base + 5))
+  assert_eq(page.entries, 2L)
+  assert_eq(page.used, 16)
+  assert_eq(page.scan(data[:], base, 5, base + 5), (5, base + 5))
+  assert_eq(page.entries, 2L)
+  try page.push(base) catch {
+    error => assert_true(error.to_string().contains("no complete offset slot"))
+  } noraise {
+    _ => fail("full page must reject before writing")
+  }
+  assert_eq(page.used, 16)
+  assert_eq(page.entries, 2L)
+  page.used = 0
+  assert_eq(page.scan(data[:], base, 5, base + 5), (10, base + 6))
+  assert_eq(page.entries, 3L)
+  assert_eq(page.scan(b"tail"[:], base + 10, 0, base + 6), (4, base + 6))
+  assert_eq(page.entries, 3L)
+}
+
+///|
 impl @io.Writer for FailedIndexWriter with fn write_once(self, _, offset~, len~) {
   ignore((offset, len))
   self.calls += 1

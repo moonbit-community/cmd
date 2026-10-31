@@ -57,7 +57,9 @@
     ],
     "diff": [
       "real-diff-source-distinct-equal",
-      "real-diff-json-modules"
+      "real-diff-json-modules",
+      "real-diff-json-revisions",
+      "real-diff-sqlite-revisions"
     ],
     "expand": [
       "real-expand-real-tabs"
@@ -169,6 +171,9 @@
     "sort": [
       "real-sort-source-lexical",
       "real-sort-airport-numeric",
+      "real-sort-airport-decimal",
+      "real-sort-source-numeric-spill",
+      "real-sort-source-numeric-key-spill",
       "real-sort-source-spill"
     ],
     "split": [
@@ -389,6 +394,55 @@
   ],
   "strategies": [
     {
+      "id": "base32-byte-encoding",
+      "owner": "commands/base32",
+      "commands": ["base32"],
+      "status": "adopted",
+      "sources": ["commands/base32/main.mbt"],
+      "tests": [
+        {"file": "commands/base32/main_wbtest.mbt", "name": "base32 RFC 4648 vectors"},
+        {"file": "commands/base32/main_wbtest.mbt", "name": "base32 byte encoding preserves every byte and wrap boundaries"},
+        {"file": "commands/base32/main_wbtest.mbt", "name": "base32 whole input acceptance retains fragments and read failures"},
+        {"file": "commands/base32/main_wbtest.mbt", "name": "base32 complete group windows preserve padding across the 64 KiB boundary"}
+      ],
+      "profiles": ["real-base32-encode-unwrapped-source", "real-base32-binary"],
+      "invariant": "Whole input acceptance precedes encoding or decoding. Byte encoding preserves all symbols, final padding, arbitrary positive wrap columns and zero-wrap termination; complete group windows cannot introduce padding at an interior boundary. Length arithmetic is checked before allocating output.",
+      "measurement_scope": "Local selected-workload pilots only; phase decisions and limits are recorded in ADR-0003. Whole-input storage remains and peak RSS is unmeasured."
+    },
+    {
+      "id": "base64-byte-encoding",
+      "owner": "commands/base64",
+      "commands": ["base64"],
+      "status": "adopted",
+      "sources": ["commands/base64/encode.mbt", "commands/base64/main.mbt"],
+      "tests": [
+        {"file": "commands/base64/main_wbtest.mbt", "name": "base64 byte encoding preserves every byte across fragmented quanta and wraps"},
+        {"file": "commands/base64/main_wbtest.mbt", "name": "base64 emits complete quanta before later read errors and never replays failed writes"},
+        {"file": "commands/base64/main_wbtest.mbt", "name": "base64 stream carry crosses the full read boundary without inserting padding"}
+      ],
+      "profiles": ["real-base64-encode-unwrapped-source", "real-base64-binary"],
+      "invariant": "A 64 KiB input read leaves at most two carry bytes. Complete quanta reach the writer before another read; only final carry receives padding. Wrap columns persist across chunks, and failed output never replays or finalizes carry.",
+      "measurement_scope": "Local genuine-source encoding and binary controls; unchanged decoder behavior, no general throughput, RSS or publication claim."
+    },
+    {
+      "id": "nl-record-output",
+      "owner": "commands/nl",
+      "commands": ["nl"],
+      "status": "adopted",
+      "sources": ["commands/nl/main.mbt", "commands/nl/numbering.mbt"],
+      "tests": [
+        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering preserves sections binary bytes and an unterminated final record"},
+        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering retains completed output before an input failure"},
+        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering never replays bytes after a partial write failure"},
+        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering batches preserve blank grouping section resets and signed formatting"},
+        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering does not advance a declined oversized record after write failure"},
+        {"file": "commands/nl/output_wbtest.mbt", "name": "numbering empty input does not allocate a requested number field"}
+      ],
+      "profiles": ["real-nl-source-records"],
+      "invariant": "Synchronous record batches preserve section and blank-line state. Complete coalesced output owns its bytes until admission or write completion; numbering advances only after that success. Earlier output survives a read failure, partial output is never replayed, and every emitted record retains its newline.",
+      "measurement_scope": "One selected real-source workload qualifies locally; private boundary tests do not establish throughput generality. The RecordReader maximum read request is 1 MiB and coalescing adds transient record storage; RSS is unmeasured."
+    },
+    {
       "id": "sed-byte-prefilter",
       "owner": "commands/sed",
       "commands": ["sed"],
@@ -412,12 +466,13 @@
       "tests": [
         {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit flushes full index pages before an unterminated final boundary"},
         {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit index pages retain 64 bit offsets and never replay a failed flush"},
+        {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit synchronous index scans resume before an uncommitted boundary"},
         {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit cached matching retains byte semantics and declines crossing records"},
         {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit cached scans stop at the first match or uncached record"},
         {"file": "commands/csplit/main_wbtest.mbt", "name": "csplit byte matcher retains BRE assertions alternatives and backreferences"}
       ],
       "profiles": ["real-csplit-source-api-boundaries"],
-      "invariant": "Bounded index pages preserve signed 64-bit offsets and data-before-index ordering; synchronous scanning stops at the first match or uncached record; one byte matcher is reused per control; cached matching requires both offsets and the complete record, while cross-page records retain the original path, error and cleanup contracts.",
+      "invariant": "Bounded index pages preserve signed 64-bit offsets and data-before-index ordering; index scanning returns before a boundary that needs a flush, and little-endian word stores require a checked complete slot. Synchronous matching stops at the first match or uncached record; one byte matcher is reused per control; cached matching requires both offsets and the complete record, while cross-page records retain the original path, error and cleanup contracts.",
       "measurement_scope": "Locally adopted from the 2026-10-31 selected-workload panels; one genuine-source workload does not establish universal throughput, full protection or publication acceptance."
     },
     {
@@ -429,6 +484,8 @@
       "tests": [
         {"file": "commands/sed/sed_wbtest.mbt", "name": "sed output records preserve separators termination empty and byte values"},
         {"file": "commands/sed/output_wbtest.mbt", "name": "sed delivers completed output before waiting for another input chunk"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed cached record admission never consumes a spanning record"},
+        {"file": "commands/sed/output_wbtest.mbt", "name": "sed synchronous output admission preserves slow path newline ownership"},
         {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output failure precedes a later script error without replay"},
         {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output failure precedes a failing input read"},
         {"file": "commands/sed/output_wbtest.mbt", "name": "sed buffered output retains n N append and unterminated boundaries"},
@@ -438,7 +495,7 @@
         {"file": "commands/sed/output_wbtest.mbt", "name": "sed record output preserves separators and termination across buffer boundaries"}
       ],
       "profiles": ["real-sed-source-identifiers", "real-sed-source-miss"],
-      "invariant": "Immutable record views retain backing bytes across refills; spanning records own their buffer, and content changes create a new pattern/hold space. Record coalescing preserves separator, text, terminator and missing-newline state; batching must retain append/n/N ordering and deliver earlier output before input or runtime failures.",
+      "invariant": "Immutable record views retain backing bytes across refills; cached admission consumes only complete newline-terminated records, spanning records own their buffer, and content changes create a new pattern/hold space. Record coalescing preserves separator, text, terminator and missing-newline state; a rejected synchronous output admission retains both its owned bytes and previous newline state for the async slow path. Batching must retain append/n/N ordering and deliver earlier output before input or runtime failures.",
       "measurement_scope": "Locally adopted record coalescing, block buffering, chunk scanning and lazy byte spaces each pass both selected 2026-10-31 substitution rows; no general throughput, memory or publication acceptance."
     },
     {
@@ -1191,6 +1248,22 @@
       "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
+      "id": "diff-byte-pipeline",
+      "owner": "commands/diff",
+      "commands": ["diff"],
+      "status": "adopted",
+      "sources": ["commands/diff/main.mbt", "commands/diff/compare.mbt", "commands/diff/output.mbt"],
+      "tests": [
+        {"file": "commands/diff/compare_wbtest.mbt", "name": "patch byte output preserves every byte and byte encoded labels"},
+        {"file": "commands/diff/compare_wbtest.mbt", "name": "compact diff retains hunk positions context and EOF across equal edges"},
+        {"file": "commands/diff/compare_wbtest.mbt", "name": "normal edits retain byte records and missing line terminators"},
+        {"file": "commands/diff/compare_wbtest.mbt", "name": "repeated records choose GNU-compatible aligned change groups"}
+      ],
+      "profiles": ["real-diff-source-distinct-equal", "real-diff-json-modules", "real-diff-json-revisions", "real-diff-sqlite-revisions"],
+      "invariant": "Both operands are read before exact equality. Binary detection and record splitting use byte search; compact scripts keep requested edge context and absolute hunk positions. Patch records preserve arbitrary bytes, labels, terminators, CR stripping and existing alignment. No source-size or corpus-specific route.",
+      "measurement_scope": "Complete genuine equal, unrelated-module and same-file release pairs. AI invocation frequency, startup amortization and general diff throughput are not inferred."
+    },
+    {
       "id": "sort-spill",
       "owner": "commands/sort",
       "commands": [
@@ -1198,7 +1271,10 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/sort/external.mbt"
+        "commands/sort/external.mbt",
+        "commands/sort/input.mbt",
+        "commands/sort/compare.mbt",
+        "commands/sort/output.mbt"
       ],
       "tests": [
         {
@@ -1208,14 +1284,37 @@
         {
           "file": "commands/sort/sort_wbtest.mbt",
           "name": "sort temporary parent failure cleans owned runs and preserves output"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort buffered output keeps unique representatives and failed writes are not replayed"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort batch admission preserves overflow ownership sequence and unterminated records"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort integral prefix preserves signed decimal tails and fallback rounding"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort lexical plan matches general ordering for ties reverse and raw bytes"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort cached run entries preserve refill boundaries ownership and truncation"
         }
       ],
       "profiles": [
         "real-sort-source-lexical",
         "real-sort-airport-numeric",
+        "real-sort-airport-decimal",
+        "real-sort-source-numeric-spill",
+        "real-sort-source-numeric-key-spill",
         "real-sort-source-spill"
       ],
-      "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio.",
+      "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio. Input batches own entries across spills; cached run decoding commits only a complete entry and preserves exact-read fallback, validation and cleanup. Bounded integer prefixes retain fractional and long-number conversion fallback. Plain byte ordering preserves reverse and sequence ties. Coalesced output preserves LF/NUL termination and first unique representatives; a failed write cannot commit a new representative or replay a prefix. Run framing and total merge budgets remain unchanged.",
       "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {

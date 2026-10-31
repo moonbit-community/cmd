@@ -242,6 +242,51 @@
       ]
     },
     {
+      "id": "real-sort-airport-decimal",
+      "command": "sort",
+      "reference_behavior_id": "case:phase3-sort-basic",
+      "recipe": "real-input",
+      "source": {
+        "path": "openflights-airports.dat",
+        "sha256": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9"
+      },
+      "args": ["-t", ",", "-k7,7n"],
+      "mode": "sort-numeric",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": ["bytes", "records", "sorting"]
+    },
+    {
+      "id": "real-sort-source-numeric-key-spill",
+      "command": "sort",
+      "reference_behavior_id": "case:phase3-sort-basic",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "args": ["-k1,1n", "-S", "4M"],
+      "mode": "sort-numeric-spill",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": ["bytes", "records", "sorting", "spill"]
+    },
+    {
+      "id": "real-sort-source-numeric-spill",
+      "command": "sort",
+      "reference_behavior_id": "case:phase3-sort-basic",
+      "recipe": "real-input",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "args": ["-n", "-S", "4M"],
+      "mode": "sort-numeric-spill",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": ["bytes", "records", "sorting", "spill"]
+    },
+    {
       "id": "real-sort-source-spill",
       "command": "sort",
       "reference_behavior_id": "case:phase3-sort-basic",
@@ -1435,6 +1480,44 @@
         "records",
         "selection"
       ]
+    },
+    {
+      "id": "real-diff-json-revisions",
+      "command": "diff",
+      "reference_behavior_id": "case:p1-diff-unified",
+      "recipe": "real-file-pair",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "args": ["--label", "left", "--label", "right", "-u", "left", "right"],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "mode": "diff-real-revision-pair",
+      "facets": ["bytes", "records", "named-files"],
+      "other_source": {
+        "path": "python-3.14.0/Lib/json/encoder.py",
+        "sha256": "5ab0fbdd8b4927db9b6a0d1cbc16eecfadc89da8b305481586618415498d3e58"
+      }
+    },
+    {
+      "id": "real-diff-sqlite-revisions",
+      "command": "diff",
+      "reference_behavior_id": "case:p1-diff-unified",
+      "recipe": "real-file-pair",
+      "source": {
+        "path": "sqlite3-3.50.3.c",
+        "sha256": "4946267f79081e3abbca035ec48a6ad95edab6a59c3c300224226e2689b852fe"
+      },
+      "args": ["--label", "left", "--label", "right", "-u", "left", "right"],
+      "expected_status": 1,
+      "expected_stderr": "",
+      "mode": "diff-real-revision-pair",
+      "facets": ["bytes", "records", "named-files"],
+      "other_source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      }
     },
     {
       "id": "real-diff-json-modules",

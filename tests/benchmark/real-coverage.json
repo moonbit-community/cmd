@@ -200,6 +200,7 @@
       "disposition": "timing",
       "required_modes": [
         "diff-distinct-equal",
+        "diff-real-revision-pair",
         "diff-real-module-pair"
       ],
       "required_facets": [
@@ -598,7 +599,8 @@
       "required_modes": [
         "sort-budget-4m",
         "sort-lexical",
-        "sort-numeric"
+        "sort-numeric",
+        "sort-numeric-spill"
       ],
       "required_facets": [
         "bytes",
@@ -1319,6 +1321,19 @@
       ],
       "operation_facets": [],
       "description": "Request unified comparison with stable labels of distinct complete files containing equal genuine bytes; expected status is 0."
+    },
+    {
+      "command": "diff",
+      "mode": "diff-real-revision-pair",
+      "allowed_invocations": [
+        {
+          "args": ["--label", "left", "--label", "right", "-u", "left", "right"],
+          "recipe": "real-file-pair",
+          "expected_status": 1
+        }
+      ],
+      "operation_facets": [],
+      "description": "Complete same-file release pairs; natural source changes, not generated edits or a general AI-call distribution."
     },
     {
       "command": "diff",
@@ -2339,6 +2354,13 @@
     },
     {
       "command": "sort",
+      "mode": "sort-numeric-spill",
+      "allowed_invocations": [{"args": ["-n", "-S", "4M"], "recipe": "real-input", "expected_status": 0}, {"args": ["-k1,1n", "-S", "4M"], "recipe": "real-input", "expected_status": 0}],
+      "operation_facets": ["sorting", "spill"],
+      "description": "Request numeric prefix sorting of the complete SQLite source under the four MiB budget, exercising prepared-key and external-run interaction."
+    },
+    {
+      "command": "sort",
       "mode": "sort-numeric",
       "allowed_invocations": [
         {
@@ -2349,12 +2371,17 @@
           ],
           "recipe": "real-input",
           "expected_status": 0
+        },
+        {
+          "args": ["-t", ",", "-k7,7n"],
+          "recipe": "real-input",
+          "expected_status": 0
         }
       ],
       "operation_facets": [
         "sorting"
       ],
-      "description": "Request numeric comparison of the first comma-delimited field."
+      "description": "Request numeric comparison of the first ID field or the seventh comma-delimited field containing airport latitudes."
     },
     {
       "command": "split",

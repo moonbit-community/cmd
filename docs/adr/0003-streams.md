@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-31
+Updated: 2026-11-01
 
 ## Decision
 
@@ -56,6 +56,274 @@ diagnostics and cannot qualify performance protection. Failed or unstable
 windows remain evidence; no automatic retries or sample removal qualify them.
 Publication continues to use `moon publish`; this decision adds no packaging,
 registry operation, platform acceptance or performance result.
+
+### Sort input/comparison and diff byte/script pilots (2026-11-01)
+
+B6 freezes the preceding retained tree and all 80 Wasm artifacts at
+`/private/tmp/cmd-performance-sort-diff-20261101`; every artifact matches the
+preceding round's final verification. Sed, csplit, encoders, nl, rg and shared
+core stay unchanged. The user's approximately five-times-native target guides
+prioritization, not an assumed fixed Wasm overhead or a relaxed timing gate.
+
+The inventory adds complete same-file release pairs for diff: CPython's JSON
+encoder 3.13.0/3.14.0 and SQLite's amalgamation 3.50.3/3.50.4. Their frozen GNU
+unified output has five and eleven hunks respectively. Add an airport seventh
+field numeric sort control beside the first field integer IDs, so an integer
+shortcut is also measured on natural fractional keys. Whole-record and explicit
+field numeric ordering also run on the complete SQLite source with a 4 MiB
+spill budget, guarding the interaction between prepared keys and run storage.
+There are now 130 rows,
+33 complete sources and 31,450,998 unique source bytes. These are finite genuine
+workloads; neither the old synthetic diff shapes nor a Moonseek call-frequency
+distribution becomes qualified. No generated edits, timing padding, new runner,
+startup subtraction, repeated warm process or sample filtering is introduced.
+
+- Sort consumes existing immutable record batches in a synchronous admission
+  loop. The pending overflow entry remains owned across spill/compaction and
+  keeps its sequence number. Maximum source read request grows from 64 KiB to
+  1 MiB; peak RSS is not measured. The first phase qualifies at 0.7280–0.7300
+  of B6 lexical time, 0.8872–0.8905 for integer keys and 0.8906–0.8918 for spill.
+- A subsequent sort candidate parses at most fifteen integer digits directly
+  with exact Double intermediates and decodes complete cached run entries in
+  a synchronous loop. Fractional/long-number conversion, run format, exact
+  refill failure, reservations and temporary ownership stay unchanged. This
+  candidate fails: lexical time costs 5.47% in one window. Its integer/spill
+  gains and 2.55–2.65% decimal cost do not offset that failure.
+- The revised sort plan selects untransformed byte ordering once per invocation,
+  retaining general key comparison and stable/reverse ties. Against the preceding
+  passing batch phase, all four rows qualify: lexical 0.8945–0.8980, integer
+  0.8620–0.8626 and spill 0.6823–0.6827. The decimal row costs **3.30–3.71%**,
+  accepted as a scoped local tradeoff below 5%, not noise or a speedup. Lift
+  this cost by avoiding duplicate prefix scans while retaining exact conversion
+  behavior and rerunning the complete integer/decimal controls.
+- Diff tests byte equality after accepting both operands, uses byte searches
+  for NUL/newline, and appends original patch record bytes without a text round
+  trip. A first candidate has three qualified rows but fails the unrelated
+  module row's dispersion/drift; it is not adopted as a qualified batch.
+- Revised diff scripts trim identical outer records while retaining requested
+  context and absolute line offsets. Comparison keys, flags and edit objects
+  cover the retained domain; the existing Myers search, repeated-anchor discard
+  and alignment rules remain. All four B6 comparisons qualify: equal source
+  0.1473–0.1498, SQLite revisions 0.5396–0.5429, Python revisions 0.9337–0.9346,
+  and unrelated modules 0.8826–0.8864. Byte output, Unicode labels, missing
+  terminators, context and reconstructed edit scripts have independent witnesses.
+
+The formatted pre-cache candidate qualifies all eight then-registered cumulative
+rows against B6: lexical sort 0.6530–0.6531, integer sort 0.7670–0.7679,
+decimal sort 0.9900–0.9971, spill sort 0.6059–0.6066; equal diff 0.1566–0.1576,
+Python revisions 0.9434–0.9476, SQLite revisions 0.5464–0.5495 and unrelated
+modules 0.8936–0.8968. Native comparison qualifies seven rows: sort lexical
+6.32–6.41 times, integer 6.92–7.33, decimal 14.53–14.56 and spill 5.50–5.61;
+diff equal 2.00–2.04, Python revisions 7.51–7.74 and SQLite revisions 5.50–5.51.
+The unrelated-module native row fails reference dispersion and stays unqualified.
+
+Three subsequent numeric-cache trials are rejected and restored from the
+pre-cache source archive. Inline cache fields improve decimal time by about
+56% but cost 9–10% on integer keys and 47% on spill. Reusing prepared-key bytes
+removes those fields but eagerly preparing global numeric keys costs 31–32%
+on whole-record numeric spill. Restricting caching to explicit numeric fields
+improves decimal time by 53–54% and numeric-field spill by 19–20%, but its
+integer control fails dispersion (7.55%) and inter-window drift (about 19–22%).
+That batch is not accepted and is not rerun unchanged to manufacture a pass.
+The final tree retains the earlier passing implementation and all added
+genuine workload controls. A future cache trial must qualify the complete six
+sort rows, preserve raw global numeric allocation behavior and exact conversion,
+and establish stable independent windows before adoption. Failed sources,
+artifacts and samples remain recoverable beside the retained snapshot.
+
+After restoring that implementation, all 80 artifacts exactly match the
+pre-cache final artifacts. Final validation passes 1,759 release-Wasm tests,
+2,260 functional checks (21 skips, zero failures), 652 reviewed finite claims,
+and the 30-strategy architecture inventory. The expanded final cumulative panel
+qualifies **9/10 rows**, including all six sort controls: lexical time falls
+34.56–34.91%, integer 22.53–22.67%, lexical spill 39.34–39.41%, numeric-field
+spill 29.65–29.72% and whole-record numeric spill 17.42–18.33%. Decimal time
+falls only 0.20–1.47%; it remains a priority. Diff equal and SQLite revision
+time fall 83.63–83.71% and 44.60–45.02%, respectively. Unrelated-module time
+falls 9.79–10.67%. The Python revision row fails W0 candidate/reference MAD
+(5.71%/9.84%) and reference drift (12.94%); the complete final batch therefore
+**does not pass**. Earlier qualified evidence is retained with its own scope,
+not substituted for the final failure. No unchanged retry is performed.
+
+The expanded final sort/native panel qualifies four of six rows: integer
+6.80–6.86 times native time, decimal 13.61–14.20, numeric-field spill
+9.92–10.12 and whole-record numeric spill 5.81–6.14. Lexical and lexical-spill
+native comparisons fail reference dispersion (up to 9.98% and 11.25%). Their
+earlier qualified ratios remain dated observations, not new acceptance.
+Diff's native evidence is reused only because its artifact is identical; the
+earlier unrelated-module failure remains. The retained tree is a local candidate
+with qualified per-row gains and an unresolved final performance gate. Evidence
+and failed guards are retained at `performance-sort-diff-20261101/README.md` in
+the thread's visualization folder; the full source/artifact archive remains in
+the raw directory above. The next work should target decimal/field-numeric sort
+and small-file diff costs while preserving these wider controls.
+
+The pinned GNU coreutils 9.11 `fillbuf`/numeric comparison and diffutils 3.12
+`find_identical_ends` implementations informed batching, byte comparison and
+edge-domain reduction. No host implementation enters the product. Small-file
+process startup and larger-file comparison work remain separate observations;
+these pilots do not establish AI integration, upstream parity, all-command
+performance, resource acceptance, remote CI or publication.
+
+### Encoding, numbering and sort output pilots (2026-11-01)
+
+The next local batch leaves sed at its accepted practical target of roughly
+five times native time and leaves rg to its separate optimization work. This
+is a prioritization decision, not a fixed Wasm or MoonBit overhead claim. B5
+preserves the current source and all 80 artifacts, including the preceding
+uncommitted sed/csplit improvements, at
+`/private/tmp/cmd-performance-other-20261101`. Its hashes match the preceding
+round's final verification. The real-source inventory and all timing gates are
+unchanged; no synthetic timing inputs or new command-specific runner are used.
+
+The fresh native baseline qualifies sort at 9.85–12.43 times native time, nl
+at 11.18–11.23 and base64 source encoding at 24.54–25.91. Base32's observed
+39.80–43.80 source ratio and both small binary controls fail stability; retain
+those failures rather than using their ratios as qualified ranking evidence.
+
+- Base64 encodes complete three-byte groups directly into byte arrays. It
+  retains at most two carry bytes across the existing 64 KiB reads, preserves
+  wrap columns, and writes complete quanta before the next read. StringBuilder,
+  character conversion and whole-chunk Array copies leave the encoding loop.
+  Both incremental rows qualify: source time is 0.2067–0.2093 of B5; the small
+  binary control is 0.9747–0.9886. Decoding is unchanged.
+- Base32 first replaces character/string intermediates with direct byte output
+  and chunk copies for wrapping, following the alphabet and bit-group layout
+  in the pinned GNU coreutils 9.11/gnulib source. Whole-input acceptance is
+  retained. Initial source time is 0.6627–0.6687 of B5. Using public 64 KiB reads
+  adds a further reduction to 0.8719–0.8743 of that candidate, while its small
+  binary control costs 1.36–1.57% (roughly 0.1 ms), a separately recorded local
+  tradeoff. Complete five-byte groups subsequently move into a compact kernel
+  with quantum-aligned 65,535-byte windows; final padding and arbitrary wrapping
+  remain outside it. That phase qualifies at 0.2079–0.2117 of the preceding
+  source time, with binary ratios 0.9969–1.0066. No interior window adds padding.
+- Nl uses the existing immutable RecordReader batches, retains section/blank
+  grouping state, and coalesces each numbered record for synchronous BlockWriter
+  admission. A declined record remains owned until its ordinary write completes;
+  only then does its number advance. Source time is 0.2449–0.2460 of B5. Its
+  maximum read request changes from 64 KiB to the existing RecordReader's 1 MiB;
+  coalescing also adds transient record storage. Peak RSS is not measured.
+- Sort coalesces record plus LF/NUL and admits in-memory sorted output in a
+  synchronous loop. Merge output uses the same command-owned admission state.
+  First unique representatives commit only after output admission/completion.
+  Comparators, sort algorithms, prepared keys, run format, run budgets, merge
+  fan-in and temporary cleanup stay unchanged. All three incremental rows
+  qualify: lexical 0.7816–0.7875, numeric 0.8995–0.9025 and spill 0.9007–0.9008.
+
+Reject a separate base32 bounded-write trial: source time increases 0.74–0.78%
+and the binary control 0.49–0.83%, with no measured benefit. Its complete source,
+tests and passing-but-negative panel remain archived. An isolated diagnostic
+using the registered source measures base32 encoding at 165 ms on the first
+call and 23 ms on each of two subsequent calls in one process. This motivated
+the compact kernel; it does not establish a particular runtime cause or replace
+fresh-process timing. Diagnostic code is removed from product tests. RFC vectors,
+frozen 0..255 byte expectations, group/read boundaries, arbitrary wrap columns,
+late read failures, failed output prefixes and stateful numbering/sort tests
+remain private correctness witnesses, not generated performance inputs.
+
+Review catches eager nl blank-prefix allocation on empty input; the retained
+version allocates it only when needed, with a large-width empty-input regression.
+That correction's incremental panel fails candidate/reference drift at
+13.84%/14.57%, so it does not establish a qualified incremental speed effect.
+The corrected final candidate instead receives its own complete cumulative
+comparison against the actual B5 baseline; all eight required rows pass. Source
+encoding uses 0.1225–0.1236 of B5 time for base32 and 0.2096–0.2106 for base64;
+nl uses 0.2458–0.2468; sort lexical uses 0.7848–0.7897 and numeric/spill
+0.9008–0.9094. Base32's small binary row is 0.9999/1.0280: retain and record
+the second window's 2.80% cost separately, rather than calling it a gain or
+discarding it as noise. The other binary control is 0.9607–0.9706.
+
+The first combined native panel is invalidated by an agent edit to
+`tests/benchmark/protection.json` during timing. Its identity failure and
+unstable rows remain preserved and supply no qualified native claim. The final
+corrected source and policy remain unchanged throughout their fresh panels.
+Final native evidence has intact identities but qualifies only four of eight
+rows: nl at 2.674–2.675 times native time and sort at 8.90–9.80. Base32 source
+observes 4.91–5.20 but candidate drift is 10.61%; base64 observes 4.51–5.13 but
+reference drift is 15.19% and first-window reference MAD is 9.00%. Both small
+binary native controls also fail stability. These observations approach the
+practical target but do not establish a qualified native-ratio result.
+
+Final validation passes strict checking/building, all 1,753 release-Wasm tests
+and 2,260 functional checks (21 platform skips, no failures). The finite reviewed
+profile passes 652 claims; the architecture inventory validates 80 commands and
+29 strategies. Generated interfaces remain unchanged. Final source and all 80
+artifacts are sealed as `retained`, with exactly base32/base64/nl/sort changed
+from B5; the other 76, including sed/csplit/rg and all codec commands, are
+identical. Full raw evidence remains at the path above, and a compact bundle
+is retained in the thread's `performance-other-20261101` directory. No remote
+CI, publication, full all-command timing, immutable-oracle parity or resource
+acceptance is implied. Sort's remaining qualified gap is the next priority;
+its numeric key reparsing and asynchronous temporary-run reads need separate
+experiments before any further algorithm or resource claim.
+
+### Cache-local loops and encoding-table pilots (2026-10-31)
+
+These local trials start from the integrated `7c9d1d2`, with complete B4 source
+and all 80 Wasm artifacts saved at
+`/private/tmp/cmd-performance-sync-loops-20261031`. The schema-3 inventory,
+genuine sources, independent contracts and two-window gates remain unchanged.
+rg and shared bytere/stream implementations are outside this batch.
+
+Retain two command-local improvements as qualified local candidates:
+
+- Csplit scans newlines and encodes each index page synchronously, returning
+  before the first boundary that needs another page. A checked eight-byte slot
+  admits the standard library's little-endian UInt64 store. Input still reaches
+  the data spool before its index; signed offsets, incomplete final records,
+  failures and cleanup retain their previous contracts. GNU coreutils 9.11's
+  `record_line_starts` similarly locates newlines within an owned buffer; its
+  in-memory line-index architecture is not transplanted. The final source row
+  uses 0.2962–0.3103 of B4 time, a 69–70% reduction.
+- Sed admits complete records from its immutable input cache synchronously and
+  directly selects commands without addresses. Empty append queues need no
+  async call. Owned, coalesced output records use the existing BlockWriter
+  synchronous admission; rejected writes retain bytes and newline state until
+  the ordinary async path completes. The existing interpreter handles address
+  lookahead, hold spaces, branching and multiline commands. The two final rows
+  use 0.6381–0.6426 and 0.5591–0.5689 of B4 time: about 36% less for identifier
+  substitution and 43–44% less for misses. No workload-specific patterns,
+  alternate interpreter or public API are introduced.
+
+Keep the earlier failed stages: csplit scan-only observed large gains but
+candidate drift was 10.1826%; sed cache-only missed the identifier stability
+gate, including 12.2630% reference drift. The later variants change actual
+encoding/output mechanisms rather than retrying unchanged failed windows.
+
+The compression trials remain outside retained product code. GNU gzip 1.14's
+`longest_match` motivates endpoint rejection and grouped comparison, but that
+variant costs 2.09–2.61% on compression despite all nine rows qualifying, so it
+is rejected. This is a measured cost, not a benefit or an accepted tradeoff.
+[zlib 1.3.1](https://github.com/madler/zlib/blob/v1.3.1/trees.c) instead motivates
+direct length/distance symbol maps. A pure MoonBit 256-byte length table and
+512-byte split distance table preserve every legal symbol, exhaustively checked
+for all 256 lengths and 32,768 distances. Compression uses 0.7672–0.7708 of B4
+time, but only eight of nine rows qualify: gunzip stored's first-window
+candidate MAD/median is 5.4047%. Archive this promising experiment and restore
+the delivered codec. The earlier buffered decoder remains excluded as well.
+A sandbox setup attempt failed before any timing samples; its empty reports
+remain separate from the subsequent host-permitted run.
+
+The separate native panel qualifies sed at 5.34–5.56 times native time for hits
+and 4.10 for misses; the experimental gzip encoder is 4.18–4.20 times native.
+Csplit observes 1.80–1.86 but fails native-reference dispersion at 5.1783% in
+the first window. These are current scoped comparisons, not general throughput
+or immutable Linux parity. The native sed executable hash matches the previous
+round, but its present 35–36 ms differs from that round's unstable 65–71 ms;
+do not infer a Wasm regression or attribute the cross-run change to an unmeasured
+host cause. This round adds no remote CI, RSS or publication acceptance.
+
+Final local validation passes strict Wasm checking/building and all 1,743
+release-Wasm tests. Functional validation records 2,260 passes, 21 platform
+skips and no failures; the finite reviewed profile passes all 652 claims without
+establishing general compatibility. The architecture inventory validates 80
+commands and 26 strategies. Generated interfaces remain unchanged. All 80
+final Wasm hashes are checked against frozen sources: sed matches the qualified
+sync-output phase, csplit matches the qualified word-encoding phase, and the
+other 78 match integrated B4. The full all-command protection run is not repeated;
+selected timing covers every changed command artifact. A compact local evidence
+bundle is retained in the current thread's `performance-sync-loops` directory,
+with complete raw windows and recovery archives at the path above.
 
 ### Adopted integration scope (2026-10-31)
 

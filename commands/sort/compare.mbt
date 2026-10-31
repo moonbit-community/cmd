@@ -47,6 +47,9 @@ fn numeric_slice(key : Bytes, exponent : Bool, allow_plus : Bool) -> Bytes? {
 
 ///|
 fn numeric_prefix(key : Bytes, exponent : Bool) -> Double {
+  if !exponent && integral_prefix(key) is Some(value) {
+    return value
+  }
   match numeric_slice(key, exponent, exponent) {
     Some(number) =>
       @string.parse_double(@utf8.decode(number)) catch {
@@ -54,6 +57,33 @@ fn numeric_prefix(key : Bytes, exponent : Bool) -> Double {
       }
     None => 0.0
   }
+}
+
+///|
+// Up to fifteen decimal digits remain exact throughout these Double operations.
+// Fractions and longer integers keep the existing conversion and rounding rules.
+fn integral_prefix(key : Bytes) -> Double? {
+  let mut i = 0
+  while i < key.length() && byte_is_blank(key[i]) {
+    i += 1
+  }
+  let negative = i < key.length() && key[i] == b'-'
+  if negative {
+    i += 1
+  }
+  let start = i
+  let mut value = 0.0
+  while i < key.length() && byte_is_digit(key[i]) {
+    if i - start == 15 {
+      return None
+    }
+    value = value * 10.0 + (key[i].to_int() - 48).to_double()
+    i += 1
+  }
+  if i < key.length() && key[i] == b'.' {
+    return None
+  }
+  Some(if negative { -value } else { value })
 }
 
 ///|
@@ -381,4 +411,36 @@ fn make_entry(
     })
   }
   { record, keys, index, }
+}
+
+///|
+// Select ordinary byte ordering once per invocation. Numeric/key policies stay
+// in the general comparator; stable sequence order still resolves equal bytes.
+fn entry_comparator(
+  specs : Array[KeySpec],
+  global : Modifiers,
+  last_resort : Bool,
+) -> (Entry, Entry) -> Int32 {
+  if specs.is_empty() && global.mode == Lexical && !transforms_key(global) {
+    let reverse = global.reverse
+    (left, right) => {
+      let order = left.record.lexical_compare(right.record)
+      if order == 0 {
+        left.index.compare(right.index)
+      } else if reverse {
+        -order
+      } else {
+        order
+      }
+    }
+  } else {
+    (left, right) => {
+      let order = compare_entries(left, right, specs, global, last_resort)
+      if order == 0 {
+        left.index.compare(right.index)
+      } else {
+        order
+      }
+    }
+  }
 }

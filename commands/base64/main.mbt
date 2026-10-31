@@ -4,21 +4,6 @@ priv suberror CliError {
 }
 
 ///|
-fn b64_char(v : Int32) -> Char {
-  if v < 26 {
-    (0x41 + v).unsafe_to_char()
-  } else if v < 52 {
-    (0x61 + v - 26).unsafe_to_char()
-  } else if v < 62 {
-    (0x30 + v - 52).unsafe_to_char()
-  } else if v == 62 {
-    '+'
-  } else {
-    '/'
-  }
-}
-
-///|
 fn sextet(c : Char) -> Int32 raise CliError {
   match c {
     'A'..<='Z' => c.to_int() - 0x41
@@ -36,60 +21,11 @@ async fn encode_stream(
   wrap : Int32,
   writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
-  let mut column = 0
-  let mut emitted = false
-  fn emit(sb : StringBuilder, c : Char) {
-    sb.write_char(c)
-    emitted = true
-    column += 1
-    if wrap > 0 && column == wrap {
-      sb.write_char('\n')
-      column = 0
-    }
-  }
-  let pending : Array[Byte] = []
+  let encoder = Base64Encoder::new(wrap)
   while @stream.read_chunk(reader) is Some(chunk) {
-    let data : Array[Byte] = []
-    data.append(pending)
-    pending.clear()
-    for byte in chunk {
-      data.push(byte)
-    }
-    let out = StringBuilder()
-    let mut index = 0
-    while index + 2 < data.length() {
-      let n = (data[index].to_int() << 16) |
-        (data[index + 1].to_int() << 8) |
-        data[index + 2].to_int()
-      emit(out, b64_char((n >> 18) & 0x3F))
-      emit(out, b64_char((n >> 12) & 0x3F))
-      emit(out, b64_char((n >> 6) & 0x3F))
-      emit(out, b64_char(n & 0x3F))
-      index += 3
-    }
-    for byte in data[index:] {
-      pending.push(byte)
-    }
-    writer.write(out.to_string())
+    writer.write(encoder.encode(chunk[:]))
   }
-  if !pending.is_empty() {
-    let out = StringBuilder()
-    let b0 = pending[0].to_int()
-    let b1 = if pending.length() > 1 { pending[1].to_int() } else { 0 }
-    let n = (b0 << 16) | (b1 << 8)
-    emit(out, b64_char((n >> 18) & 0x3F))
-    emit(out, b64_char((n >> 12) & 0x3F))
-    if pending.length() > 1 {
-      emit(out, b64_char((n >> 6) & 0x3F))
-    } else {
-      emit(out, '=')
-    }
-    emit(out, '=')
-    writer.write(out.to_string())
-  }
-  if wrap > 0 && emitted && column != 0 {
-    writer.write("\n")
-  }
+  writer.write(encoder.finish())
 }
 
 ///|

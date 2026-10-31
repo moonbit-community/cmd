@@ -6,8 +6,34 @@
   },
   "scope": "Complete registered real sources only; source and prepared-payload limits exclude immutable download containers, which are never measured input. No repetition, padding, trimming or generated-size input.",
   "blind_holdout": false,
-  "unique_source_bytes": "22152148",
+  "unique_source_bytes": "31450998",
   "files": [
+    {
+      "path": "python-3.14.0/Lib/json/encoder.py",
+      "url": "https://raw.githubusercontent.com/python/cpython/v3.14.0/Lib/json/encoder.py",
+      "sha256": "5ab0fbdd8b4927db9b6a0d1cbc16eecfadc89da8b305481586618415498d3e58",
+      "bytes": "16939",
+      "provenance": "CPython3.14.0 release tag; complete Lib/json/encoder.py, paired with the registered 3.13.0 release file",
+      "family": "python-standard-library",
+      "license_record": "PSF License Version2 with retained file notices; https://github.com/python/cpython/blob/v3.14.0/LICENSE",
+      "cache_paths": ["encoder-3.14.0.py", "python-3.14.0/Lib/json/encoder.py"],
+      "transformation": "none; complete original file"
+    },
+    {
+      "path": "sqlite3-3.50.3.c",
+      "url": "https://www.sqlite.org/2025/sqlite-amalgamation-3500300.zip",
+      "sha256": "4946267f79081e3abbca035ec48a6ad95edab6a59c3c300224226e2689b852fe",
+      "bytes": "9281911",
+      "provenance": "SQLite3.50.3 official release; exact complete sqlite3.c member, paired with the registered 3.50.4 release file",
+      "family": "database-engine-source",
+      "license_record": "SQLite deliverable source is public domain; https://www.sqlite.org/copyright.html",
+      "cache_paths": ["sqlite3-3.50.3.c"],
+      "transformation": "exact original archive member",
+      "archive_name": "sqlite-amalgamation-3500300.zip",
+      "archive_format": "zip",
+      "archive_sha256": "9ad6d16cbc1df7cd55c8b55127c82a9bca5e9f287818de6dc87e04e73599d754",
+      "archive_member": "sqlite-amalgamation-3500300/sqlite3.c"
+    },
     {
       "path": "rfc9110.txt",
       "url": "https://www.rfc-editor.org/rfc/rfc9110.txt",
