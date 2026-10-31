@@ -80,6 +80,12 @@ declare the existing working-directory mapping for the host fixture versus its
 `/work` container mount; the exact relative suffix and complete output remain
 asserted.
 
+Differential results carry a local-contract receipt only when the source is an
+independent contract and all local exact/runtime/file assertions complete. The
+receipt binds the source digest and actual local observation dimensions. The
+proof verifier requires it alongside the complete upstream comparison; a
+shared wrong output or a differential label alone cannot prove a local facet.
+
 Successful fixtures are removed. Failed captures and cleanup diagnostics are
 retained; direct-child cancellation does not promise arbitrary grandchild
 cleanup. Tests and fixtures remain pure MoonBit. Host programs are restricted

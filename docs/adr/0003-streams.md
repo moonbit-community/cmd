@@ -38,6 +38,14 @@ after combining their independent assertions; fail stale quality descriptors,
 duplicate stimuli, empty diagnostic assertions and unwired dynamic observers.
 The Linux differential suite supplements this local gate.
 
+Differential execution preserves the independent local assertion stage. Its
+typed receipt binds the original case digest, completion verdict and full local
+observation dimensions after exact, file and runtime checks actually finish.
+Finite proof joining requires both that receipt and a complete differential
+pass. An oracle-only case, missing receipt or generic result label cannot
+substitute for the reviewed local contract; historical missing receipts remain
+unqualified.
+
 The declared scope is 43 commands: 40 have real-source timing, while ln, make
 and sh retain correctness-only witnesses. Seven former synthetic regimes keep
 explicit correctness bindings without a real-source timing replacement. Lift

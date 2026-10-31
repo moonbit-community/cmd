@@ -55,6 +55,98 @@ fn proof_test_manifest() -> Json {
 }
 
 ///|
+test "differential proofs require a definition-bound complete local receipt" {
+  let fixture = proof_test_case()
+  guard ToJson::to_json(fixture) is Object(fields) else {
+    fail("case object required")
+  }
+  fields["expected_files"] = [
+    { "path": "out", "mode": 420, "same_identity_as": "reference" },
+  ]
+  let fixture : @testkit.Case = @json.from_json(Json(fields))
+  let dimensions = ["status", "stdout", "stderr", "type", "mode", "identity"]
+  let receipt : @testkit.LocalContractReceipt = {
+    definition_sha256: @testkit.json_digest(ToJson::to_json(fixture)),
+    passed: true,
+    observations: dimensions,
+  }
+  let report : @testkit.CaseReport = {
+    id: "sample",
+    command: "cat",
+    result: "pass",
+    verification: "differential",
+    stage: "complete",
+    detail: "",
+    platform: "linux",
+    backend: "wasm",
+    source_version: "independent contract and pinned oracle",
+    duration_ms: 1L,
+    observations: dimensions,
+    missing_observations: [],
+    local_contract: Some(receipt),
+    evidence: None,
+  }
+  let index = proof_test_index()
+  let check = fn(
+    reports : Array[@testkit.CaseReport],
+    source : @testkit.Case,
+  ) -> Bool {
+    join_proof_results(
+      proof_test_manifest(),
+      index,
+      [source],
+      [source],
+      reports.map(ToJson::to_json),
+      "linux",
+    )
+    is { "reviewed_profile_passed": True, .. }
+  }
+  assert_true(check([report], fixture))
+  for
+    invalid in [
+      { ..report, local_contract: None, },
+      { ..report, local_contract: Some({ ..receipt, passed: false, }), },
+      {
+        ..report,
+        local_contract: Some({
+          ..receipt,
+          definition_sha256: "different-source",
+        }),
+      },
+      {
+        ..report,
+        local_contract: Some({
+          ..receipt,
+          observations: ["status", "stdout", "stderr", "type", "identity"],
+        }),
+      },
+      {
+        ..report,
+        local_contract: Some({
+          ..receipt,
+          observations: ["status", "stdout", "stderr", "type", "mode"],
+        }),
+      },
+      { ..report, result: "fail", },
+      { ..report, result: "infra", },
+      { ..report, stage: "timeout", },
+      { ..report, missing_observations: ["mode"], },
+    ] {
+    assert_false(check([invalid], fixture))
+  }
+  assert_false(check([report, report], fixture))
+  let only_oracle = { ..fixture, comparison: Some("differential"), }
+  let forged = {
+    ..report,
+    local_contract: Some({
+      ..receipt,
+      definition_sha256: @testkit.json_digest(ToJson::to_json(only_oracle)),
+    }),
+  }
+  assert_false(check([forged], only_oracle))
+}
+
+///|
 test "proof definitions reject tags alone missing claims aliases and cross-command cases" {
   let index = proof_test_index()
   let fixture = proof_test_case()
@@ -157,6 +249,7 @@ test "proof joins actual producer reports and rejects missing skipped duplicated
     duration_ms: 1L,
     observations: ["status", "stdout", "stderr"],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
   let observed = ToJson::to_json(report)
@@ -262,6 +355,7 @@ test "file-effect obligations require actual observation dimensions" {
     duration_ms: 1L,
     observations: ["status", "stdout", "stderr"],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
   assert_true(

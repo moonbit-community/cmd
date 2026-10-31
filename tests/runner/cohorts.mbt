@@ -108,6 +108,7 @@ async fn execute_cohort(
     duration_ms: 0L,
     observations: [],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
   if !fixture.platform_applies() {

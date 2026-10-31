@@ -180,6 +180,21 @@ async fn main {
       require_full == "true" &&
       proof_field(report, "full_catalog_qualified") != Json(true)
     ) {
+    let failed = proof_array(proof_field(report, "rows")).filter(row => {
+      proof_field(row, "passed") == Json(false) &&
+      proof_field(row, "applicable_cases") != Json(0)
+    })
+    println(
+      "Finite proof verification failed: \{failed.length()} applicable claims rejected",
+    )
+    for row in failed[:failed.length().min(12)] {
+      println(
+        "  " +
+        proof_text(proof_field(row, "claim_id")) +
+        ": " +
+        proof_field(row, "cases").stringify(),
+      )
+    }
     @sys.exit(1)
   }
 }

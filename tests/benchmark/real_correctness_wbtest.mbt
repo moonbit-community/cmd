@@ -29,6 +29,7 @@ fn real_test_local_result(fixture : @testkit.Case) -> Json {
     duration_ms: 1L,
     observations: ["status", "stdout", "stderr"],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
   ToJson::to_json(report)

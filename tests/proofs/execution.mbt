@@ -90,7 +90,7 @@ fn join_proof_results(
       let matches = results.filter(row => {
         proof_field(row, "id") == Json(canonical) &&
         proof_field(row, "command") == Json(command) &&
-        [Json("contract"), Json("boundary")].contains(
+        [Json("contract"), Json("boundary"), Json("differential")].contains(
           proof_field(row, "verification"),
         )
       })
@@ -105,6 +105,27 @@ fn join_proof_results(
               Json(name),
             )
           }) &&
+          (
+            proof_field(result, "verification") != Json("differential") ||
+            (
+              !metadata &&
+              cases.filter(item => {
+                item.id == canonical && item.command == command
+              })
+              is [fixture] &&
+              fixture.comparison == Some("contract") &&
+              proof_field(result, "stage") == Json("complete") &&
+              proof_field(result, "local_contract")
+              is {
+                "passed": True,
+                "definition_sha256": String(hash),
+                "observations": Array(local_observations),
+                ..
+              } &&
+              hash == @testkit.json_digest(ToJson::to_json(fixture)) &&
+              observations.all(name => local_observations.contains(Json(name)))
+            )
+          ) &&
           (
             !metadata ||
             (

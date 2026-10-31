@@ -27,6 +27,15 @@ backends/platforms and changed definitions cannot qualify. Explicit
 platform exclusions remain unqualified on that platform. These snapshots bind
 assertions; they do not restore the retired source-sealing/push workflow.
 
+Linux results retain their differential verification kind. A source contract
+can also qualify its independent local facet only with a typed local receipt:
+the runner emits it after the exact, file and runtime checkers finish, with the
+original definition digest and complete local observation dimensions. The
+verifier additionally requires a successful complete differential result and
+the same selected source definition. Missing, failed or wrong-definition
+receipts, incomplete dimensions and oracle-only source cases cannot qualify.
+Old reports without that receipt remain unqualified; they are never backfilled.
+
 Use the same controller as CI; choose a fresh absolute report root locally:
 
 ```sh

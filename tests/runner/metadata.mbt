@@ -98,6 +98,7 @@ async fn metadata_report(
     duration_ms: 0L,
     observations: [],
     missing_observations: [],
+    local_contract: None,
     evidence: Some(evidence),
   }
   try {

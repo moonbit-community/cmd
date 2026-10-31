@@ -13,6 +13,16 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 Development test and benchmark replacement; no publication.
 
+- The follow-up Linux CI run passes every functional/upstream comparison but
+  rejects 355 finite proof claims because differential results did not carry
+  their independently executed local assertion receipts. Keep the failed run;
+  add typed receipts only after exact/runtime/file checks actually complete,
+  bound to the original case digest and full local observation dimensions.
+  Proofs require that receipt in addition to a complete differential pass;
+  an oracle-equality label alone remains insufficient. New producer and consumer
+  counterexamples bring Native tool validation to 192 passing tests. Failed
+  claim IDs now appear in concise CI diagnostics.
+
 - The first final-cleanup CI run exposed four Windows path-expectation failures
   and two Linux env directory-output differential failures. Complete captures
   show host separator spelling and the oracle's `/work` mount identity. Add

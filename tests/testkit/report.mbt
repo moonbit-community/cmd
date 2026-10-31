@@ -1,4 +1,11 @@
 ///|
+pub(all) struct LocalContractReceipt {
+  definition_sha256 : String
+  passed : Bool
+  observations : Array[String]
+} derive(ToJson, Debug)
+
+///|
 pub(all) struct CaseReport {
   id : String
   command : String
@@ -12,6 +19,7 @@ pub(all) struct CaseReport {
   duration_ms : Int64
   observations : Array[String]
   missing_observations : Array[String]
+  local_contract : LocalContractReceipt?
   evidence : String?
 } derive(ToJson, Debug)
 
@@ -562,6 +570,12 @@ pub async fn check_expected_files(
   }
   errors
 }
+
+///|
+pub extend LocalContractReceipt with ToJson::{to_json}
+
+///|
+pub extend LocalContractReceipt with @debug.Debug::{to_repr}
 
 ///|
 pub extend CaseReport with ToJson::{to_json}

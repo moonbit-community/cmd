@@ -6044,9 +6044,9 @@
   "execution": {
     "status": "actual-profile-for-matching-coverage-definitions",
     "source_freshness": "Source and build freshness were checked by the referenced verifier at verified_at_ms; this gap reporter does not revalidate current source identity.",
-    "verified_at_ms": "1793411497659",
+    "verified_at_ms": "1793412756757",
     "platform": "macos",
-    "executed_definitions_sha256": "2441e86a7e3e2311b0eaf3722a3cd0d8c846c83945837d18cdd50a36047139af",
+    "executed_definitions_sha256": "e4444af365c294d5307dd286cb8f2029c56e5781e36b3339c27dc4a3c2475565",
     "executed_scenario_proofs_sha256": "5037d741de5baf91ecaf6f7c0b6f8cc5724402a560d30cc38cfd46dd5d21f147"
   },
   "counting_scope": "Counts are independently reviewed labels, not missing implementations or required test counts. Activation reviews already have strengthened assertions and must not be counted as missing fixtures. One new fixture may cover several labels. Partial reminders add no new unresolved labels.",

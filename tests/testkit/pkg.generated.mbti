@@ -251,6 +251,7 @@ pub(all) struct CaseReport {
   duration_ms : Int64
   observations : Array[String]
   missing_observations : Array[String]
+  local_contract : LocalContractReceipt?
   evidence : String?
 } derive(ToJson, @debug.Debug)
 pub fn CaseReport::semantic_pass(Self) -> Bool
@@ -292,6 +293,14 @@ pub(all) struct FixtureFile {
 pub fn FixtureFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn FixtureFile::to_json(Self) -> Json
 pub fn FixtureFile::to_repr(Self) -> @debug.Repr
+
+pub(all) struct LocalContractReceipt {
+  definition_sha256 : String
+  passed : Bool
+  observations : Array[String]
+} derive(ToJson, @debug.Debug)
+pub fn LocalContractReceipt::to_json(Self) -> Json
+pub fn LocalContractReceipt::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Normalization {
   field : String

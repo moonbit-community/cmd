@@ -446,6 +446,7 @@ test "availability boundary and skip cannot become semantic passes" {
     duration_ms: 0L,
     observations: [],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
   assert_false(report.semantic_pass())

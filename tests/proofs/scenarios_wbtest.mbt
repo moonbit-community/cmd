@@ -99,6 +99,7 @@ test "multi-command scene binding requires its own complete actual assertions" {
     duration_ms: 1L,
     observations: ["status", "stdout", "stderr"],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
   let receipts : Json = {

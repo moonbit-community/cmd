@@ -34,6 +34,7 @@ fn suite_report(
     duration_ms: @async.now() - start,
     observations: ["status", "stdout", "stderr", "file-content"],
     missing_observations: [],
+    local_contract: None,
     evidence: None,
   }
 }
@@ -588,7 +589,7 @@ async fn run_driver() -> Unit {
                   })
                   return
                 }
-                let failures = run_case(
+                let outcome = run_case(
                   fixture,
                   bin_root,
                   oracle_image,
@@ -598,8 +599,13 @@ async fn run_driver() -> Unit {
                   report_dir,
                   docker_user,
                 ) catch {
-                  error => ["infrastructure: " + error.to_string()]
+                  error =>
+                    {
+                      failures: ["infrastructure: " + error.to_string()],
+                      local_contract: None,
+                    }
                 }
+                let failures = outcome.failures
                 let report = suite_report(fixture.id, backend, begin, failures)
                 let infrastructure = failures.any(message => {
                   message.contains("failed to start") ||
@@ -641,7 +647,7 @@ async fn run_driver() -> Unit {
                   },
                   stage,
                   observations: if failures.is_empty() {
-                    [
+                    let observed = [
                       "status",
                       "stdout",
                       "stderr",
@@ -649,6 +655,14 @@ async fn run_driver() -> Unit {
                       "type",
                       ..fixture.observe.unwrap_or([]),
                     ]
+                    if outcome.local_contract is Some(receipt) {
+                      for dimension in receipt.observations {
+                        if !observed.contains(dimension) {
+                          observed.push(dimension)
+                        }
+                      }
+                    }
+                    observed
                   } else {
                     []
                   },
@@ -657,6 +671,7 @@ async fn run_driver() -> Unit {
                   } else {
                     []
                   },
+                  local_contract: outcome.local_contract,
                   evidence: if report.result == "pass" {
                     None
                   } else {
