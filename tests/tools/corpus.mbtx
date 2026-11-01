@@ -189,7 +189,7 @@ async fn main {
   let args = @env.args()[1:]
   guard args.length() >= 1 && @path.Path(args[0]).is_absolute() else {
     fail(
-      "Usage: prepare_real_corpora.mbtx FRESH_ABSOLUTE_ROOT [--from EXISTING_ROOT]... [--download] [--catalog FILE]",
+      "Usage: corpus.mbtx FRESH_ABSOLUTE_ROOT [--from EXISTING_ROOT]... [--download] [--catalog FILE]",
     )
   }
   let destination = args[0]
