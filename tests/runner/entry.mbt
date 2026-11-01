@@ -306,18 +306,7 @@ async fn run_driver() -> Unit {
     if selected.is_empty() {
       fail("empty selection for requested suites")
     }
-    for fixture in selected {
-      if fixture.oracle == Some(true) && suites.contains("oracle") {
-        guard registry.entries.any(entry => {
-          (entry.case_id == fixture.id || entry.aliases.contains(fixture.id)) &&
-          entry.oracle_profile != ""
-        }) else {
-          fail(
-            fixture.id + ": differential requires a registered oracle profile",
-          )
-        }
-      }
-    }
+    require_oracle_bindings(selected, registry)
     let required_oracle_profiles = registry.entries
       .filter(entry => {
         entry.oracle_profile != "" &&
@@ -725,5 +714,24 @@ async fn run_driver() -> Unit {
   )
   if reports.any(item => item.result == "fail" || item.result == "infra") {
     @sys.exit(1)
+  }
+}
+
+///|
+// A declared differential route must be complete even when this host runs
+// only its independent local assertions. Oracle execution remains separate.
+fn require_oracle_bindings(
+  selected : Array[@testkit.Case],
+  registry : @registry.Registry,
+) -> Unit raise Failure {
+  for fixture in selected {
+    if fixture.oracle == Some(true) {
+      guard registry.entries.any(entry => {
+        (entry.case_id == fixture.id || entry.aliases.contains(fixture.id)) &&
+        entry.oracle_profile != ""
+      }) else {
+        fail(fixture.id + ": differential requires a registered oracle profile")
+      }
+    }
   }
 }

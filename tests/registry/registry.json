@@ -26235,7 +26235,7 @@
       "case_id": "repair-find-maxdepth-directory",
       "aliases": [],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:repair-find-prune-directory",
@@ -26246,7 +26246,7 @@
       "case_id": "repair-find-prune-directory",
       "aliases": [],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:repair-xargs-late-argv-boundary",
@@ -26268,7 +26268,7 @@
       "case_id": "repair-tail-final-unterminated-record",
       "aliases": [],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     }
   ],
   "release_commands": [

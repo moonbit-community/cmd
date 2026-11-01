@@ -38,6 +38,12 @@ Development runtime and ownership repair; no publication:
   retention and base32's whole-input encoding limitation. The unchanged-artifact
   measurements, control cases and next-step conditions are recorded in ADR-0003;
   they are not general timing results or published-version acceptance.
+- Linux CI exposed missing pinned-oracle bindings on the three new portable
+  find/tail cases before execution. Bind those cases to the existing immutable
+  profile and validate declared routes on every host, with a negative regression;
+  retain the failed CI run without relaxing assertions or comparison scope.
+  The follow-up Native test-tool suite passes 198 tests; command artifacts are
+  unchanged from the measured repair candidate.
 
 Development audit repair; no publication:
 
