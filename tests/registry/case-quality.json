@@ -642,7 +642,7 @@
     {
       "case_id": "release-metadata-jq-help",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "cbe146873a9ce1a91aad349e0c456638b5762df05ee9a5f198d4ecc34363df40",
+      "definition_sha256": "cbe4c968fa2cfbc39024985dc742da2c521a8672737d6e6a7cf10b0ebc6db0a2",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -652,7 +652,7 @@
     {
       "case_id": "release-metadata-jq-version",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "d48d222b6066cb58e3faaaa1246aac64d1f139d065dcc2e2b727fdaa9dcd217e",
+      "definition_sha256": "0f56d0dc62ff7ed8ca8e86c8b026cf2ab2f87510b8890c3b4c5bc6175af949c3",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2321,7 +2321,7 @@
     {
       "case_id": "release-metadata-nl-help",
       "source": "tests/cases/nl.json",
-      "definition_sha256": "abc4b44656d18ef5804c6b343e738546f8fa188367e6c6be2e15e9eb14c76cfc",
+      "definition_sha256": "8af4751cf9a2e1e6b47f3c75612d9832c44e7937ff38b35becd3db79d458d6e9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2331,7 +2331,7 @@
     {
       "case_id": "release-metadata-nl-version",
       "source": "tests/cases/nl.json",
-      "definition_sha256": "0a0928d48615c781dfe57f22b47e0e5f814e56f8c0f3afc9d7802b0e0da82c01",
+      "definition_sha256": "cbf3c75d138eeca0ca24f09db8df2067f18bcdc66d82a765fb1744cf681534a6",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4650,7 +4650,7 @@
     {
       "case_id": "release-metadata-sh-help",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "d90d74527a23e2723809d4a1385fab2da6fe8ebaa78b9b15c1db10e57da270cd",
+      "definition_sha256": "f40b5e18dcf6e054191413eed381fce786b99f44e1eecf532606fcb9b4037d1d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4660,7 +4660,7 @@
     {
       "case_id": "release-metadata-sh-version",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "5f8f1d67690bb11ee25f1ef8f69258405a5296aba7cb12ec318a076c98619a43",
+      "definition_sha256": "0a1957d65c47ee92b7645ddc17c4555099ac6afb166f14e6b03f6bf89270b8a8",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -5587,7 +5587,7 @@
     {
       "case_id": "release-metadata-cmp-help",
       "source": "tests/cases/cmp.json",
-      "definition_sha256": "010fda275583824c5ac074051c1bd1e32ea5f8a4934e4de5ecd57710a5f58288",
+      "definition_sha256": "edefcc5ac76124c73e12b5739a620d9981977995bf975579df2f64e178b12d64",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -5597,7 +5597,7 @@
     {
       "case_id": "release-metadata-cmp-version",
       "source": "tests/cases/cmp.json",
-      "definition_sha256": "e7825db40ae929b9fadcf5318100b1ea04a9c35f7e98beafd1925e8da53694e2",
+      "definition_sha256": "4a8f184ffe4bd9630bd682c55d1b5a0a8eb41409dafea9219d824cf0e8ba37b3",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7088,7 +7088,7 @@
     {
       "case_id": "release-metadata-sed-help",
       "source": "tests/cases/sed.json",
-      "definition_sha256": "e76d84ae51cfa8c0d46b74199ceecc971eab301c431dbae1bea531356b3d3880",
+      "definition_sha256": "6032e17cb2336f6cc5e25d24b7210e2e71f560a78b493afe62c4c9103b54032d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7098,7 +7098,7 @@
     {
       "case_id": "release-metadata-sed-version",
       "source": "tests/cases/sed.json",
-      "definition_sha256": "d1aec6a8922cfbd21ab949eca83f853ac258dfcb5cc1957b2616aba482066e89",
+      "definition_sha256": "db24bfbba3e2c3b5511117582bf5c61c7ff6b9c07cf3c04bfb1129b87f83efc4",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -8093,7 +8093,7 @@
     {
       "case_id": "p0-seq-version",
       "source": "tests/cases/seq.json",
-      "definition_sha256": "bdced0b221c36879e999f0a6b5b3d4c175fccdf07a0b962d3a2e2a2b49b1b6c2",
+      "definition_sha256": "38f890affabf4466d12ed0073d70a9d1e218e06a1f67eea9faf1ca622e4320bd",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -8216,7 +8216,7 @@
     {
       "case_id": "release-metadata-seq-help",
       "source": "tests/cases/seq.json",
-      "definition_sha256": "c9e28de6178a2aacca35646754c12a692ba8e2c4f37542991658a7849bbb3d13",
+      "definition_sha256": "92bea3584c949694e1560ff7d562e4b7eddadc97549db3d1a82f9fb6e7f9a93d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10026,7 +10026,7 @@
     {
       "case_id": "release-metadata-comm-help",
       "source": "tests/cases/comm.json",
-      "definition_sha256": "d03360f72a2b1eb81040de526a07d1ba0c0e01edadc69b1cf71c76f85a44fa24",
+      "definition_sha256": "ace1314602a340cfa37eb59254f074b0aa12167dfc29b339aa5640c333603a77",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10036,7 +10036,7 @@
     {
       "case_id": "release-metadata-comm-version",
       "source": "tests/cases/comm.json",
-      "definition_sha256": "0537d5c7ef9aa495ae1391d40ded88215461ee9593153f0011dc388b96c3f492",
+      "definition_sha256": "4d0cff05d97a3a32523afe6c1de7a4b1b00ba5edb97639265736b336f0449312",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10906,7 +10906,7 @@
     {
       "case_id": "release-metadata-diff-help",
       "source": "tests/cases/diff.json",
-      "definition_sha256": "f376187860f1413c4e0c9d2ef0f21b4319e1440ae32f465081aae74a1427b8f3",
+      "definition_sha256": "da437011329ddedcb6d4daf1a8a8ff6177c9b07c2e6ef0c06cd7cab9f748bbb8",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10916,7 +10916,7 @@
     {
       "case_id": "release-metadata-diff-version",
       "source": "tests/cases/diff.json",
-      "definition_sha256": "4567062731dc5a91a26e481a48400f7e081aff6efb8c300f12b2b67183c5be57",
+      "definition_sha256": "fcfc3c6a30d6dabce3ba17cf6dc5c014efb8e80053d1fd7ef1f45406001895eb",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -12317,7 +12317,7 @@
     {
       "case_id": "release-metadata-gzip-help",
       "source": "tests/cases/gzip.json",
-      "definition_sha256": "30f372341091ab5e7c4479e7eaa71e13c070a5974ff293e3d3a095aea410d448",
+      "definition_sha256": "5ce59917a6d15cf34248676b5e8e3364daf93f7c5d58ff1ca54a04d416d855c1",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -12327,7 +12327,7 @@
     {
       "case_id": "release-metadata-gzip-version",
       "source": "tests/cases/gzip.json",
-      "definition_sha256": "a4620beca600b7dabd1bb56dbf3429edc90f061ca46923e19afe0dbb65a81866",
+      "definition_sha256": "11625da9651426dadb0f8729fc4604e32aebf8f43bae0533c6ff36162049f7f6",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -12589,7 +12589,7 @@
     {
       "case_id": "release-metadata-join-help",
       "source": "tests/cases/join.json",
-      "definition_sha256": "7e4259b359dd2f361a4fed833f0e52358294f3a07472ceabda3d1b3b68abc0db",
+      "definition_sha256": "fe92366b0149d60cf8391db656b7e737ac38a3285dc2521b287f637dbccb383a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -12599,7 +12599,7 @@
     {
       "case_id": "release-metadata-join-version",
       "source": "tests/cases/join.json",
-      "definition_sha256": "fe7539d25f04dfd690d67869697e43eaa0af976a0535b54264576e40ff79c8c0",
+      "definition_sha256": "d33f19d1599e8e1134a1e4b4b9b7b152d37cd537b55e132616ce07928a0c43fb",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15800,7 +15800,7 @@
     {
       "case_id": "release-metadata-zcat-help",
       "source": "tests/cases/zcat.json",
-      "definition_sha256": "152a7cfbf0e0a77e3a6532c539936c935cd9e495d51f607ecd62a51a54a8e96a",
+      "definition_sha256": "5fc305d4df04213807f6249376e9bd8028a6fe0f50a9bef5b3e2dda7aaf3f764",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15810,7 +15810,7 @@
     {
       "case_id": "release-metadata-zcat-version",
       "source": "tests/cases/zcat.json",
-      "definition_sha256": "e1a4ca967d02f6884e9021626d5e0cc45f45876e442db0002e2a606750e172c0",
+      "definition_sha256": "273bf2f4f495427fca9b76b89e2be97ae302a8a0f350d5e3fc27b133bf1ef716",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16503,7 +16503,7 @@
     {
       "case_id": "release-metadata-jqlog-version",
       "source": "tests/cases/jqlog.json",
-      "definition_sha256": "dc1c5eb7659bf550d7b912c7f1a3b144358f8e53043bb0571ef945102b054770",
+      "definition_sha256": "791357efb7e1d26b6a6428bb77d89f1bb8350c2f8649ec5759574ad67e6a2f46",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16554,7 +16554,7 @@
     {
       "case_id": "release-metadata-mkdir-help",
       "source": "tests/cases/mkdir.json",
-      "definition_sha256": "bd13c6deed9dd0bab9a24eb9bbfac2940cafed8f98d7a59461a582d12ad98a2e",
+      "definition_sha256": "94516af78986a712e39b6e9d89e3702e849f06b84fd624da0920c6f1ee2e0373",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16564,7 +16564,7 @@
     {
       "case_id": "release-metadata-mkdir-version",
       "source": "tests/cases/mkdir.json",
-      "definition_sha256": "835682fa0752b33ac94f46aae23a6fd4dd429105f6ed975dae6dbd333472c765",
+      "definition_sha256": "0a337c8cb4b2b9052f3730207e8205ca8687bde21df50ae052efe383c8648938",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -17025,7 +17025,7 @@
     {
       "case_id": "release-metadata-patch-help",
       "source": "tests/cases/patch.json",
-      "definition_sha256": "7698b14f47e1dc07389f43d0942ed01a515c5901eec326dd205f0c96481cbba2",
+      "definition_sha256": "47925759817b681d8ba6c59d426bbf0e2984a47130b39ec16a6f469c56ce30d3",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -17035,7 +17035,7 @@
     {
       "case_id": "release-metadata-patch-version",
       "source": "tests/cases/patch.json",
-      "definition_sha256": "39a507998d9bc60b54edf688f55f6a41d4b8017e12321313e824b14e6d9ff92d",
+      "definition_sha256": "a6c370886167c06ee02ea82c727e0853638b12bea5b676481f0d22b0d97afcd0",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18525,7 +18525,7 @@
     {
       "case_id": "release-metadata-base32-help",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "0f1009e896cc3c18c38b823abb390dee6abc91bf91baa8c7bf8d8c4a87dd574c",
+      "definition_sha256": "6870d0a702fbe473927a91ceadb120745976738e107664d7fa6ece99df912a37",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18535,7 +18535,7 @@
     {
       "case_id": "release-metadata-base32-version",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "af0485ba09ced2724d0b983cf1f752f7461eba6ad82e71429549173e15960679",
+      "definition_sha256": "4c42aaf573ac4bb79ae84cf8b8ab677c9633511af927793eb28b080a366fe9db",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18678,7 +18678,7 @@
     {
       "case_id": "release-metadata-base64-help",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "461176ee0b1605a5b3c17e2c1579257dec93f189bc4878bc95ebb9b013683dfb",
+      "definition_sha256": "77a9fa241c944eabb2ae89efe04459bd7525a2fc4befc5b4652a15307079a3ac",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18688,7 +18688,7 @@
     {
       "case_id": "release-metadata-base64-version",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "2307a31a13e3bf72d35dc13f944fe4236b74ede93a4289897a34737cf57f979d",
+      "definition_sha256": "7f0064c73fd562a192a3b1b5523dbce70b6a4841f3581d82528f65863714abb4",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18941,7 +18941,7 @@
     {
       "case_id": "release-metadata-csplit-help",
       "source": "tests/cases/csplit.json",
-      "definition_sha256": "753741f6a2c2734fc06110596bd926fd65b86d980b90c5926371443e2afda08b",
+      "definition_sha256": "3f21d430c141f335977b3e5ae1c8c362984fba95beee4a351fed5b7e831a940d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18951,7 +18951,7 @@
     {
       "case_id": "release-metadata-csplit-version",
       "source": "tests/cases/csplit.json",
-      "definition_sha256": "ffc3f66e80708eba1fbf890792c6177ecda6c47c8899967bd9266b1c93a57384",
+      "definition_sha256": "edf35718d70b9b3a46d83ec2241cba6c46a6b98ab3624609a52e752a85f05f26",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19643,7 +19643,7 @@
     {
       "case_id": "release-metadata-gunzip-help",
       "source": "tests/cases/gunzip.json",
-      "definition_sha256": "4460639aab36ea6e9b300c6c24ef4fffb10478318aa1122a0dfca3bce100cdb3",
+      "definition_sha256": "d58a6c23d86a6bc2bca8f7737f2ceda2ebe26701f68ee49edbc9b3c14de15c84",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19653,7 +19653,7 @@
     {
       "case_id": "release-metadata-gunzip-version",
       "source": "tests/cases/gunzip.json",
-      "definition_sha256": "2b1e41ddbab327af3249b69e975dded7704f69718ab8a74c7fb3123654bf2ce9",
+      "definition_sha256": "4db09f288a1f0bff98f0582892dd4316c6fae21bfb72eca1f47d3389035c0502",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

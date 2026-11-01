@@ -2,7 +2,7 @@
 
 Encode and decode Base32 for MoonX.
 
-Workspace candidate: `cli/base32@0.1.5` (unreleased). Published coordinates
+Version: `cli/base32@0.1.5`. Published coordinates
 remain recorded in the [release inventory](../../tests/release_runner/current/latest.json).
 
 ```sh

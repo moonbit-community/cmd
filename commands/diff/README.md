@@ -3,7 +3,7 @@
 Compare files and directories for MoonX.
 
 ```sh
-moonx cli/diff@0.2.3 [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2
+moonx cli/diff@0.2.4 [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2
 ```
 
 ## Supported scope
@@ -36,8 +36,8 @@ script; small-input reconstruction and minimality remain separately tested.
 ## Examples
 
 ```sh
-moonx cli/diff@0.2.3 -u old.txt new.txt
-moonx cli/diff@0.2.3 -r old-dir new-dir
+moonx cli/diff@0.2.4 -u old.txt new.txt
+moonx cli/diff@0.2.4 -r old-dir new-dir
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

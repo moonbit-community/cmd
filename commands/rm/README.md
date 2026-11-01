@@ -10,7 +10,7 @@ moonx cli/rm@0.2.4 [OPTION]... FILE...
 
 Remove operands without following symbolic links. Explicit confirmation modes read stdin; recursive removal protects filesystem roots by default.
 
-The unreleased 0.2.4 candidate rejects symbolic-link operands ending in a path
+Version 0.2.4 rejects symbolic-link operands ending in a path
 separator before traversal, including with `-f`. Both the link and its target
 remain unchanged. Ordinary directory operands may still end in a separator.
 

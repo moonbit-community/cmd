@@ -2,14 +2,17 @@
 
 Shared runtime packages used by the independently published command modules.
 
-## 0.9.1 candidate changes
+## 0.9.1 changes
 
-The unreleased candidate adds `process.argument_bytes` and `arguments_bytes`
+Version 0.9.1 adds `process.argument_bytes` and `arguments_bytes`
 for incremental UTF-8 argv payload accounting, including each terminating NUL.
 They do not represent an operating-system ARG_MAX or environment budget.
 `copy_path_with_links` reports no change for an already existing empty directory;
 creation or a copied descendant still reports a change. Copy preflight and
 exclusive destination creation remain in the shared implementation.
+It also preserves complete jq grouping/sorting key streams and adopts the
+buffered DEFLATE decode loop described in the
+[performance guide](../docs/performance/README.md).
 
 ## 0.9.0 API changes
 

@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development; no publication.
 
+- Prepare core 0.9.1 and 26 changed command versions for publication; retain
+  the other 53 published coordinates and keep timeout local-only. Registry
+  availability, synchronized metadata and core dependency selection precede
+  source CI, uploads and exact-version acceptance.
+
 - Improve byte encoding, numbering, comparison, sequence output, inflate, JSON
   framing, merge consumers, tail, patch, sort and find while retaining their
   specialized failure and fallback contracts.

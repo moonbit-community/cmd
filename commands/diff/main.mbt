@@ -557,7 +557,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("diff 0.2.3\n")
+    @stdio.stdout.write("diff 0.2.4\n")
     return 0
   }
   guard parsed.operands.length() == 2 else {

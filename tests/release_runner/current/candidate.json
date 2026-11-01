@@ -19,7 +19,7 @@
     {
       "name": "base64",
       "package_name": "cli/base64",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -86,7 +86,7 @@
     {
       "name": "cmp",
       "package_name": "cli/cmp",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -116,7 +116,7 @@
     {
       "name": "comm",
       "package_name": "cli/comm",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -148,7 +148,7 @@
     {
       "name": "csplit",
       "package_name": "cli/csplit",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -216,7 +216,7 @@
     {
       "name": "diff",
       "package_name": "cli/diff",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -372,7 +372,7 @@
     {
       "name": "gunzip",
       "package_name": "cli/gunzip",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -384,7 +384,7 @@
     {
       "name": "gzip",
       "package_name": "cli/gzip",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -424,7 +424,7 @@
     {
       "name": "join",
       "package_name": "cli/join",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -448,7 +448,7 @@
     {
       "name": "jq",
       "package_name": "cli/jq",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "published": false,
       "compare_profile": "jq",
       "supported_options": [
@@ -460,7 +460,7 @@
     {
       "name": "jqlog",
       "package_name": "cli/jqlog",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "jqlog",
       "supported_options": [
@@ -534,7 +534,7 @@
     {
       "name": "mkdir",
       "package_name": "cli/mkdir",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -575,7 +575,7 @@
     {
       "name": "nl",
       "package_name": "cli/nl",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -620,7 +620,7 @@
     {
       "name": "patch",
       "package_name": "cli/patch",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -754,7 +754,7 @@
     {
       "name": "sed",
       "package_name": "cli/sed",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -766,7 +766,7 @@
     {
       "name": "seq",
       "package_name": "cli/seq",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -781,7 +781,7 @@
     {
       "name": "sh",
       "package_name": "cli/sh",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "posix",
       "supported_options": [
@@ -1178,7 +1178,7 @@
     {
       "name": "zcat",
       "package_name": "cli/zcat",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [

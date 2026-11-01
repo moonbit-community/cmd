@@ -3,6 +3,14 @@
 Date: 2026-09-05
 Updated: 2026-11-01
 
+The publication candidate selects core 0.9.1 and 26 changed command versions,
+including direct implementation changes and gzip/jq shared-runtime consumers.
+These commands select core 0.9.1; the other 53 published coordinates retain
+their dependencies. Exact versions are in
+[candidate.json](../tests/release_runner/current/candidate.json). Publication
+and exact-version acceptance remain pending; latest.json still describes the
+previous accepted release.
+
 The unreleased base32 0.1.5 candidate streams encoding through bounded reads,
 retaining only an unfinished quantum and wrap column between writes. Earlier
 output survives later input errors; decoding retains whole-input storage.

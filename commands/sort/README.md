@@ -10,7 +10,7 @@ moonx cli/sort@0.2.6 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--
 
 Sort files or stdin using C-byte order, selected keys and numeric/month/version/random modes. Supports stable, unique, check and merge modes.
 
-The unreleased 0.2.6 candidate compares `-n` decimal prefixes exactly, including
+Version 0.2.6 compares `-n` decimal prefixes exactly, including
 large integers and long fractions. Unique, stable, check and disk merge modes
 use the same ordering. `-g` retains floating-point general-number semantics.
 

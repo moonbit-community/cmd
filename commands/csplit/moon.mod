@@ -1,6 +1,6 @@
 name = "cli/csplit"
 
-version = "0.2.3"
+version = "0.2.4"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "csplit command for MoonX."
 
 import {
-  "cli/core@0.9.0",
+  "cli/core@0.9.1",
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
 }

@@ -140,7 +140,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cmp@0.2.3 metadata contract",
+      "source_version": "workspace cli/cmp@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]\n  -b, --print-bytes  print differing octal and visible byte values\n  -s, --silent      report status only; stop at the first difference\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": "",
       "aliases": [
@@ -164,8 +164,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cmp@0.2.3 metadata contract",
-      "expected_stdout_text": "cmp 0.2.3\n",
+      "source_version": "workspace cli/cmp@0.2.4 metadata contract",
+      "expected_stdout_text": "cmp 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

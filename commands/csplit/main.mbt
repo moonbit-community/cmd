@@ -203,7 +203,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("csplit 0.2.3\n")
+    @stdio.stdout.write("csplit 0.2.4\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -229,7 +229,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("csplit 0.2.3\n")
+    @stdio.stdout.write("csplit 0.2.4\n")
     return
   }
   let (controls, width, suffix) = try {
