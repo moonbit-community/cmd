@@ -1,51 +1,48 @@
 # Architecture Decisions
 
-Updated: 2026-10-30
+Updated: 2026-11-01
 
-These records describe current ownership, technical choices, compatibility
-costs and conditions for changing them. Command options and supported profiles
-belong in [compatibility.md](../compatibility.md) and command READMEs;
-dated changes and releases belong in [CHANGELOG.md](../../CHANGELOG.md).
+ADRs summarize current decisions, their reasons, consequences and conditions for
+reconsideration. Update the existing decision when it changes.
 
 | ADR | Decision |
 | --- | --- |
-| [0001 Validation](0001-evidence.md) | Wasm correctness on three platforms; independent upstream, resource and published-coordinate acceptance |
-| [0002 Authorization](0002-policy.md) | The embedding host owns permissions; catalog metadata only describes requirements |
-| [0003 Streams and ownership](0003-streams.md) | Preserve bytes and error order; share mechanisms while keeping command policy local |
-| [0004 Filesystem](0004-filesystem.md) | Implement the correct public-API subset without guessing identity, mode or link effects |
-| [0005 HTTP transfer](0005-transfer.md) | Own HTTP/1 framing and keep curl/Wget credential, retry and output profiles distinct |
-| [0006 Processes](0006-process.md) | Own direct-child pipes, cancellation and waits without claiming process-tree control |
-| [0007 Shell and make](0007-language.md) | Pure MoonBit sessions and dependency-ready scheduling with explicit grammar limits |
+| [0001 Validation](0001-evidence.md) | Separate Wasm correctness, upstream, resource and publication acceptance |
+| [0002 Authorization](0002-policy.md) | The embedding host owns permissions |
+| [0003 Streams and ownership](0003-streams.md) | Share mechanisms while keeping command policy and lifetimes explicit |
+| [0004 Filesystem](0004-filesystem.md) | Implement the correct public-API subset with explicit expansion conditions |
+| [0005 HTTP transfer](0005-transfer.md) | Own HTTP/1 framing and preserve distinct curl/Wget profiles |
+| [0006 Processes](0006-process.md) | Own direct-child I/O, cancellation and waits |
+| [0007 Shell and make](0007-language.md) | Preserve session state and dependency-ready scheduling |
 | [0008 Algorithms](0008-data.md) | Preserve regex dialects, numeric ABI and codec/error contracts |
-| [0009 Failure effects](0009-safety.md) | Report unsupported operations honestly and preserve operation-specific partial effects |
+| [0009 Failure effects](0009-safety.md) | Preserve operation-specific partial effects and honest rejections |
 
-## Scope and authorities
+## Documentation ownership
 
-The workspace contains 80 commands. The 2026-10-30 published inventory contains
-79 commands and core 0.9.0, as defined by
-[latest.json](../../tests/release_runner/current/latest.json) and its independent
-expected cases. The release uploaded 42 updated command packages and the first
-rg 0.1.0 package; 36 existing command coordinates remain unchanged. Timeout
-remains local-only. The [release summary](../../CHANGELOG.md#2026-10-30) records
-source CI, local exact-version MoonX results and three-platform published
-acceptance. Candidate coordinates remain preparation
-inputs and do not overwrite published expectations.
+| Information | Authoritative location |
+| --- | --- |
+| Decisions, package responsibilities, accepted tradeoffs and API proposals | The applicable ADR; package dispositions remain in ADR-0003 |
+| Current algorithms, call paths, invariants, complexity and useful rejected approaches | [Performance guide](../performance/README.md) |
+| Dated delivery and release summaries | [CHANGELOG.md](../../CHANGELOG.md) |
+| Options and support boundaries | Command READMEs and [compatibility.md](../compatibility.md) |
+| Executable workload definitions and measurement rules | [Benchmark registry and guide](../../tests/benchmark/README.md) |
+| Published coordinates and independent expectations | [Release manifest](../../tests/release_runner/current/latest.json) |
 
-Tests and implementation are the executable authorities. An ADR explains why
-a choice exists; it does not certify every input or convert a historical local
-measurement into current acceptance. Shared package dispositions and pending
-cleanup decisions are maintained in ADR-0003, without a second report tree.
+Keep the changelog to a few outcome-oriented bullets per date. In algorithm
+documents, update the current explanation rather than appending experiment
+rounds. Retain a rejected approach only when its reason and retry condition
+help a future implementation. Link exact test/workload owners instead of copying
+their inventories. Measurements must identify their dated scope; failures and
+partial evidence cannot become acceptance through summarization.
 
-## Historical records
+## History
 
-The nine-record structure replaced thirty records on 2026-09-05. Full reports,
-intermediate experiments and failed measurements remain in Git:
+Detailed reports and superseded decisions remain recoverable in Git:
 
-- [Before the 2026-10-26 consolidation](https://github.com/moonbit-community/cmd/tree/65b4b7eea24c8215776c40721e1e00ad436268ce/docs/adr).
-- [Before the 2026-10-30 simplification](https://github.com/moonbit-community/cmd/tree/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr),
-  including the complete cleanup audit and candidate probes.
+- [Before the nine-record consolidation](https://github.com/moonbit-community/cmd/tree/65b4b7eea24c8215776c40721e1e00ad436268ce/docs/adr).
+- [Before the 2026-10-30 simplification](https://github.com/moonbit-community/cmd/tree/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr).
+- [Before this consolidation](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr), including complete experiment outcomes and corrections.
 
-Update an existing decision when its implementation or boundary changes.
-Keep the reason, consequence, remaining limitation and verification route;
-do not append an execution diary. Temporary build paths are not durable
-documentation references.
+Temporary host paths are not durable documentation links. Tests and owning
+source establish current behavior; an ADR explains the decision, not exhaustive
+compatibility or performance acceptance.

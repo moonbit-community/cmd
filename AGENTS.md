@@ -127,6 +127,14 @@ module and version before any release operation.
   tradeoffs in the existing canonical ADR with an Updated date, evidence and
   conditions for lifting limitations. Keep dated delivery summaries in
   CHANGELOG.md; preserve historical claims and recover full reports from Git.
+- Keep ADRs focused on current decisions, rationale, consequences and reopening
+  conditions. Keep CHANGELOG.md to a few outcome-oriented bullets per date,
+  distinguishing development from publication. Maintain algorithm explanations
+  in docs/performance by topic: source call paths, admission rules, invariants,
+  resource costs, fallbacks and useful rejected approaches with retry conditions.
+  Update existing topics instead of appending experiment reports. Link the
+  authoritative tests/workloads and pinned historical evidence; do not duplicate
+  registries, create another report archive or broaden old acceptance claims.
 - Product delivery and required correctness acceptance target Wasm through MoonX.
   Development CI runs the complete applicable Wasm suite on Linux, macOS and
   Windows. Native is retained only for test tools and their own regressions.

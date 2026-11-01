@@ -193,8 +193,9 @@ and frozen published expectations remain unchanged.
 
 Authorization belongs to the caller/host. Catalog capabilities and the
 restricted label describe requirements, not command-local policy.
-Split is Restricted because `--filter` can launch external children; the
-current tier counts and command list are recorded in [ADR-0002](adr/0002-policy.md).
+Split is Restricted because `--filter` can launch external children. The
+[catalog](../core/contracts/catalog.mbt) owns classifications;
+[ADR-0002](adr/0002-policy.md) explains the authorization boundary.
 
 ## Published R resource changes
 
@@ -277,7 +278,8 @@ every backend, including exact hexadecimal/decimal rounding and selected
 endpoint recovery. Printf also supports GNU C-byte `%q`. This fixed profile is
 distinct from the macOS GNU build's binary64 long double; native ABI/locale
 equivalence is not inferred. The original default seq precision limits remain.
-The small local Rosetta argv0 diagnostic difference is recorded in ADR-0008.
+The small local Rosetta argv0 diagnostic difference remains in the
+[historical ADR](https://github.com/moonbit-community/cmd/blob/6e7be831cc687386b4e4f62eaad6d4cf7a34318b/docs/adr/0008-data.md).
 
 ## Published text-option profiles
 
@@ -717,7 +719,7 @@ for the locally rechecked `cli/sh@0.2.4` coordinate. This strengthens the test;
 it changes no command behavior or version. Earlier acceptance totals retain
 their dated scope and did not prove the previously unasserted empty stderr.
 Regex corpus execution partitions and benchmark evidence scope are described
-in [ADR-0003](adr/0003-streams.md#test-evidence-repair-2026-10-30-development).
+in the [dated ADR record](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr/0003-streams.md#test-evidence-repair-2026-10-30-development).
 Synthetic matrices, test counts and noisy timing rows cannot establish general
 performance or full upstream compatibility.
 
@@ -747,7 +749,7 @@ separately labeled ordinary replay exercise the calibrated profile. Unicode
 word/character behavior is not added to the product support claim.
 
 The subsequent benchmark execution repair is recorded in
-[ADR-0003](adr/0003-streams.md#benchmark-execution-and-corpus-repair-2026-10-30-development).
+[dated ADR record](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr/0003-streams.md#benchmark-execution-and-corpus-repair-2026-10-30-development).
 Actual generated-data comparisons exposed a current jq evaluator gap:
 `group_by(.active) | map(length)` returns groups in encounter order rather
 than jq key order when null, false and true keys are mixed. The unreleased

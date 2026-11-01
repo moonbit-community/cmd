@@ -2,110 +2,85 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-30
+Updated: 2026-11-01
 
 ## Decision
 
-Use the public async Client for connection, TLS and configured proxy setup,
-then its released passthrough API for project-owned HTTP/1 request serialization
-and response framing. Keep transfer state in pure MoonBit; never delegate
-product behavior to host curl/wget or private transport APIs.
-
-The public default is StrictProfile. Curl and Wget explicitly choose their
-own profiles because authentication, EOF, retry and output effects differ.
-HttpWire owns request payload framing, timeouts and write errors; callers do
-not add forwarding layers with no remaining responsibility.
+Use public async Client connection, TLS and proxy setup, then its released
+passthrough API for pure MoonBit HTTP/1 serialization and framing. HttpWire
+owns request payloads, timeouts and write errors. The public default is
+StrictProfile; curl and wget explicitly select their distinct policies.
+Do not delegate to host tools or add responsibility-free forwarding layers.
 
 ## Wire and failure contracts
 
-- Complete origin headers, payload and framing before reading the response.
-  Classify request-write, response-header and response-body failures separately.
-  Proxy CONNECT remains a connection-stage operation.
-- Validate final header names and CR/LF-free values, including generated Cookie
-  fields, before serialization. Preserve repeated final Set-Cookie fields and
-  their order separately from ordinary header lookup; interim fields do not
-  enter the cookie jar.
-- Default Accept-Encoding to identity unless explicitly supplied. Preserve
-  content-coded bytes; Content-Length and Range offsets describe that encoded
-  representation. Do not implicitly decode gzip responses.
-- Preserve body bytes delivered before later framing failure. Completed sink
-  writes are a lower bound if a Writer call fails, because its partial extent
-  is unknown. Preserve the primary error during a secondary flush/cleanup error.
-- Bound protocol lines to 64 KiB, cumulative response headers to 1 MiB, fields
-  per block to 1024, interim responses to 128 and trailer fields to 1024.
-  Header rejection precedes output opening; trailer rejection retains body
-  prefixes. These are selected-profile limits, not missing-API claims.
+- Complete origin request headers, payload and framing before reading the
+  response; proxy CONNECT remains connection setup. Distinguish request-write,
+  response-header and response-body errors.
+- Validate final names and CR/LF-free values, including generated cookies.
+  Preserve ordered, repeated final Set-Cookie fields; ignore interim cookies.
+- Default Accept-Encoding to identity and preserve content-coded bytes.
+  Lengths and Range offsets describe those bytes; no implicit decompression.
+- Preserve delivered prefixes. A failed Writer call has unknown partial extent,
+  so completed writes are only a lower bound. Keep the primary error if flush
+  or cleanup also fails.
+- Limit lines to 64 KiB, headers to 1 MiB, fields per block and trailers to
+  1024, and interim responses to 128. Header rejection precedes output opening;
+  trailer rejection retains body prefixes.
 
-Bodyless and close-delimited responses have separate successful controls.
-EOF before any response-header byte is an empty reply. Both command profiles
-accept EOF after a complete 200 status line while collecting headers, subject
-to already parsed framing; other malformed/incomplete responses remain errors.
-StrictProfile rejects incomplete headers and fixed/chunked premature EOF.
+Empty reply, bodyless response and close-delimited body are distinct states.
+Both command profiles accept EOF after a complete 200 status line while
+collecting headers, subject to parsed framing. StrictProfile rejects incomplete
+headers and premature fixed/chunked EOF.
 
-## Command-specific behavior
+## Command profiles
 
-| Concern | Curl profile | Wget profile |
+| Concern | Curl | Wget |
 | --- | --- | --- |
-| Initial URL target | Reject raw space/TAB/CR/LF/DEL in path/query before connection, status 3 | Percent-escape these bytes; preserve existing escapes |
-| Redirect Location | Spaces become %20 in path and + in query; TAB becomes %09 | Spaces become %20 in both; TAB becomes %09 |
-| Explicit Basic credentials | Initial-origin scope by default; custom Authorization has its own routing | Explicit --user/--password spans origins; without --auth-no-challenge each new origin first challenges |
-| Explicit cookies | Literal/custom Cookie stays initial-origin scoped; emit jar and explicit fields separately | Explicit field replaces outgoing jar cookies and follows origins, without disabling response storage |
-| Body failures | Empty reply 52, partial body 18, receive error 56, write failure 23 | Fixed truncation/malformed framing fail; exhausted network retries return 4 |
-| Chunk EOF | Incomplete payload or framing fails | Payload/trailer EOF is accepted; next-size-line or post-payload-CRLF EOF fails |
-| Retry input | --retry-all-errors may retry consumed stdin with an empty body; replay-required redirect fails with RewindFailure/65 | StdinBody is not retried |
+| Initial URL controls | Reject raw space/TAB/CR/LF/DEL before connection, status 3 | Percent-escape them, preserving existing escapes |
+| Redirect spaces | %20 in path, + in query; TAB becomes %09 | %20 in path/query; TAB becomes %09 |
+| Basic credentials | Initial-origin scope; custom Authorization routes separately | Explicit credentials span origins; each origin first challenges unless --auth-no-challenge |
+| Explicit cookies | Initial-origin scope; jar and explicit fields stay separate | Replace outgoing jar cookies and follow origins; response storage remains active |
+| Body failure | Empty reply 52, partial body 18, receive 56, write 23 | Fixed truncation/malformed framing fail; exhausted network retries return 4 |
+| Chunk EOF | Incomplete framing/payload fails | Payload/trailer EOF accepted; next-size-line or post-payload-CRLF EOF fails |
+| Consumed stdin | --retry-all-errors may retry an empty body; replay-required redirect fails with 65 | StdinBody is not retried |
 
-Cookie storage retains domain/path/Secure/expiry and response-order updates.
-Malformed Max-Age and overflow have explicit distinct policies: curl can delete
-on nonnumeric values and cap positive overflow at 400 days; Wget ignores
-nonnumeric replacement and treats numeric/overlong overflow differently.
-Cookie ordering remains profile-specific. The exact wire regressions are the
-authority; these rules do not establish browser cookie policy, full jar
-serialization, PSL/IDNA or cross-scope duplicate-cookie parity.
+Cookie domain/path/Secure/expiry, update order and malformed/overflow Max-Age
+policies remain profile-specific. Exact wire tests own the detailed cases;
+this does not establish browser policy, PSL/IDNA or full jar serialization.
 
-## Output and retry ownership
+## Output ownership
 
-Curl ordinary file output opens lazily on the first payload or successful
-completion. An initial empty failure leaves an unopened existing destination
-unchanged; successful empty output creates it. File buffering uses 4096 bytes.
-A network failure remains primary if flushing its buffered tail also fails.
-Stdout prefixes are already visible and do not inherit file-reset semantics.
+Curl opens ordinary files on first payload or successful empty completion.
+Initial empty failure preserves unopened destinations. Retry resets an opened
+regular file before another request; remove-on-error applies only after final
+failure. Stdout prefixes cannot be reset. A network error remains primary if
+flushing the 4096-byte file buffer also fails.
 
-An accepted retry resets an opened regular file before the next request.
-Remove-on-error applies to the opened selected file after final failure, not
-between attempts. Curl -O -J exclusively creates a valid server-selected name
-on eligible 2xx/3xx responses and retains that name across retries. Existing
-selected names fail unchanged. Calibrated 404/500 responses use ordinary lazy
-URL-derived output; -f rejects before transfer output opens.
+Curl -O -J exclusively creates eligible 2xx/3xx server-selected names and keeps
+the first name across retries. Existing names fail unchanged. Selected 404/500
+responses use ordinary URL-derived output; -f rejects before opening.
 
-Wget observes the actual selected output and delivered offset. Resumed 206
-responses must match Content-Range before writing and finish with the declared
-span. A 200 fallback skips retained prefix bytes; a shorter complete known-length
-response leaves that prefix intact. A 416 completes without transfer output
-opening; explicit -O initialization is a separate earlier file effect.
-
-Wget -c --content-disposition without -O first resolves the filename through
-HEAD, then derives the GET resume offset from that selected file. Preserve
-HEAD/GET order and the chosen name across retries. Direct callers cannot append
-an old prefix to a newly selected different file without resolving ownership.
+Wget resumes from the actual selected file. A 206 must match Content-Range
+before writing and finish with the declared span. A 200 skips retained prefix
+bytes; a shorter complete known-length response preserves them. A 416 does not
+open transfer output; explicit -O initialization is an earlier separate effect.
+With -c --content-disposition and no -O, HEAD selects the file before GET derives
+its offset. Preserve that order and filename across retries.
 
 Owned sinks close on success, failure and observable cancellation. Path-based
-retry reset does not guarantee descriptor/inode continuity under concurrent
-replacement; lifting that limit needs public handle truncation/identity and
-adversarial tests. Cancellation cleanup alone does not establish GNU signal,
-buffered-tail or remove-on-error parity.
+retry reset does not prove inode/descriptor continuity under replacement.
+Signal, buffered-tail and remove-on-error parity require separate evidence.
 
-## Remaining work and verification
+## Verification and reconsideration
 
-General ordered duplicate request headers are command-policy work, not blocked
-by the wire adapter. Wider authentication, cookie-jar and method/redirect
-combinations require explicit wire and file-effect regressions; see
-[issue #34](https://github.com/moonbit-community/cmd/issues/34). Descriptor/path
-race guarantees remain under [ADR-0004](0004-filesystem.md).
-
-Use raw loopback fixtures, package failures and actual command scenarios for
-framing, retries, Range, filenames and output prefixes. Compare against the
-immutable curl/Wget oracle and validate exact published coordinates separately.
-Old host probes and passing parser tests do not establish full command parity.
+Raw loopback fixtures and command scenarios assert framing, request order,
+retries, filenames, Range and partial files against the immutable oracle.
+Broader ordered headers, authentication and cookie combinations are project
+work ([issue #34](https://github.com/moonbit-community/cmd/issues/34)).
+Descriptor/path guarantees require public handle operations and adversarial
+tests under [ADR-0004](0004-filesystem.md). Published-coordinate acceptance
+remains separate from local parser and wire tests.
 
 Implementation: [wire](../../core/netops/http_wire.mbt),
 [serialization](../../core/netops/http_wire_request.mbt),

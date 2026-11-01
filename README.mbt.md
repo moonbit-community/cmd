@@ -35,4 +35,6 @@ interface is unavailable. Its status is recorded in the support record and it
 is not a published MoonX feature.
 
 Dated delivery milestones are in [CHANGELOG.md](CHANGELOG.md); current design
-decisions are in [docs/adr](docs/adr/README.md).
+decisions are in [docs/adr](docs/adr/README.md). The
+[performance guide](docs/performance/README.md) explains algorithm selection,
+resource ownership, fallback paths and useful rejected approaches.

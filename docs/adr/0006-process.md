@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-30
+Updated: 2026-11-01
 
 ## Decision
 
@@ -30,6 +30,7 @@ implement a faithful kill command.
 | env -S | Parse its own quote/escape/comment grammar and expand variables from the original environment. Splice literal words into option processing; shell metacharacters stay child arguments. |
 | xargs -0/-d | Last delimiter option wins; preserve raw-byte scanning. Invalid UTF-8 argv prefixes reject before launch until a public raw-byte argv API exists. |
 | xargs -p | Use an independent confirmation channel, never argument stdin. Hosts without a channel reject before input/launch; this includes the documented empty -r preflight. Windows CONIN$ availability and empty-input success have separate contracts. |
+| xargs -P | Reuse each completed child slot within the concurrency limit. Distinguish ordinary child exits 126/127 from actual launch failures; stop admission on fatal outcomes and await active children. Serialize diagnostics and prompts. See [execution algorithms](../performance/execution.md). |
 | yes | Repeated bounded output stops on real write failure. Do not swallow that failure; exact SIGPIPE status/diagnostic parity remains unverified. |
 | which | POSIX regular-file plus public can_execute, preserving PATH order, empty entries and symlinks. Windows uses PATHEXT. Never execute a candidate to test access or claim another shell's alias/function state. |
 

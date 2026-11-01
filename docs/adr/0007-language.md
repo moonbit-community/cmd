@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-30
+Updated: 2026-11-01
 
 ## Decision
 
@@ -41,12 +41,10 @@ intentional core API revision; see [ADR-0003](0003-streams.md#pending-cleanup-de
 
 ## Verification and reconsideration
 
-The 2026-10-30 sample expansion exposed stdin-script option termination:
-`sh -s -- left right` incorrectly placed `--` in `$1`. The unreleased parser
-now consumes options before assigning positional operands even after `-s`.
-Exact stdin-script cases cover both forms and preserve the command-string
-and named-script branches. Published coordinates remain unchanged pending a
-separate versioned `moon publish` release.
+Stdin-script parsing consumes options, including `--`, before assigning
+positional operands even after `-s`. Keep exact tests for stdin, command-string
+and named-script branches; current repairs do not rewrite frozen published
+expectations.
 
 Continuous-input scenarios observe immediate execution, prompts, ENV, persistent
 state, child input and recovery. Make uses ready/ack tests for real overlap,
