@@ -36,4 +36,9 @@ test "xargs maps child outcomes to findutils status classes" {
   assert_eq(xargs_child_status(126), 123)
   assert_eq(xargs_child_status(255), 124)
   assert_eq(xargs_child_status(-9), 125)
+  for status in 1..<=254 {
+    assert_eq(aggregate_xargs_status(0, Exited(status)), 123)
+  }
+  assert_eq(aggregate_xargs_status(0, FailedToLaunch(CommandNotInvokable)), 126)
+  assert_eq(aggregate_xargs_status(0, FailedToLaunch(CommandNotFound)), 127)
 }

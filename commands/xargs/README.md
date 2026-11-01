@@ -37,8 +37,10 @@ does not consume stdin. Interactive confirmations remain serialized.
 - Interactive mode requires a separate confirmation channel; failure to open it returns 2 before reading stdin.
 - Process-group cancellation is unsupported; parallel output order is unspecified.
 - Earlier batches may already have completed when later input is malformed or
-  untransportable. Fatal child statuses stop further dispatch; already running
-  children are awaited. Replacement results must also fit the argument budget.
+  untransportable. Exit 255, signal termination and launch failures stop further
+  dispatch; already running children are awaited. Ordinary child exits 1–254,
+  including 126/127, aggregate to 123 and allow later batches. Only actual launch
+  failures produce 126/127. Replacement results must also fit the argument budget.
 
 ## Examples
 

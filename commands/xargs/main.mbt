@@ -117,50 +117,48 @@ fn command_size(prefix : Array[String], values : Array[String]) -> Int64 {
 }
 
 ///|
+priv enum ChildOutcome {
+  Exited(Int32)
+  FailedToLaunch(@process.LaunchFailure)
+}
+
+///|
 async fn run_xargs_child(
   program : String,
   arguments : Array[String],
   context : @process.ExecutionContext,
   verbose : Bool,
-) -> Int32 {
+  launch~ : async (@process.ChildSpec) -> Int32 = spec => @process.run(spec),
+  diagnose~ : async (String) -> Unit = text => @stdio.stderr.write(text),
+) -> ChildOutcome {
   if verbose {
     let command_line = program + " " + arguments.join(" ") + "\n"
-    @stdio.stderr.write(command_line)
+    diagnose(command_line)
   }
-  let code = @process.run(@process.child(program, arguments, context~)) catch {
+  let code = launch(@process.child(program, arguments, context~)) catch {
     @os_error.OSError(_) as err => {
-      @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-      let status = @process.launch_failure_status(
+      diagnose("xargs: cannot run '\{program}': \{err}\n")
+      return FailedToLaunch(
         if err.is_ENOENT() {
           CommandNotFound
         } else {
           CommandNotInvokable
         },
       )
-      @sys.exit(status)
-      status
     }
     err => {
-      @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-      let status = @process.launch_failure_status(CommandNotInvokable)
-      @sys.exit(status)
-      status
+      diagnose("xargs: cannot run '\{program}': \{err}\n")
+      return FailedToLaunch(CommandNotInvokable)
     }
   }
-  if code == 126 || code == 127 {
-    @stdio.stderr.write(
-      "xargs: child launch denied or unavailable (status \{code})\n",
-    )
-  }
-  code
+  Exited(code)
 }
 
 ///|
-fn aggregate_xargs_status(current : Int32, child : Int32) -> Int32 {
-  let mapped = if child == 126 || child == 127 {
-    child
-  } else {
-    xargs_child_status(child)
+fn aggregate_xargs_status(current : Int32, child : ChildOutcome) -> Int32 {
+  let mapped = match child {
+    Exited(status) => xargs_child_status(status)
+    FailedToLaunch(failure) => @process.launch_failure_status(failure)
   }
   if mapped == 125 || current == 125 {
     125
@@ -427,6 +425,12 @@ async fn main {
     emitted: false,
   }
   let context = @process.ExecutionContext::current()
+  let diagnostic_slot = @semaphore.Semaphore(1)
+  let diagnose : async (String) -> Unit = text => {
+    diagnostic_slot.acquire()
+    defer diagnostic_slot.release()
+    @stdio.stderr.write(text)
+  }
   let status = run_xargs_stream(
     batches,
     max_procs,
@@ -436,11 +440,12 @@ async fn main {
         arguments,
         context,
         verbose && confirmation is None,
+        diagnose~,
       )
     },
     approve=arguments => {
       match confirmation {
-        Some(channel) => confirm_batch(channel, program, arguments)
+        Some(channel) => confirm_batch(channel, program, arguments, diagnose~)
         None => true
       }
     },

@@ -102,6 +102,24 @@ The combined current evidence qualifies 29/30 measured rows; cp's unstable row
 and the ln/test coverage gaps remain failed/incomplete. No unchanged timing
 retry, complete protection pass or formal performance acceptance is claimed.
 
+A subsequent real-process replay distinguishes ordinary child exits from
+launch failures. The old xargs adapter exited the whole command on a launch
+exception and treated ordinary exits 126/127 as fatal launch outcomes. The
+private `ChildOutcome` now distinguishes `Exited` from `FailedToLaunch`;
+only the scheduler aggregates statuses and stops production. Ordinary exits
+1–254 map to 123 and allow later batches. Failure diagnostics and confirmation
+prompts share a serialized writer; child execution remains concurrent.
+Injected launch failure returns through that same adapter and waits for an
+already-active child. Actual MoonBit-sh child replays preserve both invocations
+for 126/127, stop after the first 255, and retain 126/127 for real directory
+and missing-program launch errors. Evidence is in `repair-outcomes-probe.json`;
+the complete Wasm suite now passes 1,794 tests.
+Only xargs changes in this follow-up. Its final two-row, two-window comparison
+in `repair-outcomes-panels` passes against the original baseline: the options
+row is 18.2–18.8% faster; accept the UnicodeData row's 3.79%/4.54% cost for the
+corrected streaming and child lifecycle. The combined qualification remains
+29/30 measured rows, with the same cp stability and ln/test coverage gaps.
+
 Audit correction (2026-11-01): sort `-n` must preserve arbitrary decimal-prefix
 precision. The former Double conversion collapsed distinct large integers and
 fractions; previous performance evidence does not establish that semantic

@@ -38,7 +38,7 @@ async test "xargs dispatches complete batches while the producer keeps input ope
       run_xargs_stream(test_batches(input), 1, args => {
         seen.push(args[0])
         acknowledged.put(args[0])
-        0
+        Exited(0)
       }),
       0,
     )
@@ -64,13 +64,13 @@ async test "xargs refills free slots without waiting for a slow earlier child" {
         match args[0] {
           "slow" => {
             release.get()
-            1
+            Exited(1)
           }
           "third" => {
             release.put(())
-            0
+            Exited(0)
           }
-          _ => 0
+          _ => Exited(0)
         }
       }),
       123,
@@ -90,7 +90,13 @@ async test "xargs fatal child status interrupts an open producer and preserves l
       })
       defer input.close()
       assert_eq(
-        run_xargs_stream(test_batches(input), 2, _ => status),
+        run_xargs_stream(test_batches(input), 2, _ => {
+          match status {
+            126 => FailedToLaunch(CommandNotInvokable)
+            127 => FailedToLaunch(CommandNotFound)
+            _ => Exited(status)
+          }
+        }),
         if status == 255 {
           124
         } else {
@@ -144,4 +150,63 @@ async test "xargs batches count multibyte arguments once and preserve line group
   assert_eq(grouped.next(), Some(["one", "two", "three"]))
   assert_eq(grouped.next(), Some(["four", "five"]))
   assert_eq(grouped.next(), None)
+}
+
+///|
+async test "xargs preserves ordinary child exits 126 and 127 without stopping batches" {
+  for status in [126, 127] {
+    let input = @io.MemoryReader(writer => writer.write("first second\n"))
+    defer input.close()
+    let seen : Array[String] = []
+    assert_eq(
+      run_xargs_stream(test_batches(input), 1, args => {
+        seen.push(args[0])
+        run_xargs_child(
+          "fixture",
+          args,
+          @process.ExecutionContext::current(),
+          false,
+          launch=_ => status,
+        )
+      }),
+      123,
+    )
+    assert_eq(seen, ["first", "second"])
+  }
+}
+
+///|
+async test "xargs reports launch failure through the scheduler and awaits active children" {
+  @async.with_timeout(5000, () => {
+    let release : @async.Queue[Unit] = @async.Queue(kind=Blocking(1))
+    let input = @io.MemoryReader(writer => writer.write("slow unavailable\n"))
+    defer input.close()
+    let mut completed = false
+    let messages : Array[String] = []
+    assert_eq(
+      run_xargs_stream(test_batches(input), 2, args => {
+        if args[0] == "slow" {
+          release.get()
+          completed = true
+          Exited(0)
+        } else {
+          let outcome = run_xargs_child(
+            "fixture",
+            args,
+            @process.ExecutionContext::current(),
+            false,
+            launch=_ => fail("injected launch failure"),
+            diagnose=text => messages.push(text),
+          )
+          assert_true(outcome is FailedToLaunch(CommandNotInvokable))
+          release.put(())
+          outcome
+        }
+      }),
+      126,
+    )
+    assert_true(completed)
+    assert_eq(messages.length(), 1)
+    assert_true(messages[0].contains("injected launch failure"))
+  })
 }

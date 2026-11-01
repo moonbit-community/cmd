@@ -112,8 +112,9 @@ async fn confirm_batch(
   channel : &@io.Reader,
   program : String,
   arguments : Array[String],
+  diagnose~ : async (String) -> Unit = text => @stdio.stderr.write(text),
 ) -> Bool {
-  @stdio.stderr.write([program, ..arguments].map(shell_word).join(" ") + "?...")
+  diagnose([program, ..arguments].map(shell_word).join(" ") + "?...")
   let mut first = true
   let mut accepted = false
   while channel.read_some(max_len=1) is Some(bytes) {

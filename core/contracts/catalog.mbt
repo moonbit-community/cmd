@@ -507,6 +507,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "utc", "date", "iso-8601", "rfc-email", "version",
     ]),
     // Complete batches may run before EOF; fatal statuses stop new dispatch.
+    // Ordinary child exits and launch failures remain distinct; active children are awaited.
     contract(
       "xargs",
       Restricted,

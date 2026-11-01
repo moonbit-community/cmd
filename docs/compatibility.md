@@ -14,7 +14,9 @@ bounded memory or streaming latency.
 The unreleased audit candidates include core 0.9.1, cp 0.2.4, find 0.2.5,
 mv 0.2.6, rm 0.2.4, sort 0.2.6, tail 0.2.4 and xargs 0.2.4. Xargs dispatches
 complete batches before EOF and replenishes individual parallel slots; later
-input errors can follow completed child effects. Find observes directory names
+input errors can follow completed child effects. Ordinary child exits 126/127
+remain ordinary failures (aggregate 123); actual launch errors retain 126/127
+and return through the scheduler so active children are awaited. Find observes directory names
 on demand and executes completed `-exec ... +` batches during traversal, using
 UTF-8 payload budgets. Tail releases discarded streamed records without a final
 whole-selection copy. Mv reports restoration failure and its backup path.

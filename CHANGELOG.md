@@ -24,7 +24,7 @@ Development runtime and ownership repair; no publication:
 - Reuse cp's shared preflight/exclusive-copy implementation, index sort fields
   once per record and remove unreachable cp/patch policy branches. Preserve
   existing filesystem boundaries and command-specific contracts.
-- Local validation passes 1,792 release-Wasm package tests, 197 Native test-tool
+- Initial local validation passes 1,792 release-Wasm package tests, 197 Native test-tool
   tests and 2,274 CLI checks with 21 platform skips and zero failures. Real
   process probes confirm the repaired find and xargs behavior. The complete
   performance-protection gate remains failed because changed ln/test artifacts
@@ -44,6 +44,10 @@ Development runtime and ownership repair; no publication:
   retain the failed CI run without relaxing assertions or comparison scope.
   The follow-up Native test-tool suite passes 198 tests; command artifacts are
   unchanged from the measured repair candidate.
+- Distinguish ordinary xargs child exits 126/127 from actual launch failures.
+  Launch exceptions now return through the scheduler so active children are
+  awaited; serialize diagnostics with confirmation prompts. Real child replays
+  and injected launch regressions pass, with 1,794 release-Wasm tests overall.
 
 Development audit repair; no publication:
 

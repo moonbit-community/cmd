@@ -115,7 +115,7 @@ fn stop_xargs(status : Int32) -> Bool {
 async fn run_xargs_stream(
   batches : BatchReader,
   max_procs : Int32,
-  execute : async (Array[String]) -> Int32,
+  execute : async (Array[String]) -> ChildOutcome,
   approve~ : async (Array[String]) -> Bool = _ => true,
 ) -> Int32 {
   let slots = @semaphore.Semaphore(max_procs)
