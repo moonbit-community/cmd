@@ -271,6 +271,41 @@ async test "mv restores a completed backup after an injected rename failure" {
 }
 
 ///|
+async test "mv reports both commit and restoration failures with the backup path" {
+  let root = @fs.tmpdir(prefix="mooncmd-mv-double-failure")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let source = @fsops.join(root, "source")
+  let destination = @fsops.join(root, "destination")
+  @fs.write_file(source, b"new source\n")
+  @fs.write_file(destination, b"old target\n")
+  try
+    move_one(
+      source,
+      destination,
+      { ..link_move_options(), backup: @fsops.SimpleBackup, },
+      rename=(_, _, _) => raise @fsops.FsOpError("injected commit failure"),
+      restore=(target, backup) => {
+        assert_eq(target, destination)
+        assert_eq(backup, destination + "~")
+        raise @fsops.FsOpError("injected restoration failure")
+      },
+    )
+  catch {
+    @fsops.FsOpError(message) => {
+      assert_true(message.contains("injected commit failure"))
+      assert_true(message.contains("injected restoration failure"))
+      assert_true(message.contains(destination + "~"))
+    }
+    error => raise error
+  } noraise {
+    _ => fail("commit must fail")
+  }
+  assert_true(@fsops.kind_if_exists(destination) is None)
+  assert_eq(@fs.read_file(destination + "~").binary(), b"old target\n")
+  assert_eq(@fs.read_file(source).binary(), b"new source\n")
+}
+
+///|
 async fn prepare_windows_rollback_link(
   directory : String,
   name : String,

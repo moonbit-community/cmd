@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2064,
+    "exact-local": 2068,
     "finite-diagnostic": 114,
     "typed-scenario": 16,
     "typed-dynamic-output": 10
@@ -98,7 +98,7 @@
     {
       "case_id": "release-metadata-cp-help",
       "source": "tests/cases/cp.json",
-      "definition_sha256": "ed8e257a07cd566aa3714fea19d512a66e69f27c7e0d00e486d505f56d9eb3fa",
+      "definition_sha256": "d65cc3247778238c23160ad4ff8f9f960dd1cd55af17540bcbfa7241c8123d50",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -108,7 +108,7 @@
     {
       "case_id": "release-metadata-cp-version",
       "source": "tests/cases/cp.json",
-      "definition_sha256": "a857220486107439f04550cd98227f975bf965fc391956146868c82d728be88b",
+      "definition_sha256": "5f39f0e7e7acdb5eec8faf80fcb633d418b195e18f48e4ff12d29e785747b071",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2261,7 +2261,7 @@
     {
       "case_id": "release-metadata-mv-help",
       "source": "tests/cases/mv.json",
-      "definition_sha256": "a92b80d13736ca1b60ed91b8a1b141038b58a1db3240c05f078c0df634edaf70",
+      "definition_sha256": "7c9ed29ab5317b54b431fbc35455f27e8889fb5d06a6e09b5b080bcb05181f96",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2271,7 +2271,7 @@
     {
       "case_id": "release-metadata-mv-version",
       "source": "tests/cases/mv.json",
-      "definition_sha256": "c7cecc5a24b65f8749b6616773b47343eb20c1f5d1329a9525c5e7a9c2c70792",
+      "definition_sha256": "06cea65587332d8b2dc730ca3372a59b817fed516d30b587e0a6a95860173635",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -11700,7 +11700,7 @@
     {
       "case_id": "release-metadata-find-help",
       "source": "tests/cases/find.json",
-      "definition_sha256": "11663b1871fabb202eb2b248cc6bd0056da882c0dfed60ae15d6c5e85ef29d4a",
+      "definition_sha256": "c40e0d03a18c24bffc5f0a135eb15857c70e4e66d3e3164a702331986bc12c7d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -11710,7 +11710,7 @@
     {
       "case_id": "release-metadata-find-version",
       "source": "tests/cases/find.json",
-      "definition_sha256": "def3d33370b1746d6418715f76734690a11719ce146c7c111beb08546fd8c113",
+      "definition_sha256": "a14bbfe01007063a2af7ab294929fa4fc384bb17bd9d7ea6ec32b8c29cec1cec",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -11741,6 +11741,26 @@
       "case_id": "quality-find-readable-negative",
       "source": "tests/cases/find.json",
       "definition_sha256": "f732fbda10a8115aa84d64d511a922f7bd47c3442b63a9cb9a65716489f85ff3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "repair-find-maxdepth-directory",
+      "source": "tests/cases/find.json",
+      "definition_sha256": "8c91235dffcfb924a567ae18e7d9943e5fb4c141b5f8130598bca6f6d0eae5a3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "repair-find-prune-directory",
+      "source": "tests/cases/find.json",
+      "definition_sha256": "8c96006bbb9055e1cd67f25562f7e9da9f0b672d241251d772709ad72477a787",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13969,7 +13989,7 @@
     {
       "case_id": "release-metadata-tail-help",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "f20a68f456706f03be3da2bf419b3418598e68d7e11ea1ede69227bc71033767",
+      "definition_sha256": "4e78724f69ee6117e03356abce7d34b4f9f84ff08ed02590f5bc0221b9d60c8c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13979,7 +13999,7 @@
     {
       "case_id": "release-metadata-tail-version",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "ce7fb7b5cbf5b537d7ba190fdd22b61ba7c4b5135db47affd77553bda40c04ba",
+      "definition_sha256": "3fc1f045b958d3e9f042d57245412625626750d04aa5ec09c39adc55fe74688b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -14100,6 +14120,16 @@
       "case_id": "proof-tail-verbose-single-file",
       "source": "tests/cases/tail.json",
       "definition_sha256": "824a86a990e37459bf6ebd2356abad42f6f74a3f314073955993af025dc88398",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "repair-tail-final-unterminated-record",
+      "source": "tests/cases/tail.json",
+      "definition_sha256": "ff827cfcc7e1241594ae2edc1b6a170d9c15cb09e16c5a2b11426b7aa1aab9ba",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18122,7 +18152,7 @@
     {
       "case_id": "release-metadata-xargs-help",
       "source": "tests/cases/xargs.json",
-      "definition_sha256": "232163223dcc2bbfd2d689bfe70682cabe57e72d5fb15217f06a924f15475cf9",
+      "definition_sha256": "fdc595888e9803761d9f7e1344b793c0ec2579efa2d28cc2befc122866b87f01",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18132,7 +18162,7 @@
     {
       "case_id": "release-metadata-xargs-version",
       "source": "tests/cases/xargs.json",
-      "definition_sha256": "731a2c12860e6dc93d3620a0c56a666fdd7cd572becff80b3071e4b1194613a4",
+      "definition_sha256": "ac34d05f3392dc837a775898480f974fbdc02f0f82175314faf09cce1bfd7269",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18403,6 +18433,16 @@
       "case_id": "o13-xargs-p-r-empty-windows",
       "source": "tests/cases/xargs.json",
       "definition_sha256": "aa3f8994f89cdf450ac3900c74eff54733f3066c2c9f18c75a39e4b8d0267ed2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "repair-xargs-late-argv-boundary",
+      "source": "tests/cases/xargs.json",
+      "definition_sha256": "8beea36ddd825ccb28384984b25e2b0be444a48ca0bd1667d1ecb1833e16f335",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -25910,6 +25950,12 @@
     "quality-find-readable-negative": {
       "kind": "exact"
     },
+    "repair-find-maxdepth-directory": {
+      "kind": "exact"
+    },
+    "repair-find-prune-directory": {
+      "kind": "exact"
+    },
     "fold-width-newline": {
       "kind": "exact"
     },
@@ -26629,6 +26675,9 @@
       "kind": "exact"
     },
     "proof-tail-verbose-single-file": {
+      "kind": "exact"
+    },
+    "repair-tail-final-unterminated-record": {
       "kind": "exact"
     },
     "phase3-test-string": {
@@ -27964,6 +28013,9 @@
       "kind": "exact"
     },
     "o13-xargs-p-r-empty-windows": {
+      "kind": "exact"
+    },
+    "repair-xargs-late-argv-boundary": {
       "kind": "exact"
     },
     "base32-rfc4648-foobar": {

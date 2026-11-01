@@ -110,7 +110,10 @@ test "C-locale transformations are byte based" {
 ///|
 test "blank separated fields retain their leading separators" {
   let spec = parse_key("2,2", test_modifiers())
-  assert_eq(extract_key(b"x  b", spec, None), b"  b")
+  assert_eq(
+    extract_key(b"x  b", spec, field_ranges(b"x  b", None)).to_owned(),
+    b"  b",
+  )
 }
 
 ///|

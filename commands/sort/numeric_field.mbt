@@ -76,7 +76,7 @@ fn numeric_compare(left : Bytes, right : Bytes) -> Int32 {
 ///|
 // Run records retain canonical digits, not rounded Double bits. The private
 // header stores sign and integer length; input bytes cannot masquerade as it.
-fn prepare_numeric_field(key : Bytes) -> Bytes {
+fn prepare_numeric_field(key : BytesView) -> Bytes {
   let number = decimal_key(key)
   let output = @buffer.Buffer(
     size_hint=5 + number.integer.length() + number.fraction.length(),

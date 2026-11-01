@@ -1,4 +1,29 @@
 ///|
+fn delimited_items(
+  data : Bytes,
+  delimiter : Int32,
+) -> Array[InputItem] raise ArgvBytesBoundary {
+  let items : Array[InputItem] = []
+  let mut start = 0
+  // The selected GNU findutils providers use signed char for input_delimiter.
+  let signed_delimiter = if delimiter >= 128 {
+    delimiter - 256
+  } else {
+    delimiter
+  }
+  for index, byte in data {
+    if byte.to_int() == signed_delimiter {
+      items.push(input_item(data[start:index]))
+      start = index + 1
+    }
+  }
+  if start < data.length() {
+    items.push(input_item(data[start:]))
+  }
+  items
+}
+
+///|
 test "xargs delimiter parsing follows byte escape and signed char provider rules" {
   for
     (text, value) in [

@@ -118,8 +118,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/xargs@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: xargs [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n  -d, --delimiter=BYTE  separate literal input items with BYTE or an escape\n  -p, --interactive     confirm each invocation through an independent console\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/xargs@0.2.4 metadata contract",
+      "expected_stdout_text": "Usage: xargs [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n  -d, --delimiter=BYTE  separate literal input items with BYTE or an escape\n  -p, --interactive     confirm each invocation through an independent console\nComplete -n/-L batches can execute before EOF; later input errors preserve completed child effects.\n-P N replenishes individual free slots; --show-limits leaves stdin untouched.\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -137,8 +137,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/xargs@0.2.3 metadata contract",
-      "expected_stdout_text": "xargs 0.2.3\n",
+      "source_version": "workspace cli/xargs@0.2.4 metadata contract",
+      "expected_stdout_text": "xargs 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -849,6 +849,25 @@
       "host_platforms": [
         "windows"
       ]
+    },
+    {
+      "id": "repair-xargs-late-argv-boundary",
+      "command": "xargs",
+      "args": [
+        "-0",
+        "-n1",
+        "${PRINTF_CHILD}",
+        "<%s>\\n"
+      ],
+      "stdin_hex": "666972737400ff00",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "<first>\n",
+      "expected_stderr_text": "xargs: unsupported capability: non-UTF-8 argument transport\n"
     }
   ]
 }

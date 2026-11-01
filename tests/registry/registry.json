@@ -26225,6 +26225,50 @@
         "macos"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:repair-find-maxdepth-directory",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "repair-find-maxdepth-directory",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:repair-find-prune-directory",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "repair-find-prune-directory",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:repair-xargs-late-argv-boundary",
+      "command": "xargs",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/xargs.json",
+      "case_id": "repair-xargs-late-argv-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:repair-tail-final-unterminated-record",
+      "command": "tail",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tail.json",
+      "case_id": "repair-tail-final-unterminated-record",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
     }
   ],
   "release_commands": [

@@ -78,6 +78,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("printf", Core, NoInput, ByteStream, [], ["help"]),
     contract("sleep", Core, NoInput, LineStream, [], ["help", "version"]),
     // Numeric order compares exact decimal prefixes, including unique/check/merge.
+    // Key indexing is shared per record; numeric field keys remain exact.
     contract("sort", Core, FileOrStdin, LineStream, [FileRead, FileWrite], [
       "batch-size", "buffer-size", "check", "check-quiet", "dictionary-order", "field-separator",
       "general-numeric-sort", "human-numeric-sort", "ignore-case", "ignore-leading-blanks",
@@ -85,6 +86,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "random-sort", "random-source", "reverse", "sort", "stable", "temporary-directory",
       "unique", "version-sort", "zero-terminated",
     ]),
+    // Stream suffix storage follows selected bytes, including unfinished records.
     contract("tail", Core, FileOrStdin, ByteStream, [FileRead], [
       "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose", "zero-terminated",
     ]),
@@ -139,6 +141,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("expand", Core, FileOrStdin, ByteStream, [FileRead], [
       "initial", "tabs",
     ]),
+    // Directory reads follow evaluated predicates/descent; exec batches flush during traversal.
     contract(
       "find",
       Restricted,
@@ -183,6 +186,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("test", Core, NoInput, LineStream, [FileRead], [
       "expression-language", "file-kinds", "access-checks", "size", "timestamps",
     ]),
+    // One shared preflight precedes exclusive creation; overwrite flags stay boundary-only.
     contract("cp", Extended, NoInput, LineStream, [FileRead, FileWrite], [
       "archive", "force", "no-clobber", "no-target-directory", "no-preserve", "preserve",
       "recursive", "verbose", "interactive", "update", "update-mode", "backup", "backup-control",
@@ -202,6 +206,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     // Timestamps describe entries, including dangling links, without dereferencing.
     // Windows Wasm link moves/backups reject until the host rename fix is verified.
+    // A failed rollback reports its backup path alongside the original move failure.
     contract("mv", Extended, NoInput, LineStream, [FileRead, FileWrite], [
       "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
       "update-mode", "backup", "backup-control", "suffix",
@@ -501,6 +506,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("date", Core, NoInput, LineStream, [FileRead], [
       "utc", "date", "iso-8601", "rfc-email", "version",
     ]),
+    // Complete batches may run before EOF; fatal statuses stop new dispatch.
     contract(
       "xargs",
       Restricted,

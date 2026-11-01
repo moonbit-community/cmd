@@ -79,8 +79,11 @@ fn key_end(
 }
 
 ///|
-fn extract_key(line : Bytes, spec : KeySpec, separator : Byte?) -> Bytes {
-  let ranges = field_ranges(line, separator)
+fn extract_key(
+  line : Bytes,
+  spec : KeySpec,
+  ranges : Array[(Int32, Int32)],
+) -> BytesView {
   let start = key_start(line, spec.start, ranges)
   let end = match spec.end {
     Some(position) => key_end(line, position, ranges)
@@ -89,7 +92,7 @@ fn extract_key(line : Bytes, spec : KeySpec, separator : Byte?) -> Bytes {
   if end <= start {
     b""
   } else {
-    line[start:end].to_owned()
+    line[start:end]
   }
 }
 
@@ -102,9 +105,9 @@ fn transforms_key(modifiers : Modifiers) -> Bool {
 }
 
 ///|
-fn transformed_key(key : Bytes, modifiers : Modifiers) -> Bytes {
+fn transformed_key(key : BytesView, modifiers : Modifiers) -> Bytes {
   if !transforms_key(modifiers) {
-    return key
+    return key.to_owned()
   }
   let output : Array[Byte] = []
   let mut start = 0

@@ -3,7 +3,7 @@
 Move files and directories for MoonX.
 
 ```sh
-moonx cli/mv@0.2.5 [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
+moonx cli/mv@0.2.6 [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
 ```
 
 ## Supported scope
@@ -26,6 +26,11 @@ Rename or move into directories, with overwrite selection, update modes and back
 
 ## Limitations
 
+- If a move fails after making a backup and restoring that backup also fails,
+  the diagnostic includes both failures and the backup path. Inspect the
+  reported paths before retrying; successful rollback preserves the original
+  move error.
+
 - Cross-filesystem moves are unsupported.
 - Windows rejects moving symlinks/junctions and backing up destination links; explicit skip modes remain available.
 - -i/-u reject equal source/target timestamps. Same-path and same-file hard-link moves fail, except explicit skip modes.
@@ -33,9 +38,9 @@ Rename or move into directories, with overwrite selection, update modes and back
 ## Examples
 
 ```sh
-moonx cli/mv@0.2.5 old.txt new.txt
-moonx cli/mv@0.2.5 -n report.txt archive/
-moonx cli/mv@0.2.5 --backup=simple report.txt archive/
+moonx cli/mv@0.2.6 old.txt new.txt
+moonx cli/mv@0.2.6 -n report.txt archive/
+moonx cli/mv@0.2.6 --backup=simple report.txt archive/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

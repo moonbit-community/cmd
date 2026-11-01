@@ -3,7 +3,24 @@
 Date: 2026-09-05
 Updated: 2026-11-01
 
-The unreleased audit candidates are rm 0.2.4 and sort 0.2.6. Rm rejects a
+The 2026-11-01 runtime follow-up confirms two resource limitations in unchanged
+artifacts: rg count-only long records can use the growing replay buffer when
+an early match declines the streaming plan; base32 encoding waits for EOF and
+retains complete input/output arrays, including an extra wrapped-output array.
+The measured macOS Wasm cases and conditions for lifting these limitations are
+in [ADR-0003](adr/0003-streams.md). Correct output on those cases does not imply
+bounded memory or streaming latency.
+
+The unreleased audit candidates include core 0.9.1, cp 0.2.4, find 0.2.5,
+mv 0.2.6, rm 0.2.4, sort 0.2.6, tail 0.2.4 and xargs 0.2.4. Xargs dispatches
+complete batches before EOF and replenishes individual parallel slots; later
+input errors can follow completed child effects. Find observes directory names
+on demand and executes completed `-exec ... +` batches during traversal, using
+UTF-8 payload budgets. Tail releases discarded streamed records without a final
+whole-selection copy. Mv reports restoration failure and its backup path.
+Cp shares the existing preflight/copy implementation and retains its overwrite
+boundary. Sort shares field indexing while retaining exact numeric keys.
+Rm rejects a
 symbolic-link operand with trailing separators before traversal, even with
 force; this preserves the link and referent. Sort numeric mode compares decimal
 prefixes exactly in ordinary, stable, unique, check and external-merge paths.

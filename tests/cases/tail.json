@@ -210,8 +210,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tail@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/tail@0.2.4 metadata contract",
+      "expected_stdout_text": "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\nStreamed last-N selection retains selected records, including an unfinished final record.\n      --help      display this help and exit\n      --version   display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -229,8 +229,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tail@0.2.3 metadata contract",
-      "expected_stdout_text": "tail 0.2.3\n",
+      "source_version": "workspace cli/tail@0.2.4 metadata contract",
+      "expected_stdout_text": "tail 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -554,6 +554,22 @@
         "lines"
       ],
       "source_version": "Independent forced-header rendering and real tail selection for one file."
+    },
+    {
+      "id": "repair-tail-final-unterminated-record",
+      "command": "tail",
+      "args": [
+        "-n1"
+      ],
+      "stdin_text": "discarded\nselected",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "selected",
+      "expected_stderr_text": ""
     }
   ]
 }

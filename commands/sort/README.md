@@ -34,6 +34,10 @@ use the same ordering. `-g` retains floating-point general-number semantics.
 
 ## Limitations
 
+- Multiple explicit keys share one field-boundary scan per record. Preparation
+  borrows selected byte ranges before producing owned keys; numeric fields retain
+  exact canonical decimal digits, including across temporary runs.
+
 - Locale-dependent collation is unsupported. Nonzero percentage buffer sizes are rejected; the buffer budget is not a total memory cap.
 - Merge into an existing output file is rejected. Large sorts and named merges require writable temporary storage.
 

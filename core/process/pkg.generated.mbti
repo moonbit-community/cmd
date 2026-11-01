@@ -6,6 +6,10 @@ import {
 }
 
 // Values
+pub fn argument_bytes(String) -> Int64
+
+pub fn arguments_bytes(ArrayView[String]) -> Int64
+
 pub fn child(String, Array[String], context? : ExecutionContext) -> ChildSpec
 
 pub fn default_environment() -> Map[String, String]

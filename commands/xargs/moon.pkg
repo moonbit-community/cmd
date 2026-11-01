@@ -1,6 +1,7 @@
 import {
   "cli/core/process",
   "moonbitlang/async",
+  "moonbitlang/async/semaphore",
   "moonbitlang/async/fs",
   "moonbitlang/async/io",
   "moonbitlang/async/os_error",

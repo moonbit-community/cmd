@@ -6,6 +6,102 @@ Updated: 2026-11-01
 
 ## Decision
 
+Runtime audit repair (2026-11-01, unreleased): argument tokenization, batch
+construction and execution now have separate owners in xargs. One pending
+input item/batch and at most the configured number of in-flight invocations
+replace whole-input storage and waves of tasks. Confirmations remain serial;
+fatal child results stop the producer while existing children finish. Input
+errors may follow earlier child effects. The core argv byte helpers have two
+actual consumers, xargs and find; each command retains its parsing and error
+rules. Find executes complete batches during traversal and caches directory
+names only for one visit, lazily for descent or an evaluated emptiness test.
+Postorder predicates observe current state after child effects.
+
+Tail retains a deque of immutable chunks and an offset into its first chunk.
+The final delimiter decides whether the unfinished record occupies a selected
+line slot. Removed deque slots release their references; output visits the
+remaining views without concatenation. Retained payload follows the selection
+plus at most one backing chunk; a selected long record remains unbounded.
+Sort indexes fields once per record and borrows ranges during preparation,
+retaining owned spill keys and exact decimal representations. Cp uses the
+existing shared preflight and exclusive-copy path, removing dormant replacement
+policy without relaxing filesystem capability boundaries. The patch command's
+already-rejected named-output condition and tail's inert emitted flag are removed.
+
+The focused regression witnesses include an open producer awaiting its first
+child, replenishment behind a blocked child, fatal producer interruption,
+fragmented UTF-8 and quoting, short-circuited directory observation, postorder
+enumeration, incremental multibyte budgets, discarded long-record retention,
+double-failure rollback and copy preflight before effects. These assertions do
+not establish timing or total process RSS.
+
+The subsequent macOS Wasm resource diagnostic retains unchanged rg, base32
+and base64 artifacts. Inputs are synthetic 1, 8 and 32 MiB single records,
+used only to distinguish resource/lifecycle routes, never as timing inventory.
+For `rg -a -c --include-zero 'a[bc]+d'`, placing `abcd` at the beginning of a
+32 MiB record gives 103,022,592 bytes of kernel peak RSS; a final-position
+match gives 35,864,576 and a miss gives 35,586,048. The prefix-match admission
+test declines the streaming counter and replays through the growing line
+buffer. After the first file finishes, while a second stdin remains open,
+the early-match process retains 103,006,208 bytes of RSS versus 35,471,360 for
+the late-match control. `LineBuffer::clear` resets offsets without shrinking
+the backing allocation. Process RSS also includes runtime/allocator retention;
+these samples do not measure guest live bytes directly. The next repair should
+evaluate safe count-only admission independently of early match position and
+an explicit reuse/retention budget, retaining replay and matcher-budget controls.
+
+Base32 encoding of 32 MiB peaks at 229,588,992 bytes with `-w 0` and
+284,786,688 with `-w 76`; the base64 controls peak at 21,233,664 and 21,331,968.
+The base32 call chain reads the full input, creates the complete encoded
+array, then allocates the wrapped copy when requested. After writing 64 KiB
+to an open input pipe and observing concurrently for two seconds, base32
+produces no output until EOF; base64 produces output before EOF. Every encoded
+result independently decodes to the input SHA-256. This establishes the
+tested encoding resource/lifecycle limitation, not a codec correctness failure
+or a measured decoding bound. A future repair should retain the byte kernel
+inside a bounded quantum/column-state loop; historical throughput gains remain
+valid only within their original scope.
+
+Evidence bundle: `01a194b9-5133-78e3-97fb-ec4b8bc94f1e`, files
+`repair-artifacts.json`, `repair-runtime-probes.json`, and
+`repair-resources/report.json`, with replay scripts and raw rusage/phase captures.
+The real-process replay confirms find's unreadable pruned/depth-limited
+directories exit successfully and xargs starts a complete `-n 1` batch before
+EOF. Local correctness passes 1,792 release-Wasm package tests, 197 Native
+test-tool tests and 2,274 CLI checks, with 21 platform skips and zero failures.
+The full performance-protection gate remains failed: 13 artifacts change,
+but ln has only a correctness disposition and test has no registered timing
+workload. Their successful functional tests cannot replace missing timing.
+These development observations do not establish cross-platform resource
+acceptance, full upstream parity or published-coordinate acceptance.
+
+The first 30-row real-source comparison qualifies 26 rows and retains all
+failures: the first tail window implementation costs 74.2–74.9% for regular stdin and
+78.9–79.8% for the 65,537-byte pipe producer; the first xargs implementation costs
+5.7–7.1% on UnicodeData. Cp's large-file row fails dispersion/drift, so its
+ratios are not qualified. Tail now chooses the boundary-search direction with
+fewer delimiter crossings; xargs decodes complete literal items from borrowed
+chunk views and accumulates only cross-chunk items. Both changes preserve the
+same lifetime and malformed-input contracts. The failed candidate and both
+windows remain in `repair-real-panels`; two subsequent setup failures produce
+no timing evidence and remain in their separate launch logs.
+
+The revised `repair-revised-panels-final` comparison qualifies all five
+tail/xargs rows against the original baseline. Accept the individually
+measured regular-stdin tail cost of 4.18%/2.52% and UnicodeData xargs cost of
+2.73%/4.48% for the corrected retention and execution lifecycle. The other tail
+pipe rows range from 0.9% faster to 2.0% slower; the xargs options workload is
+18.1–18.5% faster. These finite costs are within the existing 5% gate, not
+evidence that every workload improves. Removing them later requires retaining
+the same independent lifecycle assertions and rerunning affected real rows.
+Only tail/xargs artifact hashes change between those candidates, so the 24
+qualified unaffected rows retain their scope: cp small/tree are 6.7–6.8% and
+9.1–10.1% faster, find names/size are 4.4–5.6% and 5.3–6.6% faster, and sort's
+numeric-airport row is 4.4% faster while its other rows remain near baseline.
+The combined current evidence qualifies 29/30 measured rows; cp's unstable row
+and the ln/test coverage gaps remain failed/incomplete. No unchanged timing
+retry, complete protection pass or formal performance acceptance is claimed.
+
 Audit correction (2026-11-01): sort `-n` must preserve arbitrary decimal-prefix
 precision. The former Double conversion collapsed distinct large integers and
 fractions; previous performance evidence does not establish that semantic

@@ -3,12 +3,19 @@
 Search directory trees for MoonX.
 
 ```sh
-moonx cli/find@0.2.4 [PATH...] [EXPRESSION]
+moonx cli/find@0.2.5 [PATH...] [EXPRESSION]
 ```
 
 ## Supported scope
 
 Walk without following symbolic links. Combine predicates with negation, AND and OR; print matching paths, execute commands or delete matches.
+
+Directory names are read only when descending or evaluating `-empty`; a
+short-circuited `-empty`, `-prune`, or the maximum-depth boundary does not itself
+enumerate children. Names are reused within a visit. Postorder evaluation uses
+fresh observations when a predicate needs them after child effects.
+`-exec ... +` executes completed batches during traversal and accounts for UTF-8
+argument bytes, including repeated placeholders, within a 64 KiB payload budget.
 
 ## Options
 
@@ -33,8 +40,8 @@ Walk without following symbolic links. Combine predicates with negation, AND and
 ## Examples
 
 ```sh
-moonx cli/find@0.2.4 . -name '*.mbt'
-moonx cli/find@0.2.4 . -type f -maxdepth 2 -print0
+moonx cli/find@0.2.5 . -name '*.mbt'
+moonx cli/find@0.2.5 . -type f -maxdepth 2 -print0
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

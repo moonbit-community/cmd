@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "candidate": true,
-  "core_version": "0.9.0",
+  "core_version": "0.9.1",
   "base_manifest": "active-cases.json",
   "commands": [
     {
@@ -136,7 +136,7 @@
     {
       "name": "cp",
       "package_name": "cli/cp",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -321,7 +321,7 @@
     {
       "name": "find",
       "package_name": "cli/find",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "findutils",
       "supported_options": [
@@ -563,7 +563,7 @@
     {
       "name": "mv",
       "package_name": "cli/mv",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -939,7 +939,7 @@
     {
       "name": "tail",
       "package_name": "cli/tail",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1131,7 +1131,7 @@
     {
       "name": "xargs",
       "package_name": "cli/xargs",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "published": false,
       "compare_profile": "findutils",
       "supported_options": [

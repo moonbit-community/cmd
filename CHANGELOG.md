@@ -11,6 +11,34 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 ## 2026-11-01
 
+Development runtime and ownership repair; no publication:
+
+- Prepare core 0.9.1 with shared UTF-8 argv-byte accounting used by find and
+  xargs. Prepare cp 0.2.4, find 0.2.5, mv 0.2.6, tail 0.2.4 and xargs 0.2.4;
+  retain the existing unpublished sort 0.2.6 candidate. Published snapshots
+  and unchanged command coordinates remain frozen.
+- Stream xargs tokens and batches with bounded concurrency, immediate free-slot
+  reuse and fatal-result producer cancellation. Keep find directory reads lazy
+  and execute bounded UTF-8 batches during traversal. Trim tail's discarded
+  records and release deque slots; report both move and backup-recovery errors.
+- Reuse cp's shared preflight/exclusive-copy implementation, index sort fields
+  once per record and remove unreachable cp/patch policy branches. Preserve
+  existing filesystem boundaries and command-specific contracts.
+- Local validation passes 1,792 release-Wasm package tests, 197 Native test-tool
+  tests and 2,274 CLI checks with 21 platform skips and zero failures. Real
+  process probes confirm the repaired find and xargs behavior. The complete
+  performance-protection gate remains failed because changed ln/test artifacts
+  lack timing coverage; no blanket performance acceptance is claimed.
+- Correct the first candidate's measured tail rescan and xargs item-copy
+  regressions. The revised five-row comparison passes; combined current
+  evidence qualifies 29/30 measured rows. Retain the unstable cp large-file
+  row and accept only the individually recorded 2.5–4.5% tail/xargs costs in
+  ADR-0003. Earlier failed candidates and windows remain failed evidence.
+- Actual resource and open-pipe observations confirm rg's early-match long-record
+  retention and base32's whole-input encoding limitation. The unchanged-artifact
+  measurements, control cases and next-step conditions are recorded in ADR-0003;
+  they are not general timing results or published-version acceptance.
+
 Development audit repair; no publication:
 
 - Prepare rm 0.2.4 to reject trailing-separator symlink operands before

@@ -60,7 +60,7 @@ priv struct FindEntry {
   readable : Bool?
   writable : Bool?
   executable : Bool?
-  empty : Bool
+  directory : DirectoryVisit?
 }
 
 ///|
@@ -546,7 +546,14 @@ async fn FindExpr::evaluate(
     Name(regex) => (regex.execute(base_name(entry.path)) is Some(_), false)
     Path(regex) => (regex.execute(entry.path) is Some(_), false)
     Kind(wanted) => (kind_matches(entry.kind, wanted), false)
-    Empty => (entry.empty, false)
+    Empty =>
+      (
+        match entry.directory {
+          Some(directory) => directory.names() is Some([])
+          None => entry.size == Some(0L)
+        },
+        false,
+      )
     Size(comparison, value, blocks) => {
       let actual_bytes = match entry.size {
         Some(bytes) => bytes
@@ -629,21 +636,6 @@ fn join_path(parent : String, name : String) -> String {
 }
 
 ///|
-fn exec_batch_size(command : Array[String], values : Array[String]) -> Int32 {
-  let mut size = 0
-  for argument in command {
-    if argument == "{}" {
-      for value in values {
-        size += value.length() + 1
-      }
-    } else {
-      size += argument.length() + 1
-    }
-  }
-  size
-}
-
-///|
 fn begins_expression(token : String) -> Bool {
   token == "(" || token == "!" || token.has_prefix("-")
 }
@@ -652,13 +644,13 @@ fn begins_expression(token : String) -> Bool {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("find 0.2.4\n")
+    @stdio.stdout.write("find 0.2.5\n")
     return
   }
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
     @stdio.stdout.write(
-      "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n",
+      "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\nPruned/depth-limited directories are read only when an evaluated predicate requires their names.\n-exec ... + runs completed batches during traversal with a 64 KiB UTF-8 argument budget.\n",
     )
     return
   }
@@ -704,7 +696,6 @@ async fn main {
     @sys.exit(1)
     return
   }
-  let needs = expression.metadata_needs()
   let references : Array[ReferenceTime] = []
   load_reference_times(expression, references) catch {
     err => {
@@ -714,209 +705,7 @@ async fn main {
     }
   }
   let context : FindContext = { now: @fsops.current_timestamp(), references, }
-  let stack : Array[(String, Int32, Bool)] = []
-  let mut path_index = paths.length()
-  while path_index > 0 {
-    path_index -= 1
-    stack.push((paths[path_index], 0, false))
-  }
-  let mut failed = false
-  let mut batch_command : Array[String]? = None
-  let batch_values : Array[String] = []
-  let batch_groups : Array[(Array[String], Array[String])] = []
-  while stack.pop() is Some((path, depth, postorder)) {
-    let kind = @fsops.kind_if_exists(path) catch {
-      err => {
-        @stdio.stderr.write("find: '\{path}': \{err}\n")
-        failed = true
-        continue
-      }
-    }
-    guard kind is Some(kind) else {
-      @stdio.stderr.write("find: '\{path}': no such file or directory\n")
-      failed = true
-      continue
-    }
-    let entries = if kind == Directory {
-      @fswalk.read_directory(path) catch {
-        err => {
-          @stdio.stderr.write("find: '\{path}': \{err}\n")
-          failed = true
-          []
-        }
-      }
-    } else {
-      []
-    }
-    entries.sort_by((left, right) => left.lexical_compare(right))
-    let size = if needs.size {
-      @fswalk.Entry::known(path, kind).regular_size(OpenFile)
-    } else {
-      None
-    }
-    let atime = if needs.atime {
-      Some(@fsops.read_file_timestamp(path, AccessTime, follow_symlink=false))
-    } else {
-      None
-    }
-    let mtime = if needs.mtime {
-      Some(
-        @fsops.read_file_timestamp(path, ModificationTime, follow_symlink=false),
-      )
-    } else {
-      None
-    }
-    let ctime = if needs.ctime {
-      Some(
-        @fsops.read_file_timestamp(path, StatusChangeTime, follow_symlink=false),
-      )
-    } else {
-      None
-    }
-    let followed_kind = if needs.followed_kind {
-      if kind == SymLink {
-        Some(@fs.kind(path, follow_symlink=true) catch { _ => SymLink })
-      } else {
-        Some(kind)
-      }
-    } else {
-      None
-    }
-    let entry : FindEntry = {
-      path,
-      kind,
-      followed_kind,
-      size,
-      atime,
-      mtime,
-      ctime,
-      readable: if needs.readable {
-        Some(@fs.can_read(path))
-      } else {
-        None
-      },
-      writable: if needs.writable {
-        Some(@fs.can_write(path))
-      } else {
-        None
-      },
-      executable: if needs.executable {
-        Some(@fs.can_execute(path))
-      } else {
-        None
-      },
-      empty: if kind == Directory {
-        entries.is_empty()
-      } else {
-        size is Some(size) && size == 0L
-      },
-    }
-    if parser.depth_first &&
-      !postorder &&
-      kind == Directory &&
-      depth < parser.max_depth {
-      stack.push((path, depth, true))
-      let mut index = entries.length()
-      while index > 0 {
-        index -= 1
-        stack.push((join_path(entry.path, entries[index]), depth + 1, false))
-      }
-      continue
-    }
-    let in_depth = depth >= parser.min_depth && depth <= parser.max_depth
-    let (matched, prune) = if in_depth {
-      expression.evaluate(entry, context)
-    } else {
-      (false, false)
-    }
-    if in_depth && matched && !(prune && parser.action is Some(Print(_))) {
-      match parser.action {
-        None => @stdio.stdout.write(path + "\n")
-        Some(Print(zero)) =>
-          @stdio.stdout.write(path + (if zero { "\u0000" } else { "\n" }))
-        Some(Delete) =>
-          if kind == Directory {
-            @fs.rmdir(path)
-          } else {
-            @fs.remove(path)
-          }
-        Some(Exec(command, batch)) =>
-          if batch {
-            if batch_command is Some(_) &&
-              !batch_values.is_empty() &&
-              exec_batch_size(command, batch_values + [path]) > 64 * 1024 {
-              batch_groups.push((command, batch_values.copy()))
-              batch_values.clear()
-            }
-            batch_command = Some(command)
-            batch_values.push(path)
-          } else {
-            let expanded : Array[String] = command.map(argument => {
-              if argument == "{}" {
-                path
-              } else {
-                argument
-              }
-            })
-            guard expanded.get(0) is Some(program) else { continue }
-            let code = @process.run(
-              @process.child(program, expanded[1:].to_owned()),
-            ) catch {
-              err => {
-                @stdio.stderr.write("find: \{err}\n")
-                failed = true
-                continue
-              }
-            }
-            if code < 0 {
-              @stdio.stderr.write("find: child terminated by signal\n")
-            }
-          }
-      }
-    }
-    if !parser.depth_first &&
-      kind == Directory &&
-      depth < parser.max_depth &&
-      !prune {
-      let mut index = entries.length()
-      while index > 0 {
-        index -= 1
-        stack.push((join_path(entry.path, entries[index]), depth + 1, false))
-      }
-    }
-  }
-  if batch_command is Some(command) && !batch_values.is_empty() {
-    batch_groups.push((command, batch_values.copy()))
-  }
-  for group in batch_groups {
-    let command = group.0
-    let values = group.1
-    let argv : Array[String] = []
-    for argument in command {
-      if argument == "{}" {
-        for value in values {
-          argv.push(value)
-        }
-      } else {
-        argv.push(argument)
-      }
-    }
-    match argv.get(0) {
-      Some(program) => {
-        let code = @process.run(@process.child(program, argv[1:].to_owned())) catch {
-          err => {
-            @stdio.stderr.write("find: \{err}\n")
-            failed = true
-            -1
-          }
-        }
-        if code != 0 {
-          failed = true
-        }
-      }
-      None => failed = true
-    }
-  }
+  let failed = walk_find(paths, parser, expression, context)
   if failed {
     @sys.exit(1)
   }

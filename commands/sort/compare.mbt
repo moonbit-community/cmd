@@ -399,12 +399,13 @@ fn make_entry(
       []
     }
   } else {
+    let ranges = field_ranges(record, separator)
     specs.map(spec => {
-      let key = prepared_key(
-        extract_key(record, spec, separator),
-        spec.modifiers,
-        seed,
-      )
+      let selected = extract_key(record, spec, ranges)
+      if spec.modifiers.mode == Numeric && !transforms_key(spec.modifiers) {
+        return prepare_numeric_field(selected)
+      }
+      let key = prepared_key(selected, spec.modifiers, seed)
       if spec.modifiers.mode == Numeric {
         prepare_numeric_field(key)
       } else {

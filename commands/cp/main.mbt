@@ -2,13 +2,10 @@
 priv struct CpOptions {
   recursive : Bool
   no_clobber : Bool
-  interactive : Bool
   no_target_directory : Bool
   verbose : Bool
   traversal : @fsops.LinkTraversal
   update : @fsops.UpdateMode
-  backup : @fsops.BackupControl
-  suffix : String
   preserve_permissions : Bool
 }
 
@@ -38,15 +35,6 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
 }
 
 ///|
-async fn confirm_overwrite(target : String) -> Bool {
-  @stdio.stderr.write("cp: overwrite '\{target}'? ")
-  match @stdio.stdin.read_until("\n") {
-    Some(answer) => answer.has_prefix("y") || answer.has_prefix("Y")
-    None => false
-  }
-}
-
-///|
 async fn replacement_decision(
   source : String,
   target : String,
@@ -71,94 +59,6 @@ async fn replacement_decision(
 }
 
 ///|
-async fn copy_tree_with_policy(
-  source : String,
-  target : String,
-  options : CpOptions,
-  command_line : Bool,
-) -> Bool {
-  let target_kind = @fsops.kind_if_exists(target)
-  let source_kind = @fs.kind(source, follow_symlink=false)
-  let source_kind = if source_kind == SymLink &&
-    (
-      options.traversal == FollowAllLinks ||
-      (options.traversal == FollowCommandLineLinks && command_line)
-    ) {
-    @fs.kind(source, follow_symlink=true)
-  } else {
-    source_kind
-  }
-  match source_kind {
-    Directory => {
-      match target_kind {
-        Some(Directory) => ()
-        None => @fs.mkdir(target, permission=0o777)
-        Some(_) =>
-          raise @fsops.FsOpError("destination is not a directory: '\{target}'")
-      }
-      let entries = @fs.readdir(
-        source,
-        include_hidden=true,
-        include_special=false,
-        sort=false,
-      )
-      entries.sort_by((left, right) => left.lexical_compare(right))
-      let mut copied = false
-      for entry in entries {
-        if copy_tree_with_policy(
-            @fsops.join(source, entry),
-            @fsops.join(target, entry),
-            options,
-            false,
-          ) {
-          copied = true
-        }
-      }
-      copied || target_kind is None
-    }
-    Regular => {
-      match replacement_decision(source, target, options) {
-        SkipDestination => return false
-        RejectDestination =>
-          raise @fsops.FsOpError("destination exists under update=none-fail")
-        ReplaceDestination => ()
-      }
-      if target_kind == Some(Regular) && options.interactive {
-        if !confirm_overwrite(target) {
-          return false
-        }
-      }
-      let backup = match target_kind {
-        Some(Regular) =>
-          @fsops.backup_destination(
-            target,
-            options.backup,
-            suffix=options.suffix,
-          )
-        _ => None
-      }
-      let backup_to_restore = backup
-      errdefer (match backup_to_restore {
-        Some(path) => @fsops.restore_backup(target, path) catch { _ => () }
-        None => ()
-      })
-      ignore(
-        @fsops.copy_path_with_links(
-          source,
-          target,
-          false,
-          backup is None,
-          options.traversal,
-          preserve_permissions=options.preserve_permissions,
-        ),
-      )
-      true
-    }
-    _ => raise @fsops.FsOpError("unsupported source type: '\{source}'")
-  }
-}
-
-///|
 async fn copy_one(
   source : String,
   target : String,
@@ -173,21 +73,21 @@ async fn copy_one(
       ReplaceDestination => ()
     }
   }
-  @fsops.preflight_copy_path(
+  @fsops.copy_path_with_links(
     source,
     target,
     options.recursive,
+    false,
     options.traversal,
     preserve_permissions=options.preserve_permissions,
   )
-  copy_tree_with_policy(source, target, options, true)
 }
 
 ///|
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cp 0.2.3\n")
+    @stdio.stdout.write("cp 0.2.4\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
@@ -219,7 +119,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\n",
+      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\nTree validation finishes before copying; existing empty directories report no copy.\n",
     )
     return
   }
@@ -258,7 +158,7 @@ async fn main {
     Some("backup-control") => parsed.last_value("backup-control").unwrap()
     _ => "none"
   }
-  let backup = @fsops.parse_backup_control(backup_text) catch {
+  ignore(@fsops.parse_backup_control(backup_text)) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("cp: \{message}\n")
       @sys.exit(2)
@@ -280,14 +180,10 @@ async fn main {
     recursive,
     no_clobber: parsed.last_occurrence(["force", "interactive", "no-clobber"]) ==
     Some("no-clobber"),
-    interactive: parsed.last_occurrence(["force", "interactive", "no-clobber"]) ==
-    Some("interactive"),
     no_target_directory: parsed.contains("no-target-directory"),
     verbose: parsed.contains("verbose"),
     traversal,
     update,
-    backup,
-    suffix: parsed.last_value("suffix").unwrap_or("~"),
     preserve_permissions: !parsed.contains("no-preserve"),
   }
   let destination = operands[operands.length() - 1]
