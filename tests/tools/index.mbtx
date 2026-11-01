@@ -63,17 +63,36 @@ async fn main {
     ("candidate.json", "tests/release/candidate.json"),
   ]
   let changed : Array[String] = []
+  let differences : Array[String] = []
   for (name, destination) in outputs {
     let bytes = @fs.read_file(temporary + "/" + name).binary()
-    if !@fs.exists(destination) || @fs.read_file(destination).binary() != bytes {
+    let exists = @fs.exists(destination)
+    let current = if exists { @fs.read_file(destination).binary() } else { b"" }
+    if !exists || current != bytes {
       changed.push(destination)
+      let mut offset = 0
+      while offset < current.length() &&
+            offset < bytes.length() &&
+            current[offset] == bytes[offset] {
+        offset += 1
+      }
+      differences.push(
+        destination +
+        ": checked-in=" +
+        current.length().to_string() +
+        " bytes, generated=" +
+        bytes.length().to_string() +
+        " bytes, first difference=" +
+        offset.to_string() +
+        (if !exists { " (missing)" } else { "" }),
+      )
     }
   }
   if mode == "check" {
     guard changed.is_empty() else {
       fail(
         "generated test definitions are stale; run index update:\n" +
-        changed.join("\n"),
+        differences.join("\n"),
       )
     }
   } else {

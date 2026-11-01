@@ -30,6 +30,9 @@ The index command generates all derived outputs into a temporary directory
 before comparison or replacement. `index check` does not edit committed files.
 It also checks case quality and candidate release definitions. Neither mode
 updates `release/latest.json` or its independent expected cases.
+Definition inputs and derived files use repository-enforced LF endings so
+byte checks and review digests are identical across hosts. This policy does
+not normalize raw fixture payloads.
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-root moon run tests/run.mbtx -- functional

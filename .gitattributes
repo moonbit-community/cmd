@@ -1,2 +1,10 @@
 # Imported fixtures include deliberate CRLF and trailing blank lines.
 commands/rg/internal/**/testdata/** -text -whitespace
+
+# Definitions and generated indexes must have identical bytes on every host.
+# Raw fixtures retain their own byte and line-ending contracts.
+tests/cases/*.json text eol=lf
+tests/cases/generated/*.json text eol=lf
+tests/coverage/review/*.json text eol=lf
+tests/coverage/generated/* text eol=lf
+tests/release/*.json text eol=lf
