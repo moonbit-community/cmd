@@ -86,4 +86,4 @@ Implementation: [wire](../../core/netops/http_wire.mbt),
 [serialization](../../core/netops/http_wire_request.mbt),
 [transfer](../../core/netops/transfer.mbt),
 [sink lifetime](../../core/netops/transfer_sink.mbt),
-[network scenarios](../../tests/network_scenarios/).
+[network scenarios](../../tests/scenarios/network/).

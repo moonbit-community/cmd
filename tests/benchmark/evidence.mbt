@@ -51,7 +51,7 @@ fn functional_workload_errors(
     errors.push("empty functional workload selection")
   }
   for row in workloads {
-    if !@testkit.safe_relative_path(row.id) || ids.contains(row.id) {
+    if !@harness.safe_relative_path(row.id) || ids.contains(row.id) {
       errors.push("unsafe or duplicate workload ID: " + row.id)
     }
     ids.add(row.id)

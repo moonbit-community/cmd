@@ -34,7 +34,7 @@ The [benchmark guide](../../tests/benchmark/README.md) and
 Do not create another runner, workload registry or chronological report archive.
 Source/test/workload bindings are executable in
 [protection.json](../../tests/benchmark/protection.json), checked by
-[architecture.mbtx](../../tests/architecture.mbtx).
+[architecture.mbtx](../../tests/tools/architecture.mbtx).
 
 ## Evidence and limits
 

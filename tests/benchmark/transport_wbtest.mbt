@@ -62,7 +62,7 @@ async fn assert_transport_child_reaped(stdout : String) -> Unit {
   let pid = @fs.read_file(stdout).text().trim().to_owned()
   assert_true(@string.parse_int(pid) > 1, msg="observer PID missing")
   let observed = if @async.platform is Windows {
-    @testkit.run("powershell.exe", [
+    @harness.run("powershell.exe", [
       "-NoLogo",
       "-NoProfile",
       "-NonInteractive",
@@ -70,7 +70,7 @@ async fn assert_transport_child_reaped(stdout : String) -> Unit {
       "$p = Get-Process -Id \{pid} -ErrorAction SilentlyContinue; if ($null -eq $p) { exit 1 } else { exit 0 }",
     ])
   } else {
-    @testkit.run("/bin/kill", ["-0", pid])
+    @harness.run("/bin/kill", ["-0", pid])
   }
   assert_true(
     observed.status != 0,

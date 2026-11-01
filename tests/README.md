@@ -1,105 +1,91 @@
 # Command validation
 
-The delivery target is Wasm through MoonX. Development checks execute current
-Wasm artifacts on Linux, macOS and Windows. Native packages implement the test
-tools; Native command builds and backend pairing are not product gates.
+Use one entry: `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- COMMAND`.
+Keep the current PATH toolchain. The entry discovers the workspace from any
+working directory inside it; arguments passed through this entry are relative
+to the repository root unless absolute. From `tests/`, use `moon run run.mbtx`.
+Moon commands sharing the workspace build directory run serially.
 
-## Workflows
+## Commands
 
-| Workflow | Trigger | Responsibility |
-| --- | --- | --- |
-| check | PR, main push, manual | Full applicable Wasm tests on three platforms; pinned upstream comparisons on Linux |
-| resource observations | Manual | Selected Linux RSS, temporary disk and large-input observations |
-| release acceptance | Manual | Exact-version MoonX functional checks on three platforms; pinned upstream comparisons on Linux |
+| Command | Responsibility |
+| --- | --- |
+| `check` | Wasm products, Native test packages, and every `.mbtx` script |
+| `test tools` / `test packages` / `test all` | Native infrastructure regressions, Wasm package tests, or both |
+| `format --check` | Package formatting and explicit formatting of every standalone script |
+| `index check` / `index update` | Verify or regenerate current derived definitions; never execution evidence |
+| `list --command sort` / `validate` | Inspect or validate functional selection without executing products |
+| `functional` | Build Wasm, execute applicable correctness checks, and verify fresh coverage evidence |
+| `architecture /absolute/fresh.json` | Validate package and strategy boundaries |
+| `published` | Build acceptance tools and validate the exact published coordinates |
+| `oracle --image sha256:ID` | Verify the immutable Linux reference used by functional/published checks |
+| `corpus`, `benchmark`, `protect` | Pinned sources and the single [timing engine](benchmark/README.md) |
+| `resources`, `resource-profiles` | Separate manual [resource observations](resources/README.md) |
 
-There is no daily full run, post-platform coverage audit, change declaration or
-audited-push wrapper. Main still requires a PR and successful platform checks.
-Independent cases use at most four tasks. Stateful, network and timestamp
-fixtures run serially. Moon commands sharing a build directory are serialized.
+Daily tools default to debug builds; product Wasm and package tests use release.
+`CMD_TEST_PROFILE=release` selects optimized tools. Published acceptance always
+uses release tools. Choose a fresh absolute report root for every execution:
 
-## Local development
-
-Keep the current PATH toolchain and prefix every Moon invocation with
-`MOON_HOME="$HOME/.moon-accounts/cli"`. Build commands once, then reuse artifacts:
-
-```text
-MOON_HOME="$HOME/.moon-accounts/cli" moon check --target wasm --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --deny-warn tests/runner
-MOON_HOME="$HOME/.moon-accounts/cli" moon test --target wasm --release --deny-warn --no-parallelize
-MOON_HOME="$HOME/.moon-accounts/cli" moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark tests/proofs
-MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_PROFILE=debug CMD_TEST_REPORT_ROOT=/absolute/fresh-report moon run tests/ci.mbtx -- functional
+```sh
+MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-report moon run tests/run.mbtx -- functional
 ```
 
-Use a fresh report directory. `functional` includes metadata, contracts,
-stateful scenarios, retained compatibility cohorts, permission checks and
-bounded stream correctness regressions. `--suite all` additionally requires
-the pinned Linux oracle. See [runner usage](runner/README.md).
+On Linux, prepare `oracle` into the same report root first: the complete Linux
+run adds pinned differential comparisons. Diagnostic driver selections are
+documented in [harness/driver](harness/driver/README.md); subsets do not qualify
+full development or publication acceptance.
 
-Daily Native tools use debug builds to reduce C compilation cost; Wasm products
-and their package tests remain release builds. CI sets `CMD_TEST_PROFILE=debug`
-for `tests/ci.mbtx` and `tests/oracle.mbtx`. Those scripts default to release
-tools for the separate published-acceptance workflow.
+## Ownership
 
-The [runtime index](registry/README.md) supplies stable case selections and
-release policy. Ordinary package tests execute in batches through Moon;
-individual test names are not separately registered or sealed.
+| Path | Source of truth |
+| --- | --- |
+| `run.mbtx` | Public command routing, workspace paths, script discovery |
+| `tools/` | Internal orchestration scripts; CI uses the public entry |
+| `harness/` | Generic fixtures, launchers, deadlines, assertions and reports |
+| `harness/driver/` | Selection, scheduling and execution orchestration |
+| `harness/catalog/` | Typed validation of the case index and release policy |
+| `cases/*.json` | Current CLI cases; `manifest.json` lists files, `index.json` binds stable identities |
+| `cases/generated/` | Derived assertion-quality inventory |
+| `scenarios/` | Stateful, multi-command and permission assertions with private regressions |
+| `fixtures/` | Static corpora and pinned external oracle setup inputs |
+| `coverage/review/` | Manually reviewed finite facets, expected observations and remaining work |
+| `coverage/generated/` | Derived definitions and gap indexes; no saved execution passes |
+| `coverage/*.mbt` | Join actual execution receipts to reviewed definitions |
+| `release/` | Release policy, generated candidate, independent published coordinates and expectations |
+| `benchmark/` | Single timing inventory, engine and protection policy |
+| `resources/` | Resource observer, input recipes and effect relations |
 
-Large rg corpus data is owned by [`fixtures/rg`](fixtures/rg/README.md).
-Engine tests remain Wasm package tests because rg's internal interfaces are
-module-private. CLI-equivalent printer cases use the ordinary JSON contract
-runner and registry; injected clocks, paths and engine state remain package
-regressions. Pipelines requiring rg's private command matcher live in driver
-white-box tests; isolated printer and searcher mechanisms retain their own
-tests. Neither lower-level package imports driver for testing. Both layers
-run in the existing development workflow.
+Keep private-state and injected-runtime tests beside product packages. Large
+static rg corpora belong to [fixtures/rg](fixtures/rg/README.md); CLI-equivalent
+cases belong to `cases/`. Do not widen product APIs to relocate tests. New
+automation is pure MoonBit. Host programs are limited to oracle setup,
+observation and diagnostics.
 
-## Results and boundaries
+## Maintaining definitions and evidence
 
-Results are `pass`, `fail`, `skip` or `infra`. Verification kinds distinguish
-availability, contracts, upstream comparisons and explicit rejection boundaries.
-An expected rejection is not support for the rejected operation. Platform skips
-do not prove behavior on that platform. Missing required infrastructure, empty
-selections, timeouts and uncertain cleanup are failures.
+Change a case and its `cases/index.json` entry together. Change manually reviewed
+coverage only when a concrete discriminating assertion justifies it; follow
+[the coverage guide](coverage/README.md). Run `index update`, review the diff,
+then run `index check` and applicable tests. CI rejects stale generated files.
+The generator completes every stage before replacing derived outputs.
 
-Reports contain `run.json`, `summary.jsonl`, `summary.md` and failure captures.
-They record the platform, revision label, selected coordinates and durations.
-The controller also binds selected cases, exact result hashes and typed scenario
-observations to current assertion sources and a freshly built driver receipt.
-The finite [proof verifier](proofs/README.md) joins those actual reports and
-rejects missing, stale or mismatched evidence. This verifies only reviewed
-facets; the separate gap index retains unresolved labels. It is neither an
-audit-before-push wrapper nor a performance or publication seal. The upstream
-image and inventory remain fixed independently of these reports.
+Current cases use schema 2 and the identity index uses schema 3. There are no
+old path forwarders, overlay chains or alternative product backends. Aliases
+remain stable case identities without duplicate execution. Frozen published
+expectations are independent inputs, never an overlay on current cases.
 
-Exact expectations can render a known fixture path with `${WORK_NATIVE}` and
-`${PATH_SEPARATOR}`. The former formats only the supplied fixture root for the
-host; `${WORK}` keeps its existing bytes. These templates never rewrite observed
-output or literal payload backslashes. Directory-output differential cases
-declare the existing working-directory mapping for the host fixture versus its
-`/work` container mount; the exact relative suffix and complete output remain
-asserted.
+Results are `pass`, `fail`, `skip` or `infra`; verification distinguishes
+availability, local contracts, differential comparisons and explicit boundaries.
+Missing fixtures, empty required selections, deadlines, uncertain cleanup and
+report failures cannot pass. Stateful fixtures run serially; independent cases
+use at most four tasks. Successful fixtures are removed and failure captures
+are retained. Reports and driver/source receipts stay under the fresh report
+root, outside versioned definitions.
 
-Differential results carry a local-contract receipt only when the source is an
-independent contract and all local exact/runtime/file assertions complete. The
-receipt binds the source digest and actual local observation dimensions. The
-proof verifier requires it alongside the complete upstream comparison; a
-shared wrong output or a differential label alone cannot prove a local facet.
-
-Successful fixtures are removed. Failed captures and cleanup diagnostics are
-retained; direct-child cancellation does not promise arbitrary grandchild
-cleanup. Tests and fixtures remain pure MoonBit. Host programs are restricted
-to CI setup, observation and fixed upstream references.
-
-## Publication and performance
-
-[Published acceptance](release_runner/README.md) uses the current exact version
-inventory and its independent expected cases. Workspace changes do not rewrite
-old published expectations. The local-only `timeout` command is excluded.
-
-[Resource observations](resources/README.md) run only when explicitly requested.
-They are distinct from the statistical [benchmark contract](benchmark/README.md).
-Existing historical reports are immutable and are not current acceptance claims.
-
-The migration and measured results are recorded in
-[the CI migration ledger](../docs/ci-wasm-migration.md).
+Development CI runs all applicable Wasm checks on Linux, macOS and Windows,
+with pinned upstream comparisons on Linux. Mainline changes require a PR,
+the three checks and actual-main validation. Resource observations and exact
+[published acceptance](release/README.md) are separate manual workflows.
+Correctness, finite coverage, upstream agreement and performance retain their
+own scopes. Historical reports remain recoverable from Git, without an active
+compatibility path or backfilled acceptance claims.

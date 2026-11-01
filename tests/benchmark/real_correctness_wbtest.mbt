@@ -1,5 +1,5 @@
 ///|
-fn real_test_contract(id : String, command : String) -> @testkit.Case raise {
+fn real_test_contract(id : String, command : String) -> @harness.Case raise {
   @json.from_json({
     "id": id,
     "command": command,
@@ -15,8 +15,8 @@ fn real_test_contract(id : String, command : String) -> @testkit.Case raise {
 }
 
 ///|
-fn real_test_local_result(fixture : @testkit.Case) -> Json {
-  let report : @testkit.CaseReport = {
+fn real_test_local_result(fixture : @harness.Case) -> Json {
+  let report : @harness.CaseReport = {
     id: fixture.id,
     command: fixture.command,
     result: "pass",
@@ -102,7 +102,7 @@ test "local correctness rejects wrong ownership runtime verification incomplete 
       msg=key,
     )
   }
-  let expected : @testkit.ExpectedFile = @json.from_json({
+  let expected : @harness.ExpectedFile = @json.from_json({
     "path": "out",
     "content_text": "value",
   })

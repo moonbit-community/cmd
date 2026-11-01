@@ -100,9 +100,9 @@ async fn freeze_functional_artifacts(
       real_registry_path(real_text(real_field(manifest, "source_catalog"))),
       real_registry_path(real_text(real_field(manifest, "coverage_registry"))),
       typed.case_corpus,
-      "tests/registry/registry.json",
-      "tests/registry/case-quality.json",
-      "tests/fixtures/runner/cases.json",
+      "tests/cases/index.json",
+      "tests/cases/generated/quality.json",
+      "tests/cases/manifest.json",
       "tests/benchmark/protection.json",
     ]
     for index, path in paths {
@@ -126,9 +126,9 @@ async fn freeze_functional_artifacts(
         (if key == "--wasm-root" { "candidate" } else { "baseline" })
       @fs.mkdir(dest + "/cli", recursive=true)
       for command in commands {
-        let source = @testkit.wasm_path(root, command)
+        let source = @harness.wasm_path(root, command)
         @fs.mkdir(dest + "/cli/" + command)
-        let target = @testkit.wasm_path(dest, command)
+        let target = @harness.wasm_path(dest, command)
         identities.push((target, freeze_benchmark_file(source, target)))
       }
       frozen[key] = dest

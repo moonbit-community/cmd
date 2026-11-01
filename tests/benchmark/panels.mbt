@@ -107,11 +107,11 @@ async fn panel_stage_root(
   for command in commands {
     @fs.mkdir(target + "/cli/" + command)
     let source = if @fs.exists(root + "/cli") {
-      @testkit.wasm_path(root, command)
+      @harness.wasm_path(root, command)
     } else {
       root + "/" + command + "/" + command + ".wasm"
     }
-    ignore(freeze_benchmark_file(source, @testkit.wasm_path(target, command)))
+    ignore(freeze_benchmark_file(source, @harness.wasm_path(target, command)))
   }
   target
 }
@@ -154,7 +154,7 @@ async fn run_panels(options : Map[String, String]) -> Bool {
   @fs.mkdir(output, recursive=true, allow_exist=false)
   @fs.mkdir(output + "/tools/oracle", recursive=true)
   let fixed : Array[(String, String)] = []
-  @fs.mkdir(output + "/policy/tests/registry", recursive=true)
+  @fs.mkdir(output + "/policy/tests/harness/catalog", recursive=true)
   @fs.mkdir(output + "/policy/tests/benchmark", recursive=true)
   let actual = options.copy()
   let commands = real_selected_commands(options, rows)
@@ -233,10 +233,10 @@ async fn run_panels(options : Map[String, String]) -> Bool {
     frozen[field] = Json(target)
   }
   let manifest : FunctionalManifest = @json.from_json(original)
-  let cases = @testkit.load_cases(manifest.case_corpus)
+  let cases = @harness.load_cases(manifest.case_corpus)
   let case_path = output + "/cases.json"
   let command_catalog = @json.parse(
-    @fs.read_file("tests/fixtures/runner/cases.json").text(),
+    @fs.read_file("tests/cases/manifest.json").text(),
   )
   write_json(case_path, {
     "schema": 2,
@@ -245,7 +245,7 @@ async fn run_panels(options : Map[String, String]) -> Bool {
   })
   for
     path in [
-      "tests/registry/registry.json", "tests/registry/case-quality.json", "tests/benchmark/protection.json",
+      "tests/cases/index.json", "tests/cases/generated/quality.json", "tests/benchmark/protection.json",
     ] {
     fixed.push((path, benchmark_file_sha256(path)))
     fixed.push(
@@ -263,7 +263,7 @@ async fn run_panels(options : Map[String, String]) -> Bool {
   for key in ["--wasm-root", "--baseline-wasm-root"] {
     if actual.get(key) is Some(root) {
       for command in commands {
-        let file = @testkit.wasm_path(root, command)
+        let file = @harness.wasm_path(root, command)
         fixed.push((file, benchmark_file_sha256(file)))
       }
     }

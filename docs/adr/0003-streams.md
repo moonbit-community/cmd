@@ -115,7 +115,7 @@ measurements remain separate evidence categories.
 
 ## Verification and reconsideration
 
-Use [architecture validation](../../tests/architecture.mbtx), private ownership
+Use [architecture validation](../../tests/tools/architecture.mbtx), private ownership
 tests and independent CLI contracts. Strategy/source/test/workload bindings live
 in [protection.json](../../tests/benchmark/protection.json); measurement gates
 live in [PROTECTION.md](../../tests/benchmark/PROTECTION.md). New sharing must

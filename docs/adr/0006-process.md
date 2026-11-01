@@ -53,6 +53,6 @@ into success. Process-group, exec and signal claims require their own released
 public APIs and actual Wasm-host tests for scope, errors, waits and pipe closure.
 
 Implementation: [process](../../core/process/process.mbt),
-[execution](../../tests/testkit/execute.mbt),
-[process scenarios](../../tests/runner/scenario_process.mbt),
+[execution](../../tests/harness/execute.mbt),
+[process scenarios](../../tests/scenarios/scenario_process.mbt),
 [rg child ownership](../../commands/rg/internal/sys/process.mbt).

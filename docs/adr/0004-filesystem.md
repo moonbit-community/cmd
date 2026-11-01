@@ -76,4 +76,4 @@ Reopen a boundary only with its public capability or a sound algorithm and
 applicable Wasm-host, alias, mode, error-order and pinned-oracle tests.
 [Compatibility](../compatibility.md) owns command support details.
 Implementation and regressions: [fsops](../../core/fsops/),
-[filesystem scenarios](../../tests/runner/scenario_filesystem.mbt).
+[filesystem scenarios](../../tests/scenarios/scenario_filesystem.mbt).

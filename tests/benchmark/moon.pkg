@@ -1,6 +1,6 @@
 import {
-  "mooxCLI/cmd-tests/registry",
-  "mooxCLI/cmd-tests/testkit",
+  "mooxCLI/cmd-tests/harness/catalog",
+  "mooxCLI/cmd-tests/harness",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/http",

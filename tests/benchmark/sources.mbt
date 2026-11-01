@@ -7,7 +7,7 @@ priv struct NaturalSource {
 ///|
 fn natural_source_errors(source : NaturalSource) -> Array[String] {
   let errors : Array[String] = []
-  if !@testkit.safe_relative_path(source.path) {
+  if !@harness.safe_relative_path(source.path) {
     errors.push("natural source path must remain relative to --corpus-root")
   }
   if source.sha256.length() != 64 ||
@@ -94,7 +94,7 @@ fn natural_path_within(root : String, resolved : String) -> Bool {
       .replace_all(old="\\", new="/")
       .trim_end(chars="/")
       .to_owned()
-    if @testkit.host_platform() == "windows" {
+    if @harness.host_platform() == "windows" {
       value.to_lower()
     } else {
       value

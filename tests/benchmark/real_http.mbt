@@ -25,7 +25,7 @@ async fn run_real_http_fixture(
     defer input.close()
     let size = input.size()
     if request.path == "/real-upload/POST" || request.path == "/real-upload/PUT" {
-      let request_method = @testkit.oracle_request_name(request)
+      let request_method = @harness.oracle_request_name(request)
       if request.path != "/real-upload/" + request_method {
         connection
         ..send_response(405, "Method Not Allowed", extra_headers={

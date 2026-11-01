@@ -55,4 +55,4 @@ terminal features only with public lifecycle interfaces.
 Implementation: [Session](../../core/shell/session.mbt),
 [executor](../../core/shell/executor.mbt),
 [make scheduler](../../commands/make/scheduler.mbt),
-[scenarios](../../tests/runner/scenarios.mbt).
+[scenarios](../../tests/scenarios/dispatch.mbt).

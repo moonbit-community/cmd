@@ -138,7 +138,7 @@ fn real_suite_errors(
   let records : Map[String, Json] = Map([])
   for source in real_array(real_field(catalog, "files")) {
     let path = real_text(real_field(source, "path"))
-    if !@testkit.safe_relative_path(path) || records.contains(path) {
+    if !@harness.safe_relative_path(path) || records.contains(path) {
       errors.push("unsafe or duplicate real source path: " + path)
     }
     for key in ["sha256", "provenance", "family", "url", "license_record"] {
@@ -260,7 +260,7 @@ fn real_suite_errors(
     let targets : Set[String] = Set([])
     let originals : Set[String] = Set([])
     for input in row.inputs.unwrap_or([]) {
-      if !@testkit.safe_relative_path(input.target) ||
+      if !@harness.safe_relative_path(input.target) ||
         targets.contains(input.target) {
         errors.push("unsafe or duplicate real input target: " + row.id)
       }
@@ -438,8 +438,8 @@ async fn validate_real_suite(
     }
   }
   let typed : FunctionalManifest = @json.from_json(manifest)
-  let cases = @testkit.load_cases(real_registry_path(typed.case_corpus))
-  let index = @registry.load(real_registry_path("tests/registry/registry.json"))
+  let cases = @harness.load_cases(real_registry_path(typed.case_corpus))
+  let index = @catalog.load(real_registry_path("tests/cases/index.json"))
   for row in rows {
     if !index.entries.any(entry => {
         entry.command == row.command &&
@@ -453,8 +453,8 @@ async fn validate_real_suite(
       )
     }
   }
-  @testkit.configure_local_quality(
-    real_registry_path("tests/registry/case-quality.json"),
+  @harness.configure_local_quality(
+    real_registry_path("tests/cases/generated/quality.json"),
     cases,
     index.entries
     .filter(row => row.implementation == "stateful-scenario")
@@ -477,7 +477,7 @@ async fn validate_real_suite(
           fixture.command == name ||
           fixture.related_commands.unwrap_or([]).contains(name)
         ) &&
-        @testkit.local_quality_descriptor(fixture.id) is Some(_)) {
+        @harness.local_quality_descriptor(fixture.id) is Some(_)) {
         errors.push(
           "real boundary needs an owned independent exact/typed local contract: " +
           name +

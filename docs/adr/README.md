@@ -26,7 +26,7 @@ reconsideration. Update the existing decision when it changes.
 | Dated delivery and release summaries | [CHANGELOG.md](../../CHANGELOG.md) |
 | Options and support boundaries | Command READMEs and [compatibility.md](../compatibility.md) |
 | Executable workload definitions and measurement rules | [Benchmark registry and guide](../../tests/benchmark/README.md) |
-| Published coordinates and independent expectations | [Release manifest](../../tests/release_runner/current/latest.json) |
+| Published coordinates and independent expectations | [Release manifest](../../tests/release/latest.json) |
 
 Keep the changelog to a few outcome-oriented bullets per date. In algorithm
 documents, update the current explanation rather than appending experiment

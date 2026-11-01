@@ -1,0 +1,19 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd-tests/resources"
+
+// Values
+
+// Errors
+
+// Types and methods
+type ContentEdit
+
+type ContentInput derive(ToJson)
+
+type Observation derive(ToJson)
+
+type Samples
+
+// Type aliases
+
+// Traits
