@@ -21,36 +21,6 @@ pub struct GitignoreGlob {
 } derive(Debug, Eq)
 
 ///|
-/// Returns the file path that defined this glob.
-pub fn GitignoreGlob::from(self : GitignoreGlob) -> String? {
-  self.from
-}
-
-///|
-/// The original glob as it was defined in a gitignore file.
-pub fn GitignoreGlob::original(self : GitignoreGlob) -> String {
-  self.original
-}
-
-///|
-/// The actual glob that was compiled to respect gitignore semantics.
-pub fn GitignoreGlob::actual(self : GitignoreGlob) -> String {
-  self.actual
-}
-
-///|
-/// Whether this was a whitelisted glob or not.
-pub fn GitignoreGlob::is_whitelist(self : GitignoreGlob) -> Bool {
-  self.is_whitelist
-}
-
-///|
-/// Whether this glob must match a directory or not.
-pub fn GitignoreGlob::is_only_dir(self : GitignoreGlob) -> Bool {
-  self.is_only_dir
-}
-
-///|
 /// Returns true if and only if this glob has a `**/` prefix.
 fn GitignoreGlob::has_doublestar_prefix(self : GitignoreGlob) -> Bool {
   self.actual.has_prefix("**/") || self.actual == "**"
@@ -80,57 +50,10 @@ pub impl Debug for Gitignore with fn to_repr(self) {
 }
 
 ///|
-/// Creates a new gitignore matcher from the gitignore file path given.
-///
-/// If it's desirable to include multiple gitignore files in a single
-/// matcher, or read gitignore globs from a different source, then
-/// use `GitignoreBuilder`.
-///
-/// This always returns a valid matcher, even if it's empty. In particular,
-/// a Gitignore file can be partially valid, e.g., when one glob is invalid
-/// but the rest aren't.
-///
-/// Note that I/O errors are ignored. For more granular control over
-/// errors, use `GitignoreBuilder`.
-pub async fn Gitignore::new(
-  gitignore_path : String,
-) -> (Gitignore, IgnoreError?) {
-  let parent = path_parent(gitignore_path).unwrap_or("/")
-  let builder = GitignoreBuilder::new(parent)
-  let errs = PartialErrorBuilder::new()
-  errs.maybe_push_ignore_io(builder.add(gitignore_path))
-  match (Ok(builder.build()) catch { e => Err(e) }) {
-    Ok(gi) => (gi, errs.into_error_option())
-    Err(err) => {
-      errs.push(err)
-      (Gitignore::empty(), errs.into_error_option())
-    }
-  }
-}
-
-///|
-/// Creates a new gitignore matcher from the global ignore file, if one
-/// exists.
-///
-/// The global config file path is specified by git's `core.excludesFile`
-/// config option.
-///
-/// Git's config file location is `$HOME/.gitconfig`. If `$HOME/.gitconfig`
-/// does not exist or does not specify `core.excludesFile`, then
-/// `$XDG_CONFIG_HOME/git/ignore` is read. If `$XDG_CONFIG_HOME` is not
-/// set or is empty, then `$HOME/.config/git/ignore` is used instead.
-pub async fn Gitignore::global() -> (Gitignore, IgnoreError?) {
-  match @sys.current_dir() {
-    Some(cwd) => GitignoreBuilder::new(cwd).build_global()
-    None => (Gitignore::empty(), Some(Io(@sys.IOError::from_errno(2))))
-  }
-}
-
-///|
 /// Creates a new empty gitignore matcher that never matches anything.
 ///
 /// Its path is empty.
-pub fn Gitignore::empty() -> Gitignore {
+fn Gitignore::empty() -> Gitignore {
   {
     set: @globset.GlobSet::empty(),
     root: "",
@@ -142,37 +65,16 @@ pub fn Gitignore::empty() -> Gitignore {
 }
 
 ///|
-/// Returns the directory containing this gitignore matcher.
-///
-/// All matches are done relative to this path.
-pub fn Gitignore::path(self : Gitignore) -> String {
-  self.root
-}
-
-///|
 /// Returns true if and only if this gitignore has zero globs, and
 /// therefore never matches any file path.
-pub fn Gitignore::is_empty(self : Gitignore) -> Bool {
+fn Gitignore::is_empty(self : Gitignore) -> Bool {
   self.set.is_empty()
 }
 
 ///|
-/// Returns the total number of globs, which should be equivalent to
-/// `num_ignores + num_whitelists`.
-pub fn Gitignore::len(self : Gitignore) -> Int32 {
-  self.set.len()
-}
-
-///|
 /// Returns the total number of ignore globs.
-pub fn Gitignore::num_ignores(self : Gitignore) -> Int32 {
+fn Gitignore::num_ignores(self : Gitignore) -> Int32 {
   self.num_ignores
-}
-
-///|
-/// Returns the total number of whitelisted globs.
-pub fn Gitignore::num_whitelists(self : Gitignore) -> Int32 {
-  self.num_whitelists
 }
 
 ///|
@@ -367,7 +269,7 @@ pub fn GitignoreBuilder::build(
 /// Note that this ignores the path given to this builder's constructor
 /// and instead derives the path automatically from git's global
 /// configuration.
-pub async fn GitignoreBuilder::build_global(
+async fn GitignoreBuilder::build_global(
   self : GitignoreBuilder,
 ) -> (Gitignore, IgnoreError?) {
   match gitconfig_excludes_path() {
@@ -477,50 +379,6 @@ fn trim_start_bom(line : String) -> String {
 }
 
 ///|
-/// Splits a string into lines like Rust's `str::lines`.
-fn str_lines(s : String) -> Array[String] {
-  let out = []
-  let n = s.length()
-  let mut start = 0
-  for i in 0..<n {
-    if s[i] == '\n' {
-      let mut end = i
-      if end > start && s[end - 1] == '\r' {
-        end -= 1
-      }
-      out.push(s.unsafe_substring(start~, end~))
-      start = i + 1
-    }
-  }
-  if start < n {
-    let mut end = n
-    if s[end - 1] == '\r' {
-      end -= 1
-    }
-    out.push(s.unsafe_substring(start~, end~))
-  }
-  out
-}
-
-///|
-/// Add each glob line from the string given.
-///
-/// If this string came from a particular `gitignore` file, then its path
-/// should be provided here.
-///
-/// The string given should be formatted as a `gitignore` file.
-pub fn GitignoreBuilder::add_str(
-  self : GitignoreBuilder,
-  from : String?,
-  gitignore : String,
-) -> GitignoreBuilder raise IgnoreError {
-  for line in str_lines(gitignore) {
-    self.add_line(from, line) |> ignore
-  }
-  self
-}
-
-///|
 /// Add a line from a gitignore file to this builder.
 ///
 /// If this line came from a particular `gitignore` file, then its path
@@ -614,7 +472,7 @@ pub fn GitignoreBuilder::add_line(
 /// affected.
 ///
 /// This is disabled by default.
-pub fn GitignoreBuilder::case_insensitive(
+fn GitignoreBuilder::case_insensitive(
   self : GitignoreBuilder,
   yes : Bool,
 ) -> GitignoreBuilder {
@@ -632,7 +490,7 @@ pub fn GitignoreBuilder::case_insensitive(
 ///
 /// By default, this is true in order to match established `gitignore`
 /// semantics.
-pub fn GitignoreBuilder::allow_unclosed_class(
+fn GitignoreBuilder::allow_unclosed_class(
   self : GitignoreBuilder,
   yes : Bool,
 ) -> GitignoreBuilder {

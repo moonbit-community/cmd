@@ -64,3 +64,44 @@ async test "missing product artifact and unavailable report destination fail clo
     _ => fail("empty required suite reported success")
   }
 }
+
+///|
+async test "invalid case metadata fails before platform exclusion can hide it" {
+  let root = @fs.tmpdir(prefix="mooncmd-platform-metadata-")
+  defer @fs.rmdir(root, recursive=true)
+  let fixture : Case = @json.from_json({
+    "id": "platform-selection",
+    "command": "true",
+    "args": [],
+    "files": [],
+    "environment": {},
+    "normalizations": [],
+    "expected_status": 0,
+    "comparison": "contract",
+    "expected_stdout_text": "",
+    "expected_stderr_text": "",
+  })
+  for platforms in [[], ["linx"], ["linux", "linux"]] {
+    let report = execute_contract(
+      { ..fixture, host_platforms: Some(platforms), },
+      root + "/missing-artifact",
+      true,
+      root + "/reports",
+    )
+    assert_eq(report.result, "infra")
+    assert_eq(report.stage, "contract-validation")
+    assert_false(report.semantic_pass())
+  }
+  let other = if host_platform() == "linux" { "windows" } else { "linux" }
+  let excluded = { ..fixture, host_platforms: Some([other]), }
+  let report = execute_contract(excluded, root, true, root + "/reports")
+  assert_eq(report.result, "skip")
+  let report = execute_contract(
+    { ..excluded, expected_stderr_contains: Some(""), },
+    root,
+    true,
+    root + "/reports",
+  )
+  assert_eq(report.result, "infra")
+  assert_eq(report.stage, "contract-validation")
+}

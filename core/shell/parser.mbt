@@ -33,15 +33,9 @@ fn Parser::skip_sequences(self : Parser) -> Unit {
 }
 
 ///|
-fn Parser::take_word(self : Parser) -> Word raise ShellError {
+fn Parser::take_word(self : Parser) -> Word raise ParseIssue {
   guard self.peek() is Some(WordToken(word)) else {
-    raise ShellError(
-      if self.peek() is None {
-        "incomplete: expected a word"
-      } else {
-        "expected a word"
-      },
-    )
+    raise self.expected("expected a word")
   }
   self.pos += 1
   word
@@ -51,21 +45,15 @@ fn Parser::take_word(self : Parser) -> Word raise ShellError {
 fn Parser::take_reserved(
   self : Parser,
   value : String,
-) -> Unit raise ShellError {
+) -> Unit raise ParseIssue {
   if self.peek_word() != Some(value) {
-    raise ShellError(
-      if self.peek() is None {
-        "incomplete: expected '\{value}'"
-      } else {
-        "expected '\{value}'"
-      },
-    )
+    raise self.expected("expected '\{value}'")
   }
   self.pos += 1
 }
 
 ///|
-fn Parser::parse_command(self : Parser) -> Command raise ShellError {
+fn Parser::parse_command(self : Parser) -> Command raise ParseIssue {
   let words : Array[Word] = []
   let mut stdin : Word? = None
   let mut stdin_data : String? = None
@@ -86,7 +74,7 @@ fn Parser::parse_command(self : Parser) -> Command raise ShellError {
         self.pos += 1
         match self.take_word().parts {
           [Text(value)] => stdin_data = Some(value)
-          _ => raise ShellError("invalid here-document body")
+          _ => raise InvalidSyntax("invalid here-document body")
         }
       }
       Some(RedirectOut) => {
@@ -109,19 +97,13 @@ fn Parser::parse_command(self : Parser) -> Command raise ShellError {
     }
   }
   if words.is_empty() {
-    raise ShellError(
-      if self.peek() is None {
-        "incomplete: expected a command"
-      } else {
-        "expected a command"
-      },
-    )
+    raise self.expected("expected a command")
   }
   { words, stdin, stdin_data, stdout, stderr, }
 }
 
 ///|
-fn Parser::parse_pipeline(self : Parser) -> Pipeline raise ShellError {
+fn Parser::parse_pipeline(self : Parser) -> Pipeline raise ParseIssue {
   let commands : Array[Command] = [self.parse_command()]
   while self.peek() == Some(Pipe) {
     self.pos += 1
@@ -135,7 +117,7 @@ fn Parser::parse_pipeline(self : Parser) -> Pipeline raise ShellError {
 fn Parser::parse_until(
   self : Parser,
   stop : Array[String],
-) -> Array[Job] raise ShellError {
+) -> Array[Job] raise ParseIssue {
   let jobs : Array[Job] = []
   let mut connector = Always
   self.skip_sequences()
@@ -155,7 +137,7 @@ fn Parser::parse_until(
         self.pos += 1
         self.skip_sequences()
         if self.peek() is None {
-          raise ShellError("incomplete: expected a command after &&")
+          raise IncompleteSyntax("incomplete: expected a command after &&")
         }
       }
       Some(OrIf) => {
@@ -163,7 +145,7 @@ fn Parser::parse_until(
         self.pos += 1
         self.skip_sequences()
         if self.peek() is None {
-          raise ShellError("incomplete: expected a command after ||")
+          raise IncompleteSyntax("incomplete: expected a command after ||")
         }
       }
       Some(Sequence) => {
@@ -171,14 +153,14 @@ fn Parser::parse_until(
         self.skip_sequences()
       }
       Some(RParen) | Some(RBrace) | Some(CaseEnd) | None => break
-      _ => raise ShellError("unexpected token after command")
+      _ => raise InvalidSyntax("unexpected token after command")
     }
   }
   jobs
 }
 
 ///|
-fn Parser::parse_if(self : Parser) -> Statement raise ShellError {
+fn Parser::parse_if(self : Parser) -> Statement raise ParseIssue {
   self.take_reserved("if")
   let condition = self.parse_until(["then"])
   self.take_reserved("then")
@@ -194,7 +176,7 @@ fn Parser::parse_if(self : Parser) -> Statement raise ShellError {
 }
 
 ///|
-fn Parser::parse_case(self : Parser) -> Statement raise ShellError {
+fn Parser::parse_case(self : Parser) -> Statement raise ParseIssue {
   self.take_reserved("case")
   let subject = self.take_word()
   self.take_reserved("in")
@@ -207,7 +189,7 @@ fn Parser::parse_case(self : Parser) -> Statement raise ShellError {
       if self.peek() == Some(Pipe) {
         self.pos += 1
       } else if self.peek() != Some(RParen) {
-        raise ShellError("expected ')' in case")
+        raise InvalidSyntax("expected ')' in case")
       }
     }
     self.pos += 1
@@ -225,14 +207,14 @@ fn Parser::parse_case(self : Parser) -> Statement raise ShellError {
 }
 
 ///|
-fn Parser::parse_for(self : Parser) -> Statement raise ShellError {
+fn Parser::parse_for(self : Parser) -> Statement raise ParseIssue {
   self.take_reserved("for")
   let name = match word_literal(self.take_word()) {
     Some(value) => value
-    _ => raise ShellError("for variable must be a name")
+    _ => raise InvalidSyntax("for variable must be a name")
   }
   if !valid_name(name) {
-    raise ShellError("for variable must be a name")
+    raise InvalidSyntax("for variable must be a name")
   }
   let words : Array[Word] = []
   if self.peek_word() == Some("in") {
@@ -254,7 +236,7 @@ fn Parser::parse_for(self : Parser) -> Statement raise ShellError {
 fn Parser::parse_loop(
   self : Parser,
   until : Bool,
-) -> Statement raise ShellError {
+) -> Statement raise ParseIssue {
   self.take_reserved(if until { "until" } else { "while" })
   let condition = self.parse_until(["do"])
   self.take_reserved("do")
@@ -264,7 +246,7 @@ fn Parser::parse_loop(
 }
 
 ///|
-fn Parser::parse_statement(self : Parser) -> Statement raise ShellError {
+fn Parser::parse_statement(self : Parser) -> Statement raise ParseIssue {
   match self.peek_word() {
     Some("if") => self.parse_if()
     Some("case") => self.parse_case()
@@ -278,7 +260,7 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ShellError {
       self.pos += 4
       let body = self.parse_until([])
       if self.peek() != Some(RBrace) {
-        raise ShellError("unterminated function body")
+        raise IncompleteSyntax("unterminated function body")
       }
       self.pos += 1
       FunctionStatement(name, body)
@@ -289,7 +271,7 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ShellError {
           self.pos += 1
           let body = self.parse_until([])
           if self.peek() != Some(RParen) {
-            raise ShellError("unterminated subshell")
+            raise IncompleteSyntax("unterminated subshell")
           }
           self.pos += 1
           GroupStatement(body, true)
@@ -298,7 +280,7 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ShellError {
           self.pos += 1
           let body = self.parse_until([])
           if self.peek() != Some(RBrace) {
-            raise ShellError("unterminated group")
+            raise IncompleteSyntax("unterminated group")
           }
           self.pos += 1
           GroupStatement(body, false)
@@ -310,11 +292,27 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ShellError {
 }
 
 ///|
-fn parse(script : String) -> Array[Job] raise ShellError {
-  let parser : Parser = { tokens: lex(script), pos: 0, }
+fn parse_input(script : String) -> Array[Job] raise ParseIssue {
+  let parser : Parser = { tokens: lex_input(script), pos: 0, }
   let jobs = parser.parse_until([])
   if parser.pos != parser.tokens.length() {
-    raise ShellError("unexpected closing token")
+    raise InvalidSyntax("unexpected closing token")
   }
   jobs
+}
+
+///|
+fn Parser::expected(self : Parser, message : String) -> ParseIssue {
+  if self.peek() is None {
+    IncompleteSyntax("incomplete: " + message)
+  } else {
+    InvalidSyntax(message)
+  }
+}
+
+///|
+fn parse(script : String) -> Array[Job] raise ShellError {
+  parse_input(script) catch {
+    issue => raise issue.shell_error()
+  }
 }

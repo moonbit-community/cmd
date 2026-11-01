@@ -24,10 +24,10 @@ fn reversed_kind(kind : Char, reverse : Bool) -> Char {
 }
 
 ///|
-fn write_line(output : StringBuilder, line : Line) -> Unit {
-  output.write_string(line.value)
+fn write_line(output : @buffer.Buffer, line : RawLine) -> Unit {
+  output.write_bytes(line.value)
   if line.terminated {
-    output.write_char('\n')
+    output.write_byte(b'\n')
   }
 }
 
@@ -46,16 +46,19 @@ fn hunk_context(hunk : Hunk) -> (Int32, Int32) {
 }
 
 ///|
-fn hunk_old_lines(hunk : Hunk, reverse : Bool) -> Array[Line] {
+fn hunk_old_lines(hunk : Hunk, reverse : Bool) -> Array[RawLine] {
   hunk.changes
   .filter(change => reversed_kind(change.kind, reverse) != '+')
-  .map(change => change.line)
+  .map(change => {
+    value: @bytere.bytes(change.line.value)[:],
+    terminated: change.line.terminated,
+  })
 }
 
 ///|
 fn matching_at(
-  input : Array[Line],
-  old : Array[Line],
+  input : Array[RawLine],
+  old : Array[RawLine],
   position : Int32,
   prefix : Int32,
   suffix : Int32,
@@ -71,8 +74,8 @@ fn matching_at(
 
 ///|
 fn locate_hunk(
-  input : Array[Line],
-  old : Array[Line],
+  input : Array[RawLine],
+  old : Array[RawLine],
   start : Int32,
   guessed : Int64,
   frozen : Int32,
@@ -150,8 +153,8 @@ fn apply_hunks(
   reverse : Bool,
   max_fuzz : Int32,
 ) -> AppliedPatch {
-  let input = lines(data)
-  let output = StringBuilder()
+  let input = raw_lines(data)
+  let output = @buffer.Buffer(size_hint=data.length())
   let results : Array[HunkResult] = []
   let mut cursor = 0
   let mut offset = 0
@@ -194,7 +197,10 @@ fn apply_hunks(
         cursor += 1
         old_index += 1
       } else {
-        write_line(output, change.line)
+        write_line(output, {
+          value: @bytere.bytes(change.line.value)[:],
+          terminated: change.line.terminated,
+        })
       }
     }
     output_delta += new_count - count
@@ -202,7 +208,7 @@ fn apply_hunks(
   for line in input[cursor.min(input.length()):] {
     write_line(output, line)
   }
-  { data: @bytere.bytes(output.to_string()), results, }
+  { data: output.to_bytes(), results, }
 }
 
 ///|
@@ -212,7 +218,7 @@ fn batch_reverse(
   reverse : Bool,
   max_fuzz : Int32,
 ) -> Bool {
-  let input = lines(data)
+  let input = raw_lines(data)
   let (prefix, suffix) = hunk_context(hunk)
   let forward = hunk_old_lines(hunk, reverse)
   let backward = hunk_old_lines(hunk, !reverse)

@@ -19,6 +19,17 @@ pub async fn read_chunk(&@io.Reader) -> Bytes?
 // Errors
 
 // Types and methods
+type BlockWriter
+pub async fn BlockWriter::flush(Self) -> Unit
+pub fn BlockWriter::new(&@io.Writer, size? : Int32, line_buffered? : Bool) -> Self
+pub fn BlockWriter::try_write_slice(Self, FixedArray[Byte], Int32, Int32) -> Bool raise
+pub async fn BlockWriter::write(Self, &@io.Data) -> Unit
+pub async fn BlockWriter::write_bytes(Self, BytesView) -> Unit
+pub async fn BlockWriter::write_once(Self, Bytes, offset~ : Int32, len~ : Int32) -> Int32
+pub async fn BlockWriter::write_reader(Self, &@io.Reader) -> Unit
+pub async fn BlockWriter::write_slice(Self, FixedArray[Byte], Int32, Int32) -> Unit
+pub impl @io.Writer for BlockWriter
+
 pub(all) struct Line {
   data : Bytes
   terminated : Bool
@@ -28,14 +39,8 @@ pub fn Line::not_equal(Self, Self) -> Bool
 pub fn Line::to_repr(Self) -> @debug.Repr
 
 pub struct LineScanner {
-  reader : &@io.Reader
-  pending : Array[Byte]
-  delimiter : Bytes
-  buffer : FixedArray[Byte]
-  chunk : Bytes
-  mut offset : Int32
-  mut limit : Int32
-  mut eof : Bool
+  records : RecordReader
+  mut batch : RecordBatch?
 }
 pub fn LineScanner::new(&@io.Reader, delimiter? : Byte) -> Self
 pub async fn LineScanner::next(Self) -> Line?

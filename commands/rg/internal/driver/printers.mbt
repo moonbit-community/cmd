@@ -7,7 +7,7 @@ pub enum Printer {
 }
 
 ///|
-pub fn Printer::get_mut(self : Printer) -> &@termcolor.WriteColor {
+fn Printer::get_mut(self : Printer) -> &@termcolor.WriteColor {
   match self {
     Standard(p) => p.get_mut()
     Summary(p) => p.get_mut()
@@ -17,14 +17,14 @@ pub fn Printer::get_mut(self : Printer) -> &@termcolor.WriteColor {
 
 ///|
 /// Builds stdout according to the color and buffering settings.
-pub fn HiArgs::stdout(self : HiArgs) -> &@termcolor.WriteColor {
-  let line_buffered = match self.buffer {
-    Auto => self.is_terminal_stdout
+fn ExecutionPlan::stdout(self : ExecutionPlan) -> &@termcolor.WriteColor {
+  let line_buffered = match self.output.buffer {
+    Auto => self.output.is_terminal_stdout
     Line => true
     Block => false
   }
-  let wtr = StdoutWriter::new(1, line_buffered)
-  let use_color = match self.color {
+  let wtr = StdoutWriter::new(line_buffered)
+  let use_color = match self.output.color {
     Never => false
     Ansi | Always => true
     Auto => {
@@ -47,21 +47,26 @@ pub fn HiArgs::stdout(self : HiArgs) -> &@termcolor.WriteColor {
 }
 
 ///|
-fn HiArgs::path_printer_builder(self : HiArgs) -> @printer.PathPrinterBuilder {
-  @printer.PathPrinterBuilder::new()
-  .color_specs(self.colors)
-  .hyperlink(self.hyperlink_config)
-  .separator(self.path_separator)
-  .terminator(self.path_terminator.unwrap_or(b'\n'))
+fn ExecutionPlan::path_printer(
+  self : ExecutionPlan,
+  wtr : &@termcolor.WriteColor,
+) -> @printer.PathPrinter {
+  @printer.PathPrinter::new(
+    wtr,
+    colors=self.output.colors,
+    hyperlink=self.output.hyperlink_config,
+    separator=self.output.path_separator,
+    terminator=self.output.path_terminator.unwrap_or(b'\n'),
+  )
 }
 
 ///|
-pub fn HiArgs::printer(
-  self : HiArgs,
+fn ExecutionPlan::printer(
+  self : ExecutionPlan,
   search_mode : SearchMode,
   wtr : &@termcolor.WriteColor,
 ) -> Printer {
-  let summary_kind : @printer.SummaryKind = if self.quiet {
+  let summary_kind : @printer.SummaryKind = if self.output.quiet {
     match search_mode {
       FilesWithoutMatch => QuietWithoutMatch
       _ => QuietWithMatch
@@ -80,64 +85,66 @@ pub fn HiArgs::printer(
 }
 
 ///|
-fn HiArgs::printer_json(
-  self : HiArgs,
+fn ExecutionPlan::printer_json(
+  self : ExecutionPlan,
   wtr : &@termcolor.WriteColor,
 ) -> @printer.JSON {
-  @printer.JSONBuilder::new()
-  .pretty(false)
-  .always_begin_end(false)
-  .replacement(self.replace)
-  .clock(@sys.now_nanos)
-  .build(wtr)
+  @printer.JSON::new(wtr, replacement=self.output.replace, clock=@sys.now_nanos)
 }
 
 ///|
-fn HiArgs::printer_standard(
-  self : HiArgs,
+fn ExecutionPlan::printer_standard(
+  self : ExecutionPlan,
   wtr : &@termcolor.WriteColor,
 ) -> @printer.Standard {
-  @printer.StandardBuilder::new()
-  .byte_offset(self.byte_offset)
-  .color_specs(self.colors)
-  .column(self.column)
-  .heading(self.heading)
-  .hyperlink(self.hyperlink_config)
-  .max_columns_preview(self.max_columns_preview)
-  .max_columns(self.max_columns.map(saturate_i64))
-  .only_matching(self.only_matching)
-  .path(self.with_filename)
-  .path_terminator(self.path_terminator)
-  .per_match_one_line(true)
-  .per_match(self.vimgrep)
-  .replacement(self.replace)
-  .separator_context(self.context_separator)
-  .separator_field_context(self.field_context_separator)
-  .separator_field_match(self.field_match_separator)
-  .separator_path(self.path_separator)
-  .stats(self.stats is Some(_))
-  .trim_ascii(self.trim)
-  .separator_search(self.file_separator)
-  .clock(@sys.now_nanos)
-  .build(wtr)
+  @printer.Standard::new(
+    wtr,
+    coalesce_matches=match self.output.buffer {
+      Auto => !self.output.is_terminal_stdout
+      Line => false
+      Block => true
+    },
+    byte_offset=self.output.byte_offset,
+    colors=self.output.colors,
+    column=self.output.column,
+    heading=self.output.heading,
+    hyperlink=self.output.hyperlink_config,
+    max_columns_preview=self.output.max_columns_preview,
+    max_columns=self.output.max_columns.map(saturate_i64),
+    only_matching=self.output.only_matching,
+    path=self.output.with_filename,
+    path_terminator=self.output.path_terminator,
+    per_match_one_line=true,
+    per_match=self.output.vimgrep,
+    replacement=self.output.replace,
+    separator_context=self.output.context_separator,
+    separator_field_context=self.output.field_context_separator,
+    separator_field_match=self.output.field_match_separator,
+    separator_path=self.output.path_separator,
+    stats=self.output.stats,
+    trim_ascii=self.output.trim,
+    separator_search=self.output.file_separator,
+    clock=@sys.now_nanos,
+  )
 }
 
 ///|
-fn HiArgs::printer_summary(
-  self : HiArgs,
+fn ExecutionPlan::printer_summary(
+  self : ExecutionPlan,
   wtr : &@termcolor.WriteColor,
   kind : @printer.SummaryKind,
 ) -> @printer.Summary {
-  @printer.SummaryBuilder::new()
-  .color_specs(self.colors)
-  .exclude_zero(!self.include_zero)
-  .hyperlink(self.hyperlink_config)
-  .kind(kind)
-  .path(self.with_filename)
-  .path_terminator(self.path_terminator)
-  .separator_field(b":")
-  .separator_path(self.path_separator)
-  .stats(self.stats is Some(_))
-  .clock(@sys.now_nanos)
-  .build(wtr)
+  @printer.Summary::new(
+    wtr,
+    colors=self.output.colors,
+    exclude_zero=!self.output.include_zero,
+    hyperlink=self.output.hyperlink_config,
+    kind~,
+    path=self.output.with_filename,
+    path_terminator=self.output.path_terminator,
+    separator_field=b":",
+    separator_path=self.output.path_separator,
+    stats=self.output.stats,
+    clock=@sys.now_nanos,
+  )
 }

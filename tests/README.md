@@ -27,8 +27,8 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon check --target wasm --deny-warn
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --deny-warn tests/runner
 MOON_HOME="$HOME/.moon-accounts/cli" moon test --target wasm --release --deny-warn --no-parallelize
-MOON_HOME="$HOME/.moon-accounts/cli" moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/debug/build/mooxCLI/cmd-tests/runner/runner.exe --suite functional --report-dir test-reports/local-functional
+MOON_HOME="$HOME/.moon-accounts/cli" moon test --target native --deny-warn --no-parallelize tests/testkit tests/registry tests/network_scenarios tests/mv_scenarios tests/runner tests/release_runner tests/benchmark tests/proofs
+MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_PROFILE=debug CMD_TEST_REPORT_ROOT=/absolute/fresh-report moon run tests/ci.mbtx -- functional
 ```
 
 Use a fresh report directory. `functional` includes metadata, contracts,
@@ -45,6 +45,15 @@ The [runtime index](registry/README.md) supplies stable case selections and
 release policy. Ordinary package tests execute in batches through Moon;
 individual test names are not separately registered or sealed.
 
+Large rg corpus data is owned by [`fixtures/rg`](fixtures/rg/README.md).
+Engine tests remain Wasm package tests because rg's internal interfaces are
+module-private. CLI-equivalent printer cases use the ordinary JSON contract
+runner and registry; injected clocks, paths and engine state remain package
+regressions. Pipelines requiring rg's private command matcher live in driver
+white-box tests; isolated printer and searcher mechanisms retain their own
+tests. Neither lower-level package imports driver for testing. Both layers
+run in the existing development workflow.
+
 ## Results and boundaries
 
 Results are `pass`, `fail`, `skip` or `infra`. Verification kinds distinguish
@@ -55,8 +64,27 @@ selections, timeouts and uncertain cleanup are failures.
 
 Reports contain `run.json`, `summary.jsonl`, `summary.md` and failure captures.
 They record the platform, revision label, selected coordinates and durations.
-There are no source-corpus hashes, artifact seals or cross-report proof chains.
-The upstream image and inventory remain fixed independently of these reports.
+The controller also binds selected cases, exact result hashes and typed scenario
+observations to current assertion sources and a freshly built driver receipt.
+The finite [proof verifier](proofs/README.md) joins those actual reports and
+rejects missing, stale or mismatched evidence. This verifies only reviewed
+facets; the separate gap index retains unresolved labels. It is neither an
+audit-before-push wrapper nor a performance or publication seal. The upstream
+image and inventory remain fixed independently of these reports.
+
+Exact expectations can render a known fixture path with `${WORK_NATIVE}` and
+`${PATH_SEPARATOR}`. The former formats only the supplied fixture root for the
+host; `${WORK}` keeps its existing bytes. These templates never rewrite observed
+output or literal payload backslashes. Directory-output differential cases
+declare the existing working-directory mapping for the host fixture versus its
+`/work` container mount; the exact relative suffix and complete output remain
+asserted.
+
+Differential results carry a local-contract receipt only when the source is an
+independent contract and all local exact/runtime/file assertions complete. The
+receipt binds the source digest and actual local observation dimensions. The
+proof verifier requires it alongside the complete upstream comparison; a
+shared wrong output or a differential label alone cannot prove a local facet.
 
 Successful fixtures are removed. Failed captures and cleanup diagnostics are
 retained; direct-child cancellation does not promise arbitrary grandchild

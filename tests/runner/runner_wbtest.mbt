@@ -2,6 +2,102 @@
 using @mv_scenarios {type OpenStdinObservation, open_stdin_observation_failures}
 
 ///|
+async test "oracle equality cannot substitute for independent local assertions" {
+  let root = @fs.tmpdir(prefix="mooncmd-oracle-local-contract-")
+  defer @fs.rmdir(root, recursive=true)
+  let fixture : OracleCase = @json.from_json({
+    "id": "local-contract",
+    "command": "cat",
+    "args": [],
+    "files": [],
+    "environment": {},
+    "normalizations": [],
+    "comparison": "contract",
+    "expected_status": 0,
+    "expected_stdout_text": "expected\n",
+    "expected_stderr_text": "",
+    "expected_files": [{ "path": "kept", "content_text": "expected" }],
+  })
+  @fs.write_file(root + "/kept", b"expected")
+  let output : @testkit.RunResult = {
+    status: 0,
+    stdout: b"expected\n",
+    stderr: b"",
+  }
+  let checked = check_oracle_candidate_contract(
+    fixture,
+    fixture,
+    output,
+    root,
+    [],
+    "",
+  )
+  assert_eq(checked.failures, [])
+  guard checked.local_contract is Some(receipt) else {
+    fail("missing actual local receipt")
+  }
+  assert_true(receipt.passed)
+  assert_eq(
+    receipt.definition_sha256,
+    @testkit.json_digest(ToJson::to_json(fixture)),
+  )
+  assert_true(
+    receipt.observations.contains("type") &&
+    receipt.observations.contains("content"),
+  )
+  let wrong_bytes = check_oracle_candidate_contract(
+    fixture,
+    fixture,
+    { ..output, stdout: b"same wrong candidate and oracle\n", },
+    root,
+    [],
+    "",
+  )
+  assert_false(wrong_bytes.failures.is_empty())
+  assert_true(wrong_bytes.local_contract is Some({ passed: false, .. }))
+  @fs.write_file(root + "/kept", b"same wrong candidate and oracle file")
+  let wrong_file = check_oracle_candidate_contract(
+    fixture,
+    fixture,
+    output,
+    root,
+    [],
+    "",
+  )
+  assert_false(wrong_file.failures.is_empty())
+  assert_true(wrong_file.local_contract is Some({ passed: false, .. }))
+  let runtime = {
+    ..fixture,
+    expected_files: None,
+    expected_stdout_text: None,
+    expected_stdout_json: Some({ "value": 7 }),
+  }
+  let resolved = @testkit.resolve_runtime_contract(runtime, root)
+  let wrong_json = check_oracle_candidate_contract(
+    runtime,
+    resolved,
+    { ..output, stdout: b"{\"value\":8}", },
+    root,
+    [],
+    "",
+  )
+  assert_false(wrong_json.failures.is_empty())
+  assert_true(wrong_json.local_contract is Some({ passed: false, .. }))
+  let differential_only = { ..fixture, comparison: Some("differential"), }
+  assert_true(
+    check_oracle_candidate_contract(
+      differential_only,
+      differential_only,
+      output,
+      root,
+      [],
+      "",
+    ).local_contract
+    is None,
+  )
+}
+
+///|
 test "byte differences identify offset and length" {
   assert_true(first_byte_difference(b"abc", b"axc").contains("at 1"))
   assert_true(first_byte_difference(b"abc", b"abcx").contains("length differs"))

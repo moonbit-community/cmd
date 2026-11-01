@@ -25,8 +25,6 @@ pub async fn patterns_from_stdin() -> Array[String]
 
 pub fn unescape(String) -> Bytes
 
-pub fn utf8_valid_up_to(BytesView) -> Int32?
-
 // Errors
 pub suberror CommandError {
   CommandIo(@sys.IOError)
@@ -38,7 +36,6 @@ pub impl Show for CommandError
 pub suberror InvalidPatternError {
   InvalidPatternError(original~ : String, valid_up_to~ : Int32)
 } derive(Eq, @debug.Debug)
-pub fn InvalidPatternError::to_string(Self) -> String
 pub fn InvalidPatternError::valid_up_to(Self) -> Int32
 pub impl Show for InvalidPatternError
 
@@ -53,7 +50,6 @@ pub impl Show for ParseSizeError
 pub suberror PatternsError {
   PatternsError(String)
 } derive(@debug.Debug)
-pub fn PatternsError::to_string(Self) -> String
 pub impl Show for PatternsError
 
 // Types and methods

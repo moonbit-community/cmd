@@ -1,4 +1,5 @@
 import {
+  "cli/core/tempio",
   "cli/core/cli",
   "cli/core/platform",
   "cli/core/bytere",
@@ -9,6 +10,7 @@ import {
   "moonbitlang/async/stdio",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/env",
+  "moonbitlang/core/buffer",
   "moonbitlang/x/sys",
 }
 

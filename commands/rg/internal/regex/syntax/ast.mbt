@@ -16,7 +16,7 @@ pub(all) struct Span {
 } derive(Debug, Eq, Compare)
 
 ///|
-pub fn Span::new(start : Position, end : Position) -> Span {
+fn Span::new(start : Position, end : Position) -> Span {
   { start, end, }
 }
 
@@ -31,7 +31,7 @@ fn Span::with_end(self : Span, end : Position) -> Span {
 }
 
 ///|
-pub fn Span::is_one_line(self : Span) -> Bool {
+fn Span::is_one_line(self : Span) -> Bool {
   self.start.line == self.end.line
 }
 
@@ -72,7 +72,7 @@ pub(all) struct Literal {
 ///|
 /// If this literal was written as a `\x` hex escape with a value <= 0xFF,
 /// returns that byte.
-pub fn Literal::byte(self : Literal) -> Int32? {
+fn Literal::byte(self : Literal) -> Int32? {
   match self.kind {
     HexFixed(X) | HexBrace(X) =>
       if self.c.to_int() <= 0xFF {
@@ -168,7 +168,7 @@ pub(all) struct ClassUnicode {
 } derive(Debug, Eq)
 
 ///|
-pub fn ClassUnicode::is_negated(self : ClassUnicode) -> Bool {
+fn ClassUnicode::is_negated(self : ClassUnicode) -> Bool {
   match self.kind {
     NamedValue(NotEqual, _, _) => !self.negated
     _ => self.negated
@@ -251,7 +251,7 @@ fn Flags::add_item(self : Flags, item : FlagsItem) -> Int32? {
 ///|
 /// Returns the state of the given flag: `Some(true)` if enabled,
 /// `Some(false)` if negated and `None` if absent.
-pub fn Flags::flag_state(self : Flags, flag : Flag) -> Bool? {
+fn Flags::flag_state(self : Flags, flag : Flag) -> Bool? {
   let mut negated = false
   for x in self.items {
     match x.kind {
@@ -317,7 +317,7 @@ pub(all) enum Ast {
 } derive(Debug, Eq)
 
 ///|
-pub fn Ast::span(self : Ast) -> Span {
+fn Ast::span(self : Ast) -> Span {
   match self {
     Empty(s) | SetFlags(s, _) | Dot(s) | Assertion(s, _) => s
     Literal(x) => x.span
@@ -377,7 +377,7 @@ pub fn is_meta_character(c : Char) -> Bool {
 
 ///|
 /// Returns true if the given character can be escaped in a regex.
-pub fn is_escapeable_character(c : Char) -> Bool {
+fn is_escapeable_character(c : Char) -> Bool {
   if is_meta_character(c) {
     return true
   }

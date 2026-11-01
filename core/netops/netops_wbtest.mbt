@@ -116,7 +116,7 @@ async fn serve_test_requests(
 }
 
 ///|
-async test "fetch streams fixed and unknown length responses to a file" {
+async test "transfer streams fixed and unknown length responses to a file" {
   @async.with_task_group <| group => {
     let (server, port) = serve_test_requests(group)
     group.add_defer(() => server.close())
@@ -126,10 +126,19 @@ async test "fetch streams fixed and unknown length responses to a file" {
     } noraise {
       _ => ()
     })
-    let options = fetch_options(false, 1000, false, "test")
-    fetch_with_options("http://127.0.0.1:\{port}/fixed", Some(path), options)
+    let options = transfer_options(
+      connect_timeout_ms=1000,
+      idle_timeout_ms=1000,
+    )
+    let output = FileOutput(
+      path~,
+      mode=Truncate,
+      content_disposition=false,
+      remove_on_error=false,
+    )
+    ignore(transfer("http://127.0.0.1:\{port}/fixed", output, options))
     assert_eq(@fs.read_file(path).text(), "hello")
-    fetch_with_options("http://127.0.0.1:\{port}/chunked", Some(path), options)
+    ignore(transfer("http://127.0.0.1:\{port}/chunked", output, options))
     assert_eq(@fs.read_file(path).text(), "slow-stream")
   }
 }
@@ -144,15 +153,24 @@ async test "HTTP errors are readable and do not create the output file" {
       @sync_fs.remove_file(path)
     }
     try
-      fetch_with_options(
+      transfer(
         "http://127.0.0.1:\{port}/missing",
-        Some(path),
-        fetch_options(true, 1000, false, "test"),
+        FileOutput(
+          path~,
+          mode=Truncate,
+          content_disposition=false,
+          remove_on_error=false,
+        ),
+        transfer_options(
+          fail_on_http_error=true,
+          connect_timeout_ms=1000,
+          idle_timeout_ms=1000,
+        ),
       )
     catch {
-      NetOpError(message) =>
+      TransferError(kind=HttpStatusFailure, message~, ..) =>
         assert_true(message.contains("HTTP status 404 Not Found"))
-      _ => fail("expected NetOpError")
+      _ => fail("expected HTTP status error")
     } noraise {
       _ => fail("expected HTTP status failure")
     }
@@ -167,15 +185,15 @@ async test "request and body reads enforce idle timeout" {
     group.add_defer(() => server.close())
     for path in ["/header-stall", "/body-stall"] {
       try
-        fetch_with_options(
+        transfer(
           "http://127.0.0.1:\{port}\{path}",
-          None,
-          fetch_options(false, 100, false, "test"),
+          DiscardOutput,
+          transfer_options(connect_timeout_ms=100, idle_timeout_ms=100),
         )
       catch {
-        NetOpError(message) =>
+        TransferError(kind=TimeoutFailure, message~, ..) =>
           assert_true(message.contains("timed out after 100 milliseconds"))
-        _ => fail("expected NetOpError")
+        _ => fail("expected timeout error")
       } noraise {
         _ => fail("expected idle timeout")
       }

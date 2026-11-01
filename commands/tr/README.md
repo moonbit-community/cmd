@@ -3,7 +3,7 @@
 Translate and delete bytes for MoonX.
 
 ```sh
-moonx cli/tr@0.2.3 [-dscCt] SET1 [SET2]
+moonx cli/tr@0.2.4 [-dscCt] SET1 [SET2]
 ```
 
 ## Supported scope
@@ -27,8 +27,8 @@ Read stdin and translate, squeeze or delete selected bytes. Sets support escapes
 ## Examples
 
 ```sh
-printf 'hello' | moonx cli/tr@0.2.3 'a-z' 'A-Z'
-printf 'a  b' | moonx cli/tr@0.2.3 -s ' '
+printf 'hello' | moonx cli/tr@0.2.4 'a-z' 'A-Z'
+printf 'a  b' | moonx cli/tr@0.2.4 -s ' '
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -29,7 +29,7 @@ fn max_bound(unicode : Bool) -> Int32 {
 
 ///|
 /// Sorts and merges overlapping or adjacent ranges.
-pub fn canonicalize_ranges(
+fn canonicalize_ranges(
   ranges : Array[(Int32, Int32)],
   unicode~ : Bool = true,
 ) -> Array[(Int32, Int32)] {
@@ -221,22 +221,17 @@ pub fn Class::ranges(self : Class) -> Array[(Int32, Int32)] {
 }
 
 ///|
-pub fn Class::is_unicode(self : Class) -> Bool {
-  self is Unicode(_)
-}
-
-///|
 pub fn Class::is_empty(self : Class) -> Bool {
   self.ranges().is_empty()
 }
 
 ///|
-pub fn Class::is_ascii(self : Class) -> Bool {
+fn Class::is_ascii(self : Class) -> Bool {
   ranges_is_ascii(self.ranges())
 }
 
 ///|
-pub fn Class::union(self : Class, other : Class) -> Class {
+fn Class::union(self : Class, other : Class) -> Class {
   match (self, other) {
     (Unicode(a), Unicode(b)) => Unicode(ranges_union(a, b))
     (Bytes(a), Bytes(b)) => Bytes(ranges_union(a, b))
@@ -245,7 +240,7 @@ pub fn Class::union(self : Class, other : Class) -> Class {
 }
 
 ///|
-pub fn Class::intersect(self : Class, other : Class) -> Class {
+fn Class::intersect(self : Class, other : Class) -> Class {
   match (self, other) {
     (Unicode(a), Unicode(b)) => Unicode(ranges_intersect(a, b))
     (Bytes(a), Bytes(b)) => Bytes(ranges_intersect(a, b))
@@ -263,7 +258,7 @@ pub fn Class::difference(self : Class, other : Class) -> Class {
 }
 
 ///|
-pub fn Class::symmetric_difference(self : Class, other : Class) -> Class {
+fn Class::symmetric_difference(self : Class, other : Class) -> Class {
   match (self, other) {
     (Unicode(a), Unicode(b)) => Unicode(ranges_symmetric_difference(a, b, true))
     (Bytes(a), Bytes(b)) => Bytes(ranges_symmetric_difference(a, b, false))
@@ -272,7 +267,7 @@ pub fn Class::symmetric_difference(self : Class, other : Class) -> Class {
 }
 
 ///|
-pub fn Class::negate(self : Class) -> Class {
+fn Class::negate(self : Class) -> Class {
   match self {
     Unicode(a) => Unicode(ranges_negate(a, true))
     Bytes(a) => Bytes(ranges_negate(a, false))
@@ -280,7 +275,7 @@ pub fn Class::negate(self : Class) -> Class {
 }
 
 ///|
-pub fn Class::case_fold_simple(self : Class) -> Class {
+fn Class::case_fold_simple(self : Class) -> Class {
   match self {
     Unicode(a) => Unicode(ranges_case_fold_unicode(a))
     Bytes(a) => Bytes(ranges_case_fold_bytes(a))
@@ -289,19 +284,19 @@ pub fn Class::case_fold_simple(self : Class) -> Class {
 
 ///|
 /// Creates a Unicode class from arbitrary ranges.
-pub fn Class::new_unicode(ranges : Array[(Int32, Int32)]) -> Class {
+fn Class::new_unicode(ranges : Array[(Int32, Int32)]) -> Class {
   Unicode(canonicalize_ranges(ranges))
 }
 
 ///|
 /// Creates a byte class from arbitrary ranges.
-pub fn Class::new_bytes(ranges : Array[(Int32, Int32)]) -> Class {
+fn Class::new_bytes(ranges : Array[(Int32, Int32)]) -> Class {
   Bytes(canonicalize_ranges(ranges))
 }
 
 ///|
 /// Converts to a byte class if every range is ASCII.
-pub fn Class::to_bytes(self : Class) -> Class? {
+fn Class::to_bytes(self : Class) -> Class? {
   match self {
     Bytes(_) => Some(self)
     Unicode(a) => if ranges_is_ascii(a) { Some(Bytes(a)) } else { None }
@@ -310,7 +305,7 @@ pub fn Class::to_bytes(self : Class) -> Class? {
 
 ///|
 /// Converts to a Unicode class if every range is ASCII.
-pub fn Class::to_unicode(self : Class) -> Class? {
+fn Class::to_unicode(self : Class) -> Class? {
   match self {
     Unicode(_) => Some(self)
     Bytes(a) => if ranges_is_ascii(a) { Some(Unicode(a)) } else { None }
@@ -319,7 +314,7 @@ pub fn Class::to_unicode(self : Class) -> Class? {
 
 ///|
 /// Returns the number of bytes needed to encode the scalar value in UTF-8.
-pub fn utf8_len(c : Int32) -> Int32 {
+fn utf8_len(c : Int32) -> Int32 {
   if c < 0x80 {
     1
   } else if c < 0x800 {
@@ -352,7 +347,7 @@ pub fn encode_utf8(buf : Buffer, c : Int32) -> Unit {
 }
 
 ///|
-pub fn Class::minimum_len(self : Class) -> Int32? {
+fn Class::minimum_len(self : Class) -> Int32? {
   match self {
     Unicode(a) => if a.is_empty() { None } else { Some(utf8_len(a[0].0)) }
     Bytes(a) => if a.is_empty() { None } else { Some(1) }
@@ -360,7 +355,7 @@ pub fn Class::minimum_len(self : Class) -> Int32? {
 }
 
 ///|
-pub fn Class::maximum_len(self : Class) -> Int32? {
+fn Class::maximum_len(self : Class) -> Int32? {
   match self {
     Unicode(a) =>
       if a.is_empty() {
@@ -375,7 +370,7 @@ pub fn Class::maximum_len(self : Class) -> Int32? {
 ///|
 /// If this class matches exactly one character (or byte), returns its
 /// encoding as a literal.
-pub fn Class::literal(self : Class) -> Bytes? {
+fn Class::literal(self : Class) -> Bytes? {
   match self {
     Unicode(a) =>
       if a.length() == 1 && a[0].0 == a[0].1 {

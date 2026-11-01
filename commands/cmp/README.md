@@ -3,7 +3,7 @@
 Compare two byte streams for MoonX.
 
 ```sh
-moonx cli/cmp@0.2.3 [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]
+moonx cli/cmp@0.2.4 [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]
 ```
 
 ## Supported scope
@@ -15,7 +15,7 @@ Compare files or stdin; omitted FILE2 means stdin. Exit 0 for equal inputs, 1 fo
 | Option | Description |
 | --- | --- |
 | `-b, --print-bytes` | Show differing byte values. |
-| `-s, --silent, --quiet` | Report status only. |
+| `-s, --silent, --quiet` | Report status only; stop at the first difference. |
 | `-l, --verbose` | List every differing byte. |
 | `-n, --bytes=LIMIT` | Compare at most LIMIT bytes. |
 | `-i, --ignore-initial=SKIP[:SKIP2]` | Skip initial bytes independently. |
@@ -28,8 +28,8 @@ Compare files or stdin; omitted FILE2 means stdin. Exit 0 for equal inputs, 1 fo
 ## Examples
 
 ```sh
-moonx cli/cmp@0.2.3 first.bin second.bin
-moonx cli/cmp@0.2.3 -n 16 first.bin second.bin
+moonx cli/cmp@0.2.4 first.bin second.bin
+moonx cli/cmp@0.2.4 -n 16 first.bin second.bin
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

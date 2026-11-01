@@ -15,7 +15,7 @@ fn[T] fail(message : String) -> T raise SedError {
 
 ///|
 enum PatternRef {
-  Explicit(@bytere.Pattern)
+  Explicit(PreparedPattern)
   Previous
 }
 
@@ -123,7 +123,7 @@ fn Script::pattern(self : Script, source : String) -> PatternRef raise {
     }
   }
   let re = @bytere.compile(normalized.to_string(), extended=self.extended)
-  Explicit(re)
+  Explicit(PreparedPattern::new(re))
 }
 
 ///|
@@ -318,7 +318,7 @@ fn compile(source : String, extended : Bool) -> Array[Command] raise {
             if re is Explicit(pattern) &&
               replacement[r] >= '1' &&
               replacement[r] <= '9' &&
-              replacement[r].to_int() - 48 > pattern.group_count() {
+              replacement[r].to_int() - 48 > pattern.pattern.group_count() {
               fail("invalid replacement backreference")
             }
           }

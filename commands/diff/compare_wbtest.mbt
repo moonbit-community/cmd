@@ -1,4 +1,83 @@
 ///|
+// Expand only in reconstruction tests; command output uses compact positions.
+fn edits(
+  a : Array[Line],
+  b : Array[Line],
+  options~ : CompareOptions = compare_options(),
+  context~ : Int32 = 0,
+) -> Array[Edit] {
+  let script = edit_script(a, b, options~, context~)
+  let result = a[:script.prefix].map(line => Equal(line))
+  let consumed = script.prefix +
+    script.changes.fold(init=0, (count, edit) => {
+      count + (if edit is Add(_) { 0 } else { 1 })
+    })
+  result.append(script.changes)
+  for line in a[consumed:] {
+    result.push(Equal(line))
+  }
+  result
+}
+
+///|
+test "compact diff retains hunk positions context and EOF across equal edges" {
+  let a = lines(b"head\nx\ny\nz\nold\np\nq\nr\ntail")
+  let b = lines(b"head\nx\ny\nz\nnew\np\nq\nr\ntail")
+  for context in [0, 1, 3, 9] {
+    let script = edit_script(a, b, context~)
+    assert_eq(
+      unified(script.changes, context, "a", "b", offset=script.prefix),
+      unified(edits(a, b, context~), context, "a", "b"),
+    )
+    assert_eq(
+      unified(
+        script.changes,
+        context,
+        "a",
+        "b",
+        offset=script.prefix,
+        context_format=true,
+      ),
+      unified(edits(a, b, context~), context, "a", "b", context_format=true),
+    )
+  }
+  let script = edit_script(a, b)
+  assert_eq(script.prefix, 4)
+  assert_eq(script.changes.length(), 2)
+  assert_eq(
+    normal(script.changes, offset=script.prefix),
+    b"5c5\n< old\n---\n> new\n",
+  )
+  let script = edit_script(lines(b"a\nb\n"), lines(b"a\nb"), context=1)
+  assert_eq(
+    unified(script.changes, 1, "a", "b", offset=script.prefix),
+    b"--- a\n+++ b\n@@ -1,2 +1,2 @@\n a\n-b\n+b\n\\ No newline at end of file\n",
+  )
+}
+
+///|
+test "patch byte output preserves every byte and byte encoded labels" {
+  let bytes = Bytes::from_array(Array::makei(256, i => i.to_byte()))
+  let output = PatchOutput::new()
+  record(output, "+", { value: bytes[:], terminated: false, })
+  assert_eq(
+    output.bytes.to_bytes(),
+    b"+" + bytes + b"\n\\ No newline at end of file\n",
+  )
+  assert_eq(
+    unified(
+      edits(lines(b"old\n"), lines(b"new\n")),
+      3,
+      @bytere.argument("café"),
+      "right",
+    ),
+    b"--- caf\xc3\xa9\n+++ right\n@@ -1 +1 @@\n-old\n+new\n",
+  )
+  assert_eq(lines(b"\n\n\xff\n\x80").length(), 4)
+  assert_true(!lines(b"\n\n\xff\n\x80")[3].terminated)
+}
+
+///|
 test "normal edits retain byte records and missing line terminators" {
   assert_eq(
     normal(edits(lines(b"a"), lines(b"a\n"))),

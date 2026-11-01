@@ -5,6 +5,7 @@ async fn mktemp_options_scenario(
   work : String,
   check_mode : Bool,
   oracle_image? : String,
+  proof? : @testkit.ScenarioProof,
 ) -> Unit {
   @testkit.check_mktemp_options(
     work,
@@ -20,6 +21,7 @@ async fn mktemp_options_scenario(
       )
     },
     check_mode~,
+    proof?,
   )
   if oracle_image is Some(image) {
     @testkit.check_mktemp_oracle(work + "/oracle", image)

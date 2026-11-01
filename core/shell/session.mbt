@@ -49,8 +49,7 @@ pub fn Session::new(
     errexit: false,
     nounset: false,
     return_status: None,
-    break_loop: false,
-    continue_loop: false,
+    loop_control: None,
     loop_depth: 0,
     call_depth: 0,
     substitution_status: None,
@@ -66,14 +65,6 @@ pub fn Session::last_signal(self : Session) -> Int32? {
 }
 
 ///|
-fn incomplete(message : String) -> Bool {
-  message.has_prefix("incomplete:") ||
-  message.has_prefix("unterminated") ||
-  message == "script ends with an unmatched backslash" ||
-  message == "here-document must start on a new line"
-}
-
-///|
 pub async fn Session::feed(self : Session, source : String) -> SessionResult {
   if self.finished || self.context.exited {
     return Exit(self.context.exit_status)
@@ -84,11 +75,9 @@ pub async fn Session::feed(self : Session, source : String) -> SessionResult {
   if text.has_suffix("\\\n") {
     return NeedMoreInput
   }
-  let jobs = parse(text) catch {
-    ShellError(message) => {
-      if incomplete(message) {
-        return NeedMoreInput
-      }
+  let jobs = parse_input(text) catch {
+    IncompleteSyntax(_) => return NeedMoreInput
+    InvalidSyntax(message) => {
       self.pending.reset()
       self.context.last_status = 2
       raise ShellError(message)

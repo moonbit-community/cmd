@@ -80,3 +80,34 @@ async test "cohort selection requires its unique typed registry owner" {
   }
   assert_true(refused)
 }
+
+///|
+async test "declared differential cases require oracle bindings on every host" {
+  let root = workspace_root()
+  let registry = @registry.load(
+    workspace_path(root, "tests/registry/registry.json"),
+  )
+  let fixtures = @testkit.load_cases(
+    workspace_path(root, "tests/fixtures/runner/cases.json"),
+  )
+  require_oracle_bindings(fixtures, registry)
+  let differential = fixtures.filter(fixture => fixture.oracle == Some(true))
+  assert_false(differential.is_empty())
+  let fixture = differential[0]
+  let missing = {
+    ..registry,
+    entries: registry.entries.map(entry => {
+      if entry.case_id == fixture.id || entry.aliases.contains(fixture.id) {
+        { ..entry, oracle_profile: "", }
+      } else {
+        entry
+      }
+    }),
+  }
+  try require_oracle_bindings([fixture], missing) catch {
+    Failure(message) =>
+      assert_true(message.contains("registered oracle profile"))
+  } noraise {
+    _ => fail("an unbound differential case must fail before execution")
+  }
+}

@@ -5,7 +5,7 @@ async test "decompress gzip (native)" {
     let low = LowArgs::default()
     parse_into(args, low)
     let rejected = try {
-      ignore(HiArgs::from_low_args(low))
+      ignore(ExecutionPlan::from_low_args(low))
       false
     } catch {
       RgError(message) =>

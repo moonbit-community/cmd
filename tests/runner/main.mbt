@@ -5,11 +5,62 @@ using @testkit {
   snapshots_equal,
   normalize_text,
   controlled_environment,
-  oracle_request_name,
 }
 
 ///|
 type OracleCase = @testkit.Case
+
+///|
+priv struct OracleCaseOutcome {
+  failures : Array[String]
+  local_contract : @testkit.LocalContractReceipt?
+}
+
+///|
+async fn check_oracle_candidate_contract(
+  fixture : OracleCase,
+  assertion_fixture : OracleCase,
+  candidate : @testkit.RunResult,
+  root : String,
+  baseline : Array[@testkit.SnapshotEntry],
+  http_base : String,
+) -> OracleCaseOutcome {
+  if fixture.comparison != Some("contract") {
+    return { failures: [], local_contract: None, }
+  }
+  let failures = @testkit.check_contract(
+    assertion_fixture,
+    candidate,
+    root,
+    http_base~,
+  )
+  failures.append(
+    @testkit.check_expected_files(
+      assertion_fixture,
+      root,
+      http_base~,
+      baseline~,
+    ),
+  )
+  failures.append(@testkit.check_runtime_contract(assertion_fixture, candidate))
+  {
+    failures,
+    local_contract: Some({
+      definition_sha256: @testkit.json_digest(ToJson::to_json(fixture)),
+      passed: failures.is_empty(),
+      observations: if failures.is_empty() {
+        [
+          "status",
+          "stdout",
+          "stderr",
+          ..@testkit.contract_observations(fixture),
+        ]
+      } else {
+        []
+      },
+    }),
+  }
+}
 
 ///|
 struct CommandRow {
@@ -33,7 +84,10 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
   if manifest.schema != 1 && manifest.schema != 2 {
     failures.push("manifest: expected schema 1, got \{manifest.schema}")
   }
-  let catalog = @cli.command_catalog()
+  if manifest.cases.is_empty() {
+    failures.push("manifest: required case corpus is empty")
+  }
+  let catalog = @contracts.command_catalog()
   if manifest.commands.length() != catalog.length() {
     failures.push(
       "manifest: expected \{catalog.length()} command rows, got \{manifest.commands.length()}",
@@ -84,13 +138,15 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
         failures.push("unknown observation: " + dimension)
       }
       if ["atime", "ctime"].contains(dimension) &&
-        fixture.expected_rejection is None {
+        fixture.expected_rejection is None &&
+        fixture.comparison != Some("contract") {
         failures.push(
           "time observations require a same-fixture boundary or scenario",
         )
       }
       if dimension == "mtime" &&
         fixture.expected_rejection is None &&
+        fixture.comparison != Some("contract") &&
         fixture.files.any(file => file.mtime is None) {
         failures.push(
           "differential mtime requires fixed timestamps on every input",
@@ -234,7 +290,7 @@ async fn run_case(
   _wasm : Bool,
   report_dir : String,
   docker_user : String,
-) -> Array[String] {
+) -> OracleCaseOutcome {
   let failures : Array[String] = []
   guard @testkit.safe_relative_path(fixture.id) else { fail("unsafe case ID") }
   let root = report_dir + "/" + fixture.id
@@ -266,15 +322,24 @@ async fn run_case(
       .contains("247b485454505f424153457d") ||
       file.content_text.unwrap_or("").contains("${HTTP_BASE}")
     })
-  let candidate_before = if fixture.expected_rejection is Some(_) {
+  let candidate_before = if fixture.expected_rejection is Some(_) ||
+    fixture.expected_files
+    .unwrap_or([])
+    .any(file => file.unchanged == Some(true)) {
     snapshot(
       candidate_root,
-      observe=fixture.observe.unwrap_or([]),
+      observe=@testkit.contract_observations(fixture),
       baseline=true,
+      preserve_identity=true,
     )
   } else {
     []
   }
+  let assertion_fixture = @testkit.resolve_runtime_contract(
+    fixture,
+    candidate_root,
+    http_base~,
+  )
   let candidate_run = @testkit.run_with_deadline(
     @testkit.command_program(),
     @testkit.command_args(bin_root, fixture.command, args),
@@ -285,22 +350,28 @@ async fn run_case(
   ) catch {
     err => {
       failures.push("\{fixture.id}: candidate failed to start: \{err}")
-      return failures
+      return { failures, local_contract: None, }
     }
   }
   let candidate = candidate_run.output
   @fs.write_file(root + "/candidate.stdout.bin", candidate.stdout)
   @fs.write_file(root + "/candidate.stderr.bin", candidate.stderr)
   if candidate_run.cleanup_error is Some(error) {
-    return ["infrastructure: cleanup: " + error]
+    return {
+      failures: ["infrastructure: cleanup: " + error],
+      local_contract: None,
+    }
   }
   if candidate_run.timed_out {
-    return ["candidate-timeout: partial streams retained"]
+    return {
+      failures: ["candidate-timeout: partial streams retained"],
+      local_contract: None,
+    }
   }
-  if fixture.comparison == Some("contract") {
-    failures.append(@testkit.check_contract(fixture, candidate, candidate_root))
-    failures.append(@testkit.check_expected_files(fixture, candidate_root))
-  }
+  let contract_check = check_oracle_candidate_contract(
+    fixture, assertion_fixture, candidate, candidate_root, candidate_before, http_base,
+  )
+  failures.append(contract_check.failures)
   let docker_args = [
     "run",
     "--user",
@@ -354,22 +425,31 @@ async fn run_case(
   ) catch {
     err => {
       failures.push("\{fixture.id}: oracle failed to start: \{err}")
-      return failures
+      return { failures, local_contract: contract_check.local_contract, }
     }
   }
   let oracle = oracle_run.output
   @fs.write_file(root + "/oracle.stdout.bin", oracle.stdout)
   @fs.write_file(root + "/oracle.stderr.bin", oracle.stderr)
   if oracle_run.cleanup_error is Some(error) {
-    return ["infrastructure: cleanup: " + error]
+    return {
+      failures: ["infrastructure: cleanup: " + error],
+      local_contract: contract_check.local_contract,
+    }
   }
   if oracle_run.timed_out {
-    return ["infrastructure: oracle-timeout: partial streams retained"]
+    return {
+      failures: ["infrastructure: oracle-timeout: partial streams retained"],
+      local_contract: contract_check.local_contract,
+    }
   }
   if unexpected_oracle_transport_status(oracle.status, fixture.expected_status) {
-    return [
-      "infrastructure: oracle unavailable, Docker status \{oracle.status}",
-    ]
+    return {
+      failures: [
+        "infrastructure: oracle unavailable, Docker status \{oracle.status}",
+      ],
+      local_contract: contract_check.local_contract,
+    }
   }
   if fixture.expected_rejection is Some(reason) {
     if oracle.status != fixture.expected_status {
@@ -393,7 +473,7 @@ async fn run_case(
     if failures.is_empty() {
       @fs.rmdir(root, recursive=true)
     }
-    return failures
+    return { failures, local_contract: contract_check.local_contract, }
   }
   if candidate.status != fixture.expected_status {
     failures.push(
@@ -466,5 +546,5 @@ async fn run_case(
   if failures.is_empty() {
     @fs.rmdir(root, recursive=true)
   }
-  failures
+  { failures, local_contract: contract_check.local_contract, }
 }

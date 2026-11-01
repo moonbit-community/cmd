@@ -22,7 +22,7 @@ priv struct SamplingPlan {
 ///|
 fn sampling_plan() -> SamplingPlan {
   {
-    warmups: Array::makei(5, pair_order),
+    warmups: Array::makei(5, index => pair_order(index + 1)),
     pairs: Array::makei(105, index => {
       index,
       block: index / 21,

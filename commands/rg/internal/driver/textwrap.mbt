@@ -1,4 +1,4 @@
-// A port of the subset of the `textwrap` crate (0.16, default features
+///|// A port of the subset of the `textwrap` crate (0.16, default features
 // disabled) used by ripgrep to render `--help` output: first-fit wrapping,
 // ASCII space word separation, no hyphenation, `break_words` enabled and
 // widths measured in chars.

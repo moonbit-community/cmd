@@ -172,7 +172,7 @@ async fn collect_files(
   while stack.pop() is Some(path) {
     let kind = @fs.kind(path, follow_symlink=false)
     if kind == Directory {
-      let entries = @fs.readdir(path, include_hidden=true, sort=false)
+      let entries = @fswalk.read_directory(path)
       entries.sort_by((left, right) => left.lexical_compare(right))
       let mut index = entries.length()
       while index > 0 {
@@ -252,7 +252,7 @@ async fn process_source(
 async fn main {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("grep 0.3.2\n")
+    @stdio.stdout.write("grep 0.3.3\n")
     return
   }
   let parsed = @cli.parse(args, [

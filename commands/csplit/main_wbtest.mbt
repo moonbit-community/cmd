@@ -62,6 +62,164 @@ async test "csplit pages indexes and regex records across block boundaries" {
 }
 
 ///|
+async test "csplit flushes full index pages before an unterminated final boundary" {
+  for lines in [8190, 8191, 8192, 16383] {
+    let bytes = Bytes::make(lines, b'\n') + b"tail"
+    with_snapshot(bytes, async fn(input) {
+      assert_eq(input.records, lines.to_int64() + 1)
+      assert_eq(input.offset(0), 0L)
+      assert_eq(input.offset(lines.to_int64()), lines.to_int64())
+      assert_eq(input.offset(lines.to_int64() + 1), bytes.length().to_int64())
+      assert_true(input.matches(lines.to_int64(), @bytere.compile("^tail$")))
+    })
+  }
+}
+
+///|
+priv struct FailedIndexWriter {
+  mut calls : Int32
+}
+
+///|
+test "csplit synchronous index scans resume before an uncommitted boundary" {
+  let page : IndexPage = {
+    bytes: FixedArray::make(16, b'\x00'),
+    used: 0,
+    entries: 0L,
+  }
+  let data = b"a\n\xff\x00\n\nlast"
+  let base = 0x0123456789abcd00L
+  assert_eq(page.scan(data[:], base, 0, base - 3), (5, base + 5))
+  assert_eq(page.entries, 2L)
+  assert_eq(page.used, 16)
+  assert_eq(page.scan(data[:], base, 5, base + 5), (5, base + 5))
+  assert_eq(page.entries, 2L)
+  try page.push(base) catch {
+    error => assert_true(error.to_string().contains("no complete offset slot"))
+  } noraise {
+    _ => fail("full page must reject before writing")
+  }
+  assert_eq(page.used, 16)
+  assert_eq(page.entries, 2L)
+  page.used = 0
+  assert_eq(page.scan(data[:], base, 5, base + 5), (10, base + 6))
+  assert_eq(page.entries, 3L)
+  assert_eq(page.scan(b"tail"[:], base + 10, 0, base + 6), (4, base + 6))
+  assert_eq(page.entries, 3L)
+}
+
+///|
+impl @io.Writer for FailedIndexWriter with fn write_once(self, _, offset~, len~) {
+  ignore((offset, len))
+  self.calls += 1
+  fail("injected index write failure")
+}
+
+///|
+async test "csplit index pages retain 64 bit offsets and never replay a failed flush" {
+  let page : IndexPage = {
+    bytes: FixedArray::make(65536, b'\x00'),
+    used: 0,
+    entries: 0L,
+  }
+  page.push(0x0123456789abcdefL)
+  assert_eq(
+    page.bytes.unsafe_reinterpret_as_bytes()[:8],
+    b"\xef\xcd\xab\x89\x67\x45\x23\x01"[:],
+  )
+  page.entries = 1152921504606846975L
+  try page.push(0) catch {
+    error => assert_true(error.to_string().contains("line index exceeds"))
+  } noraise {
+    _ => fail("must reject unaddressable index")
+  }
+  assert_eq(page.used, 8)
+  let writer : FailedIndexWriter = { calls: 0, }
+  try page.flush(writer) catch {
+    error =>
+      assert_true(error.to_string().contains("injected index write failure"))
+  } noraise {
+    _ => fail("must propagate index write failure")
+  }
+  page.flush(writer)
+  assert_eq(writer.calls, 1)
+}
+
+///|
+async test "csplit cached matching retains byte semantics and declines crossing records" {
+  let bytes = b"a\n\n\xff\x00\n" + Bytes::make(65536, b'x') + b"\ntail"
+  with_snapshot(bytes, async fn(input) {
+    let empty = @bytere.compile("^$")
+    let binary = @bytere.compile("^..$")
+    let long = @bytere.compile("^x*$")
+    let tail = @bytere.compile("^tail$")
+    assert_eq(input.matches_cached(0, empty.record_matcher()), None)
+    assert_true(input.matches(0, @bytere.compile("^a$")))
+    assert_eq(input.matches_cached(1, empty.record_matcher()), Some(true))
+    assert_eq(input.matches_cached(2, binary.record_matcher()), Some(true))
+    assert_eq(input.matches_cached(2, empty.record_matcher()), Some(false))
+    assert_eq(input.matches_cached(3, long.record_matcher()), None)
+    assert_true(input.matches(3, long))
+    assert_eq(input.matches_cached(4, tail.record_matcher()), Some(true))
+    assert_eq(input.matches_cached(0, empty.record_matcher()), None)
+  })
+  with_snapshot(Bytes::make(8194, b'\n'), async fn(input) {
+    let empty = @bytere.compile("^$")
+    assert_true(input.matches(8190, empty))
+    assert_eq(input.matches_cached(8190, empty.record_matcher()), Some(true))
+    assert_eq(input.matches_cached(8191, empty.record_matcher()), None)
+    assert_true(input.matches(8191, empty))
+    assert_eq(input.matches_cached(8192, empty.record_matcher()), Some(true))
+  })
+}
+
+///|
+async test "csplit cached scans stop at the first match or uncached record" {
+  let bytes = b"head\n" + Bytes::make(65527, b'x') + b"\nhit\ntail"
+  with_snapshot(bytes, async fn(input) {
+    let hit = @bytere.compile("^hit$")
+    let matcher = hit.record_matcher()
+    assert_eq(input.search_cached(0, matcher), (0L, false))
+    assert_true(input.matches(0, @bytere.compile("^head$")))
+    assert_eq(
+      input.search_cached(0, @bytere.compile("^head$").record_matcher()),
+      (0L, true),
+    )
+    assert_eq(input.search_cached(0, matcher), (2L, false))
+    assert_true(input.matches(2, hit))
+    assert_eq(
+      input.search_cached(3, @bytere.compile("^tail$").record_matcher()),
+      (3L, true),
+    )
+    assert_eq(input.search_cached(3, matcher), (4L, false))
+    assert_eq(input.search_cached(4, matcher), (4L, false))
+  })
+}
+
+///|
+async test "csplit byte matcher retains BRE assertions alternatives and backreferences" {
+  let records = [b"head", b"", b"abab", b"word", b"\xffhit", b"last"]
+  let input_bytes = b"head\n\nabab\nword\n\xffhit\nlast"
+  with_snapshot(input_bytes, async fn(input) {
+    for
+      expression in [
+        "^$", "^head$", "hit", "\\(ab\\)\\1", "\\<word\\>", ".*", "a\\|hit", "last$",
+      ] {
+      let pattern = @bytere.compile(expression)
+      let matcher = pattern.record_matcher()
+      for index, record in records {
+        let expected = pattern.is_match(@bytere.text(record))
+        assert_eq(input.matches(index.to_int64(), pattern), expected)
+        assert_eq(
+          input.matches_cached(index.to_int64(), matcher),
+          Some(expected),
+        )
+      }
+    }
+  })
+}
+
+///|
 async fn csplit_fixture(
   input : Bytes,
   patterns : Array[String],

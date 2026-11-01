@@ -17,7 +17,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("sed 0.2.1\n")
+    @stdio.stdout.write("sed 0.2.3\n")
     return 0
   }
   let scripts : Array[String] = []
@@ -51,6 +51,11 @@ async fn run(args : ArrayView[String]) -> Int32 {
   if files.is_empty() {
     files.push("-")
   }
+  let runtime : Runtime = {
+    previous: None,
+    missing_newline: false,
+    output: @stream.BlockWriter::new(@stdio.stdout),
+  }
   let input : Input = {
     paths: files,
     index: 0,
@@ -61,9 +66,9 @@ async fn run(args : ArrayView[String]) -> Int32 {
     position: 0,
     number: 0,
     status: 0,
+    output: runtime.output,
   }
   defer input.close()
-  let runtime : Runtime = { previous: None, missing_newline: false, }
   execute(commands, input, quiet, runtime)
   input.status
 }

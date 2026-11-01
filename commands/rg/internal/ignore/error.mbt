@@ -47,62 +47,14 @@ pub(all) suberror IgnoreError {
 } derive(Debug)
 
 ///|
-/// Returns true if this is a partial error.
-///
-/// A partial error occurs when only some operations failed while others
-/// may have succeeded. For example, an ignore file may contain an invalid
-/// glob among otherwise valid globs.
-pub fn IgnoreError::is_partial(self : IgnoreError) -> Bool {
-  match self {
-    Partial(_) => true
-    WithLineNumber(err~, ..) | WithPath(err~, ..) | WithDepth(err~, ..) =>
-      err.is_partial()
-    _ => false
-  }
-}
-
-///|
 /// Returns true if this error is exclusively an I/O error.
-pub fn IgnoreError::is_io(self : IgnoreError) -> Bool {
+fn IgnoreError::is_io(self : IgnoreError) -> Bool {
   match self {
     Partial(errs) => errs.length() == 1 && errs[0].is_io()
     WithLineNumber(err~, ..) | WithPath(err~, ..) | WithDepth(err~, ..) =>
       err.is_io()
     Io(_) => true
     Loop(..) | Glob(..) | UnrecognizedFileType(_) | InvalidDefinition => false
-  }
-}
-
-///|
-/// Inspect the original I/O error if there is one.
-///
-/// `None` is returned if this error doesn't correspond to an I/O error. This
-/// might happen, for example, when the error was produced because a cycle
-/// was found in the directory tree while following symbolic links.
-pub fn IgnoreError::io_error(self : IgnoreError) -> @sys.IOError? {
-  match self {
-    Partial(errs) => if errs.length() == 1 { errs[0].io_error() } else { None }
-    WithLineNumber(err~, ..) | WithPath(err~, ..) | WithDepth(err~, ..) =>
-      err.io_error()
-    Io(err) => Some(err)
-    Loop(..) | Glob(..) | UnrecognizedFileType(_) | InvalidDefinition => None
-  }
-}
-
-///|
-/// Similar to `io_error`. (Provided for parity with Rust's API.)
-pub fn IgnoreError::into_io_error(self : IgnoreError) -> @sys.IOError? {
-  self.io_error()
-}
-
-///|
-/// Returns a depth associated with recursively walking a directory (if
-/// this error was generated from a recursive directory iterator).
-pub fn IgnoreError::depth(self : IgnoreError) -> Int32? {
-  match self {
-    WithPath(err~, ..) => err.depth()
-    WithDepth(depth~, ..) => Some(depth)
-    _ => None
   }
 }
 

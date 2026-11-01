@@ -1,4 +1,6 @@
 import {
+  "cli/core/fswalk",
+  "cli/core/platform",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/io",

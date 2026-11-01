@@ -36,8 +36,6 @@ async test "released filesystem operations preserve chunks and unknown identitie
   let md = metadata(path)
   assert_true(md.is_file())
   assert_eq(md.len, 7L)
-  assert_eq(md.dev, None)
-  assert_eq(md.ino, None)
   let file = File::open(path)
   defer file.close()
   let buf = FixedArray::make(4, b'\x00')

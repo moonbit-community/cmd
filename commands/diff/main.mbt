@@ -276,12 +276,14 @@ async fn compare_files(
   }
   let a = if missing_left { b"" } else { source(task.left) }
   let b = if missing_right { b"" } else { source(task.right) }
-  let binary = !settings.text &&
-    (a.iter().any(v => v == b'\x00') || b.iter().any(v => v == b'\x00'))
-  let changes = if a == b || binary {
-    []
+  let identical = a == b
+  let binary = !identical &&
+    !settings.text &&
+    (a.find(b"\x00") is Some(_) || b.find(b"\x00") is Some(_))
+  let script = if identical || binary {
+    EditScript::{ changes: [], prefix: 0, }
   } else {
-    edits(
+    edit_script(
       lines(a),
       lines(b),
       options=settings.comparison,
@@ -292,8 +294,9 @@ async fn compare_files(
       },
     )
   }
+  let changes = script.changes
   let differs = if binary {
-    a != b
+    true
   } else {
     changes.iter().any(edit => meaningful(edit, settings.comparison))
   }
@@ -341,10 +344,13 @@ async fn compare_files(
         @bytere.argument(right),
         context_format=settings.context_format,
         options=settings.comparison,
+        offset=script.prefix,
       ),
     )
   } else {
-    @stdio.stdout.write(normal(changes, options=settings.comparison))
+    @stdio.stdout.write(
+      normal(changes, options=settings.comparison, offset=script.prefix),
+    )
   }
   1
 }
@@ -551,7 +557,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("diff 0.2.2\n")
+    @stdio.stdout.write("diff 0.2.4\n")
     return 0
   }
   guard parsed.operands.length() == 2 else {

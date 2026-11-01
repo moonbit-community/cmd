@@ -8,6 +8,7 @@ import {
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/string",
+  "moonbitlang/x@0.5.5/crypto",
   "moonbitlang/x@0.5.5/sys",
 }
 ----
@@ -307,6 +308,181 @@ async fn write_input(
 }
 
 ///|
+struct ContentInput {
+  bytes : Int64
+  rows : Int64
+  short_record_bytes : Int64
+  mixed : Bool
+  section_offsets : Array[Int64]
+} derive(ToJson)
+
+///|
+fn content_width(row : Int64, mixed : Bool) -> Int64 {
+  if !mixed { return 80L }
+  let at = row % 259L
+  if at < 256L { [32L,64L,96L,128L][((at+row/259L)%4L).to_int()] }
+  else if at < 258L { 512L } else { 4096L }
+}
+
+///|
+fn content_row_offset(row : Int64, mixed : Bool) -> Int64 {
+  if !mixed { return row*80L }
+  let first = row/259L*259L
+  let mut offset = row/259L*25600L
+  for index=first; index<row; index=index+1L { offset+=content_width(index,true) }
+  offset
+}
+
+///|
+// The content modes keep the requested byte budget while exercising many
+// ordinary records. The mixed cycle assigns 80% of complete-cycle bytes to
+// records of at most 128 bytes; it is a public ordered synthetic control.
+async fn write_content_input(
+  path : String,
+  size : Int64,
+  mixed : Bool,
+  sections : Bool,
+) -> ContentInput {
+  let output=@fs.create(path)
+  defer output.close()
+  let places=[1000000000L,100000000L,10000000L,1000000L,100000L,10000L,1000L,100L,10L,1L]
+  let alphabet=b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _-./:=\t"
+  let boundaries : Array[Int64]=[]
+  let mut offset=0L
+  let mut row=0L
+  let mut column=0L
+  let mut width=content_width(0L,mixed)
+  let mut short_bytes=0L
+  let mut marked=false
+  while offset<size {
+    let length=(size-offset).min(65536L).to_int()
+    let bytes=Bytes::makei(length,index=>{
+      let at=offset+index.to_int64()
+      if column==0L {
+        marked=sections && row%4096L==4095L && size-at>=9L
+        if marked {boundaries.push(at)}
+      }
+      let rank=(row*1103515245L+12345L)%1000000007L
+      let last=column==width-1L || at==size-1L
+      let byte=if last {b'\n'}
+      else if marked && column<8L {b"SECTION "[column.to_int()]}
+      else if column<10L {((rank/places[column.to_int()]%10L).to_int()+48).to_byte()}
+      else {alphabet[(((rank*31L+column*2654435761L+104729L)%1000000007L)%alphabet.length().to_int64()).to_int()]}
+      if width<=128L {short_bytes+=1L}
+      if last {row+=1L;column=0L;width=content_width(row,mixed)}
+      else {column+=1L}
+      byte
+    })
+    output.write(bytes)
+    offset+=length.to_int64()
+  }
+  {bytes:size,rows:row,short_record_bytes:short_bytes,mixed,section_offsets:boundaries}
+}
+
+///|
+async fn resource_sha256(path : String) -> String {
+  let input=@fs.open(path,mode=ReadOnly)
+  defer input.close()
+  let hash=@crypto.SHA256::new()
+  let buffer=FixedArray::make(65536,b'\x00')
+  let bytes=buffer.unsafe_reinterpret_as_bytes()
+  while input.read(buffer) is length && length>0 {hash.update(bytes[:length])}
+  @crypto.bytes_to_hex_string(hash.finalize())
+}
+
+///|
+async fn copy_content_range(source : @fs.File, output : @fs.File, start : Int64, end : Int64) -> Unit {
+  guard start>=0L && end>=start && end<=source.size() else {fail("invalid resource content range")}
+  let mut offset=start
+  while offset<end {
+    let length=(end-offset).min(65536L).to_int()
+    output.write(source.read_exactly_at(length,position=offset))
+    offset+=length.to_int64()
+  }
+}
+
+///|
+struct ContentEdit {
+  at : Int64
+  remove_bytes : Int64
+  insert : Bytes
+}
+
+///|
+async fn write_content_diff(source_path : String, changed : String, features : ContentInput, regime : String) -> Json {
+  guard features.rows>=12L else {fail("resource diff content modes need at least twelve records")}
+  let source=@fs.open(source_path,mode=ReadOnly)
+  defer source.close()
+  let output=@fs.create(changed)
+  defer output.close()
+  let edits : Array[ContentEdit]=[]
+  if regime=="sparse-interior-insert-delete" {
+    let insert_at=content_row_offset(features.rows/3L,features.mixed)
+    let delete_row=features.rows*2L/3L
+    let delete_at=content_row_offset(delete_row,features.mixed)
+    let delete_end=content_row_offset(delete_row+2L,features.mixed).min(features.bytes)
+    edits.push({at:insert_at,remove_bytes:0L,insert:b"inserted sparse resource record\n"})
+    edits.push({at:delete_at,remove_bytes:delete_end-delete_at,insert:b""})
+  } else if regime=="distributed-interior-edits" {
+    guard features.rows>2050L else {fail("distributed resource diff needs more than 2050 records")}
+    let mut event=0L
+    for row=2048L; row+2L<features.rows; row=row+4096L {
+      let at=content_row_offset(row,features.mixed)
+      let remove_bytes=if event%5L==0L {content_row_offset(row+2L,features.mixed)-at} else {1L}
+      let insert=if event%5L==0L {b"replacement distributed resource record\n"}
+        else if event%3L==0L {b"inserted distributed resource record\nX"} else {b"X"}
+      edits.push({at,remove_bytes,insert})
+      event+=1L
+    }
+  } else {
+    guard regime=="distinct-equal-content" else {fail("unknown resource diff content regime")}
+  }
+  let events : Array[Json]=[]
+  let mut offset=0L
+  for edit in edits {
+    guard edit.at>=offset && edit.at>0L && edit.at+edit.remove_bytes<features.bytes else {fail("resource diff edits must be nonoverlapping and interior")}
+    copy_content_range(source,output,offset,edit.at)
+    output.write(edit.insert)
+    offset=edit.at+edit.remove_bytes
+    events.push({"source_offset":edit.at.to_string(),"removed_bytes":edit.remove_bytes.to_string(),"inserted_bytes":edit.insert.length()})
+  }
+  copy_content_range(source,output,offset,features.bytes)
+  {
+    "regime":regime,"same_file_identity":false,"source_bytes":features.bytes.to_string(),
+    "source_rows":features.rows.to_string(),"events":events,
+    "input_transport":"distinct-named-regular-files",
+    "record_layout":if features.mixed {"mixed-short32/64/96/128/512/4096"} else {"ordinary80"},
+  }
+}
+
+///|
+// Verify every fragment independently against its declared source interval,
+// including the nonempty final tail after the last repeated interior marker.
+async fn content_fragments_match(source_path : String, effects : String, features : ContentInput) -> Bool {
+  let names=@fs.readdir(effects,sort=true)
+  if names.length()!=features.section_offsets.length()+1 {return false}
+  let source=@fs.open(source_path,mode=ReadOnly)
+  defer source.close()
+  let mut offset=0L
+  for index,name in names {
+    let suffix=index.to_string()
+    if name!="part-"+"0".repeat((6-suffix.length()).max(0))+suffix {return false}
+    let end=if index<features.section_offsets.length() {features.section_offsets[index]} else {features.bytes}
+    let fragment=@fs.open(effects+"/"+name,mode=ReadOnly)
+    defer fragment.close()
+    if fragment.size()!=end-offset || end<=offset {return false}
+    let mut position=0L
+    while position<end-offset {
+      let length=(end-offset-position).min(65536L).to_int()
+      if fragment.read_exactly_at(length,position~)!=source.read_exactly_at(length,position=offset+position) {return false}
+      position+=length.to_int64()
+    }
+    offset=end
+  }
+  offset==features.bytes
+}
+
+///|
 async fn equal_files(left : String, right : String) -> Bool {
   let a = @fs.open(left, mode=ReadOnly)
   defer a.close()
@@ -326,6 +502,13 @@ async fn equal_files(left : String, right : String) -> Bool {
     position += length.to_int64()
   }
   true
+}
+
+///|
+async fn legacy_long_fragments_match(source : String, effects : String) -> Bool {
+  @fs.readdir(effects, sort=true) == ["part-00", "part-01"] &&
+  @fs.file_size(effects + "/part-00") == 0L &&
+  equal_files(source, effects + "/part-01")
 }
 
 ///|
@@ -352,7 +535,7 @@ fn arguments(
 ) -> Array[String] {
   match command {
     "split" => ["-b", "8M", "-", "part-"]
-    "csplit" => ["-s", "-f", "part-", "-", "/^/"]
+    "csplit" => ["-s", "-n", "6", "-f", "part-", "-", "/^SECTION /", "{*}"]
     "sort" => ["-S", "4M"]
     "column" => ["-t"]
     "grep" => if binary { ["-a", "-F", "needle"] } else { ["-F", "needle"] }
@@ -432,7 +615,7 @@ async fn main {
   let distribution = options.get("--distribution").unwrap_or("ascii")
   let literal = distribution.has_prefix("literal-")
   guard [
-    "ascii", "heldout", "literal-shared", "literal-diverse", "literal-sparse", "literal-budget",
+    "ascii", "mixed-synthetic", "literal-shared", "literal-diverse", "literal-sparse", "literal-budget",
   ].contains(distribution) else {
     fail("unknown resource distribution")
   }
@@ -472,11 +655,15 @@ async fn main {
     "moonrun": moonrun,
     "oracle_bin": oracle,
     "distribution": distribution,
+    "blind_holdout": false,
+    "general_performance_acceptance": false,
+    "evidence_role": "synthetic-resource-regression",
     "record_keys": if literal {
       "all a collision misses or all Z sparse misses; sixteen fixed patterns with common suffix; one-MiB records unless long-record is selected"
     } else {
-      "deterministic varying decimal keys; heldout widths7/89/4097/65537/128 with NUL/0xff on byte profiles; rev/diff remain ASCII"
+      "deterministic varying decimal keys; legacy mixed-synthetic widths7/89/4097/65537/128 with NUL/0xff on byte profiles; diff and csplit select ordinary80 or short-byte-dominant mixed32/64/96/128/512/4096 ASCII content modes"
     },
+    "command_specific_overrides": "diff selects distinct-equal, sparse interior insert/delete and distributed interior edit modes; csplit selects repeated interior SECTION boundaries; these content modes use many short records; long-record additionally retains a separately named legacy-long-record control for each command",
   }
   @fs.write_file(root + "/metadata.json", metadata.stringify(indent=2))
   let summary = @fs.create(root + "/summary.jsonl")
@@ -487,22 +674,39 @@ async fn main {
     let changed = input + ".changed"
     let mut last_record = -1L
     let mut last_binary = false
+    let mut last_shape = ""
+    let mut content_features : ContentInput? = None
     for command in commands {
-      let record = if long {
+      let regimes = if command == "diff" {
+        ["distinct-equal-content", "sparse-interior-insert-delete", "distributed-interior-edits"]
+      } else if command == "csplit" { ["repeated-interior-sections"] } else { ["legacy-command-profile"] }
+      if long && (command == "diff" || command == "csplit") {
+        regimes.push("legacy-long-record")
+      }
+      for regime in regimes {
+      let legacy_long = regime == "legacy-long-record"
+      let content = (command == "diff" || command == "csplit") && !legacy_long
+      let record = if content { 80L } else if long {
         size
       } else if literal {
         1048576L
-      } else if command == "diff" {
-        4096L
       } else {
         80L
       }
-      let mixed = distribution == "heldout" && !long
-      let binary = distribution == "heldout" &&
+      let mixed = !legacy_long && distribution == "mixed-synthetic" && (content || !long)
+      let binary = !legacy_long && distribution == "mixed-synthetic" &&
         command != "rev" &&
-        command != "diff"
-      if record != last_record || binary != last_binary {
-        write_input(
+        !content
+      let shape = if legacy_long { "legacy-long-record" }
+        else if command == "csplit" { "interior-sections" }
+        else if command == "diff" { "short-content" }
+        else { "legacy-profile" }
+      if record != last_record || binary != last_binary || shape != last_shape {
+        if content {
+          content_features = Some(write_content_input(input,size,mixed,command=="csplit"))
+        } else {
+          content_features = None
+          write_input(
           input,
           size,
           record,
@@ -510,21 +714,74 @@ async fn main {
           binary,
           literal=if literal { distribution } else { "" },
         )
+        }
         last_record = record
         last_binary = binary
+        last_shape = shape
       }
-      if command == "diff" {
-        write_input(changed, size, record, mixed, binary)
-        let file = @fs.open(changed, mode=WriteOnly)
-        defer file.close()
-        file.write_at(b"x", position=0)
+      let content_recipe : Json = if legacy_long {
+        if command == "diff" {
+          let source = @fs.open(input, mode=ReadOnly)
+          defer source.close()
+          let right = @fs.create(changed)
+          defer right.close()
+          copy_content_range(source, right, 0L, size)
+          right.write_at(b"x", position=0L)
+        }
+        {
+          "regime": regime,
+          "evidence_role": "legacy-single-record-stress",
+          "record_layout": "one unbroken ASCII payload with a final LF",
+          "source_bytes": size.to_string(),
+          "same_file_identity": if command == "diff" { Json(false) } else { Json::null() },
+          "input_transport": if command == "diff" {
+            "distinct-named-regular-files"
+          } else { "redirected-regular-file" },
+          "comparison_regime": if command == "diff" {
+            "byte-zero replacement in distinct regular files"
+          } else {
+            "first-record /^/ boundary; empty part-00 plus full-source part-01"
+          },
+          "independent_effect_check": if command == "csplit" {
+            "part-00 is empty and part-01 equals the complete source"
+          } else { "source/right hashes checked before and after both processes" },
+        }
+      } else if command == "diff" {
+        write_content_diff(input,changed,content_features.unwrap(),regime)
+      } else if command == "csplit" {
+        let features=content_features.unwrap()
+        guard features.section_offsets.length()>=2 else {fail("resource csplit needs at least two interior SECTION markers")}
+        {
+          "regime":regime,"observed_source":features,
+          "expected_fragments":features.section_offsets.length()+1,
+          "final_tail_bytes":(size-features.section_offsets[features.section_offsets.length()-1]).to_string(),
+          "independent_effect_check":"each named fragment equals its complete declared source interval",
+        }
+      } else { Json::null() }
+      let input_hash=resource_sha256(input)
+      let changed_hash=if command=="diff" {Some(resource_sha256(changed))} else {None}
+      if command=="diff" && regime=="distinct-equal-content" {
+        guard changed_hash==Some(input_hash) && @fs.realpath(input)!=@fs.realpath(changed) else {fail("equal diff inputs must have equal bytes and distinct file paths")}
+      } else if command=="diff" {
+        guard changed_hash!=Some(input_hash) else {fail("edited resource diff inputs must differ")}
       }
-      let directory = root + "/" + command + "-" + size.to_string()
+      let directory = root + "/" + command + "-" + size.to_string() + (if content || legacy_long {"-"+regime} else {""})
       @fs.mkdir(directory)
+      let input_identity : Json = {
+        "source_path":input,"source_bytes":@fs.file_size(input).to_string(),"source_sha256":input_hash,
+        "right_path":if command=="diff" {Json(changed)} else {Json::null()},
+        "right_bytes":if command=="diff" {Json(@fs.file_size(changed).to_string())} else {Json::null()},
+        "right_sha256":changed_hash,"requested_long_record":long,
+        "actual_many_short_records":content,"legacy_long_record_control":legacy_long,
+        "actual_single_record":legacy_long || (!content && long),"recipe":content_recipe,
+      }
+      @fs.write_file(directory+"/input-identities.json",input_identity.stringify(indent=2))
       println(
-        "resource start \{command} bytes=\{size} record=\{record} distribution=\{distribution}",
+        "resource start \{command} regime=\{regime} bytes=\{size} record=\{record} distribution=\{distribution}",
       )
-      let argv = if literal {
+      let argv = if legacy_long && command == "csplit" {
+        ["-s", "-f", "part-", "-", "/^/"]
+      } else if literal {
         let result = ["-F", "-c"]
         let length = if distribution == "literal-budget" { 256 } else { 32 }
         let marker = if distribution == "literal-shared" { 28 } else { 0 }
@@ -550,6 +807,9 @@ async fn main {
         timeout,
         kernel~,
       )
+      guard resource_sha256(input)==input_hash && (changed_hash is None || Some(resource_sha256(changed))==changed_hash) else {
+        fail("resource candidate changed a shared input; refusing to run the oracle on different bytes")
+      }
       let reference = observe(
         oracle + "/" + command,
         argv,
@@ -558,7 +818,8 @@ async fn main {
         timeout,
         kernel~,
       )
-      let expected = if command == "diff" || literal { 1 } else { 0 }
+      guard resource_sha256(input)==input_hash && (changed_hash is None || Some(resource_sha256(changed))==changed_hash) else {fail("resource oracle changed a shared input")}
+      let expected = if (command == "diff" && regime!="distinct-equal-content") || literal { 1 } else { 0 }
       let mut same = !candidate.timed_out &&
         !reference.timed_out &&
         candidate.status == expected &&
@@ -591,16 +852,43 @@ async fn main {
         ) &&
         candidate.residual_temp_files == 0 &&
         candidate.residual_temp_entries == 0
+      if command=="csplit" && same {
+        same = candidate.output_bytes==0L && reference.output_bytes==0L
+        if legacy_long {
+          same = same &&
+            legacy_long_fragments_match(input,directory+"/candidate/effects") &&
+            legacy_long_fragments_match(input,directory+"/oracle/effects")
+        } else {
+          let features=content_features.unwrap()
+          same = same &&
+            content_fragments_match(input,directory+"/candidate/effects",features) &&
+            content_fragments_match(input,directory+"/oracle/effects",features)
+        }
+      }
+      if command=="diff" && regime=="distinct-equal-content" && same {
+        same = candidate.output_bytes==0L && reference.output_bytes==0L
+      } else if command=="diff" && same {
+        same = candidate.output_bytes>0L && reference.output_bytes>0L
+      }
+      if command=="diff" && same {
+        same = @fs.readdir(directory+"/candidate/effects").is_empty() && @fs.readdir(directory+"/oracle/effects").is_empty()
+      }
       let result : Json = {
         "command": command,
+        "regime":regime,
         "bytes": size.to_string(),
         "record_bytes": if mixed {
-          "mixed7/89/4097/65537/128"
+          if content {"mixed-short32/64/96/128/512/4096"} else {"legacy-mixed7/89/4097/65537/128"}
         } else {
           record.to_string()
         },
         "distribution": distribution,
+        "actual_distribution": if legacy_long { "ascii-single-record" } else { distribution },
+        "legacy_long_record_control":legacy_long,
         "binary_markers": binary,
+        "expected_status":expected,
+        "input_identities":input_identity,
+        "input_hashes_unchanged":true,
         "args": argv,
         "candidate": candidate,
         "oracle": reference,
@@ -622,6 +910,7 @@ async fn main {
         }
       } else {
         failures += 1
+      }
       }
     }
     @fs.remove(input)

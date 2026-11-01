@@ -20,7 +20,10 @@ priv struct Core {
   matcher : &@matcher.Matcher
   searcher : Searcher
   sink : &Sink
-  binary : Bool
+  mut execution : LineExecution
+  record_scan : Bool
+  mut pending_match : @matcher.Match?
+  scan_binary : Bool
   mut pos : Int32
   mut absolute_byte_offset : Int64
   mut binary_byte_offset : Int32?
@@ -41,14 +44,17 @@ fn Core::new(
   searcher : Searcher,
   matcher : &@matcher.Matcher,
   sink : &Sink,
-  binary : Bool,
+  scan_binary : Bool,
 ) -> Core {
   {
     config: searcher.config,
     matcher,
     searcher,
     sink,
-    binary,
+    execution: searcher.config.line_execution(sink, scan_binary),
+    record_scan: record_scan_proof(matcher, searcher.config.line_term),
+    pending_match: None,
+    scan_binary,
     pos: 0,
     absolute_byte_offset: 0,
     binary_byte_offset: None,
@@ -102,6 +108,7 @@ async fn Core::matched(self : Core, buf : Win, range : @matcher.Match) -> Bool {
 
 ///|
 async fn Core::binary_data(self : Core, offset : Int64) -> Bool {
+  self.execution = self.execution.after_binary()
   self.sink.binary_data(self.searcher, offset)
 }
 
@@ -161,6 +168,16 @@ async fn Core::finish(
 ///|
 async fn Core::match_by_line(self : Core, buf : Win) -> Bool {
   if self.is_line_by_line_fast() {
+    match self.execution {
+      Count(accept) => {
+        self.match_count_batch(buf, accept)
+        return true
+      }
+      Coalesced(_) => return self.match_by_line_spans(buf)
+      Synchronous(accept) => return self.match_by_line_synchronous(buf, accept)
+      Buffered(accept) => return self.match_by_line_buffered(buf, accept)
+      Ordinary => ()
+    }
     match self.match_by_line_fast(buf) {
       SwitchToSlow => self.match_by_line_slow(buf)
       Continue => true
@@ -169,6 +186,160 @@ async fn Core::match_by_line(self : Core, buf : Win) -> Bool {
   } else {
     self.match_by_line_slow(buf)
   }
+}
+
+///|
+fn Core::next_match_span(self : Core, buf : Win) -> @matcher.Match? {
+  let first = match self.pending_match {
+    Some(line) => {
+      self.pending_match = None
+      line
+    }
+    None => {
+      guard self.find_by_line_fast(buf) is Some(line) else { return None }
+      line
+    }
+  }
+  self.count += 1
+  self.has_matched = true
+  self.pos = first.end
+  while self.pos < buf.len {
+    guard self.find_by_line_fast(buf) is Some(next) else { break }
+    if next.start != self.pos {
+      self.pending_match = Some(next)
+      break
+    }
+    self.count += 1
+    self.pos = next.end
+  }
+  Some({ start: first.start, end: self.pos, })
+}
+
+///|
+async fn Core::match_by_line_spans(self : Core, buf : Win) -> Bool {
+  if self.sink.buffered_matched() is Some(accept) {
+    return self.match_by_line_buffered(buf, accept, coalesced=true)
+  }
+  while self.next_match_span(buf) is Some(span) {
+    if !self.sink_matched(buf, span.start, span.end) {
+      return false
+    }
+  }
+  self.pos = buf.len
+  true
+}
+
+///|
+// Confirmed matches need only the next line boundary. Candidates retain their
+// full-line verification. The caller has excluded every early-stop mode.
+fn Core::match_count_batch(
+  self : Core,
+  buf : Win,
+  accept : (Int64) -> Unit,
+) -> Unit {
+  if self.matcher.count_matching_lines(
+      buf.arr,
+      buf.off + self.pos,
+      buf.off + buf.len,
+      self.lineterm(),
+    )
+    is Some(count) {
+    if count > 0 {
+      self.count += count
+      self.has_matched = true
+      self.has_sunk = true
+      self.last_line_visited = buf.len
+      self.after_context_left = 0
+      accept(count)
+    }
+    self.pos = buf.len
+    return
+  }
+  let term = self.lineterm()
+  let mut pos = self.pos
+  let mut count = 0L
+  let mut last = self.last_line_visited
+  while pos < buf.len {
+    match
+      self.matcher.find_candidate_line(
+        buf.arr,
+        buf.off + pos,
+        buf.off + buf.len,
+      ) {
+      None => break
+      Some(Confirmed(end)) => {
+        let end = pos + end
+        if end == buf.len && buf.arr[buf.off + end - 1] == term {
+          break
+        }
+        pos = match find_byte(buf.arr, term, buf.off + end, buf.off + buf.len) {
+          Some(next) => next - buf.off + 1
+          None => buf.len
+        }
+        count += 1
+        last = pos
+      }
+      Some(Candidate(end)) => {
+        let line = locate(buf.arr, buf.off, buf.len, term, {
+          start: pos + end,
+          end: pos + end,
+        })
+        if line.start == buf.len {
+          break
+        }
+        pos = line.end
+        if self.is_match(buf, line) {
+          count += 1
+          last = pos
+        }
+      }
+    }
+  }
+  if count > 0 {
+    self.count += count
+    self.has_matched = true
+    self.has_sunk = true
+    self.last_line_visited = last
+    self.after_context_left = 0
+    accept(count)
+  }
+  self.pos = buf.len
+}
+
+///|
+// The reader has already performed binary detection. Context, inversion and
+// slice/multiline searches keep their existing event-driven path.
+fn Core::match_by_line_synchronous(
+  self : Core,
+  buf : Win,
+  accept : (Searcher, SinkMatch) -> Bool,
+) -> Bool {
+  while self.pos < buf.len {
+    guard self.find_by_line_fast(buf) is Some(line) else { break }
+    self.has_matched = true
+    self.count += 1
+    self.pos = line.end
+    self.count_lines(buf, line.start)
+    let mat = self.sink_match
+    mat.buf = buf.arr
+    mat.buf_start = buf.off
+    mat.buf_len = buf.len
+    mat.start = line.start
+    mat.end = line.end
+    mat.absolute_byte_offset = self.absolute_byte_offset + line.start.to_int64()
+    mat.line_number = self.line_number
+    if !accept(self.searcher, mat) {
+      return false
+    }
+    self.last_line_visited = line.end
+    self.after_context_left = 0
+    self.has_sunk = true
+  }
+  if self.has_exceeded_match_limit() {
+    return false
+  }
+  self.pos = buf.len
+  true
 }
 
 ///|
@@ -478,7 +649,7 @@ async fn Core::sink_matched(
   start : Int32,
   end : Int32,
 ) -> Bool {
-  if self.binary && self.detect_binary(buf, start, end) {
+  if self.scan_binary && self.detect_binary(buf, start, end) {
     return false
   }
   if !self.sink_break_context(start) {
@@ -531,7 +702,7 @@ async fn Core::sink_before_context(
   start : Int32,
   end : Int32,
 ) -> Bool {
-  if self.binary && self.detect_binary(buf, start, end) {
+  if self.scan_binary && self.detect_binary(buf, start, end) {
     return false
   }
   if !self.sink_context(buf, start, end, Before) {
@@ -550,7 +721,7 @@ async fn Core::sink_after_context(
   end : Int32,
 ) -> Bool {
   guard self.after_context_left >= 1 else { abort("no after context left") }
-  if self.binary && self.detect_binary(buf, start, end) {
+  if self.scan_binary && self.detect_binary(buf, start, end) {
     return false
   }
   if !self.sink_context(buf, start, end, After) {
@@ -569,7 +740,7 @@ async fn Core::sink_other_context(
   start : Int32,
   end : Int32,
 ) -> Bool {
-  if self.binary && self.detect_binary(buf, start, end) {
+  if self.scan_binary && self.detect_binary(buf, start, end) {
     return false
   }
   if !self.sink_context(buf, start, end, Other) {
@@ -617,19 +788,7 @@ fn Core::is_line_by_line_fast(self : Core) -> Bool {
   if self.config.stop_on_nonmatch && self.has_matched {
     return false
   }
-  if self.matcher.line_terminator() is Some(lt) {
-    if lt.as_byte() == b'\x00' {
-      return false
-    }
-    if lt == self.config.line_term {
-      return true
-    }
-  }
-  if self.matcher.non_matching_bytes() is Some(nm) &&
-    nm.contains(self.lineterm()) {
-    return true
-  }
-  false
+  self.record_scan
 }
 
 ///|

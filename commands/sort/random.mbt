@@ -59,7 +59,7 @@ fn random_key(seed : Bytes, key : Bytes) -> Bytes {
 }
 
 ///|
-fn prepared_key(key : Bytes, modifiers : Modifiers, seed : Bytes) -> Bytes {
+fn prepared_key(key : BytesView, modifiers : Modifiers, seed : Bytes) -> Bytes {
   let effective = transformed_key(key, modifiers)
   if modifiers.mode != Random {
     return effective

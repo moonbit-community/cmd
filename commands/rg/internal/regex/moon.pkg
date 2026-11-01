@@ -4,6 +4,7 @@ import {
 }
 
 import {
+  "moonbitlang/async",
   "cli/rg/internal/regex/internal/testdata",
 } for "test"
 

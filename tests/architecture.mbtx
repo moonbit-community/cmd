@@ -1,0 +1,432 @@
+----
+import {
+  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+----
+
+///|
+struct Package {
+  name : String
+  path : String
+  dependencies : Array[String]
+  test_dependencies : Array[String]
+  implementation_lines : Int32
+  test_lines : Int32
+  public_declarations : Int32
+} derive(ToJson)
+
+///|
+struct StrategyTest {
+  file : String
+  name : String
+} derive(FromJson)
+
+///|
+struct Strategy {
+  id : String
+  owner : String
+  commands : Array[String]
+  status : String
+  sources : Array[String]
+  tests : Array[StrategyTest]
+  profiles : Array[String]
+  invariant : String
+} derive(FromJson)
+
+///|
+struct Boundary {
+  sources : Array[String]
+  retain : String
+} derive(FromJson)
+
+///|
+struct ProtectionRegistry {
+  schema : Int32
+  profiles : Map[String, Array[String]]
+  profile_aliases : Map[String, String]?
+  boundaries : Array[Boundary]
+  strategies : Array[Strategy]
+} derive(FromJson)
+
+///|
+fn strategy_errors(
+  strategies : Array[Strategy],
+  profiles : Map[String, Array[String]],
+) -> Array[String] {
+  let errors : Array[String] = []
+  let seen : Set[String] = Set([])
+  if strategies.is_empty() {
+    errors.push("empty strategy inventory")
+  }
+  for strategy in strategies {
+    if strategy.id.is_empty() || seen.contains(strategy.id) {
+      errors.push("duplicate or empty strategy: " + strategy.id)
+    }
+    seen.add(strategy.id)
+    if !["adopted", "rejected-control", "historical"].contains(strategy.status) {
+      errors.push("unknown strategy status: " + strategy.id)
+    }
+    if strategy.owner.is_empty() || strategy.invariant.is_empty() ||
+      strategy.commands.is_empty() || strategy.sources.is_empty() ||
+      strategy.tests.is_empty() || strategy.profiles.is_empty() {
+      errors.push("incomplete strategy: " + strategy.id)
+    }
+    let allowed : Set[String] = Set([])
+    for command in strategy.commands {
+      match profiles.get(command) {
+        Some(ids) => for id in ids { allowed.add(id) }
+        None => errors.push("unregistered command: " + command)
+      }
+    }
+    for profile in strategy.profiles {
+      if !allowed.contains(profile) {
+        errors.push("orphan strategy profile: " + strategy.id + ":" + profile)
+      }
+    }
+  }
+  errors
+}
+
+///|
+fn has_named_test(source : String, name : String) -> Bool {
+  source.split("\n").any(line => {
+    let line = line.trim_end()
+    line == "test \"" + name + "\" {" || line == "async test \"" + name + "\" {"
+  })
+}
+
+///|
+async fn check_strategies(markers : Map[String, String]) -> Int32 {
+  for newline in ["\n", "\r\n"] {
+    assert_true(has_named_test("///|" + newline + "test \"boundary\" {" + newline + "}", "boundary"))
+    assert_true(has_named_test("async test \"boundary\" {" + newline, "boundary"))
+    assert_false(has_named_test("// test \"boundary\" {" + newline, "boundary"))
+    assert_false(has_named_test("test \"boundary extra\" {" + newline, "boundary"))
+  }
+  let registry : ProtectionRegistry = @json.from_json(
+    @json.parse(@fs.read_file("tests/benchmark/protection.json").text()),
+  )
+  assert_eq(registry.schema, 2)
+  assert_true(!registry.boundaries.is_empty())
+  let profiles : Set[String] = Set([])
+  for command, ids in registry.profiles {
+    assert_true(@fs.exists("commands/" + command + "/moon.pkg"))
+    assert_true(!ids.is_empty(), msg="empty profile selection: " + command)
+    for id in ids {
+      assert_true(!id.is_empty() && !profiles.contains(id), msg=id)
+      profiles.add(id)
+    }
+  }
+  assert_eq(strategy_errors(registry.strategies, registry.profiles), [])
+  let aliases = registry.profile_aliases.unwrap_or(Map([]))
+  for alias_id, target in aliases {
+    assert_true(alias_id != target && !aliases.contains(target), msg="invalid chained/cyclic profile alias: " + alias_id)
+    assert_true(registry.profiles.values().any(ids => ids.contains(alias_id) && ids.contains(target)), msg="alias must have a canonical profile in the same command: " + alias_id)
+  }
+  assert_eq(markers.length(), registry.strategies.length(), msg="orphan or missing strategy registration")
+  // Negative controls ensure incomplete and orphan registrations fail closed.
+  let valid = registry.strategies[0]
+  assert_false(strategy_errors([], registry.profiles).is_empty())
+  assert_false(strategy_errors([valid, valid], registry.profiles).is_empty())
+  for invalid in [
+    { ..valid, tests: [] },
+    { ..valid, profiles: ["unregistered-profile"] },
+    { ..valid, commands: ["unregistered-command"] },
+    { ..valid, status: "unreviewed" },
+  ] {
+    assert_false(strategy_errors([invalid], registry.profiles).is_empty())
+  }
+  for boundary in registry.boundaries {
+    assert_true(!boundary.sources.is_empty() && !boundary.retain.is_empty())
+    for path in boundary.sources {
+      assert_true(@fs.exists(path), msg="missing boundary source: " + path)
+    }
+  }
+  for strategy in registry.strategies {
+    let marker = markers.get(strategy.id).unwrap_or("")
+    assert_true(strategy.sources.contains(marker), msg="missing strategy source marker: " + strategy.id)
+    assert_true(@fs.exists(strategy.owner), msg="missing strategy owner: " + strategy.owner)
+    for path in strategy.sources {
+      assert_true(!@fs.read_file(path).text().is_empty(), msg="empty strategy source: " + path)
+    }
+    for check in strategy.tests {
+      let source = @fs.read_file(check.file).text()
+      assert_true(!check.name.is_empty())
+      assert_true(
+        has_named_test(source, check.name),
+        msg="missing strategy test: " + check.file + ":" + check.name,
+      )
+    }
+  }
+  registry.strategies.length()
+}
+
+///|
+fn dependencies(source : String) -> (Array[String], Array[String]) raise {
+  let imports = source
+    .split("\n")
+    .filter(line => !line.trim_start().has_prefix("//"))
+    .collect()
+    .join("\n")
+    .split("import {")
+    .collect()
+  let production : Array[String] = []
+  let tests : Array[String] = []
+  for i in 1..<imports.length() {
+    let parts = imports[i].split("}").collect()
+    assert_true(parts.length() >= 2, msg="incomplete package import")
+    let target = if parts[1].trim_start().has_prefix("for \"test\"") ||
+      parts[1].trim_start().has_prefix("for \"wbtest\"") {
+      tests
+    } else {
+      production
+    }
+    let quoted = parts[0].split("\"").collect()
+    for j in 0..<quoted.length() {
+      if j % 2 == 1 && !target.contains(quoted[j].to_owned()) {
+        target.push(quoted[j].to_owned())
+      }
+    }
+  }
+  (production, tests)
+}
+
+///|
+fn package_name(path : String) -> String {
+  if path.has_prefix("core") {
+    "cli/" + path
+  } else if path.has_prefix("commands/") {
+    "cli/" + path[9:].to_owned()
+  } else {
+    "mooxCLI/cmd-tests" + path[5:].to_owned()
+  }
+}
+
+///|
+fn invalid_driver_dependency(name : String, dependency : String) -> Bool {
+  ["cli/rg/internal/matcher", "cli/rg/internal/searcher"].contains(name) &&
+  dependency == "cli/rg/internal/driver"
+}
+
+///|
+async fn inventory(path : String, packages : Map[String, Package], markers : Map[String, String]) -> Unit {
+  let names = @fs.readdir(path)
+  if names.contains("moon.pkg") {
+    let (dependencies, test_dependencies) = dependencies(
+      @fs.read_file(path + "/moon.pkg").text(),
+    )
+    let mut implementation_lines = 0
+    let mut test_lines = 0
+    let mut public_declarations = 0
+    for name in names {
+      if name.has_suffix(".mbt") {
+        let source = @fs.read_file(path + "/" + name).text()
+        let lines = source.split("\n").count() -
+          (if source.has_suffix("\n") { 1 } else { 0 })
+        if name.has_suffix("_test.mbt") || name.has_suffix("_wbtest.mbt") {
+          test_lines += lines
+        } else {
+          implementation_lines += lines
+          for line in source.split("\n") {
+            if line.has_prefix("// Strategy: ") {
+              let id = line[13:].trim().to_owned()
+              assert_false(markers.contains(id), msg="duplicate strategy marker: " + id)
+              markers[id] = path + "/" + name
+            }
+          }
+        }
+      } else if name == "pkg.generated.mbti" {
+        public_declarations = @fs.read_file(path + "/" + name)
+          .text()
+          .split("\n")
+          .filter(line => line.has_prefix("pub "))
+          .count()
+      }
+    }
+    let name = package_name(path)
+    assert_false(packages.contains(name), msg="duplicate package " + name)
+    packages[name] = {
+      name,
+      path,
+      dependencies,
+      test_dependencies,
+      implementation_lines,
+      test_lines,
+      public_declarations,
+    }
+  }
+  for name in names {
+    if name.has_prefix(".") || name == "_build" || name == "target" {
+      continue
+    }
+    let child = path + "/" + name
+    if @fs.kind(child, follow_symlink=false) is Directory {
+      inventory(child, packages, markers)
+    }
+  }
+}
+
+///|
+fn visit(
+  name : String,
+  packages : Map[String, Package],
+  states : Map[String, Int32],
+  path : Array[String],
+  failures : Array[String],
+) -> Unit {
+  match states.get(name) {
+    Some(1) => {
+      failures.push("dependency cycle: " + path.join(" -> ") + " -> " + name)
+      return
+    }
+    Some(2) => return
+    _ => ()
+  }
+  states[name] = 1
+  path.push(name)
+  for dep in packages[name].dependencies {
+    if packages.contains(dep) {
+      visit(dep, packages, states, path, failures)
+    }
+  }
+  ignore(path.pop())
+  states[name] = 2
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 else {
+    fail(
+      "Usage: moon run tests/architecture.mbtx -- NEW_REPORT.json (from repository root)",
+    )
+  }
+  guard !@fs.exists(args[1]) else {
+    fail("preserve the existing architecture report")
+  }
+  assert_eq(
+    dependencies(
+      "import { \"cli/core/stream\", }\nimport { \"test/fixture\", } for \"wbtest\"",
+    ),
+    (["cli/core/stream"], ["test/fixture"]),
+  )
+  for name in ["cli/rg/internal/matcher", "cli/rg/internal/searcher"] {
+    for suffix in ["", " for \"test\"", " for \"wbtest\""] {
+      let (production, tests) = dependencies(
+        "import { \"cli/rg/internal/driver\", }" + suffix,
+      )
+      assert_true(
+        production.iter().any(dep => invalid_driver_dependency(name, dep)) ||
+        tests.iter().any(dep => invalid_driver_dependency(name, dep)),
+      )
+    }
+    assert_false(invalid_driver_dependency(name, "cli/core/bytesearch"))
+  }
+  assert_false(
+    invalid_driver_dependency("cli/rg", "cli/rg/internal/driver"),
+  )
+  let packages : Map[String, Package] = Map([])
+  let markers : Map[String, String] = Map([])
+  for path in ["core", "commands", "tests"] {
+    inventory(path, packages, markers)
+  }
+  let strategies = check_strategies(markers)
+  let failures : Array[String] = []
+  let commands = packages
+    .values()
+    .filter(p => {
+      p.path.has_prefix("commands/") && p.path.split("/").count() == 2
+    })
+    .map(p => p.name)
+    .collect()
+  assert_eq(commands.length(), 80)
+  let reachable : Set[String] = Set([])
+  let work = commands.copy()
+  while work.pop() is Some(name) {
+    if reachable.contains(name) {
+      continue
+    }
+    reachable.add(name)
+    if packages.get(name) is Some(item) {
+      work.append(item.dependencies)
+    }
+  }
+  let states : Map[String, Int32] = Map([])
+  let names = packages.keys().collect()
+  names.sort()
+  for name in names {
+    visit(name, packages, states, [], failures)
+    let item = packages[name]
+    for dep in item.test_dependencies {
+      if invalid_driver_dependency(name, dep) {
+        failures.push(name + " tests import the private command adapter: " + dep)
+      }
+    }
+    for dep in item.dependencies {
+      if invalid_driver_dependency(name, dep) {
+        failures.push(name + " imports the private command adapter: " + dep)
+      }
+      if (dep.has_prefix("cli/") || dep.has_prefix("mooxCLI/cmd-tests")) &&
+        !packages.contains(dep) {
+        failures.push(name + " imports missing workspace package " + dep)
+      }
+      if item.path.has_prefix("core/") &&
+        (
+          dep.has_prefix("mooxCLI/cmd-tests") ||
+          (dep.has_prefix("cli/") && !dep.has_prefix("cli/core/"))
+        ) {
+        failures.push(name + " imports a command or test tool: " + dep)
+      }
+      if [
+          "cli/core/bytesearch", "cli/core/bytere", "cli/core/stream", "cli/core/tempio",
+          "cli/core/fswalk", "cli/core/platform", "cli/core/process", "cli/core/checksum",
+          "cli/core/gzipops", "cli/core/numfmt", "cli/core/time_zone", "cli/core/quoting",
+          "cli/core/tabstops", "cli/core/fsops/mode",
+        ].contains(name) &&
+        (
+          dep == "cli/core/cli" ||
+          dep == "cli/core/contracts" ||
+          dep.has_suffix("/cli")
+        ) {
+        failures.push(name + " imports a command adapter: " + dep)
+      }
+    }
+  }
+  let rows : Array[Json] = []
+  for name in names {
+    let item = packages[name]
+    let consumers = packages
+      .values()
+      .filter(other => other.dependencies.contains(name))
+      .map(other => other.name)
+      .collect()
+    consumers.sort()
+    rows.push({
+      "package": Json(item),
+      "runtime_reachable": reachable.contains(name),
+      "direct_consumers": consumers,
+    })
+  }
+  let report : Json = {
+    "commands": commands.length(),
+    "validated_strategies": strategies,
+    "packages": rows,
+    "failures": failures,
+    "scope": "Workspace package dependencies, reachability and source inventory. Export-level ownership and module disposition require the canonical ADR review; generated data and test corpora are not dead code merely because they are not runtime-reachable.",
+  }
+  @fs.write_file(args[1], report.stringify(indent=2))
+  for failure in failures {
+    println(failure)
+  }
+  guard failures.is_empty() else {
+    fail("architecture dependency checks failed")
+  }
+  println(
+    "80 command modules; " +
+    packages.length().to_string() +
+    " packages; dependency checks passed",
+  )
+}

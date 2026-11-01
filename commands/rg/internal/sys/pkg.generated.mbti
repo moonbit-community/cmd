@@ -6,8 +6,6 @@ import {
 }
 
 // Values
-pub fn args() -> Array[String]
-
 pub async fn canonicalize(String) -> String
 
 pub async fn create_dir_all(String) -> Unit
@@ -15,8 +13,6 @@ pub async fn create_dir_all(String) -> Unit
 pub fn current_dir() -> String?
 
 pub fn env_var(String) -> String?
-
-pub fn env_vars() -> Array[(String, String)]
 
 pub fn exit(Int32) -> Unit
 
@@ -33,8 +29,6 @@ pub fn is_tty(Int32) -> Capability[Bool]
 pub fn is_windows() -> Bool
 
 pub async fn metadata(String) -> Metadata
-
-pub fn mmap_supported() -> Bool
 
 pub fn normalize_path(String) -> String
 
@@ -70,10 +64,8 @@ pub async fn write_file(String, Bytes) -> Unit
 pub suberror IOError {
   IOError(kind~ : IOErrorKind, code~ : Int32, message~ : String)
 } derive(@debug.Debug)
-pub fn IOError::code(Self) -> Int32
 pub fn IOError::from_errno(Int32) -> Self
 pub fn IOError::kind(Self) -> IOErrorKind
-pub fn IOError::message(Self) -> String
 pub fn IOError::other(IOErrorKind, String) -> Self
 pub fn IOError::to_string(Self) -> String
 pub impl Show for IOError
@@ -84,15 +76,17 @@ pub(all) enum Capability[T] {
   Unavailable(String)
 } derive(Eq, @debug.Debug)
 
-pub(all) struct DirEntry {
+pub struct DirEntry {
   name : String
-  file_type : FileType?
-} derive(Eq, @debug.Debug)
+  // private fields
+}
+pub async fn DirEntry::file_type(Self, String) -> FileType
 
 pub struct File {
   // private fields
 }
 pub fn File::close(Self) -> Unit
+pub fn File::is_regular(Self) -> Bool
 pub async fn File::open(String) -> Self
 pub async fn File::read(Self, FixedArray[Byte], Int32, Int32) -> Int32
 
@@ -125,12 +119,9 @@ pub(all) enum IOErrorKind {
 pub(all) struct Metadata {
   file_type : FileType
   len : Int64
-  dev : UInt64?
-  ino : UInt64?
 } derive(Eq, @debug.Debug)
 pub fn Metadata::is_dir(Self) -> Bool
 pub fn Metadata::is_file(Self) -> Bool
-pub fn Metadata::is_symlink(Self) -> Bool
 
 pub struct Process {
   // private fields

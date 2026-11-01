@@ -3,7 +3,7 @@
 Compute and verify SHA-256 checksums for MoonX.
 
 ```sh
-moonx cli/sha256sum@0.2.3 [OPTION]... [FILE]...
+moonx cli/sha256sum@0.2.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -33,8 +33,8 @@ Hash files or stdin and verify checksum manifests.
 ## Examples
 
 ```sh
-moonx cli/sha256sum@0.2.3 input.bin
-moonx cli/sha256sum@0.2.3 -c checksums.txt
+moonx cli/sha256sum@0.2.4 input.bin
+moonx cli/sha256sum@0.2.4 -c checksums.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

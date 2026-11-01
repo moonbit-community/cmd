@@ -1,0 +1,1979 @@
+{
+  "schema": 2,
+  "artifact_count": 80,
+  "timing": "Complete release Wasm processes with input, output and exit; no MoonX and no startup subtraction",
+  "windows": 2,
+  "pairs": 9,
+  "mad_limit": 0.05,
+  "drift_limit": 0.1,
+  "slowdown_limit": 1.05,
+  "slowdown_policy": "The shared-foundation integration accepts the measured small abstraction costs. A ratio above this review boundary is never offset against another workload's gain.",
+  "coverage_policy": "Compare all80 releaseWasm artifacts. Changed artifacts require actual genuine-input timing rows; correctness-only dispositions cannot qualify a performance change. Every applicable required real mode and local boundary witness must complete. No synthetic or command-specific timing runner.",
+  "profile_aliases": {},
+  "profiles": {
+    "base32": [
+      "real-base32-encode-unwrapped-source",
+      "real-base32-binary",
+      "real-base32-encode-wrapped-source",
+      "real-base32-encode-pipe257",
+      "real-base32-encode-pipe65537"
+    ],
+    "base64": [
+      "real-base64-encode-unwrapped-source",
+      "real-base64-binary"
+    ],
+    "cat": [
+      "real-cat-source",
+      "real-cat-rfc-numbered",
+      "real-cat-utf8",
+      "real-cat-binary-path",
+      "real-cat-empty",
+      "real-cat-unterminated",
+      "real-cat-copy-pipe257",
+      "real-cat-copy-pipe65537",
+      "real-cat-slow-output"
+    ],
+    "cksum": [
+      "real-cksum-crc-source",
+      "real-cksum-crc-utf8-routes",
+      "real-cksum-binary"
+    ],
+    "column": [
+      "real-column-properties-table",
+      "real-column-option-grid"
+    ],
+    "comm": [
+      "real-comm-airport-route-idsets"
+    ],
+    "csplit": [
+      "real-csplit-source-api-boundaries"
+    ],
+    "curl": [
+      "real-curl-download",
+      "real-curl-file-upload",
+      "real-curl-post-file"
+    ],
+    "cut": [
+      "real-cut-unicode-fields",
+      "real-cut-source-bytes",
+      "real-cut-long-record"
+    ],
+    "diff": [
+      "real-diff-source-distinct-equal",
+      "real-diff-json-modules",
+      "real-diff-json-revisions",
+      "real-diff-sqlite-revisions"
+    ],
+    "expand": [
+      "real-expand-real-tabs"
+    ],
+    "find": [
+      "real-find-source-tree-names",
+      "real-find-source-tree-size"
+    ],
+    "fold": [
+      "real-fold-airport-records"
+    ],
+    "grep": [
+      "real-grep-source-api-count",
+      "real-grep-source-api-lines",
+      "real-grep-regex-count",
+      "real-grep-literal-miss",
+      "real-grep-long-record-count",
+      "real-grep-unterminated-match",
+      "real-grep-empty",
+      "real-grep-early-exit",
+      "real-grep-literal-sparse-count-pipe257",
+      "real-grep-literal-sparse-count-pipe65537"
+    ],
+    "gunzip": [
+      "real-gunzip-first-dynamic-native-source",
+      "real-gunzip-stored-source",
+      "real-gunzip-fixed-literals-source",
+      "real-gunzip-members-source"
+    ],
+    "gzip": [
+      "real-gzip-default-compress-source"
+    ],
+    "head": [
+      "real-head-source-records",
+      "real-head-pipe-early-exit-pipe257",
+      "real-head-pipe-early-exit-pipe65537"
+    ],
+    "join": [
+      "real-join-airport-route-records"
+    ],
+    "jq": [
+      "real-jq-registry-identity",
+      "real-jq-registry-identifiers",
+      "real-jq-registry-filter",
+      "real-jq-registry-sort",
+      "real-jq-registry-group",
+      "real-jq-registry-sum-references",
+      "real-jq-missing-property"
+    ],
+    "ln": [
+      "real-ln-symbolic-new",
+      "real-ln-symbolic-relative"
+    ],
+    "make": [
+      "correctness-only:make"
+    ],
+    "md5sum": [
+      "real-md5sum-digest-source",
+      "real-md5sum-digest-utf8-routes",
+      "real-md5sum-binary"
+    ],
+    "nl": [
+      "real-nl-source-records"
+    ],
+    "paste": [
+      "real-paste-rfc-serial",
+      "real-paste-parallel-files"
+    ],
+    "rev": [
+      "real-rev-ascii-properties",
+      "real-rev-minified-long-record"
+    ],
+    "rg": [
+      "real-rg-source-api-count",
+      "real-rg-rfc-http-spans",
+      "real-rg-regex-count",
+      "real-rg-literal-miss",
+      "real-rg-long-record-count",
+      "real-rg-unterminated-match",
+      "real-rg-empty",
+      "real-rg-early-exit",
+      "real-rg-literal-sparse-count-pipe257",
+      "real-rg-literal-sparse-count-pipe65537",
+      "real-rg-slow-output",
+      "real-rg-source-tree",
+      "real-rg-source-api-numbered",
+      "real-rg-null-count-source",
+      "real-rg-null-count-pipe65537"
+    ],
+    "sed": [
+      "real-sed-source-identifiers",
+      "real-sed-source-miss"
+    ],
+    "sh": [
+      "correctness-only:sh"
+    ],
+    "sha1sum": [
+      "real-sha1sum-digest-source",
+      "real-sha1sum-digest-utf8-routes",
+      "real-sha1sum-binary"
+    ],
+    "sha256sum": [
+      "real-sha256sum-digest-source",
+      "real-sha256sum-digest-utf8-routes",
+      "real-sha256sum-binary"
+    ],
+    "sha512sum": [
+      "real-sha512sum-digest-source",
+      "real-sha512sum-digest-utf8-routes",
+      "real-sha512sum-binary"
+    ],
+    "sort": [
+      "real-sort-source-lexical",
+      "real-sort-airport-numeric",
+      "real-sort-airport-decimal",
+      "real-sort-source-numeric-spill",
+      "real-sort-source-numeric-key-spill",
+      "real-sort-source-spill"
+    ],
+    "split": [
+      "real-split-source-bytes"
+    ],
+    "strings": [
+      "real-strings-source",
+      "real-strings-binary"
+    ],
+    "tac": [
+      "real-tac-rfc-records",
+      "real-tac-pipe-reversal-pipe257",
+      "real-tac-pipe-reversal-pipe65537"
+    ],
+    "tail": [
+      "real-tail-source-records",
+      "real-tail-pipe-last10-pipe257",
+      "real-tail-pipe-last10-pipe65537"
+    ],
+    "tr": [
+      "real-tr-source-uppercase"
+    ],
+    "tree": [
+      "real-tree-source-json"
+    ],
+    "unexpand": [
+      "real-unexpand-source-indent"
+    ],
+    "uniq": [
+      "real-uniq-source-runs",
+      "real-uniq-rfc-adjacent"
+    ],
+    "wc": [
+      "real-wc-source-lines",
+      "real-wc-rfc-words",
+      "real-wc-japanese-bytes",
+      "real-wc-counts-utf8",
+      "real-wc-empty",
+      "real-wc-bytes-named",
+      "real-wc-scan-lines-pipe257",
+      "real-wc-scan-lines-pipe65537",
+      "real-wc-scan-words-pipe257",
+      "real-wc-scan-words-pipe65537",
+      "real-wc-pipe-bytes-pipe257",
+      "real-wc-pipe-bytes-pipe65537"
+    ],
+    "wget": [
+      "real-wget-download",
+      "real-wget-post-file"
+    ],
+    "zcat": [
+      "real-zcat-first-dynamic-native-source",
+      "real-zcat-stored-source",
+      "real-zcat-fixed-literals-source",
+      "real-zcat-members-source"
+    ],
+    "cmp": [
+      "real-cmp-small-equal",
+      "real-cmp-source-equal",
+      "real-cmp-python-revisions",
+      "real-cmp-sqlite-revisions"
+    ],
+    "cp": [
+      "real-cp-small",
+      "real-cp-source",
+      "real-cp-tree"
+    ],
+    "fmt": [
+      "real-fmt-rfc",
+      "real-fmt-book"
+    ],
+    "hexdump": [
+      "real-hexdump-png",
+      "real-hexdump-source"
+    ],
+    "od": [
+      "real-od-png",
+      "real-od-source"
+    ],
+    "xxd": [
+      "real-xxd-png",
+      "real-xxd-source"
+    ],
+    "ls": [
+      "real-ls-tree-names",
+      "real-ls-tree-recursive"
+    ],
+    "mv": [
+      "real-mv-small",
+      "real-mv-tree"
+    ],
+    "patch": [
+      "real-patch-python",
+      "real-patch-sqlite",
+      "real-patch-python-dry-run"
+    ],
+    "seq": [
+      "real-seq-daily",
+      "real-seq-bulk"
+    ],
+    "tee": [
+      "real-tee-small",
+      "real-tee-source"
+    ],
+    "xargs": [
+      "real-xargs-options",
+      "real-xargs-unicode"
+    ],
+    "rm": [
+      "real-rm-small",
+      "real-rm-tree"
+    ],
+    "chmod": [
+      "real-chmod-small",
+      "real-chmod-tree"
+    ],
+    "test": [
+      "real-test-nonempty-file",
+      "real-test-empty-file"
+    ]
+  },
+  "separate_required_evidence": {
+    "sort-spill-8m": "The pre-foundation baseline exceeded 20 seconds in warmup at -S 1M. Retain that failure. Validate the candidate with the same deadline and compare its bytes with the baseline default-budget sort; this is a repair observation, not an old/new speed ratio.",
+    "resources": "Observe kernel peak RSS, temporary residue and cleanup separately from timing. Single-pair resource observations are not stability qualification.",
+    "correctness": "Run the applicable Wasm unit and functional suites, including errors, partial output, cancellation, early exit, Unicode and binary cases. Timing fixture coverage alone is insufficient."
+  },
+  "boundaries": [
+    {
+      "retain": "Exact imported table values and order, first-use construction without suspension, process-local cached tables, unchanged Unicode/encoding semantics and file-type definitions",
+      "sources": [
+        "commands/rg/internal/ignore/default_types.mbt",
+        "commands/rg/internal/regex/unicode/unicode.mbt",
+        "commands/rg/internal/regex/unicode/age_data.mbt",
+        "commands/rg/internal/regex/unicode/script_data.mbt",
+        "commands/rg/internal/regex/unicode/script_extension_data.mbt",
+        "commands/rg/internal/regex/unicode/perl_word_data.mbt",
+        "commands/rg/internal/regex/unicode/sentence_break_data.mbt",
+        "commands/rg/internal/regex/unicode/gcb_data.mbt",
+        "commands/rg/internal/regex/unicode/general_category_data.mbt",
+        "commands/rg/internal/regex/unicode/word_break_data.mbt",
+        "commands/rg/internal/regex/unicode/property_bool_data.mbt",
+        "commands/rg/internal/regex/unicode/property_names_data.mbt",
+        "commands/rg/internal/regex/unicode/property_values_data.mbt"
+      ]
+    },
+    {
+      "sources": [
+        "commands/rg/internal/driver/search_matcher.mbt",
+        "commands/rg/internal/regex/count_boolean.mbt",
+        "commands/rg/internal/regex/automata/record_boolean.mbt",
+        "commands/rg/internal/regex/automata/record_count.mbt"
+      ],
+      "retain": "Lazy bounded boolean-count construction, ordinary blocks no larger than 256 KiB, mandatory-literal filtering throughout each block, exact delimiter exclusion, assertion and empty-match rejection, cached budget decline, and the existing fallback engines"
+    },
+    {
+      "sources": [
+        "core/bytesearch",
+        "core/stream/count.mbt",
+        "commands/wc/main.mbt",
+        "commands/rg/internal/searcher",
+        "core/bytere"
+      ],
+      "retain": "SIMD/SWAR kernels, fused counts, conservative prefilters and specialized regex semantics"
+    },
+    {
+      "sources": [
+        "core/stream/records.mbt",
+        "core/stream/stream.mbt"
+      ],
+      "retain": "Synchronous borrowed batches, explicit owned records, retained-view lifetime and original read sizes"
+    },
+    {
+      "sources": [
+        "core/stream/output.mbt",
+        "commands/rg/internal/driver/stdout.mbt",
+        "commands/column/spool.mbt",
+        "commands/nl/main.mbt",
+        "commands/paste/main.mbt",
+        "commands/comm/main.mbt"
+      ],
+      "retain": "Bounded output ownership, no asynchronous reuse, no replay after partial failure, prefix flush on read failure, diagnostics order and command formatting loops"
+    },
+    {
+      "sources": [
+        "core/tempio",
+        "commands/tac/reverse_fixed.mbt",
+        "commands/column/table.mbt",
+        "commands/sort/external.mbt"
+      ],
+      "retain": "Exclusive temporary ownership, exact range reads, independent reverse blocks, page caches and sort run layouts"
+    },
+    {
+      "sources": [
+        "commands/rg/internal/printer",
+        "commands/rg/internal/driver/plan.mbt"
+      ],
+      "retain": "Immutable execution plans and printer configuration built outside the output loop; explicit type-option errors precede input"
+    },
+    {
+      "sources": [
+        "commands/rg/internal/searcher/count_stream.mbt",
+        "commands/rg/internal/driver/search_matcher.mbt",
+        "commands/rg/internal/driver/search_pattern.mbt",
+        "commands/rg/internal/regex/syntax/inner_literals.mbt"
+      ],
+      "retain": "Literal eligibility before input discard; decoder and binary policies; bounded unmatched suffix; one EOF completion; original fallback selected before streaming; command-owned search rules and unchanged regex matching priority"
+    },
+    {
+      "sources": [
+        "commands/rg/internal/searcher/count_regex_stream.mbt",
+        "commands/rg/internal/regex/automata/record_stream.mbt"
+      ],
+      "retain": "Cheap policy decline before reads; preserve multi-byte mandatory-literal rejection and the original read capacity; one begin event; prefix matches only decline optimization and never supply results; prefetched decoded records stay in the original line buffer and precede later read errors; fully resolved bounded matcher before discarding bytes; carry state until a delimiter or actual EOF; chunk phase does not disable sparse exit acceleration"
+    },
+    {
+      "sources": [
+        "commands/grep/record_output.mbt",
+        "core/bytere/record_linear.mbt"
+      ],
+      "retain": "Immutable selected runs and output-failure ordering; branch-free fixed-length anchored Boolean matching; exact EOF acceptance; captures, word/whole-record constraints, branches, repetition and backreferences retain the existing span engine"
+    },
+    {
+      "sources": [
+        "core/contracts",
+        "core/cli"
+      ],
+      "retain": "Catalog ownership separated from parsing, with unchanged option precedence and metadata contracts"
+    },
+    {
+      "sources": [
+        "core/fswalk",
+        "commands/rg/internal/sys/filesystem.mbt",
+        "commands/find/main.mbt",
+        "commands/tree/main.mbt",
+        "commands/grep/main.mbt"
+      ],
+      "retain": "Directory lifetime and explicit metadata queries; caller-owned ordering, pruning, links and error precedence"
+    },
+    {
+      "sources": [
+        "core/checksum",
+        "core/gzipops"
+      ],
+      "retain": "Algorithm parents separated from command cli adapters; digest and record formats, CRC, concatenated members, truncation and partial-output behavior"
+    },
+    {
+      "sources": [
+        "commands/csplit/snapshot.mbt",
+        "commands/csplit/main.mbt"
+      ],
+      "retain": "Data spool precedes signed 64-bit index writes; index pages remain 64 KiB and failed writes are never replayed; synchronous regex matching requires both cached offsets and the entire cached record, otherwise retain the original long-record and page-refill path; preserve negative offsets, byte semantics, fragment cleanup and output order"
+    },
+    {
+      "sources": [
+        "commands/sed/execute.mbt",
+        "commands/sed/space.mbt",
+        "commands/sed/pattern.mbt"
+      ],
+      "retain": "Record scanning retains immutable backing bytes across refills and uses an owned buffer for spanning records; lazy text conversion only mutates a cache, and content changes create new pattern/hold spaces; mandatory-literal rejection follows executed-pattern resolution and replacement-reference validation, never establishes a match, and retains full matching on uncertainty; record coalescing and bounded output batching retain exact bytes, missing-newline state, append ordering and n/N lookahead; flush before external input reads or opens, on completion and before propagating later script failures; failed output is never replayed"
+    },
+    {
+      "sources": [
+        "core/shell"
+      ],
+      "retain": "Typed incomplete/invalid syntax and loop control; independent exit, return and signal state; diagnostics, quoting, redirection and scope"
+    },
+    {
+      "sources": [
+        "core/netops"
+      ],
+      "retain": "Prepared header ownership and transfer-only execution; profile-specific authentication, framing, redirects, timeout and output cleanup"
+    },
+    {
+      "sources": [
+        "core/bytere/cache.mbt",
+        "core/platform",
+        "core/process",
+        "core/tabstops"
+      ],
+      "retain": "Explicit adaptive-cache failure state, required capability boundaries, launch policy and aligned/relative tab-stop overflow checks"
+    }
+  ],
+  "strategies": [
+    {
+      "id": "base32-byte-encoding",
+      "owner": "commands/base32",
+      "commands": [
+        "base32"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/base32/main.mbt",
+        "commands/base32/encode.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/base32/main_wbtest.mbt",
+          "name": "base32 RFC 4648 vectors"
+        },
+        {
+          "file": "commands/base32/main_wbtest.mbt",
+          "name": "base32 byte encoding preserves every byte and wrap boundaries"
+        },
+        {
+          "file": "commands/base32/main_wbtest.mbt",
+          "name": "base32 whole input acceptance retains fragments and read failures"
+        },
+        {
+          "file": "commands/base32/main_wbtest.mbt",
+          "name": "base32 complete group windows preserve padding across the 64 KiB boundary"
+        },
+        {
+          "file": "commands/base32/stream_wbtest.mbt",
+          "name": "base32 fragmented quanta preserve padding and wrap columns"
+        },
+        {
+          "file": "commands/base32/stream_wbtest.mbt",
+          "name": "base32 emits a complete quantum while input remains open"
+        },
+        {
+          "file": "commands/base32/stream_wbtest.mbt",
+          "name": "base32 read and write failures preserve only completed output"
+        }
+      ],
+      "profiles": [
+        "real-base32-encode-unwrapped-source",
+        "real-base32-binary",
+        "real-base32-encode-wrapped-source",
+        "real-base32-encode-pipe257",
+        "real-base32-encode-pipe65537"
+      ],
+      "invariant": "Encoding retains at most four unfinished input bytes and a wrap column between bounded reads. Complete quanta can be emitted before EOF; padding and the final newline occur only on successful EOF. Failed writes are not replayed. Decoding retains its existing whole-input read-error contract.",
+      "measurement_scope": "Complete genuine-source wrapped/unwrapped and pipe encoding rows; synthetic RSS and open-producer diagnostics remain separate."
+    },
+    {
+      "id": "base64-byte-encoding",
+      "owner": "commands/base64",
+      "commands": [
+        "base64"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/base64/encode.mbt",
+        "commands/base64/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/base64/main_wbtest.mbt",
+          "name": "base64 byte encoding preserves every byte across fragmented quanta and wraps"
+        },
+        {
+          "file": "commands/base64/main_wbtest.mbt",
+          "name": "base64 emits complete quanta before later read errors and never replays failed writes"
+        },
+        {
+          "file": "commands/base64/main_wbtest.mbt",
+          "name": "base64 stream carry crosses the full read boundary without inserting padding"
+        }
+      ],
+      "profiles": [
+        "real-base64-encode-unwrapped-source",
+        "real-base64-binary"
+      ],
+      "invariant": "A 64 KiB input read leaves at most two carry bytes. Complete quanta reach the writer before another read; only final carry receives padding. Wrap columns persist across chunks, and failed output never replays or finalizes carry.",
+      "measurement_scope": "Local genuine-source encoding and binary controls; unchanged decoder behavior, no general throughput, RSS or publication claim."
+    },
+    {
+      "id": "nl-record-output",
+      "owner": "commands/nl",
+      "commands": [
+        "nl"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/nl/main.mbt",
+        "commands/nl/numbering.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering preserves sections binary bytes and an unterminated final record"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering retains completed output before an input failure"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering never replays bytes after a partial write failure"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering batches preserve blank grouping section resets and signed formatting"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering does not advance a declined oversized record after write failure"
+        },
+        {
+          "file": "commands/nl/output_wbtest.mbt",
+          "name": "numbering empty input does not allocate a requested number field"
+        }
+      ],
+      "profiles": [
+        "real-nl-source-records"
+      ],
+      "invariant": "Synchronous record batches preserve section and blank-line state. Complete coalesced output owns its bytes until admission or write completion; numbering advances only after that success. Earlier output survives a read failure, partial output is never replayed, and every emitted record retains its newline.",
+      "measurement_scope": "One selected real-source workload qualifies locally; private boundary tests do not establish throughput generality. The RecordReader maximum read request is 1 MiB and coalescing adds transient record storage; RSS is unmeasured."
+    },
+    {
+      "id": "sed-byte-prefilter",
+      "owner": "commands/sed",
+      "commands": [
+        "sed"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/sed/pattern.mbt",
+        "commands/sed/parser.mbt",
+        "commands/sed/execute.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/sed/pattern_wbtest.mbt",
+          "name": "sed byte rejection preserves the full matcher for nullable alternatives captures and binary data"
+        },
+        {
+          "file": "commands/sed/pattern_wbtest.mbt",
+          "name": "sed byte rejection updates executed pattern history without decoding a miss"
+        },
+        {
+          "file": "commands/sed/pattern_wbtest.mbt",
+          "name": "sed byte rejection preserves previous regex errors branches captures and multiline spaces"
+        }
+      ],
+      "profiles": [
+        "real-sed-source-identifiers",
+        "real-sed-source-miss"
+      ],
+      "invariant": "A mandatory literal can only reject immutable raw byte spaces. Resolve executed-pattern history and validate replacement references before rejection; otherwise retain the full matcher, captures, empty matches, branching and multiline behavior.",
+      "measurement_scope": "The incremental 2026-10-31 two-row panel qualifies; cumulative original-artifact evidence and limitations are recorded separately in ADR-0003. No general performance or publication acceptance."
+    },
+    {
+      "id": "csplit-page-processing",
+      "owner": "commands/csplit",
+      "commands": [
+        "csplit"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/csplit/snapshot.mbt",
+        "commands/csplit/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit flushes full index pages before an unterminated final boundary"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit index pages retain 64 bit offsets and never replay a failed flush"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit synchronous index scans resume before an uncommitted boundary"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit cached matching retains byte semantics and declines crossing records"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit cached scans stop at the first match or uncached record"
+        },
+        {
+          "file": "commands/csplit/main_wbtest.mbt",
+          "name": "csplit byte matcher retains BRE assertions alternatives and backreferences"
+        }
+      ],
+      "profiles": [
+        "real-csplit-source-api-boundaries"
+      ],
+      "invariant": "Bounded index pages preserve signed 64-bit offsets and data-before-index ordering; index scanning returns before a boundary that needs a flush, and little-endian word stores require a checked complete slot. Synchronous matching stops at the first match or uncached record; one byte matcher is reused per control; cached matching requires both offsets and the complete record, while cross-page records retain the original path, error and cleanup contracts.",
+      "measurement_scope": "Locally adopted from the 2026-10-31 selected-workload panels; one genuine-source workload does not establish universal throughput, full protection or publication acceptance."
+    },
+    {
+      "id": "sed-record-output",
+      "owner": "commands/sed",
+      "commands": [
+        "sed"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/sed/execute.mbt",
+        "commands/sed/space.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/sed/sed_wbtest.mbt",
+          "name": "sed output records preserve separators termination empty and byte values"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed delivers completed output before waiting for another input chunk"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed cached record admission never consumes a spanning record"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed synchronous output admission preserves slow path newline ownership"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed buffered output failure precedes a later script error without replay"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed buffered output failure precedes a failing input read"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed buffered output retains n N append and unterminated boundaries"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed record scanning preserves all bytes and fragmented final records"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed raw spaces preserve bytes without decoding and retain independent hold contents"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed raw spaces survive refills substitutions hold exchange and multiline restart"
+        },
+        {
+          "file": "commands/sed/output_wbtest.mbt",
+          "name": "sed record output preserves separators and termination across buffer boundaries"
+        }
+      ],
+      "profiles": [
+        "real-sed-source-identifiers",
+        "real-sed-source-miss"
+      ],
+      "invariant": "Immutable record views retain backing bytes across refills; cached admission consumes only complete newline-terminated records, spanning records own their buffer, and content changes create a new pattern/hold space. Record coalescing preserves separator, text, terminator and missing-newline state; a rejected synchronous output admission retains both its owned bytes and previous newline state for the async slow path. Batching must retain append/n/N ordering and deliver earlier output before input or runtime failures.",
+      "measurement_scope": "Locally adopted record coalescing, block buffering, chunk scanning and lazy byte spaces each pass both selected 2026-10-31 substitution rows; no general throughput, memory or publication acceptance."
+    },
+    {
+      "id": "rg-record-policy",
+      "owner": "commands/rg/internal/searcher",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/searcher/policy.mbt",
+        "commands/rg/internal/searcher/core.mbt",
+        "commands/rg/internal/searcher/buffered_sink.mbt",
+        "commands/rg/internal/printer/standard.mbt",
+        "commands/rg/internal/printer/buffered_sink.mbt",
+        "commands/rg/internal/printer/plain_prelude.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/searcher/policy_wbtest.mbt",
+          "name": "record policies preserve count coalescing and synchronous stop boundaries"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_synchronous_wbtest.mbt",
+          "name": "synchronous reader summaries preserve events limits binary detection and fallback"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_output_spans_wbtest.mbt",
+          "name": "plain match spans preserve partial write failure prefixes"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_buffered_trace_wbtest.mbt",
+          "name": "buffered sink handoff never duplicates events and respects stopping modes"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_buffered_output_wbtest.mbt",
+          "name": "buffered standard output preserves numbered records failures and decoding"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_granular_output_wbtest.mbt",
+          "name": "buffered granular records preserve extraction replacement limits and failures"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Count precedes coalesced, buffered, synchronous and ordinary execution. Buffered admission commits one complete event or declines without output; the pending event reaches async fallback exactly once. Binary scan ownership, raw multiline policy, stop conditions and sink capabilities remain distinct.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-directory-observations",
+      "owner": "commands/rg/internal/sys",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/sys/filesystem.mbt",
+        "commands/rg/internal/sys/types.mbt",
+        "commands/rg/internal/ignore/walkdir.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/sys/directory_test.mbt",
+          "name": "directory entries retain known directories and query unknown kinds"
+        },
+        {
+          "file": "commands/rg/internal/sys/directory_test.mbt",
+          "name": "directory kind queries do not follow live or dangling links"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Reuse only directory facts supplied by the public API. Unknown kinds require a non-following query; size and canonical path stay demand-driven.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-file-read-ahead",
+      "owner": "commands/rg/internal/driver",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/driver/file_read_buffer.mbt",
+        "commands/rg/internal/driver/search.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/driver/file_read_buffer_wbtest.mbt",
+          "name": "initial file buffering preserves chunk boundaries offsets and EOF"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_buffer_wbtest.mbt",
+          "name": "file prefix policy excludes early exits and non-search modes"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_decode_wbtest.mbt",
+          "name": "initial file buffering preserves BOM binary windows legacy decoding and read failures"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_buffer_wbtest.mbt",
+          "name": "initial file buffering propagates cancellation after copying cached bytes"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_ahead_wbtest.mbt",
+          "name": "physical file read expansion preserves logical decoder and binary windows"
+        },
+        {
+          "file": "commands/rg/internal/driver/file_read_ahead_wbtest.mbt",
+          "name": "physical file read expansion keeps short-file probes small and grows only after a full block"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "One reusable 1 MiB buffer per worker, only for opened regular files and full searches. Begin with 64 KiB physical refills and expand only after a full block. Keep logical decoder requests, retained errors and EOF distinct; stdin, preprocessors and explicit early exits bypass read-ahead.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-literal-stream",
+      "owner": "commands/rg/internal/searcher",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/searcher/count_stream.mbt",
+        "commands/rg/internal/driver/search_matcher.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
+          "name": "counting agrees across fragmented literals alternatives decoding and final records"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
+          "name": "counting preserves matches crossing bulk windows and long unmatched records"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
+          "name": "counting does not bypass an explicit heap limit"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_count_stream_wbtest.mbt",
+          "name": "literal streaming keeps nominal reads while declined routes grow records"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Resolve delimiter exclusion and decoding before discarding bytes; retain the unmatched suffix until a delimiter or actual EOF.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-regex-probe-replay",
+      "owner": "commands/rg/internal/searcher",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/searcher/count_regex_stream.mbt",
+        "commands/rg/internal/searcher/glue.mbt",
+        "commands/rg/internal/searcher/searcher.mbt",
+        "commands/rg/internal/searcher/policy.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/driver/search_reuse_wbtest.mbt",
+          "name": "audit reused regex probe must retain its nominal read bound"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_regex_stream_wbtest.mbt",
+          "name": "regex count streaming does not finalize a partial record on read failure"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_regex_stream_wbtest.mbt",
+          "name": "adaptive count probes preserve begin denial and decoded replay"
+        },
+        {
+          "file": "commands/rg/internal/searcher/retention_wbtest.mbt",
+          "name": "regex count admission is independent of match and record positions"
+        },
+        {
+          "file": "commands/rg/internal/searcher/retention_wbtest.mbt",
+          "name": "oversized buffers are released after errors and successful multiline searches"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered",
+        "real-rg-null-count-source",
+        "real-rg-null-count-pipe65537"
+      ],
+      "invariant": "Complete records retain ordinary counting; any full unfinished record may prepare a budgeted streaming plan regardless of prefix match or record position. Failure to construct the plan replays the exact decoded tail, begins once and preserves completed counts on later errors. Search exit releases buffers above the explicit retention budget.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-boolean-count",
+      "owner": "commands/rg/internal/regex",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/prepared.mbt",
+        "commands/rg/internal/regex/count_boolean.mbt",
+        "commands/rg/internal/regex/automata/record_boolean.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/regex/count_boolean_wbtest.mbt",
+          "name": "boolean count preparation is lazy and over-budget rejection is cached"
+        },
+        {
+          "file": "commands/rg/internal/regex/automata/record_policy_wbtest.mbt",
+          "name": "resolved state and transition cell budgets enforce exact boundaries"
+        },
+        {
+          "file": "commands/rg/internal/regex/count_boolean_wbtest.mbt",
+          "name": "compact and wide routing observes both sides of its exact threshold"
+        },
+        {
+          "file": "commands/rg/internal/driver/search_count_boolean_wbtest.mbt",
+          "name": "count selection revisits dense sparse and dense inputs on the same matcher"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Preparation distinguishes uninitialized, declined and ready. Mandatory-literal filtering continues throughout the block.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-wide-boolean",
+      "owner": "commands/rg/internal/regex/automata",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/automata/record_wide.mbt",
+        "commands/rg/internal/regex/automata/record_stream.mbt",
+        "commands/rg/internal/regex/automata/record_kernel.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/regex/wide_boolean_wbtest.mbt",
+          "name": "wide count table agrees with compact table for tails offsets and bytes"
+        },
+        {
+          "file": "commands/rg/internal/regex/automata/record_kernel_wbtest.mbt",
+          "name": "wide endpoint count and stream kernels agree at every chunk phase"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Exact transition and exit membership preserve delayed matches, EOF and chunk phase. Endpoint discovery replays transitions to recover the earliest endpoint.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-generic-regex",
+      "owner": "commands/rg/internal/regex",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/regex.mbt",
+        "commands/rg/internal/regex/prepared.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/driver/search_matcher_wbtest.mbt",
+          "name": "boolean discovery ends early while full matches and captures remain greedy"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Boolean discovery does not replace greedy span or capture semantics; fallback retains the original search interval and priority.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "grep-execution",
+      "owner": "commands/grep",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/grep/execution.mbt",
+        "commands/grep/streaming.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/grep/execution_wbtest.mbt",
+          "name": "grep execution preserves flag priority and contextual span output"
+        }
+      ],
+      "profiles": [
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
+      ],
+      "invariant": "Static route selection preserves summary flag priority, span output with context, and dynamic binary transitions.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "grep-record-output",
+      "owner": "commands/grep",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/grep/record_output.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/grep/record_output_wbtest.mbt",
+          "name": "whole record batches do not retry a partial output failure"
+        },
+        {
+          "file": "commands/grep/record_output_wbtest.mbt",
+          "name": "whole record batches preserve cross-chunk records and final tails"
+        }
+      ],
+      "profiles": [
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
+      ],
+      "invariant": "Commit complete buffered records once; retain cross-chunk tails and never replay a partially failed write.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "grep-span-output",
+      "owner": "commands/grep",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/grep/streaming.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/grep/span_output_wbtest.mbt",
+          "name": "span output flushes a complete and partial record before a read error"
+        },
+        {
+          "file": "commands/grep/span_output_wbtest.mbt",
+          "name": "span output never retries a partially failed threshold flush"
+        }
+      ],
+      "profiles": [
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
+      ],
+      "invariant": "Span queue resets before writing; partial input record precedes its pending read error.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "grep-summary",
+      "owner": "commands/grep",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/grep/prefilter.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/grep/prefilter_wbtest.mbt",
+          "name": "counting batches retain inverted matches NUL records and final fragments"
+        }
+      ],
+      "profiles": [
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
+      ],
+      "invariant": "Batch record accounting shares one commit operation without changing incremental cross-chunk accounting.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "bytere-literal-adaptive",
+      "owner": "core/bytere",
+      "commands": [
+        "grep"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/bytere/literal_set.mbt",
+        "core/bytere/literal_shift.mbt",
+        "core/bytere/literal_automaton.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytere/literal_adaptive_wbtest.mbt",
+          "name": "adaptive construction is lazy cached and bounded"
+        }
+      ],
+      "profiles": [
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
+      ],
+      "invariant": "Short literals use AC; shift plans carry explicit optional AC state and a typed handoff. Construction budget decline is cached.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "bytere-record-dfa",
+      "owner": "core/bytere",
+      "commands": [
+        "grep",
+        "csplit"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/bytere/record.mbt",
+        "core/bytere/record_skip.mbt",
+        "commands/csplit/snapshot.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytere/record_skip_wbtest.mbt",
+          "name": "certified skips preserve boolean matching for reused states long tails and all byte classes"
+        },
+        {
+          "file": "core/bytere/span_wbtest.mbt",
+          "name": "record DFA budget exhaustion falls back and keeps subsequent searches correct"
+        },
+        {
+          "file": "core/bytere/policy_wbtest.mbt",
+          "name": "record NFA construction includes the exact state budget"
+        },
+        {
+          "file": "core/bytere/policy_wbtest.mbt",
+          "name": "record DFA admits 255 and 256 states and rejects a 257th without losing cached rows"
+        }
+      ],
+      "profiles": [
+        "real-csplit-source-api-boundaries",
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
+      ],
+      "invariant": "Certified self-loop skips preserve Boolean semantics; budget failure falls back to the span engine.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "bytere-anchored-linear",
+      "owner": "core/bytere",
+      "commands": [
+        "grep",
+        "csplit"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/bytere/record_linear.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytere/record_linear_wbtest.mbt",
+          "name": "anchored byte predicates agree with the span engine across all short records"
+        }
+      ],
+      "profiles": [
+        "real-csplit-source-api-boundaries",
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
+      ],
+      "invariant": "Only branch-free fixed-length anchored Boolean matching uses the linear plan; exact EOF acceptance is required.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "grep-general-onepass-rejected",
+      "owner": "core/bytere",
+      "commands": [
+        "grep"
+      ],
+      "status": "rejected-control",
+      "sources": [
+        "core/bytere/record_linear.mbt",
+        "core/bytere/matcher.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytere/record_linear_wbtest.mbt",
+          "name": "anchored linear plans decline branching and position-sensitive syntax"
+        }
+      ],
+      "profiles": [
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537"
+      ],
+      "invariant": "Historical onepass profile names are fallback controls. No general onepass implementation is adopted.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "bounded-output",
+      "owner": "core/stream",
+      "commands": [
+        "rg",
+        "column",
+        "sed"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/stream/output.mbt",
+        "commands/rg/internal/driver/stdout.mbt",
+        "commands/sed/execute.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/stream/output_test.mbt",
+          "name": "failed shared output never replays a partially written prefix"
+        },
+        {
+          "file": "core/stream/output_test.mbt",
+          "name": "synchronous output admission is atomic and retains failure state"
+        }
+      ],
+      "profiles": [
+        "real-sed-source-identifiers",
+        "real-sed-source-miss",
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered",
+        "real-column-properties-table",
+        "real-column-option-grid"
+      ],
+      "invariant": "Output owns queued bytes, serializes borrowing and consumes failed or cancelled writes without replay. Synchronous admission never flushes or suspends; false leaves the queue unchanged and preserves line-buffered delivery.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "column-table-plans",
+      "owner": "commands/column",
+      "commands": [
+        "column"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/column/fields.mbt",
+        "commands/column/spool.mbt",
+        "commands/column/table.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/column/fields_wbtest.mbt",
+          "name": "large-row field metadata is bounded and does not alter snapshot storage"
+        },
+        {
+          "file": "commands/column/fields_wbtest.mbt",
+          "name": "field metadata thresholds preserve widths at exact row and byte limits"
+        }
+      ],
+      "profiles": [
+        "real-column-properties-table",
+        "real-column-option-grid"
+      ],
+      "invariant": "Record retrieval and field traversal share mechanisms while row plans remain bounded and output retains original delimiter semantics.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "tac-spool",
+      "owner": "commands/tac",
+      "commands": [
+        "tac"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/tac/reverse.mbt",
+        "commands/tac/reverse_fixed.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/tac/cleanup_wbtest.mbt",
+          "name": "spool cleanup runs once and preserves primary error precedence"
+        },
+        {
+          "file": "commands/tac/cleanup_wbtest.mbt",
+          "name": "cancelled spool operations still clean up once"
+        }
+      ],
+      "profiles": [
+        "real-tac-rfc-records",
+        "real-tac-pipe-reversal-pipe257",
+        "real-tac-pipe-reversal-pipe65537"
+      ],
+      "invariant": "Close the file before directory cleanup, preserve the primary error, and report cleanup-only failure.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "diff-byte-pipeline",
+      "owner": "commands/diff",
+      "commands": [
+        "diff"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/diff/main.mbt",
+        "commands/diff/compare.mbt",
+        "commands/diff/output.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/diff/compare_wbtest.mbt",
+          "name": "patch byte output preserves every byte and byte encoded labels"
+        },
+        {
+          "file": "commands/diff/compare_wbtest.mbt",
+          "name": "compact diff retains hunk positions context and EOF across equal edges"
+        },
+        {
+          "file": "commands/diff/compare_wbtest.mbt",
+          "name": "normal edits retain byte records and missing line terminators"
+        },
+        {
+          "file": "commands/diff/compare_wbtest.mbt",
+          "name": "repeated records choose GNU-compatible aligned change groups"
+        }
+      ],
+      "profiles": [
+        "real-diff-source-distinct-equal",
+        "real-diff-json-modules",
+        "real-diff-json-revisions",
+        "real-diff-sqlite-revisions"
+      ],
+      "invariant": "Both operands are read before exact equality. Binary detection and record splitting use byte search; compact scripts keep requested edge context and absolute hunk positions. Patch records preserve arbitrary bytes, labels, terminators, CR stripping and existing alignment. No source-size or corpus-specific route.",
+      "measurement_scope": "Complete genuine equal, unrelated-module and same-file release pairs. AI invocation frequency, startup amortization and general diff throughput are not inferred."
+    },
+    {
+      "id": "sort-spill",
+      "owner": "commands/sort",
+      "commands": [
+        "sort"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/sort/external.mbt",
+        "commands/sort/input.mbt",
+        "commands/sort/compare.mbt",
+        "commands/sort/output.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort merge reservation leaves useful run space for a one MiB budget"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort temporary parent failure cleans owned runs and preserves output"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort buffered output keeps unique representatives and failed writes are not replayed"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort batch admission preserves overflow ownership sequence and unterminated records"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort integral prefix accepts only exactly represented integer prefixes"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort lexical plan matches general ordering for ties reverse and raw bytes"
+        },
+        {
+          "file": "commands/sort/sort_wbtest.mbt",
+          "name": "sort cached run entries preserve refill boundaries ownership and truncation"
+        }
+      ],
+      "profiles": [
+        "real-sort-source-lexical",
+        "real-sort-airport-numeric",
+        "real-sort-airport-decimal",
+        "real-sort-source-numeric-spill",
+        "real-sort-source-numeric-key-spill",
+        "real-sort-source-spill"
+      ],
+      "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio. Input batches own entries across spills; cached run decoding commits only a complete entry and preserves exact-read fallback, validation and cleanup. Bounded integer prefixes fall back to exact decimal comparison for fractions and long numbers. Plain byte ordering preserves reverse and sequence ties. Coalesced output preserves LF/NUL termination and first unique representatives; a failed write cannot commit a new representative or replay a prefix. Run framing and total merge budgets remain unchanged.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-lazy-cache",
+      "owner": "commands/rg/internal/regex/automata",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/automata/cache_policy.mbt",
+        "commands/rg/internal/regex/automata/dfa.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/regex/automata/cache_policy_wbtest.mbt",
+          "name": "repeated cache pressure retires an unproductive DFA without retrying rows"
+        },
+        {
+          "file": "commands/rg/internal/regex/automata/cache_policy_wbtest.mbt",
+          "name": "Unicode quits never retire later ASCII searches"
+        },
+        {
+          "file": "commands/rg/internal/regex/prepared_wbtest.mbt",
+          "name": "reverse cache pressure falls back over the original full span"
+        },
+        {
+          "file": "commands/rg/internal/regex/automata/cache_policy_wbtest.mbt",
+          "name": "real successful scans amortize pressure before a later unproductive window"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Retire only after repeated unproductive cache fills. Unicode quit is distinct; productive windows restart accounting. Forward and reverse fallback restart the original query.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "rg-deferred-storage",
+      "owner": "commands/rg/internal/regex",
+      "commands": [
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/rg/internal/regex/prepared.mbt",
+        "commands/rg/internal/regex/regex.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/rg/internal/regex/prepared_wbtest.mbt",
+          "name": "half and boolean searches prepare neither reverse nor capture storage"
+        },
+        {
+          "file": "commands/rg/internal/regex/prepared_wbtest.mbt",
+          "name": "deferred fallback preserves low-budget spans earliest endpoints and Unicode"
+        },
+        {
+          "file": "commands/rg/internal/regex/prepared_wbtest.mbt",
+          "name": "literal engines defer storage without removing extended capture slots"
+        }
+      ],
+      "profiles": [
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Compile both NFAs eagerly to preserve constructor errors and metadata. Prepare non-raising reverse/PikeVM storage once on demand; retain all semantic fallback routes.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "exact-byte-membership",
+      "owner": "core/bytesearch",
+      "commands": [
+        "grep",
+        "rg"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/bytesearch/byte_membership.mbt",
+        "core/bytesearch/byte_set.mbt",
+        "core/bytere/record_skip.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/bytesearch/byte_membership_wbtest.mbt",
+          "name": "shared SIMD membership is exact for every singleton byte"
+        },
+        {
+          "file": "core/bytere/record_skip_wbtest.mbt",
+          "name": "certified SIMD membership covers every byte and nonzero view offsets"
+        },
+        {
+          "file": "core/bytesearch/byte_set_test.mbt",
+          "name": "byte-set candidates match scalar membership across all bytes and boundaries"
+        }
+      ],
+      "profiles": [
+        "real-grep-source-api-count",
+        "real-grep-source-api-lines",
+        "real-grep-regex-count",
+        "real-grep-literal-miss",
+        "real-grep-long-record-count",
+        "real-grep-unterminated-match",
+        "real-grep-empty",
+        "real-grep-early-exit",
+        "real-grep-literal-sparse-count-pipe257",
+        "real-grep-literal-sparse-count-pipe65537",
+        "real-rg-source-api-count",
+        "real-rg-rfc-http-spans",
+        "real-rg-regex-count",
+        "real-rg-literal-miss",
+        "real-rg-long-record-count",
+        "real-rg-unterminated-match",
+        "real-rg-empty",
+        "real-rg-early-exit",
+        "real-rg-literal-sparse-count-pipe257",
+        "real-rg-literal-sparse-count-pipe65537",
+        "real-rg-slow-output",
+        "real-rg-source-tree",
+        "real-rg-source-api-numbered"
+      ],
+      "invariant": "Share immutable 256-byte membership packing and lane masks. Fixed-array/view loading, polarity and scalar tails stay with their consumers.",
+      "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "cmp-quiet-chunks",
+      "owner": "commands/cmp",
+      "commands": [
+        "cmp"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/cmp/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/cmp/compare_wbtest.mbt",
+          "name": "cmp quiet chunks preserve skips limits binary data and unequal EOF"
+        },
+        {
+          "file": "commands/cmp/compare_wbtest.mbt",
+          "name": "cmp quiet mismatch returns before a later read failure"
+        }
+      ],
+      "profiles": [
+        "real-cmp-small-equal",
+        "real-cmp-source-equal",
+        "real-cmp-python-revisions",
+        "real-cmp-sqlite-revisions"
+      ],
+      "invariant": "Quiet comparison checks bounded byte spans and returns at the first mismatch; limits, skips, EOF and nonquiet formatting remain intact.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "seq-integer-batches",
+      "owner": "commands/seq",
+      "commands": [
+        "seq"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/seq/integer.mbt",
+        "commands/seq/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/seq/integer_wbtest.mbt",
+          "name": "seq integer batches preserve signs widths separators endpoints and overflow"
+        },
+        {
+          "file": "commands/seq/integer_wbtest.mbt",
+          "name": "seq bounded integer admission preserves exact decimal and large integer fallback"
+        },
+        {
+          "file": "commands/seq/integer_wbtest.mbt",
+          "name": "seq integer output propagates partial write failure without replay"
+        }
+      ],
+      "profiles": [
+        "real-seq-daily",
+        "real-seq-bulk"
+      ],
+      "invariant": "Only exact Int64 operands and bounded separators enter synchronous decimal batches. Preserve signed endpoints, overflow termination, width, separators and partial-output failures; arbitrary precision and formatting retain their fallback.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "inflate-ready-spans",
+      "owner": "core/gzipops",
+      "commands": [
+        "gzip",
+        "gunzip",
+        "zcat"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/gzipops/inflate_ready.mbt",
+        "core/gzipops/inflate.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/gzipops/inflate_ready_wbtest.mbt",
+          "name": "gzip synchronous decoding preserves exact full literal buffers and trailer ownership"
+        },
+        {
+          "file": "core/gzipops/inflate_ready_wbtest.mbt",
+          "name": "gzip synchronous match tail preserves overlap across a full output buffer"
+        }
+      ],
+      "profiles": [
+        "real-gzip-default-compress-source",
+        "real-gunzip-first-dynamic-native-source",
+        "real-gunzip-stored-source",
+        "real-gunzip-fixed-literals-source",
+        "real-gunzip-members-source",
+        "real-zcat-first-dynamic-native-source",
+        "real-zcat-stored-source",
+        "real-zcat-fixed-literals-source",
+        "real-zcat-members-source"
+      ],
+      "invariant": "Decode synchronously only with six buffered input bytes. Preserve trailer ownership, exact full output buffers, overlap and explicit match tails across flushes. Keep stored blocks, CRC, validation and short-input fallback.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "jq-frame-chunks",
+      "owner": "commands/jq",
+      "commands": [
+        "jq"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/jq/input.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/jq/input_wbtest.mbt",
+          "name": "jq chunk scanning preserves every JSON framing boundary"
+        },
+        {
+          "file": "commands/jq/input_wbtest.mbt",
+          "name": "jq completed frame is returned before later input is requested"
+        }
+      ],
+      "profiles": [
+        "real-jq-registry-identity",
+        "real-jq-registry-identifiers",
+        "real-jq-registry-filter",
+        "real-jq-registry-sort",
+        "real-jq-registry-group",
+        "real-jq-registry-sum-references",
+        "real-jq-missing-property"
+      ],
+      "invariant": "Synchronous scanning preserves nesting, escaping, consecutive JSON values, scalar boundaries and completion before later input errors.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "join-record-output",
+      "owner": "commands/join",
+      "commands": [
+        "join"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/join/output.mbt",
+        "commands/join/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/join/output_wbtest.mbt",
+          "name": "join buffered output flushes before the next external read"
+        },
+        {
+          "file": "commands/join/output_wbtest.mbt",
+          "name": "join output retains duplicate products and never replays a failed write"
+        }
+      ],
+      "profiles": [
+        "real-join-airport-route-records"
+      ],
+      "invariant": "Coalesce output records and flush before a physical read, order diagnostics and later errors. Preserve duplicate products and no replay after partial failure.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "comm-borrowed-merge",
+      "owner": "commands/comm",
+      "commands": [
+        "comm"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/comm/merge.mbt",
+        "commands/comm/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/comm/output_wbtest.mbt",
+          "name": "comm columns suppression and totals retain record separators"
+        },
+        {
+          "file": "commands/comm/output_wbtest.mbt",
+          "name": "comm retains the merged prefix when a later read fails"
+        },
+        {
+          "file": "commands/comm/output_wbtest.mbt",
+          "name": "comm borrowed merge preserves fragmented duplicates and suppression"
+        },
+        {
+          "file": "commands/comm/output_wbtest.mbt",
+          "name": "comm oversized record output failure does not replay queued bytes"
+        }
+      ],
+      "profiles": [
+        "real-comm-airport-route-idsets"
+      ],
+      "invariant": "Borrow immutable batch records and merge synchronously until I/O. Keep left-before-right advancement, EOF order recheck, unpairable diagnostics, exact columns and totals. Flush before external reads and errors; failed writes consume queued bytes.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "patch-byte-records",
+      "owner": "commands/patch",
+      "commands": [
+        "patch"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/patch/bytes.mbt",
+        "commands/patch/apply.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/patch/bytes_wbtest.mbt",
+          "name": "patch byte domain preserves every unchanged byte and changed binary records"
+        }
+      ],
+      "profiles": [
+        "real-patch-python",
+        "real-patch-sqlite",
+        "real-patch-python-dry-run"
+      ],
+      "invariant": "Keep source records as immutable byte views, converting hunk records once. Preserve every byte, terminators, reverse/fuzz search and unchanged patch parsing/metadata.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "sort-fractional-fields",
+      "owner": "commands/sort",
+      "commands": [
+        "sort"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/sort/numeric_field.mbt",
+        "commands/sort/compare.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/sort/numeric_field_wbtest.mbt",
+          "name": "sort fractional field cache preserves exact decimal ordering and raw marker collisions"
+        }
+      ],
+      "profiles": [
+        "real-sort-source-lexical",
+        "real-sort-airport-numeric",
+        "real-sort-airport-decimal",
+        "real-sort-source-numeric-spill",
+        "real-sort-source-numeric-key-spill",
+        "real-sort-source-spill"
+      ],
+      "invariant": "Cache exact canonical decimal digits for explicit numeric fields. Preserve signed ordering, zero equivalence, raw marker collisions, run framing, retained-byte accounting and spill cleanup; never merge distinct numbers through floating-point rounding.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    }
+  ],
+  "measurement_suite": "tests/benchmark/real.json",
+  "coverage_registry": "tests/benchmark/real-coverage.json"
+}

@@ -46,60 +46,38 @@ async fn process_reader(
   section_delimiter : String,
   section : Ref[Int32],
   blank_run : Ref[Int32],
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
-  let scanner = @stream.LineScanner::new(reader)
-  let header_marker = @utf8.encode(section_delimiter.repeat(3))
-  let body_marker = @utf8.encode(section_delimiter.repeat(2))
-  let footer_marker = @utf8.encode(section_delimiter)
-  while scanner.next() is Some(line) {
-    let next_section = if section_delimiter != "" &&
-      line.data[:].equal(header_marker[:]) {
-      Some(0)
-    } else if section_delimiter != "" && line.data[:].equal(body_marker[:]) {
-      Some(1)
-    } else if section_delimiter != "" && line.data[:].equal(footer_marker[:]) {
-      Some(2)
-    } else {
-      None
-    }
-    if next_section is Some(value) {
-      section.val = value
-      blank_run.val = 0
-      if !no_renumber {
-        number.val = starting_number
+  let output = @stream.BlockWriter::new(writer)
+  defer output.flush()
+  let scanner = @stream.RecordReader::new(reader)
+  let state : Numbering = {
+    header_style,
+    body_style,
+    footer_style,
+    width,
+    separator,
+    number,
+    starting_number,
+    increment,
+    number_format,
+    join_blank_lines,
+    no_renumber,
+    section,
+    blank_run,
+    markers: [
+      @utf8.encode(section_delimiter.repeat(3)),
+      @utf8.encode(section_delimiter.repeat(2)),
+      @utf8.encode(section_delimiter),
+    ],
+    blank_prefix: None,
+  }
+  while scanner.next_batch() is Some(batch) {
+    while state.buffer_batch(batch, output) is Some((record, numbered)) {
+      output.write_slice(record, 0, record.length())
+      if numbered {
+        number.val += increment
       }
-      @stdio.stdout.write("\n")
-      continue
-    }
-    let style = match section.val {
-      0 => header_style
-      2 => footer_style
-      _ => body_style
-    }
-    let numbered = if line.data.is_empty() {
-      blank_run.val += 1
-      if style == "a" && blank_run.val == join_blank_lines {
-        blank_run.val = 0
-        true
-      } else {
-        false
-      }
-    } else {
-      blank_run.val = 0
-      style == "a" || style == "t"
-    }
-    if numbered {
-      @stdio.stdout.write(
-        format_number(number.val, width, number_format) + separator,
-      )
-      @stdio.stdout.write(line.data)
-      @stdio.stdout.write("\n")
-      number.val += increment
-    } else {
-      @stdio.stdout.write(spaces(width))
-      @stdio.stdout.write(separator)
-      @stdio.stdout.write(line.data)
-      @stdio.stdout.write("\n")
     }
   }
 }
@@ -108,7 +86,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("nl 0.2.3\n")
+    @stdio.stdout.write("nl 0.2.5\n")
     return
   }
   let args = @env.args()[1:]

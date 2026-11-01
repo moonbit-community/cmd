@@ -1,11 +1,8 @@
 ///|
 /// Parses the contents of a ripgrep config file: one argument per line,
 /// ignoring blank lines and lines starting with `#` (after trimming).
-/// Returns the arguments and any per-line errors.
-pub fn parse_config_bytes(data : Bytes) -> (Array[String], Array[String]) {
+pub fn parse_config_bytes(data : Bytes) -> Array[String] {
   let args = []
-  let errs = []
-  let mut line_number = 0
   let mut start = 0
   let n = data.length()
   while start < n {
@@ -13,7 +10,6 @@ pub fn parse_config_bytes(data : Bytes) -> (Array[String], Array[String]) {
     while end < n && data[end] != b'\n' {
       end += 1
     }
-    line_number += 1
     // Decode losslessly (ripgrep accepts arbitrary bytes here) and trim
     // Unicode whitespace like bstr's `trim`.
     let line = @osstr.trim_white_space(@osstr.decode(data[start:end]))
@@ -21,15 +17,14 @@ pub fn parse_config_bytes(data : Bytes) -> (Array[String], Array[String]) {
     if line.is_empty() || line.has_prefix("#") {
       continue
     }
-    ignore(line_number)
     args.push(line)
   }
-  (args, errs)
+  args
 }
 
 ///|
 /// Reads extra arguments from the file in `RIPGREP_CONFIG_PATH`, if set.
-pub async fn config_args() -> Array[String] {
+async fn config_args() -> Array[String] {
   let config_path = match @sys.env_var("RIPGREP_CONFIG_PATH") {
     None => {
       log_debug(
@@ -52,10 +47,7 @@ pub async fn config_args() -> Array[String] {
       return []
     }
   }
-  let (args, errs) = parse_config_bytes(data)
-  for err in errs {
-    message("\{config_path}:\{err}")
-  }
+  let args = parse_config_bytes(data)
   log_debug(
     "rg::flags::config",
     "\{config_path}: arguments loaded from config file: \{Repr(args)}",

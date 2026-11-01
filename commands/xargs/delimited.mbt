@@ -95,31 +95,6 @@ fn input_item(data : BytesView) -> InputItem raise ArgvBytesBoundary {
 }
 
 ///|
-fn delimited_items(
-  data : Bytes,
-  delimiter : Int32,
-) -> Array[InputItem] raise ArgvBytesBoundary {
-  let items : Array[InputItem] = []
-  let mut start = 0
-  // The selected GNU findutils providers use signed char for input_delimiter.
-  let signed_delimiter = if delimiter >= 128 {
-    delimiter - 256
-  } else {
-    delimiter
-  }
-  for index, byte in data {
-    if byte.to_int() == signed_delimiter {
-      items.push(input_item(data[start:index]))
-      start = index + 1
-    }
-  }
-  if start < data.length() {
-    items.push(input_item(data[start:]))
-  }
-  items
-}
-
-///|
 async fn delimiter_or_exit(value : String) -> Int32? {
   try delimiter_byte(value) catch {
     XargsError(message) => {
@@ -137,8 +112,9 @@ async fn confirm_batch(
   channel : &@io.Reader,
   program : String,
   arguments : Array[String],
+  diagnose~ : async (String) -> Unit = text => @stdio.stderr.write(text),
 ) -> Bool {
-  @stdio.stderr.write([program, ..arguments].map(shell_word).join(" ") + "?...")
+  diagnose([program, ..arguments].map(shell_word).join(" ") + "?...")
   let mut first = true
   let mut accepted = false
   while channel.read_some(max_len=1) is Some(bytes) {

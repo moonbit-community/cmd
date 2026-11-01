@@ -147,7 +147,7 @@ pub fn GlobMatcher::is_match(self : GlobMatcher, path : String) -> Bool {
 
 ///|
 /// Tests whether the given path matches this pattern or not.
-pub fn GlobMatcher::is_match_candidate(
+fn GlobMatcher::is_match_candidate(
   self : GlobMatcher,
   path : Candidate,
 ) -> Bool {
@@ -547,21 +547,6 @@ pub fn GlobBuilder::backslash_escape(
   yes : Bool,
 ) -> GlobBuilder {
   self.opts = { ..self.opts, backslash_escape: yes, }
-  self
-}
-
-///|
-/// Toggle whether an empty pattern in a list of alternates is accepted.
-///
-/// For example, if this is set then the glob `foo{,.txt}` will match both
-/// `foo` and `foo.txt`.
-///
-/// By default this is false.
-pub fn GlobBuilder::empty_alternates(
-  self : GlobBuilder,
-  yes : Bool,
-) -> GlobBuilder {
-  self.opts = { ..self.opts, empty_alternates: yes, }
   self
 }
 

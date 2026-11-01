@@ -6,6 +6,7 @@ async test "shared network executor retains exact identity and incomplete output
     let work = directory + "/" + index.to_string()
     @fs.mkdir(work)
     let executor : Executor = {
+      proof: None,
       invoke: invocation => {
         assert_eq(invocation.command, "curl")
         assert_eq(invocation.stdin, b"\x00\xff")
@@ -75,6 +76,7 @@ async test "shared network observations preserve raw bytes across launch adapter
   let work = @fs.tmpdir(prefix="mooncmd-network-legacy-")
   defer (@fs.rmdir(work, recursive=true) catch { _ => () })
   let executor : Executor = {
+    proof: None,
     invoke: _ => {
       run: {
         output: { status: 0, stdout: b"ok", stderr: b"", },

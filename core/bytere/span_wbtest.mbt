@@ -101,7 +101,7 @@ test "record DFA budget exhaustion falls back and keeps subsequent searches corr
   let pattern = compile("(a|b)*a(a|b){9}", extended=true)
   let matcher = pattern.record_matcher()
   assert_true(!matcher.matches(b""))
-  assert_true(matcher.dfa is Some(_))
+  assert_true(matcher.dfa is Ready(_))
   for number in 0..<512 {
     let input = Bytes::makei(9, index => {
       if (number & (1 << index)) == 0 {
@@ -112,7 +112,7 @@ test "record DFA budget exhaustion falls back and keeps subsequent searches corr
     })
     assert_eq(matcher.matches(input), pattern.find_span(text(input)) is Some(_))
   }
-  assert_true(matcher.dfa is None)
+  assert_true(matcher.dfa is (Uninitialized | Disabled))
   for input in [b"aaaaaaaaaa", b"bbbbbbbbbb", b"bbbabababababa", b""] {
     assert_eq(matcher.matches(input), pattern.find_span(text(input)) is Some(_))
   }
@@ -124,7 +124,7 @@ test "record DFA budget exhaustion falls back and keeps subsequent searches corr
     ] {
     let pattern = compile(source, extended~)
     let matcher = pattern.record_matcher()
-    assert_true(matcher.dfa is None)
+    assert_true(matcher.dfa is (Uninitialized | Disabled))
     for input in [b"aa", b"ba", b""] {
       assert_eq(
         matcher.matches(input),
@@ -140,7 +140,7 @@ test "endpoint caches fall back on exhaustion and keep old searches valid" {
   let matcher = pattern.record_matcher()
   let retained = matcher.search_bytes(b"aaaaaaaaaa")
   assert_eq(retained.find_span(), Some((0, 10)))
-  assert_true(matcher.span_dfa is Some(_))
+  assert_true(matcher.span_dfa is Ready(_))
   for number in 0..<2048 {
     let input = Bytes::makei(12, index => {
       if (number & (1 << index)) == 0 {
@@ -157,7 +157,7 @@ test "endpoint caches fall back on exhaustion and keep old searches valid" {
       )
     }
   }
-  assert_true(matcher.span_dfa is None)
+  assert_true(matcher.span_dfa is (Uninitialized | Disabled))
   assert_eq(retained.find_span(), Some((0, 10)))
 }
 

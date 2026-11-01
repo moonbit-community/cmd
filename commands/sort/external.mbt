@@ -1,4 +1,5 @@
 ///|
+// Strategy: sort-spill
 priv struct Run {
   path : String
   largest_entry : Int64
@@ -81,6 +82,9 @@ fn write_number(
 
 ///|
 async fn RunReader::next(self : RunReader) -> Entry? {
+  if self.buffered_next() is Some(entry) {
+    return Some(entry)
+  }
   if !self.refill() {
     return None
   }
@@ -100,6 +104,60 @@ async fn RunReader::next(self : RunReader) -> Entry? {
     }
     keys.push(key)
   }
+  Some({ record, keys, index, })
+}
+
+///|
+// Parse complete cached entries synchronously. A crossing record leaves the
+// cursor untouched so the existing exact-read path handles refill and failure.
+fn RunReader::buffered_next(self : RunReader) -> Entry? raise {
+  let first = self.position
+  if self.available - first < 12 {
+    return None
+  }
+  let bytes = self.buffer.unsafe_reinterpret_as_bytes()
+  let size = read_size(bytes, first + 8)
+  if size < 0 || size.to_int64() > self.limit {
+    raise CliError("invalid temporary run record length")
+  }
+  let start = first + 12
+  if size > self.available - start {
+    return None
+  }
+  let mut end = start + size
+  let mut cost = size.to_int64() + 128
+  for _ in 0..<self.key_count {
+    if self.available - end < 4 {
+      return None
+    }
+    let length = read_size(bytes, end)
+    if length < 0 || length.to_int64() > self.limit {
+      raise CliError("invalid temporary run record length")
+    }
+    end += 4
+    if length > self.available - end {
+      return None
+    }
+    cost += length.to_int64() + 16
+    if cost > self.limit {
+      raise CliError("invalid temporary run entry size")
+    }
+    end += length
+  }
+  let mut index : Int64 = 0
+  for i in 0..<8 {
+    index = index | (bytes[first + i].to_int64() << (i * 8))
+  }
+  let record = bytes[start:start + size].to_owned()
+  let keys : Array[Bytes] = []
+  let mut position = start + size
+  for _ in 0..<self.key_count {
+    let length = read_size(bytes, position)
+    position += 4
+    keys.push(bytes[position:position + length].to_owned())
+    position += length
+  }
+  self.position = end
   Some({ record, keys, index, })
 }
 
@@ -302,7 +360,7 @@ async fn merge_input_sources(
 ///|
 priv struct Spool {
   directories : Array[String]
-  roots : Array[String?]
+  roots : Array[@tempio.Directory?]
   mut next : Int64
 }
 
@@ -312,16 +370,18 @@ async fn Spool::path(self : Spool) -> String {
   let root = match self.roots[slot] {
     Some(root) => root
     None => {
-      let root = if self.directories.is_empty() {
-        @fs.tmpdir(prefix="cli-sort-")
-      } else {
-        temporary_root(self.directories[slot])
+      let root = @tempio.Directory::new(
+        prefix="cli-sort-",
+        parent=self.directories.get(slot),
+      ) catch {
+        @tempio.TemporaryError(message) => raise CliError("sort: " + message)
+        error => raise error
       }
       self.roots[slot] = Some(root)
       root
     }
   }
-  let path = root + "/run-" + self.next.to_string()
+  let path = root.path() + "/run-" + self.next.to_string()
   self.next += 1
   path
 }
@@ -483,7 +543,7 @@ async fn compact_runs(
 async fn scan_source(
   path : String,
   delimiter : Byte,
-  accept : async (Bytes) -> Bool,
+  accept : async (@stream.RecordBatch) -> Bool,
 ) -> Bool {
   let file = if path == "-" {
     None
@@ -504,15 +564,15 @@ async fn scan_source(
       reader
     }
   }
-  let scanner = @stream.LineScanner::new(reader, delimiter~)
+  let scanner = @stream.RecordReader::new(reader, delimiter~)
   for ;; {
-    let next = scanner.next() catch {
+    let next = scanner.next_batch() catch {
       @os_error.OSError(_) as error =>
         raise CliError("sort: read failed: \{path}: \{os_message(error)}")
       error => raise error
     }
-    guard next is Some(line) else { break }
-    if !accept(line.data) {
+    guard next is Some(batch) else { break }
+    if !accept(batch) {
       return false
     }
   }
@@ -538,14 +598,7 @@ async fn sort_sources(
   fan_in~ : Int32 = 16,
   temporary_directories~ : Array[String] = [],
 ) -> Int32 {
-  let compare = (left : Entry, right : Entry) => {
-    let order = compare_entries(left, right, specs, global, !unique && !stable)
-    if order == 0 {
-      left.index.compare(right.index)
-    } else {
-      order
-    }
-  }
+  let compare = entry_comparator(specs, global, !unique && !stable)
   let key_count = if specs.is_empty() {
     if transforms_key(global) || global.mode == Random {
       1
@@ -555,9 +608,7 @@ async fn sort_sources(
   } else {
     specs.length()
   }
-  // Reserve input/output and selected merge buffers plus the bounded run index.
-  let reserve = (fan_in + 6).to_int64() * 65536L
-  let run_limit = (budget - reserve).max(1)
+  let (run_limit, fan_in) = merge_budget(budget, fan_in)
   let spool : Spool = {
     directories: temporary_directories,
     roots: Array::make(temporary_directories.length().max(1), None),
@@ -565,43 +616,50 @@ async fn sort_sources(
   }
   defer (for root in spool.roots {
     if root is Some(root) {
-      @fs.rmdir(root, recursive=true)
+      root.close()
     }
   })
   let runs : Array[Run] = []
-  let mut entries : Array[Entry] = []
-  let mut retained : Int64 = 0
-  let mut sequence : Int64 = 0
+  let input : SortInput = {
+    specs,
+    global,
+    separator,
+    seed,
+    sequence: 0,
+    retained: 0,
+    entries: [],
+  }
   let mut previous : Entry? = None
   for source in (if merge && !check { [] } else { sources }) {
-    let complete = scan_source(source, delimiter, record => {
-      let entry = make_entry(record, sequence, specs, global, separator, seed~)
-      sequence += 1
+    let complete = scan_source(source, delimiter, batch => {
       if check {
-        if previous is Some(old) &&
-          (
-            compare_entries(old, entry, specs, global, !stable) > 0 ||
-            (unique && compare_entries(old, entry, specs, global, false) == 0)
-          ) {
-          if diagnose {
-            let record = @utf8.decode(record) catch { _ => "" }
-            @stdio.stderr.write("sort: -:\{sequence}: disorder: \{record}\n")
+        while batch.next() is Some(line) {
+          let entry = input.entry(line.data)
+          if previous is Some(old) &&
+            (
+              compare_entries(old, entry, specs, global, !stable) > 0 ||
+              (unique && compare_entries(old, entry, specs, global, false) == 0)
+            ) {
+            if diagnose {
+              let record = @utf8.decode(entry.record) catch { _ => "" }
+              @stdio.stderr.write(
+                "sort: -:\{input.sequence}: disorder: \{record}\n",
+              )
+            }
+            return false
           }
-          return false
+          previous = Some(entry)
         }
-        previous = Some(entry)
         return true
       }
-      let cost = entry_cost(entry)
-      if !entries.is_empty() && cost > run_limit - retained {
-        runs.push(spool.write_run(entries, compare))
-        entries = []
-        retained = 0
+      while input.batch(batch, run_limit) is Some(entry) {
+        runs.push(spool.write_run(input.entries, compare))
+        input.entries = []
+        input.retained = 0
         // Level carries bound the run directory by O(log records).
         compact_runs(spool, runs, key_count, compare, run_limit, fan_in~)
+        input.admit(entry)
       }
-      entries.push(entry)
-      retained += cost
       true
     })
     if !complete {
@@ -611,6 +669,7 @@ async fn sort_sources(
   if check {
     return 0
   }
+  let mut entries = input.entries
   // Named merge output is not opened for truncation or writing until every
   // source has been consumed into owned runs. Preflight may create it empty.
   if merge && (sources.length() > fan_in || output_path is Some(_)) {
@@ -643,27 +702,16 @@ async fn sort_sources(
     }
     None => output
   }
-  let writer = @io.BufferedWriter::new(sink, size=65536)
-  let emit : async (Entry) -> Unit = entry => {
-    if previous is Some(old) &&
-      unique &&
-      compare_entries(old, entry, specs, global, false) == 0 {
-      return
-    }
-    writer.write(entry.record)
-    writer.write(if delimiter == b'\x00' { b"\x00" } else { b"\n" })
-    if unique {
-      previous = Some({
-        record: b"",
-        keys: if entry.keys.is_empty() {
-          [entry.record]
-        } else {
-          entry.keys
-        },
-        index: entry.index,
-      })
-    }
+  let writer = @stream.BlockWriter::new(sink)
+  let emitter : SortedOutput = {
+    writer,
+    delimiter,
+    unique,
+    specs,
+    global,
+    previous: None,
   }
+  let emit : async (Entry) -> Unit = entry => emitter.emit(entry)
   if merge && sources.length() <= fan_in && output_path is None {
     merge_input_sources(
       sources[:],
@@ -680,9 +728,7 @@ async fn sort_sources(
   }
   if !merge && runs.is_empty() {
     entries.sort_by(compare)
-    for entry in entries {
-      emit(entry)
-    }
+    emitter.emit_entries(entries[:])
     writer.flush()
     return 0
   } else if !merge && !entries.is_empty() {

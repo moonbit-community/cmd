@@ -1,6 +1,6 @@
 name = "cli/grep"
 
-version = "0.3.2"
+version = "0.3.3"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "grep command for MoonX."
 
 import {
-  "cli/core@0.8.2",
+  "cli/core@0.9.0",
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
 }

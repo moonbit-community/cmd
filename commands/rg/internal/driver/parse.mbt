@@ -1,6 +1,4 @@
 ///|
-
-///|
 priv struct FlagInfo {
   flag : FlagDef
   /// `Ok(long name)` or `Err(short name)`.
@@ -80,7 +78,7 @@ fn FlagParser::find_long(self : FlagParser, name : String) -> FlagInfo? {
 
 ///|
 /// Looks up a flag by its long name.
-pub fn lookup_flag(name : String) -> FlagDef? {
+fn lookup_flag(name : String) -> FlagDef? {
   match FlagParser::get().find_long(name) {
     Some(info) => Some(info.flag)
     None => None
@@ -89,10 +87,7 @@ pub fn lookup_flag(name : String) -> FlagDef? {
 
 ///|
 /// Parses the given arguments (excluding the program name) into `args`.
-pub fn parse_into(
-  rawargs : Array[String],
-  args : LowArgs,
-) -> Unit raise RgError {
+fn parse_into(rawargs : Array[String], args : LowArgs) -> Unit raise RgError {
   let parser = FlagParser::get()
   let p = Lexer::new(rawargs)
   while true {
@@ -149,14 +144,6 @@ pub fn parse_into(
       update_flag(mat.flag, value, args)
     })
   }
-}
-
-///|
-/// Parses arguments into a fresh `LowArgs` (used by tests).
-pub fn parse_low_raw(rawargs : Array[String]) -> LowArgs raise RgError {
-  let args = LowArgs::default()
-  parse_into(rawargs, args)
-  args
 }
 
 ///|

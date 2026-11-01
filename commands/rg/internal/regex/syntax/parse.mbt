@@ -109,7 +109,7 @@ pub(all) struct ParserConfig {
 }
 
 ///|
-pub fn ParserConfig::default() -> ParserConfig {
+fn ParserConfig::default() -> ParserConfig {
   {
     ignore_whitespace: false,
     nest_limit: 250,

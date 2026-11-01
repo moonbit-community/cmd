@@ -1,368 +1,272 @@
 # Changelog
 
-This repository integrates multiple command packages, so changes are recorded
-by date and delivery milestone rather than by a single package version.
+Dated delivery summaries. Development changes do not update published packages
+until a separate release through `moon publish`.
+[ADRs](docs/adr/README.md) own decisions; the
+[performance guide](docs/performance/README.md) explains current algorithms.
+[Latest published coordinates](tests/release_runner/current/latest.json)
+remain independent of candidate expectations.
+
+Full historical reports, intermediate failures, measurements and corrections
+are preserved in the
+[pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
+and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
+
+## 2026-11-01
+
+Development and publication.
+
+- Publish core 0.9.1 and 26 changed command versions from `c5c016c` after
+  [three-platform source CI](https://github.com/moonbit-community/cmd/actions/runs/41294367461).
+  Verify all 27 uploads and registry builds; retain 53 command coordinates and
+  keep timeout local-only. Updated commands select core 0.9.1.
+- Exact-version MoonX acceptance covers all 79 published commands. Local macOS
+  passes 2,338 checks with 21 skips; [published CI](https://github.com/moonbit-community/cmd/actions/runs/41295557751)
+  passes Linux 2,345/18, macOS 2,338/21 and Windows 2,183/176 (passes/skips),
+  all with zero failures. Linux includes 1,553 pinned differential results.
+  Promote the independent latest snapshot; these are scoped correctness results.
+
+- Improve byte encoding, numbering, comparison, sequence output, inflate, JSON
+  framing, merge consumers, tail, patch, sort and find while retaining their
+  specialized failure and fallback contracts.
+- Repair rm trailing-separator symlink protection and exact decimal sort keys.
+  Stream find/xargs batches, reuse child slots as they finish, distinguish
+  launch failures from child exit codes, and await owned children. Release
+  discarded tail storage and report both move and backup-recovery failures.
+- Stream base32 encoding and adapt rg counting to actual progress, replay and
+  record lifetime. Reuse cp preflight/copy logic and remove unreachable branches.
+  Add real workloads for previously uncovered ln/test artifacts.
+- At `c4ea779`, local validation passes 1,800 Wasm package tests, 198 Native
+  test-tool tests and 2,274 CLI checks, with 21 platform skips. Required
+  [three-platform CI](https://github.com/moonbit-community/cmd/actions/runs/41277371739)
+  passes. Cumulative local timing qualifies 165/171 rows, including all base32,
+  rg and cp rows; wc/fmt exact-comparison failures and cat/xargs instability
+  keep the full performance gate failed.
+- Consolidate ADRs into current decisions and this changelog into dated
+  summaries. Add topic-based performance documentation for call paths,
+  invariants, resource costs, fallbacks and useful rejected approaches.
+
+## 2026-10-31
+
+Development; no publication.
+
+- Consolidate timing into one schema-3 inventory of complete, hash-pinned genuine
+  sources. Retire generated-size timing and command-specific pipelines; retain
+  exact assertions, selectable aliases and failed/incomplete windows.
+- Bind finite claims to actual scenario receipts and immutable Linux oracle
+  routes; separate test-tool platform expectations from Wasm product behavior.
+- Adopt sed byte-prefilter/buffered-output work and csplit page/index improvements.
+  Packed Huffman/CRC combinations and other unsuccessful trials remain excluded;
+  selected gains do not establish complete performance acceptance.
+- Correct the invalid mixed-security-context Darwin mkdir comparison, then fix
+  the separately reproduced symbolic sticky-bit creation difference. Preserve
+  the correction, platform-specific assertions and frozen published expectations.
+  Repair repeated-record diff alignment without weakening expected results.
+
+## 2026-10-30
+
+Publication, followed by separate development work.
+
+- Publish core 0.9.0 and 43 command packages from `4ca0e4d`: 42 updates and
+  the first rg 0.1.0 release. Verify all 44 uploads/builds; 36 command coordinates
+  stay unchanged, giving 79 published commands. Timeout remains local-only.
+- Required [source CI](https://github.com/moonbit-community/cmd/actions/runs/40984331217)
+  and [published acceptance](https://github.com/moonbit-community/cmd/actions/runs/40986324873)
+  pass. Linux/macOS/Windows record 2,369/2,180/2,049 checks and 16/19/150 skips,
+  with zero failures; Linux includes 1,531 pinned differential results. Local
+  exact-version acceptance passes 2,180 checks with 19 skips. These results do
+  not establish full upstream parity or formal performance acceptance.
+- Consolidate shared contracts and command adapters, remove unused rg layers
+  and HTTP forwarding, and enforce private driver ownership. Keep core API
+  trial proposals unadopted and historical release archives recoverable in Git.
+- Subsequent development strengthens independent contracts, typed observations,
+  proof joins and genuine-source workloads; repairs jq grouping/sorting,
+  sh stdin-option parsing and nl padding. These changes and their local checks
+  do not broaden the earlier publication's acceptance.
+
+## 2026-10-29
+
+Development; no publication.
+
+- Improve rg policy selection, bounded Boolean counting, probe replay, plan/cache
+  reuse, deferred tables, read-ahead and matched-record output.
+- Preserve dialect and fallback boundaries. Selected measurements pass, while
+  incomplete or unstable full selections remain unqualified.
+
+## 2026-10-28
+
+Development; no publication.
+
+- Consolidate catalog/adapters and filesystem traversal; keep rg command policy
+  private to driver and prevent lower-layer reverse imports.
+- Move large corpora and equivalent CLI cases into shared fixtures/registries,
+  preserving package-private tests and making missing fixtures fail.
+- Improve progressive search reads and output batching. Retain failed full
+  performance selections and rejected wrapper-removal trials in history.
 
 ## 2026-10-27
 
-- Published a MoonX documentation release for all 78 published commands. All
-  80 command READMEs now focus on supported scope, options, limitations and
-  examples, with links to the capability matrix and ADRs. Corrected misleading
-  filesystem help and rg's inherited upstream thread/mmap/terminal claims;
-  rg's short version now identifies cli/rg. rg and timeout are excluded from
-  this release. Command versions advance independently and core dependencies
-  select the existing 0.8.2, whose fetched registry source matches this checkout.
-  All 78 uploads returned HTTP 200 and exact non-yanked registry versions.
-  Local validation passed 1,612 Wasm tests, 118 test-tool regressions and
-  2,062 workspace functional checks with 19 platform skips. The initial Windows
-  README regression exposed CRLF-sensitive assertions; normalization fixed the
-  test, and [development run 40428496917](https://github.com/moonbit-community/cmd/actions/runs/40428496917)
-  passed all three hosts before publication.
-  Local exact-version MoonX acceptance passed 2,094 checks (1,963 semantic,
-  78 startup and 53 explicit boundary results), with 18 platform skips and zero
-  failures. Seventeen additional README examples passed, including nested MoonX,
-  copy/create effects and missing-file suppression.
-  [Published acceptance run 40432031612](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
-  passed Linux (2,287 checks, 15 skips, including 1,507 pinned differential
-  results), macOS (2,094 checks, 18 skips) and Windows (1,961 checks, 151 skips),
-  all with zero failures. The current `latest.json` and its separate case snapshot
-  now bind these accepted coordinates; `published.json` and historical snapshots
-  remain unchanged. This release does not establish formal performance acceptance
-  or remove the documented unsupported behaviors.
-
-- Integrated performance PR #60 as `6705ea8` after documentation PR #59,
-  with the maintainer's explicit exception for unresolved repeatability.
-  Final-head checks and [actual-main run 40406545144](https://github.com/moonbit-community/cmd/actions/runs/40406545144)
-  passed Linux, macOS and Windows. Failed resource stability remains failed;
-  thresholds, published coordinates and frozen expectations are unchanged.
-- Promoted the adaptive literal pilot into the unpublished core/grep candidate:
-  dense verification can lazily build one bounded automaton, budget exhaustion
-  safely resumes shifts, and subsequent sparse inputs keep the shift fast path.
-  Added independent span/offset/folding/record regressions, thirteen real-command
-  performance workloads and sixteen sampled/kernel resource comparisons.
-  Real-command local pairs improved 1 MiB collision inputs by 13.98x–14.63x
-  over merged main while preserving sparse throughput. An initial 15% dense
-  count regression was corrected; two existing controls retain 2–3% regressions.
-  All 26 old/new rows were stable, while five of 26 GNU rows remained noisy and
-  several GNU ratios exceeded 3x. These are diagnostic results, not acceptance.
-  Local validation passed 1,611 Wasm tests, 117 tool tests, 2,062 functional
-  cases (19 skips), and eight resource smoke comparisons; interfaces are unchanged.
-  See [ADR-0003](docs/adr/0003-streams.md#adaptive-literal-planner-2026-10-27).
-
-- Cache/control diagnostic 40398697579 completed every window but retained
-  unstable empty-input controls and no passing full selection. Input preloading
-  is not a selected fix. Added a separate Linux perf null-counter diagnostic
-  with finer CPU accounting; ordinary resource acceptance remains unchanged.
-
-- Linux diagnostic run 40395472012 completed all controlled windows but found
-  no stable full selection: 17/23 for either observer, 14/23 with settling or
-  one-CPU affinity. Retained these rejected approaches and added a cache/control
-  phase with separate kernel-counter observations. Stability remains unresolved;
-  performance PR #60 was still unmerged at this investigation stage.
-- Added an explicit Linux stability diagnostic to investigate the six noisy
-  workloads in resource run 40346450167. It compares observer backends, a fixed
-  between-arm pause and one-CPU affinity while retaining every sample and the
-  same release Wasm commands. This is diagnostic infrastructure, not a stability
-  fix or acceptance result. The ordinary resource gate and thresholds are unchanged.
+- Publish documentation/metadata updates for all 78 released commands using
+  existing core 0.8.2. Rg and timeout remain unpublished.
+  [Published acceptance](https://github.com/moonbit-community/cmd/actions/runs/40432031612)
+  passes all three hosts with zero failures.
+- Integrate performance PR #60 with the explicit maintainer exception for
+  unresolved repeatability; [actual-main checks](https://github.com/moonbit-community/cmd/actions/runs/40406545144)
+  pass. The resource stability failure remains unresolved.
+- Continue unpublished byte/buffer/temp-I/O, adaptive matching and long-record
+  work. These later changes do not update released coordinates or establish
+  formal performance acceptance.
 
 ## 2026-10-26
 
-- Extended the manual resource workflow to cover cut/uniq/wc alongside the
-  existing commands, including Linux kernel peak RSS. Added a 23-workload
-  direct-Wasm performance profile with two independent nine-pair windows and
-  explicit dispersion/drift checks. Raw samples and noisy results are retained;
-  this does not publish packages or replace formal performance acceptance.
-- Extended unpublished core 0.8.2 and grep 0.3.1 with adaptive multi-literal
-  search, record-level count skipping and reuse of proven regex suffixes.
-  Selected local pairs improved 64 MiB / 16-pattern counts by 4.49x and a
-  16 KiB overlapping-span case by 25.44x over wave 3. Broader literal shapes
-  improved 1.21x–1.70x; several GNU ratios still exceed the 1–3x exploration
-  target. A regressing reverse-DFA skip experiment was removed. Passed 1,604
-  Wasm package tests, 117 Native tool tests and 2,062 functional cases with
-  19 skips and no failures. The independent GNU set matched 792/796, retaining
-  four known empty-pattern differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-4-candidate-2026-10-26)
-  records measurements, bounds, negative evidence and deeper follow-up
-  directions. No publication or formal performance acceptance is claimed.
-- Extended unpublished core 0.8.2 and grep 0.3.1 with borrowed byte searches,
-  paired endpoint DFAs, shared fallback decoding and resumable synchronous span
-  emission. Selected local pairs improved original/many-match/long-record spans
-  by 3.24x/4.08x/3.64x over wave 2. Original spans remain 3.16x GNU; many-match
-  and word-filtered rows are 2.19x and 1.96x. Counting gains are smaller and some
-  regex count rows show small regressions. Passed 1,597 Wasm package tests,
-  117 Native tool tests and 2,062 functional cases with 19 skips and no failures.
-  The independent GNU set matched 684/688, retaining four known empty-pattern
-  differences. [ADR-0003](docs/adr/0003-streams.md#performance-wave-3-candidate-2026-10-26)
-  records resource bounds, raw evidence and remaining gaps. No publication or
-  formal performance acceptance is claimed.
-- Extended the same unpublished performance candidates with synchronous record
-  visitors, block rejection, synchronous count scans, flat DFA transitions and
-  precomputed span closures. Final local pairs improved short-record cut/uniq
-  by 4.96x/2.41x and 64 MiB regex counting by 2.67x over wave 1. Their selected
-  GNU ratios are 2.84x, 2.52x and 2.89x; span extraction remains 10.33x.
-  Passed 1,584 Wasm package tests, 117 Native tool tests and the full functional
-  suite (2,062 passes, 19 skips, zero failures). The independent local comparison
-  matched 242 of 244 GNU cases; two empty-pattern grep differences also occur in
-  wave 1. See [ADR-0003](docs/adr/0003-streams.md#performance-wave-2-candidate-2026-10-26)
-  for bounds, evidence and remaining work. No package was uploaded, and these
-  diagnostic measurements do not establish formal performance acceptance.
-- Prepared the unpublished first performance wave in `core 0.8.2`,
-  `cut/uniq/wc 0.2.3` and `grep 0.3.1`: immutable record batches, synchronous
-  output accumulation, SIMD line/word counting, compact span worklists and a
-  bounded lazy DFA with conservative literal rejection. Published coordinates
-  and snapshots remain unchanged. Updated prospective direct-Wasm performance
-  limits to 3.0x per the current target; historical verdicts remain unchanged.
-  Local macOS checks passed 1,579 Wasm package tests, 117 Native tool tests and
-  the full functional run (2,062 passes, 19 explicit skips, zero failures).
-  Selected nine-pair measurements and the remaining short-record/regex gaps are
-  recorded in [ADR-0003](docs/adr/0003-streams.md#performance-wave-1-candidate-2026-10-26).
-  These observations do not establish three-host, published-consumer or formal
-  performance acceptance. No package was uploaded.
-- Migrated development CI to release Wasm commands on Linux, macOS and Windows,
-  with shared workspace/MoonX assertions and Native test tools. Removed the
-  daily schedule, Native product pairing, change-coverage audits and source/
-  artifact sealing. Resource observations and published acceptance run manually.
-- Added metadata stdin-preservation checks, strict cleanup/report failures,
-  bounded package-test execution and retained cancellation diagnostics. Reused
-  compilation state and parallelized independent pinned-oracle build stages.
-- Verified all 78 published coordinates on three platforms in
-  [run 40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851),
-  including the complete pinned Linux comparison. Linux/macOS/Windows recorded
-  2,287/2,094/1,961 passes and 15/18/151 explicit platform skips, with no failures.
-  This validation uploaded no packages.
-- Recorded a preliminary cold CI run at `635f355`: Linux 13:35, macOS 5:48,
-  Windows 12:44 and 32:07 total runner time. These release-tool observations do
-  not establish a controlled cold/warm result for the later debug-tool setup.
-- Integrated the unpublished `cli/rg@0.1.0` candidate and catalog-only
-  `cli/core@0.8.2` through PR #58. Retained pinned rg.mbt algorithms and Unicode
-  data while replacing system access with public async APIs. Added Windows
-  path handling and direct-child pipe cancellation/diagnostic-drain regressions.
-  Effective compressed search rejects; stdin/terminal/file-identity limits,
-  PCRE2, real mmap and parallel search remain explicit boundaries.
-- Updated all three CI workflows to MoonBit `0.10.17+d971670cd` with matching
-  core. Local rg integration recorded 1,566 passing workspace Wasm package
-  tests and 117 passing Native harness tests; these are dated observations,
-  not publication or complete ripgrep compatibility claims.
-- Passed all three actual-main development checks for the rg integration in
-  [run 40307223749](https://github.com/moonbit-community/cmd/actions/runs/40307223749)
-  at `65b4b7e`, following PR run 40304444558. This did not publish rg or lift
-  its documented input, engine and compression boundaries.
-- Consolidated implementation and release reports into this changelog. Removed
-  obsolete planning, provenance and rg migration documents, the deferred
-  compression experiment and its one-time reporting tools. Refreshed the support
-  record, upstream pins and nine canonical ADRs from source and Git history;
-  cleared accumulated local test reports. No package versions or dependencies
-  changed in this documentation cleanup.
+- Move required CI to Wasm products on Linux/macOS/Windows and Native test tools.
+  Share workspace/MoonX assertions, bound execution and require cleanup.
+  Retire daily schedules, Native product pairing, change audits and sealing;
+  resource and published acceptance workflows remain manual.
+- Verify all 78 published coordinates in
+  [run 40270955851](https://github.com/moonbit-community/cmd/actions/runs/40270955851).
+  This validation uploads no packages.
+- Integrate unpublished rg 0.1.0 through PR #58 with pinned algorithms, public
+  async I/O and direct-child regressions; [actual-main CI](https://github.com/moonbit-community/cmd/actions/runs/40307223749)
+  passes. Compression, identity, terminal, PCRE2, mmap and parallel limits remain.
 
 ## 2026-10-25
 
-- Added stable/merge/seeded-random sorting, exact fixed-ABI numeric formatting,
-  paragraph margins/prefixes and shared tab grids. Expanded selected split,
-  csplit, byte-display, checksum, path, layout, environment, prompt and pipe-error
-  options while retaining operation-specific public-API rejections.
-- Reworked rev into record streaming, csplit/column into indexed disk snapshots,
-  and tac into backward block reads with spooled fallback. Added sort memory/
-  temporary-directory/fan-in controls and shared byte views in diff. Accounted
-  budgets are not RSS caps; tac regex and diff retain whole-input storage.
-- Published core 0.8.0 and 76 changed command versions after the README/help
-  review; curl/wget retained 0.2.3. The local 2,127-case exact-MoonX run had
-  zero failures, with boundaries and platform skips reported separately.
-- Subsequently published core 0.8.1 and column/rev/tac 0.1.4, csplit/diff 0.2.1,
-  split 0.1.3 and sort 0.2.3 after PR #56's platform checks. The other 71 command
-  versions and all dependency declarations remained unchanged.
-- Verified all 78 latest command coordinates locally through exact MoonX:
-  1,875 semantic passes, 186 availability observations, 52 boundary results,
-  22 platform skips and zero failures across 2,135 cases. Ten supplemental
-  find/test/yes checks completed functional observations for all 78 commands.
-  These local releases did not establish new cross-platform or formal
-  direct-Wasm performance acceptance.
+- Add stable/merge/seeded-random sort, exact fixed-ABI formatting, paragraph/tab
+  controls and selected command options. Stream rev, index csplit/column on disk,
+  spool tac and bound sort runs/fan-in; these budgets are not RSS caps.
+- Publish core 0.8.0 and 76 changed command versions; curl/wget retain 0.2.3.
+  Subsequently publish core 0.8.1, column/rev/tac 0.1.4, csplit/diff 0.2.1,
+  split 0.1.3 and sort 0.2.3 after PR #56 checks. The other 71 versions and
+  existing dependency declarations stay unchanged in that follow-up.
+- Final local exact-MoonX validation covers all 78 commands: 2,135 cases,
+  22 skips and zero failures. It does not establish new cross-platform or
+  formal direct-Wasm performance acceptance.
 
 ## 2026-10-24
 
-- Added a pure DEFLATE encoder with 32 KiB history, stored/fixed/dynamic block
-  cost selection and levels 1–9. Added Reader-based gzip decoding with shared
-  buffers, Huffman lookup tables and preserved prefixes on CRC/truncation errors.
-  GNU roundtrips and selected size checks passed; encoder byte identity and
-  formal performance acceptance were not claimed.
-- Added parsed BRE/ERE matching, GNU repeated-capture selection and streaming
-  grep consumers. Sed gained hold space, branches, groups, multiline and text
-  instructions. The local matcher comparison matched 1,095 applicable GNU
-  cases, with three oracle faults classified separately; full grammar and
-  non-C locale compatibility remain outside that evidence.
-- Reused 64 KiB copy/scanner buffers, selected wc counters and streaming strings
-  output. External sort caches comparison keys and uses bounded-fan-in runs.
-- Added diff comparison/directory workflows and linear auxiliary reconstruction;
-  patch gained offset/fuzz matching, mixed hunk results and new reject files.
-  Existing-file mode-preserving patch writeback remains unavailable.
-- Added cut complements, uniq groups, comm totals, join headers/automatic fields
-  and wc total policies under the fixed C-byte profile. Updated the benchmark
-  contract to direct release Wasm, separating MoonX launcher cost.
+- Add pure DEFLATE cost-based encoding and Reader gzip decoding with preserved
+  error prefixes. GNU roundtrips/selected size checks do not imply byte identity
+  or performance acceptance.
+- Expand BRE/ERE, capture handling, streaming grep and sed execution; retain
+  grammar and non-C-locale limits.
+- Reuse copy/scanner buffers, specialize wc counters and cache external-sort
+  keys. Add diff reconstruction/directory modes, patch offset/fuzz and selected
+  C-byte text options; unsafe existing patch replacement still rejects.
 
 ## 2026-10-23
 
-- Fixed cancellation ownership for Docker oracle containers and made uncertain
-  cleanup an infrastructure failure. Actual-main C0 validation completed;
-  the cause of the earlier mainline timeout remained unconfirmed.
-- Hardened the then-current change-coverage system for source content, checkout
-  conversion, additions and shared producers. This mechanism was retired by
-  the 2026-10-26 CI decision; its historical passes are not current gates.
+- Fix Docker oracle cancellation ownership and fail uncertain cleanup.
+  Actual-main C0 passes; the earlier timeout cause remains unconfirmed.
+- Harden the then-current change-coverage mechanism, subsequently retired by
+  the 2026-10-26 CI decision.
 
 ## 2026-10-20
 
-- Published core 0.7.0 and curl/mv/wget 0.2.3 using async 0.22.5; the other 75
-  command coordinates were unchanged. Added explicit HTTP wire/framing and
-  command-specific retry, cookie, URL and output-lifetime behavior.
-- Retained Windows Wasm source-link move and destination-link backup rejections
-  before prompting or mutation; the Native dependency fix did not establish a
-  fixed Wasm host.
-- Passed exact-version acceptance on Linux, macOS and Windows plus pinned Linux
-  comparison in [run 39409393072](https://github.com/moonbit-community/cmd/actions/runs/39409393072).
-  The selected release covered 95 case IDs, not the later roadmap stages.
+- Publish core 0.7.0 and curl/mv/wget 0.2.3 with async 0.22.5; retain the other
+  75 coordinates. Add explicit HTTP framing, transfer profiles and sink lifetime.
+- Retain Windows Wasm link-move/backup rejections; the Native fix is insufficient.
+  [Published acceptance](https://github.com/moonbit-community/cmd/actions/runs/39409393072)
+  passes on three hosts with pinned Linux comparison for the selected 95 cases.
 
 ## 2026-10-18
 
-- Completed the metadata release of core 0.6.0 and 78 command patch versions:
-  standalone help/version now use the shared output contract. Exact-source and
-  three-platform published acceptance passed, including Linux differential
-  checks in [run 39045905149](https://github.com/moonbit-community/cmd/actions/runs/39045905149).
-  The original closed-stdin captures did not prove unread live input.
-- Repaired test lifecycle ownership, platform listener observation, exact-version
-  startup, historical-manifest separation and failure reporting. Preserved
-  platform exclusions and avoided treating missing evidence as success.
+- Publish core 0.6.0 and 78 metadata patch versions with shared help/version
+  behavior. [Published acceptance](https://github.com/moonbit-community/cmd/actions/runs/39045905149)
+  passes on three hosts; its original closed-stdin captures do not prove unread
+  live input.
+- Repair test lifecycle ownership, startup, listener observation, historical
+  expectation separation and failure reporting.
 
 ## 2026-10-12
 
-- Audited all 79 then-local command READMEs and standalone metadata paths.
-  Native and Wasm probes each passed 79 commands; published coordinates and
-  their older metadata expectations remained separate until release.
+- Audit all 79 then-local command READMEs and metadata paths with Native/Wasm
+  probes. Keep published coordinates and older expectations separate.
 
 ## 2026-10-11
 
-- Published core 0.3.0 and sixteen new 0.1.0 commands: csplit, diff, expr, fmt,
+- Publish core 0.3.0 and sixteen new 0.1.0 commands: csplit, diff, expr, fmt,
   fold, gunzip, gzip, hexdump, md5sum, od, patch, sed, sha1sum, sha512sum,
-  split and zcat. Three-platform source checks and exact-MoonX verification
-  retained explicit filesystem and algorithm boundaries.
-- Published core 0.4.0 and column/date/strings/which 0.1.0, bringing the published
-  inventory to 78 commands. Final local acceptance recorded 447 semantic passes,
-  81 availability observations, 23 boundary results and three skips in 554 cases.
-- Repaired strings/column/which semantics, TZif/calendar handling, jq slices,
-  ln/mv/ls option effects, cookie handling and seq buffering. Published core
-  0.5.0 and the affected command patches; unchanged coordinates were retained.
-- Completed the 841-case fidelity release selection with three-platform MoonX
-  acceptance and Linux comparison in
-  [run 38140928875](https://github.com/moonbit-community/cmd/actions/runs/38140928875).
-  Timestamp-sensitive cases run serially; the earlier concurrency-related atime
-  cause was not established. Repository documentation and issues use English.
+  split and zcat, retaining explicit filesystem/algorithm boundaries.
+- Publish core 0.4.0 and column/date/strings/which 0.1.0, bringing publication to
+  78 commands. Follow with core 0.5.0 and affected patches for semantic repairs,
+  retaining unchanged coordinates.
+- Complete the selected 841-case fidelity release with
+  [three-platform MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/38140928875)
+  and Linux comparison. Timestamp cases run serially; the earlier atime cause
+  remains unconfirmed.
 
 ## 2026-10-10
 
-- Implemented the second pure MoonBit command batch and shared checksum,
-  byte-regex and gzip components. Verified patch inode/mode effects and retained
-  explicit refusal of unsafe existing-file replacement before publication.
+- Implement the second pure MoonBit command batch and shared checksum, byte-regex
+  and gzip components. Retain explicit patch inode/mode replacement boundaries.
 
 ## 2026-09-27
 
-- Published 0.1.1 updates for base32, cksum, expand, mktemp, realpath, rev, tac,
-  tree, unexpand, unlink and yes after three-platform checks. Exact-version
-  MoonX acceptance kept availability and boundary observations separate.
+- Publish 0.1.1 for base32, cksum, expand, mktemp, realpath, rev, tac, tree,
+  unexpand, unlink and yes after three-platform checks and exact-MoonX acceptance.
 
 ## 2026-09-26
 
-- Published the first 0.1.0 versions of those eleven commands, bringing the
-  published inventory to 58. Core remained 0.2.0; unchanged commands were not
-  republished. The async 0.22.4 audit retained explicit metadata, process and
-  terminal API boundaries.
+- Publish those eleven commands at 0.1.0, bringing the inventory to 58.
+  Keep core 0.2.0 and unchanged commands. Record async 0.22.4 metadata,
+  process and terminal boundaries.
 
 ## 2026-09-21
 
-- Published core 0.2.0 and 47 command versions after Linux/macOS/Windows source
-  checks. Exact-version MoonX acceptance and the pinned Linux oracle retained
-  separate semantic, boundary, availability and platform-skip results.
-- Consolidated fixtures, process execution and byte/effect assertions in the
-  shared testkit, migrated 240 legacy invocations to JSON contracts, and kept
-  unsafe filesystem operations as tested rejections.
+- Publish core 0.2.0 and 47 command versions after three-platform source checks,
+  exact-MoonX acceptance and pinned Linux comparison.
+- Consolidate the shared testkit and migrate 240 legacy invocations to JSON
+  contracts, retaining unsafe filesystem operations as tested rejections.
 
 ## 2026-09-20
 
-- Added persistent pipe-based shell sessions and concurrent make dependency
-  scheduling, complete environment inheritance, Basic authentication and cookie
-  state. Corrected stream, JSON and filesystem fidelity without host delegation.
-- Retained explicit limits for file identity/mode/timestamp operations,
-  process groups, exec and terminal control. Local candidate tests were
-  development evidence before the following publication.
+- Add persistent pipe shell sessions, concurrent make scheduling, complete
+  environment inheritance, Basic authentication and cookies.
+- Repair stream/JSON/filesystem behavior while retaining identity, mode,
+  timestamp, process-group, exec and terminal boundaries. Evidence is local
+  development validation before the following publication.
 
 ## 2026-09-19
 
-- Audited actual published MoonX command behavior and separated observed
-  semantic defects from missing public runtime APIs and unsupported profiles.
-  Those observations supplied regressions for the subsequent fidelity work.
+- Audit published MoonX behavior, separating semantic defects, missing public
+  APIs and unsupported profiles; use observations for subsequent regressions.
 
 ## 2026-09-06
 
-- Fixed two-operand descending `seq`, synchronized version metadata for the
-  affected commands, sanitized `sh` rejected-syntax diagnostics, and enforced
-  single-terminal-newline `jqlog` help/error output.
-- Added the pure-MoonBit published-version Runner with exact-version MoonX
-  invocations, shared loopback HTTP fixtures, manifest validation, failure
-  classification, filesystem snapshots, and Markdown/JSONL reports.
-- Added P0 regression coverage for `echo`, `false`, `jqlog`, `seq`, `sleep`,
-  and `true` at `0.1.5`, plus the compatible `sh` follow-up staged at `0.1.7`.
-- Added release-manifest, published differential, and cross-platform smoke CI
-  jobs. `timeout` remains local-only and is excluded from the 47-command
-  published manifest.
-- Published-version verification corrected an erroneous `sh -s` expectation:
-  POSIX/dash keeps the invocation name as `$0` and the first operand as `$1`.
-  The compatible follow-up `cli/sh@0.1.7` is published and passed the final
-  pinned-oracle, differential, smoke, stress, and cross-platform CI run
-  `34015767486`; `0.1.6` is not promoted.
+- Repair descending seq, sh diagnostics and jqlog terminal newlines. Cover
+  echo/false/jqlog/seq/sleep/true 0.1.5 and build the pure MoonBit exact-version
+  release runner with shared fixtures, effect assertions and failure reporting.
+- Publish compatible sh 0.1.7 after correcting the sh -s positional expectation;
+  final cross-platform and pinned-oracle run 34015767486 passes. Version 0.1.6
+  is not promoted. Timeout stays outside the 47-command published manifest.
 
 ## 2026-09-05
 
-- Delivered P6 JSON CLI modes and the bounded `jqlog` contract.
-- Delivered P7 `make` and `xxd` compatibility slices, including explicit
-  rejection of jobserver parallelism and negative/end-relative seeks.
-- Delivered the maximum pure MoonBit Native/Wasm filesystem subset for
-  `test`, `find`, `ls`, `cp`, `mv`, `chmod`, `ln`, and `touch`.
-- Delivered P9 command-local compatibility closure across text, path, checksum,
-  status, filesystem, and fixed-C-locale byte commands.
-- Expanded the unified manifest to 48 commands and 176 semantic cases; P9
-  contributes 35 cases.
-- Corrected pinned-oracle edge behavior for `cmp`, `tr`, `paste`, and Windows
-  `pwd`.
-- Consolidated architecture decisions into nine canonical ADRs. Stage history
-  was initially archived separately and consolidated here on 2026-10-26.
-- Removed stray `pkg.generated 2.mbti` artifacts; standard
-  `pkg.generated.mbti` files remain authoritative.
-- Verified fresh Native/Wasm artifacts locally and reconciled the complete
-  Ubuntu/macOS/Windows plus pinned-oracle CI matrix in
-  [run 33964497821](https://github.com/moonbit-community/cmd/actions/runs/33964497821).
+- Deliver JSON, make/xxd, filesystem and command-local compatibility subsets
+  with explicit API limits; expand the then-current manifest to 48 commands
+  and 176 semantic cases.
+- Consolidate nine ADRs, correct pinned-oracle edge cases and remove stray
+  duplicate interface artifacts. Historical Native/Wasm three-platform
+  [CI](https://github.com/moonbit-community/cmd/actions/runs/33964497821) passes.
 
 ## 2026-09-04
 
-- Delivered P1 bounded HTTP/HTTPS profiles for `curl` and `wget`.
-- Delivered P2/P3 `grep`, `env`, `sort`, `uniq`, `wc`, `head`, and `tail`
-  extensions under the fixed byte-oriented contract.
-- Delivered P4 bounded `find`/`xargs` workflows with explicit child policy.
-- Delivered P5 restricted POSIX shell grammar without host-shell delegation.
-- Replaced the mixed legacy test systems with the unified `compat`, `oracle`,
-  and `policy` runner.
+- Deliver HTTP, text/environment, find/xargs and shell compatibility slices in
+  pure MoonBit; unify support records, oracle expectations and host policy tests.
 
 ## 2026-09-03
 
-- Added the first measured Wasm command-support record and stabilized shared
-  stream behavior, binary fixtures, and HTTP test cleanup.
-- Added tail follow behavior with the portable descriptor-follow boundary.
+- Establish measured Wasm command support, stream/binary/error cleanup and
+  descriptor-follow tail behavior, retaining explicit support boundaries.
 
 ## 2026-09-02
 
-- Established pinned upstream baselines and the Docker-backed differential
-  oracle harness.
-- Defined the evidence rule that separates native semantics, upstream
-  differential results, and Wasm authorization.
+- Add pinned Docker upstream comparison and distinguish observed compatibility,
+  implementation boundaries and validation scope.
 
 ## 2026-08-26—2026-08-30
 
-- Established the command package repository and migrated read-only,
-  filesystem-mutation, and restricted command batches.
-- Split commands into publishable modules and removed the legacy command tree.
-- Defined the harness-owned policy boundary and retained `timeout` as
-  local-only until portable process-group cancellation exists.
+- Establish publishable command modules, shared core and command inventory.
+  Add initial read/filesystem/restricted commands with host-owned authorization;
+  timeout remains local-only.

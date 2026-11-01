@@ -75,6 +75,7 @@ async fn move_one(
   target : String,
   options : MvOptions,
   rename~ : async (String, String, Bool) -> Unit = rename_move_entry,
+  restore~ : async (String, String) -> Unit = @fsops.restore_backup,
 ) -> MoveResult {
   let source_kind = @fs.kind(source, follow_symlink=false)
   if source_kind == Directory {
@@ -162,18 +163,42 @@ async fn move_one(
   } else {
     None
   }
-  let backup_to_restore = backup
-  errdefer (match backup_to_restore {
-    Some(path) => @fsops.restore_backup(target, path) catch { _ => () }
-    None => ()
+  let mut failure_message = "move did not complete"
+  errdefer (if backup is Some(path) {
+    restore(target, path) catch {
+      recovery => {
+        let recovery_message = match recovery {
+          @fsops.FsOpError(message) => message
+          _ => recovery.to_string()
+        }
+        raise @fsops.FsOpError(
+          "\{failure_message}; cannot restore '\{target}' from backup '\{path}': \{recovery_message}",
+        )
+      }
+    }
   })
-  rename(source, target, backup is None)
-  if @fsops.kind_if_exists(source) is Some(_) {
-    // POSIX rename of hard-link aliases succeeds without removing the source.
-    // Verify the operation's postcondition; never infer identity from contents.
-    raise @fsops.FsOpError(
-      "rename left the source entry in place (possible same file)",
-    )
+  let committed = try {
+    rename(source, target, backup is None)
+    if @fsops.kind_if_exists(source) is Some(_) {
+      // POSIX rename of hard-link aliases succeeds without removing the source.
+      // Verify the operation's postcondition; never infer identity from contents.
+      raise @fsops.FsOpError(
+        "rename left the source entry in place (possible same file)",
+      )
+    }
+    Ok(())
+  } catch {
+    primary => Err(primary)
+  }
+  match committed {
+    Ok(_) => ()
+    Err(primary) => {
+      failure_message = match primary {
+        @fsops.FsOpError(message) => message
+        _ => primary.to_string()
+      }
+      raise primary
+    }
   }
   Moved
 }
@@ -182,7 +207,7 @@ async fn move_one(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("mv 0.2.5\n")
+    @stdio.stdout.write("mv 0.2.6\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
@@ -206,7 +231,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
+      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
     )
     return
   }

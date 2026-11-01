@@ -142,7 +142,7 @@ pub fn to_lossy(s : String) -> String {
 ///|
 /// Returns true if `c` has the Unicode White_Space property (what Rust's
 /// `str::trim` and bstr's `trim` remove).
-pub fn is_white_space(c : Char) -> Bool {
+fn is_white_space(c : Char) -> Bool {
   match c.to_int() {
     0x09..<=0x0D | 0x20 | 0x85 | 0xA0 | 0x1680 | 0x2000..<=0x200A => true
     0x2028 | 0x2029 | 0x202F | 0x205F | 0x3000 => true

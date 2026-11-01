@@ -1,4 +1,96 @@
 ///|
+test "native path expectation templates preserve literal payload and legacy roots" {
+  let template = "${WORK_NATIVE}${PATH_SEPARATOR}sub\nliteral\\tail"
+  assert_eq(
+    expand_native_path_templates(template, "D:\\a\\case/work", true),
+    "D:\\a\\case\\work\\sub\nliteral\\tail",
+  )
+  assert_eq(
+    expand_native_path_templates(template, "/case/work", false),
+    "/case/work/sub\nliteral\\tail",
+  )
+  assert_eq(
+    expand_native_path_templates("${WORK}/unchanged", "D:\\a/case", true),
+    "${WORK}/unchanged",
+  )
+  assert_eq(
+    expand_text("${WORK}/unchanged", "D:\\a/case"),
+    "D:\\a/case/unchanged",
+  )
+}
+
+///|
+test "exact host path contracts reject wrong directories and changed payload" {
+  let root = "/case/work"
+  let directory = {
+    ..sample_case("host-cwd", "env"),
+    expected_stdout_text: Some("${WORK_NATIVE}${PATH_SEPARATOR}sub\n"),
+    expected_stderr_text: Some(""),
+  }
+  let expected = expand_text(directory.expected_stdout_text.unwrap(), root)
+  assert_eq(
+    check_contract(
+      directory,
+      { status: 0, stdout: @utf8.encode(expected), stderr: b"", },
+      root,
+    ),
+    [],
+  )
+  for
+    changed in [
+      expand_text("${WORK_NATIVE}\n", root),
+      expand_text("${WORK_NATIVE}${PATH_SEPARATOR}other\n", root),
+    ] {
+    assert_false(
+      check_contract(
+        directory,
+        { status: 0, stdout: @utf8.encode(changed), stderr: b"", },
+        root,
+      ).is_empty(),
+    )
+  }
+  let control = { ..directory, expected_stdout_text: Some("${WORK_NATIVE}\n"), }
+  assert_false(
+    check_contract(
+      control,
+      { status: 0, stdout: @utf8.encode(expected), stderr: b"", },
+      root,
+    ).is_empty(),
+  )
+  let grep = {
+    ..sample_case("host-grep", "grep"),
+    expected_stdout_text: Some(
+      "tree${PATH_SEPARATOR}keep.txt:literal\\needle\n",
+    ),
+    expected_stderr_text: Some(""),
+  }
+  let output = expand_text(grep.expected_stdout_text.unwrap(), root)
+  assert_eq(
+    check_contract(
+      grep,
+      { status: 0, stdout: @utf8.encode(output), stderr: b"", },
+      root,
+    ),
+    [],
+  )
+  for
+    changed in [
+      output.replace_all(old="keep.txt", new="skip.txt"),
+      output.replace_all(old="literal\\needle", new="literal/needle"),
+      output.replace_all(old="\n", new="\r\n"),
+      output + "extra\n",
+    ] {
+    assert_false(
+      check_contract(
+        grep,
+        { status: 0, stdout: @utf8.encode(changed), stderr: b"", },
+        root,
+      ).is_empty(),
+    )
+  }
+}
+
+///|
 test "hex fixtures preserve arbitrary bytes" {
   assert_eq(decode_hex("00ff4162", "fixture"), b"\x00\xffAb")
   try decode_hex("0", "fixture") catch {

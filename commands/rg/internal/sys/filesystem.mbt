@@ -1,4 +1,7 @@
 ///|
+// Strategy: rg-directory-observations
+
+///|
 pub async fn File::open(path : String) -> File {
   { inner: @fs.open(path, mode=ReadOnly) catch { e => raise io_error(e) }, }
 }
@@ -18,6 +21,12 @@ pub async fn File::read(
 ///|
 pub fn File::close(self : File) -> Unit {
   self.inner.close()
+}
+
+///|
+/// The open handle already carries this observation; no path stat is needed.
+pub fn File::is_regular(self : File) -> Bool {
+  self.inner.kind() is Regular
 }
 
 ///|
@@ -97,12 +106,11 @@ fn file_type(kind : @fs.FileKind) -> FileType {
 
 ///|
 async fn stat(path : String, follow : Bool) -> Metadata {
-  let kind = @fs.kind(path, follow_symlink=follow) catch {
+  let entry = @fswalk.Entry::read(path, follow_symlink=follow) catch {
     e => raise io_error(e)
   }
-  // Size is defined for regular files. Other kinds carry no byte-length claim.
-  let len = if kind is Regular { file_len(path) } else { -1L }
-  { file_type: file_type(kind), len, dev: None, ino: None, }
+  let len = entry.regular_size(ResolvedPath) catch { e => raise io_error(e) }
+  { file_type: file_type(entry.kind), len: len.unwrap_or(-1L), }
 }
 
 ///|
@@ -117,14 +125,31 @@ pub async fn symlink_metadata(path : String) -> Metadata {
 
 ///|
 pub async fn read_dir(path : String) -> Array[DirEntry] {
-  let dir = @fs.opendir(path) catch { e => raise io_error(e) }
-  defer dir.close()
-  let entries : Array[DirEntry] = []
-  while (dir.next(include_hidden=true) catch { e => raise io_error(e) })
-        is Some(entry) {
-    entries.push({ name: entry.name, file_type: None, })
+  try {
+    let dir = @fs.opendir(path)
+    defer dir.close()
+    let entries : Array[DirEntry] = []
+    while dir.next(include_hidden=true) is Some(entry) {
+      entries.push({ name: entry.name, is_dir: entry.is_dir, })
+    }
+    entries
+  } catch {
+    e => raise io_error(e)
   }
-  entries
+}
+
+///|
+/// Reuse the directory observation without asking for size or a resolved path.
+/// Public DirectoryEntry exposes no full kind or inode, so unknown kinds are
+/// queried without following links and identities remain unavailable.
+pub async fn DirEntry::file_type(self : DirEntry, path : String) -> FileType {
+  if self.is_dir {
+    Dir
+  } else {
+    file_type(@fs.kind(path, follow_symlink=false)) catch {
+      e => raise io_error(e)
+    }
+  }
 }
 
 ///|

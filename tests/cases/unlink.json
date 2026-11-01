@@ -2,22 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "p0-unlink-help",
-      "command": "unlink",
-      "args": [
-        "--help"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "expected_stdout_contains": "Usage: unlink",
-      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary.",
-      "expected_stderr_text": "",
-      "comparison": "contract",
-      "normalizations": []
-    },
-    {
       "id": "repair-unlink-one",
       "command": "unlink",
       "args": [
@@ -182,7 +166,12 @@
       ],
       "source_version": "workspace cli/unlink@0.1.5 metadata contract",
       "expected_stdout_text": "Usage: unlink FILE\nRemove exactly one non-directory name.\n      --help     display this help and exit\n      --version  display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p0-unlink-help"
+      ],
+      "expected_stdout_contains": "Usage: unlink",
+      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary."
     },
     {
       "id": "release-metadata-unlink-version",

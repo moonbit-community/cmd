@@ -11,17 +11,17 @@ test "adaptive construction is lazy cached and bounded" {
       })
     })
     let set = LiteralSet::new(patterns).unwrap()
-    assert_true(!set.automaton_attempted)
+    assert_true(set.plan is Shift(_, Uninitialized))
     assert_true(!set.matches(Bytes::make(8192, b'Z')))
-    assert_true(!set.automaton_attempted)
+    assert_true(set.plan is Shift(_, Uninitialized))
     assert_true(!set.matches(Bytes::make(8192, b'a')))
-    assert_true(set.automaton_attempted)
-    assert_eq(set.automaton is Some(_), length == 32)
+    assert_false(set.plan is Shift(_, Uninitialized))
+    assert_eq(set.plan is Shift(_, Ready(_)), length == 32)
     // A cached automaton does not replace the sparse-input shift plan.
-    assert_true(set.shift is Some(_))
+    assert_true(set.plan is Shift(_, _))
     assert_true(!set.matches(Bytes::make(8192, b'Z')))
     assert_true(set.matches(patterns[0]))
     assert_true(!set.matches(Bytes::make(8192, b'a')))
-    assert_eq(set.automaton is Some(_), length == 32)
+    assert_eq(set.plan is Shift(_, Ready(_)), length == 32)
   }
 }

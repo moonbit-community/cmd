@@ -43,16 +43,19 @@ async fn paste_serial(
   scanner : @stream.LineScanner,
   delimiters : Array[Bytes],
   record_delimiter : Byte,
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
+  let output = @stream.BlockWriter::new(writer)
+  defer output.flush()
   let mut index = 0
   while scanner.next() is Some(line) {
     if index > 0 {
-      @stdio.stdout.write(delimiters[(index - 1) % delimiters.length()])
+      output.write(delimiters[(index - 1) % delimiters.length()])
     }
-    @stdio.stdout.write(line.data)
+    output.write(line.data)
     index += 1
   }
-  @stdio.stdout.write(Bytes::from_array([record_delimiter]))
+  output.write(Bytes::from_array([record_delimiter]))
 }
 
 ///|
@@ -60,7 +63,10 @@ async fn paste_parallel(
   scanners : Array[@stream.LineScanner],
   delimiters : Array[Bytes],
   record_delimiter : Byte,
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
+  let output = @stream.BlockWriter::new(writer)
+  defer output.flush()
   for ;; {
     let row : Array[Bytes?] = []
     let mut any = false
@@ -78,13 +84,13 @@ async fn paste_parallel(
     }
     for index, value in row {
       if index > 0 {
-        @stdio.stdout.write(delimiters[(index - 1) % delimiters.length()])
+        output.write(delimiters[(index - 1) % delimiters.length()])
       }
       if value is Some(data) {
-        @stdio.stdout.write(data)
+        output.write(data)
       }
     }
-    @stdio.stdout.write(Bytes::from_array([record_delimiter]))
+    output.write(Bytes::from_array([record_delimiter]))
   }
 }
 
@@ -92,7 +98,7 @@ async fn paste_parallel(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("paste 0.2.3\n")
+    @stdio.stdout.write("paste 0.2.4\n")
     return
   }
   let args = @env.args()[1:]

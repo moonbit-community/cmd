@@ -1,11 +1,4 @@
 ///|
-async test "wasm: file system" {
-  let root = @fs.tmpdir(prefix="rg-original-wasm-fs-")
-  defer @fs.rmdir(root, recursive=true)
-  fs_roundtrip(root)
-}
-
-///|
 async test "wasm: unsupported operations" {
   // Removal and child processes are now public Wasm operations. Detection and
   // readlink remain explicit boundaries instead of the old fabricated false.

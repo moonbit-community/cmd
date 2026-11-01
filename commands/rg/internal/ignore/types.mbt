@@ -128,7 +128,7 @@ pub impl Debug for Types with fn to_repr(self) {
 ///|
 /// Creates a new file type matcher that never matches any path and
 /// contains no file type definitions.
-pub fn Types::empty() -> Types {
+fn Types::empty() -> Types {
   {
     defs: [],
     selections: [],
@@ -141,14 +141,8 @@ pub fn Types::empty() -> Types {
 
 ///|
 /// Returns true if and only if this matcher has zero selections.
-pub fn Types::is_empty(self : Types) -> Bool {
+fn Types::is_empty(self : Types) -> Bool {
   self.selections.is_empty()
-}
-
-///|
-/// Returns the number of selections used in this matcher.
-pub fn Types::len(self : Types) -> Int32 {
-  self.selections.length()
 }
 
 ///|

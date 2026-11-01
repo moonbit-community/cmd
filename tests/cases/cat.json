@@ -12,21 +12,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "phase3-cat-formatting",
-      "command": "cat",
-      "args": [
-        "-b",
-        "-s",
-        "-A"
-      ],
-      "stdin_hex": "610a0a0a620980",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "00ff016f6b"
     },
     {
       "id": "p9-cat-unbuffered-binary",
@@ -38,7 +28,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "00ff016f6b"
     },
     {
       "id": "cat-fixed-mtime-hardlink",
@@ -72,7 +66,28 @@
       "host_platforms": [
         "posix"
       ],
-      "source_version": "GNU coreutils 9.11"
+      "source_version": "GNU coreutils 9.11",
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "data\ndata\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "data\n",
+          "mtime": "1577836800:0",
+          "unchanged": true
+        },
+        {
+          "path": "alias",
+          "kind": "file",
+          "content_text": "data\n",
+          "same_identity_as": "source",
+          "mtime": "1577836800:0",
+          "unchanged": true
+        }
+      ]
     },
     {
       "id": "compat-text-line-33",
@@ -90,7 +105,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_hex": "610a0a0a620980",
       "expected_stdout_text": "     1\ta$\n$\n     2\tb^IM-^@",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "phase3-cat-formatting"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-675",
@@ -185,7 +204,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cat@0.2.3 metadata contract",
+      "source_version": "workspace cli/cat@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: cat [OPTION]... [FILE]...\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nConcatenate FILEs (or stdin) to standard output, byte-transparently:\nno decoding, no newline normalization. Use '-' or no file for stdin.\n\n  -n, --number             Number all output lines.\n  -b, --number-nonblank    Number nonempty output lines (overrides -n).\n  -s, --squeeze-blank      Suppress repeated empty output lines.\n  -T, --show-tabs          Display TAB as ^I.\n  -E, --show-ends          Display '$' at the end of each line.\n  -v, --show-nonprinting   Display nonprinting bytes visibly.\n  -A, --show-all           Equivalent to -vET.\n  -e                       Equivalent to -vE.\n  -t                       Equivalent to -vT.\n  -u, --unbuffered         Accepted for GNU compatibility.\n",
       "expected_stderr_text": ""
     },
@@ -204,9 +223,102 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cat@0.2.3 metadata contract",
-      "expected_stdout_text": "cat 0.2.3\n",
+      "source_version": "workspace cli/cat@0.2.4 metadata contract",
+      "expected_stdout_text": "cat 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-cat-number-empty-record",
+      "command": "cat",
+      "args": [
+        "--number"
+      ],
+      "stdin_text": "a\n\nb\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "     1\ta\n     2\t\n     3\tb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "number"
+      ],
+      "source_version": "Documented number-all-records contract; independent literal output"
+    },
+    {
+      "id": "proof-cat-nonblank-overrides-number-first",
+      "command": "cat",
+      "args": [
+        "-b",
+        "-n"
+      ],
+      "stdin_text": "a\n\nb\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "     1\ta\n\n     2\tb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "number",
+        "number-nonblank",
+        "precedence"
+      ],
+      "source_version": "Documented -b precedence over -n; independent literal output"
+    },
+    {
+      "id": "proof-cat-nonblank-overrides-number-last",
+      "command": "cat",
+      "args": [
+        "-n",
+        "-b"
+      ],
+      "stdin_text": "a\n\nb\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "     1\ta\n\n     2\tb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "number",
+        "number-nonblank",
+        "precedence"
+      ],
+      "source_version": "Documented -b precedence over -n; independent literal output"
+    },
+    {
+      "id": "proof-cat-unicode-path-binary-tail",
+      "command": "cat",
+      "args": [
+        "dir/数据 file.txt"
+      ],
+      "stdin_text": "different stdin\n",
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/数据 file.txt",
+          "content_hex": "610d0a0062ff"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "610d0a0062ff",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "source_version": "Independent copy identity on a named Unicode/space pathname, CRLF, NUL, invalidUTF8 and unterminated tail",
+      "coverage": [
+        "named-path",
+        "byte-preservation",
+        "no-final-lf"
+      ]
     }
   ]
 }

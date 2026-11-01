@@ -2,8 +2,10 @@
 fn workspace_network_executor(
   root : String,
   wasm : Bool,
+  proof? : @testkit.ScenarioProof,
 ) -> @network_scenarios.Executor {
   {
+    proof,
     invoke: invocation => {
       let program = @testkit.command_program()
       let args = @testkit.command_args(
@@ -40,10 +42,11 @@ async fn network_transfer_scenario(
   wasm : Bool,
   work : String,
   oracle_image? : String,
+  proof? : @testkit.ScenarioProof,
 ) -> Unit {
   @network_scenarios.run(
     "network-transfer-boundaries",
-    workspace_network_executor(root, wasm),
+    workspace_network_executor(root, wasm, proof?),
     work,
     oracle_image?,
   )
@@ -55,10 +58,11 @@ async fn network_cli_scenario(
   wasm : Bool,
   work : String,
   oracle_image? : String,
+  proof? : @testkit.ScenarioProof,
 ) -> Unit {
   @network_scenarios.run(
     "network-auth-cookie",
-    workspace_network_executor(root, wasm),
+    workspace_network_executor(root, wasm, proof?),
     work,
     oracle_image?,
   )

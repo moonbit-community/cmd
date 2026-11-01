@@ -1,6 +1,6 @@
 name = "cli/fmt"
 
-version = "0.1.3"
+version = "0.1.4"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "fmt command for MoonX."
 
 import {
-  "cli/core@0.8.2",
+  "cli/core@0.9.0",
   "moonbitlang/async@0.22.5",
   "moonbitlang/x@0.5.5",
 }

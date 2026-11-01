@@ -124,11 +124,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
   } else {
     Some(parsed.operands[0])
   }
-  if patches.length() > 1 &&
-    (
-      explicit is Some(_) ||
-      (parsed.last_value("output") is Some(output) && output != "-")
-    ) {
+  if patches.length() > 1 && explicit is Some(_) {
     raise PatchError(
       "an explicit target or output requires a single file patch",
     )

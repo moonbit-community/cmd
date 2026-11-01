@@ -1,4 +1,5 @@
 ///|
+// Strategy: grep-summary
 fn Matcher::may_match_block(
   self : Matcher,
   data : BytesView,
@@ -33,9 +34,10 @@ fn GrepInput::skip_nonmatching(
   guard remaining.rev_find(self.delimiter) is Some(last) else { return }
   let complete = remaining[:last + 1]
   if !matcher.may_match_block(complete, ignore_case) {
-    self.number += @stream.count_byte(complete, self.delimiter[0]).to_int64()
-    self.offset += complete.length().to_int64()
-    self.position += complete.length()
+    self.consume_records(
+      self.position + complete.length(),
+      @stream.count_byte(complete, self.delimiter[0]).to_int64(),
+    )
   }
 }
 
@@ -48,6 +50,20 @@ fn GrepInput::count_buffered(
   ignore_case : Bool,
   invert : Bool,
 ) -> UInt64 {
+  if matcher is Regular([pattern], false, false) {
+    let remaining = self.bytes[self.position:]
+    if remaining.rev_find(self.delimiter) is Some(last) {
+      let complete = remaining[:last + 1]
+      if pattern.count_records(complete, self.delimiter[0])
+        is Some((matched, records)) {
+        self.consume_records(
+          self.position + complete.length(),
+          records.to_int64(),
+        )
+        return (if invert { records - matched } else { matched }).to_uint64()
+      }
+    }
+  }
   if !ignore_case &&
     matcher is ManyFixed(set) &&
     !set.contains_byte(self.delimiter[0]) {
@@ -58,21 +74,19 @@ fn GrepInput::count_buffered(
     literal.find(self.delimiter) is None {
     return self.count_literal(literal, invert)
   }
-  let initial = self.position
+  let mut position = self.position
+  let mut records = 0L
   let mut count = 0UL
-  while self.bytes[self.position:].find(self.delimiter) is Some(relative) {
-    let end = self.position + relative
-    let matched = matcher.matches_record(
-      self.bytes[self.position:end],
-      ignore_case,
-    )
+  while self.bytes[position:].find(self.delimiter) is Some(relative) {
+    let end = position + relative
+    let matched = matcher.matches_record(self.bytes[position:end], ignore_case)
     if matched != invert {
       count += 1UL
     }
-    self.position = end + 1
-    self.number += 1L
+    position = end + 1
+    records += 1L
   }
-  self.offset += (self.position - initial).to_int64()
+  self.consume_records(position, records)
   count
 }
 
@@ -102,9 +116,7 @@ fn GrepInput::count_literal(
       position = end + 1
     }
   }
-  self.position += complete.length()
-  self.offset += complete.length().to_int64()
-  self.number += records.to_int64()
+  self.consume_records(self.position + complete.length(), records.to_int64())
   (if invert { records - matched } else { matched }).to_uint64()
 }
 
@@ -127,8 +139,6 @@ fn GrepInput::count_literals(
     position = end + complete[end:].find(self.delimiter).unwrap() + 1
     matched += 1
   }
-  self.position += complete.length()
-  self.offset += complete.length().to_int64()
-  self.number += records.to_int64()
+  self.consume_records(self.position + complete.length(), records.to_int64())
   (if invert { records - matched } else { matched }).to_uint64()
 }

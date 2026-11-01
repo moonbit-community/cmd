@@ -113,12 +113,24 @@ priv struct Context {
   mut errexit : Bool
   mut nounset : Bool
   mut return_status : Int32?
-  mut break_loop : Bool
-  mut continue_loop : Bool
+  mut loop_control : LoopControl?
   mut loop_depth : Int32
   mut call_depth : Int32
   mut substitution_status : Int32?
   mut expansion_failed : Bool
+}
+
+///|
+priv enum LoopControl {
+  BreakLoop
+  ContinueLoop
+}
+
+///|
+fn Context::take_loop_break(self : Context) -> Bool {
+  let should_break = self.loop_control is Some(BreakLoop)
+  self.loop_control = None
+  should_break
 }
 
 ///|
@@ -130,4 +142,17 @@ priv struct Prepared {
   stdin_data : String?
   stdout : (String, Bool)?
   stderr : (String, Bool)?
+}
+
+///|
+priv suberror ParseIssue {
+  IncompleteSyntax(String)
+  InvalidSyntax(String)
+}
+
+///|
+fn ParseIssue::shell_error(self : ParseIssue) -> ShellError {
+  match self {
+    IncompleteSyntax(message) | InvalidSyntax(message) => ShellError(message)
+  }
 }

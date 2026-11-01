@@ -14,7 +14,7 @@ async fn check_catalog(
   require_binaries : Bool,
   failures : Array[String],
 ) -> Unit {
-  let catalog = @cli.command_catalog()
+  let catalog = @contracts.command_catalog()
   if catalog.length() != 80 {
     compat_fail(
       "catalog: expected 80 commands, got \{catalog.length()}",

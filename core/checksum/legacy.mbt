@@ -92,12 +92,3 @@ fn LegacyState::finalize(self : LegacyState) -> Bytes {
   let size = if self.algorithm is (Bsd | Sysv) { 2 } else { 4 }
   Bytes::makei(size, i => (value >> ((size - i - 1) * 8)).to_byte())
 }
-
-///|
-fn legacy_number(bytes : Bytes) -> UInt32 {
-  let mut value = 0U
-  for byte in bytes {
-    value = (value << 8) | byte.to_uint()
-  }
-  value
-}

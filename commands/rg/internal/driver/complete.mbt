@@ -73,7 +73,7 @@ let bash_template_case_choices : String =
   #|
 
 ///|
-pub fn generate_complete_bash() -> String {
+fn generate_complete_bash() -> String {
   let opts = StringBuilder()
   for flag in flag_defs {
     opts.write_string("--\{flag.name_long} ")
@@ -113,7 +113,7 @@ pub fn generate_complete_bash() -> String {
 }
 
 ///|
-pub fn generate_complete_fish() -> String {
+fn generate_complete_fish() -> String {
   let out = StringBuilder()
   out.write_string(complete_fish_prelude)
   out.write_char('\n')
@@ -164,7 +164,7 @@ pub fn generate_complete_fish() -> String {
 }
 
 ///|
-pub fn generate_complete_zsh() -> String {
+fn generate_complete_zsh() -> String {
   let aliases = hyperlink_alias_descriptions
     .map(a => "    \{a.0}:\"\{a.1}\"")
     .join("\n")
@@ -209,7 +209,7 @@ let powershell_template : String =
   #|
 
 ///|
-pub fn generate_complete_powershell() -> String {
+fn generate_complete_powershell() -> String {
   let flags = StringBuilder()
   let template = (dash_name : String, name : String, doc : String) => {
     "[CompletionResult]::new('\{dash_name}', '\{name}', [CompletionResultType]::ParameterName, '\{doc}')"

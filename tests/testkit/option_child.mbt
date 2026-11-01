@@ -21,6 +21,8 @@ pub fn option_child_required(fixture : Case) -> Bool {
   fixture.args.any(arg => {
     arg.contains("${PRINTF_CHILD}") ||
     arg.contains("${PRINTENV_CHILD}") ||
+    arg.contains("${FALSE_CHILD}") ||
+    arg.contains("${PWD_CHILD}") ||
     arg.contains("${RG_PREPROCESSOR}")
   })
 }
@@ -41,6 +43,15 @@ fn option_child_source(kind : String) -> String {
 ///|
 pub async fn run_option_child(args : ArrayView[String]) -> Int32 {
   match args {
+    ["false", "--emit", marker] => {
+      @stdio.stdout.write(marker)
+      1
+    }
+    ["false", ..] => 1
+    ["pwd", ..] => {
+      @stdio.stdout.write(@fs.realpath(".") + "\n")
+      0
+    }
     ["tee-modes", program, work] => {
       check_tee_modes(program, [], work)
       0

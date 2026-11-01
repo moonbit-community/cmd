@@ -68,7 +68,14 @@ async test "workspace dependency manifests keep one async baseline and the selec
   assert_eq(dependency_manifest_field(core, "name"), "cli/core")
   let candidate_core_coordinate = "cli/core@" +
     dependency_manifest_field(core, "version")
-  let selected_core_coordinate = "cli/core@0.8.0"
+  guard @json.parse(
+      @fs.read_file(root + "tests/release_runner/current/latest.json").text(),
+    )
+    is { "core_version": String(published_core), .. } else {
+    fail("published manifest must name its core coordinate")
+  }
+  let published_core_coordinate = "cli/core@" + published_core
+  let retained_core_coordinates = ["cli/core@0.8.2", "cli/core@0.9.0"]
   let commands = command_names(root + "commands")
   assert_eq(commands.length(), 80)
   let independent = ["echo", "false", "sleep", "true"]
@@ -107,12 +114,15 @@ async test "workspace dependency manifests keep one async baseline and the selec
       // Workspace overrides may use a newer local core without changing the
       // selected released dependency. A candidate version does not upgrade pins.
       if directory == "tests" {
-        assert_eq(core_imports, [selected_core_coordinate])
+        assert_eq(core_imports, [candidate_core_coordinate])
+      } else if directory == "commands/timeout" {
+        assert_eq(core_imports, ["cli/core@0.7.0"])
       } else {
         assert_true(
-          [
-            "cli/core@0.7.0", selected_core_coordinate, candidate_core_coordinate,
-          ].contains(core_imports[0]),
+          retained_core_coordinates.contains(core_imports[0]) ||
+          [published_core_coordinate, candidate_core_coordinate].contains(
+            core_imports[0],
+          ),
         )
       }
     } else {

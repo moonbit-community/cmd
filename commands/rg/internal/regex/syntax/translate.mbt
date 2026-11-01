@@ -75,7 +75,7 @@ pub(all) struct TranslatorConfig {
 }
 
 ///|
-pub fn TranslatorConfig::default() -> TranslatorConfig {
+fn TranslatorConfig::default() -> TranslatorConfig {
   {
     utf8: true,
     line_terminator: '\n',

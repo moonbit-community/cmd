@@ -28,48 +28,12 @@ fn help_message() -> String {
 }
 
 ///|
-priv struct CommOrder {
-  mut previous : Bytes?
-  mut descending : Bool
-  mut warned : Bool
-}
-
-///|
-async fn next_checked(
-  scanner : @stream.LineScanner,
-  state : CommOrder,
-  name : String,
-  order_mode : Int32,
-  unpairable : Ref[Bool],
-) -> @stream.Line? {
-  let line = scanner.next()
-  if line is Some(value) {
-    state.descending = match state.previous {
-      Some(old) => old[:].lexical_compare(value.data[:]) > 0
-      None => false
-    }
-    state.previous = Some(value.data)
-  }
-  // At EOF GNU checks the final pair again after observing an unpaired row.
-  if !state.warned &&
-    state.descending &&
-    (order_mode > 0 || (order_mode == 0 && unpairable.val)) {
-    if order_mode > 0 {
-      raise CommError("\{name} is not in sorted order")
-    }
-    @stdio.stderr.write("comm: \{name} is not in sorted order\n")
-    state.warned = true
-  }
-  line
-}
-
-///|
-async fn write_line(prefix : String, line : Bytes, delimiter : Byte) -> Unit {
-  if prefix != "" {
-    @stdio.stdout.write(prefix)
-  }
-  @stdio.stdout.write(line)
-  @stdio.stdout.write(Bytes::from_array([delimiter]))
+fn comm_record(prefix : Bytes, line : Bytes, delimiter : Byte) -> Bytes {
+  let output = @buffer.Buffer(size_hint=prefix.length() + line.length() + 1)
+  output.write_bytes(prefix)
+  output.write_bytes(line)
+  output.write_byte(delimiter)
+  output.to_bytes()
 }
 
 ///|
@@ -83,73 +47,63 @@ async fn merge_readers(
   record_delimiter : Byte,
   column_delimiter : String,
   total : Bool,
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
-  let scanner1 = @stream.LineScanner::new(reader1, delimiter=record_delimiter)
-  let scanner2 = @stream.LineScanner::new(reader2, delimiter=record_delimiter)
-  let state1 : CommOrder = { previous: None, descending: false, warned: false, }
-  let state2 : CommOrder = { previous: None, descending: false, warned: false, }
-  let unpairable = Ref(false)
-  let mut line1 = next_checked(
-    scanner1, state1, "file 1", order_mode, unpairable,
+  let left = CommInput::new(reader1, record_delimiter)
+  let right = CommInput::new(reader2, record_delimiter)
+  let prefix2 = if hide1 { b"" } else { @utf8.encode(column_delimiter) }
+  let prefix3 = @utf8.encode(
+    (if hide1 { "" } else { column_delimiter }) +
+    (if hide2 { "" } else { column_delimiter }),
   )
-  let mut line2 = next_checked(
-    scanner2, state2, "file 2", order_mode, unpairable,
-  )
-  let col2_prefix = if hide1 { "" } else { column_delimiter }
-  let col3_prefix = (if hide1 { "" } else { column_delimiter }) +
-    (if hide2 { "" } else { column_delimiter })
-  let mut count1 : Int64 = 0
-  let mut count2 : Int64 = 0
-  let mut count3 : Int64 = 0
-  while line1 is Some(left) && line2 is Some(right) {
-    let order = left.data[:].lexical_compare(right.data[:])
-    if order < 0 {
-      unpairable.val = true
-      count1 += 1
-      if !hide1 {
-        write_line("", left.data, record_delimiter)
-      }
-      line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
-    } else if order > 0 {
-      unpairable.val = true
-      count2 += 1
-      if !hide2 {
-        write_line(col2_prefix, right.data, record_delimiter)
-      }
-      line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
-    } else {
-      count3 += 1
-      if !hide3 {
-        write_line(col3_prefix, left.data, record_delimiter)
-      }
-      line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
-      line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
-    }
+  let merger : CommMerge = {
+    left,
+    right,
+    hide1,
+    hide2,
+    hide3,
+    order_mode,
+    record_delimiter,
+    prefix2,
+    prefix3,
+    unpairable: false,
+    count1: 0,
+    count2: 0,
+    count3: 0,
+    output: @buffer.Buffer(size_hint=65536),
   }
-  while line1 is Some(left) {
-    unpairable.val = true
-    count1 += 1
-    if !hide1 {
-      write_line("", left.data, record_delimiter)
+  defer @stream.flush_buffer(writer, merger.output)
+  for ;; {
+    let action = merger.pump()
+    @stream.flush_buffer(writer, merger.output)
+    match action {
+      Read(input) => {
+        input.batch = input.records.next_batch()
+        input.eof = input.batch is None
+      }
+      Warn(input, name) => {
+        if order_mode > 0 {
+          raise CommError("\{name} is not in sorted order")
+        }
+        @stdio.stderr.write("comm: \{name} is not in sorted order\n")
+        input.warned = true
+      }
+      Flush => ()
+      Done => break
     }
-    line1 = next_checked(scanner1, state1, "file 1", order_mode, unpairable)
-  }
-  while line2 is Some(right) {
-    unpairable.val = true
-    count2 += 1
-    if !hide2 {
-      write_line(col2_prefix, right.data, record_delimiter)
-    }
-    line2 = next_checked(scanner2, state2, "file 2", order_mode, unpairable)
   }
   if total {
-    write_line(
-      "\{count1}\{column_delimiter}\{count2}\{column_delimiter}\{count3}\{column_delimiter}",
-      b"total",
-      record_delimiter,
+    writer.write(
+      comm_record(
+        @utf8.encode(
+          "\{merger.count1}\{column_delimiter}\{merger.count2}\{column_delimiter}\{merger.count3}\{column_delimiter}",
+        ),
+        b"total",
+        record_delimiter,
+      ),
     )
   }
-  if state1.warned || state2.warned {
+  if left.warned || right.warned {
     raise CommError("input is not in sorted order")
   }
 }
@@ -158,7 +112,7 @@ async fn merge_readers(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("comm 0.2.3\n")
+    @stdio.stdout.write("comm 0.2.5\n")
     return
   }
   let args = @env.args()[1:]

@@ -59,7 +59,7 @@ pub fn JsonWriter::end_object(self : JsonWriter) -> Unit {
 
 ///|
 /// Begins an array (`[`).
-pub fn JsonWriter::begin_array(self : JsonWriter) -> Unit {
+fn JsonWriter::begin_array(self : JsonWriter) -> Unit {
   if self.pretty {
     self.current_indent += 1
     self.has_value = false
@@ -70,7 +70,7 @@ pub fn JsonWriter::begin_array(self : JsonWriter) -> Unit {
 
 ///|
 /// Ends an array (`]`).
-pub fn JsonWriter::end_array(self : JsonWriter) -> Unit {
+fn JsonWriter::end_array(self : JsonWriter) -> Unit {
   self.firsts.pop() |> ignore
   if self.pretty {
     self.current_indent -= 1
@@ -107,7 +107,7 @@ pub fn JsonWriter::key(self : JsonWriter, name : String) -> Unit {
 
 ///|
 /// Must be called after each object value or array element is complete.
-pub fn JsonWriter::end_value(self : JsonWriter) -> Unit {
+fn JsonWriter::end_value(self : JsonWriter) -> Unit {
   if self.pretty {
     self.has_value = true
   }
@@ -115,7 +115,7 @@ pub fn JsonWriter::end_value(self : JsonWriter) -> Unit {
 
 ///|
 /// Begins an array element.
-pub fn JsonWriter::element(self : JsonWriter) -> Unit {
+fn JsonWriter::element(self : JsonWriter) -> Unit {
   let first = self.take_first()
   if self.pretty {
     self.raw(if first { "\n" } else { ",\n" })
@@ -127,14 +127,14 @@ pub fn JsonWriter::element(self : JsonWriter) -> Unit {
 
 ///|
 /// Writes `null`.
-pub fn JsonWriter::null(self : JsonWriter) -> Unit {
+fn JsonWriter::null(self : JsonWriter) -> Unit {
   self.raw("null")
 }
 
 ///|
 /// Writes an unsigned integer (given as an `Int64` that must be
 /// non-negative, or a `UInt64`).
-pub fn JsonWriter::uint64(self : JsonWriter, n : UInt64) -> Unit {
+fn JsonWriter::uint64(self : JsonWriter, n : UInt64) -> Unit {
   self.raw(n.to_string())
 }
 
@@ -149,7 +149,7 @@ pub fn JsonWriter::write_escaped_string(self : JsonWriter, s : String) -> Unit {
 ///|
 /// Writes `buf[start:end]`, which must be valid UTF-8, as an escaped JSON
 /// string.
-pub fn JsonWriter::write_escaped_utf8(
+fn JsonWriter::write_escaped_utf8(
   self : JsonWriter,
   buf : FixedArray[Byte],
   start : Int32,

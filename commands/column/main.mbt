@@ -1,20 +1,19 @@
 ///|
-fn split_fields(line : String, separator : String?) -> Array[String] {
-  let fields : Array[String] = []
-  let delimiters = separator.unwrap_or(" \t")
-  let mut start = 0
-  for index, char in line {
-    if delimiters.contains(char.to_string()) {
-      if separator is Some(_) || index > start {
-        fields.push(line[start:index].to_owned())
-      }
-      start = index + 1
+priv struct FieldSeparator {
+  members : FixedArray[Bool]
+  preserve_empty : Bool
+}
+
+///|
+fn FieldSeparator::new(separator : String?) -> FieldSeparator {
+  let members = FixedArray::make(128, false)
+  // The command rejects non-ASCII input separators before creating a snapshot.
+  for char in separator.unwrap_or(" \t") {
+    if char.to_int() < 128 {
+      members[char.to_int()] = true
     }
   }
-  if separator is Some(_) || start < line.length() {
-    fields.push(line[start:].to_owned())
-  }
-  fields
+  { members, preserve_empty: separator is Some(_), }
 }
 
 ///|
@@ -44,12 +43,20 @@ fn display_width(field : String, table~ : Bool = false) -> Int32 {
 }
 
 ///|
-fn input_line(data : Bytes) -> String? {
-  let line = StringBuilder()
-  for byte in data {
-    if byte == 0 {
-      break
+fn input_line(data : BytesView) -> String? {
+  let end = data.find(b"\x00").unwrap_or(data.length())
+  let prefix = data[:end]
+  if input_is_ascii(prefix) {
+    if prefix
+      .iter()
+      .all(byte => byte is (b' ' | b'\t' | b'\r' | b'\n' | b'\x0b' | b'\x0c')) {
+      return None
     }
+    // Every byte is ASCII, so decoding cannot replace or combine input bytes.
+    return Some(@utf8.decode_lossy(prefix))
+  }
+  let line = StringBuilder()
+  for byte in prefix {
     if byte >= 128 {
       let hex = "0123456789abcdef"
       line.write_string("\\x")
@@ -67,6 +74,23 @@ fn input_line(data : Bytes) -> String? {
   } else {
     Some(value)
   }
+}
+
+///|
+fn input_is_ascii(data : BytesView) -> Bool {
+  let mut offset = 0
+  while data.length() - offset >= 8 {
+    if (data.unsafe_read_uint64_le(offset) & 0x8080808080808080UL) != 0UL {
+      return false
+    }
+    offset += 8
+  }
+  for byte in data[offset:] {
+    if byte >= 128 {
+      return false
+    }
+  }
+  true
 }
 
 ///|
@@ -91,7 +115,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("column 0.1.5\n")
+    @stdio.stdout.write("column 0.1.6\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [

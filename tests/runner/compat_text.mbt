@@ -117,27 +117,50 @@ async fn run_text_process_composition_cases(
 }
 
 ///|
+/// Check both sides of the lifecycle transition: still running before cancel,
+/// then a reaped hard-cancel outcome rather than ordinary successful exit.
+async fn observe_sleep_cancellation(
+  program : String,
+  args : Array[String],
+) -> Bool {
+  @async.with_task_group <| group => {
+    let child = @process.spawn(
+      group,
+      program,
+      args,
+      cancel_handler=@process.hard_cancel(),
+      no_console_window=true,
+      no_wait=true,
+    )
+    @async.sleep(100)
+    let pending_before_cancel = child.try_wait() is None
+    child.cancel()
+    let terminal : Ref[Int32?] = Ref(None)
+    wait_for_direct_child("sleep cancellation", () => {
+      let status = child.wait()
+      terminal.val = Some(status)
+      status
+    })
+    guard pending_before_cancel && terminal.val is Some(status) else {
+      return false
+    }
+    child.try_wait() == Some(status) &&
+    (if @async.platform is Windows { status != 0 } else { status == -9 })
+  }
+}
+
+///|
 /// Cancellation is a lifecycle interaction, not a one-shot command contract.
 async fn run_sleep_cancel_case(
   bin_root : String,
   failures : Array[String],
 ) -> Unit {
-  let sleep_cancelled = @async.with_task_group <| group => {
-    let program = @testkit.command_program()
-    let child = @process.spawn(
-      group,
-      program,
-      @testkit.command_args(bin_root, "sleep", ["60"]),
-      cancel_handler=@process.hard_cancel(),
-      no_wait=true,
-    )
-    @async.sleep(20)
-    child.cancel()
-    wait_for_direct_child("sleep cancellation", () => child.wait())
-    true
-  }
+  let sleep_cancelled = observe_sleep_cancellation(
+    @testkit.command_program(),
+    @testkit.command_args(bin_root, "sleep", ["60"]),
+  )
   record_result(
-    sleep_cancelled, "sleep: hard-cancel signal path did not terminate the child",
+    sleep_cancelled, "sleep: expected a pending child followed by a reaped hard-cancel status",
     failures,
   )
 }

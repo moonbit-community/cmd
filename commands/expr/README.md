@@ -3,7 +3,7 @@
 Evaluate integer and string expressions for MoonX.
 
 ```sh
-moonx cli/expr@0.2.1 EXPRESSION
+moonx cli/expr@0.2.2 EXPRESSION
 ```
 
 ## Supported scope
@@ -27,8 +27,8 @@ Pass operators and operands separately. Supports arbitrary-size integer arithmet
 ## Examples
 
 ```sh
-moonx cli/expr@0.2.1 2 + 3
-moonx cli/expr@0.2.1 length example
+moonx cli/expr@0.2.2 2 + 3
+moonx cli/expr@0.2.2 length example
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

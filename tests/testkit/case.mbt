@@ -9,6 +9,7 @@ pub(all) struct FixtureFile {
   mode : Int32?
   atime : String?
   mtime : String?
+  readable : Bool?
 } derive(FromJson, ToJson, Debug)
 
 ///|
@@ -28,6 +29,13 @@ pub(all) struct ExpectedFile {
   mode : Int32?
   target : String?
   same_identity_as : String?
+  unchanged : Bool?
+  mtime : String?
+  atime : String?
+  same_mtime_as : String?
+  different_identity_as : String?
+  same_mode_as : String?
+  mode_mask : Int32?
 } derive(FromJson, ToJson, Debug)
 
 ///|
@@ -68,6 +76,8 @@ pub(all) struct Case {
   expected_stdout_contains_all : Array[String]?
   expected_stderr_contains_all : Array[String]?
   stdout_order : String?
+  expected_stdout_json : Json?
+  stdout_json_lines : Bool?
 } derive(FromJson, ToJson, Debug)
 
 ///|

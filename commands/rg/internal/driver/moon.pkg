@@ -1,11 +1,16 @@
 import {
+  "cli/core/stream",
+  "moonbitlang/async/stdio",
+  "moonbitlang/async/io",
   "cli/rg/internal/osstr",
-  "cli/rg/internal/memchr",
   "cli/rg/internal/cli",
   "cli/rg/internal/sys",
   "cli/rg/internal/searcher",
   "cli/rg/internal/matcher",
-  "cli/rg/internal/grep_regex",
+  "cli/rg/internal/regex",
+  "cli/rg/internal/regex/syntax",
+  "cli/rg/internal/regex/automata",
+  "cli/rg/internal/regex/unicode",
   "cli/rg/internal/printer",
   "cli/rg/internal/termcolor",
   "cli/rg/internal/ignore",
@@ -22,4 +27,5 @@ import {
 
 import {
   "moonbitlang/async",
+  "moonbitlang/async/os_error",
 } for "wbtest"

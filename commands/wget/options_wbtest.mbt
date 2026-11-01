@@ -54,8 +54,16 @@ test "wget phase2 options reject invalid methods, statuses, and timeouts" {
 ///|
 test "wget accepts documented methods and preserves repeated option order" {
   for
-    name in [
-      "GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH",
+    (name, expected_method) in [
+      ("GET", @netops.Get),
+      ("HEAD", @netops.Head),
+      ("POST", @netops.Post),
+      ("PUT", @netops.Put),
+      ("DELETE", @netops.Delete),
+      ("CONNECT", @netops.Connect),
+      ("OPTIONS", @netops.Options),
+      ("TRACE", @netops.Trace),
+      ("PATCH", @netops.Patch),
     ] {
     let options = parse_wget_options([
       "-i",
@@ -64,7 +72,7 @@ test "wget accepts documented methods and preserves repeated option order" {
       "--method=" + name,
       "https://example.test",
     ])
-    assert_eq(options.request_method, @netops.parse_http_method(name))
+    assert_eq(options.request_method, expected_method)
     assert_true(options.method_explicit)
     assert_eq(options.input_files, ["one", "two"])
   }

@@ -66,33 +66,6 @@ fn parse_words(text : String) -> Array[String] raise XargsError {
 }
 
 ///|
-async fn read_input() -> Bytes {
-  let bytes : Array[Byte] = []
-  while @stdio.stdin.read_some(max_len=65536) is Some(chunk) {
-    bytes.append(chunk.to_array())
-  }
-  Bytes::from_array(bytes)
-}
-
-///|
-fn replacement_lines(text : String, eof~ : String? = None) -> Array[String] {
-  let result : Array[String] = []
-  for line in text.split("\n") {
-    let value = line.trim().to_owned()
-    let is_eof = match eof {
-      Some(marker) => value == marker
-      None => false
-    }
-    if value != "" && !is_eof {
-      result.push(value)
-    } else if is_eof {
-      break
-    }
-  }
-  result
-}
-
-///|
 fn replace_arguments(
   arguments : Array[String],
   marker : String,
@@ -139,15 +112,14 @@ async fn parse_positive_or_exit(value : String, option : String) -> Int32? {
 }
 
 ///|
-fn command_size(prefix : Array[String], values : Array[String]) -> Int32 {
-  let mut size = 0
-  for argument in prefix {
-    size += @utf8.encode(argument[:]).length() + 1
-  }
-  for argument in values {
-    size += @utf8.encode(argument[:]).length() + 1
-  }
-  size
+fn command_size(prefix : Array[String], values : Array[String]) -> Int64 {
+  @process.arguments_bytes(prefix) + @process.arguments_bytes(values)
+}
+
+///|
+priv enum ChildOutcome {
+  Exited(Int32)
+  FailedToLaunch(@process.LaunchFailure)
 }
 
 ///|
@@ -156,45 +128,37 @@ async fn run_xargs_child(
   arguments : Array[String],
   context : @process.ExecutionContext,
   verbose : Bool,
-) -> Int32 {
+  launch~ : async (@process.ChildSpec) -> Int32 = spec => @process.run(spec),
+  diagnose~ : async (String) -> Unit = text => @stdio.stderr.write(text),
+) -> ChildOutcome {
   if verbose {
     let command_line = program + " " + arguments.join(" ") + "\n"
-    @stdio.stderr.write(command_line)
+    diagnose(command_line)
   }
-  let code = @process.run(@process.child(program, arguments, context~)) catch {
+  let code = launch(@process.child(program, arguments, context~)) catch {
     @os_error.OSError(_) as err => {
-      @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-      let status = @process.launch_failure_status(
+      diagnose("xargs: cannot run '\{program}': \{err}\n")
+      return FailedToLaunch(
         if err.is_ENOENT() {
           CommandNotFound
         } else {
           CommandNotInvokable
         },
       )
-      @sys.exit(status)
-      status
     }
     err => {
-      @stdio.stderr.write("xargs: cannot run '\{program}': \{err}\n")
-      let status = @process.launch_failure_status(CommandNotInvokable)
-      @sys.exit(status)
-      status
+      diagnose("xargs: cannot run '\{program}': \{err}\n")
+      return FailedToLaunch(CommandNotInvokable)
     }
   }
-  if code == 126 || code == 127 {
-    @stdio.stderr.write(
-      "xargs: child launch denied or unavailable (status \{code})\n",
-    )
-  }
-  code
+  Exited(code)
 }
 
 ///|
-fn aggregate_xargs_status(current : Int32, child : Int32) -> Int32 {
-  let mapped = if child == 126 || child == 127 {
-    child
-  } else {
-    xargs_child_status(child)
+fn aggregate_xargs_status(current : Int32, child : ChildOutcome) -> Int32 {
+  let mapped = match child {
+    Exited(status) => xargs_child_status(status)
+    FailedToLaunch(failure) => @process.launch_failure_status(failure)
   }
   if mapped == 125 || current == 125 {
     125
@@ -202,6 +166,8 @@ fn aggregate_xargs_status(current : Int32, child : Int32) -> Int32 {
     124
   } else if mapped == 127 || current == 127 {
     127
+  } else if mapped == 126 || current == 126 {
+    126
   } else if mapped == 123 || current == 123 {
     123
   } else {
@@ -210,76 +176,10 @@ fn aggregate_xargs_status(current : Int32, child : Int32) -> Int32 {
 }
 
 ///|
-async fn run_xargs_batches(
-  program : String,
-  batches : Array[Array[String]],
-  max_procs : Int32,
-  context : @process.ExecutionContext,
-  verbose : Bool,
-  confirmation~ : &@io.Reader? = None,
-) -> Int32 {
-  if max_procs <= 1 {
-    let mut result = 0
-    for arguments in batches {
-      if confirmation is Some(channel) &&
-        !confirm_batch(channel, program, arguments) {
-        continue
-      }
-      result = aggregate_xargs_status(
-        result,
-        run_xargs_child(
-          program,
-          arguments,
-          context,
-          verbose && confirmation is None,
-        ),
-      )
-      if result == 124 || result == 125 || result == 126 || result == 127 {
-        break
-      }
-    }
-    result
-  } else {
-    @async.with_task_group <| group => {
-      let mut result = 0
-      let mut offset = 0
-      while offset < batches.length() {
-        let end = (offset + max_procs).min(batches.length())
-        let tasks : Array[@async.Task[Int32]] = []
-        for arguments in batches[offset:end] {
-          if confirmation is Some(channel) &&
-            !confirm_batch(channel, program, arguments) {
-            continue
-          }
-          tasks.push(
-            group.spawn(() => {
-              run_xargs_child(
-                program,
-                arguments,
-                context,
-                verbose && confirmation is None,
-              )
-            }),
-          )
-        }
-        for task in tasks {
-          result = aggregate_xargs_status(result, task.wait())
-        }
-        offset = end
-        if result == 124 || result == 125 || result == 126 || result == 127 {
-          break
-        }
-      }
-      result
-    }
-  }
-}
-
-///|
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("xargs 0.2.3\n")
+    @stdio.stdout.write("xargs 0.2.4\n")
     return
   }
   let mut args = @env.args()[1:].to_owned()
@@ -441,7 +341,7 @@ async fn main {
       }
     } else if options && arg == "--help" {
       @stdio.stdout.write(
-        "Usage: xargs [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n  -d, --delimiter=BYTE  separate literal input items with BYTE or an escape\n  -p, --interactive     confirm each invocation through an independent console\n      --help      display this help and exit\n      --version   display version and exit\n",
+        "Usage: xargs [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n  -d, --delimiter=BYTE  separate literal input items with BYTE or an escape\n  -p, --interactive     confirm each invocation through an independent console\nComplete -n/-L batches can execute before EOF; later input errors preserve completed child effects.\n-P N replenishes individual free slots; --show-limits leaves stdin untouched.\n      --help      display this help and exit\n      --version   display version and exit\n",
       )
       return
     } else if options && arg.has_prefix("-") && arg != "-" {
@@ -477,7 +377,7 @@ async fn main {
   } else {
     command[1:].to_owned()
   }
-  if command_size([program], prefix) > max_bytes {
+  if command_size([program], prefix) > max_bytes.to_int64() {
     @stdio.stderr.write(
       "xargs: cannot fit single argument within argument list size limit\n",
     )
@@ -501,196 +401,69 @@ async fn main {
     None
   }
   defer (if confirmation is Some(file) { file.close() })
-  let raw = read_input() catch {
-    XargsError(message) => {
-      @stdio.stderr.write("xargs: \{message}\n")
-      @sys.exit(1)
-      return
-    }
-    err => {
-      @stdio.stderr.write("xargs: cannot read input: \{err}\n")
-      @sys.exit(1)
-      return
-    }
-  }
-  let input = if delimiter is None {
-    @utf8.decode(raw[:]) catch {
-      _ => {
-        @stdio.stderr.write("xargs: input is not valid UTF-8\n")
-        @sys.exit(1)
-        return
-      }
-    }
-  } else {
-    ""
-  }
   if show_limits {
     @stdio.stdout.write("max-args-bytes: \{max_bytes}\n")
     return
   }
-  let batches : Array[Array[String]] = []
-  if delimiter is Some(delimiter) {
-    let items = delimited_items(raw, delimiter) catch {
-      ArgvBytesBoundary => {
-        @stdio.stderr.write(
-          "xargs: unsupported capability: non-UTF-8 argument transport\n",
-        )
-        @sys.exit(2)
-        return
-      }
-    }
-    if replace is Some(marker) {
-      for item in items {
-        let arguments = replace_arguments(prefix, marker, item.value)
-        if command_size([program], arguments) > max_bytes {
-          @stdio.stderr.write("xargs: argument list too long\n")
-          @sys.exit(1)
-          return
-        }
-        batches.push(arguments)
-      }
-    } else {
-      let mut offset = 0
-      let mut prefix_size = @utf8.encode(program[:]).length().to_int64() + 1L
-      for argument in prefix {
-        prefix_size += @utf8.encode(argument[:]).length().to_int64() + 1L
-      }
-      while offset < items.length() {
-        let mut end = offset
-        let mut size = prefix_size
-        while end < items.length() &&
-              (max_args == 0 || end - offset < max_args) &&
-              (max_lines == 0 || end - offset < max_lines) {
-          if size + items[end].size > max_bytes.to_int64() {
-            if max_lines > 0 && end > offset {
-              @stdio.stderr.write("xargs: argument list too long\n")
-              @sys.exit(1)
-              return
-            }
-            break
-          }
-          size += items[end].size
-          end += 1
-        }
-        if end == offset {
-          @stdio.stderr.write("xargs: argument line too long\n")
-          @sys.exit(1)
-          return
-        }
-        batches.push(prefix + items[offset:end].map(item => item.value))
-        offset = end
-      }
-    }
-  } else if replace is Some(marker) {
-    for value in replacement_lines(input, eof=eof_string) {
-      batches.push(replace_arguments(prefix, marker, value))
-    }
-  } else if max_lines > 0 {
-    let lines : Array[Array[String]] = []
-    for line in input.split("\n") {
-      let words = parse_words(line.to_owned())
-      if !words.is_empty() {
-        lines.push(words)
-      }
-    }
-    let mut offset = 0
-    let mut eof_reached = false
-    while offset < lines.length() {
-      let mut end = offset
-      let values : Array[String] = []
-      while end < lines.length() && end - offset < max_lines {
-        if eof_string is Some(marker) &&
-          lines[end].any(value => value == marker) {
-          eof_reached = true
-          break
-        }
-        let candidate = values + lines[end]
-        if max_args > 0 && candidate.length() > max_args {
-          break
-        }
-        if command_size([program, ..prefix], candidate) > max_bytes {
-          break
-        }
-        values.append(lines[end])
-        end += 1
-      }
-      if end == offset {
-        if eof_reached {
-          break
-        }
-        @stdio.stderr.write(
-          "xargs: input line exceeds \{max_bytes} byte limit\n",
-        )
-        @sys.exit(1)
-        return
-      }
-      batches.push(prefix + values)
-      offset = end
-      if eof_reached {
-        break
-      }
-    }
-  } else {
-    let mut values = parse_words(input)
-    if eof_string is Some(marker) {
-      let mut end = values.length()
-      for index, value in values {
-        if value == marker {
-          end = index
-          break
-        }
-      }
-      values = values[:end].to_owned()
-    }
-    if !values.is_empty() {
-      let mut offset = 0
-      while offset < values.length() {
-        let mut end = offset
-        while end < values.length() &&
-              (max_args == 0 || end - offset < max_args) {
-          let candidate = values[offset:end + 1].to_owned()
-          if command_size([program, ..prefix], candidate) > max_bytes {
-            break
-          }
-          end += 1
-        }
-        if end == offset {
-          @stdio.stderr.write(
-            "xargs: one argument exceeds \{max_bytes} byte limit\n",
-          )
-          @sys.exit(1)
-          return
-        }
-        batches.push(prefix + values[offset:end].to_owned())
-        offset = end
-      }
-    }
+  let mode : InputMode = match delimiter {
+    Some(byte) => Delimited(if byte >= 128 { byte - 256 } else { byte })
+    None => if replace is Some(_) || max_lines > 0 { Lines } else { Words }
   }
-  if batches.is_empty() && run_empty {
-    return
-  }
-  if batches.is_empty() {
-    batches.push(prefix)
-  }
-  let channel : &@io.Reader? = match confirmation {
-    Some(file) => Some(file)
-    None => None
-  }
-  let status = run_xargs_batches(
+  let batches : BatchReader = {
+    input: ItemReader::new(@stdio.stdin, mode, max_bytes),
     program,
+    prefix,
+    prefix_bytes: @process.argument_bytes(program) +
+    @process.arguments_bytes(prefix),
+    max_args,
+    max_lines,
+    max_bytes: max_bytes.to_int64(),
+    replace,
+    eof: eof_string,
+    no_empty: run_empty,
+    pending: None,
+    emitted: false,
+  }
+  let context = @process.ExecutionContext::current()
+  let diagnostic_slot = @semaphore.Semaphore(1)
+  let diagnose : async (String) -> Unit = text => {
+    diagnostic_slot.acquire()
+    defer diagnostic_slot.release()
+    @stdio.stderr.write(text)
+  }
+  let status = run_xargs_stream(
     batches,
     max_procs,
-    @process.ExecutionContext::current(),
-    verbose,
-    confirmation=channel,
+    arguments => {
+      run_xargs_child(
+        program,
+        arguments,
+        context,
+        verbose && confirmation is None,
+        diagnose~,
+      )
+    },
+    approve=arguments => {
+      match confirmation {
+        Some(channel) => confirm_batch(channel, program, arguments, diagnose~)
+        None => true
+      }
+    },
   ) catch {
+    ArgvBytesBoundary => {
+      @stdio.stderr.write(
+        "xargs: unsupported capability: non-UTF-8 argument transport\n",
+      )
+      @sys.exit(2)
+      return
+    }
     XargsError(message) => {
       @stdio.stderr.write("xargs: \{message}\n")
       @sys.exit(1)
       return
     }
     error => {
-      @stdio.stderr.write("xargs: Failed to read confirmation: \{error}\n")
+      @stdio.stderr.write("xargs: input or execution failed: \{error}\n")
       @sys.exit(1)
       return
     }

@@ -1,5 +1,5 @@
 import {
-  "cli/core/gzipops",
+  "cli/core/gzipops/cli" @gzipops,
   "moonbitlang/async",
   "moonbitlang/core/env",
   "moonbitlang/x/sys",

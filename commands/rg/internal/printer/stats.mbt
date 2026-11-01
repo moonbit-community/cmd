@@ -223,7 +223,7 @@ pub fn duration_as_secs_f64(nanos : Int64) -> Double {
 ///|
 /// Formats a duration like grep-printer's `NiceDuration` `Display` impl,
 /// i.e., `format!("{:0.6}s", fractional_seconds)`.
-pub fn format_duration_human(nanos : Int64) -> String {
+fn format_duration_human(nanos : Int64) -> String {
   format_fixed(duration_as_secs_f64(nanos), 6) + "s"
 }
 

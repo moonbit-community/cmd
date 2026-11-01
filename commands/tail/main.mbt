@@ -71,89 +71,8 @@ fn parse_sleep_interval(text : String) -> Int32 raise CliError {
 }
 
 ///|
-/// Select lines from an in-memory buffer (used for streamed input after the
-/// ring buffer has trimmed it down). A trailing newline terminates the final
-/// line rather than starting an empty one.
-fn select_lines(
-  data : Bytes,
-  spec : CountSpec,
-  delimiter~ : Byte = b'\n',
-) -> BytesView {
-  match spec {
-    Last(n) => {
-      if n <= 0 || data.length() == 0 {
-        return data[0:0]
-      }
-      let mut i = if data[data.length() - 1] == delimiter {
-        data.length() - 2
-      } else {
-        data.length() - 1
-      }
-      let mut newlines : Int64 = 0
-      while i >= 0 {
-        if data[i] == delimiter {
-          newlines += 1
-          if newlines == n {
-            return data[i + 1:]
-          }
-        }
-        i -= 1
-      }
-      data
-    }
-    FromStart(k) => {
-      if k <= 1 {
-        return data
-      }
-      let mut seen : Int64 = 0
-      for i in 0..<data.length() {
-        if data[i] == delimiter {
-          seen += 1
-          if seen == k - 1 {
-            return data[i + 1:]
-          }
-        }
-      }
-      data[data.length():]
-    }
-  }
-}
-
-///|
-fn select_bytes(data : Bytes, spec : CountSpec) -> BytesView {
-  let len = data.length().to_int64()
-  match spec {
-    Last(n) => {
-      let start = if n >= len { 0 } else { (len - n).to_int() }
-      data[start:]
-    }
-    FromStart(k) => {
-      let start = if k - 1 > len { data.length() } else { (k - 1).to_int() }
-      data[start:]
-    }
-  }
-}
-
-///|
 fn count_newlines(chunk : Bytes, delimiter~ : Byte = b'\n') -> Int32 {
-  let mut n = 0
-  for b in chunk {
-    if b == delimiter {
-      n += 1
-    }
-  }
-  n
-}
-
-///|
-fn concat_chunks(chunks : Array[Bytes]) -> Bytes {
-  let out : Array[Byte] = []
-  for chunk in chunks {
-    for b in chunk {
-      out.push(b)
-    }
-  }
-  Bytes::from_array(out)
+  @bytesearch.count_byte(chunk[:], delimiter)
 }
 
 ///|
@@ -262,13 +181,8 @@ async fn tail_file(
 }
 
 ///|
-async fn read_chunk(r : &@io.Reader, buf : FixedArray[Byte]) -> Bytes? {
-  let n = r.read(buf)
-  if n == 0 {
-    None
-  } else {
-    Some(Bytes::from_array(buf[0:n]))
-  }
+async fn read_chunk(r : &@io.Reader) -> Bytes? {
+  r.read_some(max_len=chunk_size)
 }
 
 ///|
@@ -282,62 +196,28 @@ async fn tail_stream(
   bytes_mode : Bool,
   delimiter~ : Byte = b'\n',
 ) -> Unit {
-  let buf : FixedArray[Byte] = FixedArray::make(chunk_size, 0)
   match spec {
     Last(n) => {
       if n <= 0 {
         // Drain the input like GNU tail, producing no output.
         while true {
-          if read_chunk(r, buf) is None {
+          if read_chunk(r) is None {
             break
           }
         }
         return
       }
-      let chunks : Array[Bytes] = []
-      let counts : Array[Int64] = []
-      let mut total_newlines : Int64 = 0
-      let mut total_bytes : Int64 = 0
-      for ;; {
-        match read_chunk(r, buf) {
-          Some(chunk) => {
-            chunks.push(chunk)
-            total_bytes += chunk.length().to_int64()
-            if bytes_mode {
-              while chunks.length() > 1 &&
-                    total_bytes - chunks[0].length().to_int64() >= n {
-                total_bytes -= chunks[0].length().to_int64()
-                ignore(chunks.remove(0))
-              }
-            } else {
-              let c = count_newlines(chunk, delimiter~).to_int64()
-              counts.push(c)
-              total_newlines += c
-              // Keep more than n newlines beyond the dropped prefix so the
-              // last n lines stay fully buffered. (Written as `> n` rather
-              // than `>= n + 1`, which would overflow for n = INT64_MAX.)
-              while chunks.length() > 1 && total_newlines - counts[0] > n {
-                total_newlines -= counts[0]
-                ignore(chunks.remove(0))
-                ignore(counts.remove(0))
-              }
-            }
-          }
-          None => break
-        }
+      let window = TailWindow::new()
+      while read_chunk(r) is Some(chunk) {
+        window.push(chunk, n, bytes_mode, delimiter)
       }
-      let data = concat_chunks(chunks)
-      if bytes_mode {
-        @stdio.stdout.write(select_bytes(data, spec))
-      } else {
-        @stdio.stdout.write(select_lines(data, spec, delimiter~))
-      }
+      window.write(@stdio.stdout)
     }
     FromStart(k) =>
       if bytes_mode {
         let mut to_skip : Int64 = if k > 1 { k - 1 } else { 0 }
         for ;; {
-          match read_chunk(r, buf) {
+          match read_chunk(r) {
             Some(chunk) =>
               if to_skip >= chunk.length().to_int64() {
                 to_skip -= chunk.length().to_int64()
@@ -353,24 +233,21 @@ async fn tail_stream(
       } else {
         let mut remaining : Int64 = if k > 1 { k - 1 } else { 0 }
         for ;; {
-          match read_chunk(r, buf) {
+          match read_chunk(r) {
             Some(chunk) => {
               if remaining == 0 {
                 @stdio.stdout.write(chunk)
                 continue
               }
-              let mut emitted = false
               for i in 0..<chunk.length() {
                 if chunk[i] == delimiter {
                   remaining -= 1
                   if remaining == 0 {
                     @stdio.stdout.write(chunk[i + 1:])
-                    emitted = true
                     break
                   }
                 }
               }
-              ignore(emitted)
             }
             None => break
           }
@@ -443,7 +320,7 @@ async fn follow_files(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tail 0.2.3\n")
+    @stdio.stdout.write("tail 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -465,7 +342,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\nStreamed last-N selection retains selected records, including an unfinished final record.\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

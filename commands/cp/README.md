@@ -3,12 +3,16 @@
 Copy files and directories for MoonX.
 
 ```sh
-moonx cli/cp@0.2.3 [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
+moonx cli/cp@0.2.4 [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
 ```
 
 ## Supported scope
 
 Copy to new destinations with `--no-preserve=mode`. Add `-R` for directory trees. Skip modes can succeed without copying.
+
+Supported copies use one shared tree preflight followed by execution. Preflight
+rejects unsupported descendants before creating any destination; actual file
+creation remains exclusive. Reusing an existing empty directory reports no copy.
 
 ## Options
 
@@ -32,8 +36,8 @@ Copy to new destinations with `--no-preserve=mode`. Add `-R` for directory trees
 ## Examples
 
 ```sh
-moonx cli/cp@0.2.3 --no-preserve=mode source.txt new.txt
-moonx cli/cp@0.2.3 --no-preserve=mode -R source-dir new-dir
+moonx cli/cp@0.2.4 --no-preserve=mode source.txt new.txt
+moonx cli/cp@0.2.4 --no-preserve=mode -R source-dir new-dir
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

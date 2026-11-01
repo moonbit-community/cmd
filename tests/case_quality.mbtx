@@ -1,0 +1,29 @@
+----
+import {
+  "moonbitlang/async@0.22.5", "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/core/env",
+}
+----
+
+///|
+async fn main {
+  let args = @env.args()[1:]
+  guard args is [output] && !@fs.exists(output) else {
+    fail("Usage: case_quality.mbtx FRESH_JSON")
+  }
+  // Keep catalog generation in the current testkit classifier. The wrapper
+  // builds before forwarding so a stale driver cannot emit obsolete rules.
+  @shell.Cmd(
+    "moon",
+    ["build", "--target", "native", "--release", "--deny-warn", "tests/runner"],
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
+  @shell.Cmd(
+    "./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe",
+    ["--generate-quality-catalog", output],
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
+}

@@ -46,7 +46,7 @@ pub(all) enum ErrorKind {
 } derive(Debug, Eq)
 
 ///|
-pub fn ErrorKind::message(self : ErrorKind) -> String {
+fn ErrorKind::message(self : ErrorKind) -> String {
   match self {
     CaptureLimitExceeded =>
       "exceeded the maximum number of capturing groups (4294967295)"
@@ -120,15 +120,9 @@ pub suberror SyntaxError {
 } derive(Debug)
 
 ///|
-pub fn SyntaxError::kind(self : SyntaxError) -> ErrorKind {
+fn SyntaxError::kind(self : SyntaxError) -> ErrorKind {
   let SyntaxError(kind~, ..) = self
   kind
-}
-
-///|
-pub fn SyntaxError::span(self : SyntaxError) -> Span {
-  let SyntaxError(span~, ..) = self
-  span
 }
 
 ///|

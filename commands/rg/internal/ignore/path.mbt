@@ -91,28 +91,6 @@ fn path_join(base : String, child : String) -> String {
 }
 
 ///|
-/// Like Rust's `Path::strip_prefix` (component-wise). (Only used by tests.)
-#warnings("-unused_value")
-fn path_strip_prefix(path : String, base : String) -> String? {
-  let pc = path_components(path)
-  let bc = path_components(base)
-  if bc.length() > pc.length() {
-    return None
-  }
-  for i, b in bc {
-    if pc[i].0 != b.0 {
-      return None
-    }
-  }
-  if pc.length() == bc.length() {
-    Some("")
-  } else {
-    let (_, start, _) = pc[bc.length()]
-    Some(path.unsafe_substring(start~, end=path.length()))
-  }
-}
-
-///|
 /// Like Rust's `Path::has_root` on Unix.
 fn path_has_root(path : String) -> Bool {
   path.has_prefix("/") ||

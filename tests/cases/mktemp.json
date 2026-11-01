@@ -2,22 +2,6 @@
   "schema": 2,
   "cases": [
     {
-      "id": "p0-mktemp-help",
-      "command": "mktemp",
-      "args": [
-        "--help"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "expected_stdout_contains": "Usage: mktemp",
-      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary.",
-      "expected_stderr_text": "",
-      "comparison": "contract",
-      "normalizations": []
-    },
-    {
       "id": "release-metadata-mktemp-help",
       "command": "mktemp",
       "args": [
@@ -34,7 +18,12 @@
       ],
       "source_version": "workspace cli/mktemp@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: mktemp [OPTION]... [TEMPLATE]\nCreate an exclusive temporary file (0600) or directory (0700).\n  -d, --directory       create a directory\n  -p DIR, --tmpdir[=DIR] use DIR, then TMPDIR, then /tmp\n  -t                    prefer TMPDIR; reject template directories\n      --suffix=SUFFIX   append SUFFIX to a template ending in X\n  -q, --quiet           suppress creation and output errors\n      --help            display this help and exit\n      --version         display version and exit\nDefault template: tmp.XXXXXXXXXX. The final X run requires at least three Xs.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p0-mktemp-help"
+      ],
+      "expected_stdout_contains": "Usage: mktemp",
+      "diagnostic_reason": "The Usage heading is stable; command-specific help prose may vary."
     },
     {
       "id": "release-metadata-mktemp-version",

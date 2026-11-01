@@ -21,9 +21,10 @@ subsets; a subset does not establish full publication acceptance.
 
 `current/latest.json` contains current published coordinates and points to
 `latest-cases.json`, a separate current expected-case snapshot. Workspace case
-edits must not silently change those published expectations. The old
-`published.json` and historical files remain recorded evidence and are not
-the default inventory.
+edits must not silently change those published expectations. Retired manifests,
+source archives and freezing tools are recoverable from
+[Git at 234f960](https://github.com/moonbit-community/cmd/tree/234f9602347e43bd6d7c86c454489fc3f672c722/tests/release_runner).
+They are no longer copied into the active checkout or read by benchmark defaults.
 
 Candidate generation reads versions from command `moon.mod` files and release
 policy from the runtime index:

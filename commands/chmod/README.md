@@ -3,7 +3,7 @@
 Change file permissions for MoonX.
 
 ```sh
-moonx cli/chmod@0.2.3 [-R] [-v] MODE FILE...
+moonx cli/chmod@0.2.4 [-R] [-v] MODE FILE...
 ```
 
 ## Supported scope
@@ -28,8 +28,8 @@ Set numeric modes on POSIX hosts. Complete symbolic assignments such as `u=rw,g=
 ## Examples
 
 ```sh
-moonx cli/chmod@0.2.3 644 report.txt
-moonx cli/chmod@0.2.3 u=rw,g=r,o= report.txt
+moonx cli/chmod@0.2.4 644 report.txt
+moonx cli/chmod@0.2.4 u=rw,g=r,o= report.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

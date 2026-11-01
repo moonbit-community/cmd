@@ -1,5 +1,6 @@
 import {
   "cli/core/cli",
+  "cli/core/fsops/mode",
   "cli/core/platform",
   "moonbitlang/async",
   "moonbitlang/async/fs",

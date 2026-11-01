@@ -11,6 +11,31 @@ priv struct LiteralShift {
 }
 
 ///|
+// Search outcomes are not spans until every candidate start has been resolved.
+priv enum LiteralOutcome {
+  Found
+  Resume
+  Absent
+}
+
+///|
+#valtype
+priv struct LiteralSearch {
+  outcome : LiteralOutcome
+  start : Int32
+  end : Int32
+}
+
+///|
+fn LiteralSearch::span(self : LiteralSearch) -> (Int32, Int32)? {
+  match self.outcome {
+    Found => Some((self.start, self.end))
+    Absent => None
+    Resume => abort("unresolved literal handoff")
+  }
+}
+
+///|
 #inline
 fn pair_hash(first : Byte, second : Byte) -> Int32 {
   ((first.to_int() << 4) ^ second.to_int()) & 4095
@@ -52,9 +77,9 @@ fn LiteralShift::find(
   start : Int32,
   first_only : Bool,
   allow_switch~ : Bool,
-) -> (Int32, Int32)? {
+) -> LiteralSearch {
   if start < 0 || self.minimum > value.length() - start {
-    return None
+    return { outcome: Absent, start: 0, end: 0, }
   }
   let mut position = start + self.minimum - 1
   let mut window_start = position
@@ -74,7 +99,7 @@ fn LiteralShift::find(
     let mut length = 0
     if self.buckets.get(key) is Some(group) {
       if adaptive {
-        if position - window_start >= 4096 {
+        if position - window_start >= literal_shift_density_window_bytes {
           window_start = position
           checks = 0
         }
@@ -85,23 +110,27 @@ fn LiteralShift::find(
           pattern.length() <= value.length() - left &&
           value[left:left + pattern.length()] == pattern[:] {
           if first_only {
-            return Some((left, left + pattern.length()))
+            return {
+              outcome: Found,
+              start: left,
+              end: left + pattern.length(),
+            }
           }
           length = pattern.length()
         }
       }
     }
     if length > 0 {
-      return Some((left, left + length))
+      return { outcome: Found, start: left, end: left + length, }
     }
     // All candidate starts through `left` are resolved. The counter only
     // chooses an engine; it never establishes a match or skips an unchecked start.
-    if adaptive && checks >= 256 && checks > (position - window_start + 1) * 4 {
-      // A negative start is an internal handoff, never a match. Returning
-      // ordinary spans directly avoids allocating a second result per hit.
-      return Some((-1, left + 1))
+    if adaptive &&
+      checks >= literal_shift_minimum_checks &&
+      checks > (position - window_start + 1) * 4 {
+      return { outcome: Resume, start: left + 1, end: 0, }
     }
     position += 1
   }
-  None
+  { outcome: Absent, start: 0, end: 0, }
 }

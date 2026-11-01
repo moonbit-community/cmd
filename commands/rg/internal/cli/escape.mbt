@@ -38,7 +38,7 @@ fn decode_utf8_at(b : BytesView, i : Int32) -> (Int32, Int32) {
 ///|
 /// Returns the byte offset of the first invalid UTF-8 byte, or `None` if
 /// the bytes are entirely valid UTF-8.
-pub fn utf8_valid_up_to(b : BytesView) -> Int32? {
+fn utf8_valid_up_to(b : BytesView) -> Int32? {
   let mut i = 0
   while i < b.length() {
     let (len, _) = decode_utf8_at(b, i)

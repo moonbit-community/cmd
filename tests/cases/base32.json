@@ -125,8 +125,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/base32@0.1.4 metadata contract",
-      "expected_stdout_text": "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/base32@0.1.5 metadata contract",
+      "expected_stdout_text": "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nEncoding emits complete groups before EOF; later input errors may leave partial output.\n",
       "expected_stderr_text": ""
     },
     {
@@ -144,9 +144,30 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/base32@0.1.4 metadata contract",
-      "expected_stdout_text": "base32 0.1.4\n",
+      "source_version": "workspace cli/base32@0.1.5 metadata contract",
+      "expected_stdout_text": "base32 0.1.5\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-base32-ignore-garbage",
+      "command": "base32",
+      "args": [
+        "--decode",
+        "--ignore-garbage"
+      ],
+      "stdin_text": "MZ!!XW6===\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "foo",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "decode",
+        "ignore-garbage"
+      ],
+      "source_version": "RFC4648 foo vector plus documented discard of non-alphabet bytes; immutable oracle verification pending"
     }
   ]
 }

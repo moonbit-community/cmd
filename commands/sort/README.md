@@ -3,12 +3,16 @@
 Sort and merge records for MoonX.
 
 ```sh
-moonx cli/sort@0.2.4 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]
+moonx cli/sort@0.2.6 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]
 ```
 
 ## Supported scope
 
 Sort files or stdin using C-byte order, selected keys and numeric/month/version/random modes. Supports stable, unique, check and merge modes.
+
+Version 0.2.6 compares `-n` decimal prefixes exactly, including
+large integers and long fractions. Unique, stable, check and disk merge modes
+use the same ordering. `-g` retains floating-point general-number semantics.
 
 ## Options
 
@@ -25,10 +29,14 @@ Sort files or stdin using C-byte order, selected keys and numeric/month/version/
 | `-o, --output=FILE` | Write named output; - is a literal filename. |
 | `-S, --buffer-size=SIZE` | Sorting budget; default 64 MiB; bare numbers use KiB. |
 | `-T, --temporary-directory=DIR` | Select temporary directories; may repeat. |
-| `--batch-size=N` | Merge fan-in; at least 2, capped at 16. |
+| `--batch-size=N` | Maximum merge fan-in; at least 2, capped at 16. |
 | `--help` / `--version` | Show help / package version. |
 
 ## Limitations
+
+- Multiple explicit keys share one field-boundary scan per record. Preparation
+  borrows selected byte ranges before producing owned keys; numeric fields retain
+  exact canonical decimal digits, including across temporary runs.
 
 - Locale-dependent collation is unsupported. Nonzero percentage buffer sizes are rejected; the buffer budget is not a total memory cap.
 - Merge into an existing output file is rejected. Large sorts and named merges require writable temporary storage.
@@ -36,8 +44,8 @@ Sort files or stdin using C-byte order, selected keys and numeric/month/version/
 ## Examples
 
 ```sh
-moonx cli/sort@0.2.4 names.txt
-moonx cli/sort@0.2.4 -t, -k 2 -u data.csv
+moonx cli/sort@0.2.6 names.txt
+moonx cli/sort@0.2.6 -t, -k 2 -u data.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

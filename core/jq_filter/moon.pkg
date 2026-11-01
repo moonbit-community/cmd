@@ -2,3 +2,7 @@ import {
   "bobzhang/moonjq",
   "bobzhang/moonjq/ast",
 }
+
+import {
+  "moonbitlang/core/json",
+} for "test"

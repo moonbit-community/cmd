@@ -375,11 +375,14 @@ async fn copy_entry(
   match copy_source_kind(source, traversal, command_line) {
     Regular => copy_regular_file(source, destination, replace)
     Directory => {
-      match kind_if_exists(destination) {
-        Some(Directory) => ()
+      let created = match kind_if_exists(destination) {
+        Some(Directory) => false
         Some(_) =>
           raise FsOpError("destination is not a directory: '\{destination}'")
-        None => @fs.mkdir(destination, permission=0o777)
+        None => {
+          @fs.mkdir(destination, permission=0o777)
+          true
+        }
       }
       let entries = @fs.readdir(
         source,
@@ -400,7 +403,7 @@ async fn copy_entry(
           copied = true
         }
       }
-      copied || entries.is_empty()
+      copied || created
     }
     SymLink =>
       raise FsOpError("symbolic-link sources are not supported: '\{source}'")

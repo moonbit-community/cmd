@@ -20,7 +20,7 @@ pub(all) enum State {
 } derive(Debug, Eq)
 
 ///|
-pub fn State::is_epsilon(self : State) -> Bool {
+fn State::is_epsilon(self : State) -> Bool {
   match self {
     ByteRange(_, _, _) | Sparse(_) | Fail | Match => false
     Look(_, _) | Union(_) | BinaryUnion(_, _) | Capture(..) => true
@@ -53,16 +53,6 @@ pub fn NFA::states(self : NFA) -> Array[State] {
 }
 
 ///|
-pub fn NFA::start_anchored(self : NFA) -> Int32 {
-  self.start_anchored
-}
-
-///|
-pub fn NFA::start_unanchored(self : NFA) -> Int32 {
-  self.start_unanchored
-}
-
-///|
 pub fn NFA::group_len(self : NFA) -> Int32 {
   self.group_len
 }
@@ -70,16 +60,6 @@ pub fn NFA::group_len(self : NFA) -> Int32 {
 ///|
 pub fn NFA::group_names(self : NFA) -> Array[String?] {
   self.group_names
-}
-
-///|
-pub fn NFA::look_set_any(self : NFA) -> @syntax.LookSet {
-  self.look_set_any
-}
-
-///|
-pub fn NFA::is_reverse(self : NFA) -> Bool {
-  self.reverse
 }
 
 ///|

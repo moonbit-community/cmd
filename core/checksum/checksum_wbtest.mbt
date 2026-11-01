@@ -15,63 +15,32 @@ test "streaming SHA1 matches standard vectors across padding boundaries" {
         hasher.update(bytes[offset:end])
         offset = end
       }
-      assert_eq(hex_digest(hasher.finalize_bytes()), expected)
+      assert_eq(@hex.encode(hasher.finalize_bytes()), expected)
     }
   }
   let state = Sha1State::new()
   state.update(b"abc"[:])
   assert_eq(
-    hex_digest(state.finalize_bytes()),
+    @hex.encode(state.finalize_bytes()),
     "a9993e364706816aba3e25717850c26c9cd0d89d",
   )
 }
 
 ///|
-fn parse_record(algorithm : Algorithm, line : String) -> (String, String)? {
-  let format : ManifestFormat = {
-    reversed: 0,
-    label: algorithm.label(),
-    sha2_tag: None,
+test "SHA1 direct blocks preserve arbitrary source offsets and reused schedule state" {
+  let source = Bytes::makei(4096, i => (i * 73 + 17).to_byte())
+  for start in 0..<16 {
+    for length in [63, 64, 65, 127, 128, 129, 2049] {
+      let input = source[start:start + length]
+      let expected = @crypto.bytes_to_hex_string(@crypto.sha1(input.to_owned()))
+      for split in [0, 1, 7, 63, 64, 65] {
+        let state = Sha1State::new()
+        let split = split.min(length)
+        state.update(input[:split])
+        state.update(input[split:])
+        state.update(b""[:])
+        assert_eq(@hex.encode(state.finalize_bytes()), expected)
+      }
+    }
   }
-  manifest_record(line, Some(Fixed(algorithm)), false, format).map(record => {
-    (hex_digest(record.expected), record.name)
-  })
-}
-
-///|
-test "checksum records preserve escaped filenames and markers" {
-  let digest = "900150983cd24fb0d6963f7d28e17f72"
-  assert_eq(
-    format_record(digest, "payload", false, false),
-    digest + "  payload\n",
-  )
-  assert_eq(
-    format_record(digest, "payload", true, false),
-    digest + " *payload\n",
-  )
-  let name = "a\\b\nc\r"
-  let record = format_record(digest, name, false, false)
-  assert_eq(record, "\\" + digest + "  a\\\\b\\nc\\r\n")
-  assert_eq(
-    parse_record(Md5, record[:record.length() - 1].to_owned()),
-    Some((digest, name)),
-  )
-  assert_eq(
-    format_record(digest, name, false, true),
-    digest + "  " + name + "\u0000",
-  )
-}
-
-///|
-test "checksum parser checks algorithm length syntax and invalid escapes" {
-  let digest = "900150983cd24fb0d6963f7d28e17f72"
-  assert_eq(
-    parse_record(Md5, digest.to_upper() + " *payload"),
-    Some((digest, "payload")),
-  )
-  assert_eq(parse_record(Sha1, digest + "  payload"), None)
-  assert_eq(parse_record(Md5, digest + " ?payload"), None)
-  assert_eq(parse_record(Md5, digest + "  "), None)
-  assert_eq(parse_record(Md5, "\\" + digest + "  bad\\q"), None)
-  assert_eq(parse_record(Md5, digest + "  nul\u0000name"), None)
 }

@@ -1,0 +1,3844 @@
+{
+  "schema": 1,
+  "scope": "Manual definition review; these annotations are not runtime passes or exhaustive semantic proof",
+  "claims": [
+    {
+      "command": "cat",
+      "claim": "unbuffered",
+      "kind": "accepted-no-op",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-675"
+      ],
+      "activation": "README explicitly defines -u as behavior-preserving. Input binary NUL/0xff bytes are required unchanged; no buffering/performance property is inferred."
+    },
+    {
+      "command": "cat",
+      "claim": "number-nonblank",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-33"
+      ],
+      "activation": "Input a LF LF LF b TAB 0x80 under -b -s -A produces numbered nonempty records only, one retained blank, visible TAB/high byte and no invented final LF. Separate alias and -b/-n precedence coverage remains an additional obligation."
+    },
+    {
+      "command": "cat",
+      "claim": "squeeze-blank",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-33"
+      ],
+      "activation": "Three consecutive LF boundaries collapse to the explicit expected single blank record in the combined formatting contract."
+    },
+    {
+      "command": "cat",
+      "claim": "show-all",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-33"
+      ],
+      "activation": "Expected output includes $ record markers, ^I for TAB and M-^@ for input0x80, retaining the unterminated last record."
+    },
+    {
+      "command": "cut",
+      "claim": "bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-cut-adjacent-output-ranges",
+        "o1-cut-overlapping-output-ranges"
+      ],
+      "activation": "Reordered byte ranges are emitted in input order; adjacent selected ranges produce ab|cd LF, overlapping ranges merge to abc LF without a spurious output separator."
+    },
+    {
+      "command": "cut",
+      "claim": "characters",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-cut-complement-output-ranges"
+      ],
+      "activation": "The declared C-byte -c projection with repeated --complement selects the explicit byte complement over different record lengths and an empty record. Unicode character counting is outside this claim."
+    },
+    {
+      "command": "cut",
+      "claim": "complement",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-cut-complement-output-ranges"
+      ],
+      "activation": "Selecting positions2,4 with complement emits a|c|ef LF, a|c LF and LF; repeating the flag does not toggle it off."
+    },
+    {
+      "command": "cut",
+      "claim": "delimiter",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-cut-field-output-last-value",
+        "o1-cut-empty-output-delimiter"
+      ],
+      "activation": "Colon-separated input includes empty and undelimited records; -d: changes field boundaries. Distinct field/output delimiters are asserted."
+    },
+    {
+      "command": "cut",
+      "claim": "fields",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-cut-field-output-last-value",
+        "o1-cut-empty-output-delimiter"
+      ],
+      "activation": "-f1,3 emits selected colon fields, preserves the undelimited plain record and handles an empty selected field exactly."
+    },
+    {
+      "command": "cut",
+      "claim": "output-delimiter",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-cut-adjacent-output-ranges",
+        "o1-cut-field-output-last-value",
+        "o1-cut-empty-output-delimiter"
+      ],
+      "activation": "The exact outputs distinguish byte ranges, last repeated output-delimiter value, and an empty delimiter emitting NUL (a NUL c LF)."
+    },
+    {
+      "command": "wc",
+      "claim": "chars",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-wc-c-profile-chars-binary",
+        "o1-wc-c-profile-bytes-chars-binary"
+      ],
+      "activation": "Under the C profile c3 a9 ff LF counts4 bytes/chars, not Unicode scalars; the combined -cm output asserts both selected counters and spacing."
+    },
+    {
+      "command": "wc",
+      "claim": "bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-wc-c-profile-bytes-chars-binary"
+      ],
+      "activation": "The binary four-byte input under -cm emits both exact four-byte counts; no pipe throughput shortcut claim follows."
+    },
+    {
+      "command": "wc",
+      "claim": "total",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-wc-total-only-all-counters-binary",
+        "o1-wc-read-error"
+      ],
+      "activation": "--total=only emits exactly the selected aggregate counters for binary input. The read-error contract keeps counts for the completed file plus total while returning1 with a directory diagnostic."
+    },
+    {
+      "command": "jq",
+      "claim": "exit-status",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-false-exit"
+      ],
+      "activation": "-e applied to false must emit false LF with status1 and empty stderr. This is an ordinary domain result, not an error-path proof; the no-output status4 facet still needs its own binding."
+    },
+    {
+      "command": "sed",
+      "claim": "quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-sed-range-print"
+      ],
+      "activation": "-n with2,3p over a/b/c/d emits exactly b LF c LF, distinguishing suppressed auto-print from default duplicate output."
+    },
+    {
+      "command": "sed",
+      "claim": "extended-regexp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-sed-extended-capture"
+      ],
+      "activation": "-E captures each digit run in a12b3 and emits a[12]b[3] LF, requiring extended + and capture substitution rather than an identity transformation."
+    },
+    {
+      "command": "sed",
+      "claim": "expression",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-sed-ordered-scripts"
+      ],
+      "activation": "The selected -e/-f/-e row orders several transformations over the same input. The exact expected streams are bound from the case; full sed instruction-language coverage is a separate bounded family."
+    },
+    {
+      "command": "gunzip",
+      "claim": "test",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-gunzip-validate"
+      ],
+      "activation": "A nonempty valid gzip member under -t must emit no decoded stdout. Contrast with p1-gunzip-concatenated yielding abcabc establishes actual validation-only output behavior."
+    },
+    {
+      "command": "base64",
+      "claim": "ignore-garbage",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-641"
+      ],
+      "activation": "-di decodes aG!k= to exactly hi, forcing removal of a nonalphabet byte inside an encoded quantum. Whitespace-only acceptance is not used as the sole witness."
+    },
+    {
+      "command": "base64",
+      "claim": "wrap",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "base64-zero-wrap",
+        "compat-text-line-643"
+      ],
+      "activation": "-w0 encodes abc to YWJj without LF; -w4 encodes abcdef to YWJj LF ZGVm LF. The zero-width versus positive-width final newline distinction is exact."
+    },
+    {
+      "command": "md5sum",
+      "claim": "binary",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-zero-binary"
+      ],
+      "activation": "-tbz hashes nonempty abc as the fixed MD5 digest, emits *payload and final NUL. This activates binary marker, last -b precedence and NUL record termination; input translation is outside this single vector."
+    },
+    {
+      "command": "md5sum",
+      "claim": "zero",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-zero-binary"
+      ],
+      "activation": "Nonempty named input under -tbz ends the exact record with NUL, without LF; this is not vacuous empty input."
+    },
+    {
+      "command": "md5sum",
+      "claim": "check",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-check",
+        "checksum-md5sum-mismatch"
+      ],
+      "activation": "-c verifies a named abc file using uppercase hexadecimal, comment and CRLF manifest, yielding payload: OK. A different payload yields payload: FAILED, warning and status1. Digest verification is exercised positively and negatively."
+    },
+    {
+      "command": "md5sum",
+      "claim": "strict",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-strict-status",
+        "checksum-md5sum-requires-check"
+      ],
+      "activation": "A valid checksum plus bad line under -c --strict --status returns1 with both streams empty; standalone --strict rejects explicitly. The warning-only malformed counterpart returns0."
+    },
+    {
+      "command": "md5sum",
+      "claim": "status",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-strict-status"
+      ],
+      "activation": "A real verified file plus malformed manifest line under --status emits neither the otherwise expected OK line nor malformed summary, while strict status remains1. Missing-file errors are a separate facet."
+    },
+    {
+      "command": "md5sum",
+      "claim": "ignore-missing",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-ignore-missing",
+        "checksum-md5sum-missing-all"
+      ],
+      "activation": "Mixed absent and valid manifest entries with --ignore-missing succeed; all absent entries return1 with exact no file was verified diagnostic. Quiet suppresses the valid OK record in the mixed case."
+    },
+    {
+      "command": "md5sum",
+      "claim": "quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-ignore-missing"
+      ],
+      "activation": "The manifest includes a valid abc payload that normally produces payload: OK; --quiet requires completely empty stdout while --ignore-missing handles the separate absent entry."
+    },
+    {
+      "command": "md5sum",
+      "claim": "warn",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-warn"
+      ],
+      "activation": "-cw verifies one valid entry then encounters bad on line2, retains status0/OK stdout and emits exact per-line MD5 malformed warning plus summary. This distinguishes warn from strict."
+    },
+    {
+      "command": "md5sum",
+      "claim": "tag",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-md5sum-tag-boundary"
+      ],
+      "activation": "The --tag contract hashes nonempty abc LF and expects the complete BSD MD5 (payload) = 0bee89b07a248e27c83fc3d5951213c1 LF record. The historical case name does not determine its current positive semantics."
+    },
+    {
+      "command": "sha1sum",
+      "claim": "text",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-sha1sum-last-text"
+      ],
+      "activation": "-bt over abc emits the exact SHA1 digest followed by two spaces and payload, requiring final -t to override the binary marker."
+    },
+    {
+      "command": "sha1sum",
+      "claim": "check",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-sha1sum-check",
+        "checksum-sha1sum-wrong-length"
+      ],
+      "activation": "A 40-hex SHA1 manifest for abc verifies with payload: OK; a 32-hex MD5-sized record is rejected as no properly formatted checksum lines. This binds algorithm-specific manifest width."
+    },
+    {
+      "command": "sha1sum",
+      "claim": "zero",
+      "kind": "supported-with-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-sha1sum-zero-check"
+      ],
+      "activation": "-cz rejects with status1, empty stdout and exact zero/check incompatibility diagnostic. Positive NUL generation remains unproved by this scoped rejection witness."
+    },
+    {
+      "command": "sha1sum",
+      "claim": "tag",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-sha1sum-tag"
+      ],
+      "activation": "Explicit --tag on payload abc LF emits a BSD SHA1 (payload) = record with the fixed nonempty digest and final LF; no generic checksum-family substitution is assumed."
+    },
+    {
+      "command": "sha256sum",
+      "claim": "binary",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-sha256sum-last-binary"
+      ],
+      "activation": "-tb on abc emits the SHA256 fixed digest with *payload; the last binary flag controls only the marker in this platform-independent byte profile."
+    },
+    {
+      "command": "sha256sum",
+      "claim": "text",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-sha256sum-last-text"
+      ],
+      "activation": "-bt on abc emits the same SHA256 digest with two spaces before payload, discriminating final text precedence from the reversed -tb row."
+    },
+    {
+      "command": "sha256sum",
+      "claim": "warn",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-sha256sum-warn-malformed"
+      ],
+      "activation": "-c --warn over an independently known abc checksum plus malformed checks line2 must emit exact payload: OK LF/status0 and exact per-line SHA256 warning followed by the aggregate warning. Fixed native GNU9.11 independently confirms both lines, while absence of --warn removes the per-line warning. The current local case passed; other spellings, malformed combinations and ordering remain separate finite facets."
+    },
+    {
+      "command": "sha256sum",
+      "claim": "strict",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-sha256sum-strict-status"
+      ],
+      "activation": "Valid plus malformed manifest records under -c --strict --status return1 with both streams empty, contrasting the warning-only status0 row."
+    },
+    {
+      "command": "sha256sum",
+      "claim": "status",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-sha256sum-strict-status"
+      ],
+      "activation": "The valid entry and malformed record would produce an OK line/summary; --status suppresses both streams without suppressing strict status1."
+    },
+    {
+      "command": "sha256sum",
+      "claim": "ignore-missing",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-sha256sum-ignore-missing"
+      ],
+      "activation": "A manifest contains both absent and valid abc entries; --ignore-missing --quiet succeeds with empty streams. The all-missing outcome is still a separate obligation for this command."
+    },
+    {
+      "command": "sha256sum",
+      "claim": "quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-sha256sum-ignore-missing"
+      ],
+      "activation": "A valid checksum entry is present and verified while --quiet suppresses its otherwise observable OK record. Missing-file skipping is separately activated by the absent entry."
+    },
+    {
+      "command": "sha256sum",
+      "claim": "tag",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-sha256sum-tag"
+      ],
+      "activation": "Explicit --tag hashes abc LF into an exact BSD SHA256 record; its nonempty fixed digest and tag syntax are asserted as bytes."
+    },
+    {
+      "command": "sha512sum",
+      "claim": "binary",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-sha512sum-binary"
+      ],
+      "activation": "-b on abc emits the complete SHA512 fixed vector with binary *payload marker and final LF."
+    },
+    {
+      "command": "sha512sum",
+      "claim": "check",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-sha512sum-check",
+        "checksum-sha512sum-status-mismatch"
+      ],
+      "activation": "A valid 128-hex SHA512 manifest yields payload: OK/status0; a differing payload under --status yields1 with empty streams. The mismatch is observable through status even when output is suppressed."
+    },
+    {
+      "command": "sha512sum",
+      "claim": "status",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "checksum-sha512sum-status-mismatch"
+      ],
+      "activation": "A deliberately different payload under -c --status returns1 with exactly empty stdout/stderr, suppressing normal FAILED output and mismatch summary."
+    },
+    {
+      "command": "sha512sum",
+      "claim": "tag",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-sha512sum-tag"
+      ],
+      "activation": "Explicit --tag on abc LF emits the complete SHA512 BSD tagged record and fixed digest as exact bytes."
+    },
+    {
+      "command": "cksum",
+      "claim": "algorithm",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-bsd",
+        "o9-sysv",
+        "o9-crc32b",
+        "o9-md5",
+        "o9-sha1",
+        "o9-sha256-alias",
+        "o9-blake2b",
+        "o9-sm3"
+      ],
+      "activation": "Named abc LF input has fixed distinct outputs for the reviewed legacy, CRC32b and modern digest selections, including sha256 alias. This finite vector set does not prove every advertised algorithm or incremental chunk boundary."
+    },
+    {
+      "command": "cksum",
+      "claim": "length",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-blake-8",
+        "o9-blake-128",
+        "o9-blake-256",
+        "o9-sha3-length7",
+        "o9-blake-length7",
+        "o9-blake-length520",
+        "o9-length-alone"
+      ],
+      "activation": "Nonempty abc LF has exact length-specific BLAKE2b digests including 8-bit output c5. Invalid SHA3 length7, non-byte BLAKE length7, above512 and length-without-supported-algorithm all reject with precise diagnostics."
+    },
+    {
+      "command": "cksum",
+      "claim": "base64",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-md5-base64",
+        "o9-cksum-untagged-base64",
+        "o9-base64-raw"
+      ],
+      "activation": "The fixed MD5 abc LF digest is emitted as C+6JsHokjifIP8PVlRITwQ== in tagged output; SHA2-256 untagged Base64 is separately exact. Base64/raw mutual exclusion rejects."
+    },
+    {
+      "command": "cksum",
+      "claim": "raw",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-md5-raw",
+        "o9-bsd-raw",
+        "o9-raw-multiple"
+      ],
+      "activation": "Raw MD5 output is exactly16 digest bytes, with no filename/tag/LF; BSD output is exactly two bytes2060. Multiple file operands reject rather than concatenating ambiguous raw records."
+    },
+    {
+      "command": "cksum",
+      "claim": "untagged",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-cksum-untagged-base64",
+        "o9-cksum-untagged-text"
+      ],
+      "activation": "Modern digest output explicitly omits algorithm and parentheses under --untagged while retaining digest, text marker and filename. Both hex and Base64 formats are distinguished."
+    },
+    {
+      "command": "cksum",
+      "claim": "text",
+      "kind": "supported-with-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-cksum-untagged-text",
+        "o9-cksum-text"
+      ],
+      "activation": "-amd5 --untagged -t emits exact text-marker output; -t without --untagged rejects with the exact documented constraint. No host newline translation is inferred."
+    },
+    {
+      "command": "cksum",
+      "claim": "zero",
+      "kind": "supported-with-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-sysv-zero",
+        "o9-cksum-check-zero"
+      ],
+      "activation": "-asysv -z writes the named nonempty record with final NUL rather than LF; --check with zero rejects explicitly."
+    },
+    {
+      "command": "cksum",
+      "claim": "check",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-check-base64-auto",
+        "o9-explicit-check-untagged",
+        "o9-auto-check-untagged",
+        "o9-legacy-explicit-check"
+      ],
+      "activation": "Tagged Base64 MD5 auto-detection and explicitly selected untagged MD5 both verify exact OK output. Untagged auto-detection and legacy explicit verification reject. This finite format/algorithm matrix is narrower than arbitrary manifests."
+    },
+    {
+      "command": "cksum",
+      "claim": "warn",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-check-warn-auto"
+      ],
+      "activation": "Malformed line1 plus valid tagged MD5 line2 under -w -c retains status0 and exact OK output, while producing exact line-numbered malformed diagnostic and one-line summary."
+    },
+    {
+      "command": "cksum",
+      "claim": "strict",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-check-strict-auto"
+      ],
+      "activation": "The same malformed/valid pattern under --strict returns1 while preserving exact valid OK output and malformed summary, contrasting warn-only status0."
+    },
+    {
+      "command": "cksum",
+      "claim": "ignore-missing",
+      "kind": "supported-with-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-check-ignore-all"
+      ],
+      "activation": "A tagged MD5 manifest referencing missing under --ignore-missing suppresses missing-file detail but still fails with exact no file was verified. Mixed present/missing success is not established by this all-missing boundary."
+    },
+    {
+      "command": "tr",
+      "claim": "delete",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-826",
+        "repair-alias-tr-delete"
+      ],
+      "activation": "Both -d and --delete remove ! and ? from a! b? LF while preserving other bytes. The selected punctuation class actually affects the output."
+    },
+    {
+      "command": "tr",
+      "claim": "complement",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-835",
+        "repair-alias-tr-complement"
+      ],
+      "activation": "-C and --complement translate the complement of a in ab to aX, distinguishing complement from an ordinary a-to-X mapping."
+    },
+    {
+      "command": "tr",
+      "claim": "truncate-set1",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-836",
+        "repair-alias-tr-truncate-set1"
+      ],
+      "activation": "-t and its long alias translate abc against X to Xbc, requiring truncation of SET1 rather than padding SET2 and producing XXX."
+    },
+    {
+      "command": "tr",
+      "claim": "squeeze-repeats",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-chunk-squeeze",
+        "repair-alias-tr-squeeze-repeats"
+      ],
+      "activation": "The retained long repeated-a input under -s/long alias collapses to exactly a. This exercises carried squeeze state across input chunks but does not replace diverse translate/delete/squeeze interactions."
+    },
+    {
+      "command": "fold",
+      "claim": "width",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "fold-width-newline",
+        "fold-invalid-width",
+        "fold-independent-file-columns"
+      ],
+      "activation": "-w3 splits abcdef LF xy into abc LF def LF xy without inventing final LF; width0 rejects exactly; separate unterminated files reset column state. Positive and invalid bounds are explicit."
+    },
+    {
+      "command": "fold",
+      "claim": "spaces",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "fold-space-break",
+        "repair-alias-fold-spaces"
+      ],
+      "activation": "-s --width=5 over aa bb cccccc chooses earlier blank breakpoints, preserves blanks and falls back to a hard split for the long word; exact output is aa SP LF bb SP LF ccccc LF c."
+    },
+    {
+      "command": "fold",
+      "claim": "bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "fold-byte-count-control",
+        "fold-binary-byte-profile",
+        "repair-alias-fold-bytes"
+      ],
+      "activation": "--bytes counts backspace as a byte, inserting LF after ab BS at width3; NUL/high byte at width2 are preserved and split exactly. This discriminates byte counting from terminal columns."
+    },
+    {
+      "command": "expand",
+      "claim": "initial",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p0-expand-initial"
+      ],
+      "activation": "--initial expands two leading TABs to16 spaces but preserves the later TAB in A TAB B. It is not an all-tabs passthrough or all-tabs expansion witness."
+    },
+    {
+      "command": "expand",
+      "claim": "tabs",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p0-expand-explicit-stops",
+        "p0-expand-rejects-unsorted-stops",
+        "o4-expand-absolute-grid",
+        "o4-expand-relative-grid"
+      ],
+      "activation": "Explicit stops4,10 affect the emitted spaces and final-stop fallback. /8 and +8 tails produce distinct exact grids for the same nonempty input; unsorted8,4 rejects with the exact ascending diagnostic."
+    },
+    {
+      "command": "unexpand",
+      "claim": "all",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p0-unexpand-all"
+      ],
+      "activation": "--all converts an interior eight-space run after x into TAB plus space. A leading-only default implementation would leave this input unchanged."
+    },
+    {
+      "command": "unexpand",
+      "claim": "first-only",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p0-unexpand-first-only"
+      ],
+      "activation": "--all then --first-only compresses the leading eight spaces to TAB while preserving the interior run, requiring the final mode precedence."
+    },
+    {
+      "command": "unexpand",
+      "claim": "tabs",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p0-unexpand-explicit-stops",
+        "repair-alias-unexpand-tabs",
+        "o4-unexpand-absolute-grid",
+        "o4-unexpand-relative-grid"
+      ],
+      "activation": "-t and --tabs4,10 convert ten leading spaces to two TABs. Absolute /8 and relative +8 continuation grids have distinct exact output on the same nonempty input."
+    },
+    {
+      "command": "paste",
+      "claim": "zero-terminated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-paste-nul-records",
+        "repair-alias-paste-zero-terminated"
+      ],
+      "activation": "Two NUL-separated two-record files produce1 TAB a NUL2 TAB b NUL, asserting record boundaries and output NULs for short/long aliases."
+    },
+    {
+      "command": "comm",
+      "claim": "1",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-comm-total-123",
+        "o1-comm-total"
+      ],
+      "activation": "The common input contains left-only a, right-only c and three paired records. -123 suppresses all ordinary columns while preserving exact1 TAB1 TAB3 TAB total LF; baseline --total includes every class."
+    },
+    {
+      "command": "comm",
+      "claim": "2",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-comm-total-123",
+        "o1-comm-total"
+      ],
+      "activation": "Nonempty right-only c is present in the baseline and removed by -123; totals remain exact. Independent single-column prefix reflow still needs separate review."
+    },
+    {
+      "command": "comm",
+      "claim": "3",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-comm-total-123",
+        "o1-comm-total"
+      ],
+      "activation": "Three actual paired records are present in the baseline and suppressed under -123 while their total remains3. This is a bounded combined-column suppression witness."
+    },
+    {
+      "command": "comm",
+      "claim": "total",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-comm-total",
+        "o1-comm-total-123",
+        "o1-comm-delim-total"
+      ],
+      "activation": "Duplicate b pairs count twice, d once; exact totals1/1/3 persist when all content columns are suppressed and use the custom output delimiter when selected."
+    },
+    {
+      "command": "comm",
+      "claim": "output-delimiter",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-comm-delim-total",
+        "o1-comm-delim-empty",
+        "o1-comm-delim-repeat"
+      ],
+      "activation": "Custom | replaces both column and total separators. Empty delimiter writes NUL separators, while conflicting repeated delimiters reject with empty stdout and exact diagnostic."
+    },
+    {
+      "command": "comm",
+      "claim": "nocheck-order",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-comm-nocheck-precedence"
+      ],
+      "activation": "--check-order then --nocheck-order processes unsorted b/a input to complete b LF a LF TAB z LF with status0 and empty stderr; final disabling flag is active."
+    },
+    {
+      "command": "comm",
+      "claim": "zero-terminated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-comm-nul-records",
+        "repair-alias-comm-zero-terminated"
+      ],
+      "activation": "NUL-separated left a,c and right b,c produce exact three-column records terminated by NUL, including paired c with two TAB prefixes."
+    },
+    {
+      "command": "head",
+      "claim": "bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-580",
+        "compat-text-line-590"
+      ],
+      "activation": "Legacy -2c selects exactly ab from abc LF; -n1 then -c2 also emits ab, activating byte mode and last count-mode precedence."
+    },
+    {
+      "command": "head",
+      "claim": "zero-terminated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-552",
+        "repair-alias-head-zero-terminated"
+      ],
+      "activation": "-z -n2 over abc NUL def NUL ghi NUL emits exactly the first two NUL records, with no inserted LF."
+    },
+    {
+      "command": "tail",
+      "claim": "lines",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o13-tail-z-last",
+        "o13-tail-z-origin",
+        "o13-tail-z-last-lines"
+      ],
+      "activation": "NUL-record input a,b,unterminated c under -n2 and -n+2 yields b NUL c. Last -n2 overrides -c1, selecting records rather than bytes."
+    },
+    {
+      "command": "tail",
+      "claim": "bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o13-tail-z-last-bytes"
+      ],
+      "activation": "-z -n1 -c2 over a NUL b NUL c emits NUL c exactly, requiring final byte-mode selection rather than one record c."
+    },
+    {
+      "command": "tail",
+      "claim": "zero-terminated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o13-tail-z-last",
+        "o13-tail-z-origin"
+      ],
+      "activation": "Both tail count and origin selection preserve an unterminated final NUL record and emit b NUL c without inventing a terminator."
+    },
+    {
+      "command": "tail",
+      "claim": "quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o13-tail-z-multi-quiet"
+      ],
+      "activation": "Two explicit files under -q -z -n1 emit b concatenated with Y NUL and no headers, exercising quiet behavior where default multi-file headers would be visible."
+    },
+    {
+      "command": "tail",
+      "claim": "follow",
+      "kind": "supported-with-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-tail-follow-stdin"
+      ],
+      "activation": "-f -s0.02 -n2 on explicit stdin emits two final lines and exits0 at EOF. This is the documented stdin-follow termination profile; real growing-file polling still needs scenario evidence."
+    },
+    {
+      "command": "jq",
+      "claim": "compact-output",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-stream-framing",
+        "repair-alias-jq-compact-output",
+        "jq-slurp-stream"
+      ],
+      "activation": "-c and --compact-output emit an object as one compact line and frame several input JSON values independently. Slurp emits the compact array [1,2] LF."
+    },
+    {
+      "command": "jq",
+      "claim": "slurp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-slurp-stream",
+        "jq-raw-slurp"
+      ],
+      "activation": "-cs collects distinct values1 and2 into one array; -Rrs instead collects raw a LF b into one string and raw output adds exactly the final LF. JSON and raw slurp modes are distinguished."
+    },
+    {
+      "command": "jq",
+      "claim": "raw-input",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-raw-slurp"
+      ],
+      "activation": "-Rrs accepts non-JSON input a LF b and produces its exact raw bytes plus output LF, demonstrating raw input parsing rather than JSON acceptance."
+    },
+    {
+      "command": "jq",
+      "claim": "null-input",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-variable-scope",
+        "repair-alias-jq-null-input"
+      ],
+      "activation": "-n evaluates a binding expression with no input values and emits inner LF; the long alias emits null LF. Nonempty unread-stdin remains the shared metadata observer's separate concern."
+    },
+    {
+      "command": "rg",
+      "claim": "fixed-strings",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-fixed-strings"
+      ],
+      "activation": "-F a.b selects literal a.b and excludes axb, requiring metacharacter suppression rather than regex dot matching."
+    },
+    {
+      "command": "rg",
+      "claim": "replace",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-replace-captures"
+      ],
+      "activation": "Replacement $2:$1 with pattern (a)(b) transforms ab abc to b:a b:ac, preserving unmatched suffixes and reusing capture groups for multiple matches."
+    },
+    {
+      "command": "rg",
+      "claim": "only-matching",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-regex-unicode"
+      ],
+      "activation": "-o with Unicode Greek property over hello Greekletters world emits exactly the Greek substring and LF, excluding both surrounding spans."
+    },
+    {
+      "command": "rg",
+      "claim": "line-number",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-file-lines",
+        "rg-explicit-stdin",
+        "rg-context"
+      ],
+      "activation": "-n prefixes actual first/second matching lines with1:/2:, and context rows use distinct hyphen separators. Both a file and explicit stdin transport are present."
+    },
+    {
+      "command": "rg",
+      "claim": "count",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-count",
+        "rg-include-zero"
+      ],
+      "activation": "Three hits on two lines under -c produce2 LF rather than3; no-match --include-zero emits0 LF with ordinary status1. Count-matches is bound separately."
+    },
+    {
+      "command": "rg",
+      "claim": "count-matches",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-count-matches"
+      ],
+      "activation": "Two hits on one line and one on another under --count-matches emit3 LF, contrasting the same fixture's line-count2 result."
+    },
+    {
+      "command": "rg",
+      "claim": "max-count",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-maximum-count"
+      ],
+      "activation": "-m1 on two matching records emits exactly one hit LF, activating the output limit. Descriptor position/early-stop resource behavior needs separate instrumentation."
+    },
+    {
+      "command": "rg",
+      "claim": "quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-quiet",
+        "rg-preprocessor-early-stop"
+      ],
+      "activation": "Nonempty matching stdin and a selected streaming preprocessor under -q both emit empty streams and status0. This is a positive match with suppressed output, not an empty-input success."
+    },
+    {
+      "command": "rg",
+      "claim": "context",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-context"
+      ],
+      "activation": "-n -C1 over before/hit/after emits1-before LF2:hit LF3-after LF, requiring symmetric context with differentiated match/context separators."
+    },
+    {
+      "command": "rg",
+      "claim": "glob",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-directory-ignore-glob",
+        "rg-directory-ignore",
+        "rg-global-ignore-glob"
+      ],
+      "activation": "Explicit *.txt glob includes matching hidden/ignored txt files but excludes other.log, unlike the no-glob ignore baseline. Invalid [ glob rejects with precise syntax error even for stdin search."
+    },
+    {
+      "command": "rg",
+      "claim": "hidden",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-hidden",
+        "rg-directory-ignore"
+      ],
+      "activation": "--hidden discovers a hidden file containing hit; a separate ordinary directory fixture excludes its hidden entry. Explicit path-separator makes the exact label portable."
+    },
+    {
+      "command": "rg",
+      "claim": "files",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-files-default-directory"
+      ],
+      "activation": "--files with no explicit path lists named files a and b in current directory, sorted exactly, without reading their lines as match output."
+    },
+    {
+      "command": "rg",
+      "claim": "multiline",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-multiline"
+      ],
+      "activation": "-U with one\\ntwo matches across the LF and emits exactly both matching lines, excluding zero/three. This forces a multiline match rather than repeated single-record matches."
+    },
+    {
+      "command": "rg",
+      "claim": "text",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-binary-text"
+      ],
+      "activation": "-a permits embedded NUL and emits the entire a NUL hit LF record as exact bytes. Default binary-report behavior is a distinct facet."
+    },
+    {
+      "command": "rg",
+      "claim": "null-data",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-null-data"
+      ],
+      "activation": "--null-data matches and emits hit NUL from no NUL hit NUL, requiring NUL record parsing and preserving its output terminator."
+    },
+    {
+      "command": "rg",
+      "claim": "file",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-pattern-file"
+      ],
+      "activation": "-f patterns reads anchored ^alpha from a fixture and selects alpha from hay while excluding beta; option argument is an actual pattern file, not script contents."
+    },
+    {
+      "command": "grep",
+      "claim": "context",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-209"
+      ],
+      "activation": "-n -b -C1 emits exact match/context prefixes with line numbers and byte offsets for two disjoint groups, including the -- group separator; all surrounding records are real nonmatches."
+    },
+    {
+      "command": "grep",
+      "claim": "before-context",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-209"
+      ],
+      "activation": "The symmetric -C1 witness emits actual preceding a and e records with context hyphens. Dedicated -B spelling/precedence is not inferred from this shared behavior witness."
+    },
+    {
+      "command": "grep",
+      "claim": "after-context",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-218",
+        "compat-text-line-209"
+      ],
+      "activation": "Repeated -A0 then -A1 yields hit LF c LF, proving final after-context count takes effect. The grouped context fixture independently asserts following records."
+    },
+    {
+      "command": "grep",
+      "claim": "line-number",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-209",
+        "repair-alias-grep-line-number"
+      ],
+      "activation": "Matching records use2:/6: while context uses1-/3-/5-/7-; exact numbers and separators are asserted, including the long alias case."
+    },
+    {
+      "command": "grep",
+      "claim": "byte-offset",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-209",
+        "compat-text-line-227"
+      ],
+      "activation": "Byte offsets distinguish both disjoint LF groups and a NUL-record hit at offset4, whose exact output is4:hit NUL. Match count or line index cannot satisfy these outputs."
+    },
+    {
+      "command": "grep",
+      "claim": "null-data",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-227"
+      ],
+      "activation": "-Fzb over one NUL hit NUL three NUL emits4:hit NUL, proving NUL parsing, raw byte offset and NUL output termination together."
+    },
+    {
+      "command": "grep",
+      "claim": "recursive",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-312"
+      ],
+      "activation": "-r searches a nested directory and emits exactly nested/keep.txt, while include/exclude patterns remove skip.txt and keep.log. Temporary-root and separator normalization preserve the meaningful relative suffix."
+    },
+    {
+      "command": "grep",
+      "claim": "include",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-312"
+      ],
+      "activation": "--include=*.txt excludes an actual matching keep.log sibling while retaining keep.txt; it is not an empty traversal witness."
+    },
+    {
+      "command": "grep",
+      "claim": "exclude",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-312"
+      ],
+      "activation": "--exclude=skip* removes an actual matching skip.txt even though the include *.txt pattern accepts it. Both patterns' effects discriminate the result."
+    },
+    {
+      "command": "grep",
+      "claim": "no-messages",
+      "kind": "supported-with-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-grep-silent-missing"
+      ],
+      "activation": "-s on an explicitly missing input returns error status2 with both streams exactly empty. Diagnostic suppression is not misclassified as successful no-match status1."
+    },
+    {
+      "command": "grep",
+      "claim": "extended-regexp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "grep-extended-longest-only"
+      ],
+      "activation": "Extended alternation under only-matching must choose longest aa from a|aa on aa input. This requires dialect activation and longest-match behavior rather than merely matching a trivial literal."
+    },
+    {
+      "command": "grep",
+      "claim": "only-matching",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "grep-extended-longest-only"
+      ],
+      "activation": "-Eo a|aa over aa emits exactly aa LF as one longest match. More general multiple/empty match progression remains a separate obligation."
+    },
+    {
+      "command": "jq",
+      "claim": "color-output",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-color-0",
+        "jq-color-1"
+      ],
+      "activation": "-C emits exact ANSI tokens for nested null/bool/number/string/empty containers even with NO_COLOR=1; -c changes whitespace while retaining those color spans. Expected bytes are literal, not normalized away."
+    },
+    {
+      "command": "jq",
+      "claim": "monochrome-output",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-color-14",
+        "jq-color-15"
+      ],
+      "activation": "Both -CM and -MC require the complete nested object with exact plain JSON and no ANSI bytes. This attests the retained profile's monochrome precedence, not an assumed last-flag rule."
+    },
+    {
+      "command": "jq",
+      "claim": "sort-keys",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-color-2"
+      ],
+      "activation": "-nCS constructs keys z then a but exact output places a before z, with ANSI spans retained. It cannot pass by preserving construction order."
+    },
+    {
+      "command": "jq",
+      "claim": "raw-output",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-color-11",
+        "jq-color-13",
+        "jq-raw-slurp"
+      ],
+      "activation": "-r emits string contents raw LF string LF despite forced color, while an object under -r remains encoded and colored JSON. Raw input/slurp transport has its own exact witness."
+    },
+    {
+      "command": "jq",
+      "claim": "join-output",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "jq-color-12"
+      ],
+      "activation": "-j returns the literal raw string raw without quotes or final LF, even with -C. This exact final-byte distinction activates join output."
+    },
+    {
+      "command": "jqlog",
+      "claim": "file",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p0-jqlog-file"
+      ],
+      "activation": "-f input.log selects a real input fixture containing JSON a=1 while stdin is empty; positional filter .a produces exactly1 LF. This is input-file selection, unlike jq's filter-file option."
+    },
+    {
+      "command": "sort",
+      "claim": "field-separator",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-372"
+      ],
+      "activation": "-t: creates numeric second-field and reversed first-field keys; b:2/a:10/c:2 becomes c:2/b:2/a:10, which whole-record lexical sorting cannot produce."
+    },
+    {
+      "command": "sort",
+      "claim": "key",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-372",
+        "compat-text-line-390",
+        "compat-text-line-399"
+      ],
+      "activation": "Several actual keys include independent modifiers, combined endpoint modifiers and leading-blank field boundaries, all with exact distinct ordering. The finite cases do not cover every key grammar combination."
+    },
+    {
+      "command": "sort",
+      "claim": "general-numeric-sort",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-381",
+        "repair-alias-sort-general-numeric-sort"
+      ],
+      "activation": "-g/long alias sorts text, nan, negative infinity,1,positive infinity in the exact declared class order, requiring numeric-class handling beyond decimal lexical comparison."
+    },
+    {
+      "command": "sort",
+      "claim": "unique",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-408",
+        "repair-alias-sort-unique",
+        "o2-sort-merge-unique-key"
+      ],
+      "activation": "Two records with equal selected key1 retain the first b:1 under -u, despite a:1 being lexically smaller. Merge unique likewise retains first-source a2 for duplicate key a."
+    },
+    {
+      "command": "sort",
+      "claim": "human-numeric-sort",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-417",
+        "repair-alias-sort-human-numeric-sort"
+      ],
+      "activation": "10K/999999K/1M have exact suffix-aware order, with unit rank affecting comparison. This is the command's documented human-numeric order, not a normalized-byte-size claim."
+    },
+    {
+      "command": "sort",
+      "claim": "ignore-leading-blanks",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-426"
+      ],
+      "activation": "-bdf over leading-space B/z and a emits a,B,z order; leading blanks must be ignored for the B/z positions. The same input does not discriminate -d, which stays unreviewed."
+    },
+    {
+      "command": "sort",
+      "claim": "ignore-case",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-435",
+        "compat-text-line-426",
+        "repair-alias-sort-ignore-case"
+      ],
+      "activation": "-f places a before [ by uppercase-byte comparison, opposite raw ASCII a/[ order; mixed-case leading-space fixture additionally requires case folding."
+    },
+    {
+      "command": "sort",
+      "claim": "version-sort",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-436",
+        "repair-alias-sort-version-sort"
+      ],
+      "activation": "file10/file2/file1 become file1/file2/file10, requiring digit-run comparison rather than lexical order."
+    },
+    {
+      "command": "sort",
+      "claim": "zero-terminated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-445",
+        "repair-alias-sort-zero-terminated"
+      ],
+      "activation": "b NUL a NUL becomes a NUL b NUL, asserting both NUL parsing and preservation of terminators."
+    },
+    {
+      "command": "sort",
+      "claim": "check-quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-467"
+      ],
+      "activation": "Unsorted b/a under -C returns1 and both streams empty, suppressing the usual disorder diagnostic without pretending success."
+    },
+    {
+      "command": "sort",
+      "claim": "random-sort",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o2-sort-r-seed16",
+        "o2-sort-r-seed32-same-prefix"
+      ],
+      "activation": "A fixed16-byte source produces exact alpha/alpha/zeta/empty/beta order on nonempty input, distinct from lexical order. A longer source with the same16-byte prefix yields the identical order."
+    },
+    {
+      "command": "sort",
+      "claim": "random-source",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o2-sort-r-seed16",
+        "o2-sort-r-seed32-same-prefix",
+        "o2-sort-r-empty-input-empty-source"
+      ],
+      "activation": "Named deterministic seed bytes control exact random order; source-prefix behavior and empty-source rejection are separately bound. Runtime entropy quality and arbitrary distributions are outside this finite profile."
+    },
+    {
+      "command": "sort",
+      "claim": "stable",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o2-sort-r-key-stable",
+        "o2-sort-r-key",
+        "o2-sort-merge-stable-key"
+      ],
+      "activation": "Equal selected keys preserve b alpha before a alpha under -Rs whereas the nonstable row uses lexical fallback. Stable merge preserves source order a2 before a1 for equal keys."
+    },
+    {
+      "command": "sort",
+      "claim": "merge",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o2-sort-merge",
+        "o2-sort-merge-stable-key",
+        "o2-sort-merge-unique-key",
+        "o2-sort-merge-does-not-check-order"
+      ],
+      "activation": "Two already sorted fixture streams interleave to exact combined order, with stable and unique key semantics. The separate unsorted-input merge case is required to discriminate merge from ordinary full sorting."
+    },
+    {
+      "command": "sort",
+      "claim": "reverse",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "r3-sort-reverse"
+      ],
+      "activation": "--reverse changes a/c/b to c/b/a and asserts the input file unchanged; it is an observable global reverse order, independent of local key reverse."
+    },
+    {
+      "command": "uniq",
+      "claim": "count",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-476",
+        "repair-alias-uniq-count"
+      ],
+      "activation": "After field/character selection, three inputs form groups2 and1 and require exact padded counts and original representative records, including long alias."
+    },
+    {
+      "command": "uniq",
+      "claim": "skip-chars",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-476",
+        "compat-text-line-485"
+      ],
+      "activation": "Skipping one byte after field removal exposes x/x/y rather than shared leading blank, separating group2 from group1. The NUL-record case also selects a byte range within records."
+    },
+    {
+      "command": "uniq",
+      "claim": "check-chars",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-476",
+        "compat-text-line-485"
+      ],
+      "activation": "Comparing one byte makes xa/xb equal and preserves the first representative; NUL records ax1/ax2 similarly coalesce by selected x while by remains distinct."
+    },
+    {
+      "command": "uniq",
+      "claim": "zero-terminated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-485",
+        "repair-alias-uniq-zero-terminated",
+        "o1-uniq-group-both-nul"
+      ],
+      "activation": "NUL records coalesce using selected key bytes and remain NUL terminated. Group=both additionally emits explicit NUL group separators around repeated and singleton groups."
+    },
+    {
+      "command": "uniq",
+      "claim": "all-repeated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-uniq-all-repeated-default",
+        "o1-uniq-all-repeated-prepend",
+        "o1-uniq-all-repeated-separate-abbreviation"
+      ],
+      "activation": "-D emits all a/a and c/c members, drops singleton b and terminates the originally unterminated c; prepend/separate modes have exact distinct blank separators, including abbreviated value sep."
+    },
+    {
+      "command": "uniq",
+      "claim": "group",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-uniq-group-default",
+        "o1-uniq-group-prepend",
+        "o1-uniq-group-append",
+        "o1-uniq-group-both-nul"
+      ],
+      "activation": "Repeated and singleton groups are retained with exact intergroup and outer separator placement in default/prepend/append/both modes; NUL record mode is explicitly combined."
+    },
+    {
+      "command": "nl",
+      "claim": "body-numbering",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-945"
+      ],
+      "activation": "-ba numbers the body record b after an explicit body section boundary. Other body predicates and blank-record numbering remain separate."
+    },
+    {
+      "command": "nl",
+      "claim": "header-numbering",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-945"
+      ],
+      "activation": "-ha numbers h inside an actual header section rather than only body records; exact10:h establishes enabled header numbering."
+    },
+    {
+      "command": "nl",
+      "claim": "starting-line-number",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-945"
+      ],
+      "activation": "-v10 begins numbering at10 in the header and resets to10 at the body section. The -i2 in this one-record-per-section case is not treated as an increment witness."
+    },
+    {
+      "command": "nl",
+      "claim": "number-separator",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-945"
+      ],
+      "activation": "-s: yields exact10:h and10:b rather than default TAB separation; section delimiter output remains blank lines."
+    },
+    {
+      "command": "date",
+      "claim": "utc",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-date-fixed-offset",
+        "repair-date-utc-override",
+        "repair-alias-date-utc"
+      ],
+      "activation": "The same epoch0 with fixed TZ+05:45 normally emits05:45/+0545; -u and long alias require00:00/+0000/UTC, discriminating actual timezone override."
+    },
+    {
+      "command": "date",
+      "claim": "date",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p2-date-epoch-format",
+        "p2-date-iso-seconds",
+        "repair-date-negative-fraction",
+        "repair-alias-date-date"
+      ],
+      "activation": "-d parses fixed epoch0, civil timestamp and negative fractional epoch inputs into exact expected civil/epoch values; long alias is separately bound. Current clock output is not used as proof."
+    },
+    {
+      "command": "date",
+      "claim": "iso-8601",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p2-date-iso-seconds",
+        "repair-date-iso-ns"
+      ],
+      "activation": "--iso-8601=seconds emits1970-01-02T03:04:05+00:00; -Ins preserves nine fractional digits with comma and colon timezone +05:45. This is exact precision-specific formatting."
+    },
+    {
+      "command": "date",
+      "claim": "rfc-email",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p2-date-rfc-email"
+      ],
+      "activation": "-R on epoch0 in UTC emits the exact C-language Thu,01 Jan1970 timestamp with +0000 offset, not the ordinary date display."
+    },
+    {
+      "command": "seq",
+      "claim": "format",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o3-seq-format-basic",
+        "o3-seq-format-percent",
+        "o3-seq-format-separator",
+        "o3-seq-format-star",
+        "o3-seq-format-two"
+      ],
+      "activation": "Fixed fractional sequence1,1.5,2 is rendered with exact2-decimal brackets; literal percent and custom separators are distinct. Dynamic width and multiple conversions reject. This preserves the frozen numeric ABI profile rather than inferring host printf equivalence."
+    },
+    {
+      "command": "seq",
+      "claim": "separator",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o3-seq-format-separator"
+      ],
+      "activation": "-s: with bracket format emits [1]:[2]:[3] LF, requiring separators only between values and a final LF after the last value."
+    },
+    {
+      "command": "strings",
+      "claim": "all",
+      "kind": "accepted-no-op",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-strings-whole-input",
+        "repair-alias-strings-all"
+      ],
+      "activation": "README defines the default as whole-input scanning; -a and long alias return abcd LF efgh LF across a NUL boundary. This proves accepted whole-input output, not object-section traversal."
+    },
+    {
+      "command": "strings",
+      "claim": "radix",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-strings-decimal",
+        "repair-strings-radix-last-x",
+        "repair-strings-radix-last-o"
+      ],
+      "activation": "-td prefixes abcdef after xx NUL with exact padded decimal offset3. Repeated radix selection has dedicated x/o last-value cases; broad offset ranges remain separate."
+    },
+    {
+      "command": "strings",
+      "claim": "print-file-name",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-strings-stdin-prefix",
+        "repair-alias-strings-print-file-name"
+      ],
+      "activation": "-f on hello stdin emits exactly {standard input}: hello LF, while long alias has a named fixture. Filename prefixes are observed rather than inferred from an option label."
+    },
+    {
+      "command": "strings",
+      "claim": "bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-31-strings-separator-final"
+      ],
+      "activation": "-n3 emits abc and def but drops short final no from binary-separated input, requiring an actual minimum-length threshold."
+    },
+    {
+      "command": "strings",
+      "claim": "output-separator",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-31-strings-separator-final",
+        "o7-32-strings-empty-separator",
+        "o7-33-strings-separator-last"
+      ],
+      "activation": "Custom <> follows every emitted string including the last; empty separator concatenates abcdef, and repeated -sA -sB uses B. All outputs are exact hex bytes."
+    },
+    {
+      "command": "wc",
+      "claim": "max-line-length",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-495",
+        "compat-text-line-496",
+        "repair-alias-wc-max-line-length"
+      ],
+      "activation": "-L selects5 from lines3/5; a TAB between a/b yields display width9 rather than byte length3. The long alias is separately exact."
+    },
+    {
+      "command": "cut",
+      "claim": "only-delimited",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-cut-same-delimiter-single-field-suppression"
+      ],
+      "activation": "-z -s -d empty -f2 on a NUL emits no output, asserting suppression when field separator and record terminator coincide. More ordinary undelimited/empty-field distinctions remain separate."
+    },
+    {
+      "command": "cut",
+      "claim": "zero-terminated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-cut-same-delimiter-single-field-suppression",
+        "repair-alias-cut-zero-terminated"
+      ],
+      "activation": "The retained long-alias NUL-record case provides positive projection output; the same record/field delimiter case separately asserts suppression with no invented record terminator."
+    },
+    {
+      "command": "tac",
+      "claim": "before",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o6-tac-before-unterminated",
+        "o6-tac-fixed-empty-before"
+      ],
+      "activation": "-b on a LF b LF c emits LF c LF ba; an empty fixed separator interpreted as NUL emits NUL c NUL ba. Separator attachment before reversed records is observable."
+    },
+    {
+      "command": "tac",
+      "claim": "separator",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o6-tac-fixed-empty",
+        "o6-tac-fixed-empty-before"
+      ],
+      "activation": "An empty fixed -s value denotes NUL and reverses a NUL b NUL c to cb NUL a NUL; -b changes attachment. This is distinct from regex-empty rejection."
+    },
+    {
+      "command": "tac",
+      "claim": "regex",
+      "kind": "supported-with-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o6-tac-alt-prefix-after",
+        "o6-tac-regex-empty"
+      ],
+      "activation": "-r separator aba\\|b over ababa yields aabab, requiring the command's regex alternation dialect. Empty regex separator rejects before trying the deliberately absent file."
+    },
+    {
+      "command": "od",
+      "claim": "address-radix",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "od-hex-byte-address",
+        "od-signed-bytes",
+        "o7-15-od-traditional-label"
+      ],
+      "activation": "-An suppresses addresses, -Ax emits hex addresses and the traditional octal label16 is rendered as hex10. Small abc addresses alone would not distinguish decimal/octal/hex radix."
+    },
+    {
+      "command": "od",
+      "claim": "format",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "od-hex-byte-address",
+        "od-signed-bytes",
+        "od-big-endian",
+        "o7-01-od-float-values",
+        "o7-03-od-double-values"
+      ],
+      "activation": "Explicit x1/d1/x2 formats give exact byte hex, signed -1/-128 and big-endian0102 output; separate fixed float/double bodies bind supported numeric formats. This is a bounded format family, not every combination."
+    },
+    {
+      "command": "od",
+      "claim": "endian",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "od-big-endian"
+      ],
+      "activation": "--endian=big with x2 and bytes0102 emits0102 rather than host/little0201. A non-symmetric two-byte input forces endian activation."
+    },
+    {
+      "command": "od",
+      "claim": "skip-bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "od-skip-limit-concatenation"
+      ],
+      "activation": "-j2 skips actual xx across a two-file concatenation whose remaining bytes begin abcd; output starts address2 and contains only the selected four bytes."
+    },
+    {
+      "command": "od",
+      "claim": "read-bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "od-skip-limit-concatenation",
+        "o7-20-od-strings-nul-limit",
+        "o7-21-od-strings-limit-terminates"
+      ],
+      "activation": "-N4 limits a concatenated abcd suffix before yz; -N3 truncates abcdef to a qualifying abc string and emits it at the artificial EOF boundary."
+    },
+    {
+      "command": "od",
+      "claim": "width",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "od-verbose-blocks"
+      ],
+      "activation": "-w4 on eight input bytes emits two four-byte rows, rather than one default-width row. This proves row formatting, not buffer resource limits."
+    },
+    {
+      "command": "od",
+      "claim": "output-duplicates",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "od-verbose-blocks",
+        "od-duplicate-blocks"
+      ],
+      "activation": "-v emits both identical abcd rows literally instead of a * abbreviation; the default duplicate row provides the direct comparison."
+    },
+    {
+      "command": "od",
+      "claim": "character",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "od-escaped-characters",
+        "o7-14-od-old-offset"
+      ],
+      "activation": "-c renders a/LF/NUL/0xff as literal a, escaped newline/NUL and octal377, with exact spacing. Old +2 offset syntax is separately exercised."
+    },
+    {
+      "command": "od",
+      "claim": "traditional",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-15-od-traditional-label",
+        "o7-16-od-traditional-hidden-address-label"
+      ],
+      "activation": "--traditional parses separate offset/label operands and prints exact shifted parenthesized labels; -An suppresses ordinary addresses while retaining labels."
+    },
+    {
+      "command": "hexdump",
+      "claim": "one-byte-hex",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "hexdump-one-byte-hex",
+        "repair-alias-hexdump-one-byte-hex"
+      ],
+      "activation": "-X and long alias render abc as three individual61/62/63 values with exact padding and final address3, distinct from word hex output."
+    },
+    {
+      "command": "hexdump",
+      "claim": "two-bytes-hex",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "hexdump-two-byte-hex",
+        "repair-alias-hexdump-two-bytes-hex"
+      ],
+      "activation": "-x renders abc as little-endian6261 and zero-padded0063, asserting the partial word and final real-byte address3."
+    },
+    {
+      "command": "hexdump",
+      "claim": "canonical",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "hexdump-canonical-short",
+        "repair-alias-hexdump-canonical",
+        "hexdump-skip-stdin-boundary"
+      ],
+      "activation": "-C produces exact address, byte columns and |abc| ASCII gutter; a binary stdin fixture after read/discard skip asserts nonprinting dots as a workspace extension."
+    },
+    {
+      "command": "hexdump",
+      "claim": "skip",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "hexdump-skip-limit-files",
+        "hexdump-skip-stdin-boundary"
+      ],
+      "activation": "-s2 discards actual xx before reading across two files; explicit stdin skip similarly discards first two bytes. Exact displayed start/end addresses remain2/5 or2/8."
+    },
+    {
+      "command": "hexdump",
+      "claim": "length",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "hexdump-skip-limit-files"
+      ],
+      "activation": "-n3 limits concatenated xx a / bc yy input after skip2 to exactly abc, with end address5 and no yy output."
+    },
+    {
+      "command": "hexdump",
+      "claim": "format",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-hexdump-integer-sign",
+        "o7-hexdump-integer-alternate",
+        "o7-hexdump-color-unconditional"
+      ],
+      "activation": "-e format units exercise signed width/zero padding including0xff -> -001, alternate hex including zero, and literal color directives with exact ANSI bytes. This is a finite grammar subset."
+    },
+    {
+      "command": "hexdump",
+      "claim": "format-file",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-hexdump-format-file"
+      ],
+      "activation": "-f reads actual formats file containing comments, blanks, repeated4/1 hex unit and final-address unit. Eight binary input bytes produce exact two rows and final address8."
+    },
+    {
+      "command": "hexdump",
+      "claim": "color",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-hexdump-color-unconditional",
+        "o7-hexdump-builtin-color-always",
+        "o7-hexdump-builtin-color-never"
+      ],
+      "activation": "A custom _L[red] directive under --color=always emits actual red/reset ANSI spans around every byte. Builtin always/never rows are identical and would be inadequate alone to prove color activation."
+    },
+    {
+      "command": "xxd",
+      "claim": "seek",
+      "kind": "supported-with-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-42",
+        "o8-xxd-stdin-forward-relative",
+        "o8-xxd-stdin-end-relative-reject",
+        "o8-xxd-stdin-relative-backward-reject",
+        "repair-alias-xxd-seek"
+      ],
+      "activation": "Forward absolute/relative stdin seek discards actual bytes and displays address4 with data4567 onward. Unsupported negative and backwards stdin seeks fail4 with exact cannot seek diagnostic."
+    },
+    {
+      "command": "xxd",
+      "claim": "len",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-42",
+        "o8-xxd-include-columns-limit-upper"
+      ],
+      "activation": "-l4 after seek4 emits only4567 from longer input; include -l3 emits exactly three initializers and length3. Counts are observable in bytes and metadata."
+    },
+    {
+      "command": "xxd",
+      "claim": "reverse",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-51",
+        "repair-alias-xxd-reverse",
+        "o8-xxd-reverse-bits-valid"
+      ],
+      "activation": "-r -p with output adjustment2 decodes6162 to NUL NUL ab; reverse bit rows decode01000001/01000010 to AB. This binds reverse conversion and zero-fill output behavior."
+    },
+    {
+      "command": "xxd",
+      "claim": "revert",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-alias-xxd-reverse",
+        "o8-xxd-reverse-bits-valid"
+      ],
+      "activation": "Catalog revert and reverse denote the same operation; the actual long reverse alias row and bit reverse row are bound explicitly. Alias spelling must be validated from argv rather than coverage labels."
+    },
+    {
+      "command": "xxd",
+      "claim": "bits",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-bits",
+        "o8-xxd-reverse-bits-valid"
+      ],
+      "activation": "-b outputs real eight-digit binary byte groups and six-byte rows for mixed text; -r -b reads binary byte tokens back to AB. Hex passthrough cannot satisfy either literal body."
+    },
+    {
+      "command": "xxd",
+      "claim": "little",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-little-endian",
+        "o8-xxd-reverse-little-reject"
+      ],
+      "activation": "-e reverses actual four-byte groups, showing33323130 for input0123 while preserving ASCII gutter. Reverse little-endian mode has its own rejection contract, not a presumed symmetric operation."
+    },
+    {
+      "command": "xxd",
+      "claim": "ebcdic",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-ebcdic"
+      ],
+      "activation": "-E keeps byte hex but maps the ASCII gutter with the EBCDIC table: input L/M/N/O/P becomes punctuation in the literal expected display. This is not an unchanged all-ASCII witness."
+    },
+    {
+      "command": "xxd",
+      "claim": "group",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-group-none",
+        "o8-xxd-group-three",
+        "o8-xxd-group-invalid"
+      ],
+      "activation": "-g0 removes intergroup hex spacing from nonempty data; -g3 uses three-byte groups. The case named group-invalid actually accepts -g xyz as zero grouping with status0 and exact ungrouped output, so it is not counted as rejection evidence."
+    },
+    {
+      "command": "xxd",
+      "claim": "upper",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-upper",
+        "o8-xxd-include-columns-limit-upper",
+        "o8-xxd-plain-unwrapped-upper"
+      ],
+      "activation": "-u emits uppercase A-F digits for bytes whose hex includes letters; include mode uses0X and plain mode emits00C2AB LF. Numeric-only hex would not discriminate case."
+    },
+    {
+      "command": "xxd",
+      "claim": "offset",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-display-offset",
+        "o8-xxd-display-offset-negative"
+      ],
+      "activation": "-o16 shifts displayed addresses from0/10/20 to10/20/30 without skipping bytes; -o-2 shows the explicit unsigned address wrap. This is display offset, distinct from input seek."
+    },
+    {
+      "command": "xxd",
+      "claim": "autoskip",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-autoskip"
+      ],
+      "activation": "Five zero blocks under -a retain first/last blocks and replace middle blocks by a literal * line, exercising real zero-run suppression."
+    },
+    {
+      "command": "xxd",
+      "claim": "plain",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-plain-unwrapped-upper",
+        "compat-text-line-51"
+      ],
+      "activation": "-ps -c0 -u writes only00C2AB LF without addresses/gutter; reverse -p decodes plain hexadecimal. -ps is treated according to actual parser meaning, not falsely as a seek witness."
+    },
+    {
+      "command": "xxd",
+      "claim": "include",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-include-columns-limit-upper",
+        "o8-xxd-include-byte-name"
+      ],
+      "activation": "-i emits exact unsigned char array and unsigned int length declaration for three bytes; a UTF8 name is sanitized byte-wise to __file. This is output text, not a product C implementation."
+    },
+    {
+      "command": "xxd",
+      "claim": "cols",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-include-columns-limit-upper"
+      ],
+      "activation": "-c2 with three included bytes emits two initializers on the first line and one on the second, requiring column wrapping at the selected count."
+    },
+    {
+      "command": "xxd",
+      "claim": "name",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o8-xxd-include-columns-limit-upper",
+        "o8-xxd-include-byte-name"
+      ],
+      "activation": "-nfixture sets both array and length symbol names; -néfile becomes __file under byte-wise identifier sanitization. Names are literal asserted output."
+    },
+    {
+      "command": "nl",
+      "claim": "number-width",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-623"
+      ],
+      "activation": "-w1 with two numbered records NUL and last emits1:NUL LF2:last LF without default padding. The minimum field width is observable even for binary data."
+    },
+    {
+      "command": "gzip",
+      "claim": "test",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-gzip-validate",
+        "p1-gzip-concatenated"
+      ],
+      "activation": "-t consumes a nonempty valid fixed member and emits empty output/status0, contrasting ordinary decoded abcabc output. Invalid validation streams still need their own scoped bindings."
+    },
+    {
+      "command": "join",
+      "claim": "1",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-join-explicit-fields-header-auto"
+      ],
+      "activation": "-1 2 selects left key A/b from the second colon-separated field rather than first L/B; output contains joined A:L:X:R and b:B:Y:S after the header."
+    },
+    {
+      "command": "join",
+      "claim": "2",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-join-explicit-fields-header-auto"
+      ],
+      "activation": "-2 2 selects right keys a/b rather than R/S, so both left records join under case folding. Actual unequal first fields force the field-selection effect."
+    },
+    {
+      "command": "join",
+      "claim": "after",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-join-output-list",
+        "o1-join-after-plus-only"
+      ],
+      "activation": "Repeated -a1/-a2 retain actual left-only b and right-only d around paired a/c. Combined -a1 -v2 retains unpaired b/c but suppresses pair a; operand spelling after denotes -a, not an invented long option."
+    },
+    {
+      "command": "join",
+      "claim": "only",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-join-after-plus-only"
+      ],
+      "activation": "-a1 -v2 suppresses an actual a pair and emits only left b/right c unpaired rows, requiring only-unpaired mode to affect selected output."
+    },
+    {
+      "command": "join",
+      "claim": "empty",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-join-output-list",
+        "o1-join-header-auto-unpaired"
+      ],
+      "activation": "-e0 fills missing opposite-side fields with0 in retained unpaired b/d records; auto output plus -eNA separately fills a ragged b record."
+    },
+    {
+      "command": "join",
+      "claim": "output",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-join-output-list",
+        "o1-join-auto",
+        "o1-join-header-auto-unpaired"
+      ],
+      "activation": "Explicit0,1.2,2.2 list determines key/left/right order and placeholders. -oauto uses the first-record widths, dropping later EXTRA/right Z fields; exact outputs distinguish list and inferred layouts."
+    },
+    {
+      "command": "join",
+      "claim": "t",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-join-header-zero-auto",
+        "o1-join-explicit-fields-header-auto"
+      ],
+      "activation": "-t: parses colon fields and emits colon-separated records, combined with NUL records and explicit second-field keys. Default whitespace parsing cannot join these operands."
+    },
+    {
+      "command": "join",
+      "claim": "header",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-join-header-auto-unpaired",
+        "o1-join-explicit-fields-header-auto"
+      ],
+      "activation": "--header emits the combined header even though its key precedes data in a way that ordinary sorted data processing would not permit; header fields also fix auto output width."
+    },
+    {
+      "command": "join",
+      "claim": "ignore-case",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-join-ignore-case",
+        "o1-join-explicit-fields-header-auto"
+      ],
+      "activation": "Left b matches right B and left A matches right a only under -i, while output preserves the left key spelling. Case-fold activation is not inferred from identical-case pairs."
+    },
+    {
+      "command": "join",
+      "claim": "zero-terminated",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-join-header-zero-auto"
+      ],
+      "activation": "-z processes colon fields separated by NUL, emits header and matched a record as exact NUL records and preserves auto-width empty field placement."
+    },
+    {
+      "command": "join",
+      "claim": "nocheck-order",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-join-nocheck-precedence"
+      ],
+      "activation": "--check-order then --nocheck-order processes unsorted left b/a against right a/b to exact b LF/status0/empty stderr, proving disabled order diagnostics and final-flag precedence."
+    },
+    {
+      "command": "column",
+      "claim": "table",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-column-table-final-lf",
+        "repair-column-uneven",
+        "repair-alias-column-table"
+      ],
+      "activation": "-t aligns actual unequal-width cells with exact padding and emits final LF for an unterminated input row; ragged rows retain declared blank cell alignment. Long alias is separately bound."
+    },
+    {
+      "command": "column",
+      "claim": "separator",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p2-column-delimiter",
+        "repair-column-delimiter-set"
+      ],
+      "activation": "-s: changes a:b parsing; separator set :, preserves empty cells from a::b,c and xx:,d. Nonempty delimiters affect both fields and alignment."
+    },
+    {
+      "command": "column",
+      "claim": "output-separator",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p2-column-delimiter"
+      ],
+      "activation": "-o SP|SP renders a  | b and cc | ddd with explicit custom separators and width padding, distinct from the default space layout."
+    },
+    {
+      "command": "column",
+      "claim": "output-width",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-column-width",
+        "repair-column-fillrows"
+      ],
+      "activation": "-c16 overrides environment COLUMNS80 and changes five items to two display columns. The same width combined with -x fills rows instead of columns."
+    },
+    {
+      "command": "column",
+      "claim": "fillrows",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-column-fillrows",
+        "repair-column-width"
+      ],
+      "activation": "At fixed width16, default emits a/d then b/e then c, while -x emits a/b then c/d then e. Exact placement discriminates traversal order without relying on timing."
+    },
+    {
+      "command": "tee",
+      "claim": "append",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o13-tee-append-p"
+      ],
+      "activation": "Existing sink first receives abc under -ap and must become firstabc while stdout is exactly abc, proving append through actual file effects."
+    },
+    {
+      "command": "tee",
+      "claim": "output-error",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o13-tee-open-warn",
+        "o13-tee-open-exit",
+        "o13-tee-invalid-mode"
+      ],
+      "activation": "Directory-open error under warn still copies abc to stdout and later sink; exit stops before either output and leaves sink absent. Invalid mode rejects before effects. Pipe-specific failures remain their own scenario obligation."
+    },
+    {
+      "command": "base32",
+      "claim": "ignore-garbage",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-base32-ignore-garbage"
+      ],
+      "activation": "--decode --ignore-garbage transforms MZ!!XW6=== LF into exactly foo, requiring removal of nonalphabet bytes inside an encoded quantum."
+    },
+    {
+      "command": "cat",
+      "claim": "number",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-cat-number-empty-record",
+        "proof-cat-nonblank-overrides-number-first",
+        "proof-cat-nonblank-overrides-number-last"
+      ],
+      "activation": "--number assigns1,2,3 to a/blank/b records with exact six-column labels. Both -b -n and -n -b instead leave the middle record unnumbered and label b as2, proving -b dominance in either order."
+    },
+    {
+      "command": "sort",
+      "claim": "dictionary-order",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-sort-dictionary-order-activation"
+      ],
+      "activation": "--dictionary-order --stable sorts b/a~/a to a~/a/b; punctuation removal makes the last two keys equivalent and stable retains a~ before a. Without -d raw lexical order puts a before a~, so this replaces the nondiscriminating -bdf coverage label."
+    },
+    {
+      "command": "nl",
+      "claim": "line-increment",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-nl-increment-activation"
+      ],
+      "activation": "Three actual numbered records under -v10 -i2 emit10:a,12:b,14:c. Unlike the old one-record-per-section case, repeated increments are observable."
+    },
+    {
+      "command": "nl",
+      "claim": "number-format",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-nl-zero-padded-number-format"
+      ],
+      "activation": "-n rz -w3 emits001 TAB a LF002 TAB b LF, distinguishing right zero padding from space padding or left alignment."
+    },
+    {
+      "command": "paste",
+      "claim": "serial",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-paste-serial-delimiter-cycle"
+      ],
+      "activation": "Nonempty a/b/c stdin under -s and delimiter cycle newline/TAB emits a LF b TAB c LF, combining records into one serial result while cycling actual delimiter choices."
+    },
+    {
+      "command": "jq",
+      "claim": "arg",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-jq-arg-used"
+      ],
+      "activation": "-nr --arg x outer evaluates $x and emits outer LF, requiring the injected value to be used. The old shadowed-variable scope case alone could not prove injection."
+    },
+    {
+      "command": "jq",
+      "claim": "argjson",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-jq-argjson-used"
+      ],
+      "activation": "--argjson x containing object a=2 evaluates $x.a to exactly2 LF; this requires parsing and injecting a structured JSON value rather than a string."
+    },
+    {
+      "command": "jq",
+      "claim": "from-file",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-jq-from-file-filter"
+      ],
+      "activation": "--from-file filter reads actual .a source from a fixture, applies it to stdin object a=2 and emits2 LF. This is filter loading, unlike jqlog -f input-file selection."
+    },
+    {
+      "command": "head",
+      "claim": "quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-head-quiet-real-multiple-files"
+      ],
+      "activation": "Two real files under --quiet -n1 yield a LF b LF without normally visible multi-file headers; both selection and header suppression affect output."
+    },
+    {
+      "command": "head",
+      "claim": "verbose",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-head-verbose-single-file"
+      ],
+      "activation": "A single named file under --verbose -n1 emits exact ==> one <== LF a LF, forcing a header that default single-file mode omits."
+    },
+    {
+      "command": "tail",
+      "claim": "verbose",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-tail-verbose-single-file"
+      ],
+      "activation": "A single named a/z file under --verbose -n1 emits exact ==> one <== LF z LF, requiring both forced header and final-line selection."
+    },
+    {
+      "command": "grep",
+      "claim": "fixed-strings",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-grep-fixed-metacharacter"
+      ],
+      "activation": "--fixed-strings a.b excludes axb and emits only a.b LF, directly discriminating literal dot from regex dot."
+    },
+    {
+      "command": "grep",
+      "claim": "ignore-case",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-grep-ignore-case-positive"
+      ],
+      "activation": "--ignore-case alpha selects actual opposite-case ALPHA from ALPHA/beta input and preserves its original bytes."
+    },
+    {
+      "command": "rg",
+      "claim": "ignore-case",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-rg-ignore-case-positive"
+      ],
+      "activation": "-i alpha selects ALPHA and alpha but excludes beta; the positive folded match is real, unlike the old -i -s case that only proved disabling case folding."
+    },
+    {
+      "command": "rg",
+      "claim": "smart-case",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-rg-smart-case-lowercase",
+        "proof-rg-smart-case-uppercase"
+      ],
+      "activation": "Lowercase alpha under -S selects all ALPHA/alpha/Alpha variants; uppercase-containing Alpha under the same mode selects only Alpha. Neither unconditional folding nor unconditional sensitivity satisfies both."
+    },
+    {
+      "command": "rg",
+      "claim": "word-regexp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-rg-word-regexp-boundaries"
+      ],
+      "activation": "-w cat selects cat and cat-cat but rejects scatter and cat_, exercising positive boundaries, embedded text and underscore word continuation in the ASCII subset."
+    },
+    {
+      "command": "rg",
+      "claim": "line-regexp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-rg-line-regexp-boundaries"
+      ],
+      "activation": "-x alpha selects only the complete alpha record and rejects both beta alpha and alpha beta, explicitly activating both line anchors."
+    },
+    {
+      "command": "gunzip",
+      "claim": "stdout",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "g2-gunzip-named-members"
+      ],
+      "activation": "Explicit -c on two named fixed gzip members emits exactly abcabc and requires both compressed source files unchanged, proving the no-in-place stdout path."
+    },
+    {
+      "command": "zcat",
+      "claim": "test",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-zcat-validate",
+        "p1-zcat-concatenated"
+      ],
+      "activation": "-t validates a nonempty fixed member with empty streams/status0, contrasted with default concatenated members producing abcabc."
+    },
+    {
+      "command": "wc",
+      "claim": "words",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-wc-c-byte-nbsp-scalar",
+        "proof-wc-c-byte-nbsp-vector"
+      ],
+      "activation": "ByteA0 inside a nonempty C-byte word is not a separator:61 A0 62 LF gives one word, as does15 a bytes followed by A0 b LF across the vector/tail boundary. Independently reviewed by wc_profile_review. This finite facet does not prove every ASCII whitespace classification, read-boundary carry, aliases, combined counters or error behavior."
+    },
+    {
+      "command": "base32",
+      "claim": "decode",
+      "case_ids": [
+        "base32-rfc4648-decode",
+        "base32-nonzero-tail-bits-accepted"
+      ],
+      "activation": "MZXW6=== decodes to exactly foo and an accepted nonzero-tail-bit vector to f, with exact successful streams. Malformed-padding emitted-prefix failure remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "base32",
+      "claim": "wrap",
+      "case_ids": [
+        "base32-rfc4648-foobar"
+      ],
+      "activation": "-w0 encodes foobar as MZXW6YTBOI====== without final LF. Invalid negative wrap and positive-width boundaries remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "base64",
+      "claim": "decode",
+      "case_ids": [
+        "compat-text-line-642"
+      ],
+      "activation": "Explicit -D decodes aGk= to exactly hi. Lowercase-d rejection cases and other spellings remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha256sum",
+      "claim": "check",
+      "case_ids": [
+        "o9-sha256sum-check-tag"
+      ],
+      "activation": "-c accepts the named BSD-tagged SHA256 record for explicit abc LF input and emits exactly payload: OK LF. Malformed-record warnings remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "paste",
+      "claim": "delimiters",
+      "case_ids": [
+        "compat-merge-paste"
+      ],
+      "activation": "-d, replaces TAB with comma for two independently supplied two-record files, yielding exactly1,a LF2,b LF. Malformed delimiter escapes remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "head",
+      "claim": "lines",
+      "case_ids": [
+        "compat-text-line-561",
+        "compat-text-line-570",
+        "compat-text-line-579"
+      ],
+      "activation": "Exact finite fixtures bind -n -2 excluding the last two records, -n +3 selecting the first three, and legacy -2 selecting two. Malformed-count rejection remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "tail",
+      "claim": "sleep-interval",
+      "case_ids": [
+        "compat-tail-interval-without-follow",
+        "compat-tail-zero-interval"
+      ],
+      "activation": "Finite0.02 and zero intervals are accepted with the exact selected output in these non-follow fixtures. Negative/infinite validation and actual polling delays remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "sort",
+      "case_ids": [
+        "rg-files-default-directory",
+        "rg-global-ignore-disabled"
+      ],
+      "activation": "--sort path produces exact ascending paths for multiple discovered files in these fixtures. Creation-time rejection and other keys remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "pre",
+      "case_ids": [
+        "rg-preprocessor-copy",
+        "rg-preprocessor-early-stop"
+      ],
+      "activation": "Selected fixed preprocessors bind copy-through output and quiet early-stop outcome. Transformation, failed-child emitted-prefix preservation and full lifecycle effects remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "binary-files",
+      "case_ids": [
+        "compat-text-line-236",
+        "compat-text-grep-binary-stderr",
+        "compat-text-line-260"
+      ],
+      "activation": "For the explicit NUL-bearing hit, text mode emits exact raw bytes, without-match emits nothing/status1, and default mode emits the exact binary-matches stderr report. Unknown-policy rejection remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sort",
+      "claim": "check",
+      "case_ids": [
+        "compat-text-line-454",
+        "compat-text-line-467"
+      ],
+      "activation": "Sorted a/b under-c returns0 and unsorted b/a under-C returns1, both with exact empty stdout/stderr. Full disorder diagnostic wording remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "uniq",
+      "claim": "skip-fields",
+      "case_ids": [
+        "compat-text-line-476"
+      ],
+      "activation": "-f1 combined with-s1 -w1 makes the first two independently different leading-field rows compare equal while a third comparison key differs, requiring exact counts2/1. Malformed skip-count rejection remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "strings",
+      "claim": "encoding",
+      "case_ids": [
+        "repair-strings-encoding-s-tab",
+        "repair-strings-encoding-S"
+      ],
+      "activation": "Explicit s includes TAB in printable strings and S preserves0xff in an independently specified byte string. Wide-encoding rejection rows remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wc",
+      "claim": "files0-from",
+      "case_ids": [
+        "compat-text-wc-files0-accounting"
+      ],
+      "activation": "A NUL-separated short/long filename list produces exact padded line counts1/10 and total11. Positional-operand conflict rejection remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wc",
+      "claim": "lines",
+      "case_ids": [
+        "compat-text-wc-files0-accounting"
+      ],
+      "activation": "The two selected explicit files contain1/10 LF records and require exact individual/total11 counts. Later-read-error prefix retention remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "strings",
+      "case_ids": [
+        "o7-20-od-strings-nul-limit",
+        "o7-21-od-strings-limit-terminates"
+      ],
+      "activation": "-S3 selects the explicit abc string at a NUL and at read-limit EOF with exact output. Bare-S required-argument rejection remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "decompress",
+      "case_ids": [
+        "p1-gzip-concatenated",
+        "p1-gzip-named-header"
+      ],
+      "activation": "-dc decodes fixed concatenated members to abcabc and accepts the separately specified original-name header. Truncated-stream prefix retention remains unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "stdout",
+      "case_ids": [
+        "p1-gzip-concatenated"
+      ],
+      "activation": "Explicit-dc writes exact decoded concatenated-member bytes abcabc to stdout. In-place rejection/source preservation and compression-to-stdout remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "join",
+      "claim": "check-order",
+      "case_ids": [
+        "o1-join-order-last-check"
+      ],
+      "activation": "--nocheck-order then --check-order rejects the explicit unsorted fixture with exact line2 diagnostic and no stdout. Other checking fixtures remain unqualified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "jq",
+      "claim": "indent",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-jq-indent-one"
+      ],
+      "activation": "--indent 1 formats the nonempty object a=1 with exactly one ASCII space before its member, distinguishing width1 from default2. Other widths, aliases and nested layouts remain unproved."
+    },
+    {
+      "command": "jq",
+      "claim": "tab",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-jq-tab-indent"
+      ],
+      "activation": "--tab formats the nonempty object a=1 with an actual TAB before its member and exact LF framing. Nested indentation and option-order interactions remain unproved."
+    },
+    {
+      "command": "jq",
+      "claim": "logs",
+      "kind": "project-extension",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-jq-logs-skips-invalid-lines"
+      ],
+      "activation": "--logs skips diagnostic and not-json records around two valid JSON objects and evaluates .a to exactly 2 LF 3 LF with empty stderr/status0. This is the documented project extension, not upstream jq compatibility."
+    },
+    {
+      "command": "basename",
+      "claim": "multiple",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-basename-multiple-operands"
+      ],
+      "activation": "--multiple applied to left/a and right/b emits exactly a LF b LF, proving both operands are processed rather than treating the second as a suffix. Other aliases and path dialects remain unproved."
+    },
+    {
+      "command": "basename",
+      "claim": "suffix",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-basename-literal-suffix-implies-multiple"
+      ],
+      "activation": "--suffix=.txt processes two operands, removes one literal trailing suffix, and emits exactly one LF other.txt LF. This proves implied multiple mode and one-suffix removal on these paths only."
+    },
+    {
+      "command": "basename",
+      "claim": "zero",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-basename-zero-terminator"
+      ],
+      "activation": "--zero on left/a emits exactly 61 00, with no LF, empty stderr and status0. Multi-operand and alias combinations remain unproved."
+    },
+    {
+      "command": "dirname",
+      "claim": "zero",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-dirname-zero-multiple"
+      ],
+      "activation": "--zero on a/b and c/d emits exactly 61 00 63 00, preserving operand order and terminating both results with NUL rather than LF."
+    },
+    {
+      "command": "echo",
+      "claim": "enable-escapes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-718"
+      ],
+      "activation": "-e converts literal A backslash-x00 B to exactly 41 00 42 0a. This activates hexadecimal escape decoding and binary output; other escape forms remain separate."
+    },
+    {
+      "command": "echo",
+      "claim": "disable-escapes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-echo-disable-escapes-precedence"
+      ],
+      "activation": "-e then -E preserves literal backslash-n in a backslash-n b and emits one final LF. This is the explicit disable-after-enable precedence facet."
+    },
+    {
+      "command": "echo",
+      "claim": "no-newline",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-echo-no-newline-literal"
+      ],
+      "activation": "-n value emits exactly value with no final LF, empty stderr and status0. Escape-driven suppression and option-looking operands remain separate."
+    },
+    {
+      "command": "printenv",
+      "claim": "null",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-printenv-null-mixed-result"
+      ],
+      "activation": "--null selects visible P9_VALUE followed by a missing name, emits exactly visible NUL and returns1 with empty stderr. It proves NUL framing for a present value plus ordinary missing-variable status."
+    },
+    {
+      "command": "seq",
+      "claim": "equal-width",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "proof-seq-equal-width-nonempty"
+      ],
+      "activation": "--equal-width --separator=, 7 10 emits exactly 07,08,09,10 LF, crossing the9/10 width boundary. Negative, fractional and other format cases remain separate."
+    },
+    {
+      "command": "cksum",
+      "claim": "tag",
+      "kind": "explicit-rejection-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o9-cksum-check-tag"
+      ],
+      "activation": "-c --tag on an explicitly empty manifest rejects1 with empty stdout and exact meaningless-when-verifying diagnostic. This proves only the check/tag conflict; successful tagged output is a different facet."
+    },
+    {
+      "command": "comm",
+      "claim": "check-order",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-comm-order-check-total",
+        "o1-comm-order-nocheck-check"
+      ],
+      "activation": "Unsorted left b LF a versus sorted right b LF b LF c LF d under --check-order emits only the completed common b row, rejects1 and emits exact file1 order diagnostic. Repeating --check-order after --nocheck-order restores this immediate checking behavior."
+    },
+    {
+      "command": "cmp",
+      "claim": "ignore-initial",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-27-cmp-bytes-skips-limit"
+      ],
+      "activation": "-i1:2 compares independently supplied binary files after asymmetric skips: its first compared mismatch is left NUL versus right0x80 at relative byte1/line1. Exact printed byte values distinguish applying both skips. The -n2 limit is not independently activated by this early mismatch."
+    },
+    {
+      "command": "cmp",
+      "claim": "verbose",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-26-cmp-verbose-byte-control",
+        "o7-29-cmp-verbose-byte-eof-after-difference"
+      ],
+      "activation": "-lb emits all five specified differing byte positions with exact octal/control rendering, rather than only the first mismatch. A short left A versus right BC additionally emits the mismatch then exact EOF diagnostic/status1. The -l/-b combination is the reviewed spelling."
+    },
+    {
+      "command": "cmp",
+      "claim": "print-bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o7-25-cmp-byte-control",
+        "o7-30-cmp-byte-stdin-name"
+      ],
+      "activation": "-b renders a first binary mismatch NUL versus0xff as exact octal/control fields and identifies a named-file versus stdin mismatch as left - with exact printable byte values. Other spelling and locale behavior remain unproved."
+    },
+    {
+      "command": "sort",
+      "claim": "batch-size",
+      "kind": "explicit-rejection-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "r3-sort-batch-minimum"
+      ],
+      "activation": "--batch-size=1 rejects2 with exact minimum2 diagnostic and retains the explicit input bytes. This is a lower-bound validation facet, not evidence of actual merge fan-in or resource effects."
+    },
+    {
+      "command": "sort",
+      "claim": "buffer-size",
+      "kind": "explicit-rejection-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "r3-sort-buffer-percent-boundary"
+      ],
+      "activation": "-S20% rejects2 with the exact missing public physical-memory-query diagnostic, empty streams except that diagnostic, and untouched KEEP LF output. Actual buffer allocation and supported absolute sizes are separate obligations."
+    },
+    {
+      "command": "sort",
+      "claim": "output",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o2-sort-output-hardlink-mode"
+      ],
+      "activation": "On Linux/macOS, -o input alias sorts b LF a LF to a LF b LF through a hardlinked existing output, requires empty streams, mode0600 and retained input/alias identity. Other platforms and output-failure cleanup remain separate."
+    },
+    {
+      "command": "sort",
+      "claim": "sort",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o2-sort-r-sort-alias"
+      ],
+      "activation": "--sort=random with the explicit16-byte seed maps zeta,alpha,beta,alpha,empty to exactly alpha,alpha,zeta,empty,beta with final LFs. This reviews random selection via that spelling and fixed seed only, not every --sort value or randomness quality."
+    },
+    {
+      "command": "uniq",
+      "claim": "ignore-case",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o1-uniq-all-repeated-unique-members"
+      ],
+      "activation": "In the explicit combined -i -u -d -D mode, input A,a,A,b,c,c yields exactly A LF a LF c LF. ASCII case folding joins A/a/A and changes duplicate selection; the unusual combined selection contract does not establish standalone -u or -d semantics."
+    },
+    {
+      "command": "grep",
+      "claim": "regexp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "s1-grep-independent-backreferences"
+      ],
+      "activation": "Two explicit -e BRE patterns with independent capture/backreference slots find aa and bb in zaabb, emitting exactly aa LF bb LF under -o. This proves both supplied patterns participate; pattern-file and error-ordering facets remain separate."
+    },
+    {
+      "command": "grep",
+      "claim": "word-regexp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "s1-grep-word-endpoints"
+      ],
+      "activation": "-Ewo over foo.|foo|[a!]*b emits foo rather than foo. from foo.a and b rather than a!b from za!b. These exact choices activate word-endpoint filtering with alternation/only-matching; other word classes and aliases remain separate."
+    },
+    {
+      "command": "mktemp",
+      "claim": "quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o10-mktemp-q-validation-still-diagnostic",
+        "o10-mktemp-q-create-suppressed"
+      ],
+      "activation": "-q suppresses the creation failure diagnostic for missing/name.XXX while retaining status1; bad.XX still reports its exact template validation diagnostic. These distinguish creation-error suppression from unconditional diagnostic suppression; successful random creation is outside this binding."
+    },
+    {
+      "command": "mktemp",
+      "claim": "suffix",
+      "kind": "explicit-rejection-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o10-mktemp-suffix-requires-final-X",
+        "o10-mktemp-suffix-directory"
+      ],
+      "activation": "--suffix=.tail requires the supplied template to end in X, and --suffix=/tail rejects a directory separator, each with status1, empty stdout and exact diagnostic. Successful random-name suffix creation is a separate observer requirement."
+    },
+    {
+      "command": "diff",
+      "claim": "brief",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-diff-label-brief",
+        "d-diff-brief-spaces"
+      ],
+      "activation": "-q emits only one exact Files ... differ summary for old/new fixtures, using explicit LEFT/RIGHT labels or quoted space-bearing paths, with status1 and empty stderr. Full hunk output is suppressed."
+    },
+    {
+      "command": "diff",
+      "claim": "report-identical-files",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-diff-identical",
+        "repair-alias-diff-report-identical-files"
+      ],
+      "activation": "-s and the explicit --report-identical-files alias produce exactly Files a and b are identical LF for independently equal same LF files, status0 and empty stderr. Other aliases are not inferred."
+    },
+    {
+      "command": "diff",
+      "claim": "text",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-binary-as-text"
+      ],
+      "activation": "-a compares two NUL-bearing text records and emits exact normal-format old/new lines retaining the embedded NUL, rather than a binary-file summary. Status1 and empty stderr are required."
+    },
+    {
+      "command": "diff",
+      "claim": "unified",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-diff-unified",
+        "d-diff-repeated-delete"
+      ],
+      "activation": "-u emits exact labeled unified headers/hunks for old/new and a repeated-a deletion fixture. This reviews format selection and those alignment choices; arbitrary context-width values remain separate."
+    },
+    {
+      "command": "diff",
+      "claim": "context",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-diff-context"
+      ],
+      "activation": "-c emits exact labeled context headers, separator, ranges and ! old/new rows for a one-record substitution. Context-width boundary behavior is not inferred."
+    },
+    {
+      "command": "diff",
+      "claim": "label",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-diff-label-brief",
+        "p1-diff-label-binary",
+        "p1-diff-label-identical"
+      ],
+      "activation": "Explicit --label=LEFT/RIGHT replaces operand names in exact brief difference, binary difference and identical-file reports. Labels in other output forms and more than two labels remain separate."
+    },
+    {
+      "command": "diff",
+      "claim": "ignore-case",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-ignore-case",
+        "d-diff-ignored-and-real-unified"
+      ],
+      "activation": "-i makes Hello/WORLD equal hello/world with status0 and empty streams; combined -iu retains a real old/new change while showing original A as unified context. This proves ASCII case-only suppression without hiding distinct content."
+    },
+    {
+      "command": "diff",
+      "claim": "ignore-all-space",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-ignore-all-space"
+      ],
+      "activation": "-w makes a SPACE TAB b and c SPACE d equal ab and cd, returning0 with exact empty streams. General Unicode whitespace and other modes remain separate."
+    },
+    {
+      "command": "diff",
+      "claim": "ignore-space-change",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-ignore-space-change",
+        "d-diff-space-change-not-removal"
+      ],
+      "activation": "-b equates changed ASCII whitespace runs/trailing whitespace but still reports the exact ab versus a SPACE b change. Paired fixtures distinguish normalization from deleting all whitespace."
+    },
+    {
+      "command": "diff",
+      "claim": "ignore-blank-lines",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-blank-change",
+        "d-diff-blank-mixed-change"
+      ],
+      "activation": "-B suppresses a blank-only inserted record with status0, while a mixed old/blank to new hunk remains fully reported with status1 and exact normal output. Whitespace-only records need their separately specified interactions."
+    },
+    {
+      "command": "diff",
+      "claim": "ignore-trailing-space",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-ignore-trailing-space"
+      ],
+      "activation": "-Z makes records ending in explicit SPACE/TAB equal their unpadded counterparts with status0 and empty streams. Leading/interior whitespace is not reviewed by this case."
+    },
+    {
+      "command": "diff",
+      "claim": "strip-trailing-cr",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-strip-trailing-cr",
+        "d-diff-cr-difference-output",
+        "d-diff-cr-no-final-lf"
+      ],
+      "activation": "--strip-trailing-cr equates CRLF/LF records, removes record-final CR from a retained old/new hunk, and preserves a CR in an unterminated record as an actual difference with exact no-newline markers. These finite cases distinguish CRLF normalization from deleting every CR."
+    },
+    {
+      "command": "diff",
+      "claim": "recursive",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-diff-directory-boundary",
+        "d-diff-directory-type"
+      ],
+      "activation": "-r reaches an independently different nested sub/nested file and emits its exact hunk after top-level comparisons; a directory-versus-regular-file child emits the exact type mismatch. Symlink cycles and general filesystem traversal remain separate."
+    },
+    {
+      "command": "diff",
+      "claim": "new-file",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-directory-new-files",
+        "d-diff-top-new-file"
+      ],
+      "activation": "-N treats missing sides as empty, emitting exact deletion and addition hunks for left-only/right-only directory entries under -rN and an exact top-level addition for a missing left operand. Other missing/error combinations remain separate."
+    },
+    {
+      "command": "diff",
+      "claim": "unidirectional-new-file",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "d-diff-directory-unidirectional"
+      ],
+      "activation": "Under -r --unidirectional-new-file, a right-only entry becomes an exact addition from empty while the left-only entry remains Only in left. The asymmetry is explicit in independent fixture/output bytes."
+    },
+    {
+      "command": "sed",
+      "claim": "file",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-sed-ordered-scripts"
+      ],
+      "activation": "-f edit loads the fixture s/b/c/ between explicit -e s/a/b/ and -e s/c/d/, converting a LF to exactly d LF. Missing-file and alternate spelling behavior remain separate."
+    },
+    {
+      "command": "split",
+      "claim": "bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-split-binary"
+      ],
+      "activation": "-b2 splits explicit00 ff01 02 03 input into required x000.bin=00ff, x001.bin=0102 and x002.bin=03 with empty streams/status0. Unlisted paths are not asserted absent."
+    },
+    {
+      "command": "split",
+      "claim": "lines",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-split-lines"
+      ],
+      "activation": "-l2 writes one LF two LF to required part-aa and the unterminated three tail to required part-ab, with empty streams/status0. Other line counts and extra-file absence remain separate."
+    },
+    {
+      "command": "split",
+      "claim": "number",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o5-bytes-3"
+      ],
+      "activation": "-n3 divides ten explicit bytes0123456789 into required paa=0123,pab=456,pac=789. This proves the three-way byte partition definition on this input; line/round-robin and selected partitions remain separate."
+    },
+    {
+      "command": "split",
+      "claim": "line-bytes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o5-line-bytes-mixed"
+      ],
+      "activation": "-C8 keeps a LF as the first chunk, the exact seven-b record plus LF as the second and c LF as the third. Required files distinguish line-aware packing from fixed8-byte splitting."
+    },
+    {
+      "command": "split",
+      "claim": "numeric-suffixes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o5-numeric-start-leading-zero"
+      ],
+      "activation": "--numeric-suffixes=0008 with -b1 creates required names p08,p09,p10,p11 carrying a,b,c,d. This activates parsed decimal start, preserved minimum width and carry across9/10; no assertion forbids additional files."
+    },
+    {
+      "command": "split",
+      "claim": "hex-suffixes",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o5-hex-start-digit",
+        "o5-hex-start-uppercase"
+      ],
+      "activation": "--hex-suffixes=9 with -b1 requires p09=a,p0a=b,p0b=c, distinguishing hexadecimal carry. Uppercase start A rejects1 with exact invalid-start diagnostic; other values and names remain separate."
+    },
+    {
+      "command": "split",
+      "claim": "suffix-length",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-split-binary",
+        "o5-suffix-zero-length"
+      ],
+      "activation": "-a3 with decimal suffixes requires x000.bin/x001.bin/x002.bin; -a0 uses automatic paa/pab/pac for one-byte chunks. This reviews explicit3 and automatic0 only, not exhaustion or larger-width resource behavior."
+    },
+    {
+      "command": "split",
+      "claim": "additional-suffix",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-split-binary",
+        "o5-automatic-width-additional-suffix"
+      ],
+      "activation": "--additional-suffix=.bin is present in required x000.bin/x001.bin/x002.bin names; .part with automatic-a0 is present in required paa.part/pab.part/pac.part names. Contents independently bind each name to its chunk."
+    },
+    {
+      "command": "split",
+      "claim": "elide-empty-files",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o5-lines-hole",
+        "o5-lines-hole-elide"
+      ],
+      "activation": "Paired l/3 fixtures require default pab empty and pac=x LF, but -e requires pab=x LF after the skipped logical empty chunk. This proves compacted output naming/content. It does not prove that unlisted pac is absent or that empty input creates no files."
+    },
+    {
+      "command": "split",
+      "claim": "filter",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o5-filter-stdout-inherited"
+      ],
+      "activation": "-b2 --filter runs the specified printf/cat filter on explicit abcde, requiring exactly paa:abpab:cdpac:e on inherited stdout. This proves chunk stdin and FILE naming are routed to the child; file absence and arbitrary child lifecycle are not inferred from expected_files:[]."
+    },
+    {
+      "command": "csplit",
+      "claim": "elide-empty-files",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o6-csplit-suppress-negative-elide"
+      ],
+      "activation": "--suppress-matched -z /hit/-1 discards the first L1 record and elides the initial empty logical piece, requiring the remaining hit LF L3...L9 bytes in xx00 and exact byte-count27 LF. This proves compacted naming, not absence of unlisted xx01."
+    },
+    {
+      "command": "csplit",
+      "claim": "prefix",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-csplit-regex-repeat"
+      ],
+      "activation": "-fpart- with repeated /^a/ splits a,b,a,c into required part-000=a LF b LF and part-001=a LF c LF. This activates a nondefault prefix together with explicit digits3; unlisted default names are not asserted absent."
+    },
+    {
+      "command": "csplit",
+      "claim": "quiet",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "r2-csplit-quiet"
+      ],
+      "activation": "--quiet on nonempty a LF b LF suppresses byte-count stdout while required xx00=a LF and xx01=b LF prove actual splitting, with status0/empty stderr."
+    },
+    {
+      "command": "csplit",
+      "claim": "silent",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-alias-csplit-silent"
+      ],
+      "activation": "Explicit --silent suppresses counts during a real repeated-regex split whose required part-000/part-001 contents are independently asserted. This reviews that exact alias; it does not rely solely on a -s row."
+    },
+    {
+      "command": "csplit",
+      "claim": "digits",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-csplit-regex-repeat"
+      ],
+      "activation": "-n3 produces required part-000 and part-001 names for two nonempty regex pieces, distinguishing the specified width3 from default2. Custom suffix-format precedence and exhaustion remain separate."
+    },
+    {
+      "command": "csplit",
+      "claim": "suffix-format",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o6-csplit-suffix-percent"
+      ],
+      "activation": "-b pre%%-%03d.out requires part-pre%-000.out/001.out/002.out with independently specified chunk contents and exact7/10/13 byte counts. This activates literal percent, zero-padding and custom extension for one decimal format only."
+    },
+    {
+      "command": "csplit",
+      "claim": "suppress-matched",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o6-csplit-suppress-regex"
+      ],
+      "activation": "--suppress-matched /hit/ requires xx00=L1 LF and xx01 beginning L3 LF, dropping exactly the first hit record but retaining later hit records, with exact3/23 byte counts. Numeric and offset interactions remain separate."
+    },
+    {
+      "command": "fmt",
+      "claim": "width",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-fmt-width"
+      ],
+      "activation": "-w12 reformats one two three four five six into exact lines one two / three four / five six. The nondefault wrapping is independently specified; all width/overlong-word boundaries remain separate."
+    },
+    {
+      "command": "fmt",
+      "claim": "goal",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-fmt-goal-only"
+      ],
+      "activation": "-g10 applied to the explicit long alpha...omicron paragraph requires the exact six recorded lines, rather than the default-width paragraph. This is one optimization goal vector, not a bound on every emitted line."
+    },
+    {
+      "command": "fmt",
+      "claim": "split-only",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-fmt-split-only",
+        "repair-alias-fmt-split-only"
+      ],
+      "activation": "-s and explicit --split-only preserve separate one LF two LF input records that normal paragraph formatting would join, with exact streams/status0. Additional splitting widths remain separate."
+    },
+    {
+      "command": "fmt",
+      "claim": "uniform-spacing",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p1-fmt-uniform",
+        "repair-alias-fmt-uniform-spacing"
+      ],
+      "activation": "-u and explicit --uniform-spacing normalize one three-spaces two. three-spaces Three to exactly one SPACE two. two-spaces Three LF, distinguishing ordinary and sentence spacing."
+    },
+    {
+      "command": "fmt",
+      "claim": "crown-margin",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o3-fmt-crown",
+        "o3-fmt-split-crown"
+      ],
+      "activation": "-c on the explicit two-space first/four-space continuation paragraph preserves those distinct first/continuation indents while joining across input lines; combined -s -c instead wraps each source line at its original indentation. Exact byte goldens activate the margin and split interaction."
+    },
+    {
+      "command": "fmt",
+      "claim": "tagged-paragraph",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o3-tagged",
+        "o3-fmt-tagged-context"
+      ],
+      "activation": "-t treats same-indented source lines as distinct tagged paragraphs and preserves the recorded continuation indent for a later single-line paragraph after a hanging-indent context. Exact output lines/indentation bind this finite tag-state behavior."
+    },
+    {
+      "command": "fmt",
+      "claim": "prefix",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "o3-fmt-prefix-space",
+        "o3-fmt-prefix-repeat"
+      ],
+      "activation": "-p '> ' wraps matching quote-prefixed records while preserving nonmatching long plain/#/partial-prefix records; a later -p '# ' switches the affected prefix to #. Exact bytes activate selective formatting and last-value precedence."
+    },
+    {
+      "command": "strings",
+      "claim": "octal",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-strings-radix-last-o"
+      ],
+      "activation": "-tx then -o prints the second string offset10 decimal as octal12, not hex a or decimal10, with exact output for both records. This is an activated nonzero-radix and last-option-wins facet."
+    },
+    {
+      "command": "which",
+      "claim": "all",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-final-which-duplicate-path"
+      ],
+      "activation": "-a with PATH=.:. and one executable fixture emits exactly ./tool LF ./tool LF, proving every matching PATH occurrence is enumerated rather than stopping after the first. Distinct directories and aliases remain separate."
+    },
+    {
+      "command": "which",
+      "claim": "silent",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-which-executable",
+        "repair-which-not-executable",
+        "repair-alias-which-silent"
+      ],
+      "activation": "-s returns0 for mode0755 and1 for mode0644 with exact empty streams; explicit --silent also suppresses the path of a successful executable. Mode-dependent applicability and additional aliases remain explicit."
+    },
+    {
+      "command": "xargs",
+      "claim": "no-run-if-empty",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-catalog-line-314",
+        "compat-stdin-xargs"
+      ],
+      "activation": "Empty stdin with -r echo requires exact empty stdout, whereas the paired default empty-input case emits LF. This activates suppression of the ordinary echo invocation through observable output, without claiming a general process-count observer."
+    },
+    {
+      "command": "rg",
+      "claim": "regexp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-invert"
+      ],
+      "activation": "Explicit -e Sherlock|Watson supplies the alternation used with -v; only independently specified nonmatching lines2/4/6 are emitted with exact formatting. This proves that explicit expression is used, not all repeated-pattern combinations."
+    },
+    {
+      "command": "rg",
+      "claim": "invert-match",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-invert"
+      ],
+      "activation": "-v on the explicit six-line Sherlock/Watson fixture emits only lines2/4/6 and excludes lines1/3/5, with exact colored filename/number framing. Other binary/context modes remain separate."
+    },
+    {
+      "command": "rg",
+      "claim": "byte-offset",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-byte-offset-only-matching"
+      ],
+      "activation": "-b -o on the fixed byte fixture emits each o[a-z] match with its independently recorded zero-based byte offset, including1,9,12,19 within the first record. Exact output binds match offsets rather than only record starts."
+    },
+    {
+      "command": "rg",
+      "claim": "files-with-matches",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-summary-files-with-matches",
+        "rg-compat-summary-files-with-matches-null"
+      ],
+      "activation": "-l on a file containing Sherlock emits one colored sherlock filename without matching record contents; combined -0 replaces its LF with NUL. These are positive selection/format facets, not mixed matching/nonmatching-file exclusion."
+    },
+    {
+      "command": "rg",
+      "claim": "files-without-match",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-summary-files-without-match"
+      ],
+      "activation": "--files-without-match with absent ZZZ emits exactly the colored sherlock filename and status0. This is a positive no-match-file selection facet; mixed-file exclusion and aliases remain separate."
+    },
+    {
+      "command": "rg",
+      "claim": "after-context",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-max-count-after"
+      ],
+      "activation": "Explicit -A2 combined with -m1 emits the first Doctor match and exactly its following two records, with distinct exact context separators and no later Doctor match. Other counts and standalone alias spellings remain separate."
+    },
+    {
+      "command": "rg",
+      "claim": "crlf",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-crlf"
+      ],
+      "activation": "--crlf lets Sherlock$ match before CRLF and ^can match the later record while preserving exact CRLF output bytes. The supplied CRLF fixture distinguishes end-anchor handling from a literal CR before LF."
+    },
+    {
+      "command": "rg",
+      "claim": "null",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-null-terminator",
+        "rg-compat-summary-files-with-matches-null"
+      ],
+      "activation": "-0 with -H replaces the filename separator by NUL in matching-record output; -l -0 emits the filename followed by NUL. Exact goldens distinguish NUL from ordinary colon/LF framing; record delimiters remain unchanged in these cases."
+    },
+    {
+      "command": "rg",
+      "claim": "color",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-color-basic",
+        "rg-compat-multiline-no-color"
+      ],
+      "activation": "--color=always requires exact ANSI path/line/match styling in the fixed nonempty fixture; explicit --color=never requires plain multiline output. This does not prove terminal auto-color detection or every style mode."
+    },
+    {
+      "command": "rg",
+      "claim": "colors",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-custom-colors",
+        "rg-compat-colors-none"
+      ],
+      "activation": "Explicit --colors specifications require exact RGB path, indexed match foreground/background, underline line style, column color and highlight background bytes. match:none/path:none remove their styles in a separate context fixture. Only those finite color specifications are reviewed."
+    },
+    {
+      "command": "rg",
+      "claim": "heading",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-color-heading",
+        "rg-compat-color-basic"
+      ],
+      "activation": "--heading emits one colored filename heading followed by numbered match records without repeated path prefixes; the explicit --no-heading companion repeats the colored path on each match. Exact output binds both layout selections."
+    },
+    {
+      "command": "rg",
+      "claim": "with-filename",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "rg-compat-color-basic"
+      ],
+      "activation": "-H on a single explicit sherlock file requires its exact colored path prefix on each matching line, which a single-file default can omit. Other aliases and multi-file ordering remain separate."
+    }
+  ],
+  "features": [
+    {
+      "command": "true",
+      "claim": "primary-operation",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-catalog-line-294",
+        "compat-text-line-744"
+      ],
+      "activation": "Both no-operand and ignored-operand invocations return0 with exactly empty stdout/stderr. These primary result contracts are separate from --help/--version."
+    },
+    {
+      "command": "false",
+      "claim": "primary-operation",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-catalog-line-90",
+        "compat-text-line-745"
+      ],
+      "activation": "Both no-operand and ignored-operand invocations return ordinary false status1 with exactly empty stdout/stderr. Status1 is the intended result rather than an error witness."
+    },
+    {
+      "command": "printf",
+      "claim": "primary-operation",
+      "kind": "format-language",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-catalog-line-184",
+        "compat-text-line-695",
+        "compat-text-line-704",
+        "compat-text-line-705"
+      ],
+      "activation": "Exact contracts cover string/integer substitution answer=42 LF, format reuse producing1,2,3, without final LF, %b emitting embedded NUL, and invalid numeric input retaining output0 with status1/exact diagnostic. This finite format subset does not prove the full formatting grammar or ABI-specific floats."
+    },
+    {
+      "command": "sleep",
+      "claim": "primary-operation",
+      "kind": "duration-operand",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "compat-text-line-727"
+      ],
+      "activation": "Multiple zero operands0 and0s are accepted with status0 and empty streams. This proves only zero-duration parsing/completion; nonzero delay bounds, summation, suffix scaling and cancellation require a timed observation and remain unproved."
+    },
+    {
+      "command": "rev",
+      "claim": "primary-operation",
+      "kind": "byte-record-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "p0-rev-lines",
+        "o6-rev-unterminated",
+        "o6-rev-nul",
+        "o6-rev-invalid-c-byte"
+      ],
+      "activation": "Reverses abc/123 records, preserves an unterminated final record, reverses NUL within a record and rejects a high-byte C-profile record after retaining prior ko LF. The profile is C bytes, not general Unicode reversal."
+    },
+    {
+      "command": "unlink",
+      "claim": "primary-operation",
+      "kind": "filesystem-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "repair-unlink-one",
+        "repair-edge-unlink-dash-name",
+        "repair-edge-unlink-symlink-directory"
+      ],
+      "activation": "Removes an actual file and a literal -r name after -- with exact absent-file effects. POSIX-only link case removes the link while retaining its target directory; broader permission/race/IO failures remain unproved."
+    },
+    {
+      "command": "yes",
+      "claim": "primary-operation",
+      "kind": "stream-lifecycle-operation",
+      "disposition": "unresolved",
+      "case_ids": [],
+      "activation": "Current source JSON cases cover metadata only. Repeating y/operand joining, downstream-close behavior and bounded output observation need an explicit scenario; catalog metadata accounting cannot prove this operation."
+    }
+  ],
+  "boundary_dispositions": [
+    {
+      "command": "cp",
+      "claims": [
+        "archive",
+        "preserve"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "reason": "README explicitly rejects archive/preserve/default metadata-preserving copy; new copies require --no-preserve=mode.",
+      "case_ids": [
+        "compat-text-cp-preserve-rejected"
+      ],
+      "scope": "The selected preserve case binds metadata rejection; archive-specific activation remains unresolved unless a dedicated case is added."
+    },
+    {
+      "command": "cp",
+      "claims": [
+        "force",
+        "interactive",
+        "backup",
+        "backup-control",
+        "suffix"
+      ],
+      "kind": "accepted-syntax-constrained",
+      "reason": "README says parsing these flags does not enable existing-file overwrite, prompts or backups.",
+      "case_ids": [
+        "p8-cp-numbered-backup"
+      ],
+      "scope": "Boundary witness is only numbered backup. Other spellings and interactions remain unresolved."
+    },
+    {
+      "command": "touch",
+      "claims": [
+        "access-time",
+        "date",
+        "modification-time",
+        "reference",
+        "stamp"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "reason": "README states timestamp-setting flags reject before mutation because public timestamp setters are unavailable.",
+      "case_ids": [
+        "compat-text-touch-date-rejected",
+        "touch-existing-boundary"
+      ],
+      "scope": "Date and existing-file witnesses do not substitute for every individual spelling; preserve per-claim unresolved facets."
+    },
+    {
+      "command": "chmod",
+      "claims": [
+        "reference"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "reason": "README rejects --reference and Windows permission mutation.",
+      "case_ids": [
+        "compat-text-chmod-reference-rejected"
+      ],
+      "scope": "The existing boundary binds status1, empty stdout and the permission-read API diagnostic. Explicit mode/identity observation still needs a stronger POSIX fixture."
+    },
+    {
+      "command": "sed",
+      "claims": [
+        "in-place"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "reason": "README explicitly excludes in-place editing.",
+      "case_ids": [],
+      "scope": "Require a pre-mutation rejection case, not a positive update case."
+    },
+    {
+      "command": "cat",
+      "claims": [
+        "unbuffered"
+      ],
+      "kind": "accepted-no-op",
+      "reason": "README explicitly accepts -u without behavior changes.",
+      "case_ids": [
+        "compat-text-line-675"
+      ],
+      "scope": "No buffer-size, flush or latency behavior is proven."
+    },
+    {
+      "command": "strings",
+      "claims": [
+        "all"
+      ],
+      "kind": "accepted-no-op",
+      "reason": "The documented supported profile already scans the complete input, including default mode.",
+      "case_ids": [
+        "repair-strings-whole-input",
+        "repair-alias-strings-all"
+      ],
+      "scope": "Current exact -a/--all fixtures qualify their finite whole-input output across NUL boundaries. The profile intentionally scans the complete input; this does not prove object-section traversal."
+    },
+    {
+      "command": "patch",
+      "claims": [
+        "output"
+      ],
+      "kind": "supported-with-boundary",
+      "reason": "README supports -o - and rejects named output paths/existing-file replacement.",
+      "case_ids": [],
+      "scope": "Positive stdout and named-output nonmutation need distinct cases."
+    },
+    {
+      "command": "timeout",
+      "claims": [
+        "duration"
+      ],
+      "kind": "positional-operand",
+      "reason": "Duration is a nonnegative bounded operand, not --duration. Command remains local-only and cannot claim process-group control.",
+      "case_ids": [],
+      "scope": "Bind normal/deadline/invalid-range/direct-child lifecycle cases separately."
+    },
+    {
+      "command": "test",
+      "claims": [
+        "expression-language",
+        "file-kinds",
+        "access-checks",
+        "size",
+        "timestamps"
+      ],
+      "kind": "language-feature",
+      "reason": "These labels name predicate families rather than literal CLI long options.",
+      "case_ids": [],
+      "scope": "Need a reviewed per-family expression/fixture mapping including true/false/error statuses."
+    },
+    {
+      "command": "expr",
+      "claims": [
+        "expression-language"
+      ],
+      "kind": "language-feature",
+      "reason": "The catalog names the expression grammar; strings/arithmetic/BRE families require their own examples.",
+      "case_ids": [],
+      "scope": "Normal0/1 outcomes and invalid-expression2 must remain distinct."
+    },
+    {
+      "command": "sh",
+      "claims": [
+        "command",
+        "stdin-script",
+        "interactive"
+      ],
+      "kind": "language-mode",
+      "reason": "README maps -c/-s/-i to separate sessions; stdin execution is an actual transport/lifecycle contract.",
+      "case_ids": [],
+      "scope": "Avoid counting arbitrary script contents as option tokens; bind scoped session cases."
+    }
+  ]
+}

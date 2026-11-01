@@ -294,7 +294,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/expr@0.2.1 metadata contract",
+      "source_version": "workspace cli/expr@0.2.2 metadata contract",
       "expected_stdout_text": "Usage: expr EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nEvaluate integer/string expressions: | & comparisons + - * / % :\nFunctions: match, substr, index, length; + quotes one operand.\nC-byte BRE supports captures, backreferences and word assertions; locale collation is unsupported.\n",
       "expected_stderr_text": ""
     },
@@ -313,8 +313,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/expr@0.2.1 metadata contract",
-      "expected_stdout_text": "expr 0.2.1\n",
+      "source_version": "workspace cli/expr@0.2.2 metadata contract",
+      "expected_stdout_text": "expr 0.2.2\n",
       "expected_stderr_text": ""
     },
     {

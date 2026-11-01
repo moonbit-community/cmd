@@ -23,6 +23,7 @@ async fn retain_execution_failure(
         duration_ms: @async.now() - started,
         observations: [],
         missing_observations: [],
+        local_contract: None,
         evidence: None,
       })
   }

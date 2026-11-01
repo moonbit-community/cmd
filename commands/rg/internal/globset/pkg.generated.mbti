@@ -57,7 +57,6 @@ pub fn GlobBuilder::allow_unclosed_class(Self, Bool) -> Self
 pub fn GlobBuilder::backslash_escape(Self, Bool) -> Self
 pub fn GlobBuilder::build(Self) -> Glob raise GlobError
 pub fn GlobBuilder::case_insensitive(Self, Bool) -> Self
-pub fn GlobBuilder::empty_alternates(Self, Bool) -> Self
 pub fn GlobBuilder::literal_separator(Self, Bool) -> Self
 pub fn GlobBuilder::new(String) -> Self
 
@@ -66,21 +65,17 @@ pub struct GlobMatcher {
 }
 pub fn GlobMatcher::glob(Self) -> Glob
 pub fn GlobMatcher::is_match(Self, String) -> Bool
-pub fn GlobMatcher::is_match_candidate(Self, Candidate) -> Bool
 pub impl @debug.Debug for GlobMatcher
 
 pub struct GlobSet {
   // private fields
 }
-pub fn GlobSet::builder() -> GlobSetBuilder
 pub fn GlobSet::empty() -> Self
 pub fn GlobSet::is_empty(Self) -> Bool
 pub fn GlobSet::is_match(Self, String) -> Bool
-pub fn GlobSet::is_match_candidate(Self, Candidate) -> Bool
 pub fn GlobSet::len(Self) -> Int32
 pub fn GlobSet::matches(Self, String) -> Array[Int32]
 pub fn GlobSet::matches_all(Self, String) -> Bool
-pub fn GlobSet::matches_all_candidate(Self, Candidate) -> Bool
 pub fn GlobSet::matches_candidate(Self, Candidate) -> Array[Int32]
 pub fn GlobSet::matches_candidate_into(Self, Candidate, Array[Int32]) -> Unit
 pub fn GlobSet::matches_into(Self, String, Array[Int32]) -> Unit

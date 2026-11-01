@@ -1,13 +1,35 @@
 ///|
+fn expand_native_path_templates(
+  value : String,
+  root : String,
+  windows : Bool,
+) -> String {
+  let native_root = if windows {
+    root.replace_all(old="/", new="\\")
+  } else {
+    root
+  }
+  value
+  .replace_all(old="${WORK_NATIVE}", new=native_root)
+  .replace_all(old="${PATH_SEPARATOR}", new=if windows { "\\" } else { "/" })
+}
+
+///|
 pub fn expand_text(
   value : String,
   root : String,
   http_base? : String,
 ) -> String {
-  let expanded = value
+  let expanded = expand_native_path_templates(
+      value,
+      root,
+      @async.platform is Windows,
+    )
     .replace_all(old="${WORK}", new=root)
     .replace_all(old="${PRINTF_CHILD}", new=option_child_source("printf"))
     .replace_all(old="${PRINTENV_CHILD}", new=option_child_source("printenv"))
+    .replace_all(old="${FALSE_CHILD}", new=option_child_source("false"))
+    .replace_all(old="${PWD_CHILD}", new=option_child_source("pwd"))
     .replace_all(old="${RG_PREPROCESSOR}", new=option_child_path())
   match http_base {
     Some(base) => expanded.replace_all(old="${HTTP_BASE}", new=base)
@@ -26,6 +48,8 @@ pub fn expand_args(
     match arg {
       "${PRINTF_CHILD}" => result.append(option_child_words("printf"))
       "${PRINTENV_CHILD}" => result.append(option_child_words("printenv"))
+      "${FALSE_CHILD}" => result.append(option_child_words("false"))
+      "${PWD_CHILD}" => result.append(option_child_words("pwd"))
       _ => result.push(expand_text(arg, root, http_base?))
     }
   }
@@ -196,6 +220,17 @@ pub async fn prepare_fixture(
     }
     if fixture.delay_ms is Some(delay) && delay > 0 {
       @async.sleep(delay)
+    }
+  }
+  for file in fixture.files {
+    if file.readable is Some(expected) {
+      let destination = @path.Path(root).join(Path(file.path)).to_string()
+      let actual = @fs.can_read(destination)
+      guard actual == expected else {
+        fail(
+          "fixture precondition: \{fixture.id}: \{file.path}: readable=\{expected}, observed=\{actual}",
+        )
+      }
     }
   }
 }

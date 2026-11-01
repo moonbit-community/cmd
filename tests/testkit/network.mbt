@@ -89,6 +89,61 @@ pub async fn run_http_fixture(server : @http.Server) -> Unit {
           "Content-Length": "0",
         })
         .end_response()
+      "/chunked" => {
+        connection.send_response(200, "OK")
+        connection..write("slow-").flush()
+        @async.sleep(5)
+        connection..write("stream").end_response()
+      }
+      "/method-redirect" =>
+        connection
+        ..send_response(302, "Found", extra_headers={
+          "Location": "/request",
+          "Content-Length": "0",
+        })
+        .end_response()
+      "/chain-1" | "/chain-2" =>
+        connection
+        ..send_response(302, "Found", extra_headers={
+          "Location": if request.path == "/chain-1" {
+            "/chain-2"
+          } else {
+            "/fixed"
+          },
+          "Content-Length": "0",
+        })
+        .end_response()
+      "/redirect-301"
+      | "/redirect-302"
+      | "/redirect-303"
+      | "/redirect-307"
+      | "/redirect-308" => {
+        let status = @string.parse_int(request.path[10:])
+        let reason = match status {
+          301 => "Moved Permanently"
+          302 => "Found"
+          303 => "See Other"
+          307 => "Temporary Redirect"
+          _ => "Permanent Redirect"
+        }
+        connection
+        ..send_response(status, reason, extra_headers={
+          "Location": "/echo-body",
+          "Content-Length": "0",
+        })
+        .end_response()
+      }
+      "/loop-a" | "/loop-b" =>
+        connection
+        ..send_response(302, "Found", extra_headers={
+          "Location": if request.path == "/loop-a" {
+            "/loop-b"
+          } else {
+            "/loop-a"
+          },
+          "Content-Length": "0",
+        })
+        .end_response()
       "/redirect-explicit" =>
         connection
         ..send_response(302, "Found", extra_headers={
@@ -104,6 +159,54 @@ pub async fn run_http_fixture(server : @http.Server) -> Unit {
           "Content-Length": response.length().to_string(),
         })
         connection..write(response).end_response()
+      }
+      "/echo-body" => {
+        let content = body.read_all().binary()
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": content.length().to_string(),
+        })
+        connection..write(content).end_response()
+      }
+      "/request" => {
+        let content = body.read_all().text()
+        let marker = request.headers.get("X-Marker").unwrap_or("")
+        let response = "\{oracle_request_name(request)}:\{marker}:\{content}"
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": response.length().to_string(),
+        })
+        connection..write(response).end_response()
+      }
+      "/cross-origin-target" => {
+        let authorization = if request.headers.get("Authorization") is None {
+          "clean"
+        } else {
+          "leaked"
+        }
+        let payload = body.read_all().text()
+        let response = "\{oracle_request_name(request)}:\{authorization}:\{payload}"
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": response.length().to_string(),
+        })
+        connection..write(response).end_response()
+      }
+      "/method-check" => {
+        let expected = request.headers.get("X-Expected").unwrap_or("")
+        let accepted = oracle_request_name(request) == expected
+        connection
+        ..send_response(
+          if accepted {
+            200
+          } else {
+            400
+          },
+          if accepted {
+            "OK"
+          } else {
+            "Bad Request"
+          },
+          extra_headers={ "Content-Length": "0" },
+        )
+        .end_response()
       }
       "/inspect" => {
         let content = body.read_all().binary()
@@ -132,6 +235,12 @@ pub async fn run_http_fixture(server : @http.Server) -> Unit {
         }
         connection..write(content).end_response()
       }
+      "/range-ignore" => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "5",
+        })
+        connection..write("hello").end_response()
+      }
       "/conditional" =>
         if request.headers.get("If-Modified-Since") is Some(_) {
           connection
@@ -145,12 +254,70 @@ pub async fn run_http_fixture(server : @http.Server) -> Unit {
           })
           connection..write("fresh").end_response()
         }
-      "/named-header" => {
+      "/not-modified" =>
+        connection
+        ..send_response(304, "Not Modified", extra_headers={
+          "Content-Length": "0",
+        })
+        .end_response()
+      "/partial" => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "9",
+        })
+        connection..write("abc").flush()
+        connection.close()
+      }
+      "/unauthorized" | "/forbidden" | "/busy" | "/server-error" => {
+        let (status, reason) = match request.path {
+          "/unauthorized" => (401, "Unauthorized")
+          "/forbidden" => (403, "Forbidden")
+          "/busy" => (429, "Too Many Requests")
+          _ => (500, "Internal Server Error")
+        }
+        connection
+        ..send_response(status, reason, extra_headers={ "Content-Length": "0" })
+        .end_response()
+      }
+      "/named-header" | "/named" => {
         connection.send_response(200, "OK", extra_headers={
           "Content-Length": "5",
           "Content-Disposition": "attachment; filename=fixture.txt",
         })
         connection..write("hello").end_response()
+      }
+      "/named-encoded" => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "5",
+          "Content-Disposition": "attachment; filename*=UTF-8''encoded.txt",
+        })
+        connection..write("hello").end_response()
+      }
+      "/named-partial" => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "9",
+          "Content-Disposition": "attachment; filename=partial.txt",
+        })
+        connection..write("abc").flush()
+        connection.close()
+      }
+      "/one" | "/two" => {
+        let content = if request.path == "/one" { "one" } else { "two" }
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "3",
+        })
+        connection..write(content).end_response()
+      }
+      "/stall" => {
+        @async.sleep(200)
+        connection..send_response(200, "OK").end_response()
+      }
+      "/body-stall" => {
+        connection.send_response(200, "OK", extra_headers={
+          "Content-Length": "5",
+        })
+        connection.flush()
+        @async.sleep(200)
+        connection..write("later").end_response()
       }
       "/missing" =>
         connection

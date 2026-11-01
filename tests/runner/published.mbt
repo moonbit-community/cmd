@@ -46,8 +46,8 @@ fn published_coordinates(
       command.name != "timeout" else {
       fail("invalid or duplicate published coordinate: " + command.name)
     }
-    guard @cli.find_contract(command.name) is Some(contract) &&
-      @cli.releasable(contract) else {
+    guard @contracts.find_contract(command.name) is Some(contract) &&
+      @contracts.releasable(contract) else {
       fail("command is outside the published inventory: " + command.name)
     }
     guard command.version.split(".").count() >= 3 &&
@@ -85,7 +85,7 @@ async fn prime_published_commands(
     timeout,
   ) => @testkit.run_with_deadline(program, args, timeout),
 ) -> Unit {
-  for contract in @cli.command_catalog() {
+  for contract in @contracts.command_catalog() {
     let name = contract.name
     if !@testkit.command_available(name) ||
       (!selected.is_empty() && !selected.contains(name)) {

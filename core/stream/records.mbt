@@ -36,6 +36,7 @@ struct RecordReader {
   reader : &@io.Reader
   delimiter : Bytes
   pending : @buffer.Buffer
+  read_size : Int32
   mut eof : Bool
 }
 
@@ -78,10 +79,20 @@ pub fn RecordReader::new(
   reader : &@io.Reader,
   delimiter~ : Byte = b'\n',
 ) -> RecordReader {
+  RecordReader::with_read_size(reader, delimiter, 1048576)
+}
+
+///|
+fn RecordReader::with_read_size(
+  reader : &@io.Reader,
+  delimiter : Byte,
+  read_size : Int32,
+) -> RecordReader {
   {
     reader,
     delimiter: Bytes::from_array([delimiter]),
     pending: @buffer.Buffer(),
+    read_size,
     eof: false,
   }
 }
@@ -92,7 +103,7 @@ pub fn RecordReader::new(
 /// unreported, matching `LineScanner`; previously returned views stay valid.
 pub async fn RecordReader::next_batch(self : RecordReader) -> RecordBatch? {
   while !self.eof {
-    guard self.reader.read_some(max_len=1048576) is Some(chunk) else {
+    guard self.reader.read_some(max_len=self.read_size) is Some(chunk) else {
       self.eof = true
       if self.pending.is_empty() {
         return None

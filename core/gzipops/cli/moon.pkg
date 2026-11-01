@@ -1,0 +1,8 @@
+import {
+  "cli/core/gzipops",
+  "cli/core/cli" @args,
+  "moonbitlang/async/fs",
+  "moonbitlang/async/stdio",
+}
+
+supported_targets = "native+wasm"

@@ -1,99 +1,84 @@
 ///|
-pub(all) enum SpecialMode {
+priv enum SpecialMode {
   HelpShort
   HelpLong
   VersionShort
   VersionLong
   VersionPCRE2
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum SearchMode {
+priv enum SearchMode {
   Standard
   FilesWithMatches
   FilesWithoutMatch
   Count
   CountMatches
   JSON
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum GenerateMode {
+priv enum GenerateMode {
   Man
   CompleteBash
   CompleteZsh
   CompleteFish
   CompletePowerShell
-} derive(Debug, Eq)
-
-///|
-pub(all) enum IndexMode {
-  Crud
-} derive(Debug, Eq)
-
-///|
-pub(all) enum Mode {
-  Search(SearchMode)
-  Index(IndexMode)
-  Files
-  Types
-  Generate(GenerateMode)
-} derive(Debug, Eq)
-
-///|
-fn Mode::updated(self : Mode, new : Mode) -> Mode {
-  // Note: like ripgrep's `Mode::update`, any mode overrides the current
-  // one (the non-search branch's check is on the current mode, so it always
-  // succeeds).
-  ignore(self)
-  new
 }
 
 ///|
-pub(all) enum BinaryMode {
+priv enum Mode {
+  Search(SearchMode)
+  Files
+  Types
+  Generate(GenerateMode)
+}
+
+///|
+priv enum BinaryMode {
   Auto
   SearchAndSuppress
   AsText
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum BoundaryMode {
+priv enum BoundaryMode {
   Line
   Word
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum BufferMode {
+priv enum BufferMode {
   Auto
   Line
   Block
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum CaseMode {
+priv enum CaseMode {
   Sensitive
   Insensitive
   Smart
-} derive(Debug, Eq)
+} derive(Eq)
 
 ///|
-pub(all) enum ColorChoice {
+priv enum ColorChoice {
   Never
   Auto
   Always
   Ansi
-} derive(Debug, Eq)
+}
 
 ///|
 /// Limited context settings: `-B`, `-A` and `-C`.
-pub(all) struct ContextModeLimited {
+priv struct ContextModeLimited {
   before : Int32?
   after : Int32?
   both : Int32?
-} derive(Debug, Eq)
+}
 
 ///|
-pub fn ContextModeLimited::get(self : ContextModeLimited) -> (Int32, Int32) {
+fn ContextModeLimited::get(self : ContextModeLimited) -> (Int32, Int32) {
   let mut before = 0
   let mut after = 0
   if self.both is Some(n) {
@@ -110,13 +95,13 @@ pub fn ContextModeLimited::get(self : ContextModeLimited) -> (Int32, Int32) {
 }
 
 ///|
-pub(all) enum ContextMode {
+priv enum ContextMode {
   Passthru
   Limited(ContextModeLimited)
-} derive(Debug, Eq)
+}
 
 ///|
-pub fn ContextMode::default() -> ContextMode {
+fn ContextMode::default() -> ContextMode {
   Limited({ before: None, after: None, both: None, })
 }
 
@@ -145,63 +130,56 @@ fn ContextMode::set_both(self : ContextMode, lines : Int32) -> ContextMode {
 }
 
 ///|
-pub(all) enum EncodingMode {
+priv enum EncodingMode {
   Auto
   Specific(@searcher.Encoding)
   Disabled
 }
 
 ///|
-pub(all) enum EngineChoice {
+priv enum EngineChoice {
   Default
   Auto
   PCRE2
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum LoggingMode {
+priv enum LoggingMode {
   Debug
   Trace
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum MmapMode {
-  Auto
-  AlwaysTryMmap
-  Never
-} derive(Debug, Eq)
-
-///|
-pub(all) enum PatternSource {
+priv enum PatternSource {
   Regexp(String)
   File(String)
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum SortModeKind {
+priv enum SortModeKind {
   Path
   LastModified
   LastAccessed
   Created
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) struct SortMode {
+priv struct SortMode {
   reverse : Bool
   kind : SortModeKind
-} derive(Debug, Eq)
+}
 
 ///|
-pub(all) enum TypeChange {
+priv enum TypeChange {
   Clear(String)
   Add(String)
   Select(String)
   Negate(String)
-} derive(Debug, Eq)
+}
 
 ///|
 /// Low level arguments: a direct representation of the flags given.
-pub(all) struct LowArgs {
+priv struct LowArgs {
   mut special : SpecialMode?
   mut mode : Mode
   positional : Array[String]
@@ -217,7 +195,6 @@ pub(all) struct LowArgs {
   mut context : ContextMode
   mut context_separator : Bytes?
   mut crlf : Bool
-  mut dfa_size_limit : UInt64?
   mut encoding : EncodingMode
   mut engine : EngineChoice
   mut field_context_separator : Bytes
@@ -234,9 +211,6 @@ pub(all) struct LowArgs {
   ignore_file : Array[String]
   mut ignore_file_case_insensitive : Bool
   mut include_zero : Bool
-  mut index : Int32
-  mut index_force : Bool
-  mut index_path : String?
   mut invert_match : Bool
   mut line_number : Bool?
   mut logging : LoggingMode?
@@ -245,7 +219,6 @@ pub(all) struct LowArgs {
   mut max_count : UInt64?
   mut max_depth : Int32?
   mut max_filesize : UInt64?
-  mut mmap : MmapMode
   mut multiline : Bool
   mut multiline_dotall : Bool
   mut no_config : Bool
@@ -273,7 +246,6 @@ pub(all) struct LowArgs {
   mut sort : SortMode?
   mut stats : Bool
   mut stop_on_nonmatch : Bool
-  mut threads : Int32?
   mut trim : Bool
   type_changes : Array[TypeChange]
   mut unrestricted : Int32
@@ -282,7 +254,7 @@ pub(all) struct LowArgs {
 }
 
 ///|
-pub fn LowArgs::default() -> LowArgs {
+fn LowArgs::default() -> LowArgs {
   {
     special: None,
     mode: Search(Standard),
@@ -299,7 +271,6 @@ pub fn LowArgs::default() -> LowArgs {
     context: ContextMode::default(),
     context_separator: Some(b"--"),
     crlf: false,
-    dfa_size_limit: None,
     encoding: Auto,
     engine: Default,
     field_context_separator: b"-",
@@ -316,9 +287,6 @@ pub fn LowArgs::default() -> LowArgs {
     ignore_file: [],
     ignore_file_case_insensitive: false,
     include_zero: false,
-    index: 0,
-    index_force: false,
-    index_path: None,
     invert_match: false,
     line_number: None,
     logging: None,
@@ -327,7 +295,6 @@ pub fn LowArgs::default() -> LowArgs {
     max_count: None,
     max_depth: None,
     max_filesize: None,
-    mmap: Auto,
     multiline: false,
     multiline_dotall: false,
     no_config: false,
@@ -355,29 +322,10 @@ pub fn LowArgs::default() -> LowArgs {
     sort: None,
     stats: false,
     stop_on_nonmatch: false,
-    threads: None,
     trim: false,
     type_changes: [],
     unrestricted: 0,
     vimgrep: false,
     with_filename: None,
-  }
-}
-
-///|
-pub impl Eq for EncodingMode with fn equal(self, other) {
-  match (self, other) {
-    (Auto, Auto) | (Disabled, Disabled) => true
-    (Specific(a), Specific(b)) => a.name() == b.name()
-    _ => false
-  }
-}
-
-///|
-pub impl Debug for EncodingMode with fn to_repr(self) {
-  match self {
-    Auto => Repr::ctor("Auto", [])
-    Disabled => Repr::ctor("Disabled", [])
-    Specific(e) => Repr::ctor("Specific", [(None, Repr::string(e.name()))])
   }
 }

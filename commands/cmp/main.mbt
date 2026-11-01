@@ -1,4 +1,7 @@
 ///|
+// Strategy: cmp-quiet-chunks
+
+///|
 priv suberror CliError {
   CliError(String)
 }
@@ -197,6 +200,17 @@ async fn compare_readers(
             take = (maximum - compared).to_int()
           _ => ()
         }
+        // Status-only comparison needs neither line accounting nor per-byte
+        // output suspension points. A mismatch settles the result immediately.
+        if silent {
+          if a[left_pos:left_pos + take] != b[right_pos:right_pos + take] {
+            return true
+          }
+          left_pos += take
+          right_pos += take
+          compared += take.to_int64()
+          continue
+        }
         for offset in 0..<take {
           let left_byte = a[left_pos + offset]
           let right_byte = b[right_pos + offset]
@@ -248,7 +262,7 @@ fn pad_left(text : String, width : Int32) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cmp 0.2.3\n")
+    @stdio.stdout.write("cmp 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -269,7 +283,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]\n  -b, --print-bytes  print differing octal and visible byte values\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]\n  -b, --print-bytes  print differing octal and visible byte values\n  -s, --silent      report status only; stop at the first difference\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
     return
   }

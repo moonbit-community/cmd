@@ -7,6 +7,7 @@ import {
   "moonbitlang/async/os_error",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
+  "moonbitlang/core/buffer",
   "moonbitlang/core/string",
   "moonbitlang/x/sys",
   "moonbitlang/x/time",

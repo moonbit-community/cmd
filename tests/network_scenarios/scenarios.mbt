@@ -277,6 +277,126 @@ async fn network_request(
     }
   }
   let contract_failures : Array[String] = []
+  if oracle_image is None && executor.proof is Some(proof) {
+    let parts = work.split("/").to_array()
+    let prefix = "transfer/" + parts[parts.length() - 1].to_owned() + "/"
+    if actual_requests is Some(requests) {
+      if expected_ranges is Some(expected) {
+        proof.observe_equal(
+          prefix + "ranges",
+          command,
+          Json(
+            requests.map(request => {
+              request.range.map(value => Json(value)).unwrap_or(Json::null())
+            }),
+          ),
+          Json(
+            expected.map(range => {
+              range.map(value => Json(value)).unwrap_or(Json::null())
+            }),
+          ),
+        )
+      }
+      if expected_methods is Some(expected) {
+        proof.observe_equal(
+          prefix + "methods",
+          command,
+          Json(requests.map(request => request.request_method)),
+          Json(expected),
+        )
+      }
+      if expected_paths is Some(expected) {
+        proof.observe_equal(
+          prefix + "paths",
+          command,
+          Json(requests.map(request => request.path)),
+          Json(expected),
+        )
+      }
+      if expected_cookies is Some(expected) {
+        proof.observe_equal(
+          prefix + "cookies",
+          command,
+          Json(requests.map(request => request.cookies)),
+          Json(expected),
+        )
+      }
+    }
+    if proof.accepts(prefix + "files", command) &&
+      expected_files is Some(expected) &&
+      output_names is Some(names) {
+      let actual_rows : Array[Json] = []
+      let expected_rows : Array[Json] = []
+      let expected_names : Array[String] = []
+      for (name, content) in expected {
+        let path = work + "/" + name
+        let exists = @fs.exists(path)
+        let regular = exists &&
+          @fs.kind(path, follow_symlink=false) == @fs.Regular
+        actual_rows.push({
+          "path": name,
+          "exists": exists,
+          "regular": if exists {
+            Json(regular)
+          } else {
+            Json::null()
+          },
+          "content": if regular {
+            Json(@fs.read_file(path).text())
+          } else {
+            Json::null()
+          },
+        })
+        if content is Some(_) {
+          expected_names.push(name)
+        }
+        expected_rows.push({
+          "path": name,
+          "exists": content is Some(_),
+          "regular": if content is Some(_) {
+            Json(true)
+          } else {
+            Json::null()
+          },
+          "content": content.map(value => Json(value)).unwrap_or(Json::null()),
+        })
+      }
+      expected_names.sort()
+      proof.observe_equal(
+        prefix + "files",
+        command,
+        { "names": Json(names), "files": actual_rows },
+        { "names": Json(expected_names), "files": expected_rows },
+      )
+    }
+    if proof.accepts(prefix + "before-response", command) &&
+      expected_files_before_response is Some(expected) &&
+      actual_files_before_response is Some(actual) {
+      let normalize = fn(
+        files : Array[(String, Bool, Bytes)],
+      ) -> Array[Json] raise {
+        files.sort_by((a, b) => a.0.lexical_compare(b.0))
+        files.map(file => {
+          (
+            {
+              "path": file.0,
+              "regular": file.1,
+              "content": @testkit.scenario_text(file.2),
+            } : Json)
+        })
+      }
+      proof.observe_equal(
+        prefix + "before-response",
+        command,
+        Json(actual.map(normalize)),
+        Json(
+          expected.map(files => {
+            normalize(files.map(file => (file.0, true, @utf8.encode(file.1))))
+          }),
+        ),
+      )
+    }
+  }
   if actual_requests is Some(requests) && expected_paths is Some(paths) {
     if requests.map(request => request.path) != paths {
       contract_failures.push(
@@ -672,6 +792,24 @@ async fn transfer_scenario_call(
       )
     }
     let expected_status = transfer_oracle_status(command, label)
+    if oracle_image is None &&
+      executor.proof is Some(proof) &&
+      proof.accepts("transfer/" + command + "-" + label + "/response", command) {
+      proof.observe_equal(
+        "transfer/" + command + "-" + label + "/response",
+        command,
+        {
+          "status": result.status,
+          "stdout": @testkit.scenario_text(result.stdout),
+          "stderr": @testkit.scenario_text(result.stderr),
+        },
+        {
+          "status": expected_status,
+          "stdout": stdout,
+          "stderr": expected_stderr,
+        },
+      )
+    }
     if result.status != expected_status {
       call_failures.push(
         "candidate status " +
@@ -777,7 +915,16 @@ async fn network_transfer_scenario(
           work,
           command,
           endpoint,
-          [..quiet, ..to_stdout, base + "/transfer-" + endpoint],
+          [
+            ..quiet,
+            ..if command == "wget" && endpoint == "fixed-empty" {
+              ["--waitretry=0.001"]
+            } else {
+              []
+            },
+            ..to_stdout,
+            base + "/transfer-" + endpoint,
+          ],
           stdout,
           [None],
           requests,
@@ -2324,20 +2471,54 @@ async fn network_cli_scenario(
         3,
       ),
       ("wget", ["-qO-", "--no-cookies", base + "/set"], "auth=\ncookie=\n", 2),
+      (
+        "wget",
+        ["-qO-", "--http-user=user", "--http-password=pass", base + "/inspect"],
+        "auth=\ncookie=\n",
+        1,
+      ),
+      (
+        "wget",
+        [
+          "-qO-",
+          "--http-user=user",
+          "--http-password=pass",
+          "--auth-no-challenge",
+          base + "/inspect",
+        ],
+        "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+        1,
+      ),
     ]
-    for (command, args, expected, request_count) in cases {
+    for index, (command, args, expected, request_count) in cases {
       let before = requests.length()
-      check_network_response(
-        network_request(
-          executor,
-          work,
-          command,
-          args,
-          oracle_image?,
-          oracle_failures~,
-        ),
-        expected,
+      let result = network_request(
+        executor,
+        work,
+        command,
+        args,
+        oracle_image?,
+        oracle_failures~,
       )
+      check_network_response(result, expected)
+      if oracle_image is None && executor.proof is Some(proof) {
+        proof.observe_equal(
+          "auth/" + index.to_string(),
+          command,
+          {
+            "status": result.status,
+            "stdout": @testkit.scenario_text(result.stdout),
+            "stderr": @testkit.scenario_text(result.stderr),
+            "requests": requests.length() - before,
+          },
+          {
+            "status": 0,
+            "stdout": expected,
+            "stderr": "",
+            "requests": request_count,
+          },
+        )
+      }
       assert_eq(
         requests.length() - before,
         request_count * (if oracle_image is Some(_) { 2 } else { 1 }),
@@ -2371,22 +2552,40 @@ async fn network_cli_scenario(
         "auth=\ncookie=sid=fixture\n",
       )
       assert_true(@fs.read_file(jar).text().contains("\tsid\tfixture"))
+      if oracle_image is None && executor.proof is Some(proof) {
+        proof.observe_equal(
+          "cookie/" + command + "/saved",
+          command,
+          Json(@fs.read_file(jar).text().contains("\tsid\tfixture")),
+          Json(true),
+        )
+      }
       let load = if command == "curl" {
         ["-sS", "-b", jar, base + "/inspect"]
       } else {
         ["-qO-", "--load-cookies=" + jar, base + "/inspect"]
       }
-      check_network_response(
-        network_request(
-          executor,
-          work,
-          command,
-          load,
-          oracle_image?,
-          oracle_failures~,
-        ),
-        "auth=\ncookie=sid=fixture\n",
+      let loaded = network_request(
+        executor,
+        work,
+        command,
+        load,
+        oracle_image?,
+        oracle_failures~,
       )
+      check_network_response(loaded, "auth=\ncookie=sid=fixture\n")
+      if oracle_image is None && executor.proof is Some(proof) {
+        proof.observe_equal(
+          "cookie/" + command + "/loaded",
+          command,
+          {
+            "status": loaded.status,
+            "stdout": @testkit.scenario_text(loaded.stdout),
+            "stderr": @testkit.scenario_text(loaded.stderr),
+          },
+          { "status": 0, "stdout": "auth=\ncookie=sid=fixture\n", "stderr": "" },
+        )
+      }
       check_network_response(
         network_request(
           executor,
@@ -2522,6 +2721,14 @@ async fn network_cli_scenario(
         "auth=\ncookie=sid=fixture\n",
       )
       assert_false(@fs.exists(missing))
+      if oracle_image is None && executor.proof is Some(proof) {
+        proof.observe_equal(
+          "cookie/" + command + "/missing-parent",
+          command,
+          Json(@fs.exists(missing)),
+          Json(false),
+        )
+      }
     }
     let session_jar = work + "/wget-without-session.cookies"
     check_network_response(
@@ -2536,6 +2743,14 @@ async fn network_cli_scenario(
       "auth=\ncookie=sid=fixture\n",
     )
     assert_false(@fs.read_file(session_jar).text().contains("\tsid\tfixture"))
+    if oracle_image is None && executor.proof is Some(proof) {
+      proof.observe_equal(
+        "cookie/wget/session-excluded",
+        "wget",
+        Json(@fs.read_file(session_jar).text().contains("\tsid\tfixture")),
+        Json(false),
+      )
+    }
     @fs.write_file(
       work + "/../requests.json",
       @testkit.canonical_json(

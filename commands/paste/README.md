@@ -3,7 +3,7 @@
 Merge input lines for MoonX.
 
 ```sh
-moonx cli/paste@0.2.3 [-s] [-d LIST] [-z] [FILE...]
+moonx cli/paste@0.2.4 [-s] [-d LIST] [-z] [FILE...]
 ```
 
 ## Supported scope
@@ -26,8 +26,8 @@ Combine corresponding records from files, separated by TAB by default. Use - for
 ## Examples
 
 ```sh
-moonx cli/paste@0.2.3 first.txt second.txt
-moonx cli/paste@0.2.3 -s -d, input.txt
+moonx cli/paste@0.2.4 first.txt second.txt
+moonx cli/paste@0.2.4 -s -d, input.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

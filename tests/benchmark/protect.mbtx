@@ -1,0 +1,180 @@
+----
+import {
+  "moonbitlang/async@0.22.5", "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process", "moonbitlang/core/env",
+  "moonbitlang/core/json", "moonbitlang/x@0.5.5/crypto", "moonbitlang/x@0.5.5/path",
+}
+----
+
+///|
+fn field(value : Json,name : String) -> Json {match value {Object(fields)=>fields.get(name).unwrap_or(Json::null());_=>Json::null()}}
+
+///|
+fn array(value : Json) -> Array[Json] raise {guard value is Array(rows) else {fail("expected protection registry array")};rows}
+
+///|
+fn object(value : Json) -> Map[String,Json] raise {guard value is Object(fields) else {fail("expected protection registry object")};fields}
+
+///|
+fn text(value : Json) -> String raise {guard value is String(value) else {fail("expected protection registry string")};value}
+
+///|
+async fn write_json(path : String,value : Json) -> Unit {@fs.write_file(path,value.stringify(indent=2)+"\n")}
+
+///|
+async fn digest(path : String) -> String {
+  guard @fs.kind(path) is Regular else {fail("required identity is not a regular file: "+path)}
+  let input=@fs.open(path,mode=ReadOnly);defer input.close()
+  let hash=@crypto.SHA256::new()
+  let buffer=FixedArray::make(65536,b'\x00');let bytes=buffer.unsafe_reinterpret_as_bytes()
+  while input.read(buffer) is count && count>0 {hash.update(bytes[:count])}
+  @crypto.bytes_to_hex_string(hash.finalize())
+}
+
+///|
+async fn freeze(source : String,target : String,executable~ : Bool=false) -> String {
+  @fs.mkdir(@path.Path(target).dirname().to_string(),recursive=true,allow_exist=true)
+  let input=@fs.open(source,mode=ReadOnly);defer input.close()
+  let output=@fs.create(target,allow_existing=false,permission=if executable {0o755}else{0o644});defer output.close()
+  let buffer=FixedArray::make(65536,b'\x00');let bytes=buffer.unsafe_reinterpret_as_bytes()
+  while input.read(buffer) is count && count>0 {output.write(bytes[:count])}
+  output.close()
+  let expected=digest(target)
+  assert_eq(digest(source),expected,msg="source changed while freezing: "+source)
+  expected
+}
+
+///|
+async fn capture(program : String,args : Array[String],log : String) -> Int32 {
+  let output=@process.redirect_to_file(log);defer output.close()
+  @process.run(program,args,stdout=output,stderr=output)
+}
+
+///|
+async fn run_checked(program : String,args : Array[String],log : String) -> Unit {
+  guard capture(program,args,log)==0 else {fail("protection preparation failed; retained log: "+log)}
+}
+
+///|
+async fn source_inventory() -> Array[String] {
+  let listed=@process.collect_output("git",["ls-files","--cached","--others","--exclude-standard","-z","core","commands"])
+  guard listed.0==0 else {fail("cannot inventory current product source")}
+  let paths=listed.1.text().split("\u0000").filter(path=>!path.is_empty()).map(path=>path.to_owned()).to_array()
+  paths.sort();guard !paths.is_empty() else {fail("empty product source inventory")};paths
+}
+
+///|
+async fn command_inventory(root : String,shared_core~ : Bool=false) -> Array[String] {
+  let commands : Array[String]=[]
+  for name in @fs.readdir(root) {
+    if shared_core && name=="core" {continue}
+    guard @fs.kind(root+"/"+name) is Directory && @fs.kind(root+"/"+name+"/"+name+".wasm") is Regular else {fail("invalid command artifact entry: "+root+"/"+name)}
+    commands.push(name)
+  }
+  commands.sort();commands
+}
+
+///|
+async fn main {
+  let args=@env.args()
+  guard args.length()==3 else {fail("Usage: protect.mbtx FROZEN_BASELINE_CLI_ROOT FRESH_REPORT_ROOT; the former FIXTURES argument is retired and rejected")}
+  guard !(@async.platform is Windows) else {fail("real-corpus protection requires the Linux or macOS Native benchmark and correctness driver")}
+  for key in ["CMD_BENCH_SETTLE_MS","CMD_BENCH_PRELOAD","CMD_BENCH_RUSAGE","CMD_BENCH_PERF"] {
+    let value=@env.get_env_var(key).unwrap_or("")
+    guard value=="" || (key!="CMD_BENCH_PERF" && value=="0") else {fail("diagnostic observer settings cannot qualify protection: "+key)}
+  }
+  let corpus=@env.get_env_var("CMD_BENCH_CORPUS_ROOT").unwrap_or("")
+  let oracle=@env.get_env_var("CMD_BENCH_ORACLE_BIN").unwrap_or("")
+  guard !corpus.is_empty() && !oracle.is_empty() else {fail("CMD_BENCH_CORPUS_ROOT and CMD_BENCH_ORACLE_BIN are required")}
+  let corpus=@fs.realpath(corpus);let oracle=@fs.realpath(oracle)
+  guard @fs.kind(corpus) is Directory && @fs.kind(oracle) is Directory else {fail("real corpus and oracle roots must be directories")}
+  let baseline=@fs.realpath(args[1])
+  let evidence=@path.Path(args[2]).resolve().to_string()
+  guard evidence!=baseline && !evidence.has_prefix(baseline+"/") else {fail("fresh protection evidence must be outside the frozen baseline root")}
+  @fs.mkdir(evidence,recursive=true,allow_exist=false)
+  write_json(evidence+"/verdict.json",{"timing_passed":false,"stage":"preparation","general_performance_acceptance":false,"upstream_parity":false})
+  let identities : Array[(String,String)]=[]
+  let source_paths=source_inventory()
+  for path in source_paths {identities.push((path,freeze(path,evidence+"/source/"+path)))}
+  let built=@fs.realpath("_build/wasm/release/build/cli")
+  guard baseline!=built && !baseline.has_prefix(built+"/") else {fail("frozen baseline must be outside the candidate build root")}
+  for command in command_inventory(built,shared_core=true) {
+    let suffix="/"+command+"/"+command+".wasm"
+    freeze(built+suffix,evidence+"/prebuild-artifacts"+suffix) |> ignore
+  }
+  run_checked("moon",["build","--target","wasm","--release","--deny-warn"],evidence+"/build-products.log")
+  assert_eq(source_inventory(),source_paths,msg="product source inventory changed during build")
+  for (path,expected) in identities {assert_eq(digest(path),expected,msg="product source changed during build: "+path)}
+  run_checked("moon",["run","tests/architecture.mbtx","--",evidence+"/architecture.json"],evidence+"/architecture.log")
+  for package in ["tests/benchmark","tests/runner"] {
+    run_checked("moon",["build","--target","native","--release","--deny-warn",package],evidence+"/build-"+(if package=="tests/benchmark" {"benchmark"}else{"runner"})+".log")
+  }
+  let registry=@json.parse(@fs.read_file("tests/benchmark/protection.json").text())
+  guard field(registry,"schema")==Json(2) && field(registry,"artifact_count")==Json(80) && field(registry,"windows")==Json(2) && field(registry,"pairs")==Json(9) && field(registry,"mad_limit")==Json(0.05) && field(registry,"drift_limit")==Json(0.1) && field(registry,"slowdown_limit")==Json(1.05) else {fail("protection registry differs from the real runner's fixed two-window policy")}
+  guard field(registry,"profile_aliases")==Json::null() || object(field(registry,"profile_aliases")).is_empty() else {fail("historical timing aliases cannot qualify real-corpus protection")}
+  let manifest_path=@fs.realpath("tests/benchmark/real.json")
+  let manifest=@json.parse(@fs.read_file(manifest_path).text())
+  guard field(manifest,"schema")==Json(3) else {fail("protection requires real.json schema3")}
+  let rows=array(field(manifest,"workloads"));guard !rows.is_empty() else {fail("no real timing workloads")}
+  run_checked(@fs.realpath("_build/native/release/build/mooxCLI/cmd-tests/benchmark/benchmark.exe"),["inventory","--manifest",manifest_path],evidence+"/real-inventory.json")
+  let coverage_path=text(field(manifest,"coverage_registry"))
+  let dispositions=array(field(@json.parse(@fs.read_file(coverage_path).text()),"commands"))
+  let profiles=object(field(registry,"profiles"))
+  let registered : Set[String]=Set([])
+  for command,value in profiles {
+    let ids=array(value);guard !ids.is_empty() else {fail("empty real timing profile: "+command)}
+    let specs=dispositions.filter(spec=>field(spec,"command")==Json(command))
+    let correctness_only=specs is [spec] && field(spec,"disposition")==Json("correctness-only") && !array(field(spec,"local_case_ids")).is_empty()
+    for id in ids {
+      let id=text(id)
+      if id=="correctness-only:"+command {
+        guard correctness_only && ids.length()==1 && !rows.any(row=>field(row,"command")==Json(command)) && !registered.contains(id) else {fail("correctness-only profile marker requires one explicit local-contract disposition and no timing row: "+command)}
+      }else{
+        guard !correctness_only && !registered.contains(id) && rows.filter(row=>field(row,"id")==Json(id) && field(row,"command")==Json(command)) is [_] else {fail("profile must bind one actual real timing workload: "+command+":"+id)}
+      }
+      registered.add(id)
+    }
+  }
+  let commands=command_inventory(baseline)
+  assert_eq(commands.length(),80,msg="frozen baseline must contain all80 command artifacts")
+  assert_eq(command_inventory(built,shared_core=true),commands,msg="candidate/baseline command inventories differ")
+  let coverage : Array[Json]=[];let missing : Array[Json]=[];let mut changed_count=0
+  for command in commands {
+    let suffix="/"+command+"/"+command+".wasm"
+    let old=freeze(baseline+suffix,evidence+"/baseline"+suffix)
+    let current=freeze(built+suffix,evidence+"/candidate"+suffix)
+    identities.append([(baseline+suffix,old),(built+suffix,current),(evidence+"/baseline"+suffix,old),(evidence+"/candidate"+suffix,current)])
+    let changed=old!=current;if changed {changed_count+=1}
+    let workloads=rows.filter(row=>field(row,"command")==Json(command)).map(row=>field(row,"id"))
+    let specs=dispositions.filter(row=>field(row,"command")==Json(command))
+    let correctness_only=specs.any(spec=>field(spec,"disposition")==Json("correctness-only"))
+    let covered= !correctness_only && !workloads.is_empty() && profiles.contains(command)
+    let reason=if correctness_only {"correctness-only disposition cannot qualify changed performance: "+text(field(specs[0],"reason"))}else if workloads.is_empty() {"no real timing workload is registered"}else if !profiles.contains(command) {"real timing workloads lack a protection profile"}else{"registered real timing workloads"}
+    let row : Json={"command":command,"changed":changed,"real_timing_covered":covered,"real_workloads":workloads,"baseline_sha256":old,"candidate_sha256":current,"reason":reason}
+    coverage.push(row);if changed && !covered {missing.push(row)}
+  }
+  write_json(evidence+"/coverage.json",Json(coverage));write_json(evidence+"/missing-coverage.json",Json(missing))
+  let cases_path=text(field(manifest,"case_corpus"))
+  for path in ["tests/benchmark/protection.json","tests/benchmark/real.json",coverage_path,text(field(manifest,"source_catalog")),cases_path] {identities.push((path,freeze(path,evidence+"/configuration/"+path)))}
+  run_checked("moon",["version","--all"],evidence+"/toolchain.txt")
+  run_checked("git",["status","--short"],evidence+"/source-status.txt")
+  run_checked("git",["rev-parse","HEAD"],evidence+"/source-revision.txt")
+  write_json(evidence+"/prepared-artifact-identities.json",Json(identities))
+  if !missing.is_empty() {
+    write_json(evidence+"/verdict.json",{"timing_passed":false,"stage":"changed-artifact-coverage","changed_artifacts":changed_count,"missing":missing,"general_performance_acceptance":false,"upstream_parity":false})
+    fail("changed command artifacts lack qualifying real timing coverage; see missing-coverage.json")
+  }
+  let runtime=@process.collect_output("which",["moonrun"]);guard runtime.0==0 else {fail("moonrun is required")}
+  for (source,name) in [(@fs.realpath(runtime.1.text().trim()),"moonrun"),(@fs.realpath("_build/native/release/build/mooxCLI/cmd-tests/benchmark/benchmark.exe"),"benchmark"),(@fs.realpath("_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe"),"correctness-driver")] {
+    let target=evidence+"/tools/"+name;identities.push((target,freeze(source,target,executable=true)))
+  }
+  write_json(evidence+"/artifact-identities.json",Json(identities))
+  let panel_status=capture(evidence+"/tools/benchmark",["panels","--manifest",manifest_path,"--wasm-root",evidence+"/candidate","--baseline-wasm-root",evidence+"/baseline","--moonrun",evidence+"/tools/moonrun","--correctness-driver",evidence+"/tools/correctness-driver","--oracle-bin",oracle,"--corpus-root",corpus,"--report-dir",evidence+"/panels"],evidence+"/panels.log") catch {error=>{@fs.write_file(evidence+"/panels-error.txt",error.to_string());-999}}
+  let panel=if @fs.exists(evidence+"/panels/panels.json") {@json.parse(@fs.read_file(evidence+"/panels/panels.json").text())}else{Json::null()}
+  let checks : Array[Json]=[];let mut intact=source_inventory()==source_paths
+  for (path,expected) in identities {let observed=digest(path);intact=intact && observed==expected;checks.push({"path":path,"expected_sha256":expected,"observed_sha256":observed})}
+  write_json(evidence+"/artifact-identities-after.json",Json(checks))
+  let passed=panel_status==0 && intact && field(panel,"schema")==Json(3) && field(panel,"passed")==Json(true) && field(panel,"complete")==Json(true) && field(panel,"artifact_integrity")==Json(true) && field(panel,"windows")==Json(2) && field(panel,"required_workloads")==Json(rows.length())
+  write_json(evidence+"/verdict.json",{"timing_passed":passed,"stage":"complete","artifact_integrity":intact,"artifact_count":80,"changed_artifacts":changed_count,"required_workloads":rows.length(),"windows":2,"pairs_per_window":9,"panels_exit_status":panel_status,"panels_report":evidence+"/panels/panels.json","scope":"registered real-source workloads and independent local contracts only; unchanged artifacts and correctness-only dispositions do not establish changed-command performance","general_performance_acceptance":false,"upstream_parity":false,"blind_holdout":false})
+  guard passed else {fail("real-corpus protection failed; all available diagnostics and windows retained")}
+}

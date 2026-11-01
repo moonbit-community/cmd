@@ -1,6 +1,6 @@
 ///|
-/// Compile a jq filter with Unicode-scalar string slicing. moonjq 0.2.0
-/// evaluates Slice only for arrays; lower string slices through its public AST.
+/// Compile a jq filter through released public AST adaptations for string
+/// slicing and stable grouping of complete key streams.
 pub fn parse(source : String) -> @ast.Expr raise {
   lower(@moonjq.parse(source).expr)
 }
@@ -34,9 +34,9 @@ fn lower(expr : @ast.Expr) -> @ast.Expr {
     Operation(a, op, b) => Operation(lower(a), op, lower(b))
     Map(a) => Map(lower(a))
     Select(a) => Select(lower(a))
-    SortBy(a) => SortBy(lower(a))
+    SortBy(a) => lower_sorting(lower(a))
     UniqueBy(a) => UniqueBy(lower(a))
-    GroupBy(a) => GroupBy(lower(a))
+    GroupBy(a) => lower_grouping(lower(a))
     MinBy(a) => MinBy(lower(a))
     MaxBy(a) => MaxBy(lower(a))
     Contains(a) => Contains(lower(a))

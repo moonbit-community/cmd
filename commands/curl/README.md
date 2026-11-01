@@ -3,7 +3,7 @@
 Transfer HTTP and HTTPS data for MoonX.
 
 ```sh
-moonx cli/curl@0.2.4 [options...] <url>
+moonx cli/curl@0.2.5 [options...] <url>
 ```
 
 ## Supported scope
@@ -59,8 +59,8 @@ Send requests, upload files, follow redirects, manage cookies, retry failures an
 ## Examples
 
 ```sh
-moonx cli/curl@0.2.4 https://example.com/
-moonx cli/curl@0.2.4 -L -o page.html https://example.com/
+moonx cli/curl@0.2.5 https://example.com/
+moonx cli/curl@0.2.5 -L -o page.html https://example.com/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0005-transfer.md)

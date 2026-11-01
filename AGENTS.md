@@ -66,6 +66,12 @@ module and version before any release operation.
   `MOON_HOME="$HOME/.moon-accounts/cli" moon test --update` to refresh
   snapshots.
 
+- Keep large static regression corpora in `tests/fixtures` and CLI-equivalent
+  cases in the existing contract runner/registry. Preserve private-state and
+  injected-runtime tests beside their packages; do not widen product APIs just
+  to relocate tests. Migrations must preserve original expected values and
+  corpus records, with missing fixtures failing rather than silently skipping.
+
 - Prefer `assert_eq` or `assert_true(pattern is Pattern(...))` for results that
   are stable or very unlikely to change. For snapshot tests that record
   structured debugging output, derive `Debug` and use `debug_inspect`, rather
@@ -81,15 +87,54 @@ module and version before any release operation.
   `MOON_HOME="$HOME/.moon-accounts/cli" moon run <package>`, and
   `MOON_HOME="$HOME/.moon-accounts/cli" moon publish` from the verified module.
   Preparing a candidate does not authorize publication.
+  Package publication uses `moon publish` only. Do not add separate release
+  packaging, archive uploads, or another package publication mechanism.
 
 - Serialize workspace check/test/build/info/fmt commands: they share the build
   directory. Agent-authored automation must use pure MoonBit `.mbtx` files.
 
+- Shared high-performance changes follow `tests/benchmark/PROTECTION.md` and
+  the boundary/workload registry in `tests/benchmark/protection.json`. New
+  timing uses one schema-3 inventory in `tests/benchmark/real.json`; its
+  complete hash-pinned genuine sources are limited to 16 MiB each and 64 MiB
+  unique bytes. Command-specific timing pipelines and generated-size timing
+  inputs are retired. Independent local regression assertions run before
+  timing; Linux differential evidence is additional. Save the
+  current optimized source and Wasm artifacts before editing. Every changed
+  command artifact needs a registered workload; missing coverage, incomplete
+  windows and unstable results cannot pass. Keep specialized command loops and
+  explicit borrowing, output-failure and temporary-cleanup contracts. Record
+  accepted small timing costs separately from noise and resource observations
+  in ADR-0003. A local timing result does not replace required CI or publication
+  acceptance, and this workflow does not run automatically on ordinary pushes.
+
+- Internal architecture changes follow command adaptation -> domain
+  implementation -> runtime mechanisms and algorithms. Run
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/architecture.mbtx -- /absolute/new-inventory.json`
+  from the repository root after updating interfaces. Keep module dispositions
+  in ADR-0003, not another report hierarchy. New shared mechanisms need two
+  actual consumers; catalog/contract metadata has validation consumers rather
+  than runtime command consumers. Preserve dialects, error ordering and fast
+  loops instead of forcing them into a generic command framework.
+
+- rg search policy and its concrete matcher adapter are private to `driver`.
+  Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms
+  in `core/bytesearch`; `matcher` and `searcher` must not import the driver.
+  Tests requiring the command adapter belong to driver integration tests;
+  retain private buffer/capacity tests with the searcher and its test matcher.
 - A behavior or option change must update the command README, help, shared
   catalog, compatibility record and relevant regression together. Record
   tradeoffs in the existing canonical ADR with an Updated date, evidence and
   conditions for lifting limitations. Keep dated delivery summaries in
   CHANGELOG.md; preserve historical claims and recover full reports from Git.
+- Keep ADRs focused on current decisions, rationale, consequences and reopening
+  conditions. Keep CHANGELOG.md to a few outcome-oriented bullets per date,
+  distinguishing development from publication. Maintain algorithm explanations
+  in docs/performance by topic: source call paths, admission rules, invariants,
+  resource costs, fallbacks and useful rejected approaches with retry conditions.
+  Update existing topics instead of appending experiment reports. Link the
+  authoritative tests/workloads and pinned historical evidence; do not duplicate
+  registries, create another report archive or broaden old acceptance claims.
 - Product delivery and required correctness acceptance target Wasm through MoonX.
   Development CI runs the complete applicable Wasm suite on Linux, macOS and
   Windows. Native is retained only for test tools and their own regressions.
@@ -144,28 +189,29 @@ module and version before any release operation.
   changed command packages one at a time in lexical command-name order. After
   every upload require `Server status: 200 OK` and verify the exact registry
   version before moving to the next package. Never run publishes in parallel.
+- Refresh the registry index after publishing a new core version. Before MoonX
+  acceptance, wait for the selected command versions' registry builds to succeed.
 - After all uploads, run exact published-consumer smoke and contract checks
   with `MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/<cmd>@<version> ...`.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-10-27 documentation release: core
-  is 0.8.2, reused without republishing after fetched-source comparison.
-  All 78 published commands have new versions: 34 at 0.2.3, 11 at 0.2.4,
-  three at 0.2.1, two at 0.2.2, 12 at 0.1.4, ten at 0.1.3, four at 0.1.5,
-  and one each at 0.2.5 and 0.3.2. Commands using core select 0.8.2;
-  echo/false/sleep/true remain independent. `rg` and `timeout` are unpublished
-  and excluded from the release inventory. Exact coordinates and accepted
-  cases are in tests/release_runner/current/latest.json and latest-cases.json.
-  Local MoonX acceptance passed 2,094 checks (1,963 semantic, 78 startup and
-  53 boundary results), with 18 platform skips and zero failures; 17 additional
-  README examples passed. Manual published acceptance run 40432031612 passed
-  Linux (2,287 checks, 15 skips, including 1,507 pinned differential results),
-  macOS (2,094 checks, 18 skips) and Windows (1,961 checks, 151 skips), all with
-  zero failures. See CHANGELOG.md under 2026-10-27. This does not establish
-  full GNU parity or formal performance acceptance.
-  current/published.json and historical snapshots remain unchanged; prior
-  release and acceptance results retain their dated scope in CHANGELOG.md.
+- Current registry baseline after the 2026-11-01 release: core is 0.9.1.
+  Published 26 changed command versions; retained the other 53 coordinates, giving
+  79 published commands among 80 local modules. Core dependencies are 26 commands
+  on 0.9.1, 26 on 0.9.0 and 23 on 0.8.2; echo/false/sleep/true remain independent.
+  timeout remains unpublished and local-only. Exact coordinates and independent
+  expectations are in tests/release_runner/current/latest.json and latest-cases.json.
+  Source commit c5c016c passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/41294367461).
+  All 27 uploads/builds were verified. Local exact-version MoonX and
+  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751)
+  passed all 79 coordinates with zero failures, including pinned Linux comparison.
+  Counts and exclusions are in CHANGELOG.md under 2026-11-01. This does not
+  establish full upstream parity or formal performance acceptance.
+  Current latest/candidate snapshots remain independent. Retired published and
+  historical archives are preserved in Git at 234f960, rather than duplicated
+  in the active checkout. Prior acceptance results retain their dated scope
+  in CHANGELOG.md.
   Update this baseline whenever a later release changes it.
 
 ### Mandatory pure MoonBit boundary

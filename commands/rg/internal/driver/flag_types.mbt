@@ -12,7 +12,7 @@ pub(all) enum Category {
 } derive(Debug, Eq, Compare)
 
 ///|
-pub fn Category::as_str(self : Category) -> String {
+fn Category::as_str(self : Category) -> String {
   match self {
     Input => "input"
     Search => "search"

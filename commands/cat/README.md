@@ -3,7 +3,7 @@
 Concatenate files and stdin for MoonX.
 
 ```sh
-moonx cli/cat@0.2.3 [OPTION]... [FILE]...
+moonx cli/cat@0.2.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -32,8 +32,8 @@ Copy inputs in order to stdout. With no file, or `-`, read stdin. Formatting con
 ## Examples
 
 ```sh
-moonx cli/cat@0.2.3 first.txt second.txt
-moonx cli/cat@0.2.3 -n notes.txt
+moonx cli/cat@0.2.4 first.txt second.txt
+moonx cli/cat@0.2.4 -n notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

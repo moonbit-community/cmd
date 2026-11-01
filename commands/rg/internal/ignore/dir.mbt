@@ -8,17 +8,6 @@
 // directory. In this sense, `Ignore` is a *persistent* data structure.
 
 ///|
-/// IgnoreMatch represents information about where a match came from when
-/// using the `Ignore` matcher.
-#warnings("-unused_constructor")
-priv enum IgnoreMatch {
-  Override(OverrideGlob)
-  Gitignore(GitignoreGlob)
-  Types(TypesGlob)
-  Hidden
-}
-
-///|
 /// Options for the ignore matcher, shared between the matcher itself and the
 /// builder.
 priv struct IgnoreOptions {
@@ -99,13 +88,6 @@ priv struct IgnoreInner {
   mut has_git : Bool
   /// Ignore config.
   opts : IgnoreOptions
-}
-
-///|
-/// Return the directory path of this matcher. (Only used by tests.)
-#warnings("-unused_value")
-fn Ignore::path(self : Ignore) -> String {
-  self.inner.dir
 }
 
 ///|
@@ -203,7 +185,7 @@ async fn Ignore::add_child(
 async fn Ignore::add_child_with_entries(
   self : Ignore,
   dir : String,
-  entries : ArrayView[@sys.DirEntry],
+  entries : ArrayView[String],
 ) -> (Ignore, IgnoreError?) {
   let files = self.collect_ignore_files(entries)
   let (ig, err) = self.add_child_path_with_found_ignore_files(dir, Some(files))
@@ -232,7 +214,7 @@ priv struct IgnoreFilesFound {
 ///|
 fn Ignore::collect_ignore_files(
   self : Ignore,
-  entries : ArrayView[@sys.DirEntry],
+  entries : ArrayView[String],
 ) -> IgnoreFilesFound {
   let custom_ignore_filenames = self.inner.custom_ignore_filenames
   let files = {
@@ -242,8 +224,7 @@ fn Ignore::collect_ignore_files(
     has_jj_dir: false,
     custom_ignore_files: Array::make(custom_ignore_filenames.length(), false),
   }
-  for entry in entries {
-    let file_name = entry.name
+  for file_name in entries {
     if file_name == ".ignore" {
       files.has_ignore = true
     } else if file_name == ".gitignore" {
@@ -403,13 +384,10 @@ fn Ignore::has_any_ignore_rules(self : Ignore) -> Bool {
 
 ///|
 /// Like `matched`, but works with a directory entry instead.
-fn Ignore::matched_dir_entry(
-  self : Ignore,
-  dent : DirEntry,
-) -> Match[IgnoreMatch] {
+fn Ignore::matched_dir_entry(self : Ignore, dent : DirEntry) -> Match[Unit] {
   let m = self.matched(dent.path(), dent.is_dir())
   if m.is_none() && self.inner.opts.hidden && is_hidden_entry(dent) {
-    return Ignore(Hidden)
+    return Ignore(())
   }
   m
 }
@@ -418,12 +396,8 @@ fn Ignore::matched_dir_entry(
 /// Returns a match indicating whether the given file path should be
 /// ignored or not.
 ///
-/// The match contains information about its origin.
-fn Ignore::matched(
-  self : Ignore,
-  path : String,
-  is_dir : Bool,
-) -> Match[IgnoreMatch] {
+/// Only the decision is needed at the traversal boundary.
+fn Ignore::matched(self : Ignore, path : String, is_dir : Bool) -> Match[Unit] {
   // We need to be careful with our path. If it has a leading ./, then
   // strip it because it causes nothing but trouble.
   let mut path = path
@@ -435,14 +409,12 @@ fn Ignore::matched(
   // return that result immediately. Overrides have the highest
   // precedence.
   if !self.inner.overrides.is_empty() {
-    let mat = self.inner.overrides
-      .matched(path, is_dir)
-      .map(x => IgnoreMatch::Override(x))
+    let mat = self.inner.overrides.matched(path, is_dir).map(_ => ())
     if !mat.is_none() {
       return mat
     }
   }
-  let mut whitelisted : Match[IgnoreMatch] = None
+  let mut whitelisted : Match[Unit] = None
   if self.has_any_ignore_rules() {
     let mat = self.matched_ignore(path, is_dir)
     if mat.is_ignore() {
@@ -452,9 +424,7 @@ fn Ignore::matched(
     }
   }
   if !self.inner.types.is_empty() {
-    let mat = self.inner.types
-      .matched(path, is_dir)
-      .map(x => IgnoreMatch::Types(x))
+    let mat = self.inner.types.matched(path, is_dir).map(_ => ())
     if mat.is_ignore() {
       return mat
     } else if mat.is_whitelist() {
@@ -465,8 +435,8 @@ fn Ignore::matched(
 }
 
 ///|
-fn gi_match(gi : Gitignore, path : String, is_dir : Bool) -> Match[IgnoreMatch] {
-  gi.matched(path, is_dir).map(x => IgnoreMatch::Gitignore(x))
+fn gi_match(gi : Gitignore, path : String, is_dir : Bool) -> Match[Unit] {
+  gi.matched(path, is_dir).map(_ => ())
 }
 
 ///|
@@ -476,12 +446,12 @@ fn Ignore::matched_ignore(
   self : Ignore,
   path : String,
   is_dir : Bool,
-) -> Match[IgnoreMatch] {
-  let mut m_custom_ignore : Match[IgnoreMatch] = None
-  let mut m_ignore : Match[IgnoreMatch] = None
-  let mut m_gi : Match[IgnoreMatch] = None
-  let mut m_gi_exclude : Match[IgnoreMatch] = None
-  let mut m_explicit : Match[IgnoreMatch] = None
+) -> Match[Unit] {
+  let mut m_custom_ignore : Match[Unit] = None
+  let mut m_ignore : Match[Unit] = None
+  let mut m_gi : Match[Unit] = None
+  let mut m_gi_exclude : Match[Unit] = None
+  let mut m_explicit : Match[Unit] = None
   // N.B. The chain of matchers is walked directly (instead of collecting
   // `parents()`) since this is called for every directory entry.
   let any_git = !self.inner.opts.require_git ||
@@ -582,19 +552,6 @@ fn Ignore::matched_ignore(
 }
 
 ///|
-/// Returns all parent ignore matchers, including this one (from this one
-/// up to the root).
-fn Ignore::parents(self : Ignore) -> Array[IgnoreInner] {
-  let out = []
-  let mut cur = Some(self.inner)
-  while cur is Some(ig) {
-    out.push(ig)
-    cur = ig.parent
-  }
-  out
-}
-
-///|
 /// A builder for creating an Ignore matcher.
 priv struct IgnoreBuilder {
   /// The root directory path for this ignore matcher.
@@ -643,8 +600,11 @@ fn IgnoreBuilder::new() -> IgnoreBuilder {
 ///
 /// The matcher returned won't match anything until ignore rules from
 /// directories are added to it.
-async fn IgnoreBuilder::build(self : IgnoreBuilder) -> Ignore {
-  self.build_with_cwd(None)
+async fn IgnoreBuilder::build(
+  self : IgnoreBuilder,
+  load_global~ : Bool = true,
+) -> Ignore {
+  self.build_with_cwd(None, load_global~)
 }
 
 ///|
@@ -652,12 +612,13 @@ async fn IgnoreBuilder::build(self : IgnoreBuilder) -> Ignore {
 async fn IgnoreBuilder::build_with_cwd(
   self : IgnoreBuilder,
   cwd : String?,
+  load_global~ : Bool = true,
 ) -> Ignore {
   let global_gitignores_relative_to = match cwd {
     Some(_) => cwd
     None => self.global_gitignores_relative_to
   }
-  let git_global_matcher = if !self.opts.git_global {
+  let git_global_matcher = if !load_global || !self.opts.git_global {
     Gitignore::empty()
   } else if global_gitignores_relative_to is Some(cwd) {
     let builder = GitignoreBuilder::new(cwd)

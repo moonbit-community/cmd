@@ -541,7 +541,7 @@ async fn run(options : WgetOptions) -> Int32 {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("wget 0.2.4\n")
+    @stdio.stdout.write("wget 0.2.5\n")
     return
   }
   let options = parse_wget_options(@env.args()[1:]) catch {

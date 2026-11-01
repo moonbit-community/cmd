@@ -165,7 +165,7 @@ fn zero_pad(text : String, width : Int32) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("seq 0.2.4\n")
+    @stdio.stdout.write("seq 0.2.5\n")
     return
   }
   let args = @env.args()[1:]
@@ -283,6 +283,28 @@ async fn main {
     first_text.length()
   } else {
     last_text.length()
+  }
+  let separator_bytes = @utf8.encode(separator)
+  match
+    (first.bounded_integer(), step.bounded_integer(), last.bounded_integer()) {
+    (Some(first), Some(step), Some(last)) if separator_bytes.length() <= 65515 => {
+      print_integers(
+        IntegerSequence::new(
+          first,
+          step,
+          last,
+          separator_bytes,
+          if equal_width {
+            width
+          } else {
+            0
+          },
+        ),
+        @stdio.stdout,
+      )
+      return
+    }
+    _ => ()
   }
   let mut current = first
   let mut emitted = false

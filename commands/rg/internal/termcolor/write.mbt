@@ -5,12 +5,19 @@
 /// Only `write_slice` is required. Writers backed by the OS (e.g. stdout)
 /// are expected to be provided by the CLI layer by implementing this trait.
 pub(open) trait Write {
+  /// Accept the whole span synchronously, or return false without writing.
+  fn try_write_slice(Self, FixedArray[Byte], Int32, Int32) -> Bool raise = _
   /// Writes all of `buf[start:end]`.
   async fn write_slice(Self, FixedArray[Byte], Int32, Int32) -> Unit
   /// Writes all of the given bytes.
   async fn write_bytes(Self, BytesView) -> Unit = _
   /// Flushes any buffered data.
   async fn flush(Self) -> Unit = _
+}
+
+///|
+impl Write with fn try_write_slice(_self, _buf, _start, _end) {
+  false
 }
 
 ///|
@@ -41,18 +48,10 @@ pub(open) trait WriteColor: Write {
   async fn set_color(Self, ColorSpec) -> Unit
   /// Reset the current color settings to their original settings.
   async fn reset(Self) -> Unit
-  /// Returns true if and only if the underlying writer must synchronously
-  /// interact with an end user's device in order to control colors.
-  fn is_synchronous(Self) -> Bool = _
   /// Set the current hyperlink of the writer.
   async fn set_hyperlink(Self, HyperlinkSpec) -> Unit = _
   /// Returns true if and only if the underlying writer supports hyperlinks.
   fn supports_hyperlinks(Self) -> Bool = _
-}
-
-///|
-impl WriteColor with fn is_synchronous(_self) {
-  false
 }
 
 ///|
@@ -161,28 +160,8 @@ pub fn ByteVec::length(self : ByteVec) -> Int32 {
 }
 
 ///|
-pub fn ByteVec::is_empty(self : ByteVec) -> Bool {
-  self.len == 0
-}
-
-///|
 pub fn ByteVec::clear(self : ByteVec) -> Unit {
   self.len = 0
-}
-
-///|
-/// Truncates the vector to `len` bytes (no-op if already shorter).
-pub fn ByteVec::truncate(self : ByteVec, len : Int32) -> Unit {
-  if len < self.len {
-    self.len = len
-  }
-}
-
-///|
-#alias("_[_]")
-pub fn ByteVec::at(self : ByteVec, i : Int32) -> Byte {
-  guard i >= 0 && i < self.len else { abort("ByteVec index out of bounds") }
-  self.data[i]
 }
 
 ///|
@@ -211,6 +190,12 @@ pub fn ByteVec::slice_to_bytes(
 ///|
 pub impl Write for ByteVec with fn write_slice(self, buf, start, end) {
   self.extend_slice(buf, start, end)
+}
+
+///|
+pub impl Write for ByteVec with fn try_write_slice(self, buf, start, end) {
+  self.extend_slice(buf, start, end)
+  true
 }
 
 ///|

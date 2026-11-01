@@ -11,61 +11,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-context-byte-offset",
-      "command": "grep",
-      "args": [
-        "-n",
-        "-b",
-        "-C1",
-        "hit"
-      ],
-      "stdin_text": "a\nhit\nc\nd\ne\nhit\ng\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-zero-records",
-      "command": "grep",
-      "args": [
-        "-Fzb",
-        "hit"
-      ],
-      "stdin_hex": "6f6e650068697400746872656500",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-repeated-context",
-      "command": "grep",
-      "args": [
-        "-A0",
-        "-A1",
-        "hit"
-      ],
-      "stdin_text": "a\nhit\nc\n",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p2-grep-binary-report",
-      "command": "grep",
-      "args": [
-        "hit"
-      ],
-      "stdin_hex": "61006869740a",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "needle\n"
     },
     {
       "id": "p2-grep-recursive-selection",
@@ -94,7 +44,11 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "tree${PATH_SEPARATOR}keep.txt:needle\n"
     },
     {
       "id": "grep-no-context-separator",
@@ -159,7 +113,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "a\nhit\nc\nd\ne\nhit\ng\n",
       "expected_stdout_text": "1-0-a\n2:2:hit\n3-6-c\n--\n5-10-e\n6:12:hit\n7-16-g\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p2-grep-context-byte-offset"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-218",
@@ -177,7 +135,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "a\nhit\nc\n",
       "expected_stdout_text": "hit\nc\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p2-grep-repeated-context"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-227",
@@ -194,7 +156,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_hex": "6f6e650068697400746872656500",
       "expected_stdout_hex": "343a68697400",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p2-grep-zero-records"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-line-236",
@@ -355,7 +321,11 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_text": "grep: (standard input): binary file matches\n",
-      "stdin_hex": "61006869740a"
+      "stdin_hex": "61006869740a",
+      "aliases": [
+        "p2-grep-binary-report"
+      ],
+      "oracle": true
     },
     {
       "id": "compat-text-grep-silent-missing",
@@ -373,22 +343,6 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
       "expected_stderr_text": ""
-    },
-    {
-      "id": "compat-catalog-line-99",
-      "command": "grep",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "repair-alias-grep-line-number",
@@ -467,9 +421,14 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/grep@0.3.2 metadata contract",
+      "source_version": "workspace cli/grep@0.3.3 metadata contract",
       "expected_stdout_text": "Usage: grep [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n-r and -R recurse without following symbolic links.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-99"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-grep-version",
@@ -486,8 +445,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/grep@0.3.2 metadata contract",
-      "expected_stdout_text": "grep 0.3.2\n",
+      "source_version": "workspace cli/grep@0.3.3 metadata contract",
+      "expected_stdout_text": "grep 0.3.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -722,6 +681,50 @@
       "comparison": "contract",
       "oracle": true,
       "source_version": "GNU grep 3.12"
+    },
+    {
+      "id": "proof-grep-fixed-metacharacter",
+      "command": "grep",
+      "args": [
+        "--fixed-strings",
+        "a.b"
+      ],
+      "stdin_text": "axb\na.b\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "a.b\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "fixed-strings"
+      ],
+      "source_version": "Independent literal-versus-regex distinction; ordinary hit literals do not activate fixed-string semantics."
+    },
+    {
+      "id": "proof-grep-ignore-case-positive",
+      "command": "grep",
+      "args": [
+        "--ignore-case",
+        "alpha"
+      ],
+      "stdin_text": "ALPHA\nbeta\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "ALPHA\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "ignore-case"
+      ],
+      "source_version": "Independent ASCII case-fold activation with an actual opposite-case match."
     }
   ]
 }

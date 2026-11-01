@@ -6,212 +6,19 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
     let mut curl_retry_all_attempts = 0
     let mut curl_retry_limited_attempts = 0
     let mut wget_retry_limited_attempts = 0
-    let cross_origin = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
-    group.add_defer(() => cross_origin.close())
-    group.spawn_bg(no_wait=true) <| () => {
-      cross_origin.run_forever() <| ((request, body, connection) => {
-        let request_name = match request.meth {
-          Get => "GET"
-          Head => "HEAD"
-          Post => "POST"
-          Put => "PUT"
-          Delete => "DELETE"
-          Connect => "CONNECT"
-          Options => "OPTIONS"
-          Trace => "TRACE"
-          Patch => "PATCH"
-        }
-        let authorization = if request.headers.get("Authorization") is None {
-          "clean"
-        } else {
-          "leaked"
-        }
-        let payload = body.read_all().text()
-        let response = "\{request_name}:\{authorization}:\{payload}"
-        connection.send_response(200, "OK", extra_headers={
-          "Content-Length": response.length().to_string(),
-        })
-        connection..write(response).end_response()
-      })
-    }
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
+    group.spawn_bg(no_wait=true, () => @testkit.run_http_fixture(server))
+    // Counted retries stay local; ordinary responses use the contract fixture.
+    let stateful = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => stateful.close())
     group.spawn_bg(no_wait=true) <| () => {
-      server.run_forever() <| ((request, _body, connection) => {
+      stateful.run_forever() <| ((request, _body, connection) => {
         match request.path {
-          "/fixed" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "5",
-            })
-            if request.meth == @http.Head {
-              connection.end_response()
-            } else {
-              connection..write("hello").end_response()
-            }
-          }
-          "/chunked" => {
-            connection.send_response(200, "OK")
-            connection..write("slow-").flush()
-            @async.sleep(5)
-            connection..write("stream").end_response()
-          }
-          "/redirect" =>
-            connection
-            ..send_response(302, "Found", extra_headers={
-              "Location": "/fixed",
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/method-redirect" =>
-            connection
-            ..send_response(302, "Found", extra_headers={
-              "Location": "/request",
-              "Content-Length": "0",
-            })
-            .end_response()
           "/cross-origin" =>
             connection
             ..send_response(307, "Temporary Redirect", extra_headers={
-              "Location": "http://127.0.0.1:\{cross_origin.addr.port()}/target",
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/chain-1" =>
-            connection
-            ..send_response(302, "Found", extra_headers={
-              "Location": "/chain-2",
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/chain-2" =>
-            connection
-            ..send_response(302, "Found", extra_headers={
-              "Location": "/fixed",
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/redirect-301"
-          | "/redirect-302"
-          | "/redirect-303"
-          | "/redirect-307"
-          | "/redirect-308" => {
-            let status = @string.parse_int(request.path[10:])
-            let reason = match status {
-              301 => "Moved Permanently"
-              302 => "Found"
-              303 => "See Other"
-              307 => "Temporary Redirect"
-              _ => "Permanent Redirect"
-            }
-            connection
-            ..send_response(status, reason, extra_headers={
-              "Location": "/echo",
-              "Content-Length": "0",
-            })
-            .end_response()
-          }
-          "/loop-a" =>
-            connection
-            ..send_response(302, "Found", extra_headers={
-              "Location": "/loop-b",
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/loop-b" =>
-            connection
-            ..send_response(302, "Found", extra_headers={
-              "Location": "/loop-a",
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/echo" => {
-            let content = _body.read_all().binary()
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": content.length().to_string(),
-            })
-            connection..write(content).end_response()
-          }
-          "/request" => {
-            let content = _body.read_all().text()
-            let request_name = match request.meth {
-              Get => "GET"
-              Head => "HEAD"
-              Post => "POST"
-              Put => "PUT"
-              Delete => "DELETE"
-              Connect => "CONNECT"
-              Options => "OPTIONS"
-              Trace => "TRACE"
-              Patch => "PATCH"
-            }
-            let marker = request.headers.get("X-Marker").unwrap_or("")
-            let response = "\{request_name}:\{marker}:\{content}"
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": response.length().to_string(),
-            })
-            connection..write(response).end_response()
-          }
-          "/method-check" => {
-            let expected = request.headers.get("X-Expected").unwrap_or("")
-            let accepted = oracle_request_name(request) == expected
-            connection
-            ..send_response(
-              if accepted {
-                200
-              } else {
-                400
-              },
-              if accepted {
-                "OK"
-              } else {
-                "Bad Request"
-              },
-              extra_headers={ "Content-Length": "0" },
-            )
-            .end_response()
-          }
-          "/range" => {
-            let ranged = request.headers.get("Range") == Some("bytes=3-")
-            let content = if ranged { "lo" } else { "hello" }
-            let headers : Map[@http.CaseInsensitiveString, String] = {
-              "Content-Length": content.length().to_string(),
-            }
-            if ranged {
-              headers["Content-Range"] = "bytes 3-4/5"
-            }
-            connection.send_response(
-              if ranged {
-                206
-              } else {
-                200
-              },
-              "OK",
-              extra_headers=headers,
-            )
-            connection..write(content).end_response()
-          }
-          "/range-ignore" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "5",
-            })
-            connection..write("hello").end_response()
-          }
-          "/conditional" =>
-            if request.headers.get("If-Modified-Since") is Some(_) {
-              connection
-              ..send_response(304, "Not Modified", extra_headers={
-                "Content-Length": "0",
-              })
-              .end_response()
-            } else {
-              connection.send_response(200, "OK", extra_headers={
-                "Content-Length": "5",
-              })
-              connection..write("fresh").end_response()
-            }
-          "/not-modified" =>
-            connection
-            ..send_response(304, "Not Modified", extra_headers={
+              "Location": "http://127.0.0.1:\{server.addr.port()}/cross-origin-target",
               "Content-Length": "0",
             })
             .end_response()
@@ -275,94 +82,12 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
             })
             .end_response()
           }
-          "/partial" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "9",
-            })
-            connection..write("abc").flush()
-            connection.close()
-          }
-          "/unauthorized" =>
-            connection
-            ..send_response(401, "Unauthorized", extra_headers={
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/forbidden" =>
-            connection
-            ..send_response(403, "Forbidden", extra_headers={
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/busy" =>
-            connection
-            ..send_response(429, "Too Many Requests", extra_headers={
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/server-error" =>
-            connection
-            ..send_response(500, "Internal Server Error", extra_headers={
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/named" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "5",
-              "Content-Disposition": "attachment; filename=fixture.txt",
-            })
-            connection..write("hello").end_response()
-          }
-          "/named-encoded" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "5",
-              "Content-Disposition": "attachment; filename*=UTF-8''encoded.txt",
-            })
-            connection..write("hello").end_response()
-          }
-          "/named-partial" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "9",
-              "Content-Disposition": "attachment; filename=partial.txt",
-            })
-            connection..write("abc").flush()
-            connection.close()
-          }
-          "/one" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "3",
-            })
-            connection..write("one").end_response()
-          }
-          "/two" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "3",
-            })
-            connection..write("two").end_response()
-          }
-          "/missing" =>
-            connection
-            ..send_response(404, "Not Found", extra_headers={
-              "Content-Length": "0",
-            })
-            .end_response()
-          "/stall" => {
-            @async.sleep(200)
-            connection..send_response(200, "OK").end_response()
-          }
-          "/body-stall" => {
-            connection.send_response(200, "OK", extra_headers={
-              "Content-Length": "5",
-            })
-            connection.flush()
-            @async.sleep(200)
-            connection..write("later").end_response()
-          }
           _ => connection..send_response(400, "Bad Request").end_response()
         }
       })
     }
     let base = "http://127.0.0.1:\{server.addr.port()}"
+    let stateful_base = "http://127.0.0.1:\{stateful.addr.port()}"
 
     let wget_fixed = @testkit.run_command(bin_root, "wget", [
       "-O",
@@ -496,38 +221,43 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "curl: idle timeout did not fail promptly",
       failures,
     )
-    let wget_redirect = @testkit.run_command(bin_root, "wget", [
-      "-q",
-      "-O",
-      "-",
-      base + "/redirect",
-    ])
-    record_result(
-      wget_redirect.status == 0 &&
-      @testkit.bytes_equal(wget_redirect.stdout, b"hello") &&
-      wget_redirect.stderr.is_empty(),
-      "wget: default relative redirect handling mismatch",
-      failures,
-    )
-    let curl_redirect = @testkit.run_command(bin_root, "curl", [
-      "-s",
-      base + "/redirect",
-    ])
-    record_result(
-      curl_redirect.status == 0 && curl_redirect.stdout.is_empty(),
-      "curl: followed a redirect without -L",
-      failures,
-    )
-    let curl_location = @testkit.run_command(bin_root, "curl", [
-      "-sL",
-      base + "/redirect",
-    ])
-    record_result(
-      curl_location.status == 0 &&
-      @testkit.bytes_equal(curl_location.stdout, b"hello"),
-      "curl: -L relative redirect handling mismatch",
-      failures,
-    )
+    // Current JSON contracts own these checks. The frozen published corpus
+    // still needs its original cohort assertions until a later accepted release.
+    let legacy_published = @testkit.published_mode()
+    if legacy_published {
+      let wget_redirect = @testkit.run_command(bin_root, "wget", [
+        "-q",
+        "-O",
+        "-",
+        base + "/redirect",
+      ])
+      record_result(
+        wget_redirect.status == 0 &&
+        @testkit.bytes_equal(wget_redirect.stdout, b"hello") &&
+        wget_redirect.stderr.is_empty(),
+        "wget: default relative redirect handling mismatch",
+        failures,
+      )
+      let curl_redirect = @testkit.run_command(bin_root, "curl", [
+        "-s",
+        base + "/redirect",
+      ])
+      record_result(
+        curl_redirect.status == 0 && curl_redirect.stdout.is_empty(),
+        "curl: followed a redirect without -L",
+        failures,
+      )
+      let curl_location = @testkit.run_command(bin_root, "curl", [
+        "-sL",
+        base + "/redirect",
+      ])
+      record_result(
+        curl_location.status == 0 &&
+        @testkit.bytes_equal(curl_location.stdout, b"hello"),
+        "curl: -L relative redirect handling mismatch",
+        failures,
+      )
+    }
     let curl_redirect_zero = @testkit.run_command(bin_root, "curl", [
       "-sL",
       "--max-redirs",
@@ -608,7 +338,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "alpha=one",
       "--data-raw",
       "beta=two",
-      base + "/echo",
+      base + "/echo-body",
     ])
     record_result(
       curl_post.status == 0 &&
@@ -624,25 +354,25 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "-s",
       "-d",
       "@" + data_path,
-      base + "/echo",
+      base + "/echo-body",
     ])
     let curl_raw = @testkit.run_command(bin_root, "curl", [
       "-s",
       "--data-raw",
       "@literal",
-      base + "/echo",
+      base + "/echo-body",
     ])
     let curl_binary = @testkit.run_command(bin_root, "curl", [
       "-s",
       "--data-binary",
       "@" + data_path,
-      base + "/echo",
+      base + "/echo-body",
     ])
     let curl_encoded = @testkit.run_command(bin_root, "curl", [
       "-s",
       "--data-urlencode",
       "field@" + data_path,
-      base + "/echo",
+      base + "/echo-body",
     ])
     let curl_empty_data = @testkit.run_command(bin_root, "curl", [
       "-s",
@@ -650,7 +380,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "",
       "--data-urlencode",
       "a b",
-      base + "/echo",
+      base + "/echo-body",
     ])
     record_result(
       curl_form_file.status == 0 &&
@@ -672,14 +402,14 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "-s",
       "-T",
       upload_path,
-      base + "/echo",
+      base + "/echo-body",
     ])
     let curl_upload_twice = @testkit.run_command(bin_root, "curl", [
       "-s",
       "-T",
       upload_path,
-      base + "/echo",
-      base + "/echo",
+      base + "/echo-body",
+      base + "/echo-body",
     ])
     let curl_upload_patch = @testkit.run_command(bin_root, "curl", [
       "-s",
@@ -693,7 +423,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "-s",
       "-T",
       upload_path + ".missing",
-      base + "/echo",
+      base + "/echo-body",
     ])
     record_result(
       curl_upload.status == 0 &&
@@ -879,7 +609,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "Authorization: secret",
       "--data-raw",
       "payload",
-      base + "/cross-origin",
+      stateful_base + "/cross-origin",
     ])
     record_result(
       cross_redirect.status == 0 &&
@@ -889,24 +619,25 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
     )
     let resume_root = @fs.tmpdir(prefix="mooncmd-http-resume")
     defer cleanup_compat_fixture(resume_root)
-    let resume_path = @path.Path(resume_root).join(Path("range")).to_string()
     let range_ignore_path = @path.Path(resume_root)
       .join(Path("range-ignore"))
       .to_string()
     @fs.write_file(range_ignore_path, b"hel")
-    let wget_resume = @testkit.run_command(
-      bin_root,
-      "wget",
-      ["-q", "-c", base + "/range"],
-      cwd=resume_root,
-    )
-    record_result(
-      wget_resume.status == 0 &&
-      @testkit.bytes_equal(@fs.read_file(resume_path).binary(), b"hello"),
-      "wget: range resume mismatch",
-      failures,
-    )
-    @fs.write_file(resume_path, b"hel")
+    if legacy_published {
+      let resume_path = @path.Path(resume_root).join(Path("range")).to_string()
+      let wget_resume = @testkit.run_command(
+        bin_root,
+        "wget",
+        ["-q", "-c", base + "/range"],
+        cwd=resume_root,
+      )
+      record_result(
+        wget_resume.status == 0 &&
+        @testkit.bytes_equal(@fs.read_file(resume_path).binary(), b"hello"),
+        "wget: range resume mismatch",
+        failures,
+      )
+    }
     let wget_range_ignored = @testkit.run_command(
       bin_root,
       "wget",
@@ -1025,19 +756,19 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "-qO-",
       "--method=POST",
       "--body-file=" + body_file,
-      base + "/echo",
+      base + "/echo-body",
     ])
     let wget_body_without_method = @testkit.run_command(bin_root, "wget", [
       "-qO-",
       "--body-data=payload",
-      base + "/echo",
+      base + "/echo-body",
     ])
     let wget_body_conflict = @testkit.run_command(bin_root, "wget", [
       "-qO-",
       "--method=POST",
       "--body-data=payload",
       "--body-file=" + body_file,
-      base + "/echo",
+      base + "/echo-body",
     ])
     let wget_headers = @testkit.run_command(bin_root, "wget", [
       "-qO-",
@@ -1062,7 +793,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "--retry-on-http-error=503",
       "--waitretry=0.001",
       "--tries=3",
-      base + "/wget-retry",
+      stateful_base + "/wget-retry",
     ])
     record_result(
       wget_retry.status == 0 &&
@@ -1077,7 +808,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "1",
       "--retry-delay",
       "0",
-      base + "/curl-retry",
+      stateful_base + "/curl-retry",
     ])
     record_result(
       curl_retry.status == 0 &&
@@ -1093,7 +824,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "--retry-all-errors",
       "--retry-delay",
       "1",
-      base + "/curl-retry-all",
+      stateful_base + "/curl-retry-all",
     ])
     let curl_retry_limited = @testkit.run_command(bin_root, "curl", [
       "-sf",
@@ -1101,7 +832,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "3",
       "--retry-max-time",
       "1",
-      base + "/curl-retry-limited",
+      stateful_base + "/curl-retry-limited",
     ])
     let curl_refused = @testkit.run_command(bin_root, "curl", [
       "-s", "--retry", "2", "--retry-connrefused", "--retry-max-time", "1", "http://127.0.0.1:1/unreachable",
@@ -1111,7 +842,7 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
       "--tries=2",
       "--retry-on-http-error=503",
       "--waitretry=0.001",
-      base + "/wget-retry-limited",
+      stateful_base + "/wget-retry-limited",
     ])
     let wget_refused = @testkit.run_command(bin_root, "wget", [
       "-qO-", "--tries=2", "--retry-connrefused", "--waitretry=0.001", "http://127.0.0.1:1/unreachable",

@@ -34,8 +34,7 @@ fn clone_context(context : Context, capture? : StringBuilder) -> Context {
     errexit: context.errexit,
     nounset: context.nounset,
     return_status: None,
-    break_loop: false,
-    continue_loop: false,
+    loop_control: None,
     loop_depth: 0,
     call_depth: context.call_depth,
     substitution_status: None,
@@ -201,8 +200,7 @@ async fn run_jobs(
   for index, job in jobs {
     if context.exited ||
       context.return_status is Some(_) ||
-      context.break_loop ||
-      context.continue_loop {
+      context.loop_control is Some(_) {
       break
     }
     let should_run = match job.connector {
@@ -274,9 +272,7 @@ async fn eval_statement(statement : Statement, context : Context) -> Int32 {
       for value in values {
         context.env[name] = value
         status = run_jobs(body, context)
-        context.continue_loop = false
-        if context.break_loop {
-          context.break_loop = false
+        if context.take_loop_break() {
           break
         }
         if context.exited || context.return_status is Some(_) {
@@ -299,9 +295,7 @@ async fn eval_statement(statement : Statement, context : Context) -> Int32 {
           break
         }
         status = run_jobs(body, context)
-        context.continue_loop = false
-        if context.break_loop {
-          context.break_loop = false
+        if context.take_loop_break() {
           break
         }
         if context.exited || context.return_status is Some(_) {

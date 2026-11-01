@@ -4,15 +4,6 @@ priv suberror CliError {
 }
 
 ///|
-fn base32_char(v : Int32) -> Char {
-  if v < 26 {
-    (0x41 + v).unsafe_to_char()
-  } else {
-    (0x32 + v - 26).unsafe_to_char()
-  }
-}
-
-///|
 fn base32_value(c : Char) -> Int32 raise CliError {
   match c {
     'A'..<='Z' => c.to_int() - 0x41
@@ -22,74 +13,29 @@ fn base32_value(c : Char) -> Int32 raise CliError {
 }
 
 ///|
-fn append_wrapped(sb : StringBuilder, text : String, wrap : Int32) -> Unit {
-  let mut column = 0
-  for c in text {
-    sb.write_char(c)
-    column += 1
-    if wrap > 0 && column == wrap {
-      sb.write_char('\n')
-      column = 0
-    }
+fn encode_groups(
+  input : BytesView,
+  output : FixedArray[Byte],
+  destination : Int32,
+) -> Unit {
+  let alphabet = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+  let mut target = destination
+  for index = 0; index + 4 < input.length(); index = index + 5 {
+    let a = input[index].to_int()
+    let b = input[index + 1].to_int()
+    let c = input[index + 2].to_int()
+    let d = input[index + 3].to_int()
+    let e = input[index + 4].to_int()
+    output[target] = alphabet[a >> 3]
+    output[target + 1] = alphabet[((a << 2) | (b >> 6)) & 31]
+    output[target + 2] = alphabet[(b >> 1) & 31]
+    output[target + 3] = alphabet[((b << 4) | (c >> 4)) & 31]
+    output[target + 4] = alphabet[((c << 1) | (d >> 7)) & 31]
+    output[target + 5] = alphabet[(d >> 2) & 31]
+    output[target + 6] = alphabet[((d << 3) | (e >> 5)) & 31]
+    output[target + 7] = alphabet[e & 31]
+    target += 8
   }
-  if wrap > 0 && !text.is_empty() && column != 0 {
-    sb.write_char('\n')
-  }
-}
-
-///|
-fn encode_bytes(input : Bytes, wrap : Int32) -> Bytes {
-  let encoded = StringBuilder()
-  let mut index = 0
-  while index < input.length() {
-    let remaining = input.length() - index
-    let count = if remaining > 5 { 5 } else { remaining }
-    let b0 = input[index].to_int()
-    let b1 = if count > 1 { input[index + 1].to_int() } else { 0 }
-    let b2 = if count > 2 { input[index + 2].to_int() } else { 0 }
-    let b3 = if count > 3 { input[index + 3].to_int() } else { 0 }
-    let b4 = if count > 4 { input[index + 4].to_int() } else { 0 }
-    let c0 = (b0 >> 3) & 0x1F
-    let c1 = ((b0 << 2) | (b1 >> 6)) & 0x1F
-    let c2 = (b1 >> 1) & 0x1F
-    let c3 = ((b1 << 4) | (b2 >> 4)) & 0x1F
-    let c4 = ((b2 << 1) | (b3 >> 7)) & 0x1F
-    let c5 = (b3 >> 2) & 0x1F
-    let c6 = ((b3 << 3) | (b4 >> 5)) & 0x1F
-    let c7 = b4 & 0x1F
-    encoded.write_char(base32_char(c0))
-    encoded.write_char(base32_char(c1))
-    if count == 1 {
-      encoded.write_string("======")
-    } else if count == 2 {
-      encoded.write_char(base32_char(c2))
-      encoded.write_char(base32_char(c3))
-      encoded.write_string("====")
-    } else if count == 3 {
-      encoded.write_char(base32_char(c2))
-      encoded.write_char(base32_char(c3))
-      encoded.write_char(base32_char(c4))
-      encoded.write_string("===")
-    } else if count == 4 {
-      encoded.write_char(base32_char(c2))
-      encoded.write_char(base32_char(c3))
-      encoded.write_char(base32_char(c4))
-      encoded.write_char(base32_char(c5))
-      encoded.write_char(base32_char(c6))
-      encoded.write_string("=")
-    } else {
-      encoded.write_char(base32_char(c2))
-      encoded.write_char(base32_char(c3))
-      encoded.write_char(base32_char(c4))
-      encoded.write_char(base32_char(c5))
-      encoded.write_char(base32_char(c6))
-      encoded.write_char(base32_char(c7))
-    }
-    index += count
-  }
-  let wrapped = StringBuilder()
-  append_wrapped(wrapped, encoded.to_string(), wrap)
-  @utf8.encode(wrapped.to_string())
 }
 
 ///|
@@ -181,10 +127,34 @@ async fn decode_to_writer(
 }
 
 ///|
+// Decoding retains its existing whole-input read-error contract.
+async fn read_input(reader : &@io.Reader) -> Bytes {
+  let input = @buffer.Buffer()
+  while reader.read_some(max_len=65536) is Some(chunk) {
+    input.write_bytes(chunk)
+  }
+  input.to_bytes()
+}
+
+///|
+async fn convert(
+  reader : &@io.Reader,
+  decode : Bool,
+  ignore_garbage : Bool,
+  wrap : Int32,
+) -> Unit {
+  if decode {
+    decode_to_writer(read_input(reader), ignore_garbage, @stdio.stdout)
+  } else {
+    encode_stream(reader, wrap, @stdio.stdout)
+  }
+}
+
+///|
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("base32 0.1.4\n")
+    @stdio.stdout.write("base32 0.1.5\n")
     return
   }
   let args = @env.args()[1:]
@@ -202,7 +172,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nEncoding emits complete groups before EOF; later input errors may leave partial output.\n",
     )
     return
   }
@@ -226,17 +196,22 @@ async fn main {
   }
   let path = if parsed.operands.is_empty() { "-" } else { parsed.operands[0] }
   try {
-    let input = if path == "-" {
-      @stdio.stdin.read_all().binary()
+    if path == "-" {
+      convert(
+        @stdio.stdin,
+        parsed.contains("decode"),
+        parsed.contains("ignore-garbage"),
+        wrap,
+      )
     } else {
       let file = @fs.open(path, mode=ReadOnly)
       defer file.close()
-      file.read_all().binary()
-    }
-    if parsed.contains("decode") {
-      decode_to_writer(input, parsed.contains("ignore-garbage"), @stdio.stdout)
-    } else {
-      @stdio.stdout.write(encode_bytes(input, wrap))
+      convert(
+        file,
+        parsed.contains("decode"),
+        parsed.contains("ignore-garbage"),
+        wrap,
+      )
     }
   } catch {
     CliError(msg) => {

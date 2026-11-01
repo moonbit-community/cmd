@@ -8,8 +8,6 @@ pub fn encode(String) -> Bytes
 
 pub fn has_escapes(String) -> Bool
 
-pub fn is_white_space(Char) -> Bool
-
 pub fn to_lossy(String) -> String
 
 pub fn trim_white_space(String) -> String

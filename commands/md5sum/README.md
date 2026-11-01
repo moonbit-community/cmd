@@ -3,7 +3,7 @@
 Compute and verify MD5 checksums for MoonX.
 
 ```sh
-moonx cli/md5sum@0.1.3 [OPTION]... [FILE]...
+moonx cli/md5sum@0.1.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -33,8 +33,8 @@ Hash files or stdin and verify checksum manifests.
 ## Examples
 
 ```sh
-moonx cli/md5sum@0.1.3 input.bin
-moonx cli/md5sum@0.1.3 -c checksums.txt
+moonx cli/md5sum@0.1.4 input.bin
+moonx cli/md5sum@0.1.4 -c checksums.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

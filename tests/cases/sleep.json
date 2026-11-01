@@ -11,7 +11,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
     },
     {
       "id": "p9-sleep-double-dash",
@@ -24,7 +28,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
     },
     {
       "id": "p0-sleep-version",
@@ -44,7 +52,8 @@
       "expected_stdout_text": "sleep 0.2.3\n",
       "expected_stderr_text": "",
       "aliases": [
-        "compat-text-line-736"
+        "compat-text-line-736",
+        "release-metadata-sleep-version"
       ],
       "source_version": "workspace cli/sleep@0.2.3 metadata contract"
     },
@@ -64,7 +73,13 @@
         "help"
       ],
       "expected_stdout_text": "Usage: sleep NUMBER[SUFFIX]...\n      --help      display this help and exit\n      --version   display version and exit\n\nPause for NUMBER seconds, like sleep(1). NUMBER may be fractional.\nSUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or\n'd' (days). With multiple arguments, sleep for their sum.\nThe total is rounded up to milliseconds and capped at 2147483647 ms.\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "release-metadata-sleep-help",
+        "compat-catalog-line-235"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "compat-text-line-727",
@@ -97,60 +112,6 @@
       "expected_stdout_text": "",
       "expected_stderr_contains": "invalid time interval",
       "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
-    },
-    {
-      "id": "compat-catalog-line-235",
-      "command": "sleep",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
-      "id": "release-metadata-sleep-help",
-      "command": "sleep",
-      "args": [
-        "--help"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "help"
-      ],
-      "source_version": "workspace cli/sleep@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: sleep NUMBER[SUFFIX]...\n      --help      display this help and exit\n      --version   display version and exit\n\nPause for NUMBER seconds, like sleep(1). NUMBER may be fractional.\nSUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or\n'd' (days). With multiple arguments, sleep for their sum.\nThe total is rounded up to milliseconds and capped at 2147483647 ms.\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "release-metadata-sleep-version",
-      "command": "sleep",
-      "args": [
-        "--version"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "version"
-      ],
-      "source_version": "workspace cli/sleep@0.2.3 metadata contract",
-      "expected_stdout_text": "sleep 0.2.3\n",
-      "expected_stderr_text": ""
     }
   ]
 }

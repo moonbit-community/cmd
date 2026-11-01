@@ -1,0 +1,2440 @@
+{
+  "schema": 1,
+  "scope": "Finite independently reviewed assertion descriptors; actual receipts and current test-source identity are required. Catalog membership is not execution proof.",
+  "scenarios": [
+    {
+      "case_id": "sh-interactive-session",
+      "assertions": [
+        {
+          "id": "sh/prompt",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "P> ",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/startup-state",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "kept|loaded\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/multiline",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "multiline\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/foreground-read",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "read=<hello foreground>\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/child-stdin",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "child input\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/function-state",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "function:kept\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/recovery",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "recovered\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/eof",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "sh/exit",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 7,
+            "stdout": "",
+            "stderr": "P> "
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "make-ready-ack",
+      "assertions": [
+        {
+          "id": "make/jobs-before-ack",
+          "command": "make",
+          "relation": "equal",
+          "expected": {
+            "ready": [
+              true,
+              true
+            ],
+            "done": [
+              false,
+              false
+            ],
+            "shared": "S"
+          },
+          "observations": [
+            "ready-files",
+            "completion-files",
+            "shared-prerequisite"
+          ]
+        },
+        {
+          "id": "make/jobs-after-ack",
+          "command": "make",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "done": [
+              true,
+              true
+            ],
+            "shared": "S"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "completion-files",
+            "shared-prerequisite"
+          ]
+        },
+        {
+          "id": "make/keep-going",
+          "command": "make",
+          "relation": "equal",
+          "expected": {
+            "status": 2,
+            "stdout": "",
+            "forbidden": false,
+            "independent": "done"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "forbidden-file",
+            "independent-output"
+          ]
+        },
+        {
+          "id": "make/stop-before-independent",
+          "command": "make",
+          "relation": "equal",
+          "expected": {
+            "status": 2,
+            "stdout": "",
+            "independent_exists": false
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "independent-absence"
+          ]
+        },
+        {
+          "id": "make/keep-going-sequential",
+          "command": "make",
+          "relation": "equal",
+          "expected": {
+            "status": 2,
+            "stdout": "",
+            "independent": "done"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "independent-content"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "filesystem-fidelity",
+      "assertions": [
+        {
+          "id": "cp/new-copy",
+          "command": "cp",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "content": "preserve source"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "content"
+          ]
+        },
+        {
+          "id": "cp/new-mode",
+          "command": "cp",
+          "relation": "equal-pair",
+          "value_kind": "octal-mode",
+          "observations": [
+            "actual-mode",
+            "control-mode"
+          ]
+        },
+        {
+          "id": "mkdir/parents",
+          "command": "mkdir",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "parent": true,
+            "leaf": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "parent-exists",
+            "leaf-exists"
+          ]
+        },
+        {
+          "id": "mkdir/leaf-mode",
+          "command": "mkdir",
+          "relation": "equal",
+          "expected": "700",
+          "observations": [
+            "mode"
+          ]
+        },
+        {
+          "id": "mkdir/parent-mode",
+          "command": "mkdir",
+          "relation": "equal-pair",
+          "value_kind": "octal-mode",
+          "observations": [
+            "actual-mode",
+            "control-mode"
+          ]
+        },
+        {
+          "id": "chmod/recursive-link-skip",
+          "command": "chmod",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "referent_mode": "600"
+          },
+          "observations": [
+            "status",
+            "referent-mode"
+          ]
+        },
+        {
+          "id": "rm/ordinary-no-preserve-root",
+          "command": "rm",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "exists": false
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "path-absence"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "network-auth-cookie",
+      "assertions": [
+        {
+          "id": "auth/0",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+            "stderr": "",
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/1",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+            "stderr": "",
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/2",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=sid=explicit\n",
+            "stderr": "",
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/3",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=sid=first; sid=last\n",
+            "stderr": "",
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/4",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=sid=fixture\n",
+            "stderr": "",
+            "requests": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/5",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=\n",
+            "stderr": "",
+            "requests": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/6",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=\n",
+            "stderr": "",
+            "requests": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/7",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=\n",
+            "stderr": "",
+            "requests": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/8",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+            "stderr": "",
+            "requests": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/9",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+            "stderr": "",
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/10",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+            "stderr": "",
+            "requests": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/11",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+            "stderr": "",
+            "requests": 3
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/12",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=\n",
+            "stderr": "",
+            "requests": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "cookie/curl/saved",
+          "command": "curl",
+          "relation": "equal",
+          "expected": true,
+          "observations": [
+            "cookie-jar-property"
+          ]
+        },
+        {
+          "id": "cookie/curl/loaded",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=sid=fixture\n",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "cookie/curl/missing-parent",
+          "command": "curl",
+          "relation": "equal",
+          "expected": false,
+          "observations": [
+            "path-absence"
+          ]
+        },
+        {
+          "id": "cookie/wget/saved",
+          "command": "wget",
+          "relation": "equal",
+          "expected": true,
+          "observations": [
+            "cookie-jar-property"
+          ]
+        },
+        {
+          "id": "cookie/wget/loaded",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=sid=fixture\n",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "cookie/wget/missing-parent",
+          "command": "wget",
+          "relation": "equal",
+          "expected": false,
+          "observations": [
+            "path-absence"
+          ]
+        },
+        {
+          "id": "cookie/wget/session-excluded",
+          "command": "wget",
+          "relation": "equal",
+          "expected": false,
+          "observations": [
+            "cookie-jar-property"
+          ]
+        },
+        {
+          "id": "auth/13",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=\n",
+            "stderr": "",
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        },
+        {
+          "id": "auth/14",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=Basic dXNlcjpwYXNz\ncookie=\n",
+            "stderr": "",
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "network-transfer-boundaries",
+      "assertions": [
+        {
+          "id": "transfer/curl-stdin-retry-256/response",
+          "expected": {
+            "status": 0,
+            "stdout": "hellook",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-stdin-retry-256/ranges",
+          "expected": [
+            null,
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-stdin-retry-256/methods",
+          "expected": [
+            "PUT",
+            "PUT"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-stdin-retry-256/files",
+          "expected": {
+            "names": [],
+            "files": []
+          },
+          "observations": [
+            "file-inventory"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-stdin-retry-show-error-256/response",
+          "expected": {
+            "status": 0,
+            "stdout": "hellook",
+            "stderr": "curl: (18) end of response with 4 bytes missing\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-stdin-retry-show-error-256/ranges",
+          "expected": [
+            null,
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-stdin-retry-show-error-256/methods",
+          "expected": [
+            "PUT",
+            "PUT"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-stdin-retry-show-error-256/files",
+          "expected": {
+            "names": [],
+            "files": []
+          },
+          "observations": [
+            "file-inventory"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-default-retry-does-not-retry-partial/response",
+          "expected": {
+            "status": 18,
+            "stdout": "hello",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-default-retry-does-not-retry-partial/ranges",
+          "expected": [
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-default-retry-does-not-retry-partial/methods",
+          "expected": [
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-default-retry-does-not-retry-partial/files",
+          "expected": {
+            "names": [],
+            "files": []
+          },
+          "observations": [
+            "file-inventory"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-retry-all-stdout/response",
+          "expected": {
+            "status": 18,
+            "stdout": "hellohellohello",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-retry-all-stdout/ranges",
+          "expected": [
+            null,
+            null,
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-retry-all-stdout/methods",
+          "expected": [
+            "GET",
+            "GET",
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-retry-all-stdout/files",
+          "expected": {
+            "names": [],
+            "files": []
+          },
+          "observations": [
+            "file-inventory"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-retry-all-file/response",
+          "expected": {
+            "status": 18,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-retry-all-file/ranges",
+          "expected": [
+            null,
+            null,
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-retry-all-file/methods",
+          "expected": [
+            "GET",
+            "GET",
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-retry-all-file/files",
+          "expected": {
+            "names": [
+              "partial.bin"
+            ],
+            "files": [
+              {
+                "path": "partial.bin",
+                "exists": true,
+                "regular": true,
+                "content": "hello"
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-type",
+            "file-content"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-keep-named/response",
+          "expected": {
+            "status": 18,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-keep-named/ranges",
+          "expected": [
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-keep-named/methods",
+          "expected": [
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-keep-named/files",
+          "expected": {
+            "names": [
+              "wire-partial.bin"
+            ],
+            "files": [
+              {
+                "path": "wire-partial.bin",
+                "exists": true,
+                "regular": true,
+                "content": "hello"
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-type",
+            "file-content"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-remove-named/response",
+          "expected": {
+            "status": 18,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-remove-named/ranges",
+          "expected": [
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-remove-named/methods",
+          "expected": [
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-remove-named/files",
+          "expected": {
+            "names": [],
+            "files": [
+              {
+                "path": "wire-partial.bin",
+                "exists": false,
+                "regular": null,
+                "content": null
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-absence"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-changed/response",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-changed/ranges",
+          "expected": [
+            null,
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-changed/methods",
+          "expected": [
+            "GET",
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-changed/files",
+          "expected": {
+            "names": [
+              "first.bin"
+            ],
+            "files": [
+              {
+                "path": "first.bin",
+                "exists": true,
+                "regular": true,
+                "content": "ok"
+              },
+              {
+                "path": "second.bin",
+                "exists": false,
+                "regular": null,
+                "content": null
+              },
+              {
+                "path": "transfer-retry-named-complete-changed",
+                "exists": false,
+                "regular": null,
+                "content": null
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-type",
+            "file-content",
+            "file-absence"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-changed/before-response",
+          "expected": [
+            [],
+            [
+              {
+                "path": "first.bin",
+                "regular": true,
+                "content": ""
+              }
+            ]
+          ],
+          "observations": [
+            "pre-response-file-state",
+            "file-inventory",
+            "file-type",
+            "file-content"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-missing/response",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-missing/ranges",
+          "expected": [
+            null,
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-missing/methods",
+          "expected": [
+            "GET",
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-missing/files",
+          "expected": {
+            "names": [
+              "first.bin"
+            ],
+            "files": [
+              {
+                "path": "first.bin",
+                "exists": true,
+                "regular": true,
+                "content": "ok"
+              },
+              {
+                "path": "second.bin",
+                "exists": false,
+                "regular": null,
+                "content": null
+              },
+              {
+                "path": "transfer-retry-named-complete-missing",
+                "exists": false,
+                "regular": null,
+                "content": null
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-type",
+            "file-content",
+            "file-absence"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-partial-complete-missing/before-response",
+          "expected": [
+            [],
+            [
+              {
+                "path": "first.bin",
+                "regular": true,
+                "content": ""
+              }
+            ]
+          ],
+          "observations": [
+            "pre-response-file-state",
+            "file-inventory",
+            "file-type",
+            "file-content"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-false/response",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-false/ranges",
+          "expected": [
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-false/methods",
+          "expected": [
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-false/files",
+          "expected": {
+            "names": [
+              "transfer-cd-status-404-body-complete"
+            ],
+            "files": [
+              {
+                "path": "selected.bin",
+                "exists": false,
+                "regular": null,
+                "content": null
+              },
+              {
+                "path": "transfer-cd-status-404-body-complete",
+                "exists": true,
+                "regular": true,
+                "content": "hello"
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-type",
+            "file-content",
+            "file-absence"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-false/before-response",
+          "expected": [
+            []
+          ],
+          "observations": [
+            "pre-response-file-state",
+            "file-inventory"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-true/response",
+          "expected": {
+            "status": 22,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-true/ranges",
+          "expected": [
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-true/methods",
+          "expected": [
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-true/files",
+          "expected": {
+            "names": [],
+            "files": [
+              {
+                "path": "selected.bin",
+                "exists": false,
+                "regular": null,
+                "content": null
+              },
+              {
+                "path": "transfer-cd-status-404-body-complete",
+                "exists": false,
+                "regular": null,
+                "content": null
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-absence"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/curl-cd-status-404-body-complete-fail-true/before-response",
+          "expected": [
+            []
+          ],
+          "observations": [
+            "pre-response-file-state",
+            "file-inventory"
+          ],
+          "command": "curl",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/wget-retry-content-disposition-keeps-actual-name/response",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ],
+          "command": "wget",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/wget-retry-content-disposition-keeps-actual-name/ranges",
+          "expected": [
+            null,
+            "bytes=5-"
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ],
+          "command": "wget",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/wget-retry-content-disposition-keeps-actual-name/methods",
+          "expected": [
+            "GET",
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ],
+          "command": "wget",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/wget-retry-content-disposition-keeps-actual-name/files",
+          "expected": {
+            "names": [
+              "wire-retry.bin",
+              "wire-retry.bin.1"
+            ],
+            "files": [
+              {
+                "path": "wire-retry.bin",
+                "exists": true,
+                "regular": true,
+                "content": "existing"
+              },
+              {
+                "path": "wire-retry.bin.1",
+                "exists": true,
+                "regular": true,
+                "content": "helloworld"
+              },
+              {
+                "path": "wire-retry.bin.2",
+                "exists": false,
+                "regular": null,
+                "content": null
+              },
+              {
+                "path": "transfer-retry-named",
+                "exists": false,
+                "regular": null,
+                "content": null
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-type",
+            "file-content",
+            "file-absence"
+          ],
+          "command": "wget",
+          "relation": "equal"
+        },
+        {
+          "id": "transfer/wget-fixed-empty/response",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 4,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "transfer/wget-fixed-empty/ranges",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-fixed-empty/methods",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-retry-empty-is-bounded/response",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 4,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "transfer/wget-retry-empty-is-bounded/ranges",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            null,
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-retry-empty-is-bounded/methods",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            "GET",
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "mktemp-option-effects",
+      "assertions": [
+        {
+          "id": "mktemp/0",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 0,
+            "args": [],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/tmp.",
+            "width": 10,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/1",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 1,
+            "args": [
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/2",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 2,
+            "args": [
+              "name.XXX.tail"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "name.",
+            "width": 3,
+            "suffix": ".tail",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/3",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 3,
+            "args": [
+              "--suffix=.tail",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "name.",
+            "width": 3,
+            "suffix": ".tail",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/4",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 4,
+            "args": [
+              "-p",
+              "pdir",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "pdir/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/5",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 5,
+            "args": [
+              "--tmpdir",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/6",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 6,
+            "args": [
+              "--tmpdir=pdir",
+              "nested/name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "pdir/nested/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/7",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 7,
+            "args": [
+              "-t",
+              "-p",
+              "pdir",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/8",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 8,
+            "args": [
+              "-d",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "directory",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "700"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/9",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 9,
+            "args": [
+              "--tmpdir=",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/10",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 10,
+            "args": [
+              "-p",
+              "pdir",
+              "-t",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/11",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 11,
+            "args": [
+              "--",
+              "--tmpdirXXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "--tmpdir",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true,
+            "mode": "600"
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "mktemp-option-effects-windows",
+      "assertions": [
+        {
+          "id": "mktemp/0",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 0,
+            "args": [],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/tmp.",
+            "width": 10,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/1",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 1,
+            "args": [
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/2",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 2,
+            "args": [
+              "name.XXX.tail"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "name.",
+            "width": 3,
+            "suffix": ".tail",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/3",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 3,
+            "args": [
+              "--suffix=.tail",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "name.",
+            "width": 3,
+            "suffix": ".tail",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/4",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 4,
+            "args": [
+              "-p",
+              "pdir",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "pdir/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/5",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 5,
+            "args": [
+              "--tmpdir",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/6",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 6,
+            "args": [
+              "--tmpdir=pdir",
+              "nested/name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "pdir/nested/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/7",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 7,
+            "args": [
+              "-t",
+              "-p",
+              "pdir",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/8",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 8,
+            "args": [
+              "-d",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "directory",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/9",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 9,
+            "args": [
+              "--tmpdir=",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/10",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 10,
+            "args": [
+              "-p",
+              "pdir",
+              "-t",
+              "name.XXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "${WORK}/tmp/name.",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        },
+        {
+          "id": "mktemp/11",
+          "command": "mktemp",
+          "relation": "equal",
+          "expected": {
+            "case": 11,
+            "args": [
+              "--",
+              "--tmpdirXXX"
+            ],
+            "status": 0,
+            "stderr": "",
+            "prefix": "--tmpdir",
+            "width": 3,
+            "suffix": "",
+            "alphanumeric": true,
+            "kind": "file",
+            "empty": true,
+            "created_count": 1,
+            "reported_path_created": true,
+            "stdout_newline": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "name-prefix",
+            "replacement-width",
+            "replacement-alphanumeric",
+            "suffix",
+            "created-kind",
+            "created-count",
+            "reported-path-created",
+            "empty-content",
+            "stdout-framing"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -12,20 +12,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-echo-double-dash-literal",
-      "command": "echo",
-      "args": [
-        "--",
-        "-e"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "hello world\n"
     },
     {
       "id": "p9-echo-octal-per-argument",
@@ -39,7 +30,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "A BB\n"
     },
     {
       "id": "p0-echo-version",
@@ -58,7 +53,11 @@
       ],
       "expected_stdout_text": "echo 0.2.3\n",
       "expected_stderr_text": "",
-      "source_version": "workspace cli/echo@0.2.3 metadata contract"
+      "source_version": "workspace cli/echo@0.2.3 metadata contract",
+      "aliases": [
+        "release-metadata-echo-version",
+        "compat-catalog-line-243"
+      ]
     },
     {
       "id": "p0-echo-help",
@@ -76,24 +75,13 @@
         "help"
       ],
       "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "p0-echo-no-newline",
-      "command": "echo",
-      "args": [
-        "-n",
-        "value"
+      "expected_stderr_text": "",
+      "aliases": [
+        "release-metadata-echo-help",
+        "compat-catalog-line-81"
       ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "exact",
-      "coverage": [
-        "no-newline"
-      ]
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "p0-echo-enable-escapes",
@@ -107,10 +95,13 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "exact",
+      "comparison": "contract",
       "coverage": [
         "enable-escapes"
-      ]
+      ],
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "a\nb\n"
     },
     {
       "id": "p0-echo-disable-escapes",
@@ -124,10 +115,13 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "exact",
+      "comparison": "contract",
       "coverage": [
         "disable-escapes"
-      ]
+      ],
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "a\\nb\n"
     },
     {
       "id": "compat-text-line-717",
@@ -143,7 +137,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "-- -e\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p9-echo-double-dash-literal"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-line-718",
@@ -162,73 +161,50 @@
       "expected_stderr_text": ""
     },
     {
-      "id": "compat-catalog-line-81",
+      "id": "proof-echo-no-newline-literal",
       "command": "echo",
       "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
-    },
-    {
-      "id": "compat-catalog-line-243",
-      "command": "echo",
-      "args": [
-        "--version"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace cli/echo@0.2.3 metadata contract",
-      "expected_stderr_text": "",
-      "expected_stdout_text": "echo 0.2.3\n"
-    },
-    {
-      "id": "release-metadata-echo-help",
-      "command": "echo",
-      "args": [
-        "--help"
+        "-n",
+        "value"
       ],
       "stdin_text": "",
       "files": [],
       "environment": {},
-      "expected_status": 0,
       "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "value",
+      "expected_stderr_text": "",
       "comparison": "contract",
       "coverage": [
-        "help"
+        "no-newline"
       ],
-      "source_version": "workspace cli/echo@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "source_version": "Independent literal strengthening of existing differential p0-echo-no-newline.",
+      "aliases": [
+        "p0-echo-no-newline"
+      ],
+      "oracle": true
     },
     {
-      "id": "release-metadata-echo-version",
+      "id": "proof-echo-disable-escapes-precedence",
       "command": "echo",
       "args": [
-        "--version"
+        "-e",
+        "-E",
+        "a\\nb"
       ],
       "stdin_text": "",
       "files": [],
       "environment": {},
-      "expected_status": 0,
       "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "a\\nb\n",
+      "expected_stderr_text": "",
       "comparison": "contract",
       "coverage": [
-        "version"
+        "disable-escapes",
+        "precedence"
       ],
-      "source_version": "workspace cli/echo@0.2.3 metadata contract",
-      "expected_stdout_text": "echo 0.2.3\n",
-      "expected_stderr_text": ""
+      "source_version": "Independent escape-disable activation after enabling escapes; literal backslash-n must survive."
     }
   ]
 }

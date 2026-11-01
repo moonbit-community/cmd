@@ -1,9 +1,4 @@
 ///|
-pub fn args() -> Array[String] {
-  @env.args()
-}
-
-///|
 pub fn current_dir() -> String? {
   @env.current_dir().map(normalize_path)
 }
@@ -34,22 +29,13 @@ pub fn env_var(name : String) -> String? {
 }
 
 ///|
-pub fn env_vars() -> Array[(String, String)] {
-  let pairs = []
-  for key, value in @env.get_env_vars() {
-    pairs.push((key, value))
-  }
-  pairs
-}
-
-///|
 pub fn exit(code : Int32) -> Unit {
   @exit.exit(code)
 }
 
 ///|
 pub fn is_windows() -> Bool {
-  @async.platform is Windows
+  @platform.is_windows()
 }
 
 ///|
@@ -63,11 +49,6 @@ pub fn hostname() -> String? {
     Some(name) => Some(name)
     None => @env.get_env_var("COMPUTERNAME")
   }
-}
-
-///|
-pub fn mmap_supported() -> Bool {
-  false
 }
 
 ///|

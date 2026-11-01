@@ -42,7 +42,10 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/which@0.1.4 metadata contract"
+      "source_version": "workspace cli/which@0.1.4 metadata contract",
+      "aliases": [
+        "release-metadata-which-version"
+      ]
     },
     {
       "id": "p2-which-path",
@@ -465,25 +468,6 @@
       ],
       "source_version": "workspace cli/which@0.1.4 metadata contract",
       "expected_stdout_text": "Usage: which [-as] NAME...\nFind executable regular files in PATH. Windows uses PATHEXT.\n  -a, --all     print all matches\n  -s, --silent  return status without output\n      --help    display this help and exit\n      --version display version and exit\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "release-metadata-which-version",
-      "command": "which",
-      "args": [
-        "--version"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "coverage": [
-        "version"
-      ],
-      "source_version": "workspace cli/which@0.1.4 metadata contract",
-      "expected_stdout_text": "which 0.1.4\n",
       "expected_stderr_text": ""
     }
   ]

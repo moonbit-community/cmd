@@ -15,11 +15,10 @@ enum Edit {
 fn lines(data : Bytes) -> Array[Line] {
   let result : Array[Line] = []
   let mut start = 0
-  for i in 0..<data.length() {
-    if data[i] == b'\n' {
-      result.push({ value: data[start:i], terminated: true, })
-      start = i + 1
-    }
+  while data[start:].find(b"\n") is Some(relative) {
+    let end = start + relative
+    result.push({ value: data[start:end], terminated: true, })
+    start = end + 1
   }
   if start < data.length() {
     result.push({ value: data[start:], terminated: false, })
@@ -319,12 +318,18 @@ fn middle(
 }
 
 ///|
-fn edits(
+priv struct EditScript {
+  changes : Array[Edit]
+  prefix : Int32
+}
+
+///|
+fn edit_script(
   a : Array[Line],
   b : Array[Line],
   options~ : CompareOptions = compare_options(),
   context~ : Int32 = 0,
-) -> Array[Edit] {
+) -> EditScript {
   let mut common_prefix = 0
   while common_prefix < a.length() &&
         common_prefix < b.length() &&
@@ -345,11 +350,14 @@ fn edits(
         ) {
     common_suffix += 1
   }
-  let first = (common_prefix - context).max(0)
-  let ends = [
-    (a.length() - common_suffix + context).min(a.length()),
-    (b.length() - common_suffix + context).min(b.length()),
-  ]
+  let prefix = (common_prefix - context).max(0)
+  let suffix = (common_suffix - context).max(0)
+  // Keep the requested context in the comparison domain. Identical outer
+  // records contribute line numbers without allocating keys, flags or edits.
+  let a = a[prefix:a.length() - suffix].to_owned()
+  let b = b[prefix:b.length() - suffix].to_owned()
+  let first = 0
+  let ends = [a.length(), b.length()]
   let classes : Map[Line, Int32] = Map([])
   let keys : Array[Array[Int32]] = []
   for side, input in [a, b] {
@@ -383,9 +391,15 @@ fn edits(
   for side in 0..<2 {
     let index : Array[Int32] = []
     let values : Array[Int32] = []
+    let discarded = discarded_lines(
+      keys[side],
+      first,
+      ends[side],
+      counts[1 - side],
+    )
     for i in first..<ends[side] {
       let key = keys[side][i]
-      if counts[1 - side][key] == 0 {
+      if discarded[i] {
         flags[side][i] = true
       } else {
         index.push(i)
@@ -432,7 +446,7 @@ fn edits(
     }
   }
   // Identical edges outside the requested context do not participate in either
-  // matching or alignment. They remain unchanged records in the final script.
+  // matching or alignment. Their counts remain in the compact script.
   align_changes(keys[0], flags[0], flags[1], first, ends[0])
   align_changes(keys[1], flags[1], flags[0], first, ends[1])
   let result : Array[Edit] = []
@@ -453,12 +467,12 @@ fn edits(
       y += 1
     }
   }
-  result
+  { changes: result, prefix, }
 }
 
 ///|
 fn record(
-  out : StringBuilder,
+  out : PatchOutput,
   prefix : String,
   line : Line,
   options~ : CompareOptions = compare_options(),
@@ -471,8 +485,8 @@ fn record(
     line.value
   }
   out.write_string(prefix)
-  out.write_string(@bytere.text(value))
-  out.write_char('\n')
+  out.bytes.write_bytes(value)
+  out.bytes.write_byte(b'\n')
   if !line.terminated {
     out.write_string("\\ No newline at end of file\n")
   }
@@ -504,11 +518,12 @@ fn meaningful(edit : Edit, options : CompareOptions) -> Bool {
 fn normal(
   changes : Array[Edit],
   options~ : CompareOptions = compare_options(),
+  offset~ : Int32 = 0,
 ) -> Bytes {
-  let output = StringBuilder()
+  let output = PatchOutput::new()
   let mut i = 0
-  let mut old_line = 0
-  let mut new_line = 0
+  let mut old_line = offset
+  let mut new_line = offset
   while i < changes.length() {
     if changes[i] is Equal(_) {
       old_line += 1
@@ -558,7 +573,7 @@ fn normal(
     old_line += removed.length()
     new_line += added.length()
   }
-  @bytere.bytes(output.to_string())
+  output.bytes.to_bytes()
 }
 
 ///|
@@ -569,8 +584,9 @@ fn unified(
   label_b : String,
   context_format~ : Bool = false,
   options~ : CompareOptions = compare_options(),
+  offset~ : Int32 = 0,
 ) -> Bytes {
-  let output = StringBuilder()
+  let output = PatchOutput::new()
   output.write_string(
     if context_format {
       "*** " + label_a + "\n--- " + label_b + "\n"
@@ -578,8 +594,8 @@ fn unified(
       "--- " + label_a + "\n+++ " + label_b + "\n"
     },
   )
-  let old_positions = [0]
-  let new_positions = [0]
+  let old_positions = [offset]
+  let new_positions = [offset]
   for edit in changes {
     old_positions.push(
       old_positions.last().unwrap() + (if edit is Add(_) { 0 } else { 1 }),
@@ -645,12 +661,12 @@ fn unified(
     }
     position = end
   }
-  @bytere.bytes(output.to_string())
+  output.bytes.to_bytes()
 }
 
 ///|
 fn context_side(
-  output : StringBuilder,
+  output : PatchOutput,
   changes : ArrayView[Edit],
   old : Bool,
   options : CompareOptions,

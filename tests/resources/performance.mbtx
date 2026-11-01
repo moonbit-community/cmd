@@ -1,221 +1,56 @@
 ----
 import {
-  "moonbitlang/async@0.22.5",
-  "moonbitlang/async@0.22.5/fs",
-  "moonbitlang/async@0.22.5/process",
-  "moonbitlang/core/env",
-  "moonbitlang/core/json",
+  "moonbitlang/async@0.22.5", "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/process", "moonbitlang/core/env",
+  "moonbitlang/core/json", "moonbitlang/x@0.5.5/path",
 }
 ----
 
 ///|
-fn object(value : Json) -> Map[String, Json] {
-  guard value is Object(fields) else { abort("expected report object") }
-  fields
+fn field(value : Json,name : String) -> Json {match value {Object(fields)=>fields.get(name).unwrap_or(Json::null());_=>Json::null()}}
+
+///|
+async fn capture(program : String,args : Array[String],log : String) -> Int32 {
+  let output=@process.redirect_to_file(log);defer output.close()
+  @process.run(program,args,stdout=output,stderr=output)
 }
 
 ///|
-fn array(value : Json) -> Array[Json] {
-  guard value is Array(values) else { abort("expected report array") }
-  values
-}
-
-///|
-fn number(value : Json) -> Double {
-  guard value is Number(value, ..) else { abort("expected report number") }
-  value
-}
-
-///|
-fn median(values : Array[Double]) -> Double {
-  let sorted = values.copy()
-  sorted.sort()
-  sorted[sorted.length() / 2]
-}
-
-///|
-fn complete(row : Map[String, Json]) -> Bool {
-  let samples = array(row["samples"])
-  if samples.length() != 10 {
-    return false
-  }
-  let expected = object(row["case"])["status"]
-  for index in 0..<samples.length() {
-    let sample = object(samples[index])
-    if sample["trial"] != Json(index) ||
-      sample["warmup"] != Json(index == 0) ||
-      sample["equivalent"] != Json(true) {
-      return false
-    }
-    for side in ["candidate", "reference"] {
-      let observed = object(sample[side])
-      if observed["status"] != expected || number(observed["elapsed_us"]) <= 0.0 {
-        return false
-      }
-    }
-  }
-  true
-}
-
-///|
-fn spread(row : Map[String, Json], side : String) -> Double {
-  let values = array(row["samples"]).filter_map(sample => {
-    let sample = object(sample)
-    if sample["warmup"] == Json(true) {
-      None
-    } else {
-      Some(number(object(sample[side])["elapsed_us"]))
-    }
-  })
-  let middle = median(values)
-  median(values.map(value => (value - middle).abs())) / middle
-}
-
-///|
-async fn run(args : Array[String], log : String) -> Unit {
-  let output = @process.redirect_to_file(log)
-  defer output.close()
-  let status = @process.run("moon", args, stdout=output, stderr=output)
-  guard status == 0 else { fail("performance command failed; see " + log) }
+async fn run_checked(args : Array[String],log : String) -> Unit {
+  guard capture("moon",args,log)==0 else {fail("performance preparation failed; retained log: "+log)}
 }
 
 ///|
 async fn main {
-  let args = @env.args()
-  guard args.length() == 5 else {
-    fail("Usage: performance.mbtx REPORT_DIR WASM_CLI_ROOT ORACLE_BIN COMMANDS")
+  let args=@env.args()
+  guard args.length()==5 else {fail("Usage: performance.mbtx REPORT_DIR WASM_CLI_ROOT ORACLE_BIN COMMANDS")}
+  guard !(@async.platform is Windows) else {fail("real-corpus timing requires the Linux or macOS Native benchmark and correctness driver")}
+  for key in ["CMD_BENCH_SETTLE_MS","CMD_BENCH_PRELOAD","CMD_BENCH_RUSAGE","CMD_BENCH_PERF"] {
+    let value=@env.get_env_var(key).unwrap_or("")
+    guard value=="" || (key!="CMD_BENCH_PERF" && value=="0") else {fail("real-corpus timing rejects diagnostic observer/preload setting: "+key)}
   }
-  let root = args[1]
-  @fs.mkdir(root, recursive=true, allow_exist=false)
-  @fs.mkdir(root + "/results")
-  let groups = [
-    ("cut", ["cut-8m", "cut-tiny-8m", "cut-long-64m", "cut-fields-8m"]),
-    ("uniq", ["uniq-8m", "uniq-tiny-8m", "uniq-long-8m", "uniq-repeated-8m"]),
-    ("wc", ["wc-l-64m", "wc-w-64m"]),
-    (
-      "grep",
-      [
-        "grep-fixed-64m", "grep-many-count-64m", "grep-many-miss-8m", "grep-set-short-64m",
-        "grep-set-dense-64m", "grep-set-distributed-64m", "grep-overlap-8k", "grep-overlap-16k",
-        "grep-span-long-8m", "grep-span-1m", "grep-span-many-1m", "grep-regex-64m",
-        "grep-regex-miss-64m",
-      ],
-    ),
-  ]
-  let selected = args[4].split(",").map(value => value.to_owned()).collect()
-  if !args[4].is_empty() {
-    let seen : Set[String] = Set([])
-    for command in selected {
-      guard [
-          "rev", "strings", "split", "csplit", "tac", "column", "sort", "grep", "gzip",
-          "diff", "cut", "uniq", "wc",
-        ].contains(command) &&
-        !seen.contains(command) else {
-        fail("unknown, empty or duplicate command: " + command)
-      }
-      seen.add(command)
-    }
+  let corpus=@env.get_env_var("CMD_BENCH_CORPUS_ROOT").unwrap_or("")
+  guard !corpus.is_empty() else {fail("CMD_BENCH_CORPUS_ROOT is required; prepare complete pinned real sources before timing")}
+  let corpus=@fs.realpath(corpus);let wasm=@fs.realpath(args[2]);let oracle=@fs.realpath(args[3])
+  let root=@path.Path(args[1]).resolve().to_string()
+  @fs.mkdir(root,recursive=true,allow_exist=false)
+  @fs.write_file(root+"/verdict.json",({"passed":false,"stage":"preparation","general_performance_acceptance":false,"upstream_parity":false} : Json).stringify(indent=2)+"\n")
+  run_checked(["run","tests/architecture.mbtx","--",root+"/architecture.json"],root+"/architecture.log")
+  for package in ["tests/benchmark","tests/runner"] {
+    run_checked(["build","--target","native","--release","--deny-warn",package],root+"/build-"+(if package=="tests/benchmark" {"benchmark"}else{"runner"})+".log")
   }
-  let cases : Array[String] = []
-  for (command, names) in groups {
-    if args[4].is_empty() || selected.contains(command) {
-      cases.append(names)
-    }
-  }
-  if args[4].is_empty() || selected.contains("grep") {
-    for family in ["shared", "diverse"] {
-      for size in ["64k", "256k", "1m"] {
-        cases.push("grep-adaptive-" + family + "-collision-" + size)
-      }
-      for size in ["1m", "64m"] {
-        cases.push("grep-adaptive-" + family + "-sparse-" + size)
-      }
-    }
-    cases.append([
-      "grep-adaptive-mixed-64m", "grep-adaptive-dense-1m", "grep-adaptive-budget-64k",
-    ])
-  }
-  guard !cases.is_empty() else { fail("no applicable performance cases") }
-  let script = "tests/benchmark/explore.mbtx"
-  run(
-    ["run", script, "--", root, args[2], "prepare", cases.join(","), "9"],
-    root + "/prepare.log",
-  )
-  let rounds : Array[Array[Json]] = []
-  for index in 0..<2 {
-    let log = root + "/round-" + index.to_string() + ".log"
-    run(
-      ["run", script, "--", root, args[2], "ci", cases.join(","), "9", args[3]],
-      log,
-    )
-    let reports = @fs.read_file(log)
-      .text()
-      .split("\n")
-      .filter_map(line => {
-        if line.has_prefix("REPORT ") {
-          Some(line[7:].to_owned())
-        } else {
-          None
-        }
-      })
-      .collect()
-    guard reports.length() == 1 else {
-      fail("missing or ambiguous performance report")
-    }
-    let rows = array(@json.parse(@fs.read_file(reports[0]).text()))
-    guard rows.length() == cases.length() else {
-      fail("incomplete performance selection")
-    }
-    rounds.push(rows)
-  }
-  let results : Array[Json] = []
-  let mut stable = true
-  for index in 0..<cases.length() {
-    let first = object(rounds[0][index])
-    let second = object(rounds[1][index])
-    let id = object(first["case"])["id"]
-    guard first["case"] == second["case"] &&
-      first["passed"] == Json(true) &&
-      second["passed"] == Json(true) &&
-      complete(first) &&
-      complete(second) else {
-      fail(
-        "performance rows differ, failed correctness or have incomplete samples",
-      )
-    }
-    let sides : Array[Json] = []
-    for side in ["candidate", "reference"] {
-      let a = number(first[side + "_median_us"])
-      let b = number(second[side + "_median_us"])
-      let drift = (a - b).abs() / ((a + b) / 2.0)
-      let mad_a = spread(first, side)
-      let mad_b = spread(second, side)
-      let passed = drift <= 0.10 && mad_a <= 0.05 && mad_b <= 0.05
-      stable = stable && passed
-      sides.push({
-        "side": side,
-        "median_drift": drift,
-        "first_mad_ratio": mad_a,
-        "second_mad_ratio": mad_b,
-        "stable": passed,
-      })
-    }
-    results.push({
-      "id": id,
-      "round_1_ratio": first["ratio"],
-      "round_2_ratio": second["ratio"],
-      "stability": sides,
-    })
-  }
-  let report : Json = {
-    "scope": "Two diagnostic windows, each with one warmup and nine alternating direct-Wasm/GNU pairs; no MoonX timing, no startup subtraction, no formal ratio acceptance",
-    "stability_rule": "Each side must have MAD/median <= 5% in both windows and median difference / mean of medians <= 10%",
-    "stable": stable,
-    "cases": results,
-  }
-  @fs.write_file(root + "/stability.json", report.stringify(indent=2))
-  println("performance cases=\{cases.length()} stable=\{stable}")
-  guard stable else {
-    fail("performance windows were noisy; retain both windows for review")
-  }
+  let manifest=@fs.realpath("tests/benchmark/real.json")
+  guard field(@json.parse(@fs.read_file(manifest).text()),"schema")==Json(3) else {fail("performance requires real.json schema3")}
+  let benchmark=@fs.realpath("_build/native/release/build/mooxCLI/cmd-tests/benchmark/benchmark.exe")
+  let driver=@fs.realpath("_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe")
+  let located=@process.collect_output("which",["moonrun"]);guard located.0==0 else {fail("moonrun is required")}
+  let runtime=@fs.realpath(located.1.text().trim())
+  let actual=["panels","--manifest",manifest,"--wasm-root",wasm,"--moonrun",runtime,"--correctness-driver",driver,"--oracle-bin",oracle,"--corpus-root",corpus,"--report-dir",root+"/panels"]
+  if !args[4].is_empty() {actual.append(["--commands",args[4]])}
+  let status=capture(benchmark,actual,root+"/panels.log") catch {error=>{@fs.write_file(root+"/panels-error.txt",error.to_string());-999}}
+  let report=if @fs.exists(root+"/panels/panels.json") {@json.parse(@fs.read_file(root+"/panels/panels.json").text())}else{Json::null()}
+  let required : Int=@json.from_json(field(report,"required_workloads")) catch {_=>0}
+  let passed=status==0 && field(report,"schema")==Json(3) && field(report,"passed")==Json(true) && field(report,"complete")==Json(true) && field(report,"artifact_integrity")==Json(true) && field(report,"windows")==Json(2) && required>0
+  @fs.write_file(root+"/verdict.json",({"passed":passed,"stage":"complete","panels_exit_status":status,"panels_report":root+"/panels/panels.json","required_workloads":required,"selected_commands":args[4],"scope":"one selected real-corpus suite with independent local contracts before two windows of nine measured pairs; no command-specific or generated timing stage","general_performance_acceptance":false,"upstream_parity":false,"blind_holdout":false} : Json).stringify(indent=2)+"\n")
+  guard passed else {fail("real-corpus performance windows failed; retained panels and diagnostics: "+root)}
 }

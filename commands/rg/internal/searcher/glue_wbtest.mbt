@@ -699,21 +699,3 @@ async test "context_code3" {
   .expected_no_line_number(exp)
   .run()
 }
-
-///|
-async test "regression_2260" {
-  let matcher = @grep_regex.RegexMatcherBuilder::new()
-    .line_terminator(Some(b'\n'))
-    .build("^\\w+$")
-  let searcher = SearcherBuilder::new().line_number(true).build()
-  let mut matched = false
-  searcher.search_bytes(
-    matcher,
-    b"GATC\n",
-    Lossy::new((_, _) => {
-      matched = true
-      true
-    }),
-  )
-  assert_true(matched)
-}

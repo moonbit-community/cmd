@@ -12,44 +12,11 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-basename-empty",
-      "command": "basename",
-      "args": [
-        "--",
-        ""
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-basename-repeated-separators",
-      "command": "basename",
-      "args": [
-        "path///to///file///"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-basename-root",
-      "command": "basename",
-      "args": [
-        "///"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "file\n"
     },
     {
       "id": "compat-text-line-653",
@@ -65,7 +32,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p9-basename-empty"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-line-654",
@@ -80,7 +52,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "/\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "p9-basename-root"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-line-655",
@@ -95,23 +72,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "file\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "compat-catalog-line-14",
-      "command": "basename",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "aliases": [
+        "p9-basename-repeated-separators"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "release-metadata-basename-help",
@@ -130,7 +96,12 @@
       ],
       "source_version": "workspace cli/basename@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-14"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-basename-version",
@@ -150,6 +121,69 @@
       "source_version": "workspace cli/basename@0.2.3 metadata contract",
       "expected_stdout_text": "basename 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-basename-multiple-operands",
+      "command": "basename",
+      "args": [
+        "--multiple",
+        "left/a",
+        "right/b"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "a\nb\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "multiple"
+      ],
+      "source_version": "Current README textual path semantics; multiple mode must emit both operands rather than treat the second as a suffix."
+    },
+    {
+      "id": "proof-basename-literal-suffix-implies-multiple",
+      "command": "basename",
+      "args": [
+        "--suffix=.txt",
+        "dir/one.txt",
+        "other.txt.txt"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "one\nother.txt\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "suffix",
+        "multiple"
+      ],
+      "source_version": "Current README literal suffix removal, one suffix only, with implied multiple operand mode."
+    },
+    {
+      "id": "proof-basename-zero-terminator",
+      "command": "basename",
+      "args": [
+        "--zero",
+        "left/a"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_hex": "6100",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "zero"
+      ],
+      "source_version": "Current README NUL termination for a nonempty textual basename."
     }
   ]
 }

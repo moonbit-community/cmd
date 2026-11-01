@@ -104,9 +104,9 @@ fn ascii_less(a : String, b : String) -> Bool {
 ///|
 test "aliases_are_sorted" {
   let aliases = hyperlink_aliases()
-  let mut prev = aliases[0].name()
+  let mut prev = aliases[0].name
   for i in 1..<aliases.length() {
-    let name = aliases[i].name()
+    let name = aliases[i].name
     assert_true(ascii_less(prev, name))
     prev = name
   }
@@ -116,8 +116,7 @@ test "aliases_are_sorted" {
 test "alias_names_are_reasonable" {
   for al in hyperlink_aliases() {
     assert_true(
-      al
-      .name()
+      al.name
       .iter()
       .all(c => {
         (c >= 'a' && c <= 'z') ||
@@ -134,7 +133,7 @@ test "alias_names_are_reasonable" {
 ///|
 test "aliases_are_valid_formats" {
   for al in hyperlink_aliases() {
-    assert_true(parse_format(al.format()) is Ok(_))
+    assert_true(parse_format(al.format) is Ok(_))
   }
 }
 

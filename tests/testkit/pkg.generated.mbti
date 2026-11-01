@@ -19,15 +19,23 @@ pub fn canonical_json(Json) -> String
 
 pub fn case_directory_name(String) -> String
 
-pub fn check_contract(Case, RunResult, String) -> Array[String]
+pub fn case_quality_errors(Case, descriptor? : Json, wired_observers? : Array[String]) -> Array[String]
 
-pub async fn check_expected_files(Case, String) -> Array[String]
+pub fn case_quality_kind(Case, descriptor? : Json) -> String
 
-pub async fn check_mktemp_options(String, async (Array[String], String, Map[String, String]) -> RunResult, check_mode~ : Bool) -> Unit
+pub fn case_stimulus_digest(Case) -> String raise
+
+pub fn check_contract(Case, RunResult, String, http_base? : String) -> Array[String]
+
+pub async fn check_expected_files(Case, String, http_base? : String, baseline? : Array[SnapshotEntry]) -> Array[String]
+
+pub async fn check_mktemp_options(String, async (Array[String], String, Map[String, String]) -> RunResult, check_mode~ : Bool, proof? : ScenarioProof) -> Unit
 
 pub async fn check_mktemp_oracle(String, String) -> Unit
 
 pub fn check_oracle_identity(OracleProfile, String, String) -> Array[String]
+
+pub fn check_runtime_contract(Case, RunResult) -> Array[String]
 
 pub async fn check_tee_modes(String, Array[String], String, default_only? : Bool) -> Unit
 
@@ -44,6 +52,8 @@ pub fn command_program() -> String
 pub fn command_version(String) -> String?
 
 pub fn configure_commands(Map[String, String], String) -> Unit
+
+pub async fn configure_local_quality(String, Array[Case], Array[String]) -> Unit
 
 pub fn contains_bytes(Bytes, String) -> Bool
 
@@ -71,6 +81,8 @@ pub fn expand_text(String, String, http_base? : String) -> String
 
 pub async fn file_digest(String) -> String
 
+pub async fn generate_local_quality_catalog(String) -> Unit
+
 pub fn host_platform() -> String
 
 pub fn input_bytes(String?, String?, String) -> Bytes raise Failure
@@ -80,6 +92,12 @@ pub fn is_network_case(Case) -> Bool
 pub fn json_digest(Json) -> String
 
 pub async fn load_cases(String) -> Array[Case]
+
+pub fn local_quality_descriptor(String) -> Json?
+
+pub async fn metadata_contract_snapshot(Array[Case]) -> Json
+
+pub async fn metadata_version(String) -> String
 
 pub fn normalize_diagnostic(String, temporary_root? : String) -> String
 
@@ -105,6 +123,8 @@ pub fn published_mode() -> Bool
 
 pub async fn read_oracle_profile(String) -> OracleProfile
 
+pub async fn resolve_runtime_contract(Case, String, http_base? : String) -> Case
+
 pub async fn run(String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> RunResult
 
 pub async fn run_artifact(String, Bool, String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String]) -> RunResult
@@ -121,9 +141,23 @@ pub async fn run_oracle_with_deadline(String, Array[String], Int32, evidence_dir
 
 pub async fn run_with_deadline(String, Array[String], Int32, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool, read_stream? : async (@process.ReadFromProcess) -> Bytes?) -> TimedRun
 
+pub fn runtime_contract_observers(Case) -> Array[String]
+
 pub fn safe_relative_path(String) -> Bool
 
 pub fn safe_symlink_target(String) -> Bool
+
+pub fn scenario_assertion_errors(Json, Json) -> Array[String]
+
+pub fn scenario_catalog_errors(Json) -> Array[String]
+
+pub async fn scenario_contract_snapshot(Array[Case]) -> Json
+
+pub fn scenario_definition(Json, String) -> Json?
+
+pub fn scenario_receipt_errors(Json, Json, required? : Array[String], command? : String) -> Array[String]
+
+pub fn scenario_text(Bytes) -> String raise
 
 pub async fn seal_oracle_profile(String, String, expected_profile_path? : String) -> Unit
 
@@ -153,7 +187,7 @@ pub async fn verify_oracle_image(String, docker_path? : String, profile_path? : 
 
 pub fn wasm_path(String, String) -> String
 
-pub async fn write_reports(String, ArrayView[CaseReport]) -> Unit
+pub async fn write_reports(String, ArrayView[CaseReport], case_definitions_sha256? : String, scenario_proofs_sha256? : String) -> Unit
 
 // Errors
 
@@ -194,6 +228,8 @@ pub(all) struct Case {
   expected_stdout_contains_all : Array[String]?
   expected_stderr_contains_all : Array[String]?
   stdout_order : String?
+  expected_stdout_json : Json?
+  stdout_json_lines : Bool?
 } derive(ToJson, @debug.Debug, @json.FromJson)
 pub fn Case::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn Case::input(Self, root? : String, http_base? : String) -> Bytes raise Failure
@@ -215,6 +251,7 @@ pub(all) struct CaseReport {
   duration_ms : Int64
   observations : Array[String]
   missing_observations : Array[String]
+  local_contract : LocalContractReceipt?
   evidence : String?
 } derive(ToJson, @debug.Debug)
 pub fn CaseReport::semantic_pass(Self) -> Bool
@@ -230,6 +267,13 @@ pub(all) struct ExpectedFile {
   mode : Int32?
   target : String?
   same_identity_as : String?
+  unchanged : Bool?
+  mtime : String?
+  atime : String?
+  same_mtime_as : String?
+  different_identity_as : String?
+  same_mode_as : String?
+  mode_mask : Int32?
 } derive(ToJson, @debug.Debug, @json.FromJson)
 pub fn ExpectedFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn ExpectedFile::to_json(Self) -> Json
@@ -244,10 +288,19 @@ pub(all) struct FixtureFile {
   mode : Int32?
   atime : String?
   mtime : String?
+  readable : Bool?
 } derive(ToJson, @debug.Debug, @json.FromJson)
 pub fn FixtureFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn FixtureFile::to_json(Self) -> Json
 pub fn FixtureFile::to_repr(Self) -> @debug.Repr
+
+pub(all) struct LocalContractReceipt {
+  definition_sha256 : String
+  passed : Bool
+  observations : Array[String]
+} derive(ToJson, @debug.Debug)
+pub fn LocalContractReceipt::to_json(Self) -> Json
+pub fn LocalContractReceipt::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Normalization {
   field : String
@@ -300,6 +353,19 @@ pub(all) struct RunResult {
   stdout : Bytes
   stderr : Bytes
 }
+
+pub struct ScenarioProof {
+  case_id : String
+  definitions : Array[Json]
+  records : Array[Json]
+  definition_id : Json
+}
+pub fn ScenarioProof::accepts(Self, String, String) -> Bool
+pub fn ScenarioProof::errors(Self) -> Array[String]
+pub fn ScenarioProof::new(String, Json) -> Self
+pub fn ScenarioProof::observe_equal(Self, String, String, Json, Json) -> Unit
+pub fn ScenarioProof::observe_pair(Self, String, String, String, String) -> Unit
+pub fn ScenarioProof::receipt(Self) -> Json
 
 pub(all) struct SnapshotEntry {
   path : String

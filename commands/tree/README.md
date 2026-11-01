@@ -3,7 +3,7 @@
 Display directory trees for MoonX.
 
 ```sh
-moonx cli/tree@0.1.4 [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]
+moonx cli/tree@0.1.5 [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]
 ```
 
 ## Supported scope
@@ -33,8 +33,8 @@ List sorted trees as ASCII text, JSON or HTML, with patterns, depth limits, prun
 ## Examples
 
 ```sh
-moonx cli/tree@0.1.4 -L 2 --noreport project/
-moonx cli/tree@0.1.4 -J --noreport project/
+moonx cli/tree@0.1.5 -L 2 --noreport project/
+moonx cli/tree@0.1.5 -J --noreport project/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

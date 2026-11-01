@@ -1,4 +1,11 @@
 ///|
+pub(all) struct LocalContractReceipt {
+  definition_sha256 : String
+  passed : Bool
+  observations : Array[String]
+} derive(ToJson, Debug)
+
+///|
 pub(all) struct CaseReport {
   id : String
   command : String
@@ -12,6 +19,7 @@ pub(all) struct CaseReport {
   duration_ms : Int64
   observations : Array[String]
   missing_observations : Array[String]
+  local_contract : LocalContractReceipt?
   evidence : String?
 } derive(ToJson, Debug)
 
@@ -35,16 +43,19 @@ pub fn append_report(reports : Array[CaseReport], report : CaseReport) -> Unit {
 pub async fn write_reports(
   directory : String,
   reports : ArrayView[CaseReport],
+  case_definitions_sha256? : String,
+  scenario_proofs_sha256? : String,
 ) -> Unit {
   guard !reports.is_empty() else { fail("required suite produced no results") }
   @fs.mkdir(directory, recursive=true, allow_exist=true)
   guard !@fs.exists(directory + "/summary.jsonl") else {
     fail("report already exists: " + directory)
   }
-  @fs.write_file(
-    directory + "/summary.jsonl",
-    reports.map(item => ToJson::to_json(item).stringify()).join("\n") + "\n",
-  )
+  let results_text = reports
+    .map(item => ToJson::to_json(item).stringify())
+    .join("\n") +
+    "\n"
+  @fs.write_file(directory + "/summary.jsonl", results_text)
   let summary : Json = {
     "schema": 2,
     "platform": host_platform(),
@@ -56,11 +67,18 @@ pub async fn write_reports(
     },
     "commands": published_commands,
     "completed_at_ms": @async.now(),
+    "results_sha256": sha256_bytes(@utf8.encode(results_text)),
     "passed": reports.filter(row => row.result == "pass").length(),
     "failed": reports
     .filter(row => row.result == "fail" || row.result == "infra")
     .length(),
     "skipped": reports.filter(row => row.result == "skip").length(),
+  }
+  if case_definitions_sha256 is Some(hash) && summary is Object(fields) {
+    fields["case_definitions_sha256"] = Json(hash)
+  }
+  if scenario_proofs_sha256 is Some(hash) && summary is Object(fields) {
+    fields["scenario_proofs_sha256"] = Json(hash)
   }
   @fs.write_file(directory + "/run.json", summary.stringify(indent=2) + "\n")
   let lines = StringBuilder()
@@ -81,6 +99,60 @@ pub async fn write_reports(
 ///|
 pub fn contract_errors(fixture : Case) -> Array[String] {
   let errors : Array[String] = []
+  if fixture.comparison is Some(comparison) &&
+    ![
+      "contract", "boundary", "differential", "exact", "normalized", "scenario",
+      "oracle-scenario", "metadata", "compat", "policy", "stress",
+    ].contains(comparison) {
+    errors.push("unknown comparison: " + comparison)
+  }
+  if fixture.expected_rejection is Some(reason) && reason.trim().is_empty() {
+    errors.push("rejection reason must be nonempty")
+  }
+  if fixture.comparison == Some("boundary") &&
+    fixture.expected_rejection is None {
+    errors.push("boundary comparison requires an explicit rejection")
+  }
+  if fixture.host_platforms is Some(platforms) {
+    if platforms.is_empty() {
+      errors.push("host_platforms must select at least one platform")
+    }
+    let seen : Set[String] = Set([])
+    for platform in platforms {
+      if !["linux", "macos", "windows", "posix"].contains(platform) {
+        errors.push("unknown host platform: " + platform)
+      }
+      if seen.contains(platform) {
+        errors.push("duplicate host platform: " + platform)
+      }
+      seen.add(platform)
+    }
+  }
+  for
+    (field, fragment) in [
+      ("stdout", fixture.expected_stdout_contains),
+      ("stderr", fixture.expected_stderr_contains),
+    ] {
+    if fragment == Some("") {
+      errors.push(
+        field +
+        " contains assertion must be nonempty; use exact text for empty output",
+      )
+    }
+  }
+  for
+    (field, fragments) in [
+      ("stdout", fixture.expected_stdout_contains_all),
+      ("stderr", fixture.expected_stderr_contains_all),
+    ] {
+    if fragments is Some(fragments) &&
+      (fragments.is_empty() || fragments.contains("")) {
+      errors.push(field + " contains-all assertion needs nonempty fragments")
+    }
+  }
+  if fixture.forbidden_stderr.unwrap_or([]).contains("") {
+    errors.push("forbidden stderr fragments must be nonempty")
+  }
   if fixture.cwd is Some(cwd) && !safe_relative_path(cwd) {
     errors.push("unsafe case cwd")
   }
@@ -93,6 +165,51 @@ pub fn contract_errors(fixture : Case) -> Array[String] {
     }
     if file.same_identity_as is Some(path) && !safe_relative_path(path) {
       errors.push("unsafe identity reference")
+    }
+    if file.same_mtime_as is Some(path) && !safe_relative_path(path) {
+      errors.push("unsafe timestamp reference")
+    }
+    for reference in [file.different_identity_as, file.same_mode_as] {
+      if reference is Some(path) && !safe_relative_path(path) {
+        errors.push("unsafe metadata reference")
+      }
+    }
+    if file.mode_mask is Some(mask) &&
+      (!(mask > 0 && mask <= 0o7777) || file.mode is None) {
+      errors.push("mode mask requires explicit mode and valid nonzero bits")
+    }
+    if file.mode is Some(mode) {
+      if mode < 0 || mode > 0o7777 {
+        errors.push(
+          "expected mode must contain only permission and special bits",
+        )
+      }
+      if file.mode_mask is Some(mask) && (mode & mask) != mode {
+        errors.push("expected mode contains bits outside mode mask")
+      }
+    }
+    if file.unchanged == Some(false) {
+      errors.push("unchanged expectation must be true")
+    }
+    if file.exists == Some(false) &&
+      (
+        file.kind is Some(_) ||
+        file.content_text is Some(_) ||
+        file.content_hex is Some(_) ||
+        file.mode is Some(_) ||
+        file.target is Some(_) ||
+        file.same_identity_as is Some(_) ||
+        file.unchanged is Some(_) ||
+        file.mtime is Some(_) ||
+        file.atime is Some(_) ||
+        file.same_mtime_as is Some(_) ||
+        file.same_mode_as is Some(_) ||
+        file.different_identity_as is Some(_) ||
+        file.mode_mask is Some(_)
+      ) {
+      errors.push(
+        "absent file expectation cannot assert ignored metadata or content",
+      )
     }
     ignore(input_bytes(file.content_hex, file.content_text, file.path)) catch {
       error => errors.push(error.to_string())
@@ -108,9 +225,23 @@ pub fn contract_errors(fixture : Case) -> Array[String] {
             "content" =>
               file.content_text is Some(_) || file.content_hex is Some(_)
             "type" => file.kind is Some(_) || file.exists is Some(_)
-            "mode" => file.mode is Some(_)
-            "identity" => file.same_identity_as is Some(_)
-            "symlink-target" => file.target is Some(_)
+            "mode" =>
+              file.mode is Some(_) ||
+              file.same_mode_as is Some(_) ||
+              file.unchanged == Some(true)
+            "identity" =>
+              file.same_identity_as is Some(_) ||
+              file.different_identity_as is Some(_) ||
+              file.unchanged == Some(true)
+            "mtime" =>
+              file.mtime is Some(_) ||
+              file.same_mtime_as is Some(_) ||
+              file.unchanged == Some(true)
+            "atime" => file.atime is Some(_) || file.unchanged == Some(true)
+            "symlink-target" =>
+              file.target is Some(_) ||
+              file.unchanged == Some(true) ||
+              (file.kind is Some(kind) && kind != "symlink")
             _ => false
           }
         })
@@ -139,6 +270,7 @@ pub fn contract_errors(fixture : Case) -> Array[String] {
     }
     if fixture.expected_stdout_hex is None &&
       fixture.expected_stdout_text is None &&
+      fixture.expected_stdout_json is None &&
       fixture.expected_stdout_contains is None &&
       fixture.expected_stdout_contains_all.unwrap_or([]).is_empty() {
       errors.push("contract requires a stdout assertion")
@@ -155,9 +287,13 @@ pub fn contract_errors(fixture : Case) -> Array[String] {
         !fixture.expected_stdout_contains_all.unwrap_or([]).is_empty() ||
         !fixture.expected_stderr_contains_all.unwrap_or([]).is_empty()
       ) &&
-      fixture.diagnostic_reason.unwrap_or("") == "" {
+      fixture.diagnostic_reason.unwrap_or("").trim().is_empty() {
       errors.push("partial matching requires diagnostic_reason")
     }
+  }
+  if fixture.stdout_json_lines is Some(_) &&
+    fixture.expected_stdout_json is None {
+    errors.push("JSON line framing requires a complete JSON expectation")
   }
   errors
 }
@@ -167,6 +303,7 @@ pub fn check_contract(
   fixture : Case,
   result : RunResult,
   root : String,
+  http_base? : String,
 ) -> Array[String] {
   let errors = contract_errors(fixture)
   if result.status != fixture.expected_status {
@@ -192,7 +329,7 @@ pub fn check_contract(
     if hex is Some(_) || text is Some(_) {
       let expected = input_bytes(
         hex,
-        text.map(value => expand_text(value, root)),
+        text.map(value => expand_text(value, root, http_base?)),
         field,
       ) catch {
         error => {
@@ -274,9 +411,15 @@ pub fn contract_observations(fixture : Case) -> Array[String] {
       (needed, name) in [
         (true, "type"),
         (file.content_text is Some(_) || file.content_hex is Some(_), "content"),
-        (file.mode is Some(_), "mode"),
+        (file.mode is Some(_) || file.same_mode_as is Some(_), "mode"),
         (file.target is Some(_), "symlink-target"),
-        (file.same_identity_as is Some(_), "identity"),
+        (
+          file.same_identity_as is Some(_) ||
+          file.different_identity_as is Some(_),
+          "identity",
+        ),
+        (file.mtime is Some(_) || file.same_mtime_as is Some(_), "mtime"),
+        (file.atime is Some(_), "atime"),
       ] {
       if needed && !dimensions.contains(name) {
         dimensions.push(name)
@@ -287,15 +430,49 @@ pub fn contract_observations(fixture : Case) -> Array[String] {
 }
 
 ///|
+fn mode_observation_matches(
+  measured : String?,
+  expected : Int32,
+  mask : Int32?,
+) -> Bool {
+  let bits = mask.unwrap_or(0o7777)
+  guard expected >= 0 &&
+    expected <= 0o7777 &&
+    bits > 0 &&
+    bits <= 0o7777 &&
+    (expected & bits) == expected &&
+    measured is Some(text) &&
+    text.length() >= 1 &&
+    text.length() <= 4 &&
+    text.iter().all(c => c >= '0' && c <= '7') else {
+    return false
+  }
+  let parsed = @string.parse_int(text, base=8) catch { _ => return false }
+  (parsed & bits) == expected
+}
+
+///|
 pub async fn check_expected_files(
   fixture : Case,
   root : String,
+  http_base? : String,
+  baseline? : Array[SnapshotEntry],
 ) -> Array[String] {
   let expected = fixture.expected_files.unwrap_or([])
   if expected.is_empty() {
     return []
   }
-  let entries = snapshot(root, observe=contract_observations(fixture))
+  let read_content = expected.any(file => {
+    file.content_text is Some(_) ||
+    file.content_hex is Some(_) ||
+    file.unchanged == Some(true)
+  })
+  let entries = snapshot(
+    root,
+    observe=contract_observations(fixture),
+    content=read_content,
+    preserve_identity=baseline is Some(_),
+  )
   let errors : Array[String] = []
   for file in expected {
     let found = entries.iter().find_first(entry => entry.path == file.path)
@@ -315,7 +492,7 @@ pub async fn check_expected_files(
     if file.content_hex is Some(_) || file.content_text is Some(_) {
       let content = input_bytes(
         file.content_hex,
-        file.content_text.map(value => expand_text(value, root)),
+        file.content_text.map(value => expand_text(value, root, http_base?)),
         file.path,
       )
       if actual.kind != "file" || actual.content != content {
@@ -323,9 +500,11 @@ pub async fn check_expected_files(
       }
     }
     if file.mode is Some(mode) {
-      let measured = actual.metadata.get("mode").unwrap_or("")
-      let parsed = @string.parse_int(measured, base=8) catch { _ => -1 }
-      if parsed != mode {
+      if !mode_observation_matches(
+          actual.metadata.get("mode"),
+          mode,
+          file.mode_mask,
+        ) {
         errors.push(file.path + ": mode differs")
       }
     }
@@ -343,9 +522,60 @@ pub async fn check_expected_files(
         errors.push(reference + ": identity reference missing")
       }
     }
+    for (dimension, expected) in [("mtime", file.mtime), ("atime", file.atime)] {
+      if expected is Some(value) &&
+        actual.metadata.get(dimension) != Some(value) {
+        errors.push(file.path + ": " + dimension + " differs")
+      }
+    }
+    if file.same_mtime_as is Some(reference) {
+      let other = entries.iter().find_first(entry => entry.path == reference)
+      if !(other is Some(other) &&
+        actual.metadata.get("mtime") is Some(time) &&
+        other.metadata.get("mtime") == Some(time)) {
+        errors.push(file.path + ": timestamp differs from " + reference)
+      }
+    }
+    if file.unchanged == Some(true) {
+      let before = baseline
+        .unwrap_or([])
+        .iter()
+        .find_first(entry => entry.path == file.path)
+      if !(before is Some(before) &&
+        before.kind == actual.kind &&
+        before.content == actual.content &&
+        before.metadata == actual.metadata) {
+        errors.push(
+          file.path + ": changed from independently observed initial state",
+        )
+      }
+    }
+    for
+      (dimension, reference, equal) in [
+        ("mode", file.same_mode_as, true),
+        ("identity", file.different_identity_as, false),
+      ] {
+      if reference is Some(reference) {
+        let other = entries.iter().find_first(entry => entry.path == reference)
+        if !(other is Some(other) &&
+          actual.metadata.get(dimension) is Some(measured) &&
+          other.metadata.get(dimension) is Some(control) &&
+          (measured == control) == equal) {
+          errors.push(
+            file.path + ": " + dimension + " relation differs from " + reference,
+          )
+        }
+      }
+    }
   }
   errors
 }
+
+///|
+pub extend LocalContractReceipt with ToJson::{to_json}
+
+///|
+pub extend LocalContractReceipt with @debug.Debug::{to_repr}
 
 ///|
 pub extend CaseReport with ToJson::{to_json}

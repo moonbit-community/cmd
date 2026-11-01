@@ -16,7 +16,10 @@
           "comment": "candidate cases use a temporary path while the pinned container mounts the same case at /work"
         }
       ],
-      "comparison": "normalized"
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "${WORK_NATIVE}\n"
     },
     {
       "id": "compat-text-pwd-invalid-logical-fallback",
@@ -45,22 +48,6 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "<TMP>\n",
       "expected_stderr_text": ""
-    },
-    {
-      "id": "compat-catalog-line-194",
-      "command": "pwd",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
-      "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "repair-alias-pwd-logical",
@@ -107,7 +94,12 @@
       ],
       "source_version": "workspace cli/pwd@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: pwd [-L|-P]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-194"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-pwd-version",

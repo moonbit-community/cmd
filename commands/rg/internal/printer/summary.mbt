@@ -1,16 +1,16 @@
 ///|
 /// The configuration for the summary printer.
 priv struct SummaryConfig {
-  mut kind : SummaryKind
-  mut colors : ColorSpecs
-  mut hyperlink : HyperlinkConfig
-  mut stats : Bool
-  mut path : Bool
-  mut exclude_zero : Bool
-  mut separator_field : Bytes
-  mut separator_path : Byte?
-  mut path_terminator : Byte?
-  mut clock : () -> Int64
+  kind : SummaryKind
+  colors : ColorSpecs
+  hyperlink : HyperlinkConfig
+  stats : Bool
+  path : Bool
+  exclude_zero : Bool
+  separator_field : Bytes
+  separator_path : Byte?
+  path_terminator : Byte?
+  clock : () -> Int64
 }
 
 ///|
@@ -79,175 +79,10 @@ fn SummaryKind::debug_name(self : SummaryKind) -> String {
 }
 
 ///|
-/// A builder for the summary printer.
-///
-/// The builder permits configuring how the printer behaves. The summary
-/// printer has fewer configuration options than the standard printer
-/// because it aims to produce aggregate output about a single search
-/// (typically just one line) instead of output for each match.
-pub struct SummaryBuilder {
-  priv config : SummaryConfig
-}
-
-///|
-/// Return a new builder for configuring the summary printer.
-pub fn SummaryBuilder::new() -> SummaryBuilder {
-  {
-    config: {
-      kind: Count,
-      colors: ColorSpecs::default(),
-      hyperlink: HyperlinkConfig::default(),
-      stats: false,
-      path: true,
-      exclude_zero: true,
-      separator_field: b":",
-      separator_path: None,
-      path_terminator: None,
-      clock: zero_clock,
-    },
-  }
-}
-
-///|
-/// Build a printer using any implementation of `WriteColor`.
-pub fn SummaryBuilder::build(
-  self : SummaryBuilder,
-  wtr : &@termcolor.WriteColor,
-) -> Summary {
-  { config: { ..self.config, }, wtr: CounterWriter::new(wtr), }
-}
-
-///|
-/// Build a printer from any byte sink, wrapped in `NoColor`.
-pub fn SummaryBuilder::build_no_color(
-  self : SummaryBuilder,
-  wtr : &@termcolor.Write,
-) -> Summary {
-  self.build(@termcolor.NoColor::new(wtr))
-}
-
-///|
-/// Set the output mode for this printer.
-pub fn SummaryBuilder::kind(
-  self : SummaryBuilder,
-  kind : SummaryKind,
-) -> SummaryBuilder {
-  self.config.kind = kind
-  self
-}
-
-///|
-/// Set the user color specifications to use for coloring in this printer.
-pub fn SummaryBuilder::color_specs(
-  self : SummaryBuilder,
-  specs : ColorSpecs,
-) -> SummaryBuilder {
-  self.config.colors = specs
-  self
-}
-
-///|
-/// Set the configuration to use for hyperlinks output by this printer.
-pub fn SummaryBuilder::hyperlink(
-  self : SummaryBuilder,
-  config : HyperlinkConfig,
-) -> SummaryBuilder {
-  self.config.hyperlink = config
-  self
-}
-
-///|
-/// Enable the gathering of various aggregate statistics.
-pub fn SummaryBuilder::stats(
-  self : SummaryBuilder,
-  yes : Bool,
-) -> SummaryBuilder {
-  self.config.stats = yes
-  self
-}
-
-///|
-/// When enabled, if a path was given to the printer, then it is shown in
-/// the output.
-pub fn SummaryBuilder::path(
-  self : SummaryBuilder,
-  yes : Bool,
-) -> SummaryBuilder {
-  self.config.path = yes
-  self
-}
-
-///|
-/// Exclude count-related summary results with no matches (enabled by
-/// default).
-pub fn SummaryBuilder::exclude_zero(
-  self : SummaryBuilder,
-  yes : Bool,
-) -> SummaryBuilder {
-  self.config.exclude_zero = yes
-  self
-}
-
-///|
-/// Set the separator used between fields for the `Count` and
-/// `CountMatches` modes (`:` by default).
-pub fn SummaryBuilder::separator_field(
-  self : SummaryBuilder,
-  sep : Bytes,
-) -> SummaryBuilder {
-  self.config.separator_field = sep
-  self
-}
-
-///|
-/// Set the path separator used when printing file paths.
-pub fn SummaryBuilder::separator_path(
-  self : SummaryBuilder,
-  sep : Byte?,
-) -> SummaryBuilder {
-  self.config.separator_path = sep
-  self
-}
-
-///|
-/// Set the path terminator used.
-pub fn SummaryBuilder::path_terminator(
-  self : SummaryBuilder,
-  terminator : Byte?,
-) -> SummaryBuilder {
-  self.config.path_terminator = terminator
-  self
-}
-
-///|
-/// Set the clock used for timing statistics (monotonic nanoseconds). By
-/// default, a clock that always returns `0` is used.
-pub fn SummaryBuilder::clock(
-  self : SummaryBuilder,
-  clock : () -> Int64,
-) -> SummaryBuilder {
-  self.config.clock = clock
-  self
-}
-
-///|
 /// The summary printer, which emits aggregate results from a search.
 pub struct Summary {
   priv config : SummaryConfig
   priv wtr : CounterWriter
-}
-
-///|
-/// Return a summary printer with a default configuration.
-pub fn Summary::new(wtr : &@termcolor.WriteColor) -> Summary {
-  SummaryBuilder::new().build(wtr)
-}
-
-///|
-/// Return a summary printer with a default configuration that drops all
-/// color information.
-pub fn Summary::new_no_color(wtr : &@termcolor.Write) -> Summary {
-  SummaryBuilder::new().build_no_color(wtr)
 }
 
 ///|
@@ -304,13 +139,6 @@ pub fn Summary::sink_with_path(
 }
 
 ///|
-/// Returns true if and only if this printer has written at least one byte
-/// to the underlying writer during any of the previous searches.
-pub fn Summary::has_written(self : Summary) -> Bool {
-  self.wtr.total_count() > 0
-}
-
-///|
 /// Return the underlying writer.
 pub fn Summary::get_mut(self : Summary) -> &@termcolor.WriteColor {
   self.wtr.get_mut()
@@ -345,13 +173,6 @@ pub fn SummarySink::has_match(self : SummarySink) -> Bool {
 /// search. (In Rust this is a private field that the unit tests inspect.)
 pub fn SummarySink::match_count(self : SummarySink) -> Int64 {
   self.match_count
-}
-
-///|
-/// If binary data was found in the previous search, this returns the
-/// offset at which the binary data was first detected.
-pub fn SummarySink::binary_byte_offset(self : SummarySink) -> Int64? {
-  self.binary_byte_offset
 }
 
 ///|
@@ -447,6 +268,34 @@ async fn SummarySink::write(self : SummarySink, buf : Bytes) -> Unit {
 
 ///|
 pub impl @searcher.Sink for SummarySink with fn matched(self, searcher, mat) {
+  self.matched_summary(searcher, mat)
+}
+
+///|
+pub impl @searcher.Sink for SummarySink with fn synchronous_matched(self) {
+  Some((searcher, mat) => self.matched_summary(searcher, mat))
+}
+
+///|
+pub impl @searcher.Sink for SummarySink with fn bulk_scan(self) {
+  self.summary.config.kind == Count && self.stats is None
+}
+
+///|
+pub impl @searcher.Sink for SummarySink with fn synchronous_count(self) {
+  if self.summary.config.kind == Count && self.stats is None {
+    Some(count => self.match_count += count)
+  } else {
+    None
+  }
+}
+
+///|
+fn SummarySink::matched_summary(
+  self : SummarySink,
+  searcher : @searcher.Searcher,
+  mat : @searcher.SinkMatch,
+) -> Bool {
   let is_multi_line = self.multi_line(searcher)
   let sink_match_count = if self.stats is None && !is_multi_line {
     1L
@@ -582,4 +431,36 @@ pub(all) suberror PrinterError {
 pub impl Show for PrinterError with fn output(self, logger) {
   let PrinterError(msg) = self
   logger.write_string(msg)
+}
+
+///|
+/// Construct an immutable output configuration once, before processing input.
+pub fn Summary::new(
+  wtr : &@termcolor.WriteColor,
+  kind~ : SummaryKind = Count,
+  colors~ : ColorSpecs = ColorSpecs::default(),
+  hyperlink~ : HyperlinkConfig = HyperlinkConfig::default(),
+  stats~ : Bool = false,
+  path~ : Bool = true,
+  exclude_zero~ : Bool = true,
+  separator_field~ : Bytes = b":",
+  separator_path~ : Byte? = None,
+  path_terminator~ : Byte? = None,
+  clock~ : () -> Int64 = zero_clock,
+) -> Summary {
+  {
+    config: {
+      kind,
+      colors,
+      hyperlink,
+      stats,
+      path,
+      exclude_zero,
+      separator_field,
+      separator_path,
+      path_terminator,
+      clock,
+    },
+    wtr: CounterWriter::new(wtr),
+  }
 }

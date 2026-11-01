@@ -9,3 +9,7 @@ must therefore use validated relative paths only.
 The unified runner also consumes the policy profiles in `policy/`. Policy tests
 execute pre-built Wasm artifacts with `moonrun --policy`; they never rebuild
 command packages. Public-network endpoints are not valid fixtures.
+
+[`rg/`](rg/README.md) owns the imported regex corpus and ignore-file fixtures.
+CLI-level printer regressions live in the ordinary per-command case collection;
+engine-specific drivers continue to run as Wasm package tests.

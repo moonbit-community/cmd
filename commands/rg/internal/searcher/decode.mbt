@@ -116,11 +116,7 @@ fn sniff_bom(
 
 ///|
 /// Returns true if the slice begins with a UTF-8 or UTF-16 BOM.
-pub fn slice_has_bom(
-  buf : FixedArray[Byte],
-  start : Int32,
-  end : Int32,
-) -> Bool {
+fn slice_has_bom(buf : FixedArray[Byte], start : Int32, end : Int32) -> Bool {
   sniff_bom(buf, start, end) is Some(_)
 }
 

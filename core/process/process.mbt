@@ -70,24 +70,6 @@ pub async fn run(
 }
 
 ///|
-pub async fn redirect_from_file(path : String) -> &@async_process.ProcessInput {
-  @async_process.redirect_from_file(path)
-}
-
-///|
-pub async fn redirect_to_file(
-  path : String,
-  append~ : Bool = false,
-) -> &@async_process.ProcessOutput {
-  @async_process.redirect_to_file(path, append~)
-}
-
-///|
-pub fn pipe() -> (&@async_process.ProcessInput, &@async_process.ProcessOutput) raise {
-  @async_process.pipe()
-}
-
-///|
 pub extend LaunchFailure with Eq::{not_equal, equal}
 
 ///|

@@ -13,22 +13,11 @@
         "ORACLE_VALUE": "visible"
       },
       "expected_status": 0,
-      "normalizations": []
-    },
-    {
-      "id": "p9-printenv-mixed-status",
-      "command": "printenv",
-      "args": [
-        "P9_VALUE",
-        "P9_MISSING"
-      ],
-      "stdin_text": "",
-      "files": [],
-      "environment": {
-        "P9_VALUE": "visible"
-      },
-      "expected_status": 1,
-      "normalizations": []
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stderr_text": "",
+      "expected_stdout_text": "visible\n"
     },
     {
       "id": "compat-text-printenv-present-missing",
@@ -46,23 +35,12 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "visible\n",
-      "expected_stderr_text": ""
-    },
-    {
-      "id": "compat-catalog-line-176",
-      "command": "printenv",
-      "args": [
-        "--help"
-      ],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
-      "expected_stdout_contains": "Usage:",
       "expected_stderr_text": "",
-      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+      "aliases": [
+        "p9-printenv-mixed-status"
+      ],
+      "stdin_text": "",
+      "oracle": true
     },
     {
       "id": "compat-catalog-line-350",
@@ -97,7 +75,12 @@
       ],
       "source_version": "workspace cli/printenv@0.2.3 metadata contract",
       "expected_stdout_text": "Usage: printenv [-0] [NAME...]\n      --help      display this help and exit\n      --version   display version and exit\n",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "",
+      "aliases": [
+        "compat-catalog-line-176"
+      ],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
     },
     {
       "id": "release-metadata-printenv-version",
@@ -117,6 +100,30 @@
       "source_version": "workspace cli/printenv@0.2.3 metadata contract",
       "expected_stdout_text": "printenv 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "proof-printenv-null-mixed-result",
+      "command": "printenv",
+      "args": [
+        "--null",
+        "P9_VALUE",
+        "P9_MISSING"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "P9_VALUE": "visible"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_hex": "76697369626c6500",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "null",
+        "missing-variable-status"
+      ],
+      "source_version": "Current README selected-variable order/missing status plus NUL terminator; status1 is an ordinary partial domain result."
     }
   ]
 }

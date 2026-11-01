@@ -5,6 +5,13 @@ test "benchmark schedule has five warmups and balanced alternating measured pair
   assert_eq(plan.pairs.length(), 105)
   assert_eq(plan.bootstrap_iterations, 10000)
   assert_eq(plan.bootstrap_seed.length(), 32)
+  let orders = plan.warmups.copy()
+  orders.append(plan.pairs.map(pair => pair.order))
+  for index in 1..<orders.length() {
+    assert_true(
+      (orders[index] is CandidateFirst) != (orders[index - 1] is CandidateFirst),
+    )
+  }
   assert_eq(
     plan.pairs.filter(pair => pair.order is CandidateFirst).length(),
     53,

@@ -1,36 +1,27 @@
 ///|
+// Strategy: jq-frame-chunks
+
+///|
 /// Frames JSON values without waiting for the end of the entire input stream.
 /// A frame is parsed by the standard JSON parser before it reaches the query.
 priv struct JsonInput {
   reader : &@io.Reader
   mut chunk : Bytes
   mut position : Int32
-  mut pending : Byte?
 }
 
 ///|
 fn JsonInput::new(reader : &@io.Reader) -> JsonInput {
-  { reader, chunk: b"", position: 0, pending: None, }
+  { reader, chunk: b"", position: 0, }
 }
 
 ///|
-async fn JsonInput::byte(self : JsonInput) -> Byte? {
-  if self.pending is Some(byte) {
-    self.pending = None
-    return Some(byte)
-  }
-  if self.position == self.chunk.length() {
-    match self.reader.read_some(max_len=65536) {
-      None => return None
-      Some(chunk) => {
-        self.chunk = chunk
-        self.position = 0
-      }
-    }
-  }
-  let byte = self.chunk[self.position]
-  self.position += 1
-  Some(byte)
+priv struct JsonFrame {
+  bytes : Array[Byte]
+  mut compound : Bool
+  mut depth : Int32
+  mut quoted : Bool
+  mut escaped : Bool
 }
 
 ///|
@@ -39,58 +30,80 @@ fn json_space(byte : Byte) -> Bool {
 }
 
 ///|
-async fn JsonInput::next(self : JsonInput) -> Json? {
-  let frame : Array[Byte] = []
-  while self.byte() is Some(byte) {
-    if !json_space(byte) {
-      frame.push(byte)
-      break
+fn JsonInput::scan(self : JsonInput, frame : JsonFrame) -> Bool {
+  while self.position < self.chunk.length() {
+    let byte = self.chunk[self.position]
+    self.position += 1
+    if frame.bytes.is_empty() {
+      if json_space(byte) {
+        continue
+      }
+      frame.bytes.push(byte)
+      frame.compound = byte is (b'{' | b'[')
+      frame.depth = if frame.compound { 1 } else { 0 }
+      frame.quoted = byte == b'"'
+      continue
     }
-  }
-  if frame.is_empty() {
-    return None
-  }
-  let first = frame[0]
-  let compound = first is (b'{' | b'[')
-  let mut depth = if compound { 1 } else { 0 }
-  let mut quoted = first == b'"'
-  let mut escaped = false
-  while self.byte() is Some(byte) {
-    if quoted {
-      frame.push(byte)
-      if escaped {
-        escaped = false
+    if frame.quoted {
+      frame.bytes.push(byte)
+      if frame.escaped {
+        frame.escaped = false
       } else if byte == b'\\' {
-        escaped = true
+        frame.escaped = true
       } else if byte == b'"' {
-        quoted = false
-        if !compound {
-          break
+        frame.quoted = false
+        if !frame.compound {
+          return true
         }
       }
-    } else if compound {
-      frame.push(byte)
+    } else if frame.compound {
+      frame.bytes.push(byte)
       match byte {
-        b'"' => quoted = true
-        b'{' | b'[' => depth += 1
+        b'"' => frame.quoted = true
+        b'{' | b'[' => frame.depth += 1
         b'}' | b']' => {
-          depth -= 1
-          if depth == 0 {
-            break
+          frame.depth -= 1
+          if frame.depth == 0 {
+            return true
           }
         }
         _ => ()
       }
     } else if json_space(byte) {
-      break
+      return true
     } else if byte is (b'{' | b'[' | b'"') {
-      self.pending = Some(byte)
-      break
+      self.position -= 1
+      return true
     } else {
-      frame.push(byte)
+      frame.bytes.push(byte)
     }
   }
-  Some(@json.parse(@utf8.decode(Bytes::from_array(frame))))
+  false
+}
+
+///|
+async fn JsonInput::next(self : JsonInput) -> Json? {
+  let frame : JsonFrame = {
+    bytes: [],
+    compound: false,
+    depth: 0,
+    quoted: false,
+    escaped: false,
+  }
+  while !self.scan(frame) {
+    match self.reader.read_some(max_len=65536) {
+      None => break
+      Some(chunk) => {
+        self.chunk = chunk
+        self.position = 0
+      }
+    }
+  }
+  if frame.bytes.is_empty() {
+    None
+  } else {
+    Some(@json.parse(@utf8.decode(Bytes::from_array(frame.bytes))))
+  }
 }
 
 ///|
