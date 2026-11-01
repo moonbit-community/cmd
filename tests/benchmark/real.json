@@ -5004,6 +5004,260 @@
       "observe": [
         "mode"
       ]
+    },
+    {
+      "id": "real-base32-encode-wrapped-source",
+      "command": "base32",
+      "reference_behavior_id": "case:base32-rfc4648-foobar",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "args": [
+        "-w76"
+      ],
+      "mode": "base32-encode-wrapped",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec"
+      ]
+    },
+    {
+      "id": "real-base32-encode-pipe257",
+      "command": "base32",
+      "reference_behavior_id": "case:base32-rfc4648-foobar",
+      "source": {
+        "path": "rfc9110.txt",
+        "sha256": "21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a"
+      },
+      "recipe": "real-input",
+      "args": [
+        "-w76"
+      ],
+      "mode": "base32-encode-pipe",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 257
+    },
+    {
+      "id": "real-base32-encode-pipe65537",
+      "command": "base32",
+      "reference_behavior_id": "case:base32-rfc4648-foobar",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "args": [
+        "-w76"
+      ],
+      "mode": "base32-encode-pipe",
+      "expected_status": 0,
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "codec",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
+    },
+    {
+      "id": "real-ln-symbolic-new",
+      "command": "ln",
+      "reference_behavior_id": "case:phase4-ln-symbolic",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-input",
+      "args": [
+        "-s",
+        "input",
+        "link"
+      ],
+      "mode": "ln-symbolic-new",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "input"
+        }
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stdout": "",
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-ln-symbolic-relative",
+      "command": "ln",
+      "reference_behavior_id": "case:phase4-ln-symbolic",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-input",
+      "args": [
+        "-sr",
+        "input",
+        "link"
+      ],
+      "mode": "ln-symbolic-relative",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "input"
+        }
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stdout": "",
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-test-nonempty-file",
+      "command": "test",
+      "reference_behavior_id": "case:p8-test-regular-size",
+      "source": {
+        "path": "python/Lib/json/encoder.py",
+        "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+      },
+      "recipe": "real-input",
+      "args": [
+        "-s",
+        "input"
+      ],
+      "mode": "test-file-size",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/json/encoder.py",
+            "sha256": "3c9263358ba86870d71c52d64a64889ca968c54083ba690dd79c4c0e03f13e8d"
+          },
+          "target": "input"
+        }
+      ],
+      "facets": [
+        "bytes",
+        "named-files"
+      ],
+      "expected_status": 0,
+      "expected_stdout": "",
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-test-empty-file",
+      "command": "test",
+      "reference_behavior_id": "case:p8-test-regular-size",
+      "source": {
+        "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recipe": "real-input",
+      "args": [
+        "-s",
+        "input"
+      ],
+      "mode": "test-file-size",
+      "inputs": [
+        {
+          "source": {
+            "path": "python/Lib/test/test_import/data/circular_imports/subpkg2/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "target": "input"
+        }
+      ],
+      "facets": [
+        "named-files",
+        "empty"
+      ],
+      "expected_status": 1,
+      "expected_stdout": "",
+      "expected_stderr": ""
+    },
+    {
+      "id": "real-rg-null-count-source",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-null-data",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-a",
+        "--null-data",
+        "-c",
+        "[0-9]+",
+        "-"
+      ],
+      "mode": "rg-text-null-count",
+      "expected_status": 0,
+      "expected_stdout": "1\u0000",
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection"
+      ]
+    },
+    {
+      "id": "real-rg-null-count-pipe65537",
+      "command": "rg",
+      "reference_behavior_id": "case:rg-null-data",
+      "source": {
+        "path": "sqlite3-3.50.4.c",
+        "sha256": "e3f5d6901e7492af4a1fc8c4d745cae84c264942524c3fbfc02b82a5ca8818c8"
+      },
+      "recipe": "real-input",
+      "args": [
+        "--no-config",
+        "--color=never",
+        "-a",
+        "--null-data",
+        "-c",
+        "[0-9]+",
+        "-"
+      ],
+      "mode": "rg-text-null-count",
+      "expected_status": 0,
+      "expected_stdout": "1\u0000",
+      "expected_stderr": "",
+      "facets": [
+        "bytes",
+        "records",
+        "selection",
+        "pipe-input"
+      ],
+      "transport": "fragmented-pipe",
+      "chunk_bytes": 65537
     }
   ]
 }

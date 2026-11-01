@@ -3504,7 +3504,7 @@
     {
       "case_id": "release-metadata-rg-version",
       "source": "tests/cases/rg.json",
-      "definition_sha256": "f3e8bbc4d1c92fd3f1fdac8df075e9ea71da18c597387f0d071e3c0d2e40e2f1",
+      "definition_sha256": "35225a4519e49b0dd12908bdec4c7eddf4a68717ca50dbedffc02c72f6977d7a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18525,7 +18525,7 @@
     {
       "case_id": "release-metadata-base32-help",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "0ce7c1353884d40cc9b1acc7f6edfe032a1036b3276f0b650f84c71c7a10abec",
+      "definition_sha256": "0f1009e896cc3c18c38b823abb390dee6abc91bf91baa8c7bf8d8c4a87dd574c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18535,7 +18535,7 @@
     {
       "case_id": "release-metadata-base32-version",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "67782ee15f9d10814e40a777d23bbf28420bab15bc2a0a0cd613df61f2781bb6",
+      "definition_sha256": "af0485ba09ced2724d0b983cf1f752f7461eba6ad82e71429549173e15960679",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

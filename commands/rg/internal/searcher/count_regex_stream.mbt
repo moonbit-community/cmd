@@ -1,7 +1,7 @@
 ///|
 // Strategy: rg-regex-probe-replay
-// Count-only text mode permits discarding records once a bounded, resumable
-// matcher is ready. Declined probes replay decoded bytes through the old path.
+// Complete records keep the ordinary count path. A full unfinished record
+// prepares a bounded counter, independent of its position or prefix matches.
 async fn Searcher::stream_regex_count(
   self : Searcher,
   matcher : &@matcher.Matcher,
@@ -20,50 +20,41 @@ async fn Searcher::stream_regex_count(
     self.line_buffer = self.config.line_buffer(capacity~)
   }
   self.line_buffer.clear()
-  let probe = self.line_buffer.buf
+  let buffer = self.line_buffer.buf
+  let ordinary = ReadByLine::new(self, matcher, reader, sink)
   let mut length = 0
-  let mut ended = false
-  let mut terminated = false
-  // Retained allocation belongs to prior inputs, not to this search's policy.
   while length < capacity {
-    let size = reader.read(probe, length, capacity - length)
+    let size = reader.read(buffer, length, capacity - length)
     if size == 0 {
-      ended = true
-      break
+      ordinary.run(entry=Replay(length, true))
+      return true
     }
-    terminated = @memchr.memchr(term, probe, length, length + size) >= 0
+    let last = @memchr.memrchr(term, buffer, length, length + size)
     length += size
-    if terminated {
-      break
+    if last >= 0 {
+      self.line_buffer.end = length
+      self.line_buffer.last_lineterm = last + 1
+      if !ordinary.core.match_by_line(ordinary.win()) {
+        self.line_buffer.consume(ordinary.core.pos)
+        ordinary.core.finish(self.line_buffer.absolute_byte_offset, None)
+        return true
+      }
+      self.line_buffer.consume(ordinary.core.roll(ordinary.win()))
+      self.line_buffer.roll()
+      length = self.line_buffer.end
     }
   }
-  // A prefix match only declines the optimization; it never supplies a result.
-  // This avoids building an expensive plan when early boolean search is cheap.
-  let counter = if !terminated &&
-    length == capacity &&
-    !@matcher.is_match_at(
-      matcher,
-      probe,
-      0,
-      length.min(stream_probe_prefix_bytes),
-      0,
-    ) {
-    matcher.stream_counter(term)
-  } else {
-    None
-  }
-  guard counter is Some(counter) else {
-    ReadByLine::new(self, matcher, reader, sink).run(
-      entry=Replay(length, ended),
-    )
+  // No bytes are discarded until the complete plan passes its construction
+  // budget. Unsupported assertions and exhausted plans replay the exact tail.
+  guard matcher.stream_counter(term) is Some(counter) else {
+    ordinary.run(entry=Replay(length, false))
     return true
   }
-  let initial = counter(probe, 0, length, false)
+  let initial = counter(buffer, 0, length, false)
   if initial > 0L {
     accept(initial)
   }
-  let mut total = length.to_int64()
-  let buffer = probe
+  let mut total = self.line_buffer.absolute_byte_offset + length.to_int64()
   for ;; {
     let length = reader.read(buffer, 0, capacity)
     let count = counter(buffer, 0, length, length == 0)

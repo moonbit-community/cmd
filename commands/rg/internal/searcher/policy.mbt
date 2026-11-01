@@ -27,9 +27,9 @@ fn SearcherConfig::stream_count_term(self : SearcherConfig) -> Byte? {
 let bulk_read_bytes : Int32 = 262144
 
 ///|
-// Profitability probe only: matches in this bounded prefix decline streaming
-// and are replayed, never reported as complete record results.
-let stream_probe_prefix_bytes : Int32 = 65536
+// Reuse ordinary buffers, but do not retain a previous file's exceptional
+// record allocation while the next file or stdin is idle.
+let maximum_retained_buffer_bytes : Int32 = 1048576
 
 ///|
 let maximum_record_read_bytes : Int32 = 1048576

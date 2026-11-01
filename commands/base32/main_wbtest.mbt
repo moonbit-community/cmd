@@ -1,4 +1,10 @@
 ///|
+fn encode_bytes(input : Bytes, wrap : Int32) -> Bytes {
+  let encoder = Base32Encoder::new(wrap)
+  encoder.encode(input[:]) + encoder.finish()
+}
+
+///|
 test "base32 RFC 4648 vectors" {
   assert_eq(encode_bytes(b"", 0), b"")
   assert_eq(encode_bytes(b"f", 0), b"MY======")

@@ -1,6 +1,6 @@
 ///|
 /// The cli/rg package version used by every version spelling.
-pub let rg_version : String = "0.1.0"
+pub let rg_version : String = "0.1.1"
 
 ///|
 fn generate_version_digits() -> String {

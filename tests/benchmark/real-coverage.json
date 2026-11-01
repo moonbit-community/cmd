@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "All80 packages accounted for:54 timing commands,3 explicit correctness-only dispositions and23 explained not-timed commands. Finite source, generated-output and bounded-tree operations; no application-frequency or massive-directory claim.",
+  "scope": "All80 packages accounted for:56 timing commands,2 explicit correctness-only dispositions and22 explained not-timed commands. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "facet_vocabulary": [
     "bytes",
@@ -23,8 +23,8 @@
     "codec",
     "network"
   ],
-  "timing_command_count": 54,
-  "correctness_only_command_count": 3,
+  "timing_command_count": 56,
+  "correctness_only_command_count": 2,
   "commands": [
     {
       "command": "cp",
@@ -65,15 +65,21 @@
     },
     {
       "command": "ln",
-      "disposition": "correctness-only",
-      "required_modes": [],
-      "required_facets": [],
+      "disposition": "timing",
+      "required_modes": [
+        "ln-symbolic-new",
+        "ln-symbolic-relative"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files"
+      ],
       "local_case_ids": [
         "compat-filesystem-symbolic-link",
         "compat-filesystem-windows-ln-boundary",
         "repair-fs-ln-no-dereference"
       ],
-      "reason": "No meaningful bulk real-corpus timing row is declared. Exact local symbolic-link effects, alias spelling and Windows capability boundary remain required; do not infer hard-link fidelity or throughput."
+      "reason": "Startup-inclusive single-operation latency only; genuine fixture byte size is not a throughput measure."
     },
     {
       "command": "ls",
@@ -152,7 +158,8 @@
         "rg-regex-spans",
         "rg-slow-output",
         "rg-tree-files",
-        "rg-unterminated"
+        "rg-unterminated",
+        "rg-text-null-count"
       ],
       "required_facets": [
         "bytes",
@@ -684,11 +691,21 @@
     },
     {
       "command": "test",
-      "disposition": "not-timed",
-      "reason": "Short predicate checks; no genuine bulk predicate list is registered.",
-      "required_modes": [],
-      "required_facets": [],
-      "local_case_ids": []
+      "disposition": "timing",
+      "reason": "Startup-inclusive single-operation latency only; genuine fixture byte size is not a throughput measure.",
+      "required_modes": [
+        "test-file-size"
+      ],
+      "required_facets": [
+        "bytes",
+        "named-files",
+        "empty"
+      ],
+      "local_case_ids": [
+        "p8-test-regular-size",
+        "quality-test-empty-file-size",
+        "quality-test-regular-is-not-link"
+      ]
     },
     {
       "command": "tree",
@@ -927,13 +944,16 @@
       "disposition": "timing",
       "required_modes": [
         "base32-binary-encode",
-        "base32-encode-unwrapped"
+        "base32-encode-unwrapped",
+        "base32-encode-wrapped",
+        "base32-encode-pipe"
       ],
       "required_facets": [
         "binary",
         "bytes",
         "codec",
-        "records"
+        "records",
+        "pipe-input"
       ],
       "local_case_ids": [
         "base32-rfc4648-foobar",
@@ -3561,6 +3581,122 @@
         }
       ],
       "operation_facets": []
+    },
+    {
+      "command": "base32",
+      "mode": "base32-encode-wrapped",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w76"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec",
+        "formatting"
+      ],
+      "description": "Bounded streaming operation on complete genuine source bytes; transport and output are checked independently."
+    },
+    {
+      "command": "base32",
+      "mode": "base32-encode-pipe",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-w76"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "codec"
+      ],
+      "description": "Bounded streaming operation on complete genuine source bytes; transport and output are checked independently."
+    },
+    {
+      "command": "ln",
+      "mode": "ln-symbolic-new",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "input",
+            "link"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Complete-process latency for one filesystem operation on a genuine fixture; not byte-processing or bulk throughput."
+    },
+    {
+      "command": "ln",
+      "mode": "ln-symbolic-relative",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-sr",
+            "input",
+            "link"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [],
+      "description": "Complete-process latency for one filesystem operation on a genuine fixture; not byte-processing or bulk throughput."
+    },
+    {
+      "command": "test",
+      "mode": "test-file-size",
+      "allowed_invocations": [
+        {
+          "args": [
+            "-s",
+            "input"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        },
+        {
+          "args": [
+            "-s",
+            "input"
+          ],
+          "recipe": "real-input",
+          "expected_status": 1
+        }
+      ],
+      "operation_facets": [],
+      "description": "Complete-process latency for one filesystem operation on a genuine fixture; not byte-processing or bulk throughput."
+    },
+    {
+      "command": "rg",
+      "mode": "rg-text-null-count",
+      "allowed_invocations": [
+        {
+          "args": [
+            "--no-config",
+            "--color=never",
+            "-a",
+            "--null-data",
+            "-c",
+            "[0-9]+",
+            "-"
+          ],
+          "recipe": "real-input",
+          "expected_status": 0
+        }
+      ],
+      "operation_facets": [
+        "selection"
+      ],
+      "description": "Bounded streaming operation on complete genuine source bytes; transport and output are checked independently."
     }
   ],
   "untimed_regimes": [
@@ -3680,5 +3816,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 23
+  "not_timed_command_count": 22
 }

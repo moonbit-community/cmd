@@ -29,6 +29,7 @@ fn contract(
 ///|
 pub fn command_catalog() -> Array[CommandContract] {
   [
+    // Encoding emits complete groups before EOF; decoding retains whole input.
     contract("base32", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
     ]),
@@ -348,6 +349,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     // Explicit paths or '-' are required when stdin kind cannot be detected.
     // Compression is deferred; preprocessing remains user-selected authority.
     // DFA byte budgets and indexing reject explicitly; neither is a supported option.
+    // Eligible text record counts stream long records; other search modes keep
+    // their allocation boundaries and release exceptional buffers after each reader.
     contract(
       "rg",
       Restricted,

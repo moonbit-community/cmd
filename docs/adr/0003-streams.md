@@ -6,6 +6,115 @@ Updated: 2026-11-01
 
 ## Decision
 
+Streaming follow-up (2026-11-01, unreleased base32 0.1.5 and rg 0.1.1):
+base32 encoding keeps the complete-quantum byte kernel, at most four pending
+input bytes, and the wrap column between bounded 64 KiB reads. Encoded and
+wrapped chunks are bounded by that read size; neither array grows with total
+input. Complete groups are written before EOF. Only successful EOF supplies
+padding and the final wrapped newline, and failed writes are not replayed.
+Decoding retains its existing whole-input acceptance and partial-decode rules.
+
+Rg keeps complete short records on the ordinary count path and prepares a
+streaming counter only when an unfinished record fills the nominal read window.
+Admission no longer depends on an early match or the record being first in the
+file. The matcher still owns delimiter exclusion, supported assertions and the
+construction budget; a declined plan replays the exact decoded unfinished tail
+with the existing Core and a single sink begin. Completed records are delivered
+before a later read failure, while a failed read never finalizes the unfinished
+record. Reader-search exit releases line and multiline buffers above 1 MiB,
+including on errors; ordinary allocations remain reusable. This is an ownership
+bound between searches, not a total process RSS guarantee or a bound on a
+currently selected fallback record, multiline input or sorted path list.
+
+The first follow-up validation passes 1,800 release-Wasm tests, 198 Native
+test-tool tests, 2,274 CLI checks (21 platform skips, zero failures), strict
+checks and the 80-command/125-package architecture inventory. Only base32/rg
+Wasm hashes differ from the frozen b3fcdad baseline. No public interface changes
+are introduced. Published coordinates and frozen published expectations remain
+unchanged.
+
+Independent macOS Wasm resource replay uses the same synthetic 1/8/32 MiB
+inputs as the preceding audit, plus a short record followed by a long record.
+For 32 MiB, base32 peak RSS is 20,791,296 bytes without wrapping and 21,069,824
+with wrapping, versus the preceding 229,588,992/284,786,688 bytes. The open-pipe
+barrier now observes output before EOF. Rg's early/late/missing/after-short
+cases peak at 35,799,040/35,782,656/35,651,584/35,504,128 bytes; the preceding
+early-match peak was 103,022,592. While a subsequent stdin remains open,
+early/late/after-short RSS stays around 36.1–36.2 MB instead of the preceding
+early-match 103,006,208 bytes. All search counts and independently decoded
+codec SHA-256 values pass. RSS includes runtime and allocator storage; these
+synthetic diagnostics are not throughput workloads or cross-platform resource
+acceptance. Evidence: `stream-artifacts.json`, `stream-validation.json`,
+`stream-resources/report.json` and raw captures in evidence bundle
+`01a194b9-5133-78e3-97fb-ec4b8bc94f1e`.
+
+The real-source inventory now declares 171 rows across 56 timing commands.
+Ln symbolic-link operations and test file-size predicates measure complete
+process latency on genuine fixtures, with no byte-throughput claim. Base32
+adds wrapped and fragmented-input rows; rg adds text/NUL-record counts over
+the complete unmodified SQLite source. No new source bytes are added. These
+registrations close declaration gaps only; timing qualification is separate.
+The preceding cp instability and all failed windows remain historical evidence.
+
+The follow-up cp A/A diagnostic compares the identical frozen b3fcdad cp Wasm
+artifact on both sides, with one predeclared pair of windows and no retry.
+The large-file row still fails: first-window medians differ by 15.92%, one
+side has MAD/median 12.64%, and its cross-window drift is 15.22%. Small-file
+and tree controls pass. Host snapshots and surrounding observations show active
+macOS Storage Management scanning; this is evidence of measurement sensitivity,
+not proof of the exact cause of the earlier audit's failure. No cp algorithm
+change or slowdown claim is justified by this A/A result. The unsuccessful
+probe launch preceding it failed before timing because it used the flat CLI
+root with the non-panel entry point; its setup failure is retained separately.
+Evidence: `stream-cp-loaded-panels`, `stream-cp-panels-host-before.txt` and
+`stream-cp-panels-host-after.txt`. The A/A control does not replace an old/new
+performance gate.
+
+After explicit user-requested cleanup of historical generated work directories,
+captures and build caches, available space increased by 42.64 GiB. Source trees,
+Git metadata, historical result summaries and the complete current evidence
+bundle were retained. Storage Management scanning ended before timing. Cold
+rebuilds reproduced all 80 frozen candidate artifacts, and the corrected
+27-row calibration passed. Initial calibration failures were invalid facet
+declarations, not product failures: empty input cannot witness nonempty bytes,
+and wrapping is covered by its explicit codec invocation rather than a generic
+formatting facet. The original unsuccessful calibration reports are retained.
+
+The preceding-phase comparison (`stream-phase-panels`, b3fcdad baseline)
+qualifies all 20 base32/rg rows in two windows of nine alternating pairs.
+Base32 wrapped-source ratios are 0.9140/0.8958; fragmented 257-byte input is
+0.8972/0.9017. Unwrapped-source ratios vary from 1.0366 to 0.9397 across windows,
+so the first-window 3.66% cost is recorded without treating it as a recurring
+tradeoff or claiming a consistent gain. The 65,537-byte pipe ratios are
+1.0163/1.0023, within the gate. Rg NUL-record count ratios are 0.8865/0.8930
+for regular input and 0.8758/0.8738 for fragmented input. These results apply
+only to the declared complete genuine sources and startup-inclusive transports.
+
+The cumulative comparison against the original 26e7bce artifacts completes
+both windows for the full 171-row inventory, with intact source/artifact/tool
+identities and all 15 changed commands covered. It qualifies 165 rows, including
+all 20 base32/rg rows, all three cp rows and all four new ln/test rows.
+Cp large-file candidate/baseline ratios are 0.9587/0.9311, with cross-window
+drifts of 1.66%/1.26% and per-window MAD/median below 5%. Small-file and tree
+copy also pass. This closes the observed cp instability for this comparison;
+it does not identify a unique cause of earlier failures or justify another cp
+algorithm change. Cumulative base32 source encoding is about 7% faster without
+wrapping and 10% faster with wrapping; rg's NUL-record count is about 11–12%
+faster. No general command-wide gain is inferred.
+
+Full-suite protection remains **failed**, not waived: the two previously
+documented wc regular-stdin padding cases and Shakespeare fmt wrapping case
+fail exact native calibration. Cat source and fragmented-copy rows fail
+stability; xargs options fails MAD and cross-window drift (candidate 56.95%,
+baseline 38.89%). Cat, wc and fmt artifacts are unchanged. No failed row is
+removed, normalized, retried unchanged or counted as passing. Earlier scoped
+xargs evidence remains dated evidence and does not override this failed window.
+Evidence: `stream-protection/verdict.json`, `stream-protection/panels/panels.json`
+and both complete window reports. After timing, the base32 private regression
+was strengthened from exactly 64 KiB to 65,541 bytes to cross a real read-window
+boundary; product artifacts remain unchanged. Development CI and publication
+acceptance remain separate from these local macOS measurements.
+
 Runtime audit repair (2026-11-01, unreleased): argument tokenization, batch
 construction and execution now have separate owners in xargs. One pending
 input item/batch and at most the configured number of in-flight invocations

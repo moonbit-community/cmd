@@ -13,7 +13,10 @@
   "profiles": {
     "base32": [
       "real-base32-encode-unwrapped-source",
-      "real-base32-binary"
+      "real-base32-binary",
+      "real-base32-encode-wrapped-source",
+      "real-base32-encode-pipe257",
+      "real-base32-encode-pipe65537"
     ],
     "base64": [
       "real-base64-encode-unwrapped-source",
@@ -110,7 +113,8 @@
       "real-jq-missing-property"
     ],
     "ln": [
-      "correctness-only:ln"
+      "real-ln-symbolic-new",
+      "real-ln-symbolic-relative"
     ],
     "make": [
       "correctness-only:make"
@@ -144,7 +148,9 @@
       "real-rg-literal-sparse-count-pipe65537",
       "real-rg-slow-output",
       "real-rg-source-tree",
-      "real-rg-source-api-numbered"
+      "real-rg-source-api-numbered",
+      "real-rg-null-count-source",
+      "real-rg-null-count-pipe65537"
     ],
     "sed": [
       "real-sed-source-identifiers",
@@ -289,6 +295,10 @@
     "chmod": [
       "real-chmod-small",
       "real-chmod-tree"
+    ],
+    "test": [
+      "real-test-nonempty-file",
+      "real-test-empty-file"
     ]
   },
   "separate_required_evidence": {
@@ -461,7 +471,8 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/base32/main.mbt"
+        "commands/base32/main.mbt",
+        "commands/base32/encode.mbt"
       ],
       "tests": [
         {
@@ -479,14 +490,29 @@
         {
           "file": "commands/base32/main_wbtest.mbt",
           "name": "base32 complete group windows preserve padding across the 64 KiB boundary"
+        },
+        {
+          "file": "commands/base32/stream_wbtest.mbt",
+          "name": "base32 fragmented quanta preserve padding and wrap columns"
+        },
+        {
+          "file": "commands/base32/stream_wbtest.mbt",
+          "name": "base32 emits a complete quantum while input remains open"
+        },
+        {
+          "file": "commands/base32/stream_wbtest.mbt",
+          "name": "base32 read and write failures preserve only completed output"
         }
       ],
       "profiles": [
         "real-base32-encode-unwrapped-source",
-        "real-base32-binary"
+        "real-base32-binary",
+        "real-base32-encode-wrapped-source",
+        "real-base32-encode-pipe257",
+        "real-base32-encode-pipe65537"
       ],
-      "invariant": "Whole input acceptance precedes encoding or decoding. Byte encoding preserves all symbols, final padding, arbitrary positive wrap columns and zero-wrap termination; complete group windows cannot introduce padding at an interior boundary. Length arithmetic is checked before allocating output.",
-      "measurement_scope": "Local selected-workload pilots only; phase decisions and limits are recorded in ADR-0003. Whole-input storage remains and peak RSS is unmeasured."
+      "invariant": "Encoding retains at most four unfinished input bytes and a wrap column between bounded reads. Complete quanta can be emitted before EOF; padding and the final newline occur only on successful EOF. Failed writes are not replayed. Decoding retains its existing whole-input read-error contract.",
+      "measurement_scope": "Complete genuine-source wrapped/unwrapped and pipe encoding rows; synthetic RSS and open-producer diagnostics remain separate."
     },
     {
       "id": "base64-byte-encoding",
@@ -913,7 +939,9 @@
       "status": "adopted",
       "sources": [
         "commands/rg/internal/searcher/count_regex_stream.mbt",
-        "commands/rg/internal/searcher/glue.mbt"
+        "commands/rg/internal/searcher/glue.mbt",
+        "commands/rg/internal/searcher/searcher.mbt",
+        "commands/rg/internal/searcher/policy.mbt"
       ],
       "tests": [
         {
@@ -927,6 +955,14 @@
         {
           "file": "commands/rg/internal/driver/search_regex_stream_wbtest.mbt",
           "name": "adaptive count probes preserve begin denial and decoded replay"
+        },
+        {
+          "file": "commands/rg/internal/searcher/retention_wbtest.mbt",
+          "name": "regex count admission is independent of match and record positions"
+        },
+        {
+          "file": "commands/rg/internal/searcher/retention_wbtest.mbt",
+          "name": "oversized buffers are released after errors and successful multiline searches"
         }
       ],
       "profiles": [
@@ -942,9 +978,11 @@
         "real-rg-literal-sparse-count-pipe65537",
         "real-rg-slow-output",
         "real-rg-source-tree",
-        "real-rg-source-api-numbered"
+        "real-rg-source-api-numbered",
+        "real-rg-null-count-source",
+        "real-rg-null-count-pipe65537"
       ],
-      "invariant": "Probe uses nominal capacity independent of retained storage. Replay owns the original decoder, begins once and delivers complete records before later errors.",
+      "invariant": "Complete records retain ordinary counting; any full unfinished record may prepare a budgeted streaming plan regardless of prefix match or record position. Failure to construct the plan replays the exact decoded tail, begins once and preserves completed counts on later errors. Search exit releases buffers above the explicit retention budget.",
       "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {

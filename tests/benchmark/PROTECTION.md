@@ -5,12 +5,17 @@
 `protect.mbtx` compares all 80 command artifacts against an immutable
 baseline and rejects any changed command without qualifying real timing
 coverage. It uses `real.json` schema 3 and its associated source and coverage
-registries. All 80 packages have a disposition: 162 workloads across 54 timing
-commands, three correctness-only commands (ln, make and sh), and 23 individually
+registries. All 80 packages have a disposition: 171 workloads across 56 timing
+commands, two correctness-only commands (make and sh), and 22 individually
 explained not-timed commands. The 33 complete genuine
 sources total 31,450,998 unique payload bytes, with a 16 MiB per-source cap and
 a 64 MiB suite budget. Counts describe the inventory; they do not establish
 execution or timing success.
+
+The ln and test rows measure startup-inclusive latency for individual symbolic
+link operations and file-size predicates on genuine fixtures. They do not
+claim byte-processing throughput; positive ln timing requires a host with
+symbolic-link support. Independent platform rejection witnesses remain required.
 
 `protection.json` binds strategy invariants to this inventory. Its schema-2
 strategy metadata is distinct from the schema-3 executable workload format. The former

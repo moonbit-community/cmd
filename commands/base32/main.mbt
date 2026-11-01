@@ -39,87 +39,6 @@ fn encode_groups(
 }
 
 ///|
-// Strategy: base32-byte-encoding
-fn encode_bytes(input : Bytes, wrap : Int32) -> Bytes raise CliError {
-  let groups = (input.length().to_int64() + 4) / 5
-  let length = groups * 8
-  let separators = if wrap > 0 {
-    (length + wrap.to_int64() - 1) / wrap.to_int64()
-  } else {
-    0L
-  }
-  guard length + separators <= 2147483647L else {
-    raise CliError("base32: encoded output is too large")
-  }
-  let alphabet = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
-  let encoded = FixedArray::make(length.to_int(), b'=')
-  let mut index = 0
-  let mut target = 0
-  let complete = input.length() - input.length() % 5
-  while index < complete {
-    // Keep complete quanta in a compact byte kernel. The tail and wrapping
-    // remain outside that loop; no I/O or input-specific decision occurs here.
-    let count = (complete - index).min(65535)
-    encode_groups(input[index:index + count], encoded, target)
-    index += count
-    target += count / 5 * 8
-  }
-  while index < input.length() {
-    let remaining = input.length() - index
-    let count = if remaining > 5 { 5 } else { remaining }
-    let b0 = input[index].to_int()
-    let b1 = if count > 1 { input[index + 1].to_int() } else { 0 }
-    let b2 = if count > 2 { input[index + 2].to_int() } else { 0 }
-    let b3 = if count > 3 { input[index + 3].to_int() } else { 0 }
-    let b4 = if count > 4 { input[index + 4].to_int() } else { 0 }
-    let c0 = (b0 >> 3) & 0x1F
-    let c1 = ((b0 << 2) | (b1 >> 6)) & 0x1F
-    let c2 = (b1 >> 1) & 0x1F
-    let c3 = ((b1 << 4) | (b2 >> 4)) & 0x1F
-    let c4 = ((b2 << 1) | (b3 >> 7)) & 0x1F
-    let c5 = (b3 >> 2) & 0x1F
-    let c6 = ((b3 << 3) | (b4 >> 5)) & 0x1F
-    let c7 = b4 & 0x1F
-    encoded[target] = alphabet[c0]
-    encoded[target + 1] = alphabet[c1]
-    if count > 1 {
-      encoded[target + 2] = alphabet[c2]
-      encoded[target + 3] = alphabet[c3]
-    }
-    if count > 2 {
-      encoded[target + 4] = alphabet[c4]
-    }
-    if count > 3 {
-      encoded[target + 5] = alphabet[c5]
-      encoded[target + 6] = alphabet[c6]
-    }
-    if count > 4 {
-      encoded[target + 7] = alphabet[c7]
-    }
-    index += count
-    target += 8
-  }
-  if wrap <= 0 || length == 0 {
-    return encoded.unsafe_reinterpret_as_bytes()
-  }
-  let output = FixedArray::make((length + separators).to_int(), b'\n')
-  let mut source = 0
-  let mut destination = 0
-  while source < encoded.length() {
-    let count = wrap.min(encoded.length() - source)
-    encoded.blit_to(
-      output,
-      src_offset=source,
-      dst_offset=destination,
-      len=count,
-    )
-    source += count
-    destination += count + 1
-  }
-  output.unsafe_reinterpret_as_bytes()
-}
-
-///|
 fn decode_block(block : Array[Byte], out : Array[Byte]) -> Unit raise CliError {
   if block.length() != 8 {
     raise CliError("base32: invalid input length")
@@ -208,8 +127,7 @@ async fn decode_to_writer(
 }
 
 ///|
-// Preserve whole-input acceptance before encoding/decoding and avoid a host
-// read boundary for each 4 KiB segment of standard input.
+// Decoding retains its existing whole-input read-error contract.
 async fn read_input(reader : &@io.Reader) -> Bytes {
   let input = @buffer.Buffer()
   while reader.read_some(max_len=65536) is Some(chunk) {
@@ -219,10 +137,24 @@ async fn read_input(reader : &@io.Reader) -> Bytes {
 }
 
 ///|
+async fn convert(
+  reader : &@io.Reader,
+  decode : Bool,
+  ignore_garbage : Bool,
+  wrap : Int32,
+) -> Unit {
+  if decode {
+    decode_to_writer(read_input(reader), ignore_garbage, @stdio.stdout)
+  } else {
+    encode_stream(reader, wrap, @stdio.stdout)
+  }
+}
+
+///|
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("base32 0.1.4\n")
+    @stdio.stdout.write("base32 0.1.5\n")
     return
   }
   let args = @env.args()[1:]
@@ -240,7 +172,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nEncoding emits complete groups before EOF; later input errors may leave partial output.\n",
     )
     return
   }
@@ -264,17 +196,22 @@ async fn main {
   }
   let path = if parsed.operands.is_empty() { "-" } else { parsed.operands[0] }
   try {
-    let input = if path == "-" {
-      read_input(@stdio.stdin)
+    if path == "-" {
+      convert(
+        @stdio.stdin,
+        parsed.contains("decode"),
+        parsed.contains("ignore-garbage"),
+        wrap,
+      )
     } else {
       let file = @fs.open(path, mode=ReadOnly)
       defer file.close()
-      read_input(file)
-    }
-    if parsed.contains("decode") {
-      decode_to_writer(input, parsed.contains("ignore-garbage"), @stdio.stdout)
-    } else {
-      @stdio.stdout.write(encode_bytes(input, wrap))
+      convert(
+        file,
+        parsed.contains("decode"),
+        parsed.contains("ignore-garbage"),
+        wrap,
+      )
     }
   } catch {
     CliError(msg) => {

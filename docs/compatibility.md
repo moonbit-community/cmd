@@ -3,13 +3,15 @@
 Date: 2026-09-05
 Updated: 2026-11-01
 
-The 2026-11-01 runtime follow-up confirms two resource limitations in unchanged
-artifacts: rg count-only long records can use the growing replay buffer when
-an early match declines the streaming plan; base32 encoding waits for EOF and
-retains complete input/output arrays, including an extra wrapped-output array.
-The measured macOS Wasm cases and conditions for lifting these limitations are
-in [ADR-0003](adr/0003-streams.md). Correct output on those cases does not imply
-bounded memory or streaming latency.
+The unreleased base32 0.1.5 candidate streams encoding through bounded reads,
+retaining only an unfinished quantum and wrap column between writes. Earlier
+output survives later input errors; decoding retains whole-input storage.
+The rg 0.1.1 candidate admits eligible long text records to the budgeted count
+plan independently of prefix matches or record position, and releases exceptional
+search buffers on reader exit. Unsupported matcher/configuration routes retain
+their explicit fallbacks. The preceding 2026-11-01 macOS Wasm resource failures
+and subsequent repair evidence retain their dated scope in
+[ADR-0003](adr/0003-streams.md); buffer release is not an immediate RSS guarantee.
 
 The unreleased audit candidates include core 0.9.1, cp 0.2.4, find 0.2.5,
 mv 0.2.6, rm 0.2.4, sort 0.2.6, tail 0.2.4 and xargs 0.2.4. Xargs dispatches

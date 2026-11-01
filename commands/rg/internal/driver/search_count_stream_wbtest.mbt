@@ -5,7 +5,8 @@ async test "literal streaming keeps nominal reads while declined routes grow rec
       (pattern, input, heap, streaming) in [
         ("abc", b"abc" + Bytes::make(2097152, b'x'), None, true),
         ("abc", b"abc" + Bytes::make(2097152, b'x'), Some(4194304), false),
-        ("ab.c", b"abxc" + Bytes::make(2097152, b'x'), None, false),
+        ("ab.c", b"abxc" + Bytes::make(2097152, b'x'), None, true),
+        ("^abxc", b"abxc" + Bytes::make(2097152, b'x'), None, false),
       ] {
       let matcher = SearchMatcher::new(
         [pattern],

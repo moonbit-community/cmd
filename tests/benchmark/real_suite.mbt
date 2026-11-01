@@ -65,8 +65,8 @@ fn real_command_scope() -> Set[String] {
 fn real_untimed_scope() -> Set[String] {
   Set([
     "basename", "date", "dirname", "echo", "env", "expr", "false", "jqlog", "mkdir",
-    "mktemp", "printenv", "printf", "pwd", "realpath", "rmdir", "sleep", "test",
-    "timeout", "touch", "true", "unlink", "which", "yes",
+    "mktemp", "printenv", "printf", "pwd", "realpath", "rmdir", "sleep", "timeout",
+    "touch", "true", "unlink", "which", "yes",
   ])
 }
 
@@ -328,7 +328,7 @@ fn real_suite_errors(
       continue
     }
     if disposition == "correctness-only" {
-      if !["ln", "make", "sh"].contains(command) {
+      if !["make", "sh"].contains(command) {
         errors.push(
           "reviewed timing command cannot be relabeled correctness-only: " +
           command,
@@ -344,7 +344,7 @@ fn real_suite_errors(
       }
       continue
     }
-    if ["ln", "make", "sh"].contains(command) {
+    if ["make", "sh"].contains(command) {
       errors.push(
         "reviewed correctness-only command needs a new deliberate timing policy before measured inclusion: " +
         command,

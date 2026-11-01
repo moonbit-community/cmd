@@ -7,7 +7,7 @@
     {
       "name": "base32",
       "package_name": "cli/base32",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -711,7 +711,7 @@
     {
       "name": "rg",
       "package_name": "cli/rg",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "published": false,
       "compare_profile": "ripgrep",
       "supported_options": [

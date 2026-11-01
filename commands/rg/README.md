@@ -2,12 +2,12 @@
 
 Search files recursively for MoonX.
 
-Install `cli/rg@0.1.0`, using `cli/core@0.9.0`. The repository's
+Workspace candidate: `cli/rg@0.1.1` (unreleased), using `cli/core@0.9.0`. The repository's
 [release inventory](../../tests/release_runner/current/latest.json) records
 accepted coordinates and their independent expected cases.
 
 ```sh
-moonx cli/rg@0.1.0 [OPTIONS] PATTERN PATH...
+moonx cli/rg@0.1.1 [OPTIONS] PATTERN PATH...
 ```
 
 ## Supported scope
@@ -43,15 +43,21 @@ Search explicit paths or stdin (`-`) with regex/Unicode matching, glob/ignore ru
 - `--dfa-size-limit` is rejected: the engine has a fixed state-count limit, not a configurable byte budget. Indexing options (`-X`/`--index`, `--x-crud`, `--x-force`, `--x-path`) are also rejected.
 - Automatic terminal color/headings are off. Raw non-UTF-8 paths and redirected-output same-file exclusion are unsupported.
 - Searches are single-threaded; `--threads` does not start workers, and mmap options use streaming reads.
-- Long records may require record-sized buffers. Multiline and sorted modes may retain whole input or path lists.
+- Eligible text-only record counts stream long records regardless of where a
+  match or the long record occurs. Unsupported assertions, construction budgets,
+  binary conversion, context and explicit heap limits retain their fallback paths.
+- Other long records may require record-sized buffers. Multiline and sorted
+  modes may retain whole input or path lists. Exceptional search buffers above
+  the reuse budget are released when a reader search returns, including errors;
+  this does not promise an immediate decrease in process RSS.
 
 ## Examples
 
 ```sh
-moonx cli/rg@0.1.0 -n 'pattern' notes.txt
-moonx cli/rg@0.1.0 --hidden -g '*.mbt' 'pattern' .
-printf 'one\ntwo\n' | moonx cli/rg@0.1.0 -i 'ONE' -
-moonx cli/rg@0.1.0 --files --sort path
+moonx cli/rg@0.1.1 -n 'pattern' notes.txt
+moonx cli/rg@0.1.1 --hidden -g '*.mbt' 'pattern' .
+printf 'one\ntwo\n' | moonx cli/rg@0.1.1 -i 'ONE' -
+moonx cli/rg@0.1.1 --files --sort path
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -11,6 +11,32 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 ## 2026-11-01
 
+Development streaming follow-up; no publication:
+
+- Prepare base32 0.1.5 and rg 0.1.1 without changing published coordinates.
+  Stream base32 encoding through bounded quantum/wrap state; retain decoding's
+  existing whole-input contract. Admit eligible rg long-record counts regardless
+  of early match or record position, and release exceptional reader buffers on
+  success or error. Keep unsupported matcher and configuration fallbacks.
+- Pass 1,800 release-Wasm tests, 198 Native test-tool tests, 2,274 CLI checks
+  (21 platform skips, zero failures), strict checks and architecture validation.
+- Repeat macOS Wasm resource diagnostics: the 32 MiB base32 encoding cases
+  peak near 20 MiB instead of 219–272 MiB and emit output before EOF; rg's
+  early-match case peaks near 34 MiB instead of 98 MiB. Late/missing and
+  short-record-then-long-record controls pass. These are resource observations,
+  not general timing acceptance.
+- Add nine genuine-source timing rows, including startup-inclusive ln/test
+  operations, base32 wrapping/pipes and rg NUL-record counts. All 27 selected
+  rows pass correctness/native calibration after correcting facet declarations.
+- After requested temporary/cache cleanup and ending Storage Management
+  scanning, pass all 20 preceding-phase base32/rg timing rows. Complete the
+  cumulative 171-row two-window comparison: 165 rows pass, including all
+  base32/rg, cp and new ln/test rows. The cp large-file drifts are 1.66%/1.26%;
+  retain its earlier failed A/A and old/new evidence without another algorithm
+  change. Full protection remains failed on the known wc/fmt exact-output
+  boundaries and cat/xargs stability failures. See ADR-0003 for exact scopes,
+  ratios and the distinction between resource, timing and CI evidence.
+
 Development runtime and ownership repair; no publication:
 
 - Prepare core 0.9.1 with shared UTF-8 argv-byte accounting used by find and

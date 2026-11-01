@@ -150,7 +150,12 @@ async test "regex count streaming does not finalize a partial record on read fai
     ["a[bc]+d"],
     line_terminator=Some(@matcher.LineTerminator::byte(b'\n')),
   )
-  for bytes in [b"abcd\nabcd", Bytes::make(65536, b'x') + b"abcd\nabcd"] {
+  for
+    bytes in [
+      b"abcd\nabcd",
+      Bytes::make(65536, b'x') + b"abcd\nabcd",
+      b"abcd\nabcd" + Bytes::make(1048576, b'x'),
+    ] {
     for aggregate in [false, true] {
       let sink : CountSummary = {
         aggregate,
@@ -260,7 +265,7 @@ async test "adaptive count probes preserve begin denial and decoded replay" {
 }
 
 ///|
-async test "probe matches only decline streaming and never count a truncated record" {
+async test "regex count admission never treats a truncated record as EOF" {
   for
     (pattern, input, expected) in [
       ("", b"", 0L),

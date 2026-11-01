@@ -262,6 +262,7 @@ pub async fn Searcher::search_reader(
   rdr : &Reader,
   sink : &Sink,
 ) -> Unit {
+  defer self.release_oversized_buffers()
   self.check_config(matcher)
   let decoder : &Reader = DecodeReader::new(
     rdr,
@@ -290,6 +291,18 @@ pub async fn Searcher::search_reader(
     }
     self.line_buffer.clear()
     ReadByLine::new(self, matcher, decoder, sink).run()
+  }
+}
+
+///|
+fn Searcher::release_oversized_buffers(self : Searcher) -> Unit {
+  if self.line_buffer.buf.length() > maximum_retained_buffer_bytes {
+    self.line_buffer.buf = FixedArray::make(self.line_buffer.capacity, b'\x00')
+    self.line_buffer.clear()
+  }
+  if self.multi_line_buffer.length() > maximum_retained_buffer_bytes {
+    self.multi_line_buffer = FixedArray::make(0, b'\x00')
+    self.multi_line_len = 0
   }
 }
 

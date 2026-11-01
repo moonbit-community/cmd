@@ -2,15 +2,23 @@
 
 ## Current declared scope (2026-11-01)
 
-`real.json` is the single active timing inventory. Its 162 data-driven rows
-cover 54 commands. `real-coverage.json` accounts for all 80 command packages,
-including explicit correctness-only dispositions for ln, make and sh. Those
-three commands have independent local contract witnesses; they have no
-real-source timing claim. Another 23 packages have individual `not-timed`
+`real.json` is the single active timing inventory. Its 171 data-driven rows
+cover 56 commands. `real-coverage.json` accounts for all 80 command packages,
+including explicit correctness-only dispositions for make and sh. Those
+two commands have independent local contract witnesses; they have no
+real-source timing claim. Another 22 packages have individual `not-timed`
 reasons, including short utilities, unsupported ordinary operations, missing
 fair upstream equivalents and unbounded-output lifecycle requirements. A reason
 cannot relabel a reviewed timing command to discard its rows. These are
 inventory counts, not execution results.
+
+Ln's new/relative symbolic-link operations and test's nonempty/empty file-size
+predicates measure startup-inclusive single-operation latency on genuine
+fixtures, not source-byte throughput. Positive ln timing requires symbolic-link
+support; platform rejection cases remain independent local witnesses. Base32
+adds folded output and fragmented producer regimes. Rg's explicit text/NUL
+record count uses the complete SQLite source as one record without modifying
+or duplicating its bytes; private tests establish route and lifetime properties.
 
 The inventory reuses 33 complete source files totaling 31,450,998 unique
 payload bytes. Each measured source is at most 16 MiB, and the complete source
