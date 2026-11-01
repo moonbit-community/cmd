@@ -349,6 +349,19 @@ async fn compressed_block(
   output : InflateOutput,
 ) -> Unit {
   for ;; {
+    match compressed_ready(bits, literal, distance, output) {
+      EndBlock => return
+      NeedOutput => {
+        output.flush()
+        continue
+      }
+      MatchTail(count, length) => {
+        output.flush()
+        output.copy_match(count, length)
+        continue
+      }
+      NeedInput => ()
+    }
     let symbol = literal.read(bits)
     if symbol < 256 {
       output.push(symbol.to_byte())

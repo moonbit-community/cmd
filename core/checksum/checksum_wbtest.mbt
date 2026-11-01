@@ -25,3 +25,22 @@ test "streaming SHA1 matches standard vectors across padding boundaries" {
     "a9993e364706816aba3e25717850c26c9cd0d89d",
   )
 }
+
+///|
+test "SHA1 direct blocks preserve arbitrary source offsets and reused schedule state" {
+  let source = Bytes::makei(4096, i => (i * 73 + 17).to_byte())
+  for start in 0..<16 {
+    for length in [63, 64, 65, 127, 128, 129, 2049] {
+      let input = source[start:start + length]
+      let expected = @crypto.bytes_to_hex_string(@crypto.sha1(input.to_owned()))
+      for split in [0, 1, 7, 63, 64, 65] {
+        let state = Sha1State::new()
+        let split = split.min(length)
+        state.update(input[:split])
+        state.update(input[split:])
+        state.update(b""[:])
+        assert_eq(@hex.encode(state.finalize_bytes()), expected)
+      }
+    }
+  }
+}

@@ -11,6 +11,20 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 ## 2026-11-01
 
+Development pilots for the 13 non-rg commands observed above 10x; no publication.
+
+- Improve quiet comparison, integer sequence output, buffered inflate, JSON
+  framing, join/comm processing, tail byte scanning, patch byte records,
+  fractional sort keys and find output. Preserve command-specific ordering,
+  fallback and failure contracts; rg is unchanged.
+- Keep failed SHA-1 and copy trials as evidence and restore their original
+  implementations. Incremental timing qualifications, limitations and final
+  validation scope are recorded in ADR-0003; this is not remote CI acceptance.
+- Final cumulative comparison qualifies 38/38 workloads for all 12 changed
+  artifacts. Full local validation passes 1,776 Wasm tests, 60 observer tests
+  and 2,260 CLI checks with 21 platform skips. Fresh native comparison completes
+  44 workloads but qualifies only 20; preserve the other 24 as unstable evidence.
+
 Performance integration and post-CI measurement coverage; no publication.
 
 - Integrate retained performance work at `d12f317`; all required platforms pass

@@ -333,10 +333,22 @@ fn compare_prepared_key(
   left : Bytes,
   right : Bytes,
   modifiers : Modifiers,
+  cached_numeric~ : Bool = false,
 ) -> Int32 {
   let result = match modifiers.mode {
     Lexical => left.lexical_compare(right)
-    Numeric => numeric_prefix(left, false).compare(numeric_prefix(right, false))
+    Numeric =>
+      (if cached_numeric {
+        numeric_field_value(left)
+      } else {
+        numeric_prefix(left, false)
+      }).compare(
+        if cached_numeric {
+          numeric_field_value(right)
+        } else {
+          numeric_prefix(right, false)
+        },
+      )
     GeneralNumeric => general_compare(left, right)
     HumanNumeric => human_compare(left, right)
     Month => month_value(left) - month_value(right)
@@ -373,6 +385,7 @@ fn compare_entries(
         left.keys[index],
         right.keys[index],
         spec.modifiers,
+        cached_numeric=true,
       )
       if result != 0 {
         return result
@@ -407,7 +420,16 @@ fn make_entry(
     }
   } else {
     specs.map(spec => {
-      prepared_key(extract_key(record, spec, separator), spec.modifiers, seed)
+      let key = prepared_key(
+        extract_key(record, spec, separator),
+        spec.modifiers,
+        seed,
+      )
+      if spec.modifiers.mode == Numeric {
+        prepare_numeric_field(key)
+      } else {
+        key
+      }
     })
   }
   { record, keys, index, }

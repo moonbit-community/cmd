@@ -831,14 +831,9 @@ async fn main {
     }
     if in_depth && matched && !(prune && parser.action is Some(Print(_))) {
       match parser.action {
-        None => {
-          @stdio.stdout.write(path)
-          @stdio.stdout.write("\n")
-        }
-        Some(Print(zero)) => {
-          @stdio.stdout.write(path)
-          @stdio.stdout.write(if zero { "\u0000" } else { "\n" })
-        }
+        None => @stdio.stdout.write(path + "\n")
+        Some(Print(zero)) =>
+          @stdio.stdout.write(path + (if zero { "\u0000" } else { "\n" }))
         Some(Delete) =>
           if kind == Directory {
             @fs.rmdir(path)

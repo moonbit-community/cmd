@@ -184,6 +184,7 @@ fn parse_file_numbers(
 
 ///|
 async fn write_joined(
+  writer : @stream.BlockWriter,
   left : JoinRow?,
   right : JoinRow?,
   field1 : Int32,
@@ -247,12 +248,13 @@ async fn write_joined(
     append_bytes(output, value)
   }
   output.push(record_delimiter)
-  @stdio.stdout.write(Bytes::from_array(output))
+  writer.write(Bytes::from_array(output))
 }
 
 ///|
 async fn next_ordered_row(
-  scanner : @stream.LineScanner,
+  output : @stream.BlockWriter,
+  scanner : JoinInput,
   state : JoinOrder,
   field : Int32,
   separator : Byte?,
@@ -261,7 +263,7 @@ async fn next_ordered_row(
   ignore_case : Bool,
   unpairable : Ref[Bool],
 ) -> JoinRow? {
-  match scanner.next() {
+  match next_join_record(scanner, output) {
     Some(line) => {
       let row : JoinRow = { fields: split_fields(line.data, separator), }
       let key = key_of(row.fields, field)
@@ -270,6 +272,7 @@ async fn next_ordered_row(
         (order_mode > 0 || (order_mode == 0 && unpairable.val)) {
         match state.previous_key {
           Some(previous) if compare_bytes(previous, key, ignore_case) > 0 => {
+            output.flush()
             @stdio.stderr.write(
               "join: \{name}:\{state.line_number}: is not sorted: ",
             )
@@ -318,9 +321,12 @@ async fn merge_readers(
   auto_format : Bool,
   name1 : String,
   name2 : String,
+  writer~ : &@io.Writer = @stdio.stdout,
 ) -> Unit {
-  let scanner1 = @stream.LineScanner::new(reader1, delimiter=record_delimiter)
-  let scanner2 = @stream.LineScanner::new(reader2, delimiter=record_delimiter)
+  let output = @stream.BlockWriter::new(writer)
+  defer output.flush()
+  let scanner1 = JoinInput::new(reader1, record_delimiter)
+  let scanner2 = JoinInput::new(reader2, record_delimiter)
   let state1 : JoinOrder = {
     previous_key: None,
     line_number: 0,
@@ -333,10 +339,12 @@ async fn merge_readers(
   }
   let unpairable = Ref(false)
   let mut row1 = next_ordered_row(
-    scanner1, state1, field1, separator, name1, order_mode, ignore_case, unpairable,
+    output, scanner1, state1, field1, separator, name1, order_mode, ignore_case,
+    unpairable,
   )
   let mut row2 = next_ordered_row(
-    scanner2, state2, field2, separator, name2, order_mode, ignore_case, unpairable,
+    output, scanner2, state2, field2, separator, name2, order_mode, ignore_case,
+    unpairable,
   )
   let out_separator = separator.unwrap_or(b' ')
   let auto_counts = if auto_format {
@@ -354,19 +362,21 @@ async fn merge_readers(
   }
   if header && (row1 is Some(_) || row2 is Some(_)) {
     write_joined(
-      row1, row2, field1, field2, out_separator, empty, output_fields, auto_counts,
+      output, row1, row2, field1, field2, out_separator, empty, output_fields, auto_counts,
       record_delimiter,
     )
     state1.previous_key = None
     state2.previous_key = None
     if row1 is Some(_) {
       row1 = next_ordered_row(
-        scanner1, state1, field1, separator, name1, order_mode, ignore_case, unpairable,
+        output, scanner1, state1, field1, separator, name1, order_mode, ignore_case,
+        unpairable,
       )
     }
     if row2 is Some(_) {
       row2 = next_ordered_row(
-        scanner2, state2, field2, separator, name2, order_mode, ignore_case, unpairable,
+        output, scanner2, state2, field2, separator, name2, order_mode, ignore_case,
+        unpairable,
       )
     }
   }
@@ -377,6 +387,7 @@ async fn merge_readers(
     if order < 0 {
       if all.contains(1) || only.contains(1) {
         write_joined(
+          output,
           Some(left),
           None,
           field1,
@@ -389,12 +400,14 @@ async fn merge_readers(
         )
       }
       row1 = next_ordered_row(
-        scanner1, state1, field1, separator, name1, order_mode, ignore_case, unpairable,
+        output, scanner1, state1, field1, separator, name1, order_mode, ignore_case,
+        unpairable,
       )
       unpairable.val = true
     } else if order > 0 {
       if all.contains(2) || only.contains(2) {
         write_joined(
+          output,
           None,
           Some(right),
           field1,
@@ -407,7 +420,8 @@ async fn merge_readers(
         )
       }
       row2 = next_ordered_row(
-        scanner2, state2, field2, separator, name2, order_mode, ignore_case, unpairable,
+        output, scanner2, state2, field2, separator, name2, order_mode, ignore_case,
+        unpairable,
       )
       unpairable.val = true
     } else {
@@ -415,7 +429,7 @@ async fn merge_readers(
       let right_run : Array[JoinRow] = [right]
       row1 = None
       while next_ordered_row(
-              scanner1, state1, field1, separator, name1, order_mode, ignore_case,
+              output, scanner1, state1, field1, separator, name1, order_mode, ignore_case,
               unpairable,
             )
             is Some(next) {
@@ -428,7 +442,7 @@ async fn merge_readers(
       }
       row2 = None
       while next_ordered_row(
-              scanner2, state2, field2, separator, name2, order_mode, ignore_case,
+              output, scanner2, state2, field2, separator, name2, order_mode, ignore_case,
               unpairable,
             )
             is Some(next) {
@@ -443,6 +457,7 @@ async fn merge_readers(
         for left_item in left_run {
           for right_item in right_run {
             write_joined(
+              output,
               Some(left_item),
               Some(right_item),
               field1,
@@ -461,6 +476,7 @@ async fn merge_readers(
   while row1 is Some(left) {
     if all.contains(1) || only.contains(1) {
       write_joined(
+        output,
         Some(left),
         None,
         field1,
@@ -473,12 +489,14 @@ async fn merge_readers(
       )
     }
     row1 = next_ordered_row(
-      scanner1, state1, field1, separator, name1, order_mode, ignore_case, unpairable,
+      output, scanner1, state1, field1, separator, name1, order_mode, ignore_case,
+      unpairable,
     )
   }
   while row2 is Some(right) {
     if all.contains(2) || only.contains(2) {
       write_joined(
+        output,
         None,
         Some(right),
         field1,
@@ -491,7 +509,8 @@ async fn merge_readers(
       )
     }
     row2 = next_ordered_row(
-      scanner2, state2, field2, separator, name2, order_mode, ignore_case, unpairable,
+      output, scanner2, state2, field2, separator, name2, order_mode, ignore_case,
+      unpairable,
     )
   }
   if state1.warned || state2.warned {

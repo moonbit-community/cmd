@@ -284,6 +284,28 @@ async fn main {
   } else {
     last_text.length()
   }
+  let separator_bytes = @utf8.encode(separator)
+  match
+    (first.bounded_integer(), step.bounded_integer(), last.bounded_integer()) {
+    (Some(first), Some(step), Some(last)) if separator_bytes.length() <= 65515 => {
+      print_integers(
+        IntegerSequence::new(
+          first,
+          step,
+          last,
+          separator_bytes,
+          if equal_width {
+            width
+          } else {
+            0
+          },
+        ),
+        @stdio.stdout,
+      )
+      return
+    }
+    _ => ()
+  }
   let mut current = first
   let mut emitted = false
   let output = @io.BufferedWriter::new(@stdio.stdout, size=65536)

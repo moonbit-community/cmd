@@ -19,6 +19,93 @@ records that outlive a refill must own their storage. Completed output is
 flushed on input failure where the command contract requires it. Failed output
 writes poison the writer and are never replayed during cleanup.
 
+## Over-tenfold command pilots (2026-11-01)
+
+The post-CI inventory selected cmp, seq, gunzip, zcat, jq, join, comm, tail,
+sha1sum, sort, cp, find and patch, including unstable observations above 10x.
+rg is explicitly excluded by the user. Baseline `de243c8` and all 80 optimized
+artifacts were frozen before editing in
+`/private/tmp/cmd-performance-deep-20261101/B0`. These are local development
+pilots, without publication or new remote CI acceptance.
+
+Retain independently qualified phases: quiet cmp compares byte spans and stops
+at the first mismatch; bounded Int64 seq renders synchronous output batches;
+inflate decodes buffered symbols synchronously with explicit cross-flush match
+tails; jq scans each input chunk synchronously; join batches complete output
+records; comm borrows immutable records and merges until an I/O boundary;
+tail uses byte-search counts and owned input chunks; patch keeps the full source
+in the byte domain; sort caches only explicit numeric fields that require
+general decimal conversion; find coalesces each output record. Preserve skips,
+limits, integer overflow, fallback conversion, framing, exact bytes, order
+diagnostics, output-failure and cleanup contracts in the named regressions.
+
+Incremental windows qualify A (6/6 rows), B (9/9), C (12/12), D's patch and
+find subsets (5/5), and E's sort and comm subsets (7/7). D and E as complete
+panels **failed**. D's decimal sort and several digest controls drifted; E's
+digest controls and copy-source samples remained unstable. Never substitute
+their promising medians for a pass. The E sort revision avoids rescanning an
+already rejected integral prefix; the E comm revision replaces per-record
+async calls with a synchronous merge. These are separate implementations,
+not retries of an unchanged failed candidate.
+
+SHA-1 reusable schedules, direct block input and fixed round groups showed
+source-file gains but could not qualify every changed checksum artifact.
+Restore the original checksum implementation; retain the independent block
+boundary tests and both failed panels. cp 256 KiB and 128 KiB buffers showed
+source-file gains but did not qualify. Its read-owned-buffer variant changed
+25 artifacts, including correctness-only ln, so was rejected before timing.
+Restore the original 64 KiB copy. E's checksum controls are not new adoption
+claims. No qualified 3-5% slowdown is accepted in these incremental panels;
+sort's ordinary numeric rows show roughly 1-2% costs, recorded separately from
+the decimal gain. No peak-RSS improvement is inferred from allocation changes.
+
+Remaining limits: tail cannot seek regular-file stdin through the released
+public Reader API; cp retains identity/permission preflight and public copy
+boundaries; find retains explicit metadata queries and traversal ordering.
+Changing these requires a public API or independently validated semantic
+implementation, not host delegation. Buffered inflate follows the six-byte
+input bound documented by
+[zlib 1.3.1 inffast](https://github.com/madler/zlib/blob/v1.3.1/inffast.c);
+seq uses command-owned digit batches, informed by
+[GNU seq](https://github.com/coreutils/coreutils/blob/master/src/seq.c).
+Neither imports an external implementation into the pure MoonBit product.
+
+The C snapshot temporarily omitted two existing comm tests during editing;
+both original tests were restored unchanged and all 17 selected tests passed
+before further work. Preserve that snapshot and correction evidence. Final
+acceptance must use the restored corpus, all changed-artifact workloads and
+the cumulative comparison against B0. Fresh native ratios are separate from
+old/new Wasm gains; neither establishes general upstream parity.
+
+Final retained candidate F qualifies all **38/38** cumulative workloads across
+all **12 changed command artifacts**, with all 80 artifact identities checked.
+Both windows satisfy stability, drift and the 5% slowdown limit. New/old time:
+large quiet cmp 0.0132-0.0292, million-integer seq 0.0471-0.0474, compressed
+inflate 0.0594-0.1070 (stored blocks remain controls), jq 0.4129-0.5511,
+join 0.2346-0.2354, comm 0.4929-0.4942, large-input tail 0.7382-0.7492,
+fractional sort 0.4790-0.4804, and large-source patch 0.1772-0.1826.
+find improvements are only 0.9644-0.9924. The largest qualified timing cost is
+1.9% on ordinary numeric sort; no 3-5% cost is accepted. Small patch and
+fragmented tail retain substantially smaller benefits or unchanged time.
+
+Fresh native comparison completes **44/44** workloads, but only **20/44**
+qualify; the other 24 fail stability or inter-window drift. Its overall panel
+is failed and is not repeated unchanged. Stable examples include large equal
+cmp at 4.50-4.57x, fixed-literal gunzip at 3.97-4.22x, member decoding at
+3.39-3.72x, and jq at 2.54-7.65x depending on mode. Unchanged cp source copying
+is 10.45-10.75x; this is a fresh observation, not an adopted copy optimization.
+Do not infer a native ratio by multiplying an earlier ratio by a Wasm gain.
+
+Validation: 1,776 release Wasm tests, 60 Native benchmark-observer tests,
+2,260 CLI checks (2,203 semantic passes), 21 platform skips and zero failures;
+strict checking, formatting, interfaces and architecture pass. The changed cmp
+help expectation and its reviewed quality hash are synchronized; published
+expectations remain unchanged. No public interface changed. Compact evidence,
+including failed D/E panels, all samples and oracle records, is retained at
+`/Users/winter/.codex/visualizations/2026/10/31/01a18ff6-bbc5-7b90-8147-4ac7a03d76e3/performance-deep-20261101/README.md`.
+These generic protection-threshold panels are not a formal 105-pair result,
+the full protection wrapper, cross-platform CI or publication acceptance.
+
 ## Genuine-source performance and local regression evidence (2026-10-31)
 
 Use one schema-3 inventory, `tests/benchmark/real.json`, for every timed

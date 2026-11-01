@@ -5547,7 +5547,7 @@
     {
       "case_id": "release-metadata-cmp-help",
       "source": "tests/cases/cmp.json",
-      "definition_sha256": "280d970671f5076df706e5fe05c41b78e2fe27745740f0e8c58dd7f83ca19748",
+      "definition_sha256": "010fda275583824c5ac074051c1bd1e32ea5f8a4934e4de5ecd57710a5f58288",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

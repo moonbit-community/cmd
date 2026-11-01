@@ -77,3 +77,100 @@ async test "comm retains the merged prefix when a later read fails" {
   assert_true(failed)
   assert_eq(Bytes::from_array(output.bytes), b"\t\tone\ntwo\n")
 }
+
+///|
+test "comm coalesced records preserve arbitrary column and record delimiters" {
+  assert_eq(comm_record(b"\t\t", b"a\x00\xff", b'\n'), b"\t\ta\x00\xff\n")
+  assert_eq(comm_record(b"", b"", b'\x00'), b"\x00")
+  assert_eq(
+    comm_record(@utf8.encode("界"), b"record", b'\x00'),
+    @utf8.encode("界record\u0000"),
+  )
+}
+
+///|
+async test "comm borrowed merge preserves fragmented duplicates and suppression" {
+  for chunk in [1, 2, 3, 7, 65536] {
+    for mask in 0..<8 {
+      let left = @io.MemoryReader(writer => {
+        let bytes = b"a\na\nc\nd"
+        for i = 0; i < bytes.length(); i = i + chunk {
+          writer.write(bytes[i:(i + chunk).min(bytes.length())])
+        }
+      })
+      defer left.close()
+      let right = @io.MemoryReader(writer => {
+        let bytes = b"a\nb\nc\nc\n"
+        for i = 0; i < bytes.length(); i = i + chunk {
+          writer.write(bytes[i:(i + chunk).min(bytes.length())])
+        }
+      })
+      defer right.close()
+      let h1 = (mask & 1) != 0
+      let h2 = (mask & 2) != 0
+      let h3 = (mask & 4) != 0
+      let p2 = if h1 { "" } else { ":" }
+      let p3 = p2 + (if h2 { "" } else { ":" })
+      let expected = (if h3 { "" } else { p3 + "a\n" }) +
+        (if h1 { "" } else { "a\n" }) +
+        (if h2 { "" } else { p2 + "b\n" }) +
+        (if h3 { "" } else { p3 + "c\n" }) +
+        (if h2 { "" } else { p2 + "c\n" }) +
+        (if h1 { "" } else { "d\n" }) +
+        "2:2:2:total\n"
+      let output : CommOutput = { bytes: [], }
+      merge_readers(left, right, h1, h2, h3, 1, b'\n', ":", true, writer=output)
+      assert_eq(Bytes::from_array(output.bytes), @utf8.encode(expected))
+    }
+  }
+}
+
+///|
+priv struct CommFailOutput {
+  bytes : Array[Byte]
+}
+
+///|
+impl @io.Writer for CommFailOutput with fn write_once(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
+  if self.bytes.length() >= 17 {
+    fail("injected partial output failure")
+  }
+  let count = len.min(17 - self.bytes.length())
+  for i in offset..<(offset + count) {
+    self.bytes.push(bytes[i])
+  }
+  count
+}
+
+///|
+async test "comm oversized record output failure does not replay queued bytes" {
+  let left = @io.MemoryReader(writer => writer.write(Bytes::make(70000, b'a')))
+  defer left.close()
+  let right = @io.MemoryReader(_ => ())
+  defer right.close()
+  let output : CommFailOutput = { bytes: [], }
+  let failed = try {
+    merge_readers(
+      left,
+      right,
+      false,
+      false,
+      false,
+      -1,
+      b'\n',
+      "\t",
+      false,
+      writer=output,
+    )
+    false
+  } catch {
+    _ => true
+  }
+  assert_true(failed)
+  assert_eq(Bytes::from_array(output.bytes), Bytes::make(17, b'a'))
+}

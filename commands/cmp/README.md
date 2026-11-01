@@ -15,7 +15,7 @@ Compare files or stdin; omitted FILE2 means stdin. Exit 0 for equal inputs, 1 fo
 | Option | Description |
 | --- | --- |
 | `-b, --print-bytes` | Show differing byte values. |
-| `-s, --silent, --quiet` | Report status only. |
+| `-s, --silent, --quiet` | Report status only; stop at the first difference. |
 | `-l, --verbose` | List every differing byte. |
 | `-n, --bytes=LIMIT` | Compare at most LIMIT bytes. |
 | `-i, --ignore-initial=SKIP[:SKIP2]` | Skip initial bytes independently. |

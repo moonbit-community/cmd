@@ -136,24 +136,16 @@ fn select_bytes(data : Bytes, spec : CountSpec) -> BytesView {
 
 ///|
 fn count_newlines(chunk : Bytes, delimiter~ : Byte = b'\n') -> Int32 {
-  let mut n = 0
-  for b in chunk {
-    if b == delimiter {
-      n += 1
-    }
-  }
-  n
+  @bytesearch.count_byte(chunk[:], delimiter)
 }
 
 ///|
 fn concat_chunks(chunks : Array[Bytes]) -> Bytes {
-  let out : Array[Byte] = []
+  let out = @buffer.Buffer()
   for chunk in chunks {
-    for b in chunk {
-      out.push(b)
-    }
+    out.write_bytes(chunk)
   }
-  Bytes::from_array(out)
+  out.to_bytes()
 }
 
 ///|
@@ -262,13 +254,8 @@ async fn tail_file(
 }
 
 ///|
-async fn read_chunk(r : &@io.Reader, buf : FixedArray[Byte]) -> Bytes? {
-  let n = r.read(buf)
-  if n == 0 {
-    None
-  } else {
-    Some(Bytes::from_array(buf[0:n]))
-  }
+async fn read_chunk(r : &@io.Reader) -> Bytes? {
+  r.read_some(max_len=chunk_size)
 }
 
 ///|
@@ -282,13 +269,12 @@ async fn tail_stream(
   bytes_mode : Bool,
   delimiter~ : Byte = b'\n',
 ) -> Unit {
-  let buf : FixedArray[Byte] = FixedArray::make(chunk_size, 0)
   match spec {
     Last(n) => {
       if n <= 0 {
         // Drain the input like GNU tail, producing no output.
         while true {
-          if read_chunk(r, buf) is None {
+          if read_chunk(r) is None {
             break
           }
         }
@@ -299,7 +285,7 @@ async fn tail_stream(
       let mut total_newlines : Int64 = 0
       let mut total_bytes : Int64 = 0
       for ;; {
-        match read_chunk(r, buf) {
+        match read_chunk(r) {
           Some(chunk) => {
             chunks.push(chunk)
             total_bytes += chunk.length().to_int64()
@@ -337,7 +323,7 @@ async fn tail_stream(
       if bytes_mode {
         let mut to_skip : Int64 = if k > 1 { k - 1 } else { 0 }
         for ;; {
-          match read_chunk(r, buf) {
+          match read_chunk(r) {
             Some(chunk) =>
               if to_skip >= chunk.length().to_int64() {
                 to_skip -= chunk.length().to_int64()
@@ -353,7 +339,7 @@ async fn tail_stream(
       } else {
         let mut remaining : Int64 = if k > 1 { k - 1 } else { 0 }
         for ;; {
-          match read_chunk(r, buf) {
+          match read_chunk(r) {
             Some(chunk) => {
               if remaining == 0 {
                 @stdio.stdout.write(chunk)

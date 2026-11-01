@@ -1689,6 +1689,251 @@
       ],
       "invariant": "Share immutable 256-byte membership packing and lane masks. Fixed-array/view loading, polarity and scalar tails stay with their consumers.",
       "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
+    },
+    {
+      "id": "cmp-quiet-chunks",
+      "owner": "commands/cmp",
+      "commands": [
+        "cmp"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/cmp/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/cmp/compare_wbtest.mbt",
+          "name": "cmp quiet chunks preserve skips limits binary data and unequal EOF"
+        },
+        {
+          "file": "commands/cmp/compare_wbtest.mbt",
+          "name": "cmp quiet mismatch returns before a later read failure"
+        }
+      ],
+      "profiles": [
+        "real-cmp-small-equal",
+        "real-cmp-source-equal",
+        "real-cmp-python-revisions",
+        "real-cmp-sqlite-revisions"
+      ],
+      "invariant": "Quiet comparison checks bounded byte spans and returns at the first mismatch; limits, skips, EOF and nonquiet formatting remain intact.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "seq-integer-batches",
+      "owner": "commands/seq",
+      "commands": [
+        "seq"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/seq/integer.mbt",
+        "commands/seq/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/seq/integer_wbtest.mbt",
+          "name": "seq integer batches preserve signs widths separators endpoints and overflow"
+        },
+        {
+          "file": "commands/seq/integer_wbtest.mbt",
+          "name": "seq bounded integer admission preserves exact decimal and large integer fallback"
+        },
+        {
+          "file": "commands/seq/integer_wbtest.mbt",
+          "name": "seq integer output propagates partial write failure without replay"
+        }
+      ],
+      "profiles": [
+        "real-seq-daily",
+        "real-seq-bulk"
+      ],
+      "invariant": "Only exact Int64 operands and bounded separators enter synchronous decimal batches. Preserve signed endpoints, overflow termination, width, separators and partial-output failures; arbitrary precision and formatting retain their fallback.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "inflate-ready-spans",
+      "owner": "core/gzipops",
+      "commands": [
+        "gzip",
+        "gunzip",
+        "zcat"
+      ],
+      "status": "adopted",
+      "sources": [
+        "core/gzipops/inflate_ready.mbt",
+        "core/gzipops/inflate.mbt"
+      ],
+      "tests": [
+        {
+          "file": "core/gzipops/inflate_ready_wbtest.mbt",
+          "name": "gzip synchronous decoding preserves exact full literal buffers and trailer ownership"
+        },
+        {
+          "file": "core/gzipops/inflate_ready_wbtest.mbt",
+          "name": "gzip synchronous match tail preserves overlap across a full output buffer"
+        }
+      ],
+      "profiles": [
+        "real-gzip-default-compress-source",
+        "real-gunzip-first-dynamic-native-source",
+        "real-gunzip-stored-source",
+        "real-gunzip-fixed-literals-source",
+        "real-gunzip-members-source",
+        "real-zcat-first-dynamic-native-source",
+        "real-zcat-stored-source",
+        "real-zcat-fixed-literals-source",
+        "real-zcat-members-source"
+      ],
+      "invariant": "Decode synchronously only with six buffered input bytes. Preserve trailer ownership, exact full output buffers, overlap and explicit match tails across flushes. Keep stored blocks, CRC, validation and short-input fallback.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "jq-frame-chunks",
+      "owner": "commands/jq",
+      "commands": [
+        "jq"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/jq/input.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/jq/input_wbtest.mbt",
+          "name": "jq chunk scanning preserves every JSON framing boundary"
+        },
+        {
+          "file": "commands/jq/input_wbtest.mbt",
+          "name": "jq completed frame is returned before later input is requested"
+        }
+      ],
+      "profiles": [
+        "real-jq-registry-identity",
+        "real-jq-registry-identifiers",
+        "real-jq-registry-filter",
+        "real-jq-registry-sort",
+        "real-jq-registry-group",
+        "real-jq-registry-sum-references",
+        "real-jq-missing-property"
+      ],
+      "invariant": "Synchronous scanning preserves nesting, escaping, consecutive JSON values, scalar boundaries and completion before later input errors.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "join-record-output",
+      "owner": "commands/join",
+      "commands": [
+        "join"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/join/output.mbt",
+        "commands/join/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/join/output_wbtest.mbt",
+          "name": "join buffered output flushes before the next external read"
+        },
+        {
+          "file": "commands/join/output_wbtest.mbt",
+          "name": "join output retains duplicate products and never replays a failed write"
+        }
+      ],
+      "profiles": [
+        "real-join-airport-route-records"
+      ],
+      "invariant": "Coalesce output records and flush before a physical read, order diagnostics and later errors. Preserve duplicate products and no replay after partial failure.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "comm-borrowed-merge",
+      "owner": "commands/comm",
+      "commands": [
+        "comm"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/comm/merge.mbt",
+        "commands/comm/main.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/comm/output_wbtest.mbt",
+          "name": "comm columns suppression and totals retain record separators"
+        },
+        {
+          "file": "commands/comm/output_wbtest.mbt",
+          "name": "comm retains the merged prefix when a later read fails"
+        },
+        {
+          "file": "commands/comm/output_wbtest.mbt",
+          "name": "comm borrowed merge preserves fragmented duplicates and suppression"
+        },
+        {
+          "file": "commands/comm/output_wbtest.mbt",
+          "name": "comm oversized record output failure does not replay queued bytes"
+        }
+      ],
+      "profiles": [
+        "real-comm-airport-route-idsets"
+      ],
+      "invariant": "Borrow immutable batch records and merge synchronously until I/O. Keep left-before-right advancement, EOF order recheck, unpairable diagnostics, exact columns and totals. Flush before external reads and errors; failed writes consume queued bytes.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "patch-byte-records",
+      "owner": "commands/patch",
+      "commands": [
+        "patch"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/patch/bytes.mbt",
+        "commands/patch/apply.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/patch/bytes_wbtest.mbt",
+          "name": "patch byte domain preserves every unchanged byte and changed binary records"
+        }
+      ],
+      "profiles": [
+        "real-patch-python",
+        "real-patch-sqlite",
+        "real-patch-python-dry-run"
+      ],
+      "invariant": "Keep source records as immutable byte views, converting hunk records once. Preserve every byte, terminators, reverse/fuzz search and unchanged patch parsing/metadata.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
+    },
+    {
+      "id": "sort-fractional-fields",
+      "owner": "commands/sort",
+      "commands": [
+        "sort"
+      ],
+      "status": "adopted",
+      "sources": [
+        "commands/sort/numeric_field.mbt",
+        "commands/sort/compare.mbt"
+      ],
+      "tests": [
+        {
+          "file": "commands/sort/numeric_field_wbtest.mbt",
+          "name": "sort fractional field cache preserves exact conversions and raw marker collisions"
+        }
+      ],
+      "profiles": [
+        "real-sort-source-lexical",
+        "real-sort-airport-numeric",
+        "real-sort-airport-decimal",
+        "real-sort-source-numeric-spill",
+        "real-sort-source-numeric-key-spill",
+        "real-sort-source-spill"
+      ],
+      "invariant": "Cache only explicit numeric fields requiring decimal conversion. Preserve Double bits, raw marker collisions, integer/global-key paths, run framing, retained-byte accounting and spill cleanup.",
+      "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
     }
   ],
   "measurement_suite": "tests/benchmark/real.json",

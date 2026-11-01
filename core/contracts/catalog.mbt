@@ -127,6 +127,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       FileOrStdin,
       LineStream,
       [FileRead],
+      // Silent comparison stops at the first mismatch, before later reads.
       ["bytes", "ignore-initial", "silent", "verbose", "print-bytes"],
       exit_codes=[0, 1, 2],
     ),
