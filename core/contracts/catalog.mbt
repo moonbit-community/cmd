@@ -77,6 +77,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ]),
     contract("printf", Core, NoInput, ByteStream, [], ["help"]),
     contract("sleep", Core, NoInput, LineStream, [], ["help", "version"]),
+    // Numeric order compares exact decimal prefixes, including unique/check/merge.
     contract("sort", Core, FileOrStdin, LineStream, [FileRead, FileWrite], [
       "batch-size", "buffer-size", "check", "check-quiet", "dictionary-order", "field-separator",
       "general-numeric-sort", "human-numeric-sort", "ignore-case", "ignore-leading-blanks",
@@ -205,6 +206,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
       "update-mode", "backup", "backup-control", "suffix",
     ]),
+    // Directory-link operands with trailing separators reject before traversal.
     contract("rm", Extended, OptionalStdin, LineStream, [FileWrite], [
       "dir", "force", "interactive", "preserve-root", "no-preserve-root", "recursive",
       "verbose",

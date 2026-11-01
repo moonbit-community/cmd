@@ -2,7 +2,16 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-10-31
+Updated: 2026-11-01
+
+Audit correction: rm inspects the final operand entry without trailing
+separators before recursion. A symlink in that position rejects with status 1,
+including force mode, preserving both the link and target. Passing the original
+suffixed operand directly to a no-follow kind query allowed host dereferencing.
+Exact CLI regressions cover one/two separators, normal directories and
+unsuffixed links. Concurrent pathname replacement still requires handle-relative
+identity and traversal APIs. A future relaxation must prove referent preservation
+on all supported hosts before changing this rejection policy.
 
 ## Decision
 

@@ -203,6 +203,31 @@ async fn item_prompt(
 
 ///|
 async fn remove_operand(operand : String, options : RmOptions) -> Bool {
+  // A trailing separator makes the host resolve a directory link even for a
+  // no-follow kind query. Inspect the final entry before traversal or prompts.
+  let mut end = operand.length()
+  while end > 0 &&
+        (
+          operand[end - 1] == '/' ||
+          (@async.platform is Windows && operand[end - 1] == '\\')
+        ) {
+    end -= 1
+  }
+  if end > 0 && end < operand.length() {
+    let entry = operand[:end].to_owned()
+    let kind = @fsops.kind_if_exists(entry) catch {
+      error => {
+        report_error(entry, operand, error, false)
+        return false
+      }
+    }
+    if kind is Some(SymLink) {
+      @stdio.stderr.write(
+        "rm: refusing to traverse symbolic link with trailing separator '\{operand}'\n",
+      )
+      return false
+    }
+  }
   let pending : Array[Removal] = [Visit(operand, operand)]
   let mut failed = false
   while pending.pop() is Some(work) {
@@ -344,6 +369,7 @@ async fn main {
       "  -I                      prompt once for recursion or more than three operands\n" +
       "      --interactive[=WHEN] never, once or always (default with option)\n" +
       "  -r, -R, --recursive     remove directory trees without following symlinks\n" +
+      "                          reject symbolic links with trailing separators\n" +
       "  -d, --dir               remove empty directories\n" +
       "  -v, --verbose           print removed paths\n" +
       "      --preserve-root     protect filesystem roots (default)\n" +
@@ -354,7 +380,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("rm 0.2.3\n")
+    @stdio.stdout.write("rm 0.2.4\n")
     return
   }
   let mut preserve_root = true

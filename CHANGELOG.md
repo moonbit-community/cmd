@@ -11,6 +11,21 @@ Their failed, incomplete and platform-limited results keep their original scope.
 
 ## 2026-11-01
 
+Development audit repair; no publication:
+
+- Prepare rm 0.2.4 to reject trailing-separator symlink operands before
+  traversal, preserving their referents even with force mode.
+- Prepare sort 0.2.6 with exact decimal numeric ordering and lossless prepared
+  keys across unique/stable/check and disk-merge paths.
+- Discover benchmark command modules by directory and module manifest, ignoring
+  incidental files such as `.DS_Store` while retaining unknown real modules.
+- Correct removed network helper API claims and use the current Wasm-only
+  product launcher in reproduction instructions.
+- Local validation passes 1,777 release-Wasm tests, 197 Native test-tool tests
+  and 2,270 CLI checks with 21 platform skips and zero failures. Strict checks
+  and the 80-command/125-package architecture inventory pass. These are local
+  correctness results, not new timing or published-version acceptance.
+
 Development pilots for the 13 non-rg commands observed above 10x; no publication.
 
 - Improve quiet comparison, integer sequence output, buffered inflate, JSON

@@ -46,22 +46,8 @@ fn numeric_slice(key : Bytes, exponent : Bool, allow_plus : Bool) -> Bytes? {
 }
 
 ///|
-fn numeric_prefix(key : Bytes, exponent : Bool) -> Double {
-  if !exponent && integral_prefix(key) is Some(value) {
-    return value
-  }
-  match numeric_slice(key, exponent, exponent) {
-    Some(number) =>
-      @string.parse_double(@utf8.decode(number)) catch {
-        _ => 0.0
-      }
-    None => 0.0
-  }
-}
-
-///|
 // Up to fifteen decimal digits remain exact throughout these Double operations.
-// Fractions and longer integers keep the existing conversion and rounding rules.
+// Fractions and longer integers use the exact decimal comparator.
 fn integral_prefix(key : Bytes) -> Double? {
   let mut i = 0
   while i < key.length() && byte_is_blank(key[i]) {
@@ -338,17 +324,11 @@ fn compare_prepared_key(
   let result = match modifiers.mode {
     Lexical => left.lexical_compare(right)
     Numeric =>
-      (if cached_numeric {
-        numeric_field_value(left)
+      if cached_numeric {
+        numeric_field_value(left).compare(numeric_field_value(right))
       } else {
-        numeric_prefix(left, false)
-      }).compare(
-        if cached_numeric {
-          numeric_field_value(right)
-        } else {
-          numeric_prefix(right, false)
-        },
-      )
+        numeric_compare(left, right)
+      }
     GeneralNumeric => general_compare(left, right)
     HumanNumeric => human_compare(left, right)
     Month => month_value(left) - month_value(right)

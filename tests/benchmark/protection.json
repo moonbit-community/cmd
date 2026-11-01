@@ -1523,7 +1523,7 @@
         },
         {
           "file": "commands/sort/sort_wbtest.mbt",
-          "name": "sort integral prefix preserves signed decimal tails and fallback rounding"
+          "name": "sort integral prefix accepts only exactly represented integer prefixes"
         },
         {
           "file": "commands/sort/sort_wbtest.mbt",
@@ -1542,7 +1542,7 @@
         "real-sort-source-numeric-key-spill",
         "real-sort-source-spill"
       ],
-      "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio. Input batches own entries across spills; cached run decoding commits only a complete entry and preserves exact-read fallback, validation and cleanup. Bounded integer prefixes retain fractional and long-number conversion fallback. Plain byte ordering preserves reverse and sequence ties. Coalesced output preserves LF/NUL termination and first unique representatives; a failed write cannot commit a new representative or replay a prefix. Run framing and total merge budgets remain unchanged.",
+      "invariant": "Bound run and merge reservations; the separate spill repair observation is not a passing baseline timing ratio. Input batches own entries across spills; cached run decoding commits only a complete entry and preserves exact-read fallback, validation and cleanup. Bounded integer prefixes fall back to exact decimal comparison for fractions and long numbers. Plain byte ordering preserves reverse and sequence ties. Coalesced output preserves LF/NUL termination and first unique representatives; a failed write cannot commit a new representative or replay a prefix. Run framing and total merge budgets remain unchanged.",
       "measurement_scope": "End-to-end genuine-corpus rows only. Named correctness/private mechanism tests retain their exact invariants; no synthetic route or capacity timing is inferred from ordinary inputs."
     },
     {
@@ -1921,7 +1921,7 @@
       "tests": [
         {
           "file": "commands/sort/numeric_field_wbtest.mbt",
-          "name": "sort fractional field cache preserves exact conversions and raw marker collisions"
+          "name": "sort fractional field cache preserves exact decimal ordering and raw marker collisions"
         }
       ],
       "profiles": [
@@ -1932,7 +1932,7 @@
         "real-sort-source-numeric-key-spill",
         "real-sort-source-spill"
       ],
-      "invariant": "Cache only explicit numeric fields requiring decimal conversion. Preserve Double bits, raw marker collisions, integer/global-key paths, run framing, retained-byte accounting and spill cleanup.",
+      "invariant": "Cache exact canonical decimal digits for explicit numeric fields. Preserve signed ordering, zero equivalence, raw marker collisions, run framing, retained-byte accounting and spill cleanup; never merge distinct numbers through floating-point rounding.",
       "measurement_scope": "Two-window real-source old/new evidence only; no general performance, resource or upstream-parity claim."
     }
   ],

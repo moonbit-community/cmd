@@ -99,7 +99,7 @@ pathname still identifies the original descriptor or inode. Public handle-based
 truncation and identity, plus path-replacement regressions, are the unlock
 condition for that narrower [#10 boundary](https://github.com/moonbit-community/cmd/issues/10);
 ordinary file retry is implemented without waiting for those APIs. Current
-Native/Wasm command and fixed-oracle acceptance remains required.
+Wasm command and fixed-oracle acceptance remains required.
 
 Without a caller-supplied `Accept-Encoding`, requests explicitly use `identity`.
 Caller-supplied values are preserved. The wire adapter does not decode content,
@@ -151,12 +151,12 @@ profile's protocol errors or generic HTTP status policy.
 Command-level output preparation, such as Wget's explicit `-O` initialization,
 can occur before `transfer` and is outside this no-mutation response branch.
 
-These candidate contracts require the current package, CLI, backend-pair and
+These candidate contracts require the current package, Wasm CLI and
 fixed-oracle checks; implementation does not establish published acceptance.
 
-The legacy `fetch` and `fetch_with_options` entry points remain source
-compatible and retain the original 30-second default. New command adapters use
-`transfer_options` directly.
+The legacy `fetch` and `fetch_with_options` entry points were removed in core
+0.9.0. Callers use `transfer` with `transfer_options`; see the
+[core migration table](../README.md#090-api-changes).
 
 `CookieJar` receives parsed cookies separately from the wire adapter's retained
 final Set-Cookie fields. Stores survive redirects and separate transfers;
@@ -218,14 +218,13 @@ override. A raw TCP core regression observes the individual fields and redirect
 origin handling.
 
 ```sh
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release
+MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --deny-warn tests/runner
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite scenarios --case network-auth-cookie --backend native
-./_build/native/release/build/mooxCLI/cmd-tests/runner/runner.exe --suite scenarios --case network-auth-cookie --backend wasm
+MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/debug/build/mooxCLI/cmd-tests/runner/runner.exe --suite scenarios --case network-auth-cookie --backend wasm --report-dir /absolute/fresh-network-report
 ```
 
 Linux CI also registers `--suite oracle --case network-auth-cookie-oracle`,
-which compares both backends with the pinned curl 8.22.0/Wget 1.25.0 container,
+which compares Wasm commands with the pinned curl 8.22.0/Wget 1.25.0 container,
 including jar permissions. Local candidate contracts do not establish that
 gate passed. The former probe is archived with the 2026-09-21 test evidence.
 

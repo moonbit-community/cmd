@@ -26106,6 +26106,125 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sort-exact-integer-unique",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "sort-exact-integer-unique",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sort-exact-integer-stable",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "sort-exact-integer-stable",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sort-exact-field-unique",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "sort-exact-field-unique",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sort-exact-check",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "sort-exact-check",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sort-exact-decimal-reverse",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "sort-exact-decimal-reverse",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sort-exact-zero-equivalence",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "sort-exact-zero-equivalence",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:rm-link-trailing-slash",
+      "command": "rm",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/rm.json",
+      "case_id": "rm-link-trailing-slash",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rm-link-trailing-double-slash",
+      "command": "rm",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/rm.json",
+      "case_id": "rm-link-trailing-double-slash",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rm-directory-trailing-slash",
+      "command": "rm",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rm.json",
+      "case_id": "rm-directory-trailing-slash",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:rm-directory-link-no-slash",
+      "command": "rm",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rm.json",
+      "case_id": "rm-directory-link-no-slash",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ],
   "release_commands": [
@@ -27666,6 +27785,10 @@
       "releasable": true,
       "case_ids": [
         "release-metadata-rm-help",
+        "rm-link-trailing-slash",
+        "rm-link-trailing-double-slash",
+        "rm-directory-trailing-slash",
+        "rm-directory-link-no-slash",
         "compat-filesystem-remove-link",
         "compat-filesystem-rm-current-directory",
         "compat-filesystem-rm-dash",
@@ -27902,6 +28025,12 @@
       "releasable": true,
       "case_ids": [
         "phase3-sort-basic",
+        "sort-exact-integer-unique",
+        "sort-exact-integer-stable",
+        "sort-exact-field-unique",
+        "sort-exact-check",
+        "sort-exact-decimal-reverse",
+        "sort-exact-zero-equivalence",
         "compat-text-line-372",
         "p3-sort-general-numeric",
         "compat-text-line-381",

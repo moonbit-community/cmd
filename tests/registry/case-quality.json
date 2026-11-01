@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2054,
+    "exact-local": 2064,
     "finite-diagnostic": 114,
     "typed-scenario": 16,
     "typed-dynamic-output": 10
@@ -4105,7 +4105,7 @@
     {
       "case_id": "release-metadata-rm-help",
       "source": "tests/cases/rm.json",
-      "definition_sha256": "2e1d0b4587442a8bbe049c4b002494f6f1accde28ff37a30cfd4850f172b003b",
+      "definition_sha256": "3a17405d9466b8bdb35bbce568aa805085f956d3b3c22d47ee5d333a195701b9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4115,7 +4115,7 @@
     {
       "case_id": "release-metadata-rm-version",
       "source": "tests/cases/rm.json",
-      "definition_sha256": "98662689ae2d9373cf86372c454e93ed030389bf400c0f18a4e7052c573704e9",
+      "definition_sha256": "b69297cb1c02c9080317991ad09650bc2d5bca2a525d915fb6e68048de65ee65",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4376,6 +4376,46 @@
       "case_id": "o10-rm-empty-interaction",
       "source": "tests/cases/rm.json",
       "definition_sha256": "d1322d0e01b6a992f5c16363be03b01894318e2eaf8696a87c31602474b06cd1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "rm-link-trailing-slash",
+      "source": "tests/cases/rm.json",
+      "definition_sha256": "69c127039eae33a3db2b35fd3aa4cb327e5b6ac7e12cf314bf357af4a4abed9f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "rm-link-trailing-double-slash",
+      "source": "tests/cases/rm.json",
+      "definition_sha256": "83d1552310807f56096dfa9f14ffa3096ce7f7185681059c6e4caa73e14d3991",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "rm-directory-trailing-slash",
+      "source": "tests/cases/rm.json",
+      "definition_sha256": "7113ab91f96bf5ce307ef9f2ec94d553eb05403c5ffebd24e122216acbf44b7f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "rm-directory-link-no-slash",
+      "source": "tests/cases/rm.json",
+      "definition_sha256": "bc5b3fe11faf6cc379fc913c32acfb5912e00874a125b1fa8dccf707def3739d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13116,7 +13156,7 @@
     {
       "case_id": "release-metadata-sort-help",
       "source": "tests/cases/sort.json",
-      "definition_sha256": "047011a0ae21f5a7e497ffe88217145a90b180d47fd95e7d4c6a20d1393a310a",
+      "definition_sha256": "8466a524484764a068b07e77822c9a00d7c4fa236654cefa880b2770fb7b934c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13126,7 +13166,7 @@
     {
       "case_id": "release-metadata-sort-version",
       "source": "tests/cases/sort.json",
-      "definition_sha256": "615af1923ee1e9ec12ea5111993abec9038f266dc5ba78a1324ce78ae07b7962",
+      "definition_sha256": "742892d50797308c76a47fddc4d623cbadbd6a8a9f39a130db75338bf74330b9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13757,6 +13797,66 @@
       "case_id": "proof-sort-dictionary-order-activation",
       "source": "tests/cases/sort.json",
       "definition_sha256": "e22b77e237bc0c337c1d81efda345d20ed0c48d5cee53489c430bb3bcbec7b9b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "sort-exact-integer-unique",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "0ab0d0ffdb274b133ca1b4117e080369e851e853564152817e4bfd012e09898c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "sort-exact-integer-stable",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "4e9a9cfd74e24cc89305f3fe2e8cda652124cebd7936aed86f50938aa32c18a1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "sort-exact-field-unique",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "98fc3cb81440f05e9a9c6a1d9df433583eb40151e5b9b6240bb70a9c27692b6e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "sort-exact-check",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "825940230bc192316adcd1eba39d4a940e300270c78a75349cd838471201edc3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "sort-exact-decimal-reverse",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "fbab55170832017d6099a57c7ef3e97579d1cad1db0e181cc3cccfb9c8475042",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "sort-exact-zero-equivalence",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "3223055a84ede705871a4c1734a0cdcdaa42afdc61548133ec832e4332c3d3aa",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -23548,6 +23648,18 @@
     "o10-rm-empty-interaction": {
       "kind": "exact"
     },
+    "rm-link-trailing-slash": {
+      "kind": "exact"
+    },
+    "rm-link-trailing-double-slash": {
+      "kind": "exact"
+    },
+    "rm-directory-trailing-slash": {
+      "kind": "exact"
+    },
+    "rm-directory-link-no-slash": {
+      "kind": "exact"
+    },
     "phase5-sh-command-positional": {
       "kind": "exact"
     },
@@ -26424,6 +26536,24 @@
       "kind": "exact"
     },
     "proof-sort-dictionary-order-activation": {
+      "kind": "exact"
+    },
+    "sort-exact-integer-unique": {
+      "kind": "exact"
+    },
+    "sort-exact-integer-stable": {
+      "kind": "exact"
+    },
+    "sort-exact-field-unique": {
+      "kind": "exact"
+    },
+    "sort-exact-check": {
+      "kind": "exact"
+    },
+    "sort-exact-decimal-reverse": {
+      "kind": "exact"
+    },
+    "sort-exact-zero-equivalence": {
       "kind": "exact"
     },
     "phase3-tail-line-count": {

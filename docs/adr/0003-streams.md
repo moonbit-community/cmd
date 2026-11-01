@@ -6,6 +6,17 @@ Updated: 2026-11-01
 
 ## Decision
 
+Audit correction (2026-11-01): sort `-n` must preserve arbitrary decimal-prefix
+precision. The former Double conversion collapsed distinct large integers and
+fractions; previous performance evidence does not establish that semantic
+contract. Global keys use borrowed decimal ranges with an exact small-integer
+fast path. Prepared fields store sign, integer length and canonical digits in
+temporary runs. Cached storage grows with numeric precision and is accounted
+by the existing entry budget. Independent ordering, equality, stable/unique,
+check and forced disk-run regressions govern the repair. Previous timing
+verdicts do not qualify this revision. General-numeric mode remains separate;
+published expectations are frozen.
+
 Dependencies flow from command adaptation to domain implementation to runtime
 mechanisms and algorithms. Keep one cli/core module. Share a mechanism when
 at least two actual consumers need the same contract; catalog validation is a

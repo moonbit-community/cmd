@@ -3,12 +3,16 @@
 Remove files and directory trees for MoonX.
 
 ```sh
-moonx cli/rm@0.2.3 [OPTION]... FILE...
+moonx cli/rm@0.2.4 [OPTION]... FILE...
 ```
 
 ## Supported scope
 
 Remove operands without following symbolic links. Explicit confirmation modes read stdin; recursive removal protects filesystem roots by default.
+
+The unreleased 0.2.4 candidate rejects symbolic-link operands ending in a path
+separator before traversal, including with `-f`. Both the link and its target
+remain unchanged. Ordinary directory operands may still end in a separator.
 
 ## Options
 
@@ -30,8 +34,8 @@ Remove operands without following symbolic links. Explicit confirmation modes re
 ## Examples
 
 ```sh
-moonx cli/rm@0.2.3 temporary.txt
-moonx cli/rm@0.2.3 -i unwanted.txt
+moonx cli/rm@0.2.4 temporary.txt
+moonx cli/rm@0.2.4 -i unwanted.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

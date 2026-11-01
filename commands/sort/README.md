@@ -3,12 +3,16 @@
 Sort and merge records for MoonX.
 
 ```sh
-moonx cli/sort@0.2.5 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]
+moonx cli/sort@0.2.6 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]
 ```
 
 ## Supported scope
 
 Sort files or stdin using C-byte order, selected keys and numeric/month/version/random modes. Supports stable, unique, check and merge modes.
+
+The unreleased 0.2.6 candidate compares `-n` decimal prefixes exactly, including
+large integers and long fractions. Unique, stable, check and disk merge modes
+use the same ordering. `-g` retains floating-point general-number semantics.
 
 ## Options
 
@@ -36,8 +40,8 @@ Sort files or stdin using C-byte order, selected keys and numeric/month/version/
 ## Examples
 
 ```sh
-moonx cli/sort@0.2.5 names.txt
-moonx cli/sort@0.2.5 -t, -k 2 -u data.csv
+moonx cli/sort@0.2.6 names.txt
+moonx cli/sort@0.2.6 -t, -k 2 -u data.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

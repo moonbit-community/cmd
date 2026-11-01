@@ -288,8 +288,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/rm@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: rm [OPTION]... FILE...\n  -f, --force             ignore missing files; never prompt\n  -i                      prompt for each removal using stdin\n  -I                      prompt once for recursion or more than three operands\n      --interactive[=WHEN] never, once or always (default with option)\n  -r, -R, --recursive     remove directory trees without following symlinks\n  -d, --dir               remove empty directories\n  -v, --verbose           print removed paths\n      --preserve-root     protect filesystem roots (default)\n      --no-preserve-root  disable root protection\n      --help              display this help and exit\n      --version           display version and exit\n",
+      "source_version": "workspace cli/rm@0.2.4 metadata contract",
+      "expected_stdout_text": "Usage: rm [OPTION]... FILE...\n  -f, --force             ignore missing files; never prompt\n  -i                      prompt for each removal using stdin\n  -I                      prompt once for recursion or more than three operands\n      --interactive[=WHEN] never, once or always (default with option)\n  -r, -R, --recursive     remove directory trees without following symlinks\n                          reject symbolic links with trailing separators\n  -d, --dir               remove empty directories\n  -v, --verbose           print removed paths\n      --preserve-root     protect filesystem roots (default)\n      --no-preserve-root  disable root protection\n      --help              display this help and exit\n      --version           display version and exit\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-202"
@@ -312,8 +312,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/rm@0.2.3 metadata contract",
-      "expected_stdout_text": "rm 0.2.3\n",
+      "source_version": "workspace cli/rm@0.2.4 metadata contract",
+      "expected_stdout_text": "rm 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -1459,6 +1459,177 @@
       "expected_files": [],
       "coverage": [
         "interactive"
+      ]
+    },
+    {
+      "id": "rm-link-trailing-slash",
+      "command": "rm",
+      "args": [
+        "-rf",
+        "link/"
+      ],
+      "files": [
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "safe\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: refusing to traverse symbolic link with trailing separator 'link/'\n",
+      "expected_files": [
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "safe\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ]
+    },
+    {
+      "id": "rm-link-trailing-double-slash",
+      "command": "rm",
+      "args": [
+        "-rf",
+        "link//"
+      ],
+      "files": [
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "safe\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rm: refusing to traverse symbolic link with trailing separator 'link//'\n",
+      "expected_files": [
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "safe\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ]
+    },
+    {
+      "id": "rm-directory-trailing-slash",
+      "command": "rm",
+      "args": [
+        "-r",
+        "target/"
+      ],
+      "files": [
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "safe\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "target",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "rm-directory-link-no-slash",
+      "command": "rm",
+      "args": [
+        "-r",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "safe\n"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "target/kept",
+          "content_text": "safe\n"
+        },
+        {
+          "path": "link",
+          "exists": false
+        }
       ]
     }
   ]

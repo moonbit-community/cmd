@@ -61,27 +61,23 @@ test "sort lexical plan matches general ordering for ties reverse and raw bytes"
 }
 
 ///|
-test "sort integral prefix preserves signed decimal tails and fallback rounding" {
+test "sort integral prefix accepts only exactly represented integer prefixes" {
   for
     (key, expected) in [
       (b"  -00123suffix", -123.0),
       (b"1e3", 1.0),
       (b"+7", 0.0),
       (b"--8", 0.0),
-      (b".5", 0.5),
-      (b"-0.125suffix", -0.125),
       (b"999999999999999tail", 999999999999999.0),
-      (b"9007199254740993", 9007199254740992.0),
-      (b"-9007199254740993", -9007199254740992.0),
-      (b"2.", 2.0),
       (b"-", 0.0),
       (b" \xff", 0.0),
     ] {
-    assert_eq(numeric_prefix(key, false), expected)
+    assert_eq(integral_prefix(key), Some(expected))
   }
   assert_true(integral_prefix(b"0.5") is None)
   assert_true(integral_prefix(b"1000000000000000") is None)
-  assert_eq(numeric_prefix(b"1e3", true), 1000.0)
+  assert_true(integral_prefix(b"9007199254740993") is None)
+  assert_true(integral_prefix(b"-9007199254740993") is None)
 }
 
 ///|

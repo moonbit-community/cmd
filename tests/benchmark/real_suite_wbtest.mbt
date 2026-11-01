@@ -165,8 +165,33 @@ async test "real timing command cannot be relabeled correctness-only to discard 
 
 ///|
 async test "all command modules have an explicit performance disposition" {
-  let commands = @fs.readdir(real_registry_path("commands"))
+  let commands = command_modules(real_registry_path("commands"))
   assert_eq(Set(commands), real_command_scope())
+}
+
+///|
+async fn command_modules(root : String) -> Array[String] {
+  let modules : Array[String] = []
+  for name in @fs.readdir(root) {
+    let path = root + "/" + name
+    if @fs.kind(path, follow_symlink=false) == Directory &&
+      @fs.exists(path + "/moon.mod") {
+      modules.push(name)
+    }
+  }
+  modules
+}
+
+///|
+async test "command inventory ignores incidental entries but retains unregistered modules" {
+  let root = @fs.tmpdir(prefix="cmd-module-inventory-")
+  defer @fs.rmdir(root, recursive=true)
+  @fs.write_file(root + "/.DS_Store", "incidental")
+  @fs.mkdir(root + "/notes")
+  @fs.mkdir(root + "/new-command")
+  @fs.write_file(root + "/new-command/moon.mod", "name = \"cli/new-command\"\n")
+  assert_eq(command_modules(root), ["new-command"])
+  assert_false(Set(command_modules(root)) == real_command_scope())
 }
 
 ///|

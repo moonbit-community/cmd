@@ -1,4 +1,5 @@
 import {
+  "moonbitlang/core/buffer",
   "cli/core/tempio",
   "cli/core/cli",
   "cli/core/stream",

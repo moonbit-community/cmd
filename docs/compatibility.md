@@ -3,6 +3,13 @@
 Date: 2026-09-05
 Updated: 2026-11-01
 
+The unreleased audit candidates are rm 0.2.4 and sort 0.2.6. Rm rejects a
+symbolic-link operand with trailing separators before traversal, even with
+force; this preserves the link and referent. Sort numeric mode compares decimal
+prefixes exactly in ordinary, stable, unique, check and external-merge paths.
+General-numeric mode retains floating-point semantics. Published coordinates
+and frozen expectations remain unchanged.
+
 The 2026-10-30 release published `cli/core@0.9.0` and 43 command packages:
 42 updates and the first `cli/rg@0.1.0` release. Another 36 command coordinates
 remain unchanged, giving 79 published commands; `timeout` remains local-only.

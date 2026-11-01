@@ -610,8 +610,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sort@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\n",
+      "source_version": "workspace cli/sort@0.2.6 metadata contract",
+      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\n-n compares decimal prefixes exactly; -g uses general floating-point order.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\n",
       "expected_stderr_text": ""
     },
     {
@@ -629,8 +629,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sort@0.2.5 metadata contract",
-      "expected_stdout_text": "sort 0.2.5\n",
+      "source_version": "workspace cli/sort@0.2.6 metadata contract",
+      "expected_stdout_text": "sort 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -2952,6 +2952,103 @@
         "stable"
       ],
       "source_version": "Independent definition: ignored punctuation makes a~ and a equal; stable preserves their input order. Existing -bdf fixture does not discriminate -d."
+    },
+    {
+      "id": "sort-exact-integer-unique",
+      "command": "sort",
+      "args": [
+        "-nu"
+      ],
+      "stdin_text": "9007199254740993\n9007199254740992\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "9007199254740992\n9007199254740993\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-exact-integer-stable",
+      "command": "sort",
+      "args": [
+        "-ns"
+      ],
+      "stdin_text": "9007199254740993\n9007199254740992\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "9007199254740992\n9007199254740993\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-exact-field-unique",
+      "command": "sort",
+      "args": [
+        "-k1,1n",
+        "-u"
+      ],
+      "stdin_text": "9007199254740993\n9007199254740992\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "9007199254740992\n9007199254740993\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-exact-check",
+      "command": "sort",
+      "args": [
+        "-nCs"
+      ],
+      "stdin_text": "9007199254740993\n9007199254740992\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-exact-decimal-reverse",
+      "command": "sort",
+      "args": [
+        "-nru"
+      ],
+      "stdin_text": "-1.000000000000000002\n-1.000000000000000001\n1.000000000000000001\n1.000000000000000002\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "1.000000000000000002\n1.000000000000000001\n-1.000000000000000001\n-1.000000000000000002\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-exact-zero-equivalence",
+      "command": "sort",
+      "args": [
+        "-nu"
+      ],
+      "stdin_text": "-0.000\n000\n.000\n1.0\n01.0000\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "-0.000\n1.0\n",
+      "expected_stderr_text": ""
     }
   ]
 }
