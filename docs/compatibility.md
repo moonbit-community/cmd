@@ -3,25 +3,27 @@
 Date: 2026-09-05
 Updated: 2026-11-01
 
-The publication candidate selects core 0.9.1 and 26 changed command versions,
+The 2026-11-01 release publishes core 0.9.1 and 26 changed command versions,
 including direct implementation changes and gzip/jq shared-runtime consumers.
 These commands select core 0.9.1; the other 53 published coordinates retain
 their dependencies. Exact versions are in
-[candidate.json](../tests/release_runner/current/candidate.json). Publication
-and exact-version acceptance remain pending; latest.json still describes the
-previous accepted release.
+[latest.json](../tests/release_runner/current/latest.json), with independent
+expectations in latest-cases.json. All 27 uploads/builds and all 79 coordinates
+passed local MoonX and [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751),
+including pinned Linux comparison. Counts and scope are summarized in
+[CHANGELOG.md](../CHANGELOG.md#2026-11-01); full performance acceptance remains open.
 
-The unreleased base32 0.1.5 candidate streams encoding through bounded reads,
+Base32 0.1.5 streams encoding through bounded reads,
 retaining only an unfinished quantum and wrap column between writes. Earlier
 output survives later input errors; decoding retains whole-input storage.
-The rg 0.1.1 candidate admits eligible long text records to the budgeted count
+Rg 0.1.1 admits eligible long text records to the budgeted count
 plan independently of prefix matches or record position, and releases exceptional
 search buffers on reader exit. Unsupported matcher/configuration routes retain
 their explicit fallbacks. The preceding 2026-11-01 macOS Wasm resource failures
 and subsequent repair evidence retain their dated scope in
-[ADR-0003](adr/0003-streams.md); buffer release is not an immediate RSS guarantee.
+[performance guide](performance/README.md); buffer release is not an immediate RSS guarantee.
 
-The unreleased audit candidates include core 0.9.1, cp 0.2.4, find 0.2.5,
+Published audit repairs include core 0.9.1, cp 0.2.4, find 0.2.5,
 mv 0.2.6, rm 0.2.4, sort 0.2.6, tail 0.2.4 and xargs 0.2.4. Xargs dispatches
 complete batches before EOF and replenishes individual parallel slots; later
 input errors can follow completed child effects. Ordinary child exits 126/127
@@ -36,8 +38,9 @@ Rm rejects a
 symbolic-link operand with trailing separators before traversal, even with
 force; this preserves the link and referent. Sort numeric mode compares decimal
 prefixes exactly in ordinary, stable, unique, check and external-merge paths.
-General-numeric mode retains floating-point semantics. Published coordinates
-and frozen expectations remain unchanged.
+General-numeric mode retains floating-point semantics. Historical releases
+retain their original expectations in Git; the current snapshot reflects the
+newly accepted coordinates.
 
 The 2026-10-30 release published `cli/core@0.9.0` and 43 command packages:
 42 updates and the first `cli/rg@0.1.0` release. Another 36 command coordinates

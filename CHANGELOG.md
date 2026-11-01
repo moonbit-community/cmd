@@ -14,12 +14,17 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-01
 
-Development; no publication.
+Development and publication.
 
-- Prepare core 0.9.1 and 26 changed command versions for publication; retain
-  the other 53 published coordinates and keep timeout local-only. Registry
-  availability, synchronized metadata and core dependency selection precede
-  source CI, uploads and exact-version acceptance.
+- Publish core 0.9.1 and 26 changed command versions from `c5c016c` after
+  [three-platform source CI](https://github.com/moonbit-community/cmd/actions/runs/41294367461).
+  Verify all 27 uploads and registry builds; retain 53 command coordinates and
+  keep timeout local-only. Updated commands select core 0.9.1.
+- Exact-version MoonX acceptance covers all 79 published commands. Local macOS
+  passes 2,338 checks with 21 skips; [published CI](https://github.com/moonbit-community/cmd/actions/runs/41295557751)
+  passes Linux 2,345/18, macOS 2,338/21 and Windows 2,183/176 (passes/skips),
+  all with zero failures. Linux includes 1,553 pinned differential results.
+  Promote the independent latest snapshot; these are scoped correctness results.
 
 - Improve byte encoding, numbering, comparison, sequence output, inflate, JSON
   framing, merge consumers, tail, patch, sort and find while retaining their

@@ -196,23 +196,18 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-10-30 release: core is 0.9.0.
-  Published 43 command packages: 42 updates and the first cli/rg@0.1.0 release.
-  Thirty-six command coordinates remain unchanged, giving 79 published commands
-  among 80 local modules. The 43 new command coordinates select core 0.9.0;
-  32 retained commands select core 0.8.2; echo/false/sleep/true remain independent.
+- Current registry baseline after the 2026-11-01 release: core is 0.9.1.
+  Published 26 changed command versions; retained the other 53 coordinates, giving
+  79 published commands among 80 local modules. Core dependencies are 26 commands
+  on 0.9.1, 26 on 0.9.0 and 23 on 0.8.2; echo/false/sleep/true remain independent.
   timeout remains unpublished and local-only. Exact coordinates and independent
   expectations are in tests/release_runner/current/latest.json and latest-cases.json.
-  Source commit 4ca0e4d passed all three required development checks in
-  [CI run 40984331217](https://github.com/moonbit-community/cmd/actions/runs/40984331217).
-  All 44 uploads and registry builds were verified. Local exact-version MoonX
-  acceptance passed 2,180 checks (2,048 semantic contract results, 79 startup
-  availability checks and 53 boundary results), with 19 platform skips and zero
-  failures across all 79 coordinates. Published acceptance run 40986324873 passed
-  Linux (2,369 checks, 16 skips, including 1,531 pinned differential results),
-  macOS (2,180 checks, 19 skips) and Windows (2,049 checks, 150 skips), all with
-  zero failures. See CHANGELOG.md under 2026-10-30. This does not establish full
-  upstream parity or formal performance acceptance.
+  Source commit c5c016c passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/41294367461).
+  All 27 uploads/builds were verified. Local exact-version MoonX and
+  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751)
+  passed all 79 coordinates with zero failures, including pinned Linux comparison.
+  Counts and exclusions are in CHANGELOG.md under 2026-11-01. This does not
+  establish full upstream parity or formal performance acceptance.
   Current latest/candidate snapshots remain independent. Retired published and
   historical archives are preserved in Git at 234f960, rather than duplicated
   in the active checkout. Prior acceptance results retain their dated scope
