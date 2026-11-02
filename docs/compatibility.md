@@ -7,7 +7,7 @@ The 2026-11-01 release publishes core 0.9.1 and 26 changed command versions,
 including direct implementation changes and gzip/jq shared-runtime consumers.
 These commands select core 0.9.1; the other 53 published coordinates retain
 their dependencies. Exact versions are in
-[latest.json](../tests/release_runner/current/latest.json), with independent
+[latest.json](../tests/release/latest.json), with independent
 expectations in latest-cases.json. All 27 uploads/builds and all 79 coordinates
 passed local MoonX and [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751),
 including pinned Linux comparison. Counts and scope are summarized in
@@ -47,7 +47,7 @@ The 2026-10-30 release published `cli/core@0.9.0` and 43 command packages:
 remain unchanged, giving 79 published commands; `timeout` remains local-only.
 All 44 uploads and registry builds were verified. Local exact-version MoonX
 acceptance passed 2,180 checks with 19 skips and zero failures across all 79
-coordinates. [latest.json](../tests/release_runner/current/latest.json) and its
+coordinates. [latest.json](../tests/release/latest.json) and its
 independent expected cases select the exact published inventory. The
 [release summary](../CHANGELOG.md#2026-10-30) records source CI and three-platform
 published acceptance.
@@ -434,7 +434,7 @@ remain unchanged by async 0.22.5.
 
 The current [development workflow](../.github/workflows/check.yml) runs
 release Wasm commands and package tests on Linux, macOS and Windows. Native
-is used for test tools. The shared [runner](../tests/runner/README.md) builds
+is used for test tools. The shared [runner](../tests/harness/driver/README.md) builds
 no command during a case; it captures bytes, status, filesystem effects and
 process observations from prebuilt artifacts. Host authorization is tested
 separately from command semantics. Missing infrastructure, empty selections,
@@ -450,9 +450,7 @@ captures do not establish this property. All 80 workspace commands are selected.
 From the repository root:
 
 ```text
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --deny-warn tests/runner
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/debug/build/mooxCLI/cmd-tests/runner/runner.exe --suite functional --report-dir test-reports/local-functional
+MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-functional moon run tests/run.mbtx -- functional
 ```
 
 Use a fresh report directory. `contract`, `metadata`, `scenarios`, `policy`,
@@ -462,9 +460,9 @@ verified immutable oracle profile. A focused run is not full acceptance.
 
 ## Published-version verification
 
-[latest.json](../tests/release_runner/current/latest.json) selects 79 exact
+[latest.json](../tests/release/latest.json) selects 79 exact
 published coordinates and independent `latest-cases.json` expectations from the
-2026-10-30 release. Candidate generation keeps proposed coordinates and the
+2026-11-01 release. Candidate generation keeps proposed coordinates and the
 active workspace case index separate. Acceptance against a candidate must name
 that manifest explicitly; the runner never rewrites either expectation set.
 Promote coordinates and materialize independent published cases through a
@@ -472,8 +470,8 @@ reviewed documentation change after acceptance passes.
 Retired manifests and source archives retain their older frozen meanings in
 [Git at 234f960](https://github.com/moonbit-community/cmd/tree/234f9602347e43bd6d7c86c454489fc3f672c722/tests/release_runner).
 The current driver does not implement historical replay, receipt verification
-or publication freezing. Benchmark defaults select the same latest published
-inventory and its independent case corpus; historical reports keep their
+or publication freezing. Benchmarks select current workspace contracts through
+`tests/cases/manifest.json`; historical reports keep their
 recorded coordinates.
 
 The manual [release workflow](../.github/workflows/release-acceptance.yml)
@@ -481,11 +479,10 @@ executes exact MoonX coordinates on all three hosts, plus the pinned Linux
 comparison. It never publishes or rewrites manifests. Every product child
 uses the same selected coordinate map; startup and acceptance run serially.
 `functional` is the default, `oracle` selects comparison and Linux `all`
-combines them. Legacy `smoke`/`differential` alias `functional`/`oracle`.
+combines them. Retired suite aliases are rejected.
 
 ```text
-MOON_HOME="$HOME/.moon-accounts/cli" moon build --target native --release --deny-warn tests/runner tests/release_runner
-MOON_HOME="$HOME/.moon-accounts/cli" ./_build/native/release/build/mooxCLI/cmd-tests/release_runner/release_runner.exe --manifest tests/release_runner/current/latest.json --suite functional --report-dir test-reports/published-functional
+MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-published moon run tests/run.mbtx -- published
 ```
 
 The wrapper inserts `--` after the exact MoonX coordinate. Candidate
@@ -504,7 +501,7 @@ The subsequent rg candidate is absent from that published selection.
 HTTP uses shared loopback fixtures. HTTPS fixture and POSIX metadata cases
 retain their explicit platform conditions; a skip is not evidence for the
 excluded platform. Resource observations and formal performance acceptance
-remain separate manual work. See the [release guide](../tests/release_runner/README.md)
+remain separate manual work. See the [release guide](../tests/release/README.md)
 and [changelog](../CHANGELOG.md) for workflow and dated results.
 
 <a id="rg-candidate"></a>
@@ -580,7 +577,7 @@ The 2026-10-27 published command versions were **34 at 0.2.3,
 11 at 0.2.4, 3 at 0.2.1, 2 at 0.2.2, 12 at 0.1.4, 10 at 0.1.3,
 4 at 0.1.5, and one each at 0.2.5 and 0.3.2**; those values retain their historical
 scope. Current exact coordinates and independent expected cases are in
-[the latest manifest](../tests/release_runner/current/latest.json) and
+[the latest manifest](../tests/release/latest.json) and
 `latest-cases.json`. The [2026-10-30 release summary](../CHANGELOG.md#2026-10-30)
 records local and three-platform exact-version acceptance results.
 Previous frozen baselines and earlier manifests are
@@ -743,7 +740,7 @@ facets retain explicit platform companion exclusions. Two independent reviewers
 verify the actual receipt identities and all twelve negative-pipeline rejections.
 This does not broaden the dated published acceptance above.
 
-The [remaining work index](../tests/registry/coverage-gaps.md) identifies 180
+The [remaining work index](../tests/coverage/generated/gaps.md) identifies 180
 catalog labels needing new activated fixtures or observers, 33 needing stronger
 assertions on existing fixtures, and one supplemental `yes` stream-lifecycle
 feature. Each row states existing evidence and concrete work; these are label

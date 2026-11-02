@@ -39,5 +39,5 @@ only upstream rules justify command-local environment changes.
 
 Implementation: [catalog](../../core/contracts/catalog.mbt),
 [process context](../../core/process/process.mbt),
-[policy scenarios](../../tests/runner/policy.mbt). Delivery gates are defined
+[policy scenarios](../../tests/scenarios/policy_suite.mbt). Delivery gates are defined
 once in [ADR-0001](0001-evidence.md).

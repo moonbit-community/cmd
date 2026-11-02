@@ -92,6 +92,18 @@ module and version before any release operation.
 
 - Serialize workspace check/test/build/info/fmt commands: they share the build
   directory. Agent-authored automation must use pure MoonBit `.mbtx` files.
+- Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- COMMAND`
+  for test orchestration and CI. `check` includes all standalone scripts;
+  `format --check` checks them explicitly. Entry arguments resolve from the
+  repository root, and execution uses a fresh absolute `CMD_TEST_REPORT_ROOT`.
+  Current cases and identity bindings belong to `tests/cases`, reusable
+  infrastructure to `tests/harness`, and specialized assertions to
+  `tests/scenarios`. Do not add retired-path wrappers or historical modes.
+- Maintain manual finite coverage in `tests/coverage/review`; use `index update`
+  then `index check` for derived quality, coverage, gaps and candidate files.
+  Generated definitions are not execution evidence. Keep actual receipts in
+  fresh report directories and never backfill old reports. Published coordinates
+  and expectations in `tests/release/latest*.json` remain independent inputs.
 
 - Shared high-performance changes follow `tests/benchmark/PROTECTION.md` and
   the boundary/workload registry in `tests/benchmark/protection.json`. New
@@ -110,7 +122,7 @@ module and version before any release operation.
 
 - Internal architecture changes follow command adaptation -> domain
   implementation -> runtime mechanisms and algorithms. Run
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/architecture.mbtx -- /absolute/new-inventory.json`
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- architecture /absolute/new-inventory.json`
   from the repository root after updating interfaces. Keep module dispositions
   in ADR-0003, not another report hierarchy. New shared mechanisms need two
   actual consumers; catalog/contract metadata has validation consumers rather
@@ -201,7 +213,7 @@ module and version before any release operation.
   79 published commands among 80 local modules. Core dependencies are 26 commands
   on 0.9.1, 26 on 0.9.0 and 23 on 0.8.2; echo/false/sleep/true remain independent.
   timeout remains unpublished and local-only. Exact coordinates and independent
-  expectations are in tests/release_runner/current/latest.json and latest-cases.json.
+  expectations are in tests/release/latest.json and latest-cases.json.
   Source commit c5c016c passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/41294367461).
   All 27 uploads/builds were verified. Local exact-version MoonX and
   [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751)

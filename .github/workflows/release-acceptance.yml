@@ -34,7 +34,7 @@ jobs:
       LC_ALL: C
       TZ: UTC
       DOCKER_BUILD_RECORD_RETENTION_DAYS: 30
-      CMD_RELEASE_MANIFEST: tests/release_runner/current/${{ inputs.manifest }}.json
+      CMD_RELEASE_MANIFEST: tests/release/${{ inputs.manifest }}.json
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,8 +53,6 @@ jobs:
       - name: Linux listener observer
         if: runner.os == 'Linux'
         run: command -v lsof || (sudo apt-get update && sudo apt-get install --yes lsof)
-      - name: Build acceptance tools
-        run: moon build --target native --release --deny-warn tests/runner tests/release_runner
       - uses: docker/setup-buildx-action@v3
         if: runner.os == 'Linux'
         with:
@@ -67,16 +65,16 @@ jobs:
         if: runner.os == 'Linux'
         uses: docker/build-push-action@v6
         with:
-          context: tests/runner/image
+          context: tests/fixtures/oracle
           load: true
           tags: mooncmd-oracle:phase0
           cache-from: type=gha,scope=mooncmd-oracle
           cache-to: ${{ github.ref == 'refs/heads/main' && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
       - name: Record pinned oracle
         if: runner.os == 'Linux'
-        run: moon run tests/oracle.mbtx -- --image '${{ steps.oracle.outputs.imageid }}'
+        run: moon run tests/run.mbtx -- oracle --image '${{ steps.oracle.outputs.imageid }}'
       - name: Exact-version functional acceptance
-        run: moon run tests/ci.mbtx -- published 2>&1 | tee test-reports/published.log
+        run: moon run tests/run.mbtx -- published 2>&1 | tee test-reports/published.log
       - name: Preserve acceptance results
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4

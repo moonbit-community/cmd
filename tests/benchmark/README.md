@@ -66,9 +66,9 @@ download mode fetches registered upstream sources. These examples are
 alternatives:
 
 ```text
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/prepare_real_corpora.mbtx -- \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- corpus \
   /absolute/new-corpus --from /absolute/existing-corpus
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/prepare_real_corpora.mbtx -- \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- corpus \
   /absolute/another-new-corpus --download
 ```
 
@@ -97,7 +97,7 @@ correctness is exercised through frozen release Wasm.
 
 ```text
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- panels \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- benchmark panels \
   --wasm-root /absolute/current-artifacts \
   --baseline-wasm-root /absolute/frozen-baseline-artifacts \
   --moonrun /absolute/moonrun \
@@ -215,14 +215,14 @@ a formal 105-pair result, and a formal result does not replace protection's
 old/new windows.
 
 ```text
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- inventory \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- benchmark inventory \
   --manifest tests/benchmark/real.json
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- run \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- benchmark run \
   --wasm-root /absolute/current-artifacts --moonrun /absolute/moonrun \
   --oracle-bin /absolute/native-oracle/bin \
   --corpus-root /absolute/prepared-corpus \
   --report-dir /absolute/new-formal-report
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/benchmark/run.mbtx -- report \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- benchmark report \
   --report-dir /absolute/retained-report
 ```
 

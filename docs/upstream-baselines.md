@@ -58,17 +58,17 @@ Every downloaded source or official binary is verified before use:
 | ripgrep commit archive | `e2c23831f1057a7e15575a72a64a900b317a86661561a786a36795717d602561` |
 | `rust-1.97.1-x86_64-unknown-linux-gnu.tar.xz` | `88f28fa9af20594179f85d6df67078dfd6fa93e2f6da5e1e9b0ac4997988ca4f` |
 
-The [Dockerfile](../tests/runner/image/Dockerfile) is the build authority; its
+The [Dockerfile](../tests/fixtures/oracle/Dockerfile) is the build authority; its
 17 component stages are assembled in a fixed order. The table above records
 the current pins, not the latest versions available upstream. Apt build/runtime
 dependencies are not individually pinned by this recipe, so its base digest
 and source hashes alone do not identify a finished executable image.
 
-The checked-in [profile template](../tests/runner/image/profile.json) deliberately
+The checked-in [profile template](../tests/fixtures/oracle/profile.json) deliberately
 has no final image digest or inventory. Linux development and manual acceptance
-jobs pass the built content ID to [oracle.mbtx](../tests/oracle.mbtx), which
+jobs pass the built content ID to [oracle.mbtx](../tests/tools/oracle.mbtx), which
 records the actual image, tool versions and source/recipe checksums in a fresh
-run profile. [The verifier](../tests/testkit/oracle.mbt) binds that profile to
+run profile. [The verifier](../tests/harness/oracle.mbt) binds that profile to
 the reviewed recipe. The tag `mooncmd-oracle:phase0` is only a local build name;
 an unsealed template or historical image ID is not current differential evidence.
 
@@ -88,8 +88,8 @@ The oracle runner sets:
 - a fixed umask where the upstream command exposes permission-sensitive output.
 
 Current workspace contracts live in [tests/cases](../tests/cases/) and are
-selected by the [runtime index](../tests/registry/registry.json). Published
-expectations use [latest-cases.json](../tests/release_runner/current/latest-cases.json)
+selected by the [runtime index](../tests/cases/index.json). Published
+expectations use [latest-cases.json](../tests/release/latest-cases.json)
 with the exact coordinates in `latest.json`. Normalizations must be explicit;
 binary streams otherwise compare without decoding or line-ending changes.
 

@@ -1,0 +1,26 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd-tests/harness/driver"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+type CommandRow derive(@debug.Debug, @json.FromJson)
+
+type Manifest derive(@debug.Debug, @json.FromJson)
+
+type MetadataObservation derive(@json.FromJson)
+
+type PublishedCommand derive(@json.FromJson)
+
+type PublishedSelection derive(@json.FromJson)
+
+// Type aliases
+
+// Traits

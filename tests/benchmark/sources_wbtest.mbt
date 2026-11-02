@@ -13,7 +13,7 @@ fn natural_test_workload(source : NaturalSource) -> FunctionalWorkload raise {
 test "natural source identities reject ambiguous inputs" {
   let source : NaturalSource = {
     path: "original.bin",
-    sha256: @testkit.sha256_bytes(b"original"),
+    sha256: @harness.sha256_bytes(b"original"),
   }
   assert_eq(natural_source_errors(source), [])
   for
@@ -40,7 +40,7 @@ async test "benchmark file freezing checks bounded copies and preserves measured
   let frozen = root + "/frozen"
   let bytes = Bytes::makei(131075, i => (i % 251).to_byte())
   @fs.write_file(input, bytes)
-  let wanted = @testkit.sha256_bytes(bytes)
+  let wanted = @harness.sha256_bytes(bytes)
   assert_eq(benchmark_file_sha256(input), wanted)
   assert_eq(freeze_benchmark_file(input, frozen, expected=wanted), wanted)
   assert_eq(@fs.read_file(frozen).binary(), bytes)
@@ -77,7 +77,7 @@ async test "natural workload preparation rejects missing changed truncated and e
   @fs.mkdir(reports + "/corpora")
   let source : NaturalSource = {
     path: "original",
-    sha256: @testkit.sha256_bytes(b"original\x00\xff\n"),
+    sha256: @harness.sha256_bytes(b"original\x00\xff\n"),
   }
   let options = Map([("--corpus-root", corpus)])
   let workload = natural_test_workload(source)
@@ -153,7 +153,7 @@ async test "natural workload preparation rejects missing changed truncated and e
     _ => false
   }
   assert_false(accepted)
-  if @testkit.host_platform() != "windows" {
+  if @harness.host_platform() != "windows" {
     @fs.write_file(root + "/outside", b"original\x00\xff\n")
     @fs.symlink(target=root + "/outside", corpus + "/escaped")
     let escaped = natural_test_workload({ ..source, path: "escaped", })

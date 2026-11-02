@@ -28,7 +28,7 @@ fn functional_candidate(
   guard options.get("--wasm-root") is Some(root) else {
     fail("real-source comparisons require explicit Wasm artifacts")
   }
-  (options["--moonrun"], [@testkit.wasm_path(root, command), "--", ..args])
+  (options["--moonrun"], [@harness.wasm_path(root, command), "--", ..args])
 }
 
 ///|
@@ -37,7 +37,7 @@ fn functional_candidate(
 async fn execute_functional_side(
   side : String,
   workload : FunctionalWorkload,
-  fixture : @testkit.Case,
+  fixture : @harness.Case,
   options : Map[String, String],
   oracle_bin : String,
   environment : Map[String, String],
@@ -64,10 +64,10 @@ async fn execute_functional_side(
   let actual_args = fixture.args.map(arg => {
     arg.replace_all(old="${INPUT}", new=input)
   })
-  let args = @testkit.expand_args(actual_args, root, http_base~)
+  let args = @harness.expand_args(actual_args, root, http_base~)
   let extra = environment.copy()
   for
-    name, value in @testkit.expand_environment(
+    name, value in @harness.expand_environment(
       fixture.environment,
       root,
       http_base~,
@@ -87,7 +87,7 @@ async fn execute_functional_side(
       Some(baseline) =>
         (
           options["--moonrun"],
-          [@testkit.wasm_path(baseline, fixture.command), "--", ..args],
+          [@harness.wasm_path(baseline, fixture.command), "--", ..args],
         )
       None => (oracle_bin + "/" + fixture.command, args)
     }
@@ -199,7 +199,7 @@ async fn execute_functional_side(
     observation.error is None {
     {
       errors.append(
-        @testkit.check_contract(
+        @harness.check_contract(
           fixture,
           {
             status,
@@ -213,7 +213,7 @@ async fn execute_functional_side(
           root,
         ),
       )
-      errors.append(@testkit.check_expected_files(fixture, root))
+      errors.append(@harness.check_expected_files(fixture, root))
     }
     if workload.recipe == Some("gzip") {
       let decoded = directory + "/" + side + ".decoded.bin"
@@ -284,7 +284,7 @@ async fn execute_functional_side(
 ///|
 async fn compare_functional_sides(
   workload : FunctionalWorkload,
-  fixture : @testkit.Case,
+  fixture : @harness.Case,
   candidate : FunctionalSide,
   upstream : FunctionalSide,
 ) -> Array[String] {
@@ -298,7 +298,7 @@ async fn compare_functional_sides(
         @json.parse(@utf8.decode(bounded_capture(candidate.stdout))) ==
         @json.parse(@utf8.decode(bounded_capture(upstream.stdout)))
       Some("record-multiset") =>
-        @testkit.unordered_lines_equal(
+        @harness.unordered_lines_equal(
           bounded_capture(candidate.stdout),
           bounded_capture(upstream.stdout),
         )
@@ -315,7 +315,7 @@ async fn compare_functional_sides(
     compare_functional_effects(
       candidate.root,
       upstream.root,
-      @testkit.contract_observations(fixture),
+      @harness.contract_observations(fixture),
     ),
   )
   errors
@@ -326,7 +326,7 @@ async fn compare_functional_sides(
 ///|
 async fn functional_pair(
   workload : FunctionalWorkload,
-  fixture : @testkit.Case,
+  fixture : @harness.Case,
   options : Map[String, String],
   environment : Map[String, String],
   directory : String,
@@ -401,7 +401,7 @@ async fn functional_pair(
 ///|
 async fn run_functional_row(
   workload : FunctionalWorkload,
-  fixture : @testkit.Case,
+  fixture : @harness.Case,
   options : Map[String, String],
   environment : Map[String, String],
   output : String,
@@ -705,7 +705,7 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
     )
   }
   let launcher = options["--moonrun"]
-  let environment = @testkit.controlled_environment(Map([]))
+  let environment = @harness.controlled_environment(Map([]))
   guard @env.get_env_var("MOON_HOME") is Some(account) && account != "" else {
     fail("MOON_HOME is required")
   }
@@ -726,7 +726,7 @@ async fn run_functional(options : Map[String, String], sample~ : Bool) -> Bool {
       "oracle_bin": oracle,
     },
     "environment": ToJson::to_json(environment),
-    "platform": Json(@testkit.host_platform()),
+    "platform": Json(@harness.host_platform()),
     "candidate_role": Json("direct-wasm"),
     "wasm_root": ToJson::to_json(options.get("--wasm-root")),
     "observations": ToJson::to_json(probes),

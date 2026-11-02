@@ -1,0 +1,328 @@
+{
+  "schema": 2,
+  "commands": [
+    {
+      "name": "base32"
+    },
+    {
+      "name": "base64"
+    },
+    {
+      "name": "cksum"
+    },
+    {
+      "name": "basename"
+    },
+    {
+      "name": "cat"
+    },
+    {
+      "name": "chmod"
+    },
+    {
+      "name": "cmp"
+    },
+    {
+      "name": "comm"
+    },
+    {
+      "name": "cp"
+    },
+    {
+      "name": "curl"
+    },
+    {
+      "name": "cut"
+    },
+    {
+      "name": "dirname"
+    },
+    {
+      "name": "echo"
+    },
+    {
+      "name": "expand"
+    },
+    {
+      "name": "env"
+    },
+    {
+      "name": "false"
+    },
+    {
+      "name": "find"
+    },
+    {
+      "name": "grep"
+    },
+    {
+      "name": "head"
+    },
+    {
+      "name": "join"
+    },
+    {
+      "name": "jq"
+    },
+    {
+      "name": "jqlog"
+    },
+    {
+      "name": "ln"
+    },
+    {
+      "name": "ls"
+    },
+    {
+      "name": "make"
+    },
+    {
+      "name": "mkdir"
+    },
+    {
+      "name": "mktemp"
+    },
+    {
+      "name": "mv"
+    },
+    {
+      "name": "nl"
+    },
+    {
+      "name": "paste"
+    },
+    {
+      "name": "printenv"
+    },
+    {
+      "name": "printf"
+    },
+    {
+      "name": "pwd"
+    },
+    {
+      "name": "realpath"
+    },
+    {
+      "name": "rm"
+    },
+    {
+      "name": "rev"
+    },
+    {
+      "name": "rmdir"
+    },
+    {
+      "name": "seq"
+    },
+    {
+      "name": "sh"
+    },
+    {
+      "name": "sha256sum"
+    },
+    {
+      "name": "sleep"
+    },
+    {
+      "name": "sort"
+    },
+    {
+      "name": "tail"
+    },
+    {
+      "name": "tac"
+    },
+    {
+      "name": "tee"
+    },
+    {
+      "name": "test"
+    },
+    {
+      "name": "timeout"
+    },
+    {
+      "name": "touch"
+    },
+    {
+      "name": "tr"
+    },
+    {
+      "name": "true"
+    },
+    {
+      "name": "tree"
+    },
+    {
+      "name": "uniq"
+    },
+    {
+      "name": "unexpand"
+    },
+    {
+      "name": "unlink"
+    },
+    {
+      "name": "wc"
+    },
+    {
+      "name": "wget"
+    },
+    {
+      "name": "yes"
+    },
+    {
+      "name": "xargs"
+    },
+    {
+      "name": "xxd"
+    },
+    {
+      "name": "fold"
+    },
+    {
+      "name": "od"
+    },
+    {
+      "name": "hexdump"
+    },
+    {
+      "name": "md5sum"
+    },
+    {
+      "name": "sha1sum"
+    },
+    {
+      "name": "sha512sum"
+    },
+    {
+      "name": "sed"
+    },
+    {
+      "name": "diff"
+    },
+    {
+      "name": "patch"
+    },
+    {
+      "name": "split"
+    },
+    {
+      "name": "csplit"
+    },
+    {
+      "name": "expr"
+    },
+    {
+      "name": "fmt"
+    },
+    {
+      "name": "gzip"
+    },
+    {
+      "name": "gunzip"
+    },
+    {
+      "name": "zcat"
+    },
+    {
+      "name": "strings"
+    },
+    {
+      "name": "column"
+    },
+    {
+      "name": "which"
+    },
+    {
+      "name": "date"
+    },
+    {
+      "name": "rg"
+    }
+  ],
+  "cases": [],
+  "case_files": [
+    "base32.json",
+    "cksum.json",
+    "expand.json",
+    "cp.json",
+    "jq.json",
+    "ln.json",
+    "ls.json",
+    "mv.json",
+    "nl.json",
+    "rm.json",
+    "sh.json",
+    "tr.json",
+    "wc.json",
+    "cat.json",
+    "cmp.json",
+    "cut.json",
+    "env.json",
+    "pwd.json",
+    "seq.json",
+    "tee.json",
+    "xxd.json",
+    "comm.json",
+    "curl.json",
+    "echo.json",
+    "find.json",
+    "grep.json",
+    "head.json",
+    "join.json",
+    "make.json",
+    "sort.json",
+    "tail.json",
+    "test.json",
+    "true.json",
+    "uniq.json",
+    "wget.json",
+    "chmod.json",
+    "false.json",
+    "jqlog.json",
+    "mkdir.json",
+    "paste.json",
+    "rmdir.json",
+    "sleep.json",
+    "touch.json",
+    "xargs.json",
+    "base64.json",
+    "printf.json",
+    "dirname.json",
+    "timeout.json",
+    "basename.json",
+    "printenv.json",
+    "sha256sum.json",
+    "mktemp.json",
+    "realpath.json",
+    "rev.json",
+    "tac.json",
+    "tree.json",
+    "unexpand.json",
+    "unlink.json",
+    "yes.json",
+    "fold.json",
+    "od.json",
+    "hexdump.json",
+    "md5sum.json",
+    "sha1sum.json",
+    "sha512sum.json",
+    "sed.json",
+    "diff.json",
+    "patch.json",
+    "split.json",
+    "csplit.json",
+    "expr.json",
+    "fmt.json",
+    "gzip.json",
+    "gunzip.json",
+    "zcat.json",
+    "strings.json",
+    "column.json",
+    "which.json",
+    "date.json",
+    "rg.json"
+  ]
+}

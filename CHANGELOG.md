@@ -4,7 +4,7 @@ Dated delivery summaries. Development changes do not update published packages
 until a separate release through `moon publish`.
 [ADRs](docs/adr/README.md) own decisions; the
 [performance guide](docs/performance/README.md) explains current algorithms.
-[Latest published coordinates](tests/release_runner/current/latest.json)
+[Latest published coordinates](tests/release/latest.json)
 remain independent of candidate expectations.
 
 Full historical reports, intermediate failures, measurements and corrections
@@ -15,6 +15,15 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 ## 2026-11-01
 
 Development and publication.
+
+- Development: unify test orchestration under `tests/run.mbtx`, separate current
+  cases, release policy, finite coverage review and generated definitions, and
+  move specialized assertions out of the generic harness. Split network,
+  permission and resource tools by responsibility; retire overlay manifests,
+  duplicate current indexes, backend parameters and old entry paths.
+- Development: check every standalone script and generated index in CI. Keep
+  run-bound coverage evidence outside committed definitions and preserve
+  independent published coordinates and expected-case bytes.
 
 - Publish core 0.9.1 and 26 changed command versions from `c5c016c` after
   [three-platform source CI](https://github.com/moonbit-community/cmd/actions/runs/41294367461).

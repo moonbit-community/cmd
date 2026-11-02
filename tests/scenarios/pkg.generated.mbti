@@ -1,0 +1,23 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd-tests/scenarios"
+
+import {
+  "mooxCLI/cmd-tests/harness",
+}
+
+// Values
+pub fn cohort_cases() -> Array[@harness.Case] raise
+
+pub async fn execute_cohort(@harness.Case, String, String, String, String) -> @harness.CaseReport
+
+pub async fn execute_scenario(@harness.Case, String, String, oracle_image? : String, retain_success? : Bool, proof_catalog? : Json, proof_receipts? : Array[Json]) -> @harness.CaseReport
+
+pub async fn run_test_helper(ArrayView[String]) -> Unit
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

@@ -36,6 +36,6 @@ cases, aliases and partial-output assertions on applicable Wasm hosts. Delivery,
 publication and performance remain separate gates under
 [ADR-0001](0001-evidence.md).
 
-Executable evidence: [testkit](../../tests/testkit/),
-[filesystem scenarios](../../tests/runner/scenario_filesystem.mbt),
+Executable evidence: [testkit](../../tests/harness/),
+[filesystem scenarios](../../tests/scenarios/scenario_filesystem.mbt),
 [patch cases](../../tests/cases/patch.json) and package error regressions.

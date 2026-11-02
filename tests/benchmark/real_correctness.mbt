@@ -33,7 +33,7 @@ async fn real_selected_commands(
 
 ///|
 fn real_local_result_errors(
-  required : Array[@testkit.Case],
+  required : Array[@harness.Case],
   results : Array[Json],
   run : Json,
   platform : String,
@@ -80,7 +80,7 @@ fn real_local_result_errors(
           "status",
           "stdout",
           "stderr",
-          ..@testkit.contract_observations(definition),
+          ..@harness.contract_observations(definition),
         ] {
         if !observations.contains(Json(required)) {
           errors.push(
@@ -130,7 +130,7 @@ async fn run_real_local_contracts(
     ),
   )
   let case_path = real_registry_path(manifest.case_corpus)
-  let definitions = @testkit.load_cases(case_path)
+  let definitions = @harness.load_cases(case_path)
   let cases : Set[String] = Set([])
   for spec in real_array(real_field(coverage, "commands")) {
     if commands.contains(real_text(real_field(spec, "command"))) {
@@ -156,7 +156,7 @@ async fn run_real_local_contracts(
   }
   let local_manifest = output + "/local-cases.json"
   let descriptors = @json.parse(
-    @fs.read_file(real_registry_path("tests/fixtures/runner/cases.json")).text(),
+    @fs.read_file(real_registry_path("tests/cases/manifest.json")).text(),
   )
   write_json(local_manifest, {
     "schema": 2,
@@ -210,7 +210,7 @@ async fn run_real_local_contracts(
   }
   let actual = @fs.read_file(output + "/local-contracts/summary.jsonl").text()
   guard real_field(run, "results_sha256") ==
-    Json(@testkit.sha256_bytes(@utf8.encode(actual))) else {
+    Json(@harness.sha256_bytes(@utf8.encode(actual))) else {
     fail("local correctness result hash differs")
   }
   let results : Array[Json] = []
@@ -229,7 +229,7 @@ async fn run_real_local_contracts(
     definitions.filter(definition => cases.contains(definition.id)),
     results,
     run,
-    @testkit.host_platform(),
+    @harness.host_platform(),
   )
   guard errors.is_empty() else { fail(errors.join("\n")) }
   write_json(output + "/local-correctness.json", {

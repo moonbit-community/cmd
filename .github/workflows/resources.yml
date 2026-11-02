@@ -61,14 +61,14 @@ jobs:
         id: oracle
         uses: docker/build-push-action@v6
         with:
-          context: tests/runner/image
+          context: tests/fixtures/oracle
           load: true
           tags: mooncmd-oracle:phase0
           cache-from: type=gha,scope=mooncmd-oracle
           cache-to: ${{ github.ref == 'refs/heads/main' && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
       - name: Observe selected resource profiles
         timeout-minutes: 120
-        run: moon run tests/resources/ci.mbtx -- --image '${{ steps.oracle.outputs.imageid }}' 2>&1 | tee test-reports/resources.log
+        run: moon run tests/run.mbtx -- resource-profiles --image '${{ steps.oracle.outputs.imageid }}' 2>&1 | tee test-reports/resources.log
       - name: Preserve resource observations
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4

@@ -36,7 +36,7 @@ test "benchmark direct Wasm invocation preserves program arguments" {
 async test "benchmark functional fixtures reset mutations and compare bounded effects" {
   let directory = @fs.tmpdir(prefix="cmd-functional-reset-")
   defer @fs.rmdir(directory, recursive=true)
-  let fixture : @testkit.Case = @json.from_json({
+  let fixture : @harness.Case = @json.from_json({
     "id": "reset",
     "command": "cat",
     "args": [],

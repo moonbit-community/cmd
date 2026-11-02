@@ -1,0 +1,12 @@
+import {
+  "mooxCLI/cmd-tests/harness",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+supported_targets = "native"
+
+import {
+  "moonbitlang/async",
+} for "wbtest"

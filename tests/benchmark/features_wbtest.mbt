@@ -91,7 +91,7 @@ async test "observed markers cross read boundaries and long records retain all b
   assert_eq(feature_field(observed, "bytes"), Json(196613L))
   assert_eq(
     feature_field(observed, "sha256"),
-    Json(@testkit.sha256_bytes(bytes)),
+    Json(@harness.sha256_bytes(bytes)),
   )
   assert_eq(feature_field(observed, "stream_buffer_bytes"), Json(65536))
   assert_eq(feature_field(observed, "retained_record_bytes"), Json(0))

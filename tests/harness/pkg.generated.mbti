@@ -1,0 +1,394 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "mooxCLI/cmd-tests/harness"
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/http",
+  "moonbitlang/async/process",
+  "moonbitlang/async/socket",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn append_report(Array[CaseReport], CaseReport) -> Unit
+
+pub fn bytes_equal(Bytes, Bytes) -> Bool
+
+pub fn canonical_json(Json) -> String
+
+pub fn case_directory_name(String) -> String
+
+pub fn case_quality_errors(Case, descriptor? : Json, wired_observers? : Array[String]) -> Array[String]
+
+pub fn case_quality_kind(Case, descriptor? : Json) -> String
+
+pub fn case_stimulus_digest(Case) -> String raise
+
+pub fn check_contract(Case, RunResult, String, http_base? : String) -> Array[String]
+
+pub async fn check_expected_files(Case, String, http_base? : String, baseline? : Array[SnapshotEntry]) -> Array[String]
+
+pub fn check_oracle_identity(OracleProfile, String, String) -> Array[String]
+
+pub fn check_runtime_contract(Case, RunResult) -> Array[String]
+
+pub fn command_args(String, String, Array[String], policy? : String) -> Array[String] raise
+
+pub fn command_available(String) -> Bool
+
+pub fn command_line(String, String, Array[String]) -> Array[String] raise
+
+pub fn command_program() -> String
+
+pub fn command_version(String) -> String?
+
+pub fn configure_commands(Map[String, String], String) -> Unit
+
+pub async fn configure_local_quality(String, Array[Case], Array[String]) -> Unit
+
+pub fn contains_bytes(Bytes, String) -> Bool
+
+pub fn contract_errors(Case) -> Array[String]
+
+pub fn contract_observations(Case) -> Array[String]
+
+pub fn controlled_environment(Map[String, String]) -> Map[String, String]
+
+pub fn decode_hex(String, String) -> Bytes raise Failure
+
+pub async fn docker_user() -> String
+
+pub fn ends_with_newline(Bytes) -> Bool
+
+pub async fn execute_contract(Case, String, String, http_base? : String, retain_success? : Bool, observer? : String) -> CaseReport
+
+pub fn expand_args(ArrayView[String], String, http_base? : String) -> Array[String]
+
+pub fn expand_environment(Map[String, String], String, http_base? : String) -> Map[String, String]
+
+pub fn expand_fixture_content(Bytes, http_base? : String) -> Bytes
+
+pub fn expand_text(String, String, http_base? : String) -> String
+
+pub async fn file_digest(String) -> String
+
+pub async fn generate_local_quality_catalog(String) -> Unit
+
+pub fn host_platform() -> String
+
+pub fn input_bytes(String?, String?, String) -> Bytes raise Failure
+
+pub fn is_network_case(Case) -> Bool
+
+pub fn json_digest(Json) -> String
+
+pub async fn load_cases(String) -> Array[Case]
+
+pub fn local_quality_descriptor(String) -> Json?
+
+pub async fn metadata_contract_snapshot(Array[Case]) -> Json
+
+pub async fn metadata_version(String) -> String
+
+pub fn normalize_diagnostic(String, temporary_root? : String) -> String
+
+pub fn normalize_lf(String) -> String
+
+pub fn normalize_text(Bytes, String, ArrayView[Normalization], String) -> Bytes
+
+pub fn option_child_path() -> String
+
+pub fn option_child_required(Case) -> Bool
+
+pub fn oracle_profile_binding_errors(OracleProfile, OracleProfile, required_profile_ids? : Array[String]) -> Array[String]
+
+pub fn oracle_profile_errors(OracleProfile) -> Array[String]
+
+pub fn oracle_request_name(@http.Request) -> String
+
+pub fn parse_oracle_options(ArrayView[String]) -> OracleOptions raise Failure
+
+pub async fn prepare_fixture(String, Case, http_base? : String) -> Unit
+
+pub fn published_mode() -> Bool
+
+pub async fn read_oracle_profile(String) -> OracleProfile
+
+pub async fn repository_path(String) -> String
+
+pub async fn repository_root(start? : String) -> String
+
+pub async fn resolve_runtime_contract(Case, String, http_base? : String) -> Case
+
+pub async fn run(String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> RunResult
+
+pub async fn run_command(String, String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String]) -> RunResult
+
+pub async fn run_http_fixture(@http.Server) -> Unit
+
+pub async fn run_http_fixture_process() -> Unit
+
+pub async fn run_option_child(ArrayView[String]) -> Int32
+
+pub async fn run_oracle_with_deadline(String, Array[String], Int32, evidence_dir~ : String, stdin? : Bytes, extra_env? : Map[String, String], inherit_env? : Bool) -> TimedRun
+
+pub async fn run_with_deadline(String, Array[String], Int32, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool, read_stream? : async (@process.ReadFromProcess) -> Bytes?) -> TimedRun
+
+pub fn runtime_contract_observers(Case) -> Array[String]
+
+pub fn safe_relative_path(String) -> Bool
+
+pub fn safe_symlink_target(String) -> Bool
+
+pub fn scenario_assertion_errors(Json, Json) -> Array[String]
+
+pub fn scenario_catalog_errors(Json) -> Array[String]
+
+pub async fn scenario_contract_snapshot(Array[Case]) -> Json
+
+pub fn scenario_definition(Json, String) -> Json?
+
+pub fn scenario_receipt_errors(Json, Json, required? : Array[String], command? : String) -> Array[String]
+
+pub fn scenario_text(Bytes) -> String raise
+
+pub async fn seal_oracle_profile(String, String, expected_profile_path? : String) -> Unit
+
+pub fn select_cases(ArrayView[Case], ArrayView[String], ArrayView[String]) -> Array[Case] raise Failure
+
+pub async fn serve_transfer_fixture(@http.Request, @http.ServerConnection, requests? : Array[TransferFixtureRequest], before_response? : async () -> Unit) -> Bool
+
+pub async fn serve_wire_fixture(@socket.Tcp, Array[TransferFixtureRequest], Array[Bytes]) -> Unit
+
+pub fn sha256_bytes(Bytes) -> String
+
+pub fn sha256_text(String) -> String
+
+pub async fn snapshot(String, observe? : ArrayView[String], content? : Bool, baseline? : Bool, preserve_identity? : Bool, stat_path? : String, readlink_path? : String) -> Array[SnapshotEntry]
+
+pub fn snapshot_fingerprint(ArrayView[SnapshotEntry]) -> String
+
+pub fn snapshots_equal(ArrayView[SnapshotEntry], ArrayView[SnapshotEntry]) -> Bool
+
+pub async fn spawn_http_fixture_process(@async.TaskGroup[Unit], timeout_ms? : Int32) -> (@process.Process, @process.ReadFromProcess, String)
+
+pub async fn spawn_https_fixture_process(@async.TaskGroup[Unit], String, fixture_directory? : String, timeout_ms? : Int32) -> (@process.Process, String)
+
+pub fn suite_report(String, String, Int64, Array[String]) -> CaseReport
+
+pub fn unordered_lines_equal(Bytes, Bytes) -> Bool
+
+pub async fn verify_oracle_image(String, docker_path? : String, profile_path? : String, expected_profile_path? : String, required_profile_ids? : Array[String]) -> OracleIdentity
+
+pub fn wasm_path(String, String) -> String
+
+pub async fn write_reports(String, ArrayView[CaseReport], case_definitions_sha256? : String, scenario_proofs_sha256? : String) -> Unit
+
+// Errors
+
+// Types and methods
+pub(all) struct Case {
+  id : String
+  aliases : Array[String]?
+  command : String
+  related_commands : Array[String]?
+  args : Array[String]
+  stdin_hex : String?
+  stdin_text : String?
+  files : Array[FixtureFile]
+  delay_ms : Int32?
+  environment : Map[String, String]
+  expected_status : Int32
+  expected_rejection : String?
+  normalizations : Array[Normalization]
+  timeout_ms : Int32?
+  comparison : String?
+  oracle : Bool?
+  expected_stdout_hex : String?
+  expected_stdout_text : String?
+  expected_stderr_hex : String?
+  expected_stderr_text : String?
+  expected_stdout_contains : String?
+  expected_stderr_contains : String?
+  diagnostic_reason : String?
+  expected_stdout_ends_with_newline : Bool?
+  expected_stderr_ends_with_newline : Bool?
+  forbidden_stderr : Array[String]?
+  coverage : Array[String]?
+  host_platforms : Array[String]?
+  observe : Array[String]?
+  source_version : String?
+  cwd : String?
+  expected_files : Array[ExpectedFile]?
+  expected_stdout_contains_all : Array[String]?
+  expected_stderr_contains_all : Array[String]?
+  stdout_order : String?
+  expected_stdout_json : Json?
+  stdout_json_lines : Bool?
+} derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn Case::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Case::input(Self, root? : String, http_base? : String) -> Bytes raise Failure
+pub fn Case::platform_applies(Self) -> Bool
+pub fn Case::to_json(Self) -> Json
+pub fn Case::to_repr(Self) -> @debug.Repr
+pub fn Case::working_directory(Self, String) -> String raise Failure
+
+pub(all) struct CaseReport {
+  id : String
+  command : String
+  result : String
+  verification : String
+  stage : String
+  detail : String
+  platform : String
+  backend : String
+  source_version : String
+  duration_ms : Int64
+  observations : Array[String]
+  missing_observations : Array[String]
+  local_contract : LocalContractReceipt?
+  evidence : String?
+} derive(ToJson, @debug.Debug)
+pub fn CaseReport::semantic_pass(Self) -> Bool
+pub fn CaseReport::to_json(Self) -> Json
+pub fn CaseReport::to_repr(Self) -> @debug.Repr
+
+pub(all) struct ExpectedFile {
+  path : String
+  exists : Bool?
+  kind : String?
+  content_text : String?
+  content_hex : String?
+  mode : Int32?
+  target : String?
+  same_identity_as : String?
+  unchanged : Bool?
+  mtime : String?
+  atime : String?
+  same_mtime_as : String?
+  different_identity_as : String?
+  same_mode_as : String?
+  mode_mask : Int32?
+} derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn ExpectedFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ExpectedFile::to_json(Self) -> Json
+pub fn ExpectedFile::to_repr(Self) -> @debug.Repr
+
+pub(all) struct FixtureFile {
+  path : String
+  content_hex : String?
+  content_text : String?
+  kind : String?
+  target : String?
+  mode : Int32?
+  atime : String?
+  mtime : String?
+  readable : Bool?
+} derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn FixtureFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FixtureFile::to_json(Self) -> Json
+pub fn FixtureFile::to_repr(Self) -> @debug.Repr
+
+pub(all) struct LocalContractReceipt {
+  definition_sha256 : String
+  passed : Bool
+  observations : Array[String]
+} derive(ToJson, @debug.Debug)
+pub fn LocalContractReceipt::to_json(Self) -> Json
+pub fn LocalContractReceipt::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Normalization {
+  field : String
+  rule : String
+  comment : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+pub fn Normalization::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Normalization::to_json(Self) -> Json
+pub fn Normalization::to_repr(Self) -> @debug.Repr
+
+pub(all) struct OracleIdentity {
+  image : String
+  digest : String
+  versions : String
+  profile_id : String
+}
+
+pub(all) struct OracleOptions {
+  arguments : Array[String]
+  profile_path : String
+  seal_digest : String?
+}
+
+pub(all) struct OracleProfile {
+  schema : Int32
+  id : String
+  profile_version : Int32
+  image : String
+  base_image_digest : String
+  image_digest : String
+  versions : String
+  versions_sha256 : String
+  dockerfile_sha256 : String
+  versions_script_sha256 : String
+  sources : Array[OracleSource]
+} derive(ToJson, @json.FromJson)
+pub fn OracleProfile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OracleProfile::to_json(Self) -> Json
+
+pub(all) struct OracleSource {
+  project : String
+  version : String
+  sha256 : String
+} derive(ToJson, @json.FromJson)
+pub fn OracleSource::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OracleSource::to_json(Self) -> Json
+
+pub(all) struct RunResult {
+  status : Int32
+  stdout : Bytes
+  stderr : Bytes
+}
+
+pub struct ScenarioProof {
+  case_id : String
+  definitions : Array[Json]
+  records : Array[Json]
+  definition_id : Json
+}
+pub fn ScenarioProof::accepts(Self, String, String) -> Bool
+pub fn ScenarioProof::errors(Self) -> Array[String]
+pub fn ScenarioProof::new(String, Json) -> Self
+pub fn ScenarioProof::observe_equal(Self, String, String, Json, Json) -> Unit
+pub fn ScenarioProof::observe_pair(Self, String, String, String, String) -> Unit
+pub fn ScenarioProof::receipt(Self) -> Json
+
+pub(all) struct SnapshotEntry {
+  path : String
+  kind : String
+  content : Bytes
+  metadata : Map[String, String]
+} derive(@debug.Debug)
+pub fn SnapshotEntry::to_repr(Self) -> @debug.Repr
+
+pub(all) struct TimedRun {
+  output : RunResult
+  timed_out : Bool
+  cleanup_error : String?
+}
+
+pub(all) struct TransferFixtureRequest {
+  request_method : String
+  path : String
+  range : String?
+  body : Bytes
+  cookies : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+pub fn TransferFixtureRequest::equal(Self, Self) -> Bool
+pub fn TransferFixtureRequest::not_equal(Self, Self) -> Bool
+pub fn TransferFixtureRequest::to_json(Self) -> Json
+pub fn TransferFixtureRequest::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

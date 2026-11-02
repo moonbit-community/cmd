@@ -1,6 +1,6 @@
 {
   "schema": 3,
-  "case_corpus": "tests/release_runner/current/active-cases.json",
+  "case_corpus": "tests/cases/manifest.json",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "coverage_registry": "tests/benchmark/real-coverage.json",
   "limits": {

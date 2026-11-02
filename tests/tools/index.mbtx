@@ -1,0 +1,116 @@
+----
+import {
+  "moonbitlang/async@0.22.5", "moonbitlang/async@0.22.5/fs",
+  "moonbitlang/async@0.22.5/shell", "moonbitlang/core/env",
+}
+----
+
+///|
+async fn run(program : String, args : Array[String]) -> Unit {
+  @shell.Cmd(program, args, stdout=Inherit, stderr=Inherit).run()
+}
+
+///|
+async fn main {
+  guard @env.args()[1:] is [mode] && ["check", "update"].contains(mode) else {
+    fail("index requires check or update")
+  }
+  let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("debug")
+  guard ["debug", "release"].contains(profile) else {
+    fail("unknown test-tool profile")
+  }
+  let build = [
+    "build", "--target", "native", "--deny-warn", "tests/harness/driver", "tests/coverage",
+    "tests/release",
+  ]
+  if profile == "release" {
+    build.push("--release")
+  }
+  run("moon", build)
+  let prefix = "_build/native/" + profile + "/build/mooxCLI/cmd-tests/"
+  let temporary = @fs.tmpdir(prefix="cmd-test-index-")
+  defer @fs.rmdir(temporary, recursive=true)
+  run(prefix + "harness/driver/driver.exe", [
+    "--generate-quality-catalog",
+    temporary + "/quality.json",
+  ])
+  run(prefix + "coverage/coverage.exe", [
+    "--generate",
+    "--output",
+    temporary + "/definitions.json",
+  ])
+  run("moon", [
+    "run",
+    "tests/tools/gaps.mbtx",
+    "--",
+    "--manifest",
+    temporary + "/definitions.json",
+    "--output",
+    temporary + "/gaps.json",
+    "--markdown",
+    temporary + "/gaps.md",
+  ])
+  run(prefix + "release/release.exe", [
+    "--generate-candidate",
+    "--output",
+    temporary + "/candidate.json",
+  ])
+  let outputs = [
+    ("quality.json", "tests/cases/generated/quality.json"),
+    ("definitions.json", "tests/coverage/generated/definitions.json"),
+    ("gaps.json", "tests/coverage/generated/gaps.json"),
+    ("gaps.md", "tests/coverage/generated/gaps.md"),
+    ("candidate.json", "tests/release/candidate.json"),
+  ]
+  let changed : Array[String] = []
+  let differences : Array[String] = []
+  for (name, destination) in outputs {
+    let bytes = @fs.read_file(temporary + "/" + name).binary()
+    let exists = @fs.exists(destination)
+    let current = if exists { @fs.read_file(destination).binary() } else { b"" }
+    if !exists || current != bytes {
+      changed.push(destination)
+      let mut offset = 0
+      while offset < current.length() &&
+            offset < bytes.length() &&
+            current[offset] == bytes[offset] {
+        offset += 1
+      }
+      differences.push(
+        destination +
+        ": checked-in=" +
+        current.length().to_string() +
+        " bytes, generated=" +
+        bytes.length().to_string() +
+        " bytes, first difference=" +
+        offset.to_string() +
+        (if !exists { " (missing)" } else { "" }),
+      )
+    }
+  }
+  if mode == "check" {
+    guard changed.is_empty() else {
+      fail(
+        "generated test definitions are stale; run index update:\n" +
+        differences.join("\n"),
+      )
+    }
+  } else {
+    // Every generator has succeeded before replacing any derived definition.
+    for (name, destination) in outputs {
+      if changed.contains(destination) {
+        @fs.write_file(
+          destination,
+          @fs.read_file(temporary + "/" + name).binary(),
+        )
+      }
+    }
+  }
+  println(
+    "Test definition index " +
+    mode +
+    ": " +
+    changed.length().to_string() +
+    " changed files; published coordinates and expectations preserved",
+  )
+}

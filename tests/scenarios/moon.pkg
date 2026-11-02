@@ -1,0 +1,22 @@
+import {
+  "cli/core/contracts",
+  "cli/core/platform",
+  "mooxCLI/cmd-tests/scenarios/network",
+  "mooxCLI/cmd-tests/scenarios/filesystem",
+  "mooxCLI/cmd-tests/harness",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/http",
+  "moonbitlang/async/io",
+  "moonbitlang/async/process",
+  "moonbitlang/async/socket",
+  "moonbitlang/async/stdio",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+  "moonbitlang/x/path",
+  "moonbitlang/x/sys",
+}
+
+supported_targets = "native"

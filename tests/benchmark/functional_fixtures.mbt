@@ -36,7 +36,7 @@ priv struct FunctionalManifest {
 } derive(FromJson, ToJson)
 
 ///|
-fn functional_fixture(workload : FunctionalWorkload) -> @testkit.Case raise {
+fn functional_fixture(workload : FunctionalWorkload) -> @harness.Case raise {
   let args = workload.args.unwrap_or([])
   guard !args.any(arg => ["--help", "--version"].contains(arg)) else {
     fail("metadata cannot replace a real performance operation: " + workload.id)
@@ -64,14 +64,14 @@ fn functional_fixture(workload : FunctionalWorkload) -> @testkit.Case raise {
 ///|
 async fn reset_functional_fixture(
   root : String,
-  fixture : @testkit.Case,
+  fixture : @harness.Case,
   http_base : String,
 ) -> Unit {
   if @fs.exists(root) {
     @fs.rmdir(root, recursive=true)
   }
   @fs.mkdir(root)
-  @testkit.prepare_fixture(root, fixture, http_base~)
+  @harness.prepare_fixture(root, fixture, http_base~)
 }
 
 ///|
@@ -80,9 +80,9 @@ async fn compare_functional_effects(
   right : String,
   dimensions : Array[String],
 ) -> Array[String] {
-  let before = @testkit.snapshot(left, observe=dimensions, content=false)
-  let after = @testkit.snapshot(right, observe=dimensions, content=false)
-  if !@testkit.snapshots_equal(before, after) {
+  let before = @harness.snapshot(left, observe=dimensions, content=false)
+  let after = @harness.snapshot(right, observe=dimensions, content=false)
+  if !@harness.snapshots_equal(before, after) {
     return ["filesystem metadata or paths differ"]
   }
   let errors : Array[String] = []
