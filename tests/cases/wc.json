@@ -141,11 +141,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "extra operand",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
       "coverage": [
         "files0-from"
-      ]
+      ],
+      "expected_stderr_text": "wc: extra operand with --files0-from\n"
     },
     {
       "id": "compat-text-line-596",

@@ -725,6 +725,280 @@
         "ignore-case"
       ],
       "source_version": "Independent ASCII case-fold activation with an actual opposite-case match."
+    },
+    {
+      "id": "coverage-grep-basic",
+      "command": "grep",
+      "args": [
+        "--basic-regexp",
+        "a+"
+      ],
+      "stdin_text": "aa\na+\n",
+      "expected_stdout_text": "a+\n",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-grep-count",
+      "command": "grep",
+      "args": [
+        "-c",
+        "hit"
+      ],
+      "stdin_text": "hit hit\nmiss\nhit\n",
+      "expected_stdout_text": "2\n",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-grep-file",
+      "command": "grep",
+      "args": [
+        "-f",
+        "patterns"
+      ],
+      "stdin_text": "red\nblue\ngreen\n",
+      "files": [
+        {
+          "path": "patterns",
+          "content_text": "^red$\n^green$\n"
+        }
+      ],
+      "expected_stdout_text": "red\ngreen\n",
+      "oracle": true,
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-grep-files-matching",
+      "command": "grep",
+      "args": [
+        "-l",
+        "hit",
+        "one",
+        "two",
+        "three"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "hit\n"
+        },
+        {
+          "path": "two",
+          "content_text": "miss\n"
+        },
+        {
+          "path": "three",
+          "content_text": "hit\nhit\n"
+        }
+      ],
+      "expected_stdout_text": "one\nthree\n",
+      "oracle": true,
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-grep-files-nonmatching",
+      "command": "grep",
+      "args": [
+        "-L",
+        "hit",
+        "one",
+        "two",
+        "three"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "hit\n"
+        },
+        {
+          "path": "two",
+          "content_text": "miss\n"
+        },
+        {
+          "path": "three",
+          "content_text": "hit\nhit\n"
+        }
+      ],
+      "expected_stdout_text": "two\n",
+      "oracle": true,
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-grep-invert",
+      "command": "grep",
+      "args": [
+        "-v",
+        "hit"
+      ],
+      "stdin_text": "hit\nmiss\nhit again\n",
+      "expected_stdout_text": "miss\n",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-grep-line",
+      "command": "grep",
+      "args": [
+        "-x",
+        "hit"
+      ],
+      "stdin_text": "hit\nhit again\notherhit\n",
+      "expected_stdout_text": "hit\n",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-grep-quiet-hit",
+      "command": "grep",
+      "args": [
+        "-q",
+        "hit"
+      ],
+      "stdin_text": "hit\n",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-grep-quiet-miss",
+      "command": "grep",
+      "args": [
+        "-q",
+        "hit"
+      ],
+      "stdin_text": "miss\n",
+      "expected_status": 1,
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-grep-no-filename",
+      "command": "grep",
+      "args": [
+        "-h",
+        "hit",
+        "one",
+        "two"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "hit one\n"
+        },
+        {
+          "path": "two",
+          "content_text": "hit two\n"
+        }
+      ],
+      "expected_stdout_text": "hit one\nhit two\n",
+      "oracle": true,
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-grep-with-filename",
+      "command": "grep",
+      "args": [
+        "-H",
+        "hit",
+        "one"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "hit one\n"
+        }
+      ],
+      "expected_stdout_text": "one:hit one\n",
+      "oracle": true,
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-grep-text",
+      "command": "grep",
+      "args": [
+        "--text",
+        "hit"
+      ],
+      "stdin_hex": "61006869740a",
+      "expected_stdout_hex": "61006869740a",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-grep-binary-policy-reject",
+      "command": "grep",
+      "args": [
+        "--binary-files=bogus",
+        "hit"
+      ],
+      "stdin_text": "hit\n",
+      "expected_status": 2,
+      "expected_stderr_text": "grep: unknown binary-files type 'bogus'\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": ""
     }
   ]
 }

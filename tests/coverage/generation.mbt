@@ -1,9 +1,10 @@
 ///|
-fn proof_exact_streams(fixture : @harness.Case) -> Bool {
+fn proof_asserted_streams(fixture : @harness.Case) -> Bool {
   [Some("contract"), Some("boundary")].contains(fixture.comparison) &&
   (
     fixture.expected_stdout_text is Some(_) ||
-    fixture.expected_stdout_hex is Some(_)
+    fixture.expected_stdout_hex is Some(_) ||
+    fixture.expected_stdout_json is Some(_)
   ) &&
   (
     fixture.expected_stderr_text is Some(_) ||
@@ -138,7 +139,7 @@ fn proof_obligation(
         fixture.id == id && fixture.command == command
       })
       is [fixture] &&
-      proof_exact_streams(fixture) {
+      proof_asserted_streams(fixture) {
       ids.push(id)
     } else {
       unsupported.push({

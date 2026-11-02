@@ -46,9 +46,7 @@
       "expected_rejection": "unexpected token after command",
       "aliases": [
         "compat-shell-array-boundary"
-      ],
-      "expected_stderr_contains": "unexpected token after command",
-      "diagnostic_reason": "The parser diagnostic identifies the rejected structure; status and stdout are exact."
+      ]
     },
     {
       "id": "p0-sh-stdin-script",

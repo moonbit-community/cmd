@@ -219,9 +219,9 @@ fn proof_definitions_errors(
           id,
         )
       }
-      if !proof_exact_streams(fixture) {
+      if !proof_asserted_streams(fixture) {
         errors.push(
-          "proof requires exact stdout and stderr contracts in this profile: " +
+          "proof requires exact bytes or a complete typed stdout contract, and exact stderr: " +
           id,
         )
       }

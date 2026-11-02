@@ -319,6 +319,51 @@
         "byte-preservation",
         "no-final-lf"
       ]
+    },
+    {
+      "id": "coverage-cat-ends",
+      "command": "cat",
+      "args": [
+        "-E"
+      ],
+      "stdin_hex": "610a098000",
+      "expected_stdout_hex": "61240a098000",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-cat-tabs",
+      "command": "cat",
+      "args": [
+        "-T"
+      ],
+      "stdin_hex": "610a098000",
+      "expected_stdout_hex": "610a5e498000",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-cat-nonprinting",
+      "command": "cat",
+      "args": [
+        "-v"
+      ],
+      "stdin_hex": "610a098000",
+      "expected_stdout_text": "a\n\tM-^@^@",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
     }
   ]
 }

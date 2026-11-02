@@ -86,11 +86,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "invalid number",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
       "coverage": [
         "skip-fields"
-      ]
+      ],
+      "expected_stderr_text": "uniq: invalid number of fields: 'bad'\n"
     },
     {
       "id": "compat-text-line-614",
@@ -524,6 +523,38 @@
         "all-repeated",
         "skip-chars"
       ]
+    },
+    {
+      "id": "coverage-uniq-repeated",
+      "command": "uniq",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "a\na\nb\nc\nc\n",
+      "expected_stdout_text": "a\nc\n",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-uniq-unique",
+      "command": "uniq",
+      "args": [
+        "-u"
+      ],
+      "stdin_text": "a\na\nb\nc\nc\n",
+      "expected_stdout_text": "b\n",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
     }
   ]
 }

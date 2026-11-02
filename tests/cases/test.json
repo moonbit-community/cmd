@@ -205,6 +205,348 @@
       "source_version": "workspace cli/test@0.2.3 metadata contract",
       "expected_stdout_text": "test 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-test-equality-false",
+      "command": "test",
+      "args": [
+        "left",
+        "=",
+        "right"
+      ],
+      "expected_status": 1,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-size-empty",
+      "command": "test",
+      "args": [
+        "-s",
+        "empty"
+      ],
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "expected_status": 1,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-size-missing",
+      "command": "test",
+      "args": [
+        "-s",
+        "missing"
+      ],
+      "expected_status": 1,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-time--nt-new-old",
+      "command": "test",
+      "args": [
+        "new",
+        "-nt",
+        "old"
+      ],
+      "files": [
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "equal",
+          "content_text": "equal",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-time--nt-old-new",
+      "command": "test",
+      "args": [
+        "old",
+        "-nt",
+        "new"
+      ],
+      "files": [
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "equal",
+          "content_text": "equal",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 1,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-time--nt-new-equal",
+      "command": "test",
+      "args": [
+        "new",
+        "-nt",
+        "equal"
+      ],
+      "files": [
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "equal",
+          "content_text": "equal",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 1,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-time--ot-old-new",
+      "command": "test",
+      "args": [
+        "old",
+        "-ot",
+        "new"
+      ],
+      "files": [
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "equal",
+          "content_text": "equal",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-time--ot-new-old",
+      "command": "test",
+      "args": [
+        "new",
+        "-ot",
+        "old"
+      ],
+      "files": [
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "equal",
+          "content_text": "equal",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 1,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-time--ot-equal-new",
+      "command": "test",
+      "args": [
+        "equal",
+        "-ot",
+        "new"
+      ],
+      "files": [
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "equal",
+          "content_text": "equal",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 1,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-time--nt-new-missing",
+      "command": "test",
+      "args": [
+        "new",
+        "-nt",
+        "missing"
+      ],
+      "files": [
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "equal",
+          "content_text": "equal",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-test-time--ot-missing-new",
+      "command": "test",
+      "args": [
+        "missing",
+        "-ot",
+        "new"
+      ],
+      "files": [
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "equal",
+          "content_text": "equal",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

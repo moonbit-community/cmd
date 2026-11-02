@@ -231,6 +231,95 @@
         "unnumbered-padding"
       ],
       "source_version": "Independent fixed GNU nl9.11 C-profile oracle: unnumbered prefix uses separator byte length4, not UTF16 length2"
+    },
+    {
+      "id": "coverage-nl-footer",
+      "command": "nl",
+      "args": [
+        "-w1",
+        "-s:",
+        "-fa"
+      ],
+      "stdin_text": "body\n\\:\nfooter\n",
+      "expected_stdout_text": "1:body\n\n1:footer\n",
+      "source_version": "GNU nl resets numbering at each logical page section; footer style is activated by an actual footer delimiter.",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-nl-blank-groups",
+      "command": "nl",
+      "args": [
+        "-w1",
+        "-s:",
+        "-ba",
+        "-l2"
+      ],
+      "stdin_text": "\n\n\nx\n\n\n",
+      "expected_stdout_text": "  \n1:\n  \n2:x\n  \n3:\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-nl-page-reset",
+      "command": "nl",
+      "args": [
+        "-w1",
+        "-s:",
+        "-ha"
+      ],
+      "stdin_text": "a\n\\:\\:\\:\nb\n",
+      "expected_stdout_text": "1:a\n\n1:b\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-nl-page-continuation",
+      "command": "nl",
+      "args": [
+        "-w1",
+        "-s:",
+        "-ha",
+        "-p"
+      ],
+      "stdin_text": "a\n\\:\\:\\:\nb\n",
+      "expected_stdout_text": "1:a\n\n2:b\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-nl-delimiter",
+      "command": "nl",
+      "args": [
+        "-w1",
+        "-s:",
+        "-ha",
+        "-dXY"
+      ],
+      "stdin_text": "a\nXYXYXY\nb\n",
+      "expected_stdout_text": "1:a\n\n1:b\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
     }
   ]
 }

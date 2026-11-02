@@ -97,6 +97,7 @@ fn join_proof_results(
       let ok = match matches {
         [result] =>
           proof_field(result, "result") == Json("pass") &&
+          proof_field(result, "stage") == Json("complete") &&
           proof_field(result, "platform") == Json(platform) &&
           proof_field(result, "backend") == Json("wasm") &&
           proof_field(result, "missing_observations") == Json::array([]) &&
@@ -194,4 +195,11 @@ fn join_proof_results(
     "platform": platform,
     "rows": verdicts,
   }
+}
+
+///|
+fn proof_acceptance_passed(report : Json, require_full : Bool) -> Bool {
+  proof_field(report, "reviewed_profile_passed") == Json(true) &&
+  proof_field(report, "unresolved_obligations") == Json(0) &&
+  (!require_full || proof_field(report, "full_catalog_qualified") == Json(true))
 }

@@ -55,14 +55,13 @@
       "environment": {},
       "expected_status": 2,
       "expected_stdout_text": "",
-      "expected_stderr_contains": "unsupported encoding",
-      "diagnostic_reason": "The rejection category is stable while host diagnostics may vary.",
       "comparison": "boundary",
       "expected_rejection": "unsupported encoding",
       "normalizations": [],
       "coverage": [
         "encoding"
-      ]
+      ],
+      "expected_stderr_text": "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n"
     },
     {
       "id": "p2-strings-version",
@@ -327,9 +326,8 @@
       "comparison": "boundary",
       "normalizations": [],
       "source_version": "explicit unsupported encoding boundary",
-      "expected_stderr_contains": "unsupported encoding",
-      "diagnostic_reason": "Refuse wide encoding before reading input; never scan it as single-byte text.",
-      "expected_rejection": "unsupported encoding"
+      "expected_rejection": "unsupported encoding",
+      "expected_stderr_text": "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n"
     },
     {
       "id": "repair-strings-wide-l",
@@ -350,9 +348,8 @@
       "comparison": "boundary",
       "normalizations": [],
       "source_version": "explicit unsupported encoding boundary",
-      "expected_stderr_contains": "unsupported encoding",
-      "diagnostic_reason": "Refuse wide encoding before reading input; never scan it as single-byte text.",
-      "expected_rejection": "unsupported encoding"
+      "expected_rejection": "unsupported encoding",
+      "expected_stderr_text": "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n"
     },
     {
       "id": "repair-strings-wide-B",
@@ -373,9 +370,8 @@
       "comparison": "boundary",
       "normalizations": [],
       "source_version": "explicit unsupported encoding boundary",
-      "expected_stderr_contains": "unsupported encoding",
-      "diagnostic_reason": "Refuse wide encoding before reading input; never scan it as single-byte text.",
-      "expected_rejection": "unsupported encoding"
+      "expected_rejection": "unsupported encoding",
+      "expected_stderr_text": "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n"
     },
     {
       "id": "repair-strings-wide-L",
@@ -396,9 +392,8 @@
       "comparison": "boundary",
       "normalizations": [],
       "source_version": "explicit unsupported encoding boundary",
-      "expected_stderr_contains": "unsupported encoding",
-      "diagnostic_reason": "Refuse wide encoding before reading input; never scan it as single-byte text.",
-      "expected_rejection": "unsupported encoding"
+      "expected_rejection": "unsupported encoding",
+      "expected_stderr_text": "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n"
     },
     {
       "id": "repair-alias-strings-bytes",

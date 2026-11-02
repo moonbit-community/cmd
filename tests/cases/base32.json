@@ -44,8 +44,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "invalid",
-      "diagnostic_reason": "The decoder status and empty stdout are exact; error wording is implementation-specific."
+      "expected_stderr_text": "base32: invalid input character: 'm'\n"
     },
     {
       "id": "base32-nonzero-tail-bits-accepted",
@@ -75,8 +74,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "f",
-      "expected_stderr_contains": "invalid",
-      "diagnostic_reason": "The decoded prefix and failure status are exact; error wording is implementation-specific."
+      "expected_stderr_text": "base32: invalid padding\n"
     },
     {
       "id": "base32-negative-wrap",
@@ -91,8 +89,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "invalid wrap size",
-      "diagnostic_reason": "The argument status and empty stdout are exact; diagnostic wording may vary."
+      "expected_stderr_text": "base32: invalid wrap size: '-1'\n"
     },
     {
       "id": "repair-alias-base32-decode",
@@ -168,6 +165,21 @@
         "ignore-garbage"
       ],
       "source_version": "RFC4648 foo vector plus documented discard of non-alphabet bytes; immutable oracle verification pending"
+    },
+    {
+      "id": "coverage-base32-wrap-positive",
+      "command": "base32",
+      "args": [
+        "-w4"
+      ],
+      "stdin_text": "foobar",
+      "expected_stdout_text": "MZXW\n6YTB\nOI==\n====\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
     }
   ]
 }

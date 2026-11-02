@@ -6,6 +6,7 @@ import {
   "mooxCLI/cmd-tests/harness",
   "moonbitlang/async",
   "moonbitlang/async/fs",
+  "moonbitlang/async/gzip",
   "moonbitlang/async/http",
   "moonbitlang/async/io",
   "moonbitlang/async/process",

@@ -1796,6 +1796,73 @@
         "strip"
       ],
       "source_version": "GNU coreutils 9.11 fixed native root-to-self observation; independent of fixture directory depth"
+    },
+    {
+      "id": "coverage-realpath-final-missing",
+      "command": "realpath",
+      "args": [
+        "-E",
+        "--relative-to=.",
+        "dir/missing"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        }
+      ],
+      "expected_stdout_text": "dir/missing\n",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-realpath-middle-missing",
+      "command": "realpath",
+      "args": [
+        "-q",
+        "-E",
+        "--relative-to=.",
+        "missing/child"
+      ],
+      "expected_status": 1,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-realpath-zero",
+      "command": "realpath",
+      "args": [
+        "-z",
+        "--relative-to=.",
+        "one",
+        "two"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "1"
+        },
+        {
+          "path": "two",
+          "content_text": "2"
+        }
+      ],
+      "expected_stdout_hex": "6f6e650074776f00",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

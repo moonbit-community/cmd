@@ -15,22 +15,22 @@
     {
       "command": "cp",
       "claim": "recursive",
-      "kind": "explicit-rejection-boundary",
-      "disposition": "reviewed-definition",
       "case_ids": [
-        "compat-filesystem-nested-copy"
+        "quality-cp-recursive-command-line-link"
       ],
-      "activation": "-R tree tree/child/copy must reject copying inside its source, preserve the source payload and leave destination absent. This activates recursive safety, not successful recursive copying."
+      "kind": "supported-option",
+      "activation": "Explicit -R -H copies a directory symlink's payload into an independent new tree, retaining the original tree and link. Nested-destination rejection is additionally checked by the retained safety fixture.",
+      "disposition": "reviewed-definition"
     },
     {
       "command": "cp",
       "claim": "preserve",
-      "kind": "explicit-rejection-boundary",
-      "disposition": "reviewed-definition",
       "case_ids": [
-        "compat-text-cp-preserve-rejected"
+        "coverage-cp-preserve-boundary"
       ],
-      "activation": "-p left preserved-copy exits1 with empty stdout and a metadata-capability diagnostic. The row does not assert all source/destination metadata and does not cover -a."
+      "kind": "explicit-rejection-boundary",
+      "activation": "The explicit -p spelling rejects before replacement with exact status/diagnostic and no prompt, retaining both original contents and creating no simple, numbered or custom-suffix backup. This is the documented portable boundary, not successful overwrite or metadata preservation.",
+      "disposition": "reviewed-definition"
     },
     {
       "command": "mv",
@@ -159,12 +159,12 @@
     {
       "command": "touch",
       "claim": "date",
-      "kind": "explicit-rejection-boundary",
-      "disposition": "reviewed-definition",
       "case_ids": [
-        "compat-text-touch-date-rejected"
+        "coverage-touch-date-boundary"
       ],
-      "activation": "-d2020 rejects1 with empty stdout and a timestamp-capability diagnostic. This row lacks explicit destination noncreation/metadata observation; individual -a/-m/-r/-t/--time spellings are not inferred."
+      "kind": "explicit-rejection-boundary",
+      "activation": "The individual -d 2020-01-01 selector rejects before any operand mutation: exact diagnostic/status, missing destination absent, existing and reference contents unchanged. Timestamp setting remains explicitly unsupported.",
+      "disposition": "reviewed-definition"
     },
     {
       "command": "ln",
@@ -541,12 +541,11 @@
         "o11-quote-c-maybe",
         "o11-quote-escape",
         "o11-quote-locale",
-        "o11-quote-clocale"
+        "o11-quote-clocale",
+        "o11-invalid-quote-before-valid",
+        "o11-ambiguous-quoting"
       ],
-      "activation": "Ten explicitly named quoting styles have exact independently specified byte outputs over spaces, apostrophes, quotes, backslashes, control bytes, glob punctuation and UTF8 names. This finite success-style facet excludes malformed-style precedence and every other filename/locale.",
-      "remaining_facets": [
-        "Exact malformed-style diagnostic and precedence before a later -Q remain unqualified; the existing partial fixture needs an assertion upgrade."
-      ]
+      "activation": "Ten named quoting styles require exact outputs over spaces, quotes, backslashes, control bytes, glob punctuation and UTF8 names. Invalid and ambiguous style arguments require complete diagnostics and help trailers, including failure precedence before a later valid-Q; other filenames/locales remain outside this finite profile."
     },
     {
       "command": "ls",
@@ -895,12 +894,14 @@
     {
       "command": "env",
       "claim": "unset",
-      "kind": "option-interaction-only",
-      "disposition": "reviewed-definition",
       "case_ids": [
-        "o13-env-s-u-expansion"
+        "coverage-env-unset-before",
+        "coverage-env-unset",
+        "coverage-env-unset-reassign"
       ],
-      "activation": "-u O13_TEST still allows-S expansion from the original environment. The row proves expansion ordering only; it does not inspect the child's environment to prove removal, so general unset-effect coverage remains unresolved."
+      "kind": "supported-option",
+      "activation": "The same inherited variable is visible normally, absent after -u with child status 1, and restored by a later explicit assignment. Exact child output/status distinguish all three states.",
+      "disposition": "reviewed-definition"
     },
     {
       "command": "xargs",
@@ -1063,12 +1064,13 @@
     {
       "command": "patch",
       "claim": "directory",
-      "kind": "accepted-option-nondistinguishing-fixture",
-      "disposition": "reviewed-definition",
       "case_ids": [
+        "coverage-patch-directory",
         "d-patch-explicit-unified-options"
       ],
-      "activation": "-d. is present in an exact output/nonmutation contract. Because dot equals the existing cwd, the row proves accepted spelling only; changing-directory behavior still needs a distinct-subdirectory fixture."
+      "activation": "Only the distinct nested directory contains the patch input and matching target; -d nested must locate both, successfully check the patch and preserve both target and conflicting outer sentinel without side effects.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
     },
     {
       "command": "patch",
@@ -1165,12 +1167,14 @@
     {
       "command": "patch",
       "claim": "no-backup-if-mismatch",
-      "kind": "accepted-option-nondistinguishing-fixture",
-      "disposition": "reviewed-definition",
+      "kind": "accepted-no-op",
       "case_ids": [
+        "coverage-patch-no-backup-dry-run",
+        "coverage-patch-no-backup-boundary",
         "d-patch-explicit-unified-options"
       ],
-      "activation": "The flag is accepted in a successful exact stdout/nonmutation case. There is no mismatch or permitted in-place overwrite in this row, so it does not prove a backup-policy difference."
+      "activation": "The constrained no-backup flag is accepted on a real mismatching dry-run with exact hunk failure. Requesting existing-file writeback still rejects before mutation. Both cases require original bytes and absent backup/reject files; no unsupported writeback behavior is claimed.",
+      "disposition": "reviewed-definition"
     },
     {
       "command": "curl",
@@ -1210,12 +1214,26 @@
     {
       "command": "curl",
       "claim": "retry-delay",
-      "kind": "accepted-option-timing-unmeasured",
-      "disposition": "reviewed-definition",
       "case_ids": [
         "network-transfer-boundaries"
       ],
-      "activation": "--retry-delay1 participates in real two-request retries and exact state observations. No monotonic timestamps are asserted around the requests, so the numerical delay duration is unproven."
+      "scenario_bindings": [
+        {
+          "case_id": "network-retry-effects",
+          "assertions": [
+            "curl/retry-delay"
+          ]
+        },
+        {
+          "case_id": "network-transfer-boundaries",
+          "assertions": [
+            "transfer/curl-retry-all-file/response"
+          ]
+        }
+      ],
+      "activation": "A first503 and second200 fixture records actual request counts and monotonic times. The requested delay must elapse before retry and final hello file bytes are exact. A shorter curl retry budget prevents the next request; wget explicit status-retry is paired with a no-retry control. This finite scheduling assertion is separate from performance acceptance.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
     },
     {
       "command": "wget",
@@ -1232,12 +1250,26 @@
     {
       "command": "wget",
       "claim": "waitretry",
-      "kind": "accepted-option-timing-unmeasured",
-      "disposition": "reviewed-definition",
       "case_ids": [
         "network-transfer-boundaries"
       ],
-      "activation": "--waitretry=0.001 is accepted in real retried framing/resume scenarios with exact request counts and file outcomes. No clock observations prove the delay/backoff value."
+      "scenario_bindings": [
+        {
+          "case_id": "network-retry-effects",
+          "assertions": [
+            "wget/waitretry"
+          ]
+        },
+        {
+          "case_id": "network-transfer-boundaries",
+          "assertions": [
+            "transfer/wget-retry-empty-is-bounded/response"
+          ]
+        }
+      ],
+      "activation": "A first503 and second200 fixture records actual request counts and monotonic times. The requested delay must elapse before retry and final hello file bytes are exact. A shorter curl retry budget prevents the next request; wget explicit status-retry is paired with a no-retry control. This finite scheduling assertion is separate from performance acceptance.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
     },
     {
       "command": "wget",
@@ -1253,9 +1285,10 @@
       "command": "mv",
       "claim": "update",
       "case_ids": [
-        "repair-fs-mv-update-older"
+        "repair-fs-mv-update-older",
+        "repair-fs-mv-equal-time-boundary"
       ],
-      "activation": "With explicit distinct mtimes,-u replaces the older destination bytes and removes source. Equal-time rejection and identity-capability handling remain unqualified.",
+      "activation": "Explicit older timestamps cause replacement; equal-time ambiguous targets reject with the full identity-capability diagnostic and preserve both files. This retains the current API boundary instead of inferring identity from equal times.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1263,9 +1296,10 @@
       "command": "mv",
       "claim": "backup",
       "case_ids": [
-        "repair-fs-mv-backup"
+        "repair-fs-mv-backup",
+        "repair-fs-mv-same-backup"
       ],
-      "activation": "-b -S.save moves source bytes to destination and requires exact old destination bytes in destination.save. Self-copy rejection/no-backup remains unqualified.",
+      "activation": "The explicit suffix preserves old destination bytes in destination.save while moving source bytes. A self-move with backup rejects with the complete same-file diagnostic, unchanged source and no backup artifact.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1276,9 +1310,11 @@
         "o10-rm-always-tree-full-accept",
         "o10-rm-always-tree-child-decline",
         "compat-filesystem-remove-link",
-        "repair-alias-rm-recursive"
+        "repair-alias-rm-recursive",
+        "rm-final-parent-slash",
+        "rm-final-parent-backslash"
       ],
-      "activation": "Confirmed traversal removes child/tree; child refusal preserves the child and reports nonempty. Explicit-r/--recursive remove the tested symlink while preserving its referent. Final-parent path protection remains unqualified.",
+      "activation": "Recursive removal and interactive refusal require exact retained/removed trees. Symlink removal preserves its referent; slash and backslash final-parent spellings both require full protected-path diagnostics and retained fixtures.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1286,9 +1322,11 @@
       "command": "touch",
       "claim": "no-create",
       "case_ids": [
-        "proof-touch-no-create-missing"
+        "proof-touch-no-create-missing",
+        "coverage-touch-no-create-existing",
+        "coverage-touch-create-then-boundary"
       ],
-      "activation": "--no-create absent returns0 with empty streams and explicitly absent destination. The-c alias and create-then-later-timestamp-failure sequencing remain unqualified.",
+      "activation": "No-create skips absent paths and its-c spelling rejects timestamp mutation on an existing file. A separate created-then-existing sequence proves earlier creation survives later failure while existing content, mode and fixed mtime remain unchanged; POSIX metadata scope.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1297,9 +1335,11 @@
       "claim": "symbolic",
       "case_ids": [
         "compat-filesystem-symbolic-link",
-        "repair-alias-ln-symbolic"
+        "repair-alias-ln-symbolic",
+        "compat-filesystem-windows-ln-boundary",
+        "coverage-ln-hardlink-boundary"
       ],
-      "activation": "On the explicitly applicable POSIX platforms,-s and --symbolic create the required link target while preserving source bytes. Windows rejection and hard links remain unqualified.",
+      "activation": "POSIX short/long symbolic creation preserves targets and source. Windows symbolic creation and portable hard-link requests require exact diagnostics, unchanged source and absent destination. Platform exclusions remain explicit.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1311,9 +1351,19 @@
         "ls-links-times-4",
         "repair-alias-ls-dereference-command-line"
       ],
-      "activation": "-H and its executed long alias follow the directory-symlink operand in the retained success fixtures, including-dF output. Broken-link diagnostics remain unqualified.",
+      "activation": "Actual-H follows a directory operand but retains child symlinks. A broken operand returns2 while retaining the good operand output, with one missing-path diagnostic and unchanged links/source. Explicit-P provides the literal-link control; OS wrapper locations are not frozen.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "ls-link-facets",
+          "assertions": [
+            "ls/operand-H",
+            "ls/child-H",
+            "ls/literal"
+          ]
+        }
+      ]
     },
     {
       "command": "ls",
@@ -1322,18 +1372,29 @@
         "proof-ls-dereference-directory-operand",
         "proof-ls-preserve-directory-symlink-operand"
       ],
-      "activation": "The same nonempty directory symlink operand under -LdF emits link/ LF, while -PdF emits link@ LF, both with status0 and empty stderr. No later-H or-P shadows-L in the positive fixture. This finite operand-classification contrast does not prove every traversed entry, broken-link error or alias.",
+      "activation": "Actual-L rejects a broken operand with status2; a broken discovered child gives status1 while preserving the complete sorted listing and literal symlink marker. Each diagnostic identifies the missing path/cause; links and source remain intact. Existing precedence rows stay required.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "ls-link-facets",
+          "assertions": [
+            "ls/operand-L",
+            "ls/child-L",
+            "ls/literal"
+          ]
+        }
+      ]
     },
     {
       "command": "tree",
       "claim": "level",
       "case_ids": [
         "o12-more-11",
-        "o12-more-2"
+        "o12-more-2",
+        "o12-linux-directory-du-level"
       ],
-      "activation": "-L1 with prune/pattern stops at the specified first level and counts; -L0 rejects as exactly asserted. Host-dependent Linux du-level fragments remain unqualified.",
+      "activation": "Exact depth1/prune and level0 rejection are supplemented by Linux du-depth output computed from independent stat-size inputs, proving descendant omission and selected totals; no fixed directory inode size is assumed.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1342,9 +1403,11 @@
       "claim": "size",
       "case_ids": [
         "o12-more-23",
-        "o12-more-29"
+        "o12-more-29",
+        "o12-linux-directory-size",
+        "o12-boundary-size-s"
       ],
-      "activation": "The explicit3-byte regular file has exact text/JSON size3. Directory inode-size fragments and host-dependent totals remain unqualified.",
+      "activation": "Regular-file sizes are exact; Linux directory sizes use independent host metadata in complete expected text. macOS explicitly rejects unavailable directory sizes with exact empty output and diagnostic.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1352,9 +1415,14 @@
       "command": "tree",
       "claim": "du",
       "case_ids": [
-        "o12-more-26"
+        "o12-more-26",
+        "o12-linux-directory-du",
+        "o12-linux-directory-du-json",
+        "o12-linux-directory-du-level",
+        "o12-linux-directory-du-prune",
+        "o12-boundary-size--du"
       ],
-      "activation": "The regular-file fixture has exact du output and total3. Nested-directory totals, depth/prune interactions and fragment-only Linux observations remain unqualified.",
+      "activation": "Full text and typed JSON require independently calculated inode-plus-file sums, nested counts, depth selection and prune effects on Linux. macOS unavailable directory metadata remains an explicit rejection; no filesystem-specific fixed golden or cross-platform parity is inferred.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1369,9 +1437,10 @@
         "compat-shell-line-39",
         "compat-shell-line-59",
         "compat-shell-line-68",
-        "compat-shell-line-95"
+        "compat-shell-line-95",
+        "p0-sh-public-error"
       ],
-      "activation": "The retained-c fixtures independently bind their recorded command substitution, heredoc, conditionals/case/for/functions/groups and errexit outputs/statuses. Unsupported-array rejection remains unqualified; this is a finite language profile.",
+      "activation": "The retained-c fixtures bind their exact finite shell-language outputs and statuses; unsupported array syntax now requires the complete rejection diagnostic before any command effects.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -1381,9 +1450,21 @@
       "case_ids": [
         "compat-text-make-include-cli-override"
       ],
-      "activation": "-C work locates the explicit Makefile and relative common.mk, with CLI VALUE overriding included/local assignments to emit cli LF. DAG/concurrency/ready-ACK assertions remain a separate required scenario facet.",
+      "activation": "Actual-C resolves an included relative Makefile with CLI variable override. The independent ready/ACK graph additionally requires bounded parallel starts, completion dependency order and keep-going/stop behavior; directory lookup is not used to infer concurrency.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "make-ready-ack",
+          "assertions": [
+            "make/jobs-before-ack",
+            "make/jobs-after-ack",
+            "make/keep-going",
+            "make/stop-before-independent",
+            "make/keep-going-sequential"
+          ]
+        }
+      ]
     },
     {
       "command": "curl",
@@ -1391,9 +1472,18 @@
       "case_ids": [
         "transfer-curl-head-length"
       ],
-      "activation": "-I on the fixed endpoint requires exact HTTP status/Content-Length headers and no response body. Captured-request method and broader retry/file lifecycle assertions require the separate scenario.",
+      "activation": "Actual-I emits complete fixed response headers and no body; the independent server must capture exactly one HEAD despite a nonzero Content-Length.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "network-transfer-boundaries",
+          "assertions": [
+            "transfer/curl-head-length/response",
+            "transfer/curl-head-length/methods"
+          ]
+        }
+      ]
     },
     {
       "command": "curl",
@@ -1401,9 +1491,20 @@
       "case_ids": [
         "transfer-curl-chunked-stdin-upload"
       ],
-      "activation": "-T- sends the explicit binary stdin to a reflecting endpoint and requires exact PUT:payload output. Captured request counts, retries and replayability remain separate scenario requirements.",
+      "activation": "Binary stdin upload and reflected output remain exact. The retry witness requires two PUT requests and exact captured body arrays: independently generated bytes0..255 first, then empty non-replayable stdin, with exact response prefix and range sequence.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "network-transfer-boundaries",
+          "assertions": [
+            "transfer/curl-stdin-retry-256/response",
+            "transfer/curl-stdin-retry-256/methods",
+            "transfer/curl-stdin-retry-256/ranges",
+            "transfer/curl-stdin-retry-256/bodies"
+          ]
+        }
+      ]
     },
     {
       "command": "wget",
@@ -1411,9 +1512,20 @@
       "case_ids": [
         "transfer-wget-fixed-complete"
       ],
-      "activation": "-O- streams exact fixed response bytes to stdout. Named-O creation/truncation/retries/partial persistence and/dev/full require the separate scenario.",
+      "activation": "Actual-O- writes exact fixed bytes; named-O additionally survives a partial first response and resumed retry with exactly two GETs, Range bytes5- and final helloworld in the sole regular output file.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "network-transfer-boundaries",
+          "assertions": [
+            "transfer/wget-retry-range-file/response",
+            "transfer/wget-retry-range-file/methods",
+            "transfer/wget-retry-range-file/ranges",
+            "transfer/wget-retry-range-file/files"
+          ]
+        }
+      ]
     },
     {
       "command": "wget",
@@ -1421,9 +1533,18 @@
       "case_ids": [
         "transfer-wget-head-length"
       ],
-      "activation": "--method=HEAD emits exact empty output despite the response Content-Length. Captured request-method equality and other custom methods/body interactions require separate observation.",
+      "activation": "Explicit HEAD returns exact empty output while an independent server captures one HEAD. Existing custom request/body fixtures remain required; no method is inferred solely from response length.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "network-transfer-boundaries",
+          "assertions": [
+            "transfer/wget-head-length/response",
+            "transfer/wget-head-length/methods"
+          ]
+        }
+      ]
     },
     {
       "command": "wget",
@@ -1432,9 +1553,19 @@
         "p1-wget-continue-range",
         "p1-wget-continue-new-file"
       ],
-      "activation": "-c exact JSON fixtures bind their explicit retained/resumed file contents for an existing prefix and a missing destination. Captured Range, malformed416, collisions and rename scenarios remain unqualified.",
+      "activation": "Explicit-c fixtures bind missing and existing-prefix outcomes; an actual416 at an equal-length resource captures Range bytes6-, succeeds without duplicate output and preserves the complete local abcdef file. Other malformed/range variants remain asserted in the same scenario.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "network-transfer-boundaries",
+          "assertions": [
+            "transfer/wget-resume-unsatisfied-equal-resource/response",
+            "transfer/wget-resume-unsatisfied-equal-resource/ranges",
+            "transfer/wget-resume-unsatisfied-equal-resource/files"
+          ]
+        }
+      ]
     },
     {
       "command": "wget",
@@ -1442,7 +1573,7 @@
       "case_ids": [
         "network-transfer-boundaries"
       ],
-      "activation": "The same perpetually incomplete fixed-length endpoint makes exactly one GET with -t1 and exactly two GETs with -t2 before both runs terminate with status4 and empty streams. Captured request methods/ranges prove this bounded attempt-count contrast; numeric backoff and other retry causes remain unqualified.",
+      "activation": "Incomplete responses distinguish exactly one GET under-t1 from two under-t2 before terminal status4. The independently held retry fixture also requires two requests separated by the configured wait interval and exact recovered output.",
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "scenario_bindings": [
@@ -1456,6 +1587,12 @@
             "transfer/wget-retry-empty-is-bounded/ranges",
             "transfer/wget-retry-empty-is-bounded/methods"
           ]
+        },
+        {
+          "case_id": "network-retry-effects",
+          "assertions": [
+            "wget/waitretry"
+          ]
         }
       ]
     },
@@ -1463,11 +1600,26 @@
       "command": "wget",
       "claim": "header",
       "case_ids": [
-        "repair-final-wget-cookie-header"
+        "repair-final-wget-cookie-header",
+        "p1-wget-method-and-repeated-header"
       ],
-      "activation": "The executed --header=Cookie combines with the fixture cookie jar as required by exact reflected response bytes. Arbitrary-header replacement and scenario request counts remain unqualified.",
+      "activation": "Repeated header replacement is captured on one request, including default User-Agent override. PATCH/body reflection and cookie interaction remain exact; cross-host explicit Cookie removal is bound to two requests.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "wget/header-replacement"
+          ]
+        },
+        {
+          "case_id": "network-auth-cookie",
+          "assertions": [
+            "auth/12"
+          ]
+        }
+      ]
     },
     {
       "command": "wget",
@@ -1476,9 +1628,20 @@
         "repair-final-wget-cookie-session",
         "repair-final-wget-cookie-header"
       ],
-      "activation": "--load-cookies=jar produces exact reflected fixture cookie outcomes, including explicit Cookie header interaction. Jar-save/reload lifecycle, path/domain/expiry and permissions require the scenario.",
+      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "network-auth-cookie",
+          "assertions": [
+            "cookie/wget/saved",
+            "cookie/wget/loaded",
+            "cookie/wget/missing-parent",
+            "cookie/wget/session-excluded"
+          ]
+        }
+      ]
     },
     {
       "command": "sh",
@@ -1667,7 +1830,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-auth-cookie"
+        "network-auth-cookie",
+        "repair-final-curl-cookie-header"
       ],
       "scenario_bindings": [
         {
@@ -1675,9 +1839,15 @@
           "assertions": [
             "auth/6"
           ]
+        },
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "curl/header-replacement"
+          ]
         }
       ],
-      "activation": "A custom Cookie header is stripped on the selected cross-host redirect, with two actual requests and an exact empty reflected cookie. Other header fields and same-host behavior remain unproved by this facet."
+      "activation": "Actual-H replaces repeated X-Marker and default User-Agent values, captured on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts."
     },
     {
       "command": "curl",
@@ -1767,11 +1937,13 @@
           "case_id": "network-auth-cookie",
           "assertions": [
             "auth/8",
-            "auth/11"
+            "auth/11",
+            "auth/9",
+            "auth/10"
           ]
         }
       ],
-      "activation": "Generic user/password responds to the selected challenge, including a cross-host redirect challenge, with exact Basic reflection and request counts2/3. HTTP-specific spellings remain separate."
+      "activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints; HTTP-specific credentials require a first-request Basic value, while preemptive cross-host redirect strips it with two requests."
     },
     {
       "command": "wget",
@@ -1786,11 +1958,13 @@
           "case_id": "network-auth-cookie",
           "assertions": [
             "auth/8",
-            "auth/11"
+            "auth/11",
+            "auth/9",
+            "auth/10"
           ]
         }
       ],
-      "activation": "Generic password participates in the exact Basic challenge responses on direct and redirected endpoints with two/three requests. Other authentication mechanisms remain unproved."
+      "activation": "Password assertions cover generic challenge and HTTP-specific preemptive spellings, exact reflected credentials, first-request counts and stripped credentials after cross-host redirect. This remains a finite Basic-auth profile."
     },
     {
       "command": "wget",
@@ -2134,6 +2308,420 @@
         "rg-global-ignore-type"
       ],
       "activation": "Explicit --type unknown-cmd-type rejects2 with exact empty stdout and rg: unrecognized file type: unknown-cmd-type LF on nonempty stdin. This binds unknown-type validation only; positive file selection, aliases and other type controls remain separate."
+    },
+    {
+      "command": "cp",
+      "claim": "archive",
+      "case_ids": [
+        "coverage-cp-archive-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The explicit -a spelling rejects before replacement with exact status/diagnostic and no prompt, retaining both original contents and creating no simple, numbered or custom-suffix backup. This is the documented portable boundary, not successful overwrite or metadata preservation.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "force",
+      "case_ids": [
+        "coverage-cp-force-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The explicit --no-preserve=mode -f spelling rejects before replacement with exact status/diagnostic and no prompt, retaining both original contents and creating no simple, numbered or custom-suffix backup. This is the documented portable boundary, not successful overwrite or metadata preservation.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "interactive",
+      "case_ids": [
+        "coverage-cp-interactive-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The explicit --no-preserve=mode -i spelling rejects before replacement with exact status/diagnostic and no prompt, retaining both original contents and creating no simple, numbered or custom-suffix backup. This is the documented portable boundary, not successful overwrite or metadata preservation.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "backup",
+      "case_ids": [
+        "coverage-cp-backup-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The explicit --no-preserve=mode -b spelling rejects before replacement with exact status/diagnostic and no prompt, retaining both original contents and creating no simple, numbered or custom-suffix backup. This is the documented portable boundary, not successful overwrite or metadata preservation.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "backup-control",
+      "case_ids": [
+        "coverage-cp-backup-control-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The explicit --no-preserve=mode --backup=numbered spelling rejects before replacement with exact status/diagnostic and no prompt, retaining both original contents and creating no simple, numbered or custom-suffix backup. This is the documented portable boundary, not successful overwrite or metadata preservation.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "suffix",
+      "case_ids": [
+        "coverage-cp-suffix-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The explicit --no-preserve=mode -b -S .save spelling rejects before replacement with exact status/diagnostic and no prompt, retaining both original contents and creating no simple, numbered or custom-suffix backup. This is the documented portable boundary, not successful overwrite or metadata preservation.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "touch",
+      "claim": "access-time",
+      "case_ids": [
+        "coverage-touch-access-time-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The individual -a selector rejects before any operand mutation: exact diagnostic/status, missing destination absent, existing and reference contents unchanged. Timestamp setting remains explicitly unsupported.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "touch",
+      "claim": "modification-time",
+      "case_ids": [
+        "coverage-touch-modification-time-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The individual -m selector rejects before any operand mutation: exact diagnostic/status, missing destination absent, existing and reference contents unchanged. Timestamp setting remains explicitly unsupported.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "touch",
+      "claim": "reference",
+      "case_ids": [
+        "coverage-touch-reference-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The individual -r reference selector rejects before any operand mutation: exact diagnostic/status, missing destination absent, existing and reference contents unchanged. Timestamp setting remains explicitly unsupported.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "touch",
+      "claim": "stamp",
+      "case_ids": [
+        "coverage-touch-stamp-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The individual -t 202001010000.00 selector rejects before any operand mutation: exact diagnostic/status, missing destination absent, existing and reference contents unchanged. Timestamp setting remains explicitly unsupported.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "touch",
+      "claim": "time",
+      "case_ids": [
+        "coverage-touch-time-boundary"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "The individual --time=access selector rejects before any operand mutation: exact diagnostic/status, missing destination absent, existing and reference contents unchanged. Timestamp setting remains explicitly unsupported.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "no-target-directory",
+      "case_ids": [
+        "coverage-cp-complete-path",
+        "coverage-cp-directory",
+        "coverage-cp-complete-existing-directory"
+      ],
+      "kind": "supported-option",
+      "activation": "Explicit -T copies to a new complete path and rejects an existing directory without creating dir/source, whereas the control without -T copies inside that directory. All byte effects are required.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "verbose",
+      "case_ids": [
+        "coverage-cp-verbose"
+      ],
+      "kind": "supported-option",
+      "activation": "Explicit -v emits the exact source-to-copy line only after the new destination contains the required bytes; the source remains unchanged.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "dereference",
+      "case_ids": [
+        "coverage-cp-dereference"
+      ],
+      "kind": "supported-option",
+      "activation": "Actual source symlink under explicit -L produces an independent regular-file copy with referent bytes; both the original link target and source bytes remain unchanged. POSIX symlink scope.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "no-dereference",
+      "case_ids": [
+        "coverage-cp-no-dereference"
+      ],
+      "kind": "explicit-rejection-boundary",
+      "activation": "Actual source symlink under explicit -P rejects the unsupported link-preserving copy without creating the destination; both the original link target and source bytes remain unchanged. POSIX symlink scope.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "dereference-command-line",
+      "case_ids": [
+        "quality-cp-recursive-command-line-link",
+        "p8-cp-command-line-link"
+      ],
+      "kind": "supported-option",
+      "activation": "Explicit -H follows both a file operand link and a recursive directory operand link; exact copied bytes and retained original link targets are required. Interior-link traversal is separate.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "update-mode",
+      "case_ids": [
+        "quality-cp-update-older-fixed-times"
+      ],
+      "kind": "supported-option",
+      "activation": "Controlled 2020 source and 2021 destination under --update=older preserve both contents and exact mtimes. This is the older-source skip facet.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cp",
+      "claim": "update",
+      "case_ids": [
+        "coverage-cp-update-short"
+      ],
+      "kind": "supported-option",
+      "activation": "Actual -u spelling with independently fixed older source/newer destination times skips the replacement and preserves exact contents and timestamps.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rmdir",
+      "claim": "parents",
+      "case_ids": [
+        "coverage-rmdir-parents-verbose",
+        "coverage-rmdir-parent-nonempty"
+      ],
+      "kind": "supported-option",
+      "activation": "-p removes each disposable empty ancestor in child-first order, retains a nonempty ancestor and its sibling sentinel with explicit suppression, and never removes the fixture root.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rmdir",
+      "claim": "verbose",
+      "case_ids": [
+        "coverage-rmdir-parents-verbose"
+      ],
+      "kind": "supported-option",
+      "activation": "-v reports the exact three removed directory paths in child-first order and the top directory must actually be absent.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rmdir",
+      "claim": "ignore-fail-on-non-empty",
+      "case_ids": [
+        "phase4-rmdir-ignore-nonempty",
+        "coverage-rmdir-parent-nonempty"
+      ],
+      "kind": "supported-option",
+      "activation": "Explicit suppression returns 0 with empty streams for a nonempty operand or parent, retaining the child bytes while still removing the empty descendant.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "chmod",
+      "claim": "verbose",
+      "case_ids": [
+        "coverage-chmod-verbose"
+      ],
+      "kind": "supported-option",
+      "activation": "A known 0600 file becomes exactly 0644 and -v reports that new mode; original file bytes are retained. POSIX scope.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "chmod",
+      "claim": "symbolic-assignment",
+      "case_ids": [
+        "p8-chmod-symbolic-assignment"
+      ],
+      "kind": "supported-option",
+      "activation": "Explicit a=rwx changes a controlled 0600 file to 0777, retaining its bytes; this is a concrete all-class assignment rather than parser acceptance.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "env",
+      "claim": "chdir",
+      "case_ids": [
+        "coverage-env-chdir"
+      ],
+      "kind": "supported-option",
+      "activation": "The launched child reports its actual canonical cwd after -C sub; the expected absolute fixture subdirectory is specified before execution.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "expression-language",
+      "case_ids": [
+        "phase3-find-exec-status",
+        "phase4-find-metadata",
+        "phase4-find-prune-depth"
+      ],
+      "activation": "Independent exact assertions require a final -exec child marker despite its false status, a one-byte file selection, and exclusion of a pruned subtree through -o. These are finite conjunction/disjunction/action facets, not the entire expression grammar.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "readable",
+      "case_ids": [
+        "p8-find-readable",
+        "quality-find-readable-negative"
+      ],
+      "activation": "A known readable file is selected; the unprivileged POSIX companion checks its access preconditions and excludes mode0000 while including mode0600, with exact selected paths and retained modes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "xtype",
+      "case_ids": [
+        "p8-find-xtype-link"
+      ],
+      "activation": "Default nonfollowing traversal with -xtype l selects an actual dangling symbolic link and preserves its exact missing target; POSIX applicability is explicit.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "test",
+      "claim": "expression-language",
+      "case_ids": [
+        "phase3-test-string",
+        "coverage-test-equality-false"
+      ],
+      "activation": "String equality gives status0 for identical values and status1 for distinct values, with exact empty streams in both cases.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "test",
+      "claim": "file-kinds",
+      "case_ids": [
+        "p8-test-dangling-link"
+      ],
+      "activation": "-L succeeds for a real dangling link and preserves the link target; no referent existence or unrelated predicate is inferred.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "test",
+      "claim": "size",
+      "case_ids": [
+        "p8-test-regular-size",
+        "coverage-test-size-empty",
+        "coverage-test-size-missing"
+      ],
+      "activation": "-s returns0 for a nonempty file and1 for empty or missing files, with exact empty streams and preserved nonempty source bytes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "ln",
+      "claim": "relative",
+      "case_ids": [
+        "quality-ln-relative-cross-directory",
+        "quality-ln-relative-control"
+      ],
+      "activation": "Under -sr the cross-directory link text is ../targets/file; without -r the identical operands produce targets/file. Both exact link targets and unchanged source bytes are required on POSIX.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "data",
+      "case_ids": [
+        "phase2-curl-post-data"
+      ],
+      "activation": "Explicit -d selects POST and the independent loopback endpoint reflects exactly alpha=one as the request body; status and stderr are exact.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "data-binary",
+      "case_ids": [
+        "p1-curl-binary-data-file"
+      ],
+      "activation": "--data-binary @payload.bin sends exact NUL/high-byte content under POST; both reflected bytes and retained source bytes are independently specified.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "data-raw",
+      "case_ids": [
+        "quality-curl-data-raw-literal",
+        "p1-curl-explicit-method-redirect"
+      ],
+      "activation": "--data-raw sends @literal literally despite a differently populated file of that name. The redirect companion preserves explicit POST while its redirected body is empty. Full redirect traces remain separate.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "max-redirs",
+      "case_ids": [
+        "p1-curl-redirect-limit-zero"
+      ],
+      "activation": "An actual redirect with -L --max-redirs 0 returns47 and exact empty silent streams; this is the zero-follow boundary, not a request-count measurement.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "request",
+      "case_ids": [
+        "p1-curl-explicit-method-redirect"
+      ],
+      "activation": "After a redirect, explicit -X POST is reflected as POST with the specified empty redirected body, rather than automatic GET conversion.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "body-data",
+      "case_ids": [
+        "phase2-wget-request-body"
+      ],
+      "activation": "An independent HTTP echo asserts the actual POST method and exact literal payload passed with --body-data; status0 and empty stderr are required.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "body-file",
+      "case_ids": [
+        "p1-wget-binary-body-file"
+      ],
+      "activation": "--body-file reads real NUL/high-byte input under an explicit POST method, with exact reflected bytes and retained input file content.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "input-file",
+      "case_ids": [
+        "phase2-wget-input-file"
+      ],
+      "activation": "A two-URL input file produces both separately named files with independently specified hello/world contents and no stdout or diagnostic bytes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "timestamping",
+      "case_ids": [
+        "p1-wget-timestamp-not-modified",
+        "quality-wget-timestamping-control"
+      ],
+      "activation": "The same conditional endpoint preserves existing bytes without a new file under -N, whereas its control without -N creates conditional.1 containing fresh. This binds the conditional-header-presence/304 file-effect contrast.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
     }
   ],
   "boundary_dispositions": [

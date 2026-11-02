@@ -338,6 +338,34 @@
       "coverage": [
         "check"
       ]
+    },
+    {
+      "id": "coverage-sha256sum-zero-record",
+      "command": "sha256sum",
+      "args": [
+        "-z",
+        "payload"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        }
+      ],
+      "expected_stdout_text": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad  payload\u0000",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

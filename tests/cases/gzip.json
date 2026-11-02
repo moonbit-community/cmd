@@ -90,8 +90,6 @@
       "environment": {},
       "expected_status": 2,
       "expected_stdout_text": "",
-      "expected_stderr_contains": "in-place replacement is unsupported",
-      "diagnostic_reason": "The diagnostic names the command and provides the supported stdout alternative.",
       "expected_rejection": "in-place replacement is unsupported",
       "comparison": "contract",
       "normalizations": [],
@@ -104,7 +102,8 @@
           "path": "data",
           "exists": false
         }
-      ]
+      ],
+      "expected_stderr_text": "gzip: in-place replacement is unsupported; use -c\n"
     },
     {
       "id": "g1-gzip-levels-decompress",
@@ -258,6 +257,69 @@
       "source_version": "workspace cli/gzip@0.1.5 metadata contract",
       "expected_stdout_text": "gzip 0.1.5\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "compression-selectors",
+      "command": "gzip",
+      "args": [],
+      "files": [],
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-gzip-garbage-control",
+      "command": "gzip",
+      "args": [
+        "-dc"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c241243503000000747261696c696e67",
+      "expected_status": 2,
+      "expected_stdout_text": "abc",
+      "expected_stderr_text": "gzip: -: decompression OK, trailing garbage ignored\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract"
+    },
+    {
+      "id": "coverage-gzip-quiet-garbage",
+      "command": "gzip",
+      "args": [
+        "-dc",
+        "-q"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c241243503000000747261696c696e67",
+      "expected_status": 2,
+      "expected_stdout_text": "abc",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract"
+    },
+    {
+      "id": "stream-failure-prefixes",
+      "command": "gzip",
+      "related_commands": [
+        "wc",
+        "rg"
+      ],
+      "comparison": "scenario",
+      "timeout_ms": 30000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

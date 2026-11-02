@@ -206,6 +206,217 @@
       "source_version": "workspace cli/gunzip@0.1.5 metadata contract",
       "expected_stdout_text": "gunzip 0.1.5\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-garbage-control",
+      "command": "gunzip",
+      "args": [
+        "-c"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c241243503000000747261696c696e67",
+      "expected_status": 2,
+      "expected_stdout_text": "abc",
+      "expected_stderr_text": "gunzip: -: decompression OK, trailing garbage ignored\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract"
+    },
+    {
+      "id": "coverage-gunzip-quiet-garbage",
+      "command": "gunzip",
+      "args": [
+        "-c",
+        "-q"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c241243503000000747261696c696e67",
+      "expected_status": 2,
+      "expected_stdout_text": "abc",
+      "expected_stderr_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract"
+    },
+    {
+      "id": "coverage-gunzip-no-name",
+      "command": "gunzip",
+      "args": [
+        "-n"
+      ],
+      "stdin_hex": "1f8b08080000000000036e6f7465732e747874004b4c4a0600c241243503000000",
+      "expected_stdout_text": "abc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-decompress",
+      "command": "gunzip",
+      "args": [
+        "--decompress"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-stdout",
+      "command": "gunzip",
+      "args": [
+        "--stdout"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-fast",
+      "command": "gunzip",
+      "args": [
+        "--fast"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-2",
+      "command": "gunzip",
+      "args": [
+        "-2"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-3",
+      "command": "gunzip",
+      "args": [
+        "-3"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-4",
+      "command": "gunzip",
+      "args": [
+        "-4"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-5",
+      "command": "gunzip",
+      "args": [
+        "-5"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-6",
+      "command": "gunzip",
+      "args": [
+        "-6"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-7",
+      "command": "gunzip",
+      "args": [
+        "-7"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-8",
+      "command": "gunzip",
+      "args": [
+        "-8"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-gunzip-level-best",
+      "command": "gunzip",
+      "args": [
+        "--best"
+      ],
+      "stdin_hex": "1f8b08000000000000034b4c4a0600c2412435030000001f8b08000000000000034b4c4a0600c241243503000000",
+      "expected_stdout_text": "abcabc",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
     }
   ]
 }

@@ -180,17 +180,14 @@ async fn main {
   guard ["true", "false"].contains(require_full) else {
     fail("--require-full must be true or false")
   }
-  if proof_field(report, "reviewed_profile_passed") != Json(true) ||
-    (
-      require_full == "true" &&
-      proof_field(report, "full_catalog_qualified") != Json(true)
-    ) {
+  if !proof_acceptance_passed(report, require_full == "true") {
     let failed = proof_array(proof_field(report, "rows")).filter(row => {
       proof_field(row, "passed") == Json(false) &&
       proof_field(row, "applicable_cases") != Json(0)
     })
     println(
-      "Finite proof verification failed: \{failed.length()} applicable claims rejected",
+      "Finite proof verification failed: \{failed.length()} applicable claims rejected; unresolved obligations=" +
+      proof_field(report, "unresolved_obligations").stringify(),
     )
     for row in failed[:failed.length().min(12)] {
       println(

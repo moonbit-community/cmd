@@ -853,6 +853,74 @@
         "data-raw"
       ],
       "source_version": "Independent raw-body contract: --data-raw sends @literal literally and selects POST; a real literal file with different bytes rejects accidental -d file expansion. The hand-written echo endpoint returns method colon exact request body. Existing redirect case remains separate."
+    },
+    {
+      "id": "network-deadline-effects",
+      "command": "curl",
+      "related_commands": [
+        "wget"
+      ],
+      "comparison": "scenario",
+      "timeout_ms": 120000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "network-retry-effects",
+      "command": "curl",
+      "related_commands": [
+        "wget"
+      ],
+      "comparison": "scenario",
+      "timeout_ms": 120000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "network-refusal-recovery",
+      "command": "curl",
+      "related_commands": [
+        "wget"
+      ],
+      "comparison": "scenario",
+      "timeout_ms": 120000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "network-option-effects",
+      "command": "curl",
+      "related_commands": [
+        "wget"
+      ],
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

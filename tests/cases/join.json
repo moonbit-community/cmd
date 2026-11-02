@@ -132,11 +132,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "is not sorted",
-      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
       "coverage": [
         "check-order"
-      ]
+      ],
+      "expected_stderr_text": "join: left:2: is not sorted: a\n"
     },
     {
       "id": "compat-text-join-nocheck-precedence",

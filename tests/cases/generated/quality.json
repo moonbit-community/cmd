@@ -2,9 +2,9 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2068,
-    "finite-diagnostic": 114,
-    "typed-scenario": 16,
+    "exact-local": 2306,
+    "finite-diagnostic": 84,
+    "typed-scenario": 32,
     "typed-dynamic-output": 10
   },
   "definitions": [
@@ -150,6 +150,146 @@
       "case_id": "quality-cp-update-older-fixed-times",
       "source": "tests/cases/cp.json",
       "definition_sha256": "0814a1382bfdcd032b29ab868b696fa7f8d7f087d303aa89bcf52ba1627bd20c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-archive-boundary",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "7466d06d05901c063bc4706c6d22934c199435d6d772fec05687753faf41be1d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-preserve-boundary",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "d2395f3e2ff1e93e745d726dc0c1a4d1b71df7572a4831ab4415b570d966b33c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-force-boundary",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "5a42bad4c5220116fd79751aa99799b9a566df1659e180e74c999383d9a87994",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-interactive-boundary",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "1ff6411f6cf824760437c593edf1140bfd53345afc9f0dfbd700d6e366fcbeac",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-backup-boundary",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "12e4309fdf81d48f9a6f4d2064c094c1c90c7fdec1df7c4662b522b48917d3bf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-backup-control-boundary",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "bf3eb4caaa2365a9d86d264be3430eb0afc5ff1a11a5161b52e763a2516b2ec0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-suffix-boundary",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "dea9b1e5e7dd72d08ca824a81def7ba9e7b880d7efe73b35423ed39360901813",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-complete-path",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "264a9ba5a695a7480f387b7d41236eda9c3641402d72d71250d538db892bee51",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-verbose",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "9166ea4f9cef9a91af8164e50a931fba4b5d0f5346890c650a240e594f73afc9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-directory",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "ed42c23c7552b79a6ed1821db4e1c1056caea8f5e03a4c1f408dfc9f0c18db0a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-complete-existing-directory",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "72e0c34bb96579725f87a83b4c7e3a542aa68027940b815c078c1137d175a218",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-dereference",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "b141461bfe5fd808be29baa69654d37c67559abb653058a32ed50862c2aa66b7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-no-dereference",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "877f600653e2d957d58c33fa75b4bd5065d1558c5409d3e43f7dfd3d7c7bd745",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cp-update-short",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "ca6bc37f654a577fda2feba73d4ae1a42331549c3fd040d7227c744834e7e8c4",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -812,11 +952,10 @@
     {
       "case_id": "compat-filesystem-windows-ln-boundary",
       "source": "tests/cases/ln.json",
-      "definition_sha256": "e8fe69aa6493030c6fb04a192b96c15bbfed669599caa4d591acb167f1776df9",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "6bebf3601e6072793755a2b7ade8bdad7bd4487c2b15585fce936afd2dc02a22",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -924,6 +1063,66 @@
       "case_id": "quality-ln-relative-control",
       "source": "tests/cases/ln.json",
       "definition_sha256": "cc0427447e692614b3b41c59118502e5ae3122dd55a6dda3ddc768dc4da7c231",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-ln-backup-numbered",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "fa41563b5b98b68930e21403304ae97e82d66c15b4bca44b2f1a5c6a96803823",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-ln-backup-existing",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "eb179321b13befa09aa56a6ffdaefd7b7cf08c96734a85ae9c3502b6346adfae",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-ln-backup-none",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "af59e2cec21f55902a8f447d57a623babfd31e7c292c93f3dc9c2aeef29dbd81",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-ln-verbose",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "30fbca10ca2682da6e7c2d5a661db6f7af43d81c0f9b22ab627c591d975bce43",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-ln-no-target-directory",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "84d69e2e8bfd86899308fb5273a1b534ba1eeefcabf67fbdfd3615c19ba021fe",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-ln-hardlink-boundary",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "7f0295af952d82fa44ca6f13cf2070064e378d013818ff1f99172eae36768a36",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1907,11 +2106,10 @@
     {
       "case_id": "o11-invalid-quote-before-valid",
       "source": "tests/cases/ls.json",
-      "definition_sha256": "6bc64b6a7d56e7fb66e3a7c4d4ccf95af5f47b528bcde2b91678189e05a004a4",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "21327212015604d0be36232ee7ceb767b8670d27122d89e15beb04ffe2a34ca1",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -1929,11 +2127,10 @@
     {
       "case_id": "o11-ambiguous-quoting",
       "source": "tests/cases/ls.json",
-      "definition_sha256": "b3d5802c55d6fca8c4a3eab8cbaccd242954acbe19e8c4605034f99ea8430258",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "cdc31ba7d26474c7987f479785279c81660c94bc55a03ee3f2823ea73f302828",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -2028,6 +2225,20 @@
       "required_work": ""
     },
     {
+      "case_id": "ls-link-facets",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "2cef5bb6250519da178e2b18bbc030db04de1d9d21debf1058d53988e8c6d3fd",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:ls-link-facets"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "mv-windows-wasm-links-boundary",
       "source": "tests/cases/mv.json",
       "definition_sha256": "1b9214c78cd11aca1b84ad3c9d5a37f76146682a36315a92623f42dcb0e34bc0",
@@ -2118,11 +2329,10 @@
     {
       "case_id": "repair-fs-mv-same-backup",
       "source": "tests/cases/mv.json",
-      "definition_sha256": "1b8f339208f60b0d4efc867f74ea6c1cc592815a6b991c98a509118439641b2d",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "cc36c8ba78f3f5fd15ab27b3d44831d6dfd0c886adb76204399541d6ed659084",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -2200,11 +2410,10 @@
     {
       "case_id": "repair-fs-mv-equal-time-boundary",
       "source": "tests/cases/mv.json",
-      "definition_sha256": "b989af4f2df6f76b81b2be9b115a128eb83590e6048e0f08b5134747753fd977",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "3590a6c0b4b9dc0e7da1d6c67518cfe34d56b04b3d7f98ba1c0bd68d0b8c0d7a",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Equal timestamps cannot establish identity; reject the ambiguous early-return decision without mutation."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -2272,6 +2481,56 @@
       "case_id": "release-metadata-mv-version",
       "source": "tests/cases/mv.json",
       "definition_sha256": "06cea65587332d8b2dc730ca3372a59b817fed516d30b587e0a6a95860173635",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-mv-force",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "23aeb02b4302a2a0137d88ca2aff9c9a5b74cac9a7ec1a11a6fb9fd6574df40b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-mv-verbose",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "b53afbab5786f529603d238eb46be4900f4ac7267afd23b3b940af7229c056e6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-mv-backup-numbered",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "198025e7f70d03c3b9aa695005da3f8b4a1f2631b078b2ff87de2715ef096efd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-mv-backup-existing",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "ebf19364c0c23d4adf9c62b7987dd18307c889dee6e01b23bd8187e5fef99293",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-mv-backup-none",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "9ace1674b03ffc9cdcc0822fd843a3e9e8fc925f75ec6a5d57cd34642c05df97",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2382,6 +2641,56 @@
       "case_id": "proof-nl-unnumbered-utf8-separator",
       "source": "tests/cases/nl.json",
       "definition_sha256": "09100da8197d380da7704374cb94a6baef60eace52a0a2771475663b1df5057b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-nl-footer",
+      "source": "tests/cases/nl.json",
+      "definition_sha256": "db29cb98eaff43f27e7c6c1e4fc54834f19b6f51debfac63d8dd4b169a66b331",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-nl-blank-groups",
+      "source": "tests/cases/nl.json",
+      "definition_sha256": "824f0da4a903bab43e56f35f62e6206890a568a5ee8f291328e3cbbeaff2881d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-nl-page-reset",
+      "source": "tests/cases/nl.json",
+      "definition_sha256": "0d52ade10fb00e643757f9ab9f3af328764645c826b9a3f991384a0199149a29",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-nl-page-continuation",
+      "source": "tests/cases/nl.json",
+      "definition_sha256": "4bc677df4b36026b928f17cd0aa353433c14e5bc0ecf6e2b07a4af64adc90fd8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-nl-delimiter",
+      "source": "tests/cases/nl.json",
+      "definition_sha256": "9e6726062688ea313c5f6b6cdb5c29a34133763e2331551cbd27c969859f6a03",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2842,11 +3151,10 @@
     {
       "case_id": "o7-19-od-strings-eof",
       "source": "tests/cases/od.json",
-      "definition_sha256": "9d7096a8dc72c9131d9f662dd4eaa90df14c4cf19fb60a7e5e60e8b0e64514c0",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "165b2e5c29f70f6340d4e4cf81aeac6b5b69b524f6ba180e814757fe17071661",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/od in libc's diagnostic prefix and trailing help hint. The exact missing-short-option-argument diagnostic body, stdout and status are asserted; complete oracle and Native/Wasm candidate streams are retained separately."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -2994,6 +3302,86 @@
       "case_id": "o7-od-x87-pseudo-infinity",
       "source": "tests/cases/od.json",
       "definition_sha256": "68825066aa18da267a9587cd7ad58163c59d7f22f6067da18fd8f22bb74e408e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-od-named",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "d5f22080a9e88e5c57511494e78542af241940419344a9bb141c66cb9fddb74b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-od-octal-byte",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "98999f12c7cef7b62dcab664045c8c25368068445b4193459fa2939141139ca2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-od-decimal",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "1f0ab718598f6907dea503f2a0e6fc9f95df7285c44c5104f6b41c2f856804e6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-od-int",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "3459be093f2ed03ce981f6ea0b5972cee2d5b9213d224adbece061d242755a2b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-od-long",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "eb3592d7e3415a7e3b1c4f19f514a1b7bdecd9c25035cd003df7e01dd85ad092",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-od-octal",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "e6a050a2d8f9e26c6755ee810005785dee59c5e281c5220654fc5d364b19d441",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-od-signed",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "bc2ff2154d8172d60040ef2181ff0c7ac759b393a5c8989019def1d0809c17c9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-od-hex",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "4bed701a7e44a517371060f8143672eded3c3c78b1b02e846feeb1f9d9300534",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -3235,11 +3623,10 @@
     {
       "case_id": "rg-boundary-creation-time",
       "source": "tests/cases/rg.json",
-      "definition_sha256": "46ca719a97ad42a05b5446f67b4f17573ce3de8c6a1d4596217f075d7b1600d7",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "bfda2bcfd9c487ab2f33318e92f0aed1ee29ae7506495699a73d0b167cbf707f",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Released public metadata has no creation time; status and stdout are exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -4019,24 +4406,256 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-rg-ignore-file",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "5d94863b95ecc39cf0e7174ddcbcd19d68dfa47af80218cff850b0379a427707",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-ignore-file-control",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "bf2110d94c61c325cd95de8a41f846afd095be1d191bf6dde602effc452079a2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-iglob",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "ce9b8661b99dfa46c2507a76f312e8c44fde89d403f8b0482664147e23418ee4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-no-ignore",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "4aafb1000acd95baa54cd10f4baeead827f918cb5f59519bb0c6bc9fbf227c45",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-no-ignore-control",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "f225c41569d9644f982f60cc5b2cb5451ccf6d2807c292660cc9aa179144a9a4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-type-not",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "1360c737260b26d8764c70369c5c5228af7b52313f28ebec4d6bb0ee3f4f0d59",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-type-add",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "21cf04ba534127ff4e9632934db4e08926d89af0b6a8f8380f3d1e2a7883b719",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-max-depth",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "d4cd3f623697ee0918bacad00601a3066d6d2abfed1e8b1a113d23e8a5ad39ab",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-max-depth-control",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "1ef812e7ffae21842791f27b5df5a84a60b971f72ffc532fec177b84144be0ac",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-sortr",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "4dcc43e141887e376fae77229aa5b221dcfd5f320a749dc104180427b96ebfc9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-before-context",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "1fff121e719c43124785295d1f406cb5a467072e964cc36520bc63b1dbf5cdc9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-dotall",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "81096545343551652945e10fb8b9ec4cd07038928af28c37a2263f6aac6ed3f4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-dotall-control",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "5c922be4c0c37632dda9c8dcfa3eedd7f92a681cae45781bf85ab9ae5e432cca",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-no-filename",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "61affee9e9999476a65df3b76ec36f60654ca75599a32c964a6fdc673548b268",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-no-config",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "69d6d0f21d57bc1374d695a03cc3c7ee454a34ea2dddec1d257b74afd500618d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-encoding",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "3d99892d6851c3dbd54f71a2b4ccd79eae3b0418b871f49550ceaf34747f4a27",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-binary",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "e90c65e260fc892421339a6dbfc348fecd8484a1a283ec84c4d924acc3d2f7bf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-pre-glob",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "60aa737aeb594f07902832dbb20fdd40ba4fe06ea2113f8031c6e0b7da393a59",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-follow-control",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "e778ea4165449c788449d2ff3a508d8f0b63613774dbf678f134b2e43f8f5085",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-follow",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "21b0af2f1b288d80f7e6c6c59d9c555161e0ac3c910b89f52e8b97f8a9623a20",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "rg-type-listing",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "a41d13fffbf30dd8842f185b92975288075951d6290c8f898c9351b9f6ad7acf",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:rg-type-listing"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "coverage-rg-sort-accessed",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "921ac75dfe568a9cc72f6bef4751f6734410ae9312426a09a7fb47c3c0339fac",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rg-sort-modified",
+      "source": "tests/cases/rg.json",
+      "definition_sha256": "30b46532aadefba7532771360340214980fab245a2dd51eefde37769cf8a052e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "rm-final-parent-slash",
       "source": "tests/cases/rm.json",
-      "definition_sha256": "27d8f22b1e0e41e9268329b3c21073a4c0081d4cf91c19c096f9c5fca8ab86c7",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "80a97e4103d55a183c65fc2e65f9768d8cd41f1588dc7c22bf7893e4e9e18d23",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The path spelling is platform dependent; the refusal, status and complete retained fixture are required."
+        "kind": "exact"
       },
       "required_work": ""
     },
     {
       "case_id": "rm-final-parent-backslash",
       "source": "tests/cases/rm.json",
-      "definition_sha256": "f9b508e27147e063b6042a8a06a729246891386a06befed725a818dfea4c1585",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "49356d677da43d8e8d0535bf07adc9c30d998a812c828dc6f07f567768d0ca6f",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The refusal, status and complete retained fixture are required; command branding differs from upstream."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -4423,6 +5042,20 @@
       "required_work": ""
     },
     {
+      "case_id": "rm-root-guard",
+      "source": "tests/cases/rm.json",
+      "definition_sha256": "a4f4d37adca1ad58a78c3e9be78d190661156720ecedb739123ad666426b02ec",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:rm-root-guard"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "phase5-sh-command-positional",
       "source": "tests/cases/sh.json",
       "definition_sha256": "6541e3300f4194134c47e133fd2af79dc3669d7364e4957e80b19111f1bfe164",
@@ -4435,7 +5068,7 @@
     {
       "case_id": "p0-sh-public-error",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "ac8c896e77a172ec6ff4c1c338ad4da2ea12c61172a0ee53f7c3f16186c6c247",
+      "definition_sha256": "3c1f1234d3cf6af5c4bff74cd68095f966a8989b6fd2f1389af6ac3fa3184fd1",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4984,11 +5617,10 @@
     {
       "case_id": "compat-text-line-536",
       "source": "tests/cases/wc.json",
-      "definition_sha256": "c3bea173516526f5cf5d348bf8c7787e1b564c7e2032cbdf0225924b5b19d22b",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "29cc838cd820ce1f04211243a7d11152f3b4fa33a549d9d00831964484949c83",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -5534,6 +6166,36 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-cat-ends",
+      "source": "tests/cases/cat.json",
+      "definition_sha256": "8ead93913435e97dc1f94473081962029b8712e8ce619fd387bc355f0608d0d3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cat-tabs",
+      "source": "tests/cases/cat.json",
+      "definition_sha256": "e188491affb8e0f0ada33a9113d8fa77104f99459d47c1db911e4ec58e8a4a21",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cat-nonprinting",
+      "source": "tests/cases/cat.json",
+      "definition_sha256": "96460b5c7027a64db3e25555dab6d1dfe28645f5213d013901da5fe9e7f9c15b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p9-cmp-different",
       "source": "tests/cases/cmp.json",
       "definition_sha256": "dc9849faa0d5fc446b1349bbd01d1667c2d19f5970de8496b54b64b5bfe0c8ca",
@@ -5668,6 +6330,36 @@
       "case_id": "o7-cmp-quoted-eof-name",
       "source": "tests/cases/cmp.json",
       "definition_sha256": "c0caca76d96fb0c365b4bd01527453a15693d43b3f99c059d086d08e6d8d4613",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cmp-before-difference",
+      "source": "tests/cases/cmp.json",
+      "definition_sha256": "566a49c2f3896a73288a2169655d6baf4c719a29323a057de9fa7e9fa8e01009",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cmp-at-difference",
+      "source": "tests/cases/cmp.json",
+      "definition_sha256": "12059a6eb62a5794421964078211dc6870409498cbd18a70917b6e05ee11db4c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cmp-silent-difference",
+      "source": "tests/cases/cmp.json",
+      "definition_sha256": "5355b7e75d94706dbd7de5857e1eaa3bf4ee31a357325ed1d62edf1efa7dbe64",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6356,6 +7048,46 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-env-chdir",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "5b9bbd40b8c66bb4b26599571e70f3b71e1cfbda59b682a623c968dd3d8f1b06",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-env-unset-before",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "1cd918c57e2e4dd927f9a0f1cc0d9da41bfbf0016538b1852e14125d4cc118e3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-env-unset",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "1494dad86fc590cbc1a3b6755e248aadd404e4d854b52ac52402376ea01d7619",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-env-unset-reassign",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "05bab88ffe786b09148c484f7724bf49c4348629d2e2f28e22b46fd840f88185",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p1-fmt-width",
       "source": "tests/cases/fmt.json",
       "definition_sha256": "457bc88f0cd02e3ad0d49c740c6ce4e4b0369e7c490a35f9c6824716b1ef9872",
@@ -6769,6 +7501,26 @@
       "case_id": "release-metadata-pwd-version",
       "source": "tests/cases/pwd.json",
       "definition_sha256": "0c9dafe4278aa384eed3ffbb79d43630eaad00785f5ad543371672a2e079b3eb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-pwd-logical",
+      "source": "tests/cases/pwd.json",
+      "definition_sha256": "570df36f13482bb20b11b0ace85ccdd01baa9f8c140f84366647c969429f3a9f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-pwd-physical",
+      "source": "tests/cases/pwd.json",
+      "definition_sha256": "1d80521d1deda9ae103ef6d59b4eb70150d4e89c3ea04c4b527ebf412b9041b6",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -8082,11 +8834,30 @@
     {
       "case_id": "proof-sed-in-place-boundary-preserves-source",
       "source": "tests/cases/sed.json",
-      "definition_sha256": "eda5741f48461ad5152c0d017539c557c9795e91e139eb168e1e1f3bc10be8b1",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "305cc79df63d909ecf55324f76c84eb78181b715d5ce003e16c5c08a27e17c12",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The documented in-place API boundary must reject before touching the input; command-specific wording may vary."
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sed-silent",
+      "source": "tests/cases/sed.json",
+      "definition_sha256": "d68c492684b059a7caba7505e161dcebf495d83db392bc45070300eebb53f55a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sed-in-place-short",
+      "source": "tests/cases/sed.json",
+      "definition_sha256": "cb3c9b8d78eddf2efc827754db45f9a5114a3ec6b128a5de3ba6d08560be96fc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -9931,6 +10702,20 @@
       "required_work": ""
     },
     {
+      "case_id": "yes-stream-lifecycle",
+      "source": "tests/cases/yes.json",
+      "definition_sha256": "251c5d4fff8c26481127022cb4263be39ed6c285ed3dfbe1a2c5415820827c72",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:yes-stream-lifecycle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "phase3-comm-columns",
       "source": "tests/cases/comm.json",
       "definition_sha256": "cf9e8f911d2c540ea2426e1c10dbc8f7f440636713ac3eb820b1e4c73a7d3ced",
@@ -10558,6 +11343,62 @@
         "kind": "exact"
       },
       "required_work": ""
+    },
+    {
+      "case_id": "network-deadline-effects",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "6143966d5d758e828255c195c731a5dc47d175b44b8f9cbbb8e5cc212215da44",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-deadline-effects"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-retry-effects",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "4930f5bfa8864502f5f7be8bc09cb5cf0d2c35968981a7c87a565c7cec987756",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-retry-effects"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-refusal-recovery",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "d62b3f19fa294e712ff1c7db369dba0ad5b1bd3014042824ce0358297be89227",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-refusal-recovery"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-option-effects",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "d4f4cfb8be4e837236b8651f1344ba9ad45235e3e126ac55c0b2d68f6fd4e72e",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-option-effects"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "p2-date-epoch-format",
@@ -11338,6 +12179,26 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-diff-unified-lines",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "48ca0d11c5b8061862a268afed59dc792a36aea164d730337687b8a6cd1a3674",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-diff-context-lines",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "de8d04cf50c9ce7adbbdee913caf7df8b3b9aff629f63fe4482e1d04c2bbe107",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase3-echo-basic",
       "source": "tests/cases/echo.json",
       "definition_sha256": "ae2b2089309b897743ac17b654a6c2611db5520a600d514f3a5199f764b64a54",
@@ -11768,6 +12629,50 @@
       "required_work": ""
     },
     {
+      "case_id": "metadata-relations",
+      "source": "tests/cases/find.json",
+      "definition_sha256": "d934b2853050fb51ad647c2a11d047a3316f01d66fb3be336c6c915a9e5093fb",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:metadata-relations"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "coverage-find-reject--newerBm",
+      "source": "tests/cases/find.json",
+      "definition_sha256": "c0de23493a4df978326e18ee4bbc3734f6b00d1a6bfc460731c2fd81646f46ce",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-find-reject--newermB",
+      "source": "tests/cases/find.json",
+      "definition_sha256": "51c129745e2312bd1f42a78ea13707e995b564f068ea4b2b514f45c401ec27bd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-find-reject--newermt",
+      "source": "tests/cases/find.json",
+      "definition_sha256": "49668d9e49850cebd50dfa3216a0e28b8d58fa83a0bf287e41eaae98e9d0e3fa",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "fold-width-newline",
       "source": "tests/cases/fold.json",
       "definition_sha256": "3d26e8151612860db73c70eaf06dfb8214ad7ace5a7933ced9286dfa05b15a4f",
@@ -11882,6 +12787,26 @@
       "case_id": "release-metadata-fold-version",
       "source": "tests/cases/fold.json",
       "definition_sha256": "5bafce21b6f6729612023dcdb1c93bb9a79cf65049d458fbe3b50271f3fae38f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-fold-characters",
+      "source": "tests/cases/fold.json",
+      "definition_sha256": "1f1908f5d7f8d653c3e39866fbea2c22cbde197fa3a43ce33ee0e1b4f8d997bb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-fold-columns-control",
+      "source": "tests/cases/fold.json",
+      "definition_sha256": "0e3b61157f496e4cf87d1a7ff5735dc24bc8234d22af61009a1fc680e95534ce",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -12232,6 +13157,136 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-grep-basic",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "f983809dab6dddf2f22b9e3682faf4a57855dcaf623926d6fc17280a13e5db84",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-count",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "c4f8253f14422e853a589c482646767b64a3742500e2fdfdca87aaf84a8028b6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-file",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "b319f13c0492945457f53a0771e0931bce74272246bf9d51312c0ab4d8fb2afc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-files-matching",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "0fb1319eaf1ae34c6e3346b62106b6b3f8f1acf0c5a64acd47e9aca33f2d9ee7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-files-nonmatching",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "a3f159e8a3cc586499fde33a6f40bc9e0ddf9a69c736741b342e903e7183737e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-invert",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "6e78e8f90d718aba19a7eff9309b1eb6fa99fda6a5e4a64d384d3fce00a83c63",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-line",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "a6d3c719332c2f8be643bc97fbd423c1b21f86bfc475dc2deb94af331a82e0b4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-quiet-hit",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "4b75ff070a429f7a6ba0dafea810e7539601cb348dc518b20efb4d43fb31d066",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-quiet-miss",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "d0475a1e29cb5a879f319dcb3ed71f7691b60f78c0581ae0c619b34f38516b47",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-no-filename",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "e6f1253434e7431d2566ac46182e912784cb3d354626a1b79640ce00ffcc9a33",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-with-filename",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "5952d1e2aaafe7cb416cfad32fe6e9668b50573da99cb491f5915e558bd50609",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-text",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "9cea00283b74ccfd052acf38c9566b92ae890118f782c2b72e9dbe9474e3dcf8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-grep-binary-policy-reject",
+      "source": "tests/cases/grep.json",
+      "definition_sha256": "6ee51f70a095fb13560067a5917cc0a8a2db9e0b7891fcb371667b06aa843bfe",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p1-gzip-concatenated",
       "source": "tests/cases/gzip.json",
       "definition_sha256": "f4dd6eb1cf12163dbe0ccc9f62e364530cb71f5d50757d763aa677abd2814b9f",
@@ -12275,11 +13330,10 @@
     {
       "case_id": "p1-gzip-inplace-boundary",
       "source": "tests/cases/gzip.json",
-      "definition_sha256": "193531b36e8ccaddd043b60704817b094e771dc2bcf06af0296a6734c12f524d",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "addd1c79e42065cf43dd910a962b764b87948e9693bb048008db311839922bde",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The diagnostic names the command and provides the supported stdout alternative."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -12333,6 +13387,54 @@
         "kind": "exact"
       },
       "required_work": ""
+    },
+    {
+      "case_id": "compression-selectors",
+      "source": "tests/cases/gzip.json",
+      "definition_sha256": "e0f7398f5dac53a0ab96715bbeeaf8a6003a163c4d59c2c979e190e3a339912b",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:compression-selectors"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "coverage-gzip-garbage-control",
+      "source": "tests/cases/gzip.json",
+      "definition_sha256": "0f5f1b8f88dc227d0e78283669df7e095d0473fbf9923e83cdda85b625d53a38",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gzip-quiet-garbage",
+      "source": "tests/cases/gzip.json",
+      "definition_sha256": "4675d52151a284cdf1fa582ec897b62b9d6f2a7a8195dbbcddc841479d4bd4f9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "stream-failure-prefixes",
+      "source": "tests/cases/gzip.json",
+      "definition_sha256": "47701b0e72f1629a3d7780750a8449a39ade32fca140475aa5a6b86a91a043db",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:stream-failure-prefixes"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "phase3-head-line-count",
@@ -12427,11 +13529,10 @@
     {
       "case_id": "compat-text-line-591",
       "source": "tests/cases/head.json",
-      "definition_sha256": "64197c66255f33aa6a1d0b49a0f4e0fedcabfe58e1c545156de295ef1c6eb3bc",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "ba10bd4327e668986a82ea06533a6297742c4fe3cd60d91de04b65e5b42afa22",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -12538,11 +13639,10 @@
     {
       "case_id": "compat-text-join-check-order",
       "source": "tests/cases/join.json",
-      "definition_sha256": "87d62caa84fa23c4d6eecd682c7d13266da57146f36d9d02e09f808d3ed27476",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "1f4aef773dcd7fcd39d61362f8ff5ac6a94004c7338386d7de20e4094a923704",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -12892,6 +13992,76 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-make-fresh-control",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ffb61841fdb1a0c2f81ca382d1ac922c1fbbe28f8afee099568880a6e75717f3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-make-always-make",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "2251557c5eb3e5b47e554d28b828a4ec0185a92c0116c783e9f91d98c340a547",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-make-what-if",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "4b442ce9452af12ebb5337f8745a631fbc358a73dc11b44c8cfefc8befd1a07a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-make-just-print",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "40c4539b4c054ff90c472eecc7d0132ab2df8ae33a5bfe1ac762391104923699",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-make-silent-control",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ac0c5687bd368695dc013cf8c36ebe4a94a77ad49bd6a3a2c1f840c5f48ef099",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-make-silent",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ed673aa99f8a5b75cbcc40d3ea5a6f72e90d9211af40268c87a6741df8eb46e8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-make-file",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "6f192ed440df826f2933d77bda313f55f6fc7a44e1356e746239d5fae683b1c8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase3-sort-basic",
       "source": "tests/cases/sort.json",
       "definition_sha256": "a1441895f8aa03f45776538b7fe5b497f546d01bbd7eb4f2b21d946d1beebfee",
@@ -13074,22 +14244,20 @@
     {
       "case_id": "compat-text-line-544",
       "source": "tests/cases/sort.json",
-      "definition_sha256": "fdd930f2acb8e9772ec60fe73afdaa258a8f23699f270f9331ea1d640c01342e",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "80c198d24eed553be8a4228936b32694b347279e2d411be31f62f076d0f23476",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
     {
       "case_id": "compat-text-sort-check-diagnostic",
       "source": "tests/cases/sort.json",
-      "definition_sha256": "034a98dee0d7414b6ef0193cb77b074c46def96421981efe59b24e4300da2b0c",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "4dbc4b367d20b8546c61f1e2c0a3a424c403afe898807578682e033528016906",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -13884,6 +15052,30 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-sort-numeric",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "0790614579dea089d4fc3af07a5d1bf2f5754ffc636309121217ba49ae1405c3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "sort-live-spill",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "8c7dc9ae0086763ecc4e2c27494d67a5270149b5342541b6ded885db2084d18e",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:sort-live-spill"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "phase3-tail-line-count",
       "source": "tests/cases/tail.json",
       "definition_sha256": "e650e89a41dba71d0e97922349bebde683591215769dd0fa2192d10efbb4d231",
@@ -13926,22 +15118,20 @@
     {
       "case_id": "compat-tail-negative-interval",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "9331d7d62a1df2736e2c9580b977ef25df1eafaf7032abfa98850ebadbfa57a3",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "d6131fc6e3ae223b29d13bb2f373389b2f7ad5ea9af80dee654235471a287ed5",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
     {
       "case_id": "compat-tail-infinite-interval",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "947612eb4b9ce107d8faf8fd8d66727598228a59407bf338a3736fbf94c0f356",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "848c39470eff672dfaf3b83e7968d7950157f0196bcb6b230bfafbc2a77151bb",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -14137,6 +15327,20 @@
       "required_work": ""
     },
     {
+      "case_id": "tail-follow-interval",
+      "source": "tests/cases/tail.json",
+      "definition_sha256": "ae734ef21676a6520cd93efd078cfe3b2d418961ccf2f9f24eecd1cf81a76ffd",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:tail-follow-interval"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "phase3-test-string",
       "source": "tests/cases/test.json",
       "definition_sha256": "1f4c5c4cf58ad9575dce6ed423efefff1137b23d9eb8dd0a781ae49265158b93",
@@ -14210,6 +15414,116 @@
       "case_id": "release-metadata-test-version",
       "source": "tests/cases/test.json",
       "definition_sha256": "7e063847d20a6359fd642f8efeb369d1201433a4262a1e9fb5fecbf96c721d1f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-equality-false",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "88e3f93fcfc49e8b0d5355aeb4b5529c691c25e99514c9e3cc0edaf34c2af832",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-size-empty",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "f0fff3c86b8ab269e8ea8f1c57882c646af2770eb2d5f1ba7102ed31bd87037a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-size-missing",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "44f595799e882bbaa48c6834a5abd7c11e9eca4838415236dcab0448b6088064",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-time--nt-new-old",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "a0361b30ac092aaf202a8cc89d0e47f5437e9a856579a078c41b323296bd0184",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-time--nt-old-new",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "606b86c85386ea445f8ac9a56565f6879e7d0e94083c4235a50b8f80969c0631",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-time--nt-new-equal",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "34321a6cef088efc29ed36e228e2820cd5696d3ba048c08a0fb952e991b2cbfd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-time--ot-old-new",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "dde06f08d5209e1a16ed6eafd92feb698c6ecd4c0cdbc5c981330a3d5ef21ff0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-time--ot-new-old",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "7c73e0de8f031304bb5cd9fe3058d76eda992d1dab2544dc706be40bd6f63fc8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-time--ot-equal-new",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "e42c0fa320f3d3816f0b3afb36221938c4c90f53bc0ca447aa5adb5ae121e0a1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-time--nt-new-missing",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "bdd9f76edf2773f712da0c5763cb0abab8ab8fbe49c5bec1be2f4f7dce6e83f9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-test-time--ot-missing-new",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "3e3e4b831f7c99fd7ba3c7b878ece2bdc91131f81bf1428b95a7c4a155e627f0",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15198,11 +16512,10 @@
     {
       "case_id": "compat-text-line-494",
       "source": "tests/cases/uniq.json",
-      "definition_sha256": "fe1ce767a1e89637b75eeee9de33685ead67fd8e21ff839b7d5d8049fc5d7af6",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "08b4c49e9bd74024df43c63253955bab49e65b3c92bcc29ab3df85a4f5157f6e",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -15410,6 +16723,26 @@
       "case_id": "o1-uniq-D-attached-text-is-cluster",
       "source": "tests/cases/uniq.json",
       "definition_sha256": "c645ecc337126759105b3c7ebb63edc908b98f69e7e9bc4c8c23846c51499fb9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-uniq-repeated",
+      "source": "tests/cases/uniq.json",
+      "definition_sha256": "4e8d8e5af00b302de265cb823e9c64fe0833643d3db2fd4683b0506160e23607",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-uniq-unique",
+      "source": "tests/cases/uniq.json",
+      "definition_sha256": "f44e249ba04fb7bee81df948ebf0410733fbc27d98330debbbe238a512401f84",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15818,6 +17151,146 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-zcat-garbage-control",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "5bdc56243b3a3a63ef1d79696d676c7dec29ec01da53f46f2e7064ee6c1ce107",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-quiet-garbage",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "33a7d402775ac8b99458cb31e7a0e11709099e2660285354773daff141ac6d2d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-no-name",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "4ae2ca17ee59dc83e8f7660105a8e3e233f80a69ceeadd6a2e0616f5248e106d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-decompress",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "99923c84124bfed45f036ccc70e7642c863e6000b873d892bede9906de637569",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-stdout",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "5af201c367a0d414de6bba0e8be7257d6c9cd41fda0e255ba8a21b9d4edfb458",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-fast",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "7c0274cd8166fa7ae5e75db811b3f8a6233baf25c5ba4260c474ba7695b1baf1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-2",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "170e056eb6c3978a106fe1da70bfb8138fda3d8ae2aa7258a5e74ebff0b37665",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-3",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "19b79f7dde52317a835ba585741093997577d6a79a67bcc3535060c7b1cbbf9b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-4",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "5ed291bbf08f5d07a61ead0836cf02377e8f8d7117288ef591e078396f3a154c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-5",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "f0d135352b2d89ea7bdfac3722c7feeaadce433b0f4d83e9f08f0c808ca0a88f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-6",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "123c276a82081ed3369af38df8410ac285f67b36310a50151a1ceb1324881efd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-7",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "078d8ead70841c4bce701d4dffc7c09e4eeb41a98271cfdd2cf6de49e7529392",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-8",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "f37d6ce92e71fe6dae240802ff8253f6737366d0610b002e2d263dddd31cffd9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-zcat-level-best",
+      "source": "tests/cases/zcat.json",
+      "definition_sha256": "896a5d4d7e46f7167e3e819c58945766af31fea78d70d98941acb2ac12ec8dd6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase4-chmod-numeric",
       "source": "tests/cases/chmod.json",
       "definition_sha256": "91ed6c67327731534b75dcc091bfd8dfdcd6ef515d44941f879116734f87abae",
@@ -15883,6 +17356,16 @@
       "case_id": "proof-chmod-reference-boundary-preserves-mode",
       "source": "tests/cases/chmod.json",
       "definition_sha256": "be02e83b9bc363d8b22d34cbad781c380e1c40a1883256525a9d19ad7ed104ac",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-chmod-verbose",
+      "source": "tests/cases/chmod.json",
+      "definition_sha256": "6a59a61f4006bae9fe4ad3cb0cde7c0d6b2d496e477ff1696135c39810b88fb4",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16400,6 +17883,136 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-cksum-check-control",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "541a931748bf611afdefc31d97149e677f28e058d48c7a94ea4942371083d7e8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-quiet-good",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "3615d5f8830e4f80422f3cfb29ca9c425ad3bf72d605a092d5d4d54f9c1707fc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-quiet-mismatch",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "61c49f96af70bda2f4b09f8ffc085ff176103878c6ecc4a06716048e203e52ab",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-quiet-malformed",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "0844859ba093d3e1859724867444b1c051c162d8bd584e79e65569b0a569e844",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-status-good",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "27e1f483b080d3d8b3c91a7ea862026cf0483dd5b2b500c07ab5fb479fd5c79d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-status-mismatch",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "ed90a1f3e4aacdaf0daabb8cc7164dea17943e790612e939d23fce0f6aee92a4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-status-malformed",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "92659f385a651cb3a5816866640ccbb753b1465cb45265306a314bbcab455380",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-missing",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "e7d387dae903f4909dc1dbcc5ae57950788d1d5deceee52a2b42ff24f249e469",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-missing-all",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "a2d50a1e1ee4244ad7d540cb7769309d99912d79393e654498e03ff84f14d515",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-lenient",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "e5d3ada664787b01d98d4d7054a3721f1dc6d7b37132d8309afe438d59a3a6b1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-strict",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "890d382a86b37c25bec590d4af53b4faa8b648c0904bb56db54ea94604c11a84",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-warn",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "470c7ec540b27e2613b74378371229718bc5213444411af61a20bfad2a6fc0f2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-cksum-binary-record",
+      "source": "tests/cases/cksum.json",
+      "definition_sha256": "4741ddcd2d30acfab7a32fcfddd3126cc23f47dc61201cd653e17fd344fe3bd4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p0-false-version",
       "source": "tests/cases/false.json",
       "definition_sha256": "10a6e37ac83dbaf7c823f97c9bde2606fbff940281339457cfe5e0b1921bd51b",
@@ -16794,11 +18407,10 @@
     {
       "case_id": "compat-text-line-719",
       "source": "tests/cases/paste.json",
-      "definition_sha256": "7eab9cf601c6c3a40361e9725a729caec7ca0eeed2d2798cb1c510f9755f6e75",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "9efc86f91261674e86ce42f9be7599a07c8ffde67fc0c87989c53a0abdda65e0",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -17223,6 +18835,36 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-patch-directory",
+      "source": "tests/cases/patch.json",
+      "definition_sha256": "29fe550eec09288e5e596771fcf80cbb1631133d0c47192844801980a6ce60d8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-patch-no-backup-boundary",
+      "source": "tests/cases/patch.json",
+      "definition_sha256": "f98ef656b2e472554b36557ccc1cc3f028ebf159bdbe18d996056ec118bd2174",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-patch-no-backup-dry-run",
+      "source": "tests/cases/patch.json",
+      "definition_sha256": "d07487bd634ef92fa27289af40c7bad7b36931afd92a8d5dd95ba23480cee6b7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase4-rmdir-ignore-nonempty",
       "source": "tests/cases/rmdir.json",
       "definition_sha256": "c8a9eecc829c1998a504ba328f74bdd3ad1358179eaf64cb9b0837c26c8fbbc0",
@@ -17257,6 +18899,26 @@
       "case_id": "release-metadata-rmdir-version",
       "source": "tests/cases/rmdir.json",
       "definition_sha256": "08fbcb9ec76d491b6a098a0757d6bc3aa83515ce641d91b828b3739eb5618e81",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rmdir-parents-verbose",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "cb08ebefbaaf4c24e4acdf674edcd9d5eb4fbd8af79868e8cc5fe3e0d51d52c2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-rmdir-parent-nonempty",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "c356c62ce086527157d0674ac684ea2ed3f4e1b35ed637e34028a73e99d9873f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -17919,6 +19581,86 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-touch-access-time-boundary",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "257ace64d03168529148362f7b0ad38ef6c7bb54367a713649bf8a7c22783a34",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-touch-modification-time-boundary",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "f2270385d8a8da2839f9751b7d62015c73f1d2923ddb5283e2648a63f56e9a66",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-touch-date-boundary",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "8bac832d171139eb4959cab875390f173333396bc9e069f49892f1be7d32cfae",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-touch-reference-boundary",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "f72c3a4dcc5496dd54bc13be41784b49117eb4da55a3cba01063d7a001a53f92",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-touch-stamp-boundary",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "76209fe9ef3134e35b42776a7ecb2a19e86769ee786f7141183a716a14aaf83d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-touch-time-boundary",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "295b8a6c6f4eaadbdfbb33440cb3ad7a58dc73541264e1f541c8bb93fe759df8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-touch-no-create-existing",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "55edc213313a7fce5a50a84b5fcb971e32fc489882607574cc81ee868bb17cd0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-touch-create-then-boundary",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "92174568936a06767b9137eb55b0c5a2fa96588d112270a853991f74c32103b2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p2-which-direct",
       "source": "tests/cases/which.json",
       "definition_sha256": "55be6ea0d8287582c073cf0099d2990f309043fe479f904fd65e1ad602befe6d",
@@ -18450,6 +20192,20 @@
       "required_work": ""
     },
     {
+      "case_id": "xargs-verbose-argv",
+      "source": "tests/cases/xargs.json",
+      "definition_sha256": "f096dcef844bb4ec5261fd0c8643561d1f66af9ba230c74b9c14780c8478c760",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:xargs-verbose-argv"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "base32-rfc4648-foobar",
       "source": "tests/cases/base32.json",
       "definition_sha256": "7065e3baefcb5db2f4323893438d6ebf79693fe7bb9935a77adefc099e653a6c",
@@ -18472,11 +20228,10 @@
     {
       "case_id": "base32-uppercase-only",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "d9d9e765c5ffbcb5b7cef58f6faed7665892e2aa53107ecfe9f6145d96a234b3",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "93e5c6eceeddfef170c4fa37a5682c8b4b7c95e94f64d8c6e44aba4ab474febd",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The decoder status and empty stdout are exact; error wording is implementation-specific."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -18493,22 +20248,20 @@
     {
       "case_id": "base32-prefix-before-malformed-padding",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "e6cc1aaee1e91c87daa5d5d39bfddee31e9d9ecffa02e172db0d9a1d54862395",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "6326b36489d7a4cd51aa0f34a9310572ec1e6c2988554af3f021e8ce195717d8",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The decoded prefix and failure status are exact; error wording is implementation-specific."
+        "kind": "exact"
       },
       "required_work": ""
     },
     {
       "case_id": "base32-negative-wrap",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "3e688da5aaccfb7a3142110b25b48816b66bb3d93d38a40f3d5a5bcc7d864e95",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "d834ddc6a3b22075fc3a2605f39975683f444931f41644aa11069bd98ab2bf1e",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The argument status and empty stdout are exact; diagnostic wording may vary."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -18553,6 +20306,16 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-base32-wrap-positive",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "4dc5ebf39c32ff2a310ee2192f932b7dea0cc78824c626498b5fa24f1c751490",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase0-base64-stdin",
       "source": "tests/cases/base64.json",
       "definition_sha256": "a0570250a0365d3062c1ac9143afd11b973d45f41e3b4ac918412e83022a6e62",
@@ -18585,11 +20348,10 @@
     {
       "case_id": "compat-text-line-633",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "e954cc534d8dcd43d6c30f4405c62f420ac223601ba90c6b8ef6aa6a8e9f46e8",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "967aaee4d871895c77a18c6a6d2e669d8f1c977c379965bad1b7099bf144d346",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The preserved failure contract checks decoder rejection; diagnostic wording is project specific."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -18626,11 +20388,10 @@
     {
       "case_id": "compat-text-line-652",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "dd90a7ed3857c25fddc020257b1b43ff16479c2f6b15e8c41578f2f76d351171",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "e117d8736a36cc30dea4e0b377e6fe4ba8b7d645ee26dbbcc99850abb544fd39",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The preserved failure contract checks decoder rejection; diagnostic wording is project specific."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -19339,6 +21100,20 @@
       "required_work": ""
     },
     {
+      "case_id": "csplit-fragment-retention",
+      "source": "tests/cases/csplit.json",
+      "definition_sha256": "4b63013f5a9ea172fbbfd43a59ca7336a3dd69da8154548a0555da1edbc8dc8d",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:csplit-fragment-retention"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "p0-expand-basic-tabs",
       "source": "tests/cases/expand.json",
       "definition_sha256": "717041542f55fa117b49a3f0f3e4badebe0d3959398271244f0013854523c2da",
@@ -19661,6 +21436,146 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-gunzip-garbage-control",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "f27724058bef1e2893ba8722819163687b7898f4eb144d94e52285752f311b38",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-quiet-garbage",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "046da40d8e3c470c5583dbfbf146fe93dba888321348d5791ee5ada835e137a7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-no-name",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "1ec3daf90fc0871da2aeaf2a5e7da20cb5021fb043308fcfe5f99fb784d5d056",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-decompress",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "cda5afbb54ede74e108fa81f6210e31acea2fc728ac534202f05696a4fc6ef3a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-stdout",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "880502fa5353db2c3793abdf62b2c66a5179b2685f429feb47f98b310abf0b65",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-fast",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "25d7fd65aa7c1e59c7ef06a819f9896beac77a3147dedd083a25acd6db43a292",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-2",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "3a8a8454b322693f82f5c36c8fcdf0b0f202ea675149f92be31fd2b8f6ae7977",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-3",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "d02b59567456ab525afecc7a1403b9880d10f50b8cd2cbbfcbf66e6d84a49d8d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-4",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "6a105077d3dfd7ecd8fb0ff52635aacbb1d4e0ccef09e570b993e95f760080c3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-5",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "a7e29e219f14474c323a868fe12d5d50977242bd7c62ee437fe2b07200fff521",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-6",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "fc1ffcdd2c1de5ad0f3b9c06318463119d5c6d2ba173b13d16e848bff2c397c7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-7",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "dd772f6605e4a7fbb45aa4f0bd2c1ff514c6e4fb6c865429c443badce1733c9f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-8",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "e94839678a404f70831e4686f909486a131619c6efc7c1a72dbbd6a14ea50e1a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-gunzip-level-best",
+      "source": "tests/cases/gunzip.json",
+      "definition_sha256": "b40990caac25956008b6847eb5efadf710195a022191ed77a611056299292a38",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "checksum-md5sum-stdin",
       "source": "tests/cases/md5sum.json",
       "definition_sha256": "8b9f8d10075e7e5be365e29cb4781ad8c715e64e9fff196463eb7b9e7c8dae62",
@@ -19854,6 +21769,16 @@
       "case_id": "o9-sum-tag-escaped",
       "source": "tests/cases/md5sum.json",
       "definition_sha256": "116514c7aaecdc2460799277584b7ba019f2038bac8206c182bb923f10b0dbbf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-md5sum-text-record",
+      "source": "tests/cases/md5sum.json",
+      "definition_sha256": "ecc77df5828bd427e2927f4330eb3a478fa44bdecc75479bb356e3c0dce44b17",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21024,6 +22949,56 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-hexdump-one-byte-octal",
+      "source": "tests/cases/hexdump.json",
+      "definition_sha256": "1b0297dc803ed8ad6265ed77abd451b8bf30de777c91de3c28da8d1053482b41",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-hexdump-one-byte-char",
+      "source": "tests/cases/hexdump.json",
+      "definition_sha256": "a189abec269ecdb757c1e9cc9c03c3f7833c972f26f7d3ceb0a74da53925c5de",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-hexdump-two-bytes-decimal",
+      "source": "tests/cases/hexdump.json",
+      "definition_sha256": "1b65dd91486a5cec44ba286a784f041d98ecb927567878331acdeb50f71f28c2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-hexdump-two-bytes-octal",
+      "source": "tests/cases/hexdump.json",
+      "definition_sha256": "4ed79d8465193c85803b6a1c799a14cfa5d36fa6f462009c3e1d5e7acd2b9343",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-hexdump-no-squeezing",
+      "source": "tests/cases/hexdump.json",
+      "definition_sha256": "ebb1f710c730adef17f66c49548a5442405d18242d949058aa6d64c8bb67d07a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "checksum-sha1sum-stdin",
       "source": "tests/cases/sha1sum.json",
       "definition_sha256": "57dd187d6e54c545241fa4434dabf941774fbcef6e29591078d53c1b83ca0ec3",
@@ -21056,7 +23031,7 @@
     {
       "case_id": "checksum-sha1sum-check",
       "source": "tests/cases/sha1sum.json",
-      "definition_sha256": "bee5930f7909da5387c0834280b3d5638358815827b90921b4580a3096018a5f",
+      "definition_sha256": "9505cd3beba39661a053f967e8acdb3fd1f75665531dffc224f854e063a3ee67",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21114,6 +23089,126 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-sha1sum-quiet-good",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "b86397f910aa8295c0b2cd4ec0aee92f83a507f6846d26acede02e27ed75983d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-quiet-mismatch",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "fe0b9c34f4e99e051f256ce189de8d35885a9aa608e1d820a81793c505f3e233",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-quiet-malformed",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "1cac712a967c5d5cbacd284fe9f362a5d34f865255c16e54c0710ca68ae0331c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-status-good",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "7e24d294dc77407ce498831dca599b06555aac8fb2ee43248593dad32516097f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-status-mismatch",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "a6be3a1c09b99bd0dbcc354d4b813c1df067ece9ebfdfaef8d5cd1c4857141f9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-status-malformed",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "70239b7ad950d5d9a86abadea0e4a8d979674a430afd2adff5fe5cc6c5c14e26",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-missing",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "499dd197120e5d6310b40a1a6a799738bef085eeb031c9a5dd9cf4c0e5ded861",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-missing-all",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "b68aa85f0ba27d0a2c0ef9e423488c03e256fb5e67bbe650e98357e619985ccd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-lenient",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "61e256e65e3bbac66e928fff24a030792034987cc4aa33902c4b2c1e48e3b7d3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-strict",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "a8941359fc6d2ae29dd98bbac35ed922e41122691c5f3eef930968a3884fd107",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-warn",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "480516cd464a4b99222c168bb272ca217d7cc53f8b93b7e16e32dd025d00a8a6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha1sum-binary-record",
+      "source": "tests/cases/sha1sum.json",
+      "definition_sha256": "a8180599000532a1adeb37d1aa480973d75f4896ccacce1e6e69d5e428f0cd8c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p2-strings-default",
       "source": "tests/cases/strings.json",
       "definition_sha256": "286c16bd80970d5d1cde0487872088055b32319cebad670c810708b679a4365a",
@@ -21136,11 +23231,10 @@
     {
       "case_id": "p2-strings-unsupported-encoding",
       "source": "tests/cases/strings.json",
-      "definition_sha256": "8219c3dc511e0688c4d87ee254c912a86fcfc1db52b899009c27513135a49967",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "58aabe27810889d932ba7ccbd6037220ad2290ff9312c82c456766a49dd1e64e",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "The rejection category is stable while host diagnostics may vary."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -21257,44 +23351,40 @@
     {
       "case_id": "repair-strings-wide-b",
       "source": "tests/cases/strings.json",
-      "definition_sha256": "ef03d56ebc562ef3714fda0896a2692ee6c96ff6654b910e1957298c8c61f828",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "ebebe6a43bcc908e8ebb6077e6a8dd6b8d843392581548912c1a1203e8c6f64a",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Refuse wide encoding before reading input; never scan it as single-byte text."
+        "kind": "exact"
       },
       "required_work": ""
     },
     {
       "case_id": "repair-strings-wide-l",
       "source": "tests/cases/strings.json",
-      "definition_sha256": "f973c14da31940b7589787f90cab310381c5874942b2c4758b1df1f8eba3bbe1",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "7e09dc87e54ff338ec5ead4a34cb4bdd3a5b531872ab0529357790e5f91fe6d6",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Refuse wide encoding before reading input; never scan it as single-byte text."
+        "kind": "exact"
       },
       "required_work": ""
     },
     {
       "case_id": "repair-strings-wide-B",
       "source": "tests/cases/strings.json",
-      "definition_sha256": "2370aaf4613dc9e02e0259c9409add016502f14d56fc58eed79abde786c94529",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "a2fb191f428975572aed3555e40891ba1e202c81a0f5b9d47e65e2338c1ff4d9",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Refuse wide encoding before reading input; never scan it as single-byte text."
+        "kind": "exact"
       },
       "required_work": ""
     },
     {
       "case_id": "repair-strings-wide-L",
       "source": "tests/cases/strings.json",
-      "definition_sha256": "947a976484725651075a16683a18fa7d04a8cba8fb6fd288059967603dfc2a9a",
-      "classification": "finite-diagnostic",
+      "definition_sha256": "8d1b6425657d130298282af1619a456470c3cd7d387e3e85ef7fbe6847d07b74",
+      "classification": "exact-local",
       "descriptor": {
-        "kind": "diagnostic-fragment",
-        "reason": "Refuse wide encoding before reading input; never scan it as single-byte text."
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -21414,6 +23504,20 @@
         ]
       },
       "required_work": "Execute the named complete independent runtime or metadata assertion; the descriptor itself is not evidence."
+    },
+    {
+      "case_id": "timeout-child-lifecycle",
+      "source": "tests/cases/timeout.json",
+      "definition_sha256": "516b4178c29feeaf12a24c486e2919f53ddb67001f3ab8174943470102baa2e3",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:timeout-child-lifecycle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "phase3-basename-suffix",
@@ -21820,6 +23924,36 @@
       "case_id": "o10-realpath-relative-root-self",
       "source": "tests/cases/realpath.json",
       "definition_sha256": "901b68e8244b7c5c9f7a190c6a6dce75d33bca9147cfed2d2f6c261fc59ef258",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-realpath-final-missing",
+      "source": "tests/cases/realpath.json",
+      "definition_sha256": "a1a10a44618fc5eafae8e7c39e0d5d6642d013bab1e2300d0630015e23d1059f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-realpath-middle-missing",
+      "source": "tests/cases/realpath.json",
+      "definition_sha256": "eac021befa4561c15cbc59c465267881e6b4e10cc119ce8b48bcc4abd8324eda",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-realpath-zero",
+      "source": "tests/cases/realpath.json",
+      "definition_sha256": "24e949c616506afd2aefffaed9240afad321ed7c229c4ae7574816e07c9087ca",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22267,6 +24401,16 @@
       "required_work": ""
     },
     {
+      "case_id": "coverage-sha256sum-zero-record",
+      "source": "tests/cases/sha256sum.json",
+      "definition_sha256": "655adffef9b12f4b0465daea042229196433bc48466cb45ec09ecd09c5053bc8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "checksum-sha512sum-stdin",
       "source": "tests/cases/sha512sum.json",
       "definition_sha256": "57feccea373955ecc3f70983841c76939e15165c61ead57c42a3debd131a2c34",
@@ -22289,7 +24433,7 @@
     {
       "case_id": "checksum-sha512sum-check",
       "source": "tests/cases/sha512sum.json",
-      "definition_sha256": "52a1ef7b29d63e86848ba114aad08f5496a20359008472cb2fd427307ccd770b",
+      "definition_sha256": "b1097142628c1ee8417034f0006cf1bdf1e09bfc702b0b0c333d3490949f14ea",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22330,6 +24474,136 @@
       "case_id": "o9-sha512sum-tag",
       "source": "tests/cases/sha512sum.json",
       "definition_sha256": "ee0dbde1bb744761585c845f0888a51eaf0e311fb9d158029c3e3bac8048a065",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-quiet-good",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "69c45ec819f2a6e6f0b6758095dae15e91a931d7461ba495059502f5ace21ee1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-quiet-mismatch",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "c4a232a806fcbb6377950be124d515bfe9ddc99dd458c8551447d0af53e659c6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-quiet-malformed",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "977ec1cf49fc2a45718fb5c066ef4ce3826060ef78489780032c105951a49377",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-status-good",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "01a90905e1d177be01cd19558575ca44f3aec018309c9f0c0f4782a510a12c6e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-status-mismatch",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "be6c746b42e67b57298bef5f947283eede437b811145fc6ea94b4c3224383ef7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-status-malformed",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "bf883992abb34a958713a6f3bc074860b27d60f5f7dafdca97c7f47ae1e5589d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-missing",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "f75c8a9cf445a266eace30931a370952288083e898d86c355232f531a55448d4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-missing-all",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "5a897d30575e1af345dee4cb1f889917d33f1c48379065cf2248cd901f127dfa",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-lenient",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "203198ff0e6c700de3fb5ef0123c949787e4bda549b74e61322f70989aecb760",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-strict",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "112fb13a9cfe0d5e65e64a3ea2c6074abf52e08865b396d3973c3aec31ea4bff",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-warn",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "281efdecad0d265b6803e386a4e500c74396289eb90be19cb2c0dd17192adb44",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-text-record",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "ca8ab0e04765c3a77e8e82c47a6e7551bcba918cfa334467894b876ca5bd107b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "coverage-sha512sum-zero-record",
+      "source": "tests/cases/sha512sum.json",
+      "definition_sha256": "46f0395349171cb09eac0ae8fbf1af1cb2694bbdc9f2c88509ac14260d43b720",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22386,6 +24660,48 @@
       "reason": "The documented local profile rejects recursive symbolic-link operands unless traversal is enabled. Status 1, empty stdout and complete fixture nonmutation are independent requirements; no GNU positive link-preservation behavior or full product diagnostic golden is asserted."
     },
     "quality-cp-update-older-fixed-times": {
+      "kind": "exact"
+    },
+    "coverage-cp-archive-boundary": {
+      "kind": "exact"
+    },
+    "coverage-cp-preserve-boundary": {
+      "kind": "exact"
+    },
+    "coverage-cp-force-boundary": {
+      "kind": "exact"
+    },
+    "coverage-cp-interactive-boundary": {
+      "kind": "exact"
+    },
+    "coverage-cp-backup-boundary": {
+      "kind": "exact"
+    },
+    "coverage-cp-backup-control-boundary": {
+      "kind": "exact"
+    },
+    "coverage-cp-suffix-boundary": {
+      "kind": "exact"
+    },
+    "coverage-cp-complete-path": {
+      "kind": "exact"
+    },
+    "coverage-cp-verbose": {
+      "kind": "exact"
+    },
+    "coverage-cp-directory": {
+      "kind": "exact"
+    },
+    "coverage-cp-complete-existing-directory": {
+      "kind": "exact"
+    },
+    "coverage-cp-dereference": {
+      "kind": "exact"
+    },
+    "coverage-cp-no-dereference": {
+      "kind": "exact"
+    },
+    "coverage-cp-update-short": {
       "kind": "exact"
     },
     "phase3-jq-property": {
@@ -22587,8 +24903,7 @@
       "kind": "exact"
     },
     "compat-filesystem-windows-ln-boundary": {
-      "kind": "diagnostic-fragment",
-      "reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+      "kind": "exact"
     },
     "repair-alias-ln-symbolic": {
       "kind": "exact"
@@ -22621,6 +24936,24 @@
       "kind": "exact"
     },
     "quality-ln-relative-control": {
+      "kind": "exact"
+    },
+    "coverage-ln-backup-numbered": {
+      "kind": "exact"
+    },
+    "coverage-ln-backup-existing": {
+      "kind": "exact"
+    },
+    "coverage-ln-backup-none": {
+      "kind": "exact"
+    },
+    "coverage-ln-verbose": {
+      "kind": "exact"
+    },
+    "coverage-ln-no-target-directory": {
+      "kind": "exact"
+    },
+    "coverage-ln-hardlink-boundary": {
       "kind": "exact"
     },
     "phase3-ls-basic": {
@@ -22919,16 +25252,14 @@
       "kind": "exact"
     },
     "o11-invalid-quote-before-valid": {
-      "kind": "diagnostic-fragment",
-      "reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle."
+      "kind": "exact"
     },
     "o11-invalid-color-before-valid": {
       "kind": "diagnostic-fragment",
       "reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle."
     },
     "o11-ambiguous-quoting": {
-      "kind": "diagnostic-fragment",
-      "reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle."
+      "kind": "exact"
     },
     "o11-boundary-regular-ex": {
       "kind": "exact"
@@ -22956,6 +25287,13 @@
     },
     "proof-ls-preserve-directory-symlink-operand": {
       "kind": "exact"
+    },
+    "ls-link-facets": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:ls-link-facets"
+      ]
     },
     "mv-windows-wasm-links-boundary": {
       "kind": "scenario",
@@ -22990,8 +25328,7 @@
       "reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
     },
     "repair-fs-mv-same-backup": {
-      "kind": "diagnostic-fragment",
-      "reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
+      "kind": "exact"
     },
     "repair-fs-mv-same-no-clobber": {
       "kind": "exact"
@@ -23016,8 +25353,7 @@
       "kind": "exact"
     },
     "repair-fs-mv-equal-time-boundary": {
-      "kind": "diagnostic-fragment",
-      "reason": "Equal timestamps cannot establish identity; reject the ambiguous early-return decision without mutation."
+      "kind": "exact"
     },
     "repair-fs-mv-interactive-no-eof": {
       "kind": "exact"
@@ -23038,6 +25374,21 @@
       "kind": "exact"
     },
     "release-metadata-mv-version": {
+      "kind": "exact"
+    },
+    "coverage-mv-force": {
+      "kind": "exact"
+    },
+    "coverage-mv-verbose": {
+      "kind": "exact"
+    },
+    "coverage-mv-backup-numbered": {
+      "kind": "exact"
+    },
+    "coverage-mv-backup-existing": {
+      "kind": "exact"
+    },
+    "coverage-mv-backup-none": {
       "kind": "exact"
     },
     "p9-nl-number-format": {
@@ -23071,6 +25422,21 @@
       "kind": "exact"
     },
     "proof-nl-unnumbered-utf8-separator": {
+      "kind": "exact"
+    },
+    "coverage-nl-footer": {
+      "kind": "exact"
+    },
+    "coverage-nl-blank-groups": {
+      "kind": "exact"
+    },
+    "coverage-nl-page-reset": {
+      "kind": "exact"
+    },
+    "coverage-nl-page-continuation": {
+      "kind": "exact"
+    },
+    "coverage-nl-delimiter": {
       "kind": "exact"
     },
     "od-default-partial-word": {
@@ -23210,8 +25576,7 @@
       "reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/od only in the trailing help hint. Both complete primary diagnostic lines, stdout and status are asserted; both raw stderr streams are retained. Native Linux CI binds its own oracle."
     },
     "o7-19-od-strings-eof": {
-      "kind": "diagnostic-fragment",
-      "reason": "The local Rosetta/binfmt oracle replaces argv0 with /oracle/bin/od in libc's diagnostic prefix and trailing help hint. The exact missing-short-option-argument diagnostic body, stdout and status are asserted; complete oracle and Native/Wasm candidate streams are retained separately."
+      "kind": "exact"
     },
     "o7-20-od-strings-nul-limit": {
       "kind": "exact"
@@ -23256,6 +25621,30 @@
       "kind": "exact"
     },
     "o7-od-x87-pseudo-infinity": {
+      "kind": "exact"
+    },
+    "coverage-od-named": {
+      "kind": "exact"
+    },
+    "coverage-od-octal-byte": {
+      "kind": "exact"
+    },
+    "coverage-od-decimal": {
+      "kind": "exact"
+    },
+    "coverage-od-int": {
+      "kind": "exact"
+    },
+    "coverage-od-long": {
+      "kind": "exact"
+    },
+    "coverage-od-octal": {
+      "kind": "exact"
+    },
+    "coverage-od-signed": {
+      "kind": "exact"
+    },
+    "coverage-od-hex": {
       "kind": "exact"
     },
     "rg-boundary-dfa-budget": {
@@ -23330,8 +25719,7 @@
       "reason": "Retain the child diagnostic and output before nonzero EOF; command wrappers include platform paths."
     },
     "rg-boundary-creation-time": {
-      "kind": "diagnostic-fragment",
-      "reason": "Released public metadata has no creation time; status and stdout are exact."
+      "kind": "exact"
     },
     "rg-regex-unicode": {
       "kind": "exact"
@@ -23576,13 +25964,84 @@
     "proof-rg-line-regexp-boundaries": {
       "kind": "exact"
     },
+    "coverage-rg-ignore-file": {
+      "kind": "exact"
+    },
+    "coverage-rg-ignore-file-control": {
+      "kind": "exact"
+    },
+    "coverage-rg-iglob": {
+      "kind": "exact"
+    },
+    "coverage-rg-no-ignore": {
+      "kind": "exact"
+    },
+    "coverage-rg-no-ignore-control": {
+      "kind": "exact"
+    },
+    "coverage-rg-type-not": {
+      "kind": "exact"
+    },
+    "coverage-rg-type-add": {
+      "kind": "exact"
+    },
+    "coverage-rg-max-depth": {
+      "kind": "exact"
+    },
+    "coverage-rg-max-depth-control": {
+      "kind": "exact"
+    },
+    "coverage-rg-sortr": {
+      "kind": "exact"
+    },
+    "coverage-rg-before-context": {
+      "kind": "exact"
+    },
+    "coverage-rg-dotall": {
+      "kind": "exact"
+    },
+    "coverage-rg-dotall-control": {
+      "kind": "exact"
+    },
+    "coverage-rg-no-filename": {
+      "kind": "exact"
+    },
+    "coverage-rg-no-config": {
+      "kind": "exact"
+    },
+    "coverage-rg-encoding": {
+      "kind": "exact"
+    },
+    "coverage-rg-binary": {
+      "kind": "exact"
+    },
+    "coverage-rg-pre-glob": {
+      "kind": "exact"
+    },
+    "coverage-rg-follow-control": {
+      "kind": "exact"
+    },
+    "coverage-rg-follow": {
+      "kind": "exact"
+    },
+    "rg-type-listing": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:rg-type-listing"
+      ]
+    },
+    "coverage-rg-sort-accessed": {
+      "kind": "exact"
+    },
+    "coverage-rg-sort-modified": {
+      "kind": "exact"
+    },
     "rm-final-parent-slash": {
-      "kind": "diagnostic-fragment",
-      "reason": "The path spelling is platform dependent; the refusal, status and complete retained fixture are required."
+      "kind": "exact"
     },
     "rm-final-parent-backslash": {
-      "kind": "diagnostic-fragment",
-      "reason": "The refusal, status and complete retained fixture are required; command branding differs from upstream."
+      "kind": "exact"
     },
     "phase4-rm-regular": {
       "kind": "exact"
@@ -23699,6 +26158,13 @@
     },
     "rm-directory-link-no-slash": {
       "kind": "exact"
+    },
+    "rm-root-guard": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:rm-root-guard"
+      ]
     },
     "phase5-sh-command-positional": {
       "kind": "exact"
@@ -23875,8 +26341,7 @@
       "kind": "exact"
     },
     "compat-text-line-536": {
-      "kind": "diagnostic-fragment",
-      "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "kind": "exact"
     },
     "compat-text-line-596": {
       "kind": "exact"
@@ -24041,6 +26506,15 @@
     "proof-cat-unicode-path-binary-tail": {
       "kind": "exact"
     },
+    "coverage-cat-ends": {
+      "kind": "exact"
+    },
+    "coverage-cat-tabs": {
+      "kind": "exact"
+    },
+    "coverage-cat-nonprinting": {
+      "kind": "exact"
+    },
     "p9-cmp-different": {
       "kind": "exact"
     },
@@ -24082,6 +26556,15 @@
       "kind": "exact"
     },
     "o7-cmp-quoted-eof-name": {
+      "kind": "exact"
+    },
+    "coverage-cmp-before-difference": {
+      "kind": "exact"
+    },
+    "coverage-cmp-at-difference": {
+      "kind": "exact"
+    },
+    "coverage-cmp-silent-difference": {
       "kind": "exact"
     },
     "phase3-cut-field": {
@@ -24296,6 +26779,18 @@
     "quality-env-chdir-control": {
       "kind": "exact"
     },
+    "coverage-env-chdir": {
+      "kind": "exact"
+    },
+    "coverage-env-unset-before": {
+      "kind": "exact"
+    },
+    "coverage-env-unset": {
+      "kind": "exact"
+    },
+    "coverage-env-unset-reassign": {
+      "kind": "exact"
+    },
     "p1-fmt-width": {
       "kind": "exact"
     },
@@ -24420,6 +26915,12 @@
       "kind": "exact"
     },
     "release-metadata-pwd-version": {
+      "kind": "exact"
+    },
+    "coverage-pwd-logical": {
+      "kind": "exact"
+    },
+    "coverage-pwd-physical": {
       "kind": "exact"
     },
     "p0-rev-lines": {
@@ -24817,8 +27318,13 @@
       "reason": "GNU status/stdout are retained; stderr follows the documented project diagnostic format."
     },
     "proof-sed-in-place-boundary-preserves-source": {
-      "kind": "diagnostic-fragment",
-      "reason": "The documented in-place API boundary must reject before touching the input; command-specific wording may vary."
+      "kind": "exact"
+    },
+    "coverage-sed-silent": {
+      "kind": "exact"
+    },
+    "coverage-sed-in-place-short": {
+      "kind": "exact"
     },
     "p0-seq-version": {
       "kind": "exact"
@@ -25386,6 +27892,13 @@
     "release-metadata-yes-version": {
       "kind": "exact"
     },
+    "yes-stream-lifecycle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:yes-stream-lifecycle"
+      ]
+    },
     "phase3-comm-columns": {
       "kind": "exact"
     },
@@ -25587,6 +28100,34 @@
     },
     "quality-curl-data-raw-literal": {
       "kind": "exact"
+    },
+    "network-deadline-effects": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-deadline-effects"
+      ]
+    },
+    "network-retry-effects": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-retry-effects"
+      ]
+    },
+    "network-refusal-recovery": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-refusal-recovery"
+      ]
+    },
+    "network-option-effects": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-option-effects"
+      ]
     },
     "p2-date-epoch-format": {
       "kind": "exact"
@@ -25827,6 +28368,12 @@
     "quality-diff-scaled-repeated-anchors": {
       "kind": "exact"
     },
+    "coverage-diff-unified-lines": {
+      "kind": "exact"
+    },
+    "coverage-diff-context-lines": {
+      "kind": "exact"
+    },
     "phase3-echo-basic": {
       "kind": "exact"
     },
@@ -25956,6 +28503,22 @@
     "repair-find-prune-directory": {
       "kind": "exact"
     },
+    "metadata-relations": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:metadata-relations"
+      ]
+    },
+    "coverage-find-reject--newerBm": {
+      "kind": "exact"
+    },
+    "coverage-find-reject--newermB": {
+      "kind": "exact"
+    },
+    "coverage-find-reject--newermt": {
+      "kind": "exact"
+    },
     "fold-width-newline": {
       "kind": "exact"
     },
@@ -25991,6 +28554,12 @@
       "kind": "exact"
     },
     "release-metadata-fold-version": {
+      "kind": "exact"
+    },
+    "coverage-fold-characters": {
+      "kind": "exact"
+    },
+    "coverage-fold-columns-control": {
       "kind": "exact"
     },
     "phase3-grep-stdin": {
@@ -26098,6 +28667,45 @@
     "proof-grep-ignore-case-positive": {
       "kind": "exact"
     },
+    "coverage-grep-basic": {
+      "kind": "exact"
+    },
+    "coverage-grep-count": {
+      "kind": "exact"
+    },
+    "coverage-grep-file": {
+      "kind": "exact"
+    },
+    "coverage-grep-files-matching": {
+      "kind": "exact"
+    },
+    "coverage-grep-files-nonmatching": {
+      "kind": "exact"
+    },
+    "coverage-grep-invert": {
+      "kind": "exact"
+    },
+    "coverage-grep-line": {
+      "kind": "exact"
+    },
+    "coverage-grep-quiet-hit": {
+      "kind": "exact"
+    },
+    "coverage-grep-quiet-miss": {
+      "kind": "exact"
+    },
+    "coverage-grep-no-filename": {
+      "kind": "exact"
+    },
+    "coverage-grep-with-filename": {
+      "kind": "exact"
+    },
+    "coverage-grep-text": {
+      "kind": "exact"
+    },
+    "coverage-grep-binary-policy-reject": {
+      "kind": "exact"
+    },
     "p1-gzip-concatenated": {
       "kind": "exact"
     },
@@ -26112,8 +28720,7 @@
       "kind": "exact"
     },
     "p1-gzip-inplace-boundary": {
-      "kind": "diagnostic-fragment",
-      "reason": "The diagnostic names the command and provides the supported stdout alternative."
+      "kind": "exact"
     },
     "g1-gzip-levels-decompress": {
       "kind": "exact"
@@ -26130,6 +28737,26 @@
     },
     "release-metadata-gzip-version": {
       "kind": "exact"
+    },
+    "compression-selectors": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:compression-selectors"
+      ]
+    },
+    "coverage-gzip-garbage-control": {
+      "kind": "exact"
+    },
+    "coverage-gzip-quiet-garbage": {
+      "kind": "exact"
+    },
+    "stream-failure-prefixes": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:stream-failure-prefixes"
+      ]
     },
     "phase3-head-line-count": {
       "kind": "exact"
@@ -26159,8 +28786,7 @@
       "kind": "exact"
     },
     "compat-text-line-591": {
-      "kind": "diagnostic-fragment",
-      "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "kind": "exact"
     },
     "compat-catalog-line-107": {
       "kind": "exact"
@@ -26193,8 +28819,7 @@
       "kind": "exact"
     },
     "compat-text-join-check-order": {
-      "kind": "diagnostic-fragment",
-      "reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+      "kind": "exact"
     },
     "compat-text-join-nocheck-precedence": {
       "kind": "exact"
@@ -26303,6 +28928,27 @@
     "release-metadata-make-version": {
       "kind": "exact"
     },
+    "coverage-make-fresh-control": {
+      "kind": "exact"
+    },
+    "coverage-make-always-make": {
+      "kind": "exact"
+    },
+    "coverage-make-what-if": {
+      "kind": "exact"
+    },
+    "coverage-make-just-print": {
+      "kind": "exact"
+    },
+    "coverage-make-silent-control": {
+      "kind": "exact"
+    },
+    "coverage-make-silent": {
+      "kind": "exact"
+    },
+    "coverage-make-file": {
+      "kind": "exact"
+    },
     "phase3-sort-basic": {
       "kind": "exact"
     },
@@ -26358,12 +29004,10 @@
       "kind": "exact"
     },
     "compat-text-line-544": {
-      "kind": "diagnostic-fragment",
-      "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "kind": "exact"
     },
     "compat-text-sort-check-diagnostic": {
-      "kind": "diagnostic-fragment",
-      "reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted."
+      "kind": "exact"
     },
     "compat-catalog-line-259": {
       "kind": "exact"
@@ -26602,6 +29246,16 @@
     "sort-exact-zero-equivalence": {
       "kind": "exact"
     },
+    "coverage-sort-numeric": {
+      "kind": "exact"
+    },
+    "sort-live-spill": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:sort-live-spill"
+      ]
+    },
     "phase3-tail-line-count": {
       "kind": "exact"
     },
@@ -26615,12 +29269,10 @@
       "kind": "exact"
     },
     "compat-tail-negative-interval": {
-      "kind": "diagnostic-fragment",
-      "reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+      "kind": "exact"
     },
     "compat-tail-infinite-interval": {
-      "kind": "diagnostic-fragment",
-      "reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+      "kind": "exact"
     },
     "compat-tail-follow-name-boundary": {
       "kind": "diagnostic-fragment",
@@ -26680,6 +29332,13 @@
     "repair-tail-final-unterminated-record": {
       "kind": "exact"
     },
+    "tail-follow-interval": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:tail-follow-interval"
+      ]
+    },
     "phase3-test-string": {
       "kind": "exact"
     },
@@ -26702,6 +29361,39 @@
       "kind": "exact"
     },
     "release-metadata-test-version": {
+      "kind": "exact"
+    },
+    "coverage-test-equality-false": {
+      "kind": "exact"
+    },
+    "coverage-test-size-empty": {
+      "kind": "exact"
+    },
+    "coverage-test-size-missing": {
+      "kind": "exact"
+    },
+    "coverage-test-time--nt-new-old": {
+      "kind": "exact"
+    },
+    "coverage-test-time--nt-old-new": {
+      "kind": "exact"
+    },
+    "coverage-test-time--nt-new-equal": {
+      "kind": "exact"
+    },
+    "coverage-test-time--ot-old-new": {
+      "kind": "exact"
+    },
+    "coverage-test-time--ot-new-old": {
+      "kind": "exact"
+    },
+    "coverage-test-time--ot-equal-new": {
+      "kind": "exact"
+    },
+    "coverage-test-time--nt-new-missing": {
+      "kind": "exact"
+    },
+    "coverage-test-time--ot-missing-new": {
       "kind": "exact"
     },
     "release-metadata-tree-help": {
@@ -27033,8 +29725,7 @@
       "kind": "exact"
     },
     "compat-text-line-494": {
-      "kind": "diagnostic-fragment",
-      "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "kind": "exact"
     },
     "compat-text-line-614": {
       "kind": "exact"
@@ -27097,6 +29788,12 @@
       "kind": "exact"
     },
     "o1-uniq-D-attached-text-is-cluster": {
+      "kind": "exact"
+    },
+    "coverage-uniq-repeated": {
+      "kind": "exact"
+    },
+    "coverage-uniq-unique": {
       "kind": "exact"
     },
     "transfer-wget-chunk-initial-eof": {
@@ -27220,6 +29917,48 @@
     "release-metadata-zcat-version": {
       "kind": "exact"
     },
+    "coverage-zcat-garbage-control": {
+      "kind": "exact"
+    },
+    "coverage-zcat-quiet-garbage": {
+      "kind": "exact"
+    },
+    "coverage-zcat-no-name": {
+      "kind": "exact"
+    },
+    "coverage-zcat-decompress": {
+      "kind": "exact"
+    },
+    "coverage-zcat-stdout": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-fast": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-2": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-3": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-4": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-5": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-6": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-7": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-8": {
+      "kind": "exact"
+    },
+    "coverage-zcat-level-best": {
+      "kind": "exact"
+    },
     "phase4-chmod-numeric": {
       "kind": "exact"
     },
@@ -27241,6 +29980,9 @@
       "kind": "exact"
     },
     "proof-chmod-reference-boundary-preserves-mode": {
+      "kind": "exact"
+    },
+    "coverage-chmod-verbose": {
       "kind": "exact"
     },
     "p0-cksum-stdin": {
@@ -27396,6 +30138,45 @@
     "o9-check-ignore-all": {
       "kind": "exact"
     },
+    "coverage-cksum-check-control": {
+      "kind": "exact"
+    },
+    "coverage-cksum-quiet-good": {
+      "kind": "exact"
+    },
+    "coverage-cksum-quiet-mismatch": {
+      "kind": "exact"
+    },
+    "coverage-cksum-quiet-malformed": {
+      "kind": "exact"
+    },
+    "coverage-cksum-status-good": {
+      "kind": "exact"
+    },
+    "coverage-cksum-status-mismatch": {
+      "kind": "exact"
+    },
+    "coverage-cksum-status-malformed": {
+      "kind": "exact"
+    },
+    "coverage-cksum-missing": {
+      "kind": "exact"
+    },
+    "coverage-cksum-missing-all": {
+      "kind": "exact"
+    },
+    "coverage-cksum-lenient": {
+      "kind": "exact"
+    },
+    "coverage-cksum-strict": {
+      "kind": "exact"
+    },
+    "coverage-cksum-warn": {
+      "kind": "exact"
+    },
+    "coverage-cksum-binary-record": {
+      "kind": "exact"
+    },
     "p0-false-version": {
       "kind": "exact"
     },
@@ -27516,8 +30297,7 @@
       "kind": "exact"
     },
     "compat-text-line-719": {
-      "kind": "diagnostic-fragment",
-      "reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "kind": "exact"
     },
     "compat-text-paste-nul-records": {
       "kind": "exact"
@@ -27645,6 +30425,15 @@
     "d-patch-existing-reject-boundary": {
       "kind": "exact"
     },
+    "coverage-patch-directory": {
+      "kind": "exact"
+    },
+    "coverage-patch-no-backup-boundary": {
+      "kind": "exact"
+    },
+    "coverage-patch-no-backup-dry-run": {
+      "kind": "exact"
+    },
     "phase4-rmdir-ignore-nonempty": {
       "kind": "exact"
     },
@@ -27656,6 +30445,12 @@
       "kind": "exact"
     },
     "release-metadata-rmdir-version": {
+      "kind": "exact"
+    },
+    "coverage-rmdir-parents-verbose": {
+      "kind": "exact"
+    },
+    "coverage-rmdir-parent-nonempty": {
       "kind": "exact"
     },
     "phase3-sleep-zero": {
@@ -27858,6 +30653,30 @@
     "proof-touch-no-create-missing": {
       "kind": "exact"
     },
+    "coverage-touch-access-time-boundary": {
+      "kind": "exact"
+    },
+    "coverage-touch-modification-time-boundary": {
+      "kind": "exact"
+    },
+    "coverage-touch-date-boundary": {
+      "kind": "exact"
+    },
+    "coverage-touch-reference-boundary": {
+      "kind": "exact"
+    },
+    "coverage-touch-stamp-boundary": {
+      "kind": "exact"
+    },
+    "coverage-touch-time-boundary": {
+      "kind": "exact"
+    },
+    "coverage-touch-no-create-existing": {
+      "kind": "exact"
+    },
+    "coverage-touch-create-then-boundary": {
+      "kind": "exact"
+    },
     "p2-which-direct": {
       "kind": "exact"
     },
@@ -28018,6 +30837,13 @@
     "repair-xargs-late-argv-boundary": {
       "kind": "exact"
     },
+    "xargs-verbose-argv": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:xargs-verbose-argv"
+      ]
+    },
     "base32-rfc4648-foobar": {
       "kind": "exact"
     },
@@ -28025,19 +30851,16 @@
       "kind": "exact"
     },
     "base32-uppercase-only": {
-      "kind": "diagnostic-fragment",
-      "reason": "The decoder status and empty stdout are exact; error wording is implementation-specific."
+      "kind": "exact"
     },
     "base32-nonzero-tail-bits-accepted": {
       "kind": "exact"
     },
     "base32-prefix-before-malformed-padding": {
-      "kind": "diagnostic-fragment",
-      "reason": "The decoded prefix and failure status are exact; error wording is implementation-specific."
+      "kind": "exact"
     },
     "base32-negative-wrap": {
-      "kind": "diagnostic-fragment",
-      "reason": "The argument status and empty stdout are exact; diagnostic wording may vary."
+      "kind": "exact"
     },
     "repair-alias-base32-decode": {
       "kind": "exact"
@@ -28051,6 +30874,9 @@
     "proof-base32-ignore-garbage": {
       "kind": "exact"
     },
+    "coverage-base32-wrap-positive": {
+      "kind": "exact"
+    },
     "phase0-base64-stdin": {
       "kind": "exact"
     },
@@ -28061,8 +30887,7 @@
       "kind": "exact"
     },
     "compat-text-line-633": {
-      "kind": "diagnostic-fragment",
-      "reason": "The preserved failure contract checks decoder rejection; diagnostic wording is project specific."
+      "kind": "exact"
     },
     "compat-text-line-641": {
       "kind": "exact"
@@ -28074,8 +30899,7 @@
       "kind": "exact"
     },
     "compat-text-line-652": {
-      "kind": "diagnostic-fragment",
-      "reason": "The preserved failure contract checks decoder rejection; diagnostic wording is project specific."
+      "kind": "exact"
     },
     "compat-catalog-line-4": {
       "kind": "exact"
@@ -28291,6 +31115,13 @@
     "r2-csplit-quiet": {
       "kind": "exact"
     },
+    "csplit-fragment-retention": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:csplit-fragment-retention"
+      ]
+    },
     "p0-expand-basic-tabs": {
       "kind": "exact"
     },
@@ -28389,6 +31220,48 @@
     "release-metadata-gunzip-version": {
       "kind": "exact"
     },
+    "coverage-gunzip-garbage-control": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-quiet-garbage": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-no-name": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-decompress": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-stdout": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-fast": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-2": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-3": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-4": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-5": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-6": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-7": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-8": {
+      "kind": "exact"
+    },
+    "coverage-gunzip-level-best": {
+      "kind": "exact"
+    },
     "checksum-md5sum-stdin": {
       "kind": "exact"
     },
@@ -28447,6 +31320,9 @@
       "kind": "exact"
     },
     "o9-sum-tag-escaped": {
+      "kind": "exact"
+    },
+    "coverage-md5sum-text-record": {
       "kind": "exact"
     },
     "release-metadata-mktemp-help": {
@@ -28807,6 +31683,21 @@
     "o7-hexdump-stdin-read-discard-eof": {
       "kind": "exact"
     },
+    "coverage-hexdump-one-byte-octal": {
+      "kind": "exact"
+    },
+    "coverage-hexdump-one-byte-char": {
+      "kind": "exact"
+    },
+    "coverage-hexdump-two-bytes-decimal": {
+      "kind": "exact"
+    },
+    "coverage-hexdump-two-bytes-octal": {
+      "kind": "exact"
+    },
+    "coverage-hexdump-no-squeezing": {
+      "kind": "exact"
+    },
     "checksum-sha1sum-stdin": {
       "kind": "exact"
     },
@@ -28834,6 +31725,42 @@
     "o9-sha1sum-tag": {
       "kind": "exact"
     },
+    "coverage-sha1sum-quiet-good": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-quiet-mismatch": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-quiet-malformed": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-status-good": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-status-mismatch": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-status-malformed": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-missing": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-missing-all": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-lenient": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-strict": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-warn": {
+      "kind": "exact"
+    },
+    "coverage-sha1sum-binary-record": {
+      "kind": "exact"
+    },
     "p2-strings-default": {
       "kind": "exact"
     },
@@ -28841,8 +31768,7 @@
       "kind": "exact"
     },
     "p2-strings-unsupported-encoding": {
-      "kind": "diagnostic-fragment",
-      "reason": "The rejection category is stable while host diagnostics may vary."
+      "kind": "exact"
     },
     "p2-strings-version": {
       "kind": "exact"
@@ -28878,20 +31804,16 @@
       "kind": "exact"
     },
     "repair-strings-wide-b": {
-      "kind": "diagnostic-fragment",
-      "reason": "Refuse wide encoding before reading input; never scan it as single-byte text."
+      "kind": "exact"
     },
     "repair-strings-wide-l": {
-      "kind": "diagnostic-fragment",
-      "reason": "Refuse wide encoding before reading input; never scan it as single-byte text."
+      "kind": "exact"
     },
     "repair-strings-wide-B": {
-      "kind": "diagnostic-fragment",
-      "reason": "Refuse wide encoding before reading input; never scan it as single-byte text."
+      "kind": "exact"
     },
     "repair-strings-wide-L": {
-      "kind": "diagnostic-fragment",
-      "reason": "Refuse wide encoding before reading input; never scan it as single-byte text."
+      "kind": "exact"
     },
     "repair-alias-strings-bytes": {
       "kind": "exact"
@@ -28931,6 +31853,13 @@
       ],
       "streams": [
         "stdout"
+      ]
+    },
+    "timeout-child-lifecycle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:timeout-child-lifecycle"
       ]
     },
     "phase3-basename-suffix": {
@@ -29055,6 +31984,15 @@
       "kind": "exact"
     },
     "o10-realpath-relative-root-self": {
+      "kind": "exact"
+    },
+    "coverage-realpath-final-missing": {
+      "kind": "exact"
+    },
+    "coverage-realpath-middle-missing": {
+      "kind": "exact"
+    },
+    "coverage-realpath-zero": {
       "kind": "exact"
     },
     "p0-unexpand-leading": {
@@ -29189,6 +32127,9 @@
     "o9-sha256sum-check-tag": {
       "kind": "exact"
     },
+    "coverage-sha256sum-zero-record": {
+      "kind": "exact"
+    },
     "checksum-sha512sum-stdin": {
       "kind": "exact"
     },
@@ -29208,6 +32149,45 @@
       "kind": "exact"
     },
     "o9-sha512sum-tag": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-quiet-good": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-quiet-mismatch": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-quiet-malformed": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-status-good": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-status-mismatch": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-status-malformed": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-missing": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-missing-all": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-lenient": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-strict": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-warn": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-text-record": {
+      "kind": "exact"
+    },
+    "coverage-sha512sum-zero-record": {
       "kind": "exact"
     }
   }

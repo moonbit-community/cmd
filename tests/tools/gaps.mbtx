@@ -293,7 +293,7 @@ async fn main {
       )
     }
     text.write_string(
-      "\nPartial-facet reminders are separate in the JSON report; their historical narrow scopes do not imply that currently bound typed scenarios are absent. Every qualified label remains a finite facet, not exhaustive behavior.\n",
+      "\nFinite-facet reviews are separate in the JSON report and describe their current required assertions. Every qualified label remains a finite facet, not exhaustive behavior.\n",
     )
     @fs.write_file(path, text.to_string())
   }

@@ -399,6 +399,110 @@
           "content_text": "kept\n"
         }
       ]
+    },
+    {
+      "id": "metadata-relations",
+      "command": "find",
+      "related_commands": [
+        "test"
+      ],
+      "comparison": "scenario",
+      "host_platforms": [
+        "posix"
+      ],
+      "timeout_ms": 60000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-find-reject--newerBm",
+      "command": "find",
+      "args": [
+        "sentinel",
+        "-newerBm",
+        "reference"
+      ],
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "find: invalid timestamp selector: 'B'\n",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-find-reject--newermB",
+      "command": "find",
+      "args": [
+        "sentinel",
+        "-newermB",
+        "reference"
+      ],
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "find: invalid timestamp selector: 'B'\n",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-find-reject--newermt",
+      "command": "find",
+      "args": [
+        "sentinel",
+        "-newermt",
+        "reference"
+      ],
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "find: invalid timestamp selector: 't'\n",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

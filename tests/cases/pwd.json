@@ -119,6 +119,68 @@
       "source_version": "workspace cli/pwd@0.2.3 metadata contract",
       "expected_stdout_text": "pwd 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-pwd-logical",
+      "command": "pwd",
+      "args": [
+        "-L"
+      ],
+      "cwd": "link",
+      "files": [
+        {
+          "path": "real",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "real"
+        }
+      ],
+      "environment": {
+        "PWD": "${WORK}/link"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "${WORK}/link\n",
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-pwd-physical",
+      "command": "pwd",
+      "args": [
+        "-P"
+      ],
+      "cwd": "link",
+      "files": [
+        {
+          "path": "real",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "real"
+        }
+      ],
+      "environment": {
+        "PWD": "${WORK}/link"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "${WORK}/real\n",
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

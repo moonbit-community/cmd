@@ -5,6 +5,7 @@ async fn run_rg_preprocessor(mode : String, args : ArrayView[String]) -> Unit {
     fail("preprocessor argv/cwd was not preserved")
   }
   match mode {
+    "marker" => @stdio.stdout.write("transformed\n")
     "copy" => {
       let chunk = FixedArray::make(7, b'\x00')
       for ;; {

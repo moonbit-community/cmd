@@ -7144,13 +7144,12 @@
       "comparison": "contract",
       "oracle": true,
       "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
-      "expected_stderr_contains": "ls: invalid argument 'bogus' for '--quoting-style'\nValid arguments are:\n  - 'literal'\n  - 'shell'\n  - 'shell-always'\n  - 'shell-escape'\n  - 'shell-escape-always'\n  - 'c'\n  - 'c-maybe'\n  - 'escape'\n  - 'locale'\n  - 'clocale'\n",
-      "diagnostic_reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle.",
       "normalizations": [],
       "coverage": [
         "quote",
         "quoting-style"
-      ]
+      ],
+      "expected_stderr_text": "ls: invalid argument 'bogus' for '--quoting-style'\nValid arguments are:\n  - 'literal'\n  - 'shell'\n  - 'shell-always'\n  - 'shell-escape'\n  - 'shell-escape-always'\n  - 'c'\n  - 'c-maybe'\n  - 'escape'\n  - 'locale'\n  - 'clocale'\nTry 'ls --help' for more information.\n"
     },
     {
       "id": "o11-invalid-color-before-valid",
@@ -7201,12 +7200,11 @@
       "comparison": "contract",
       "oracle": true,
       "source_version": "Frozen Linux amd64 /oracle/bin/ls; image sha256:05e320ad56f11fc1207b0946b414468b90fc0c8bf8e65d32eb2ba48f682589b7; LC_ALL=C",
-      "expected_stderr_contains": "ls: ambiguous argument 'sh' for '--quoting-style'\nValid arguments are:\n  - 'literal'\n  - 'shell'\n  - 'shell-always'\n  - 'shell-escape'\n  - 'shell-escape-always'\n  - 'c'\n  - 'c-maybe'\n  - 'escape'\n  - 'locale'\n  - 'clocale'\n",
-      "diagnostic_reason": "The local Rosetta/binfmt immutable oracle overrides argv0 with /oracle/bin/ls in the final help hint. The entire substantive diagnostic and valid-argument list are asserted exactly. Raw oracle and Native/Wasm candidate streams remain separate; stdout and status are exact. Native Linux CI binds its own oracle.",
       "normalizations": [],
       "coverage": [
         "quoting-style"
-      ]
+      ],
+      "expected_stderr_text": "ls: ambiguous argument 'sh' for '--quoting-style'\nValid arguments are:\n  - 'literal'\n  - 'shell'\n  - 'shell-always'\n  - 'shell-escape'\n  - 'shell-escape-always'\n  - 'c'\n  - 'c-maybe'\n  - 'escape'\n  - 'locale'\n  - 'clocale'\nTry 'ls --help' for more information.\n"
     },
     {
       "id": "o11-boundary-regular-ex",
@@ -7552,6 +7550,23 @@
         "symlink-operand",
         "classify"
       ]
+    },
+    {
+      "id": "ls-link-facets",
+      "command": "ls",
+      "comparison": "scenario",
+      "host_platforms": [
+        "posix"
+      ],
+      "timeout_ms": 30000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

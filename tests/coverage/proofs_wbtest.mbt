@@ -1,4 +1,48 @@
 ///|
+test "acceptance rejects unresolved labels even when reviewed claims passed" {
+  let complete : Json = {
+    "reviewed_profile_passed": true,
+    "unresolved_obligations": 0,
+    "full_catalog_qualified": true,
+  }
+  let excluded : Json = {
+    "reviewed_profile_passed": true,
+    "unresolved_obligations": 0,
+    "full_catalog_qualified": false,
+  }
+  assert_true(proof_acceptance_passed(complete, false))
+  assert_true(proof_acceptance_passed(complete, true))
+  assert_true(proof_acceptance_passed(excluded, false))
+  assert_false(proof_acceptance_passed(excluded, true))
+  assert_false(
+    proof_acceptance_passed(
+      {
+        "reviewed_profile_passed": true,
+        "unresolved_obligations": 1,
+        "full_catalog_qualified": false,
+      },
+      false,
+    ),
+  )
+  assert_false(
+    proof_acceptance_passed(
+      { "reviewed_profile_passed": true, "full_catalog_qualified": true },
+      false,
+    ),
+  )
+  assert_false(
+    proof_acceptance_passed(
+      {
+        "reviewed_profile_passed": false,
+        "unresolved_obligations": 0,
+        "full_catalog_qualified": false,
+      },
+      false,
+    ),
+  )
+}
+
+///|
 fn proof_test_index() -> @catalog.Registry raise {
   @json.from_json({
     "schema": 3,
@@ -52,6 +96,52 @@ fn proof_test_manifest() -> Json {
       },
     ],
   }
+}
+
+///|
+test "structured stdout qualifies only through the full typed assertion" {
+  let fixture = proof_test_case()
+  let structured : @harness.Case = {
+    ..fixture,
+    expected_stdout_text: None,
+    expected_stdout_json: Some({
+      "matches": 2,
+      "elapsed": { "$any": "duration" },
+    }),
+  }
+  assert_true(proof_asserted_streams(structured))
+  assert_false(
+    proof_asserted_streams({
+      ..structured,
+      expected_stdout_json: None,
+      expected_stdout_contains: Some("matches"),
+    }),
+  )
+  assert_false(
+    proof_asserted_streams({
+      ..structured,
+      expected_stderr_text: None,
+      expected_stderr_contains: Some("error"),
+    }),
+  )
+  let valid : @harness.RunResult = {
+    status: 0,
+    stdout: b"{\"matches\":2,\"elapsed\":{\"secs\":0,\"nanos\":1,\"human\":\"0.000000s\"}}",
+    stderr: b"",
+  }
+  assert_true(@harness.check_runtime_contract(structured, valid).is_empty())
+  assert_false(
+    @harness.check_runtime_contract(structured, {
+      ..valid,
+      stdout: b"{\"matches\":1,\"elapsed\":{\"secs\":0,\"nanos\":1,\"human\":\"0.000000s\"}}",
+    }).is_empty(),
+  )
+  assert_false(
+    @harness.check_runtime_contract(structured, {
+      ..valid,
+      stdout: b"{\"matches\":2,\"elapsed\":{\"secs\":0,\"nanos\":-1,\"human\":\"0.000000s\"}}",
+    }).is_empty(),
+  )
 }
 
 ///|

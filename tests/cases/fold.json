@@ -260,6 +260,38 @@
       "source_version": "workspace cli/fold@0.1.4 metadata contract",
       "expected_stdout_text": "fold 0.1.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-fold-characters",
+      "command": "fold",
+      "args": [
+        "-c",
+        "-w3"
+      ],
+      "stdin_hex": "610062630a",
+      "expected_stdout_hex": "6100620a630a",
+      "source_version": "GNU coreutils v9.11 src/fold.c adjust_column: character mode assigns NUL width 1 while default c32width is 0; TAB/CR/backspace remain special in both modes.",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-fold-columns-control",
+      "command": "fold",
+      "args": [
+        "-w3"
+      ],
+      "stdin_hex": "610062630a",
+      "expected_stdout_hex": "610062630a",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
     }
   ]
 }

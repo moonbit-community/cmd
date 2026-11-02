@@ -580,6 +580,684 @@
         "update",
         "update-mode"
       ]
+    },
+    {
+      "id": "coverage-cp-archive-boundary",
+      "command": "cp",
+      "args": [
+        "-a",
+        "source",
+        "target"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: metadata and symbolic-link preservation are unavailable in the portable filesystem profile\n",
+      "expected_rejection": "metadata",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        },
+        {
+          "path": "target.~1~",
+          "exists": false
+        },
+        {
+          "path": "target.save",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-preserve-boundary",
+      "command": "cp",
+      "args": [
+        "-p",
+        "source",
+        "target"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: metadata and symbolic-link preservation are unavailable in the portable filesystem profile\n",
+      "expected_rejection": "metadata",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        },
+        {
+          "path": "target.~1~",
+          "exists": false
+        },
+        {
+          "path": "target.save",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-force-boundary",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-f",
+        "source",
+        "target"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: cannot copy 'source' to 'target': overwriting an existing file requires public file identity and handle truncation APIs\n",
+      "expected_rejection": "identity",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        },
+        {
+          "path": "target.~1~",
+          "exists": false
+        },
+        {
+          "path": "target.save",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-interactive-boundary",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-i",
+        "source",
+        "target"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: cannot copy 'source' to 'target': overwriting an existing file requires public file identity and handle truncation APIs\n",
+      "expected_rejection": "identity",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        },
+        {
+          "path": "target.~1~",
+          "exists": false
+        },
+        {
+          "path": "target.save",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-backup-boundary",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-b",
+        "source",
+        "target"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: cannot copy 'source' to 'target': overwriting an existing file requires public file identity and handle truncation APIs\n",
+      "expected_rejection": "identity",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        },
+        {
+          "path": "target.~1~",
+          "exists": false
+        },
+        {
+          "path": "target.save",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-backup-control-boundary",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "--backup=numbered",
+        "source",
+        "target"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: cannot copy 'source' to 'target': overwriting an existing file requires public file identity and handle truncation APIs\n",
+      "expected_rejection": "identity",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        },
+        {
+          "path": "target.~1~",
+          "exists": false
+        },
+        {
+          "path": "target.save",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-suffix-boundary",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-b",
+        "-S",
+        ".save",
+        "source",
+        "target"
+      ],
+      "stdin_text": "y\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: cannot copy 'source' to 'target': overwriting an existing file requires public file identity and handle truncation APIs\n",
+      "expected_rejection": "identity",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        },
+        {
+          "path": "target.~1~",
+          "exists": false
+        },
+        {
+          "path": "target.save",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-complete-path",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-T",
+        "source",
+        "copy"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        }
+      ],
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "kind": "file",
+          "content_text": "new"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cp-verbose",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-v",
+        "source",
+        "copy"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        }
+      ],
+      "expected_stdout_text": "'source' -> 'copy'\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "kind": "file",
+          "content_text": "new"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cp-directory",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "source",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "dir",
+          "kind": "directory"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "dir/source",
+          "content_text": "new"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-complete-existing-directory",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-T",
+        "source",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "dir",
+          "kind": "directory"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: cannot copy 'source' to 'dir': destination is a directory: 'dir'\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/source",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-dereference",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-L",
+        "link",
+        "copy"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "kind": "file",
+          "content_text": "new",
+          "different_identity_as": "source"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-no-dereference",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-P",
+        "link",
+        "copy"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "cp: cannot copy 'link' to 'copy': symbolic-link sources are not supported: 'link'\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cp-update-short",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-u",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "new",
+          "mtime": "202101010000.00"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "old",
+          "mtime": "1577836800:0",
+          "unchanged": true
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "new",
+          "mtime": "1609459200:0",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "update",
+        "update-mode"
+      ]
     }
   ]
 }

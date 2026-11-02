@@ -58,8 +58,7 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "unescaped backslash",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
+      "expected_stderr_text": "paste: delimiter list ends with an unescaped backslash\n"
     },
     {
       "id": "compat-text-paste-nul-records",

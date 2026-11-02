@@ -43,6 +43,17 @@
       "source_version": "workspace cli/yes@0.1.4 metadata contract",
       "expected_stdout_text": "yes 0.1.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "yes-stream-lifecycle",
+      "command": "yes",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 20000
     }
   ]
 }

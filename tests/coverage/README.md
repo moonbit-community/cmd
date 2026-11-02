@@ -21,10 +21,15 @@ execution pass into a current definition or generate a review from case tags.
 2. Review the activation, expected values, observation dimensions, command,
    finite scope and remaining facets in the appropriate `review/` file. A
    rejection proves only that boundary; option spelling alone proves nothing.
+   Pair selectors with distinguishing controls. Observe requests, file contents,
+   retained inputs and owned-child termination when output alone cannot prove
+   the effect. Known payloads and an independent decoder can validate generated
+   compressed bytes without freezing an encoder's incidental representation.
 3. Run `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- index update`
    and inspect the diff. Update a gap classification only when its evidence
    warrants it. Unknown, duplicate or stale classifications fail generation.
-4. Run `index check` and a fresh `functional` execution. CI requires both.
+4. Run `index check` and a fresh `functional` execution. CI requires both;
+   either rejects unresolved finite catalog or primary-operation obligations.
 
 The index command generates all derived outputs into a temporary directory
 before comparison or replacement. `index check` does not edit committed files.
@@ -44,8 +49,18 @@ descriptors, metadata versions, driver identity and actual observations.
 The verifier binds the successful build to the execution window and binary,
 then validates result totals/hash, scenario sidecar hash, each required value,
 platform and command against its reviewed descriptor. Missing, duplicate,
-stale, skipped or mismatched results cannot qualify. Explicit platform
+stale, skipped or mismatched results cannot qualify. A passing result must have
+completed its assertion and cleanup stage. Explicit platform
 exclusions remain unqualified on that platform.
+
+Ordinary cases require exact stdout/stderr bytes, or a complete typed JSON
+stdout assertion with exact stderr. Fragment checks do not qualify a claim.
+Stateful descriptors name each required typed relation and its independent
+expected value; platform-dependent error wrappers may be checked by a finite
+cause/path relation without claiming byte-for-byte diagnostic equivalence.
+Partial-facet review notes must describe the current bound assertions, not keep
+obsolete work items after their cases have been strengthened. A zero unresolved
+label count still describes the finite catalog, not every possible input.
 
 Linux differential results qualify an independent local facet only when the
 exact/runtime/file checkers emit a successful typed local receipt with the
@@ -57,9 +72,9 @@ under the fresh report root. Checked-in gap indexes contain definitions only.
 CI retains concise summaries, stage durations and failure diagnostics. Existing
 reports are never backfilled when definitions move or change.
 
-The verifier's `--require-full true` additionally rejects unresolved claims
-and excluded reviewed facets. The default verifies applicable reviewed claims
-and lists remaining work. Neither mode establishes exhaustive semantics,
+The verifier's `--require-full true` additionally rejects excluded reviewed
+facets. The default requires zero unresolved obligations and verifies every
+applicable reviewed assertion while listing platform exclusions. Neither mode establishes exhaustive semantics,
 upstream parity, performance acceptance or publication acceptance. Release
 `supported_options` is a separate authority and must not be expanded from
 catalog labels mechanically. Historical results remain in Git.

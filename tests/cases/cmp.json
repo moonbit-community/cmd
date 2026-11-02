@@ -386,6 +386,89 @@
       "coverage": [
         "print-bytes"
       ]
+    },
+    {
+      "id": "coverage-cmp-before-difference",
+      "command": "cmp",
+      "args": [
+        "-s",
+        "-n2",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "abX"
+        },
+        {
+          "path": "right",
+          "content_text": "abY"
+        }
+      ],
+      "oracle": true,
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cmp-at-difference",
+      "command": "cmp",
+      "args": [
+        "-s",
+        "-n3",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "abX"
+        },
+        {
+          "path": "right",
+          "content_text": "abY"
+        }
+      ],
+      "expected_status": 1,
+      "oracle": true,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-cmp-silent-difference",
+      "command": "cmp",
+      "args": [
+        "-s",
+        "left",
+        "right"
+      ],
+      "files": [
+        {
+          "path": "left",
+          "content_text": "abX"
+        },
+        {
+          "path": "right",
+          "content_text": "abY"
+        }
+      ],
+      "expected_status": 1,
+      "oracle": true,
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }
