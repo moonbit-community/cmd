@@ -332,7 +332,9 @@
           "exists": false
         }
       ],
-      "expected_stderr_text": "mv: cannot move 'source' to 'source': source and destination are the same file\n"
+      "expected_stderr_text": "mv: cannot move 'source' to 'source': source and destination are the same file\n",
+      "expected_stderr_contains": "same file",
+      "diagnostic_reason": "Local stderr remains byte-for-byte asserted. The pinned GNU comparison separately requires the same-file cause because diagnostic framing differs; status, empty stdout and preserved files remain exact."
     },
     {
       "id": "repair-fs-mv-same-no-clobber",

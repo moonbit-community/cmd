@@ -4912,7 +4912,7 @@
         "coverage-rg-follow",
         "coverage-rg-follow-control"
       ],
-      "activation": "Recursive listing visits the real directory in both runs and adds its symlink spelling only under -L. Exact path sets distinguish link following; POSIX scope.",
+      "activation": "Recursive listing visits the real directory in both runs and adds its symlink spelling only under -L. Both disable ignore rules so repository or global exclusions cannot hide the referent. Exact path sets distinguish link following; POSIX scope.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },

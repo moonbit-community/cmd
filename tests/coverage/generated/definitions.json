@@ -13245,7 +13245,7 @@
         "coverage-rg-follow",
         "coverage-rg-follow-control"
       ],
-      "activation": "Recursive listing visits the real directory in both runs and adds its symlink spelling only under -L. Exact path sets distinguish link following; POSIX scope.",
+      "activation": "Recursive listing visits the real directory in both runs and adds its symlink spelling only under -L. Both disable ignore rules so repository or global exclusions cannot hide the referent. Exact path sets distinguish link following; POSIX scope.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",

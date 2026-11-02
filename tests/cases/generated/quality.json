@@ -2329,7 +2329,7 @@
     {
       "case_id": "repair-fs-mv-same-backup",
       "source": "tests/cases/mv.json",
-      "definition_sha256": "cc36c8ba78f3f5fd15ab27b3d44831d6dfd0c886adb76204399541d6ed659084",
+      "definition_sha256": "ad1b1e6da364b72727ae28d915d0ea748a46022697ed0686f96e78aef6327f65",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4588,7 +4588,7 @@
     {
       "case_id": "coverage-rg-follow-control",
       "source": "tests/cases/rg.json",
-      "definition_sha256": "e778ea4165449c788449d2ff3a508d8f0b63613774dbf678f134b2e43f8f5085",
+      "definition_sha256": "2a30adddb7dfdaa89eb093bfa7fb173acad44aadc1a06374b39a77f7cd95c28e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4598,7 +4598,7 @@
     {
       "case_id": "coverage-rg-follow",
       "source": "tests/cases/rg.json",
-      "definition_sha256": "21b0af2f1b288d80f7e6c6c59d9c555161e0ac3c910b89f52e8b97f8a9623a20",
+      "definition_sha256": "c3008a630c8999920f5e02eed4e9a4ed6763b4dbae4b3c5bf8cbde1ba6b09f21",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7050,7 +7050,7 @@
     {
       "case_id": "coverage-env-chdir",
       "source": "tests/cases/env.json",
-      "definition_sha256": "5b9bbd40b8c66bb4b26599571e70f3b71e1cfbda59b682a623c968dd3d8f1b06",
+      "definition_sha256": "d039fc34687ff510e4ec3d2c4a41d2e8e7e97d4eec4bde256c9ec48616a1dbec",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18908,7 +18908,7 @@
     {
       "case_id": "coverage-rmdir-parents-verbose",
       "source": "tests/cases/rmdir.json",
-      "definition_sha256": "cb08ebefbaaf4c24e4acdf674edcd9d5eb4fbd8af79868e8cc5fe3e0d51d52c2",
+      "definition_sha256": "589b7c9f7118fa778c8cdd2c9eeedb081b19710fd00d4eaa898f5b975feb3441",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -23933,7 +23933,7 @@
     {
       "case_id": "coverage-realpath-final-missing",
       "source": "tests/cases/realpath.json",
-      "definition_sha256": "a1a10a44618fc5eafae8e7c39e0d5d6642d013bab1e2300d0630015e23d1059f",
+      "definition_sha256": "800693bbbaf5f97ffe63daf41179f0e636b6b63bc90561ab3c556959ef60bdca",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

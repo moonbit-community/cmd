@@ -130,7 +130,7 @@
           "kind": "directory"
         }
       ],
-      "expected_stdout_text": "rmdir: removed directory 'a/b/c'\nrmdir: removed directory 'a/b'\nrmdir: removed directory 'a'\n",
+      "expected_stdout_text": "rmdir: removed directory 'a/b/c'\nrmdir: removed directory 'a${PATH_SEPARATOR}b'\nrmdir: removed directory 'a'\n",
       "expected_files": [
         {
           "path": "a",

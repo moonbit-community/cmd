@@ -99,8 +99,32 @@ fn proof_test_manifest() -> Json {
 }
 
 ///|
-test "structured stdout qualifies only through the full typed assertion" {
+test "proofs require full local assertions alongside structured and oracle facets" {
   let fixture = proof_test_case()
+  let diagnostic = {
+    ..fixture,
+    expected_status: 1,
+    expected_stderr_text: Some("candidate: same file\n"),
+    expected_stderr_contains: Some("same file"),
+    diagnostic_reason: Some(
+      "The oracle shares the cause but uses different framing.",
+    ),
+    oracle: Some(true),
+  }
+  assert_true(proof_asserted_streams(diagnostic))
+  let observed : @harness.RunResult = {
+    status: 1,
+    stdout: b"     1\ta\n",
+    stderr: b"candidate: same file\n",
+  }
+  assert_true(@harness.check_contract(diagnostic, observed, "/tmp").is_empty())
+  assert_false(
+    @harness.check_contract(
+      diagnostic,
+      { ..observed, stderr: b"other: same file\n", },
+      "/tmp",
+    ).is_empty(),
+  )
   let structured : @harness.Case = {
     ..fixture,
     expected_stdout_text: None,

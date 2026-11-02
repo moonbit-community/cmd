@@ -3597,6 +3597,7 @@
       "command": "rg",
       "args": [
         "--files",
+        "--no-ignore",
         "tree"
       ],
       "files": [
@@ -3627,6 +3628,7 @@
       "command": "rg",
       "args": [
         "--files",
+        "--no-ignore",
         "-L",
         "tree"
       ],
