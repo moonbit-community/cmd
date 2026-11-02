@@ -38,6 +38,31 @@ async fn metadata_scenario(
   work : String,
   proof? : @harness.ScenarioProof,
 ) -> Unit {
+  // Workspace readers can change atime independently of the command under test.
+  let isolated = @fs.tmpdir(prefix="cmd-metadata-")
+  defer @async.protect_from_cancel(() => {
+    defer @fs.rmdir(isolated, recursive=true)
+    let streams = isolated + "/streams"
+    if @fs.exists(streams) {
+      @fs.mkdir(work + "/streams")
+      for name in @fs.readdir(streams) {
+        @fs.write_file(
+          work + "/streams/" + name,
+          @fs.read_file(streams + "/" + name).binary(),
+        )
+      }
+    }
+  })
+  @fs.mkdir(isolated + "/work")
+  metadata_observations(root, isolated + "/work", proof?)
+}
+
+///|
+async fn metadata_observations(
+  root : String,
+  work : String,
+  proof? : @harness.ScenarioProof,
+) -> Unit {
   // Native observation prepares timestamps; commands still execute as Wasm.
   for
     (name, date, seconds) in [
