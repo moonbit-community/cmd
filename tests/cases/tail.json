@@ -96,8 +96,7 @@
       "expected_stdout_text": "",
       "expected_files": [],
       "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
-      "expected_stderr_contains": "invalid sleep interval",
-      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+      "expected_stderr_text": "tail: invalid sleep interval: '-1'\n"
     },
     {
       "id": "compat-tail-infinite-interval",
@@ -115,8 +114,7 @@
       "expected_stdout_text": "",
       "expected_files": [],
       "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
-      "expected_stderr_contains": "invalid sleep interval",
-      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact."
+      "expected_stderr_text": "tail: invalid sleep interval: 'inf'\n"
     },
     {
       "id": "compat-tail-follow-name-boundary",
@@ -570,6 +568,20 @@
       "oracle": true,
       "expected_stdout_text": "selected",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "tail-follow-interval",
+      "command": "tail",
+      "comparison": "scenario",
+      "timeout_ms": 30000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

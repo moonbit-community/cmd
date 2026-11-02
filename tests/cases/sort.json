@@ -414,11 +414,10 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "extra operand",
-      "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
       "coverage": [
         "check"
-      ]
+      ],
+      "expected_stderr_text": "sort: extra operand 'long' not allowed with -c\n"
     },
     {
       "id": "compat-text-sort-check-diagnostic",
@@ -433,12 +432,11 @@
       "comparison": "contract",
       "source_version": "workspace 0.2.0 retained compat assertions",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "disorder",
-      "diagnostic_reason": "Retains the existing diagnostic fragment because OS details or project branding vary; stdout and status are fully asserted.",
       "stdin_text": "b\na\n",
       "coverage": [
         "check"
-      ]
+      ],
+      "expected_stderr_text": "sort: -:2: disorder: a\n"
     },
     {
       "id": "compat-catalog-line-259",
@@ -3049,6 +3047,36 @@
       "oracle": true,
       "expected_stdout_text": "-0.000\n1.0\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-sort-numeric",
+      "command": "sort",
+      "args": [
+        "-n"
+      ],
+      "stdin_text": "10\n2\n-3\ninvalid\n0\n",
+      "expected_stdout_text": "-3\n0\ninvalid\n2\n10\n",
+      "oracle": true,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-live-spill",
+      "command": "sort",
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

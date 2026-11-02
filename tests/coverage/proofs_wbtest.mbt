@@ -1,4 +1,48 @@
 ///|
+test "acceptance rejects unresolved labels even when reviewed claims passed" {
+  let complete : Json = {
+    "reviewed_profile_passed": true,
+    "unresolved_obligations": 0,
+    "full_catalog_qualified": true,
+  }
+  let excluded : Json = {
+    "reviewed_profile_passed": true,
+    "unresolved_obligations": 0,
+    "full_catalog_qualified": false,
+  }
+  assert_true(proof_acceptance_passed(complete, false))
+  assert_true(proof_acceptance_passed(complete, true))
+  assert_true(proof_acceptance_passed(excluded, false))
+  assert_false(proof_acceptance_passed(excluded, true))
+  assert_false(
+    proof_acceptance_passed(
+      {
+        "reviewed_profile_passed": true,
+        "unresolved_obligations": 1,
+        "full_catalog_qualified": false,
+      },
+      false,
+    ),
+  )
+  assert_false(
+    proof_acceptance_passed(
+      { "reviewed_profile_passed": true, "full_catalog_qualified": true },
+      false,
+    ),
+  )
+  assert_false(
+    proof_acceptance_passed(
+      {
+        "reviewed_profile_passed": false,
+        "unresolved_obligations": 0,
+        "full_catalog_qualified": false,
+      },
+      false,
+    ),
+  )
+}
+
+///|
 fn proof_test_index() -> @catalog.Registry raise {
   @json.from_json({
     "schema": 3,
@@ -52,6 +96,76 @@ fn proof_test_manifest() -> Json {
       },
     ],
   }
+}
+
+///|
+test "proofs require full local assertions alongside structured and oracle facets" {
+  let fixture = proof_test_case()
+  let diagnostic = {
+    ..fixture,
+    expected_status: 1,
+    expected_stderr_text: Some("candidate: same file\n"),
+    expected_stderr_contains: Some("same file"),
+    diagnostic_reason: Some(
+      "The oracle shares the cause but uses different framing.",
+    ),
+    oracle: Some(true),
+  }
+  assert_true(proof_asserted_streams(diagnostic))
+  let observed : @harness.RunResult = {
+    status: 1,
+    stdout: b"     1\ta\n",
+    stderr: b"candidate: same file\n",
+  }
+  assert_true(@harness.check_contract(diagnostic, observed, "/tmp").is_empty())
+  assert_false(
+    @harness.check_contract(
+      diagnostic,
+      { ..observed, stderr: b"other: same file\n", },
+      "/tmp",
+    ).is_empty(),
+  )
+  let structured : @harness.Case = {
+    ..fixture,
+    expected_stdout_text: None,
+    expected_stdout_json: Some({
+      "matches": 2,
+      "elapsed": { "$any": "duration" },
+    }),
+  }
+  assert_true(proof_asserted_streams(structured))
+  assert_false(
+    proof_asserted_streams({
+      ..structured,
+      expected_stdout_json: None,
+      expected_stdout_contains: Some("matches"),
+    }),
+  )
+  assert_false(
+    proof_asserted_streams({
+      ..structured,
+      expected_stderr_text: None,
+      expected_stderr_contains: Some("error"),
+    }),
+  )
+  let valid : @harness.RunResult = {
+    status: 0,
+    stdout: b"{\"matches\":2,\"elapsed\":{\"secs\":0,\"nanos\":1,\"human\":\"0.000000s\"}}",
+    stderr: b"",
+  }
+  assert_true(@harness.check_runtime_contract(structured, valid).is_empty())
+  assert_false(
+    @harness.check_runtime_contract(structured, {
+      ..valid,
+      stdout: b"{\"matches\":1,\"elapsed\":{\"secs\":0,\"nanos\":1,\"human\":\"0.000000s\"}}",
+    }).is_empty(),
+  )
+  assert_false(
+    @harness.check_runtime_contract(structured, {
+      ..valid,
+      stdout: b"{\"matches\":2,\"elapsed\":{\"secs\":0,\"nanos\":-1,\"human\":\"0.000000s\"}}",
+    }).is_empty(),
+  )
 }
 
 ///|

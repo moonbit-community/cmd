@@ -563,6 +563,34 @@
       "coverage": [
         "tag"
       ]
+    },
+    {
+      "id": "coverage-md5sum-text-record",
+      "command": "md5sum",
+      "args": [
+        "-t",
+        "payload"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        }
+      ],
+      "expected_stdout_text": "900150983cd24fb0d6963f7d28e17f72  payload\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

@@ -895,7 +895,16 @@
       "case_ids": [
         "compat-tail-follow-stdin"
       ],
-      "activation": "-f -s0.02 -n2 on explicit stdin emits two final lines and exits0 at EOF. This is the documented stdin-follow termination profile; real growing-file polling still needs scenario evidence."
+      "activation": "Stdin-follow terminates at EOF with exact selected records. Real file-follow additionally observes an append after readiness at50ms/2s intervals, requiring the next record within the corresponding bound, unchanged prior content, empty diagnostics and reaped direct children.",
+      "scenario_bindings": [
+        {
+          "case_id": "tail-follow-interval",
+          "assertions": [
+            "tail/fast",
+            "tail/slow"
+          ]
+        }
+      ]
     },
     {
       "command": "jq",
@@ -2558,9 +2567,11 @@
       "claim": "decode",
       "case_ids": [
         "base32-rfc4648-decode",
-        "base32-nonzero-tail-bits-accepted"
+        "base32-nonzero-tail-bits-accepted",
+        "base32-uppercase-only",
+        "base32-prefix-before-malformed-padding"
       ],
-      "activation": "MZXW6=== decodes to exactly foo and an accepted nonzero-tail-bit vector to f, with exact successful streams. Malformed-padding emitted-prefix failure remains unqualified.",
+      "activation": "Known RFC4648 inputs decode to exact bytes, including the retained nonzero-tail-bit profile. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2568,9 +2579,11 @@
       "command": "base32",
       "claim": "wrap",
       "case_ids": [
-        "base32-rfc4648-foobar"
+        "base32-rfc4648-foobar",
+        "base32-negative-wrap",
+        "coverage-base32-wrap-positive"
       ],
-      "activation": "-w0 encodes foobar as MZXW6YTBOI====== without final LF. Invalid negative wrap and positive-width boundaries remain unqualified.",
+      "activation": "Explicit width4 splits the known RFC4648 foobar representation into exact lines, width0 suppresses wrapping/final LF and negative width rejects before output.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2578,9 +2591,11 @@
       "command": "base64",
       "claim": "decode",
       "case_ids": [
-        "compat-text-line-642"
+        "compat-text-line-642",
+        "compat-text-line-633",
+        "compat-text-line-652"
       ],
-      "activation": "Explicit -D decodes aGk= to exactly hi. Lowercase-d rejection cases and other spellings remain unqualified.",
+      "activation": "Explicit-D decodes known aGk= to hi. Lowercase-d malformed padding and invalid input length require complete diagnostics, status and the original emitted-prefix bytes.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2588,9 +2603,11 @@
       "command": "sha256sum",
       "claim": "check",
       "case_ids": [
-        "o9-sha256sum-check-tag"
+        "o9-sha256sum-check-tag",
+        "compat-text-sha256sum-warn-malformed",
+        "compat-text-sha256sum-strict-status"
       ],
-      "activation": "-c accepts the named BSD-tagged SHA256 record for explicit abc LF input and emits exactly payload: OK LF. Malformed-record warnings remain unqualified.",
+      "activation": "Named BSD-tagged and malformed manifests require exact payload verdicts, per-line/aggregate warnings and strict status behavior on independently fixed digests.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2598,9 +2615,10 @@
       "command": "paste",
       "claim": "delimiters",
       "case_ids": [
-        "compat-merge-paste"
+        "compat-merge-paste",
+        "compat-text-line-719"
       ],
-      "activation": "-d, replaces TAB with comma for two independently supplied two-record files, yielding exactly1,a LF2,b LF. Malformed delimiter escapes remain unqualified.",
+      "activation": "Comma delimiter merges independent two-record files into exact rows. A trailing unescaped backslash rejects with the complete diagnostic before output.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2610,9 +2628,10 @@
       "case_ids": [
         "compat-text-line-561",
         "compat-text-line-570",
-        "compat-text-line-579"
+        "compat-text-line-579",
+        "compat-text-line-591"
       ],
-      "activation": "Exact finite fixtures bind -n -2 excluding the last two records, -n +3 selecting the first three, and legacy -2 selecting two. Malformed-count rejection remains unqualified.",
+      "activation": "Signed, legacy and ordinary line counts retain their explicit record outputs. A malformed count rejects with the full diagnostic and empty stdout.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2621,20 +2640,34 @@
       "claim": "sleep-interval",
       "case_ids": [
         "compat-tail-interval-without-follow",
-        "compat-tail-zero-interval"
+        "compat-tail-zero-interval",
+        "compat-tail-negative-interval",
+        "compat-tail-infinite-interval"
       ],
-      "activation": "Finite0.02 and zero intervals are accepted with the exact selected output in these non-follow fixtures. Negative/infinite validation and actual polling delays remain unqualified.",
+      "activation": "Finite zero/positive syntax and negative/infinite rejection are supplemented by actual followed appends after readiness:50ms must deliver before1.2s and2s must wait at least1.4s. Both preserve records, empty diagnostics and reaped direct children; this is a bounded scheduling regression, not a timing benchmark.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "tail-follow-interval",
+          "assertions": [
+            "tail/fast",
+            "tail/slow"
+          ]
+        }
+      ]
     },
     {
       "command": "rg",
       "claim": "sort",
       "case_ids": [
         "rg-files-default-directory",
-        "rg-global-ignore-disabled"
+        "rg-global-ignore-disabled",
+        "rg-boundary-creation-time",
+        "coverage-rg-sort-accessed",
+        "coverage-rg-sort-modified"
       ],
-      "activation": "--sort path produces exact ascending paths for multiple discovered files in these fixtures. Creation-time rejection and other keys remain unqualified.",
+      "activation": "Path ordering and fixed distinct access/modified timestamps require exact ascending lists; unavailable creation-time sorting requires the complete status2 diagnostic before output.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2643,11 +2676,20 @@
       "claim": "pre",
       "case_ids": [
         "rg-preprocessor-copy",
-        "rg-preprocessor-early-stop"
+        "rg-preprocessor-early-stop",
+        "coverage-rg-pre-glob"
       ],
-      "activation": "Selected fixed preprocessors bind copy-through output and quiet early-stop outcome. Transformation, failed-child emitted-prefix preservation and full lifecycle effects remain unqualified.",
+      "activation": "Copy-through, transformed versus bypassed files, quiet early stop and failed-child emitted alpha prefix are required. The failure witness checks status2, diagnostic cause and unchanged input; host-specific wrapper wording remains outside the byte contract.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "stream-failure-prefixes",
+          "assertions": [
+            "rg/preprocessor-failure"
+          ]
+        }
+      ]
     },
     {
       "command": "grep",
@@ -2655,9 +2697,10 @@
       "case_ids": [
         "compat-text-line-236",
         "compat-text-grep-binary-stderr",
-        "compat-text-line-260"
+        "compat-text-line-260",
+        "coverage-grep-binary-policy-reject"
       ],
-      "activation": "For the explicit NUL-bearing hit, text mode emits exact raw bytes, without-match emits nothing/status1, and default mode emits the exact binary-matches stderr report. Unknown-policy rejection remains unqualified.",
+      "activation": "NUL-bearing input distinguishes text, without-match and default binary output; unknown policy rejects with complete diagnostic before matching.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2666,9 +2709,11 @@
       "claim": "check",
       "case_ids": [
         "compat-text-line-454",
-        "compat-text-line-467"
+        "compat-text-line-467",
+        "compat-text-sort-check-diagnostic",
+        "compat-text-line-544"
       ],
-      "activation": "Sorted a/b under-c returns0 and unsorted b/a under-C returns1, both with exact empty stdout/stderr. Full disorder diagnostic wording remains unqualified.",
+      "activation": "Sorted-c succeeds and unsorted-C fails silently. Unsorted-c requires the full source/line/disorder diagnostic; extra operands reject with their exact diagnostic. All output streams and statuses are explicit.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2676,9 +2721,10 @@
       "command": "uniq",
       "claim": "skip-fields",
       "case_ids": [
-        "compat-text-line-476"
+        "compat-text-line-476",
+        "compat-text-line-494"
       ],
-      "activation": "-f1 combined with-s1 -w1 makes the first two independently different leading-field rows compare equal while a third comparison key differs, requiring exact counts2/1. Malformed skip-count rejection remains unqualified.",
+      "activation": "Field/character skipping and bounded comparison width distinguish exact run counts2/1 on independent keys. A malformed field count requires the complete rejection diagnostic before output.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2687,9 +2733,14 @@
       "claim": "encoding",
       "case_ids": [
         "repair-strings-encoding-s-tab",
-        "repair-strings-encoding-S"
+        "repair-strings-encoding-S",
+        "p2-strings-unsupported-encoding",
+        "repair-strings-wide-b",
+        "repair-strings-wide-l",
+        "repair-strings-wide-B",
+        "repair-strings-wide-L"
       ],
-      "activation": "Explicit s includes TAB in printable strings and S preserves0xff in an independently specified byte string. Wide-encoding rejection rows remain unqualified.",
+      "activation": "Seven-bit s retains TAB and eight-bit S retains0xff in exact output. Unsupported b/l/B/L wide encodings require the complete diagnostic and empty stdout.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2697,9 +2748,10 @@
       "command": "wc",
       "claim": "files0-from",
       "case_ids": [
-        "compat-text-wc-files0-accounting"
+        "compat-text-wc-files0-accounting",
+        "compat-text-line-536"
       ],
-      "activation": "A NUL-separated short/long filename list produces exact padded line counts1/10 and total11. Positional-operand conflict rejection remains unqualified.",
+      "activation": "The explicit NUL-separated filename list requires exact individual counts and total11. Combining positional operands with files0-from rejects with the full diagnostic and no count output.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2709,18 +2761,29 @@
       "case_ids": [
         "compat-text-wc-files0-accounting"
       ],
-      "activation": "The two selected explicit files contain1/10 LF records and require exact individual/total11 counts. Later-read-error prefix retention remains unqualified.",
+      "activation": "Exact one/ten LF counts and aggregate11 are supplemented by a later missing operand: the preceding count and total survive with status1, missing-operand diagnostic and unchanged source. OS error spelling is outside this finite relation.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "stream-failure-prefixes",
+          "assertions": [
+            "wc/error-prefix"
+          ]
+        }
+      ]
     },
     {
       "command": "od",
       "claim": "strings",
       "case_ids": [
         "o7-20-od-strings-nul-limit",
-        "o7-21-od-strings-limit-terminates"
+        "o7-21-od-strings-limit-terminates",
+        "o7-19-od-strings-eof",
+        "o7-22-od-strings-zero-minimum",
+        "o7-23-od-strings-cross-file"
       ],
-      "activation": "-S3 selects the explicit abc string at a NUL and at read-limit EOF with exact output. Bare-S required-argument rejection remains unqualified.",
+      "activation": "Explicit minimum lengths, NUL/read-limit EOF, zero minimum and cross-file concatenation retain exact outputs. Bare short-S requires the complete missing-argument diagnostic and status1.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2731,27 +2794,45 @@
         "p1-gzip-concatenated",
         "p1-gzip-named-header"
       ],
-      "activation": "-dc decodes fixed concatenated members to abcabc and accepts the separately specified original-name header. Truncated-stream prefix retention remains unqualified.",
+      "activation": "Independently fixed concatenated/named members decode to exact bytes; a truncated trailer returns1 while retaining emitted abc and identifying unexpected EOF. Compiler source locations in the error are not frozen.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "stream-failure-prefixes",
+          "assertions": [
+            "gzip/truncated-prefix"
+          ]
+        }
+      ]
     },
     {
       "command": "gzip",
       "claim": "stdout",
       "case_ids": [
-        "p1-gzip-concatenated"
+        "p1-gzip-concatenated",
+        "p1-gzip-inplace-boundary"
       ],
-      "activation": "Explicit-dc writes exact decoded concatenated-member bytes abcabc to stdout. In-place rejection/source preservation and compression-to-stdout remain unqualified.",
+      "activation": "Explicit-dc decodes exact concatenated members, explicit-cn compresses a named binary payload decoded independently to original bytes, and in-place replacement rejects with the complete diagnostic and preserved source.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-6"
+          ]
+        }
+      ]
     },
     {
       "command": "join",
       "claim": "check-order",
       "case_ids": [
-        "o1-join-order-last-check"
+        "o1-join-order-last-check",
+        "compat-text-join-check-order"
       ],
-      "activation": "--nocheck-order then --check-order rejects the explicit unsorted fixture with exact line2 diagnostic and no stdout. Other checking fixtures remain unqualified.",
+      "activation": "Explicit check-order rejects the retained unsorted input with the complete file/line diagnostic and no stdout, including precedence after nocheck-order.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -3608,6 +3689,2002 @@
         "rg-compat-color-basic"
       ],
       "activation": "-H on a single explicit sherlock file requires its exact colored path prefix on each matching line, which a single-file default can omit. Other aliases and multi-file ordering remain separate."
+    },
+    {
+      "command": "cat",
+      "claim": "show-ends",
+      "case_ids": [
+        "coverage-cat-ends"
+      ],
+      "activation": "Explicit -E appends $ to the terminated first record and leaves TAB, high byte, NUL and the unterminated tail unchanged.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cat",
+      "claim": "show-tabs",
+      "case_ids": [
+        "coverage-cat-tabs"
+      ],
+      "activation": "Explicit -T replaces TAB by ^I without adding end markers or rewriting the high byte and NUL.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cat",
+      "claim": "show-nonprinting",
+      "case_ids": [
+        "coverage-cat-nonprinting"
+      ],
+      "activation": "Explicit -v renders 0x80 and NUL as M-^@ and ^@ while LF and TAB remain literal; output has no invented final LF.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "nl",
+      "claim": "footer-numbering",
+      "case_ids": [
+        "coverage-nl-footer"
+      ],
+      "activation": "An actual footer delimiter switches to the explicitly selected -fa style and resets numbering to 1, preserving the delimiter's empty output record.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "nl",
+      "claim": "join-blank-lines",
+      "case_ids": [
+        "coverage-nl-blank-groups"
+      ],
+      "activation": "With -ba -l2 only each second consecutive blank receives a number. A nonblank record resets the blank group; unnumbered records contain exact width-plus-separator padding.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "nl",
+      "claim": "no-renumber",
+      "case_ids": [
+        "coverage-nl-page-reset",
+        "coverage-nl-page-continuation"
+      ],
+      "activation": "The same logical page marker restarts at 1 normally but continues at 2 with -p; both exact streams bind the contrast.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "nl",
+      "claim": "section-delimiter",
+      "case_ids": [
+        "coverage-nl-delimiter"
+      ],
+      "activation": "Nondefault XY delimiters recognize XYXYXY as a page header, suppress that marker and restart numbering. Treating it as ordinary text would change exact output.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sort",
+      "claim": "numeric-sort",
+      "case_ids": [
+        "coverage-sort-numeric"
+      ],
+      "activation": "Global -n orders negative, zero/invalid, 2 and 10 numerically, with a defined lexical tie break for zero and invalid text.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sort",
+      "claim": "ignore-nonprinting",
+      "case_ids": [
+        "p3-sort-ignore-nonprinting"
+      ],
+      "activation": "Ignoring embedded byte 0x01 reverses the raw-byte ordering of a<control>z and ay; exact output retains original bytes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sort",
+      "claim": "month-sort",
+      "case_ids": [
+        "p3-sort-month"
+      ],
+      "activation": "The independently specified vector places invalid month zzz first, then mixed-case January, February and March; exact output distinguishes lexical order.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "uniq",
+      "claim": "repeated",
+      "case_ids": [
+        "coverage-uniq-repeated"
+      ],
+      "activation": "Standalone -d emits one a and one c from repeated groups and excludes singleton b.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "uniq",
+      "claim": "unique",
+      "case_ids": [
+        "coverage-uniq-unique"
+      ],
+      "activation": "Standalone -u emits only singleton b and excludes both repeated groups.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cmp",
+      "claim": "bytes",
+      "case_ids": [
+        "coverage-cmp-before-difference",
+        "coverage-cmp-at-difference"
+      ],
+      "activation": "The first differing byte is position 3: -n2 must exit 0 and -n3 must exit 1. Silent streams are exact in both cases.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cmp",
+      "claim": "silent",
+      "case_ids": [
+        "coverage-cmp-silent-difference",
+        "coverage-cmp-before-difference"
+      ],
+      "activation": "Explicit -s suppresses all output for differing files while preserving exit 1, and equal compared prefixes still return 0.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "basic-regexp",
+      "case_ids": [
+        "coverage-grep-basic"
+      ],
+      "activation": "Explicit --basic-regexp treats unescaped + literally: a+ matches and aa does not, distinguishing the extended dialect.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "count",
+      "case_ids": [
+        "coverage-grep-count"
+      ],
+      "activation": "-c counts matching records, not occurrences: two hits on the first record plus a later hit yield exactly 2.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "file",
+      "case_ids": [
+        "coverage-grep-file"
+      ],
+      "activation": "A real pattern file supplies two anchored expressions and selects exactly red and green, excluding blue.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "files-with-matches",
+      "case_ids": [
+        "coverage-grep-files-matching"
+      ],
+      "activation": "-l emits only the names one and three, once each despite repeated matches, and omits the nonmatching file.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "files-without-match",
+      "case_ids": [
+        "coverage-grep-files-nonmatching"
+      ],
+      "activation": "-L emits only the nonmatching filename two, not matching records or matching filenames.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "invert-match",
+      "case_ids": [
+        "coverage-grep-invert"
+      ],
+      "activation": "-v selects exactly miss and excludes both records containing hit.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "line-regexp",
+      "case_ids": [
+        "coverage-grep-line"
+      ],
+      "activation": "-x selects the complete hit record and rejects both prefix and suffix substring matches.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "quiet",
+      "case_ids": [
+        "coverage-grep-quiet-hit",
+        "coverage-grep-quiet-miss"
+      ],
+      "activation": "-q emits no bytes in either matching or nonmatching input, with exact statuses 0 and 1 respectively.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "no-filename",
+      "case_ids": [
+        "coverage-grep-no-filename"
+      ],
+      "activation": "-h over two named files removes prefixes that multi-file output normally requires, while retaining both exact matching records.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "with-filename",
+      "case_ids": [
+        "coverage-grep-with-filename"
+      ],
+      "activation": "-H over a single named file adds the exact one: prefix, distinguishing the default single-file stream.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "grep",
+      "claim": "text",
+      "case_ids": [
+        "coverage-grep-text"
+      ],
+      "activation": "Explicit --text preserves the NUL-containing matching record as raw bytes instead of reporting a binary match.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "fold",
+      "claim": "characters",
+      "case_ids": [
+        "coverage-fold-characters",
+        "coverage-fold-columns-control"
+      ],
+      "activation": "Explicit -c counts NUL as one character while default columns assign it zero width, so a NUL b c wraps before c only in character mode. TAB/CR/backspace are not claimed to be ordinary bytes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "json",
+      "case_ids": [
+        "rg-json"
+      ],
+      "activation": "The complete ordered JSONL structure binds begin, match, end and summary events, exact path/line/submatch offsets and byte/count fields. Only explicitly typed elapsed durations vary; missing/extra fields and invalid durations fail the runtime matcher.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "ignore-file",
+      "case_ids": [
+        "coverage-rg-ignore-file",
+        "coverage-rg-ignore-file-control"
+      ],
+      "activation": "An actual explicit ignore file removes tree/skip while retaining tree/keep; the otherwise identical control lists both. This observes rule application, independent of missing-ignore-file diagnostics.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "realpath",
+      "claim": "canonicalize",
+      "case_ids": [
+        "coverage-realpath-final-missing",
+        "coverage-realpath-middle-missing"
+      ],
+      "activation": "Explicit -E accepts a missing final path under an existing directory but rejects a missing middle component. Quiet rejection keeps diagnostic wording outside this path-resolution claim.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "realpath",
+      "claim": "zero",
+      "case_ids": [
+        "coverage-realpath-zero"
+      ],
+      "activation": "-z terminates both independently known relative paths with NUL, including the final path, with no LF bytes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "fast",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-1"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "2",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-2"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "3",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-3"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "4",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-4"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "5",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-5"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "6",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-6"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "7",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-7"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "8",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-8"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "best",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-9"
+          ]
+        }
+      ],
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "no-name",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "compression-selectors",
+          "assertions": [
+            "gzip/level-6",
+            "gzip/name-boundary"
+          ]
+        }
+      ],
+      "activation": "Named compression with -cn produces no filename/time fields, independently decodes to the original bytes and retains the source. The same named operation without -n rejects with exact status2 and diagnostic.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gzip",
+      "claim": "quiet",
+      "case_ids": [
+        "coverage-gzip-quiet-garbage",
+        "coverage-gzip-garbage-control"
+      ],
+      "activation": "The same valid fixed abc member followed by garbage yields decoded abc and status2. Explicit -q suppresses the exact warning visible in the control; it does not suppress failure status or decoded bytes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "quiet",
+      "case_ids": [
+        "coverage-gunzip-quiet-garbage",
+        "coverage-gunzip-garbage-control"
+      ],
+      "activation": "The same valid fixed abc member followed by garbage yields decoded abc and status2. Explicit -q suppresses the exact warning visible in the control; it does not suppress failure status or decoded bytes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "no-name",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-no-name"
+      ],
+      "activation": "The explicit -n spelling decodes independently fixed gzip members to exact abc bytes. In the decoder-only profile -n is accepted without restoring the saved filename; no compression or metadata-restoration support is inferred.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "decompress",
+      "kind": "supported-option",
+      "case_ids": [
+        "coverage-gunzip-decompress"
+      ],
+      "activation": "The explicit --decompress spelling decodes independently fixed gzip members to exact abc bytes. In the decoder-only profile -n is accepted without restoring the saved filename; no compression or metadata-restoration support is inferred.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "fast",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-fast"
+      ],
+      "activation": "The individual --fast selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "2",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-2"
+      ],
+      "activation": "The individual -2 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "3",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-3"
+      ],
+      "activation": "The individual -3 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "4",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-4"
+      ],
+      "activation": "The individual -4 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "5",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-5"
+      ],
+      "activation": "The individual -5 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "6",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-6"
+      ],
+      "activation": "The individual -6 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "7",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-7"
+      ],
+      "activation": "The individual -7 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "8",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-8"
+      ],
+      "activation": "The individual -8 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "gunzip",
+      "claim": "best",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-gunzip-level-best"
+      ],
+      "activation": "The individual --best selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "quiet",
+      "case_ids": [
+        "coverage-zcat-quiet-garbage",
+        "coverage-zcat-garbage-control"
+      ],
+      "activation": "The same valid fixed abc member followed by garbage yields decoded abc and status2. Explicit -q suppresses the exact warning visible in the control; it does not suppress failure status or decoded bytes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "no-name",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-no-name"
+      ],
+      "activation": "The explicit -n spelling decodes independently fixed gzip members to exact abc bytes. In the decoder-only profile -n is accepted without restoring the saved filename; no compression or metadata-restoration support is inferred.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "decompress",
+      "kind": "supported-option",
+      "case_ids": [
+        "coverage-zcat-decompress"
+      ],
+      "activation": "The explicit --decompress spelling decodes independently fixed gzip members to exact abc bytes. In the decoder-only profile -n is accepted without restoring the saved filename; no compression or metadata-restoration support is inferred.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "stdout",
+      "kind": "supported-option",
+      "case_ids": [
+        "coverage-zcat-stdout"
+      ],
+      "activation": "The explicit --stdout spelling decodes independently fixed gzip members to exact abc bytes. In the decoder-only profile -n is accepted without restoring the saved filename; no compression or metadata-restoration support is inferred.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "fast",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-fast"
+      ],
+      "activation": "The individual --fast selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "2",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-2"
+      ],
+      "activation": "The individual -2 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "3",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-3"
+      ],
+      "activation": "The individual -3 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "4",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-4"
+      ],
+      "activation": "The individual -4 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "5",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-5"
+      ],
+      "activation": "The individual -5 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "6",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-6"
+      ],
+      "activation": "The individual -6 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "7",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-7"
+      ],
+      "activation": "The individual -7 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "8",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-8"
+      ],
+      "activation": "The individual -8 selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "zcat",
+      "claim": "best",
+      "kind": "accepted-no-op",
+      "case_ids": [
+        "coverage-zcat-level-best"
+      ],
+      "activation": "The individual --best selector is documented as ignored during decompression. Two independently fixed members must still produce exactly abcabc with status0 and empty stderr; this deliberately claims only the decoder no-op, not level-specific compression.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cksum",
+      "claim": "quiet",
+      "case_ids": [
+        "coverage-cksum-check-control",
+        "coverage-cksum-quiet-good",
+        "coverage-cksum-quiet-mismatch",
+        "coverage-cksum-quiet-malformed"
+      ],
+      "activation": "Quiet suppresses successful checksum lines but retains FAILED and malformed-line summaries. Known abc digest, all-zero mismatch and malformed second line independently determine exact status and streams.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cksum",
+      "claim": "status",
+      "case_ids": [
+        "coverage-cksum-status-good",
+        "coverage-cksum-status-mismatch",
+        "coverage-cksum-status-malformed"
+      ],
+      "activation": "Status mode suppresses both result and summary streams while distinguishing valid0, mismatch1 and strict-malformed1 results; input files are unchanged.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha1sum",
+      "claim": "quiet",
+      "case_ids": [
+        "checksum-sha1sum-check",
+        "coverage-sha1sum-quiet-good",
+        "coverage-sha1sum-quiet-mismatch",
+        "coverage-sha1sum-quiet-malformed"
+      ],
+      "activation": "Quiet suppresses successful checksum lines but retains FAILED and malformed-line summaries. Known abc digest, all-zero mismatch and malformed second line independently determine exact status and streams.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha1sum",
+      "claim": "status",
+      "case_ids": [
+        "coverage-sha1sum-status-good",
+        "coverage-sha1sum-status-mismatch",
+        "coverage-sha1sum-status-malformed"
+      ],
+      "activation": "Status mode suppresses both result and summary streams while distinguishing valid0, mismatch1 and strict-malformed1 results; input files are unchanged.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha1sum",
+      "claim": "ignore-missing",
+      "case_ids": [
+        "coverage-sha1sum-missing",
+        "coverage-sha1sum-missing-all"
+      ],
+      "activation": "A missing record is skipped while a present independently known abc digest is verified. An all-missing manifest still fails with the exact no-file-verified diagnostic.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha1sum",
+      "claim": "strict",
+      "case_ids": [
+        "coverage-sha1sum-lenient",
+        "coverage-sha1sum-strict"
+      ],
+      "activation": "The same valid-plus-malformed manifest returns0 normally but1 with --strict, retaining the success line and exact malformed summary in both runs.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha1sum",
+      "claim": "warn",
+      "case_ids": [
+        "coverage-sha1sum-lenient",
+        "coverage-sha1sum-warn"
+      ],
+      "activation": "The same malformed second line adds an exact per-line algorithm-specific diagnostic under --warn; the independent valid digest still succeeds and the summary remains exact.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha512sum",
+      "claim": "quiet",
+      "case_ids": [
+        "checksum-sha512sum-check",
+        "coverage-sha512sum-quiet-good",
+        "coverage-sha512sum-quiet-mismatch",
+        "coverage-sha512sum-quiet-malformed"
+      ],
+      "activation": "Quiet suppresses successful checksum lines but retains FAILED and malformed-line summaries. Known abc digest, all-zero mismatch and malformed second line independently determine exact status and streams.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha512sum",
+      "claim": "ignore-missing",
+      "case_ids": [
+        "coverage-sha512sum-missing",
+        "coverage-sha512sum-missing-all"
+      ],
+      "activation": "A missing record is skipped while a present independently known abc digest is verified. An all-missing manifest still fails with the exact no-file-verified diagnostic.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha512sum",
+      "claim": "strict",
+      "case_ids": [
+        "coverage-sha512sum-lenient",
+        "coverage-sha512sum-strict"
+      ],
+      "activation": "The same valid-plus-malformed manifest returns0 normally but1 with --strict, retaining the success line and exact malformed summary in both runs.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha512sum",
+      "claim": "warn",
+      "case_ids": [
+        "coverage-sha512sum-lenient",
+        "coverage-sha512sum-warn"
+      ],
+      "activation": "The same malformed second line adds an exact per-line algorithm-specific diagnostic under --warn; the independent valid digest still succeeds and the summary remains exact.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "cksum",
+      "claim": "binary",
+      "case_ids": [
+        "coverage-cksum-binary-record"
+      ],
+      "activation": "The actual -b spelling on named nonempty abc input must emit its independently known digest, exact text/binary marker and LF/NUL terminator, retaining source bytes. No input translation or checksum-only parser claim is substituted.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha1sum",
+      "claim": "binary",
+      "case_ids": [
+        "coverage-sha1sum-binary-record"
+      ],
+      "activation": "The actual -b spelling on named nonempty abc input must emit its independently known digest, exact text/binary marker and LF/NUL terminator, retaining source bytes. No input translation or checksum-only parser claim is substituted.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "md5sum",
+      "claim": "text",
+      "case_ids": [
+        "coverage-md5sum-text-record"
+      ],
+      "activation": "The actual -t spelling on named nonempty abc input must emit its independently known digest, exact text/binary marker and LF/NUL terminator, retaining source bytes. No input translation or checksum-only parser claim is substituted.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha512sum",
+      "claim": "text",
+      "case_ids": [
+        "coverage-sha512sum-text-record"
+      ],
+      "activation": "The actual -t spelling on named nonempty abc input must emit its independently known digest, exact text/binary marker and LF/NUL terminator, retaining source bytes. No input translation or checksum-only parser claim is substituted.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha512sum",
+      "claim": "zero",
+      "case_ids": [
+        "coverage-sha512sum-zero-record"
+      ],
+      "activation": "The actual -z spelling on named nonempty abc input must emit its independently known digest, exact text/binary marker and LF/NUL terminator, retaining source bytes. No input translation or checksum-only parser claim is substituted.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sha256sum",
+      "claim": "zero",
+      "case_ids": [
+        "coverage-sha256sum-zero-record"
+      ],
+      "activation": "The actual -z spelling on named nonempty abc input must emit its independently known digest, exact text/binary marker and LF/NUL terminator, retaining source bytes. No input translation or checksum-only parser claim is substituted.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "named",
+      "case_ids": [
+        "coverage-od-named"
+      ],
+      "activation": "The explicit -a selector renders independently calculated nonempty byte values with exact field widths. Numeric vectors exercise zero/sign, endian order or a partial final word as applicable; no default-format alias inference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "octal-byte",
+      "case_ids": [
+        "coverage-od-octal-byte"
+      ],
+      "activation": "The explicit -b selector renders independently calculated nonempty byte values with exact field widths. Numeric vectors exercise zero/sign, endian order or a partial final word as applicable; no default-format alias inference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "decimal",
+      "case_ids": [
+        "coverage-od-decimal"
+      ],
+      "activation": "The explicit -d selector renders independently calculated nonempty byte values with exact field widths. Numeric vectors exercise zero/sign, endian order or a partial final word as applicable; no default-format alias inference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "int",
+      "case_ids": [
+        "coverage-od-int"
+      ],
+      "activation": "The explicit -i selector renders independently calculated nonempty byte values with exact field widths. Numeric vectors exercise zero/sign, endian order or a partial final word as applicable; no default-format alias inference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "long",
+      "case_ids": [
+        "coverage-od-long"
+      ],
+      "activation": "The explicit -l selector renders independently calculated nonempty byte values with exact field widths. Numeric vectors exercise zero/sign, endian order or a partial final word as applicable; no default-format alias inference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "octal",
+      "case_ids": [
+        "coverage-od-octal"
+      ],
+      "activation": "The explicit -o selector renders independently calculated nonempty byte values with exact field widths. Numeric vectors exercise zero/sign, endian order or a partial final word as applicable; no default-format alias inference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "signed",
+      "case_ids": [
+        "coverage-od-signed"
+      ],
+      "activation": "The explicit -s selector renders independently calculated nonempty byte values with exact field widths. Numeric vectors exercise zero/sign, endian order or a partial final word as applicable; no default-format alias inference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "od",
+      "claim": "hex",
+      "case_ids": [
+        "coverage-od-hex"
+      ],
+      "activation": "The explicit -x selector renders independently calculated nonempty byte values with exact field widths. Numeric vectors exercise zero/sign, endian order or a partial final word as applicable; no default-format alias inference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "hexdump",
+      "claim": "one-byte-octal",
+      "case_ids": [
+        "coverage-hexdump-one-byte-octal"
+      ],
+      "activation": "Explicit -b renders independently specified control/high bytes or little-endian numeric words, including the short final row, padding and final address; exact complete streams are required.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "hexdump",
+      "claim": "one-byte-char",
+      "case_ids": [
+        "coverage-hexdump-one-byte-char"
+      ],
+      "activation": "Explicit -c renders independently specified control/high bytes or little-endian numeric words, including the short final row, padding and final address; exact complete streams are required.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "hexdump",
+      "claim": "two-bytes-decimal",
+      "case_ids": [
+        "coverage-hexdump-two-bytes-decimal"
+      ],
+      "activation": "Explicit -d renders independently specified control/high bytes or little-endian numeric words, including the short final row, padding and final address; exact complete streams are required.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "hexdump",
+      "claim": "two-bytes-octal",
+      "case_ids": [
+        "coverage-hexdump-two-bytes-octal"
+      ],
+      "activation": "Explicit -o renders independently specified control/high bytes or little-endian numeric words, including the short final row, padding and final address; exact complete streams are required.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "hexdump",
+      "claim": "no-squeezing",
+      "case_ids": [
+        "coverage-hexdump-no-squeezing",
+        "hexdump-duplicate-blocks"
+      ],
+      "activation": "Three identical full blocks are printed at all three exact addresses under -v; the retained control squeezes them to one row and an asterisk.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "diff",
+      "claim": "unified-lines",
+      "case_ids": [
+        "coverage-diff-unified-lines"
+      ],
+      "activation": "A single middle-line replacement in five records under -U1 includes exactly one record before and after, omits both outer records and requires exact hunk ranges and framing; default three-line context would fail.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "diff",
+      "claim": "context-lines",
+      "case_ids": [
+        "coverage-diff-context-lines"
+      ],
+      "activation": "A single middle-line replacement in five records under -C1 includes exactly one record before and after, omits both outer records and requires exact hunk ranges and framing; default three-line context would fail.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sed",
+      "claim": "silent",
+      "case_ids": [
+        "coverage-sed-silent"
+      ],
+      "activation": "Explicit --silent suppresses automatic output for all three input records while the second-line p command emits exactly one selected record.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "iglob",
+      "case_ids": [
+        "coverage-rg-iglob"
+      ],
+      "activation": "Case-insensitive glob selection includes both uppercase and lowercase TXT names while excluding the Rust file.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "no-ignore",
+      "case_ids": [
+        "coverage-rg-no-ignore",
+        "coverage-rg-no-ignore-control"
+      ],
+      "activation": "Explicit --no-ignore includes a path excluded by a real .ignore file; the control lists only the retained path.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "type-not",
+      "case_ids": [
+        "coverage-rg-type-not"
+      ],
+      "activation": "Explicit --type-not rust excludes the .rs file while retaining the unrelated text file.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "type-add",
+      "case_ids": [
+        "coverage-rg-type-add"
+      ],
+      "activation": "A custom proof type with *.toy actively selects its file and excludes a text file.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "max-depth",
+      "case_ids": [
+        "coverage-rg-max-depth",
+        "coverage-rg-max-depth-control"
+      ],
+      "activation": "Depth one includes the direct child but excludes a real depth-two descendant; the companion depth-two selection includes both.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "sortr",
+      "case_ids": [
+        "coverage-rg-sortr"
+      ],
+      "activation": "Explicit reverse path sorting requires z before a, with raw line order asserted rather than normalized.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "before-context",
+      "case_ids": [
+        "coverage-rg-before-context"
+      ],
+      "activation": "-B1 includes only the immediately preceding record with context framing, omits the farther preceding and following records, and retains the numbered match.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "multiline-dotall",
+      "case_ids": [
+        "coverage-rg-dotall",
+        "coverage-rg-dotall-control"
+      ],
+      "activation": "The same -U pattern hit.*end matches across LF only with --multiline-dotall; exact whole matched bytes and statuses 0 versus1 bind the difference.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "no-filename",
+      "case_ids": [
+        "coverage-rg-no-filename"
+      ],
+      "activation": "Actual --no-filename suppresses prefixes for two named matching files, preserving exact records and their explicit operand order.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "no-config",
+      "case_ids": [
+        "rg-config",
+        "coverage-rg-no-config"
+      ],
+      "activation": "The same nonempty ignore-case configuration matches ALPHA normally but --no-config disables it, yielding status1 and no output.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "encoding",
+      "case_ids": [
+        "coverage-rg-encoding"
+      ],
+      "activation": "Explicit Latin1 decoding converts byte e9 to UTF-8 é before matching and output; the literal Unicode pattern must match the exact decoded record.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "binary",
+      "case_ids": [
+        "coverage-rg-binary"
+      ],
+      "activation": "An actual NUL before the matching record under --binary produces the exact named binary-match diagnostic with observed byte offset3 and status0, rather than raw text output.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "pre-glob",
+      "case_ids": [
+        "coverage-rg-pre-glob"
+      ],
+      "activation": "A preprocessor changes matching .prep input to transformed, while the nonmatching .txt input remains raw. Exact per-file output fails if preprocessing runs on either zero or both files.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "follow",
+      "case_ids": [
+        "coverage-rg-follow",
+        "coverage-rg-follow-control"
+      ],
+      "activation": "Recursive listing visits the real directory in both runs and adds its symlink spelling only under -L. Both disable ignore rules so repository or global exclusions cannot hide the referent. Exact path sets distinguish link following; POSIX scope.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "pwd",
+      "claim": "logical",
+      "case_ids": [
+        "coverage-pwd-logical",
+        "coverage-pwd-physical"
+      ],
+      "activation": "A real symbolic-link cwd with valid matching logical PWD requires distinct -L link and -P referent paths. Both exact outputs are required; POSIX scope.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "pwd",
+      "claim": "physical",
+      "case_ids": [
+        "coverage-pwd-logical",
+        "coverage-pwd-physical"
+      ],
+      "activation": "A real symbolic-link cwd with valid matching logical PWD requires distinct -L link and -P referent paths. Both exact outputs are required; POSIX scope.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "mv",
+      "claim": "force",
+      "case_ids": [
+        "coverage-mv-force"
+      ],
+      "activation": "The last -f overrides preceding -i despite a negative stdin answer, replacing a real destination without a prompt, removing source and preserving exact new bytes. Fixed distinct mtimes avoid identity ambiguity; POSIX.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "mv",
+      "claim": "verbose",
+      "case_ids": [
+        "coverage-mv-verbose"
+      ],
+      "activation": "A real replacement emits the exact renamed source/destination line and requires source absence plus destination new bytes; POSIX with distinct mtimes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "ln",
+      "claim": "backup-control",
+      "case_ids": [
+        "coverage-ln-backup-numbered",
+        "coverage-ln-backup-existing",
+        "coverage-ln-backup-none"
+      ],
+      "activation": "Actual destination replacement under numbered/existing preserves the old bytes in the next numbered backup while retaining the first. Explicit none creates no new backup. Exact destination/source/link state and all relevant backup names are checked; POSIX.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "mv",
+      "claim": "backup-control",
+      "case_ids": [
+        "coverage-mv-backup-numbered",
+        "coverage-mv-backup-existing",
+        "coverage-mv-backup-none"
+      ],
+      "activation": "Actual destination replacement under numbered/existing preserves the old bytes in the next numbered backup while retaining the first. Explicit none creates no new backup. Exact destination/source/link state and all relevant backup names are checked; POSIX.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "ln",
+      "claim": "verbose",
+      "case_ids": [
+        "coverage-ln-verbose"
+      ],
+      "activation": "Explicit -v emits the exact link/target diagnostic while an actual symlink with the independently specified target is created and the referent is retained; POSIX.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "ln",
+      "claim": "no-target-directory",
+      "case_ids": [
+        "coverage-ln-no-target-directory",
+        "repair-fs-ln-target-directory"
+      ],
+      "activation": "A real directory destination under -T rejects replacement and must remain a directory without a nested link; the target-directory control creates its nested link. POSIX scope.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "make",
+      "claim": "always-make",
+      "case_ids": [
+        "coverage-make-always-make",
+        "coverage-make-fresh-control"
+      ],
+      "activation": "Controlled source older than target skips the recipe normally. -B and -W source execute it and create exact marker bytes; -n -B prints the recipe but creates no marker. Both timestamps and original contents are retained; POSIX timestamp fixture.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "make",
+      "claim": "what-if",
+      "case_ids": [
+        "coverage-make-what-if",
+        "coverage-make-fresh-control"
+      ],
+      "activation": "Controlled source older than target skips the recipe normally. -B and -W source execute it and create exact marker bytes; -n -B prints the recipe but creates no marker. Both timestamps and original contents are retained; POSIX timestamp fixture.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "make",
+      "claim": "just-print",
+      "case_ids": [
+        "coverage-make-just-print",
+        "coverage-make-fresh-control"
+      ],
+      "activation": "Controlled source older than target skips the recipe normally. -B and -W source execute it and create exact marker bytes; -n -B prints the recipe but creates no marker. Both timestamps and original contents are retained; POSIX timestamp fixture.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "make",
+      "claim": "silent",
+      "case_ids": [
+        "coverage-make-silent",
+        "coverage-make-silent-control"
+      ],
+      "activation": "A non-@ recipe prints its command and hello normally; -s removes only the command echo while retaining exact recipe output.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "make",
+      "claim": "file",
+      "case_ids": [
+        "coverage-make-file"
+      ],
+      "activation": "An explicit alternate makefile executes selected while a conflicting default Makefile would emit wrong; exact output distinguishes actual file selection.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "amin",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/amin"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "atime",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/atime"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "mmin",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/mmin"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "cmin",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/cmin"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "ctime",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/ctime"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "anewer",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/anewer"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "cnewer",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/cnewer"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "used",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/used"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "writable",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/writable"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "executable",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/executable"
+          ]
+        }
+      ],
+      "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "find",
+      "claim": "newerXY",
+      "case_ids": [
+        "coverage-find-reject--newerBm",
+        "coverage-find-reject--newermB",
+        "coverage-find-reject--newermt"
+      ],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "find/neweraa",
+            "find/newerac",
+            "find/neweram",
+            "find/newerca",
+            "find/newercc",
+            "find/newercm",
+            "find/newerma",
+            "find/newermc",
+            "find/newermm"
+          ]
+        }
+      ],
+      "activation": "All nine supported a/c/m source/reference combinations execute true/false comparisons with independently checked timestamp relations, including strict equality rejection for c/c. Birth and literal-time selectors reject explicitly without touching a sentinel; POSIX timestamp scenario plus portable rejection vectors.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "test",
+      "claim": "access-checks",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "metadata-relations",
+          "assertions": [
+            "test/readable",
+            "test/writable",
+            "test/executable"
+          ]
+        }
+      ],
+      "activation": "Each -r/-w/-x invocation has an allowed and denied file with native effective-access preconditions checked before execution; Wasm must return exact0/1 with no output. POSIX scope, no assumption that chmod alone establishes access.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sed",
+      "claim": "in-place",
+      "kind": "explicit-rejection-boundary",
+      "case_ids": [
+        "coverage-sed-in-place-short",
+        "proof-sed-in-place-boundary-preserves-source"
+      ],
+      "activation": "Both explicit in-place spellings reject before processing a named sentinel, with the complete generic parser diagnostic, status1, empty stdout, unchanged bytes/type and no backup. Metadata is observed separately where supported.",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "test",
+      "claim": "timestamps",
+      "case_ids": [
+        "coverage-test-time--nt-new-old",
+        "coverage-test-time--nt-old-new",
+        "coverage-test-time--nt-new-equal",
+        "coverage-test-time--ot-old-new",
+        "coverage-test-time--ot-new-old",
+        "coverage-test-time--ot-equal-new",
+        "coverage-test-time--nt-new-missing",
+        "coverage-test-time--ot-missing-new"
+      ],
+      "activation": "Independently fixed old/new/equal mtimes exercise both -nt/-ot true, false, equality and documented one-missing-file relations, with exact statuses and empty streams; POSIX.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rg",
+      "claim": "type-list",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "rg-type-listing",
+          "assertions": [
+            "rg/type-list"
+          ]
+        }
+      ],
+      "activation": "Actual --type-list with a newly added type must contain the exact custom and Rust stanzas, only well-formed nonempty stanzas in unique sorted order and final LF. This finite contract does not assert the entire evolving builtin inventory.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "sort",
+      "claim": "temporary-directory",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "sort-live-spill",
+          "assertions": [
+            "sort/temporary-directory"
+          ]
+        }
+      ],
+      "activation": "An independently held stdin forces disk spilling under a 128-byte budget. A live filesystem observer sees actual runs in the explicit -T directory before EOF, requires the fallback directory empty, then checks exact full sorted output and complete cleanup inventories after success.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "rm",
+      "claim": "preserve-root",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "rm-root-guard",
+          "assertions": [
+            "rm/preserve-root"
+          ]
+        }
+      ],
+      "activation": "Explicit --preserve-root rejects the root operand with exact diagnostic before filesystem descent. The child has a deny-all capability policy, independently checked by a denied sentinel deletion, so a regressed guard cannot mutate host files.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "xargs",
+      "claim": "verbose",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "xargs-verbose-argv",
+          "assertions": [
+            "xargs/verbose"
+          ]
+        }
+      ],
+      "activation": "Explicit -t displays the exact current command-line format while a real controlled child independently renders each NUL-delimited space/quote/empty argument. The native executable path is supplied independently; display escaping beyond the documented current profile is not inferred.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "timeout",
+      "claim": "duration",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "timeout-child-lifecycle",
+          "assertions": [
+            "timeout/complete",
+            "timeout/child-failure",
+            "timeout/expire",
+            "timeout/invalid",
+            "timeout/range",
+            "timeout/negative"
+          ]
+        }
+      ],
+      "activation": "The real local-only Wasm timeout propagates successful/failed child exit, expires an independently ready child that otherwise sleeps60s, and rejects malformed/range/negative durations before child output. Captured pipe EOF within the outer15s deadline observes termination of that direct child. A missing executable also requires127; its host diagnostic is checked separately. No process-group or publication claim.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "csplit",
+      "claim": "keep-files",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "csplit-fragment-retention",
+          "assertions": [
+            "csplit/keep",
+            "csplit/remove"
+          ]
+        }
+      ],
+      "activation": "A real second-pattern failure after two fragments requires exact count output/status and complete file inventories: -k retains both exact pieces; its control removes all pieces. The complete diagnostic grammar fixes command/module/message and permits only numeric source-location changes.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "connect-timeout",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-deadline-effects",
+          "assertions": [
+            "curl/connect-timeout"
+          ]
+        }
+      ],
+      "activation": "A real loopback listener observes readiness and keeps the selected phase incomplete. Connect deadlines stall TLS after ClientHello; read/idle deadlines retain exact abc response prefix; curl whole-transfer time expires while bytes arrive every40ms under a separate2s idle allowance. Exact terminal status and request count, preserved bytes, empty quiet stderr and a bounded100ms..5s post-readiness window are required; expiry must precede fixture completion.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "idle-timeout",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-deadline-effects",
+          "assertions": [
+            "curl/idle-timeout"
+          ]
+        }
+      ],
+      "activation": "A real loopback listener observes readiness and keeps the selected phase incomplete. Connect deadlines stall TLS after ClientHello; read/idle deadlines retain exact abc response prefix; curl whole-transfer time expires while bytes arrive every40ms under a separate2s idle allowance. Exact terminal status and request count, preserved bytes, empty quiet stderr and a bounded100ms..5s post-readiness window are required; expiry must precede fixture completion.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "max-time",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-deadline-effects",
+          "assertions": [
+            "curl/max-time"
+          ]
+        }
+      ],
+      "activation": "A real loopback listener observes readiness and keeps the selected phase incomplete. Connect deadlines stall TLS after ClientHello; read/idle deadlines retain exact abc response prefix; curl whole-transfer time expires while bytes arrive every40ms under a separate2s idle allowance. Exact terminal status and request count, preserved bytes, empty quiet stderr and a bounded100ms..5s post-readiness window are required; expiry must precede fixture completion.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "connect-timeout",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-deadline-effects",
+          "assertions": [
+            "wget/connect-timeout"
+          ]
+        }
+      ],
+      "activation": "A real loopback listener observes readiness and keeps the selected phase incomplete. Connect deadlines stall TLS after ClientHello; read/idle deadlines retain exact abc response prefix; curl whole-transfer time expires while bytes arrive every40ms under a separate2s idle allowance. Exact terminal status and request count, preserved bytes, empty quiet stderr and a bounded100ms..5s post-readiness window are required; expiry must precede fixture completion.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "read-timeout",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-deadline-effects",
+          "assertions": [
+            "wget/read-timeout"
+          ]
+        }
+      ],
+      "activation": "A real loopback listener observes readiness and keeps the selected phase incomplete. Connect deadlines stall TLS after ClientHello; read/idle deadlines retain exact abc response prefix; curl whole-transfer time expires while bytes arrive every40ms under a separate2s idle allowance. Exact terminal status and request count, preserved bytes, empty quiet stderr and a bounded100ms..5s post-readiness window are required; expiry must precede fixture completion.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "idle-timeout",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-deadline-effects",
+          "assertions": [
+            "wget/idle-timeout"
+          ]
+        }
+      ],
+      "activation": "A real loopback listener observes readiness and keeps the selected phase incomplete. Connect deadlines stall TLS after ClientHello; read/idle deadlines retain exact abc response prefix; curl whole-transfer time expires while bytes arrive every40ms under a separate2s idle allowance. Exact terminal status and request count, preserved bytes, empty quiet stderr and a bounded100ms..5s post-readiness window are required; expiry must precede fixture completion.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "timeout",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-deadline-effects",
+          "assertions": [
+            "wget/timeout"
+          ]
+        }
+      ],
+      "activation": "A real loopback listener observes readiness and keeps the selected phase incomplete. Connect deadlines stall TLS after ClientHello; read/idle deadlines retain exact abc response prefix; curl whole-transfer time expires while bytes arrive every40ms under a separate2s idle allowance. Exact terminal status and request count, preserved bytes, empty quiet stderr and a bounded100ms..5s post-readiness window are required; expiry must precede fixture completion.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "retry-max-time",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-retry-effects",
+          "assertions": [
+            "curl/retry-max-time"
+          ]
+        }
+      ],
+      "activation": "A first503 and second200 fixture records actual request counts and monotonic times. The requested delay must elapse before retry and final hello file bytes are exact. A shorter curl retry budget prevents the next request; wget explicit status-retry is paired with a no-retry control. This finite scheduling assertion is separate from performance acceptance.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "retry-on-http-error",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-retry-effects",
+          "assertions": [
+            "wget/retry-on-http-error",
+            "wget/retry-on-http-error-control"
+          ]
+        }
+      ],
+      "activation": "A fixed418 response does not retry by default; explicit retry-on-http-error=418 makes exactly two requests and writes the recovered hello file with exact successful streams.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "retry-connrefused",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-refusal-recovery",
+          "assertions": [
+            "curl/refused-retry",
+            "curl/refused-control"
+          ]
+        }
+      ],
+      "activation": "A reserved then closed local port first produces an actual refusal acknowledgment. Only after that acknowledgment does the fixture start its listener. Explicit refusal-retry waits then reaches it exactly once and emits recovered; the flag-absent control terminates without a successful request. The raw host diagnostic is retained and its refusal cause checked; no invented connection-success count.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "retry-connrefused",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-refusal-recovery",
+          "assertions": [
+            "wget/refused-retry",
+            "wget/refused-control"
+          ]
+        }
+      ],
+      "activation": "A reserved then closed local port first produces an actual refusal acknowledgment. Only after that acknowledgment does the fixture start its listener. Explicit refusal-retry waits then reaches it exactly once and emits recovered; the flag-absent control terminates without a successful request. The raw host diagnostic is retained and its refusal cause checked; no invented connection-success count.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "data-urlencode",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "curl/data-urlencode"
+          ]
+        }
+      ],
+      "activation": "A local server independently captures the single exact method/path/body/Authorization request. --data-urlencode escapes space, ampersand and UTF8 bytes; explicit --basic emits the known user:pass credential on the first request. Complete response streams and request cardinality are required.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "basic",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "curl/basic"
+          ]
+        }
+      ],
+      "activation": "A local server independently captures the single exact method/path/body/Authorization request. --data-urlencode escapes space, ampersand and UTF8 bytes; explicit --basic emits the known user:pass credential on the first request. Complete response streams and request cardinality are required.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "append-output",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "wget/append-output"
+          ]
+        }
+      ],
+      "activation": "An existing log receives a real403 failure. Explicit append preserves its exact old prefix; output-file replaces it. Full log text includes the independently allocated URL and fixed diagnostic; stdout/stderr remain empty and exactly one request is observed.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "output-file",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "wget/output-file"
+          ]
+        }
+      ],
+      "activation": "An existing log receives a real403 failure. Explicit append preserves its exact old prefix; output-file replaces it. Full log text includes the independently allocated URL and fixed diagnostic; stdout/stderr remain empty and exactly one request is observed.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "max-redirect",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "wget/redirect-1",
+            "wget/redirect-2"
+          ]
+        }
+      ],
+      "activation": "A two-hop chain fails under limit1 after exactly two captured paths and succeeds under limit2 after exactly three paths with hello. Exact statuses and complete streams distinguish actual redirect limit effects.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "curl",
+      "claim": "proxy",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "curl/proxy"
+          ]
+        }
+      ],
+      "activation": "Explicit proxy routing must establish exactly one CONNECT with the independently allocated origin authority and one origin request before returning exact hello.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
+    },
+    {
+      "command": "wget",
+      "claim": "no-proxy",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "network-option-effects",
+          "assertions": [
+            "wget/proxy",
+            "wget/no-proxy"
+          ]
+        }
+      ],
+      "activation": "A real environment proxy receives one CONNECT in the control; --no-proxy must leave the same proxy count at zero while the origin still receives exactly one request and emits exact hello.",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition"
     }
   ],
   "features": [
@@ -3685,9 +5762,18 @@
       "command": "yes",
       "claim": "primary-operation",
       "kind": "stream-lifecycle-operation",
-      "disposition": "unresolved",
+      "disposition": "reviewed-definition",
       "case_ids": [],
-      "activation": "Current source JSON cases cover metadata only. Repeating y/operand joining, downstream-close behavior and bounded output observation need an explicit scenario; catalog metadata accounting cannot prove this operation."
+      "scenario_bindings": [
+        {
+          "case_id": "yes-stream-lifecycle",
+          "assertions": [
+            "yes/default",
+            "yes/operands"
+          ]
+        }
+      ],
+      "activation": "A bounded live consumer observes two exact repeated default y records and two operand-joined records, then closes stdout. The actual Wasm child must exit0 with empty stderr within five seconds without test cancellation; hanging producers fail and are cleaned up."
     }
   ],
   "boundary_dispositions": [

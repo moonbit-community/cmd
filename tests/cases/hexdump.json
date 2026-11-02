@@ -1314,6 +1314,82 @@
       "source_version": "Workspace read/discard extension; display compared with fixed util-linux 2.40 named-file output",
       "environment": {},
       "normalizations": []
+    },
+    {
+      "id": "coverage-hexdump-one-byte-octal",
+      "command": "hexdump",
+      "args": [
+        "-b"
+      ],
+      "stdin_hex": "0001ff",
+      "expected_stdout_text": "0000000 000 001 377                                                    \n0000003\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-hexdump-one-byte-char",
+      "command": "hexdump",
+      "args": [
+        "-c"
+      ],
+      "stdin_hex": "410a00ff",
+      "expected_stdout_text": "0000000   A  \\n  \\0 377                                                \n0000004\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-hexdump-two-bytes-decimal",
+      "command": "hexdump",
+      "args": [
+        "-d"
+      ],
+      "stdin_hex": "0100ffff03",
+      "expected_stdout_text": "0000000   00001   65535   00003                                        \n0000005\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-hexdump-two-bytes-octal",
+      "command": "hexdump",
+      "args": [
+        "-o"
+      ],
+      "stdin_hex": "0100ffff03",
+      "expected_stdout_text": "0000000  000001  177777  000003                                        \n0000005\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-hexdump-no-squeezing",
+      "command": "hexdump",
+      "args": [
+        "-C",
+        "-v"
+      ],
+      "stdin_text": "0123456789abcdef0123456789abcdef0123456789abcdef",
+      "expected_stdout_text": "00000000  30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66  |0123456789abcdef|\n00000010  30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66  |0123456789abcdef|\n00000020  30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66  |0123456789abcdef|\n00000030\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
     }
   ]
 }

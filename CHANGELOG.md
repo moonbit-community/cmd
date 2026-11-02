@@ -12,6 +12,23 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-03
+
+Development; no publication.
+
+- Close the 213 finite catalog/primary-operation definition gaps with 224
+  additional cases and stronger retained assertions. Review the 44 partial
+  facets against current typed observations, including streaming, deadlines,
+  retries, request bodies, file effects, metadata and child cleanup.
+- Reject unresolved finite obligations, incomplete execution stages and stale
+  evidence during acceptance. Preserve existing corpus inputs, product APIs,
+  package versions and independent published expectations. Zero finite gaps
+  does not establish exhaustive semantics or full upstream parity.
+- Local macOS validation passes 1,800 Wasm package tests, 204 Native tool tests
+  and 2,498 functional checks, with zero failures and 21 platform exclusions.
+  All 865 reviewed claims satisfy their applicable requirements; nine retain
+  excluded platform bindings. Required three-platform CI remains separate.
+
 ## 2026-11-01
 
 Development and publication.

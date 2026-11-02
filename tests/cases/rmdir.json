@@ -116,6 +116,73 @@
       "source_version": "workspace cli/rmdir@0.2.3 metadata contract",
       "expected_stdout_text": "rmdir 0.2.3\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-rmdir-parents-verbose",
+      "command": "rmdir",
+      "args": [
+        "-pv",
+        "a/b/c"
+      ],
+      "files": [
+        {
+          "path": "a/b/c",
+          "kind": "directory"
+        }
+      ],
+      "expected_stdout_text": "rmdir: removed directory 'a/b/c'\nrmdir: removed directory 'a${PATH_SEPARATOR}b'\nrmdir: removed directory 'a'\n",
+      "expected_files": [
+        {
+          "path": "a",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rmdir-parent-nonempty",
+      "command": "rmdir",
+      "args": [
+        "-p",
+        "--ignore-fail-on-non-empty",
+        "a/b"
+      ],
+      "files": [
+        {
+          "path": "a/b",
+          "kind": "directory"
+        },
+        {
+          "path": "a/keep",
+          "content_text": "keep"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "a/b",
+          "exists": false
+        },
+        {
+          "path": "a",
+          "kind": "directory"
+        },
+        {
+          "path": "a/keep",
+          "content_text": "keep"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

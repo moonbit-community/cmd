@@ -2,6 +2,7 @@
 import {
   "moonbitlang/async@0.22.5", "moonbitlang/async@0.22.5/fs",
   "moonbitlang/async@0.22.5/shell", "moonbitlang/core/env",
+  "moonbitlang/core/json",
 }
 ----
 
@@ -89,6 +90,15 @@ async fn main {
     }
   }
   if mode == "check" {
+    let gaps = @json.parse(@fs.read_file(temporary + "/gaps.json").text())
+    guard gaps is Object(fields) &&
+      fields["remaining_catalog_labels"] == Json(0) &&
+      fields["remaining_primary_features"] == Json(0) &&
+      fields["unknown_classifications"] == Json(0) else {
+      fail(
+        "finite coverage gaps remain; add and review the missing assertions before acceptance",
+      )
+    }
     guard changed.is_empty() else {
       fail(
         "generated test definitions are stale; run index update:\n" +

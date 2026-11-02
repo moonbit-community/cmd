@@ -165,12 +165,11 @@
         }
       ],
       "source_version": "workspace 0.2.0 migrated filesystem and merge assertions",
-      "expected_stderr_contains": "unsupported capability",
-      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact.",
       "host_platforms": [
         "windows"
       ],
-      "expected_rejection": "unsupported capability"
+      "expected_rejection": "unsupported capability",
+      "expected_stderr_text": "ln: unsupported capability: symbolic links\n"
     },
     {
       "id": "repair-alias-ln-symbolic",
@@ -646,6 +645,296 @@
           "target": "targets/file"
         }
       ]
+    },
+    {
+      "id": "coverage-ln-backup-numbered",
+      "command": "ln",
+      "args": [
+        "-sf",
+        "--backup=numbered",
+        "source",
+        "destination"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        },
+        {
+          "path": "destination.~2~",
+          "exists": true,
+          "content_text": "old"
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        },
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-ln-backup-existing",
+      "command": "ln",
+      "args": [
+        "-sf",
+        "--backup=existing",
+        "source",
+        "destination"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        },
+        {
+          "path": "destination.~2~",
+          "exists": true,
+          "content_text": "old"
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        },
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-ln-backup-none",
+      "command": "ln",
+      "args": [
+        "-sf",
+        "--backup=none",
+        "source",
+        "destination"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        },
+        {
+          "path": "destination.~2~",
+          "exists": false
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        },
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-ln-verbose",
+      "command": "ln",
+      "args": [
+        "-sv",
+        "source",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "data"
+        }
+      ],
+      "expected_stdout_text": "'link' -> 'source'\n",
+      "expected_files": [
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        },
+        {
+          "path": "source",
+          "content_text": "data"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-ln-no-target-directory",
+      "command": "ln",
+      "args": [
+        "-sT",
+        "source",
+        "links"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "links",
+          "kind": "directory"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "ln: failed to create 'links': refusing to replace directory: 'links'\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "links",
+          "kind": "directory"
+        },
+        {
+          "path": "links/source",
+          "exists": false
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-ln-hardlink-boundary",
+      "command": "ln",
+      "args": [
+        "source",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "retained\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "ln: hard links are unavailable in the portable filesystem API; use -s\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "retained\n"
+        },
+        {
+          "path": "link",
+          "exists": false
+        }
+      ],
+      "expected_rejection": "hard links are unavailable",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

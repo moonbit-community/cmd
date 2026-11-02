@@ -241,6 +241,276 @@
       "source_version": "workspace cli/make@0.2.4 metadata contract",
       "expected_stdout_text": "make 0.2.4\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-make-fresh-control",
+      "command": "make",
+      "args": [
+        "-s",
+        "target"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "target: source\n\tprintf rebuilt > marker\n"
+        },
+        {
+          "path": "source",
+          "content_text": "src",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "target",
+          "content_text": "target",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "expected_stdout_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "src",
+          "mtime": "1262304000:0"
+        },
+        {
+          "path": "target",
+          "content_text": "target",
+          "mtime": "1577836800:0"
+        },
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-make-always-make",
+      "command": "make",
+      "args": [
+        "-s",
+        "-B",
+        "target"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "target: source\n\tprintf rebuilt > marker\n"
+        },
+        {
+          "path": "source",
+          "content_text": "src",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "target",
+          "content_text": "target",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "expected_stdout_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "src",
+          "mtime": "1262304000:0"
+        },
+        {
+          "path": "target",
+          "content_text": "target",
+          "mtime": "1577836800:0"
+        },
+        {
+          "path": "marker",
+          "exists": true,
+          "content_text": "rebuilt"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-make-what-if",
+      "command": "make",
+      "args": [
+        "-s",
+        "-W",
+        "source",
+        "target"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "target: source\n\tprintf rebuilt > marker\n"
+        },
+        {
+          "path": "source",
+          "content_text": "src",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "target",
+          "content_text": "target",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "expected_stdout_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "src",
+          "mtime": "1262304000:0"
+        },
+        {
+          "path": "target",
+          "content_text": "target",
+          "mtime": "1577836800:0"
+        },
+        {
+          "path": "marker",
+          "exists": true,
+          "content_text": "rebuilt"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-make-just-print",
+      "command": "make",
+      "args": [
+        "-n",
+        "-B",
+        "target"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "target: source\n\tprintf rebuilt > marker\n"
+        },
+        {
+          "path": "source",
+          "content_text": "src",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "target",
+          "content_text": "target",
+          "mtime": "202001010000.00"
+        }
+      ],
+      "expected_stdout_text": "printf rebuilt > marker\n",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "src",
+          "mtime": "1262304000:0"
+        },
+        {
+          "path": "target",
+          "content_text": "target",
+          "mtime": "1577836800:0"
+        },
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-make-silent-control",
+      "command": "make",
+      "args": [],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\tprintf hello\n"
+        }
+      ],
+      "expected_stdout_text": "printf hello\nhello",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-make-silent",
+      "command": "make",
+      "args": [
+        "-s"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\tprintf hello\n"
+        }
+      ],
+      "expected_stdout_text": "hello",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-make-file",
+      "command": "make",
+      "args": [
+        "-s",
+        "-f",
+        "alternate.mk"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\tprintf wrong\n"
+        },
+        {
+          "path": "alternate.mk",
+          "content_text": "all:\n\tprintf selected\n"
+        }
+      ],
+      "expected_stdout_text": "selected",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

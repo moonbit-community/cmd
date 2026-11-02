@@ -1485,6 +1485,145 @@
         "reject-file",
         "input"
       ]
+    },
+    {
+      "id": "coverage-patch-directory",
+      "command": "patch",
+      "args": [
+        "-d",
+        "nested",
+        "--dry-run",
+        "-i",
+        "change.diff"
+      ],
+      "files": [
+        {
+          "path": "nested/change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        },
+        {
+          "path": "nested/input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "input",
+          "content_text": "outer sentinel\n"
+        }
+      ],
+      "expected_stdout_text": "checking file input\n",
+      "expected_files": [
+        {
+          "path": "nested/input",
+          "content_text": "one\ntwo\nthree\n"
+        },
+        {
+          "path": "input",
+          "content_text": "outer sentinel\n"
+        },
+        {
+          "path": "nested/input.orig",
+          "exists": false
+        },
+        {
+          "path": "nested/input.rej",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-patch-no-backup-boundary",
+      "command": "patch",
+      "args": [
+        "--no-backup-if-mismatch",
+        "-F0",
+        "input"
+      ],
+      "stdin_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        }
+      ],
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "patch: rewriting an existing file requires public source mode metadata; use --dry-run or --output=-\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "input.orig",
+          "exists": false
+        },
+        {
+          "path": "input~",
+          "exists": false
+        },
+        {
+          "path": "input.rej",
+          "exists": false
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract"
+    },
+    {
+      "id": "coverage-patch-no-backup-dry-run",
+      "command": "patch",
+      "args": [
+        "--no-backup-if-mismatch",
+        "-F0",
+        "--dry-run",
+        "input"
+      ],
+      "stdin_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n",
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "checking file input\nHunk #1 FAILED at 1.\n1 out of 1 hunk FAILED\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "input.orig",
+          "exists": false
+        },
+        {
+          "path": "input~",
+          "exists": false
+        },
+        {
+          "path": "input.rej",
+          "exists": false
+        },
+        {
+          "path": "-.rej",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract"
     }
   ]
 }

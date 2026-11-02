@@ -60,8 +60,7 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "YQ==YQ==",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "invalid",
-      "diagnostic_reason": "The preserved failure contract checks decoder rejection; diagnostic wording is project specific."
+      "expected_stderr_text": "base64: invalid padding\n"
     },
     {
       "id": "compat-text-line-641",
@@ -133,8 +132,7 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "!",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "invalid",
-      "diagnostic_reason": "The preserved failure contract checks decoder rejection; diagnostic wording is project specific."
+      "expected_stderr_text": "base64: invalid input length\n"
     },
     {
       "id": "compat-catalog-line-4",

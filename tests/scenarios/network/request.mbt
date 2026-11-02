@@ -305,6 +305,18 @@ async fn network_request(
           Json(expected),
         )
       }
+      if expected_bodies is Some(expected) {
+        proof.observe_equal(
+          prefix + "bodies",
+          command,
+          Json(
+            requests.map(request => {
+              request.body.to_array().map(byte => byte.to_int())
+            }),
+          ),
+          Json(expected.map(body => body.to_array().map(byte => byte.to_int()))),
+        )
+      }
       if expected_paths is Some(expected) {
         proof.observe_equal(
           prefix + "paths",

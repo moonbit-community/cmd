@@ -2833,37 +2833,90 @@
         "s/a/b/",
         "source"
       ],
-      "stdin_text": "",
       "files": [
         {
           "path": "source",
           "content_text": "a\n"
         }
       ],
+      "expected_status": 1,
+      "expected_stderr_text": "sed: cli/core/cli.CliError.CliError\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "a\n",
+          "unchanged": true,
+          "kind": "file"
+        },
+        {
+          "path": "source.bak",
+          "exists": false
+        }
+      ],
       "environment": {},
       "normalizations": [],
-      "expected_status": 1,
+      "comparison": "contract",
+      "stdin_text": "",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "sed:",
-      "diagnostic_reason": "The documented in-place API boundary must reject before touching the input; command-specific wording may vary.",
       "expected_rejection": "CliError",
       "observe": [
         "content",
         "type"
       ],
-      "expected_files": [
-        {
-          "path": "source",
-          "kind": "file",
-          "content_text": "a\n"
-        }
-      ],
-      "comparison": "contract",
       "coverage": [
         "in-place",
         "no-mutation"
       ],
       "source_version": "Documented unsupported option must reject without mutation; current generic parser diagnostic is not a dedicated in-place diagnostic"
+    },
+    {
+      "id": "coverage-sed-silent",
+      "command": "sed",
+      "args": [
+        "--silent",
+        "2p"
+      ],
+      "stdin_text": "one\ntwo\nthree\n",
+      "expected_stdout_text": "two\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-sed-in-place-short",
+      "command": "sed",
+      "args": [
+        "-i",
+        "s/a/b/",
+        "source"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "a\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "sed: cli/core/cli.CliError.CliError\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "a\n",
+          "unchanged": true
+        },
+        {
+          "path": "source.bak",
+          "exists": false
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

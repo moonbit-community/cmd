@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-01
+Updated: 2026-11-03
 
 ## Decision
 
@@ -31,6 +31,13 @@ derived file is replaced. Checked-in gap indexes describe definitions only;
 actual passes require the fresh execution receipt and verifier. Published
 coordinates and frozen expected cases remain independent and unchanged by this
 process. Historical execution evidence remains in Git without replay adapters.
+
+Coverage qualification requires complete typed or exact-byte assertions and a
+completed execution/cleanup stage. Bind selectors to distinguishing positive
+and negative controls, and stateful behavior to observed requests, deadlines,
+file effects and owned-child lifecycle. Keep platform-specific qualification
+explicit. Index checks and functional acceptance reject unresolved finite
+obligations. Closing those gaps does not establish exhaustive semantics.
 
 ## Consequences and boundaries
 

@@ -45,10 +45,6 @@
         "-c",
         "checks"
       ],
-      "oracle": true,
-      "source_version": "GNU coreutils 9.11",
-      "environment": {},
-      "normalizations": [],
       "files": [
         {
           "path": "payload",
@@ -62,6 +58,22 @@
       "expected_status": 0,
       "expected_stdout_text": "payload: OK\n",
       "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": true,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
       "comparison": "contract"
     },
     {
@@ -161,6 +173,502 @@
       "coverage": [
         "tag"
       ]
+    },
+    {
+      "id": "coverage-sha512sum-quiet-good",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--quiet",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-quiet-mismatch",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--quiet",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000  payload\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "payload: FAILED\n",
+      "expected_stderr_text": "sha512sum: WARNING: 1 computed checksum did NOT match\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-quiet-malformed",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--quiet",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sha512sum: WARNING: 1 line is improperly formatted\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-status-good",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--status",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-status-mismatch",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--status",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000  payload\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-status-malformed",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--strict",
+        "--status",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-missing",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--ignore-missing",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  missing\nddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  missing\nddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-missing-all",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--ignore-missing",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  missing\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sha512sum: checks: no file was verified\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  missing\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-lenient",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "sha512sum: WARNING: 1 line is improperly formatted\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-strict",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--strict",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "sha512sum: WARNING: 1 line is improperly formatted\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-warn",
+      "command": "sha512sum",
+      "args": [
+        "-c",
+        "--warn",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "sha512sum: checks: 2: improperly formatted SHA512 checksum line\nsha512sum: WARNING: 1 line is improperly formatted\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-text-record",
+      "command": "sha512sum",
+      "args": [
+        "-t",
+        "payload"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        }
+      ],
+      "expected_stdout_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-sha512sum-zero-record",
+      "command": "sha512sum",
+      "args": [
+        "-z",
+        "payload"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        }
+      ],
+      "expected_stdout_text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f  payload\u0000",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

@@ -1547,6 +1547,480 @@
             "request-method",
             "request-count"
           ]
+        },
+        {
+          "id": "transfer/curl-head-length/response",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "HTTP/1.1 200 OK\r\nContent-Length: 9\r\n\r\n",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "transfer/curl-head-length/methods",
+          "command": "curl",
+          "relation": "equal",
+          "expected": [
+            "HEAD"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/curl-head-length/ranges",
+          "command": "curl",
+          "relation": "equal",
+          "expected": [
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-head-length/response",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "transfer/wget-head-length/methods",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            "HEAD"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-head-length/ranges",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            null
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-retry-range-file/response",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "transfer/wget-retry-range-file/methods",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            "GET",
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-retry-range-file/ranges",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            null,
+            "bytes=5-"
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-retry-range-file/files",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "names": [
+              "result.bin"
+            ],
+            "files": [
+              {
+                "path": "result.bin",
+                "exists": true,
+                "regular": true,
+                "content": "helloworld"
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-type",
+            "file-content"
+          ]
+        },
+        {
+          "id": "transfer/wget-resume-unsatisfied-equal-resource/response",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "transfer/wget-resume-unsatisfied-equal-resource/methods",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            "GET"
+          ],
+          "observations": [
+            "request-method",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-resume-unsatisfied-equal-resource/ranges",
+          "command": "wget",
+          "relation": "equal",
+          "expected": [
+            "bytes=6-"
+          ],
+          "observations": [
+            "request-range",
+            "request-count"
+          ]
+        },
+        {
+          "id": "transfer/wget-resume-unsatisfied-equal-resource/files",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "names": [
+              "transfer-resume-unsatisfied"
+            ],
+            "files": [
+              {
+                "path": "transfer-resume-unsatisfied",
+                "exists": true,
+                "regular": true,
+                "content": "abcdef"
+              }
+            ]
+          },
+          "observations": [
+            "file-inventory",
+            "file-type",
+            "file-content"
+          ]
+        },
+        {
+          "id": "transfer/curl-stdin-retry-256/bodies",
+          "command": "curl",
+          "relation": "equal",
+          "expected": [
+            [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66,
+              67,
+              68,
+              69,
+              70,
+              71,
+              72,
+              73,
+              74,
+              75,
+              76,
+              77,
+              78,
+              79,
+              80,
+              81,
+              82,
+              83,
+              84,
+              85,
+              86,
+              87,
+              88,
+              89,
+              90,
+              91,
+              92,
+              93,
+              94,
+              95,
+              96,
+              97,
+              98,
+              99,
+              100,
+              101,
+              102,
+              103,
+              104,
+              105,
+              106,
+              107,
+              108,
+              109,
+              110,
+              111,
+              112,
+              113,
+              114,
+              115,
+              116,
+              117,
+              118,
+              119,
+              120,
+              121,
+              122,
+              123,
+              124,
+              125,
+              126,
+              127,
+              128,
+              129,
+              130,
+              131,
+              132,
+              133,
+              134,
+              135,
+              136,
+              137,
+              138,
+              139,
+              140,
+              141,
+              142,
+              143,
+              144,
+              145,
+              146,
+              147,
+              148,
+              149,
+              150,
+              151,
+              152,
+              153,
+              154,
+              155,
+              156,
+              157,
+              158,
+              159,
+              160,
+              161,
+              162,
+              163,
+              164,
+              165,
+              166,
+              167,
+              168,
+              169,
+              170,
+              171,
+              172,
+              173,
+              174,
+              175,
+              176,
+              177,
+              178,
+              179,
+              180,
+              181,
+              182,
+              183,
+              184,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              191,
+              192,
+              193,
+              194,
+              195,
+              196,
+              197,
+              198,
+              199,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              209,
+              210,
+              211,
+              212,
+              213,
+              214,
+              215,
+              216,
+              217,
+              218,
+              219,
+              220,
+              221,
+              222,
+              223,
+              224,
+              225,
+              226,
+              227,
+              228,
+              229,
+              230,
+              231,
+              232,
+              233,
+              234,
+              235,
+              236,
+              237,
+              238,
+              239,
+              240,
+              241,
+              242,
+              243,
+              244,
+              245,
+              246,
+              247,
+              248,
+              249,
+              250,
+              251,
+              252,
+              253,
+              254,
+              255
+            ],
+            []
+          ],
+          "observations": [
+            "request-body-bytes",
+            "request-count"
+          ]
         }
       ]
     },
@@ -2432,6 +2906,1887 @@
             "reported-path-created",
             "empty-content",
             "stdout-framing"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "yes-stream-lifecycle",
+      "assertions": [
+        {
+          "id": "yes/default",
+          "command": "yes",
+          "relation": "equal",
+          "expected": {
+            "prefix": "y\ny\n",
+            "status": 0,
+            "stderr": ""
+          },
+          "observations": [
+            "bounded-prefix",
+            "consumer-close",
+            "child-exit",
+            "stderr"
+          ]
+        },
+        {
+          "id": "yes/operands",
+          "command": "yes",
+          "relation": "equal",
+          "expected": {
+            "prefix": "hello two words \nhello two words \n",
+            "status": 0,
+            "stderr": ""
+          },
+          "observations": [
+            "bounded-prefix",
+            "consumer-close",
+            "child-exit",
+            "stderr"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "compression-selectors",
+      "assertions": [
+        {
+          "id": "gzip/level-1",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 4,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/level-2",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 0,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/level-3",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 0,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/level-4",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 0,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/level-5",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 0,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/level-6",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 0,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/level-7",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 0,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/level-8",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 0,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/level-9",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "decoded": true,
+            "metadata_omitted": true,
+            "extra_flags": 2,
+            "compressed": true,
+            "last_value": true,
+            "retained": true
+          },
+          "observations": [
+            "status",
+            "stderr",
+            "independent-decoder",
+            "gzip-header",
+            "compression",
+            "last-value",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "gzip/name-boundary",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 2,
+            "stdout": "",
+            "stderr": "gzip: saved filename metadata is unsupported; use -n\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "metadata-relations",
+      "assertions": [
+        {
+          "id": "find/amin",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "old\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/atime",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "old\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/mmin",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "old\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/cmin",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "fresh\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/ctime",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "fresh\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/anewer",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "fresh\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/cnewer",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "fresh\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/used",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "future\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/readable",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "readable-yes\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/writable",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "writable-yes\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/executable",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "executable-yes\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/neweraa",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "future\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/newerac",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "future\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/neweram",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "future\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/newerca",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "fresh\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/newercc",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "fresh\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/newercm",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "fresh\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/newerma",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "future\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/newermc",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "future\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/newermm",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0
+            ],
+            "stdout": [
+              "future\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "test/readable",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              1
+            ],
+            "stdout": [
+              "",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "effective-access-preconditions"
+          ]
+        },
+        {
+          "id": "test/writable",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              1
+            ],
+            "stdout": [
+              "",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "effective-access-preconditions"
+          ]
+        },
+        {
+          "id": "test/executable",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              1
+            ],
+            "stdout": [
+              "",
+              ""
+            ],
+            "stderr": [
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "effective-access-preconditions"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "rg-type-listing",
+      "assertions": [
+        {
+          "id": "rg/type-list",
+          "command": "rg",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stderr": "",
+            "custom": [
+              "proof: *.proof"
+            ],
+            "rust": [
+              "rust: *.rs"
+            ],
+            "sorted_unique": true,
+            "final_lf": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-side-effects"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "sort-live-spill",
+      "assertions": [
+        {
+          "id": "sort/temporary-directory",
+          "command": "sort",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout_exact": true,
+            "stderr": "",
+            "live_runs": true,
+            "selected_clean": true,
+            "fallback_clean": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-side-effects"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "rm-root-guard",
+      "assertions": [
+        {
+          "id": "rm/preserve-root",
+          "command": "rm",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "",
+            "stderr": "rm: refusing to remove protected path '/'\n",
+            "sentinel": "retained"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-side-effects"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "xargs-verbose-argv",
+      "assertions": [
+        {
+          "id": "xargs/verbose",
+          "command": "xargs",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "<two words>\n<a'b>\n<>\n",
+            "display": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-side-effects"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "timeout-child-lifecycle",
+      "assertions": [
+        {
+          "id": "timeout/complete",
+          "command": "timeout",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "finished\n",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "child-stream-eof"
+          ]
+        },
+        {
+          "id": "timeout/child-failure",
+          "command": "timeout",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "child-stream-eof"
+          ]
+        },
+        {
+          "id": "timeout/expire",
+          "command": "timeout",
+          "relation": "equal",
+          "expected": {
+            "status": 124,
+            "stdout": "ready\n",
+            "stderr": "timeout: command timed out\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "child-stream-eof"
+          ]
+        },
+        {
+          "id": "timeout/invalid",
+          "command": "timeout",
+          "relation": "equal",
+          "expected": {
+            "status": 125,
+            "stdout": "",
+            "stderr": "timeout: invalid duration: nonsense\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "child-stream-eof"
+          ]
+        },
+        {
+          "id": "timeout/range",
+          "command": "timeout",
+          "relation": "equal",
+          "expected": {
+            "status": 125,
+            "stdout": "",
+            "stderr": "timeout: invalid duration: 999999999d\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "child-stream-eof"
+          ]
+        },
+        {
+          "id": "timeout/negative",
+          "command": "timeout",
+          "relation": "equal",
+          "expected": {
+            "status": 125,
+            "stdout": "",
+            "stderr": "timeout: invalid duration: -1\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "child-stream-eof"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "csplit-fragment-retention",
+      "assertions": [
+        {
+          "id": "csplit/remove",
+          "command": "csplit",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "2\n2\n",
+            "diagnostic": true,
+            "files": [],
+            "contents": []
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "typed-diagnostic",
+            "complete-file-inventory",
+            "content"
+          ]
+        },
+        {
+          "id": "csplit/keep",
+          "command": "csplit",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "2\n2\n",
+            "diagnostic": true,
+            "files": [
+              "xx00",
+              "xx01"
+            ],
+            "contents": [
+              "a\n",
+              "b\n"
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "typed-diagnostic",
+            "complete-file-inventory",
+            "content"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "network-deadline-effects",
+      "assertions": [
+        {
+          "id": "curl/connect-timeout",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 28,
+            "stderr": "",
+            "body": true,
+            "requests": 1,
+            "expired_while_held": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "listener-ready",
+            "monotonic-expiry",
+            "held-connection"
+          ]
+        },
+        {
+          "id": "curl/idle-timeout",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 28,
+            "stderr": "",
+            "body": true,
+            "requests": 1,
+            "expired_while_held": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "listener-ready",
+            "monotonic-expiry",
+            "held-connection"
+          ]
+        },
+        {
+          "id": "curl/max-time",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 28,
+            "stderr": "",
+            "body": true,
+            "requests": 1,
+            "expired_while_held": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "listener-ready",
+            "monotonic-expiry",
+            "held-connection"
+          ]
+        },
+        {
+          "id": "wget/connect-timeout",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 4,
+            "stderr": "",
+            "body": true,
+            "requests": 1,
+            "expired_while_held": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "listener-ready",
+            "monotonic-expiry",
+            "held-connection"
+          ]
+        },
+        {
+          "id": "wget/read-timeout",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 4,
+            "stderr": "",
+            "body": true,
+            "requests": 1,
+            "expired_while_held": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "listener-ready",
+            "monotonic-expiry",
+            "held-connection"
+          ]
+        },
+        {
+          "id": "wget/idle-timeout",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 4,
+            "stderr": "",
+            "body": true,
+            "requests": 1,
+            "expired_while_held": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "listener-ready",
+            "monotonic-expiry",
+            "held-connection"
+          ]
+        },
+        {
+          "id": "wget/timeout",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 4,
+            "stderr": "",
+            "body": true,
+            "requests": 1,
+            "expired_while_held": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "listener-ready",
+            "monotonic-expiry",
+            "held-connection"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "network-retry-effects",
+      "assertions": [
+        {
+          "id": "curl/retry-delay",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "requests": 2,
+            "content": "hello",
+            "schedule": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "monotonic-request-times",
+            "request-count",
+            "retained-file-bytes"
+          ]
+        },
+        {
+          "id": "curl/retry-max-time",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 22,
+            "stdout": "",
+            "stderr": "",
+            "requests": 1,
+            "content": "",
+            "schedule": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "monotonic-request-times",
+            "request-count",
+            "retained-file-bytes"
+          ]
+        },
+        {
+          "id": "wget/waitretry",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "requests": 2,
+            "content": "hello",
+            "schedule": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "monotonic-request-times",
+            "request-count",
+            "retained-file-bytes"
+          ]
+        },
+        {
+          "id": "wget/retry-on-http-error",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "requests": 2,
+            "content": "hello",
+            "schedule": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "monotonic-request-times",
+            "request-count",
+            "retained-file-bytes"
+          ]
+        },
+        {
+          "id": "wget/retry-on-http-error-control",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 8,
+            "stdout": "",
+            "stderr": "",
+            "requests": 1,
+            "content": "",
+            "schedule": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "monotonic-request-times",
+            "request-count",
+            "retained-file-bytes"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "network-refusal-recovery",
+      "assertions": [
+        {
+          "id": "curl/refused-control",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 7,
+            "stdout": "",
+            "refused": true,
+            "successful_requests": 0,
+            "retry_delay": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "connection-refusal-ack",
+            "request-count",
+            "monotonic-retry-delay"
+          ]
+        },
+        {
+          "id": "curl/refused-retry",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "recovered",
+            "refused": true,
+            "successful_requests": 1,
+            "retry_delay": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "connection-refusal-ack",
+            "request-count",
+            "monotonic-retry-delay"
+          ]
+        },
+        {
+          "id": "wget/refused-control",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 4,
+            "stdout": "",
+            "refused": true,
+            "successful_requests": 0,
+            "retry_delay": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "connection-refusal-ack",
+            "request-count",
+            "monotonic-retry-delay"
+          ]
+        },
+        {
+          "id": "wget/refused-retry",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "recovered",
+            "refused": true,
+            "successful_requests": 1,
+            "retry_delay": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "connection-refusal-ack",
+            "request-count",
+            "monotonic-retry-delay"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "network-option-effects",
+      "assertions": [
+        {
+          "id": "curl/data-urlencode",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "hello",
+            "stderr": "",
+            "requests": [
+              {
+                "path": "/inspect",
+                "method": "POST",
+                "body": "name=a%20b%26%C3%A9",
+                "auth": ""
+              }
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count",
+            "request-method",
+            "request-body",
+            "request-authorization"
+          ]
+        },
+        {
+          "id": "curl/basic",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "hello",
+            "stderr": "",
+            "requests": [
+              {
+                "path": "/inspect",
+                "method": "GET",
+                "body": "",
+                "auth": "Basic dXNlcjpwYXNz"
+              }
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count",
+            "request-method",
+            "request-body",
+            "request-authorization"
+          ]
+        },
+        {
+          "id": "wget/append-output",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 8,
+            "stdout": "",
+            "stderr": "",
+            "log_exact": true,
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count",
+            "exact-log-content"
+          ]
+        },
+        {
+          "id": "wget/output-file",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 8,
+            "stdout": "",
+            "stderr": "",
+            "log_exact": true,
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-count",
+            "exact-log-content"
+          ]
+        },
+        {
+          "id": "wget/redirect-1",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 7,
+            "stdout": "",
+            "stderr": "",
+            "paths": [
+              "/redirect/0",
+              "/redirect/1"
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-paths"
+          ]
+        },
+        {
+          "id": "wget/redirect-2",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "hello",
+            "stderr": "",
+            "paths": [
+              "/redirect/0",
+              "/redirect/1",
+              "/fixed"
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-paths"
+          ]
+        },
+        {
+          "id": "curl/proxy",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "hello",
+            "stderr": "",
+            "proxy_requests": 1,
+            "target": true,
+            "origin_requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "proxy-connect-target",
+            "proxy-count",
+            "origin-count"
+          ]
+        },
+        {
+          "id": "wget/proxy",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "hello",
+            "stderr": "",
+            "proxy_requests": 1,
+            "target": true,
+            "origin_requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "proxy-connect-target",
+            "proxy-count",
+            "origin-count"
+          ]
+        },
+        {
+          "id": "wget/no-proxy",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "hello",
+            "stderr": "",
+            "proxy_requests": 0,
+            "target": true,
+            "origin_requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "proxy-connect-target",
+            "proxy-count",
+            "origin-count"
+          ]
+        },
+        {
+          "id": "curl/header-replacement",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "hello",
+            "stderr": "",
+            "headers": [
+              {
+                "marker": "second",
+                "agent": "coverage"
+              }
+            ],
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-headers",
+            "request-count"
+          ]
+        },
+        {
+          "id": "wget/header-replacement",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "hello",
+            "stderr": "",
+            "headers": [
+              {
+                "marker": "second",
+                "agent": "coverage"
+              }
+            ],
+            "requests": 1
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "request-headers",
+            "request-count"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "tail-follow-interval",
+      "assertions": [
+        {
+          "id": "tail/fast",
+          "command": "tail",
+          "relation": "equal",
+          "expected": {
+            "record": "later",
+            "stderr": "",
+            "interval_effect": true,
+            "retained": "ready\nlater\n"
+          },
+          "observations": [
+            "actual-follow-record",
+            "monotonic-interval",
+            "child-termination",
+            "file-content"
+          ]
+        },
+        {
+          "id": "tail/slow",
+          "command": "tail",
+          "relation": "equal",
+          "expected": {
+            "record": "later",
+            "stderr": "",
+            "interval_effect": true,
+            "retained": "ready\nlater\n"
+          },
+          "observations": [
+            "actual-follow-record",
+            "monotonic-interval",
+            "child-termination",
+            "file-content"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "stream-failure-prefixes",
+      "assertions": [
+        {
+          "id": "gzip/truncated-prefix",
+          "command": "gzip",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "abc",
+            "truncated_error": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "error-cause"
+          ]
+        },
+        {
+          "id": "wc/error-prefix",
+          "command": "wc",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "1 short\n1 total\n",
+            "missing_operand": true,
+            "retained": "a\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "failed-operand",
+            "file-content"
+          ]
+        },
+        {
+          "id": "rg/preprocessor-failure",
+          "command": "rg",
+          "relation": "equal",
+          "expected": {
+            "status": 2,
+            "stdout": "alpha\n",
+            "child_error": true,
+            "retained": "source\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "child-diagnostic",
+            "file-content"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "ls-link-facets",
+      "assertions": [
+        {
+          "id": "ls/operand-H",
+          "command": "ls",
+          "relation": "equal",
+          "expected": {
+            "status": 2,
+            "stdout": "dir/a\n",
+            "diagnostic": true,
+            "links_preserved": true,
+            "source": "retained\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "error-cause",
+            "failed-path",
+            "file-type",
+            "file-content"
+          ]
+        },
+        {
+          "id": "ls/operand-L",
+          "command": "ls",
+          "relation": "equal",
+          "expected": {
+            "status": 2,
+            "stdout": "",
+            "diagnostic": true,
+            "links_preserved": true,
+            "source": "retained\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "error-cause",
+            "failed-path",
+            "file-type",
+            "file-content"
+          ]
+        },
+        {
+          "id": "ls/child-L",
+          "command": "ls",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "a\nmissing@\n",
+            "diagnostic": true,
+            "links_preserved": true,
+            "source": "retained\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "error-cause",
+            "failed-path",
+            "file-type",
+            "file-content"
+          ]
+        },
+        {
+          "id": "ls/child-H",
+          "command": "ls",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "a\nmissing@\n",
+            "diagnostic": true,
+            "links_preserved": true,
+            "source": "retained\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "error-cause",
+            "failed-path",
+            "file-type",
+            "file-content"
+          ]
+        },
+        {
+          "id": "ls/literal",
+          "command": "ls",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "broken@\n",
+            "diagnostic": true,
+            "links_preserved": true,
+            "source": "retained\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "error-cause",
+            "failed-path",
+            "file-type",
+            "file-content"
           ]
         }
       ]

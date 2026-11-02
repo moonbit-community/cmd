@@ -5963,13 +5963,12 @@
     {
       "behavior_id": "case:p0-sh-public-error",
       "command": "sh",
-      "status": "supported",
+      "status": "boundary",
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "p0-sh-public-error",
       "aliases": [
-        "compat-shell-array-boundary",
-        "case:compat-shell-array-boundary"
+        "compat-shell-array-boundary"
       ],
       "platforms": [],
       "oracle_profile": ""
@@ -24333,7 +24332,7 @@
     {
       "behavior_id": "case:rg-boundary-creation-time",
       "command": "rg",
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/rg.json",
       "case_id": "rg-boundary-creation-time",
@@ -25402,7 +25401,7 @@
     {
       "behavior_id": "case:proof-sed-in-place-boundary-preserves-source",
       "command": "sed",
-      "status": "supported",
+      "status": "boundary",
       "implementation": "json-case",
       "source": "tests/cases/sed.json",
       "case_id": "proof-sed-in-place-boundary-preserves-source",
@@ -26269,6 +26268,2720 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-cat-ends",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "coverage-cat-ends",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cat-tabs",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "coverage-cat-tabs",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cat-nonprinting",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "coverage-cat-nonprinting",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-nl-footer",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "coverage-nl-footer",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-nl-blank-groups",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "coverage-nl-blank-groups",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-nl-page-reset",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "coverage-nl-page-reset",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-nl-page-continuation",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "coverage-nl-page-continuation",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-nl-delimiter",
+      "command": "nl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nl.json",
+      "case_id": "coverage-nl-delimiter",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sort-numeric",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "coverage-sort-numeric",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-uniq-repeated",
+      "command": "uniq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "coverage-uniq-repeated",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-uniq-unique",
+      "command": "uniq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uniq.json",
+      "case_id": "coverage-uniq-unique",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-cmp-before-difference",
+      "command": "cmp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cmp.json",
+      "case_id": "coverage-cmp-before-difference",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-cmp-at-difference",
+      "command": "cmp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cmp.json",
+      "case_id": "coverage-cmp-at-difference",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-cmp-silent-difference",
+      "command": "cmp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cmp.json",
+      "case_id": "coverage-cmp-silent-difference",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-basic",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-basic",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-count",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-count",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-file",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-file",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-files-matching",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-files-matching",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-files-nonmatching",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-files-nonmatching",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-invert",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-invert",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-line",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-line",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-quiet-hit",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-quiet-hit",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-quiet-miss",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-quiet-miss",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-no-filename",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-no-filename",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-with-filename",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-with-filename",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-grep-text",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-text",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-fold-characters",
+      "command": "fold",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fold.json",
+      "case_id": "coverage-fold-characters",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-fold-columns-control",
+      "command": "fold",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fold.json",
+      "case_id": "coverage-fold-columns-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-archive-boundary",
+      "command": "cp",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-archive-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-preserve-boundary",
+      "command": "cp",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-preserve-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-force-boundary",
+      "command": "cp",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-force-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-interactive-boundary",
+      "command": "cp",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-interactive-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-backup-boundary",
+      "command": "cp",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-backup-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-backup-control-boundary",
+      "command": "cp",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-backup-control-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-suffix-boundary",
+      "command": "cp",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-suffix-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-touch-access-time-boundary",
+      "command": "touch",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "coverage-touch-access-time-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-touch-modification-time-boundary",
+      "command": "touch",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "coverage-touch-modification-time-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-touch-date-boundary",
+      "command": "touch",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "coverage-touch-date-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-touch-reference-boundary",
+      "command": "touch",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "coverage-touch-reference-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-touch-stamp-boundary",
+      "command": "touch",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "coverage-touch-stamp-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-touch-time-boundary",
+      "command": "touch",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "coverage-touch-time-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-touch-no-create-existing",
+      "command": "touch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "coverage-touch-no-create-existing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-complete-path",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-complete-path",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-verbose",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-verbose",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-directory",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-directory",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-complete-existing-directory",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-complete-existing-directory",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-dereference",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-dereference",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-no-dereference",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-no-dereference",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cp-update-short",
+      "command": "cp",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "coverage-cp-update-short",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:coverage-rmdir-parents-verbose",
+      "command": "rmdir",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rmdir.json",
+      "case_id": "coverage-rmdir-parents-verbose",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rmdir-parent-nonempty",
+      "command": "rmdir",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rmdir.json",
+      "case_id": "coverage-rmdir-parent-nonempty",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-chmod-verbose",
+      "command": "chmod",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/chmod.json",
+      "case_id": "coverage-chmod-verbose",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-env-chdir",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "coverage-env-chdir",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-env-unset-before",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "coverage-env-unset-before",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-env-unset",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "coverage-env-unset",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-env-unset-reassign",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "coverage-env-unset-reassign",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:yes-stream-lifecycle",
+      "command": "yes",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/yes.json",
+      "case_id": "yes-stream-lifecycle",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:yes-stream-lifecycle",
+      "command": "yes",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::yes-stream-lifecycle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-equality-false",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-equality-false",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-size-empty",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-size-empty",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-size-missing",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-size-missing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-realpath-final-missing",
+      "command": "realpath",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/realpath.json",
+      "case_id": "coverage-realpath-final-missing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-realpath-middle-missing",
+      "command": "realpath",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/realpath.json",
+      "case_id": "coverage-realpath-middle-missing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-realpath-zero",
+      "command": "realpath",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/realpath.json",
+      "case_id": "coverage-realpath-zero",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-ignore-file",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-ignore-file",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-ignore-file-control",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-ignore-file-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:compression-selectors",
+      "command": "gzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gzip.json",
+      "case_id": "compression-selectors",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:compression-selectors",
+      "command": "gzip",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::compression-selectors",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gzip-garbage-control",
+      "command": "gzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gzip.json",
+      "case_id": "coverage-gzip-garbage-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gzip-quiet-garbage",
+      "command": "gzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gzip.json",
+      "case_id": "coverage-gzip-quiet-garbage",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-garbage-control",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-garbage-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-quiet-garbage",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-quiet-garbage",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-no-name",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-no-name",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-decompress",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-decompress",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-stdout",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-stdout",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-fast",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-fast",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-2",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-2",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-3",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-3",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-4",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-4",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-5",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-5",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-6",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-6",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-7",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-7",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-8",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-8",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-gunzip-level-best",
+      "command": "gunzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gunzip.json",
+      "case_id": "coverage-gunzip-level-best",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-garbage-control",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-garbage-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-quiet-garbage",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-quiet-garbage",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-no-name",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-no-name",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-decompress",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-decompress",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-stdout",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-stdout",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-fast",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-fast",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-2",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-2",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-3",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-3",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-4",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-4",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-5",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-5",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-6",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-6",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-7",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-7",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-8",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-8",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-zcat-level-best",
+      "command": "zcat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zcat.json",
+      "case_id": "coverage-zcat-level-best",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-check-control",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-check-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-quiet-good",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-quiet-good",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-quiet-mismatch",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-quiet-mismatch",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-quiet-malformed",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-quiet-malformed",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-status-good",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-status-good",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-status-mismatch",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-status-mismatch",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-status-malformed",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-status-malformed",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-missing",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-missing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-missing-all",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-missing-all",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-lenient",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-lenient",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-strict",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-strict",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-warn",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-warn",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-quiet-good",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-quiet-good",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-quiet-mismatch",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-quiet-mismatch",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-quiet-malformed",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-quiet-malformed",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-status-good",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-status-good",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-status-mismatch",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-status-mismatch",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-status-malformed",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-status-malformed",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-missing",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-missing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-missing-all",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-missing-all",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-lenient",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-lenient",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-strict",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-strict",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-warn",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-warn",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-quiet-good",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-quiet-good",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-quiet-mismatch",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-quiet-mismatch",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-quiet-malformed",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-quiet-malformed",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-status-good",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-status-good",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-status-mismatch",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-status-mismatch",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-status-malformed",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-status-malformed",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-missing",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-missing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-missing-all",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-missing-all",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-lenient",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-lenient",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-strict",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-strict",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-warn",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-warn",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-cksum-binary-record",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "coverage-cksum-binary-record",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha1sum-binary-record",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "coverage-sha1sum-binary-record",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-md5sum-text-record",
+      "command": "md5sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/md5sum.json",
+      "case_id": "coverage-md5sum-text-record",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-text-record",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-text-record",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha512sum-zero-record",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "coverage-sha512sum-zero-record",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sha256sum-zero-record",
+      "command": "sha256sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha256sum.json",
+      "case_id": "coverage-sha256sum-zero-record",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-od-named",
+      "command": "od",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/od.json",
+      "case_id": "coverage-od-named",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-od-octal-byte",
+      "command": "od",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/od.json",
+      "case_id": "coverage-od-octal-byte",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-od-decimal",
+      "command": "od",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/od.json",
+      "case_id": "coverage-od-decimal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-od-int",
+      "command": "od",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/od.json",
+      "case_id": "coverage-od-int",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-od-long",
+      "command": "od",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/od.json",
+      "case_id": "coverage-od-long",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-od-octal",
+      "command": "od",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/od.json",
+      "case_id": "coverage-od-octal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-od-signed",
+      "command": "od",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/od.json",
+      "case_id": "coverage-od-signed",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-od-hex",
+      "command": "od",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/od.json",
+      "case_id": "coverage-od-hex",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-hexdump-one-byte-octal",
+      "command": "hexdump",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/hexdump.json",
+      "case_id": "coverage-hexdump-one-byte-octal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-hexdump-one-byte-char",
+      "command": "hexdump",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/hexdump.json",
+      "case_id": "coverage-hexdump-one-byte-char",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-hexdump-two-bytes-decimal",
+      "command": "hexdump",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/hexdump.json",
+      "case_id": "coverage-hexdump-two-bytes-decimal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-hexdump-two-bytes-octal",
+      "command": "hexdump",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/hexdump.json",
+      "case_id": "coverage-hexdump-two-bytes-octal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-hexdump-no-squeezing",
+      "command": "hexdump",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/hexdump.json",
+      "case_id": "coverage-hexdump-no-squeezing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-diff-unified-lines",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/diff.json",
+      "case_id": "coverage-diff-unified-lines",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-diff-context-lines",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/diff.json",
+      "case_id": "coverage-diff-context-lines",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sed-silent",
+      "command": "sed",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sed.json",
+      "case_id": "coverage-sed-silent",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-iglob",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-iglob",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-no-ignore",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-no-ignore",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-no-ignore-control",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-no-ignore-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-type-not",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-type-not",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-type-add",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-type-add",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-max-depth",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-max-depth",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-max-depth-control",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-max-depth-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-sortr",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-sortr",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-before-context",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-before-context",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-dotall",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-dotall",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-dotall-control",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-dotall-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-no-filename",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-no-filename",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-no-config",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-no-config",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-encoding",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-encoding",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-binary",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-binary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-pre-glob",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-pre-glob",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-follow-control",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-follow-control",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-follow",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-follow",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-pwd-logical",
+      "command": "pwd",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/pwd.json",
+      "case_id": "coverage-pwd-logical",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-pwd-physical",
+      "command": "pwd",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/pwd.json",
+      "case_id": "coverage-pwd-physical",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-mv-force",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "coverage-mv-force",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-mv-verbose",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "coverage-mv-verbose",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-ln-backup-numbered",
+      "command": "ln",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "coverage-ln-backup-numbered",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-ln-backup-existing",
+      "command": "ln",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "coverage-ln-backup-existing",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-ln-backup-none",
+      "command": "ln",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "coverage-ln-backup-none",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-mv-backup-numbered",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "coverage-mv-backup-numbered",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-mv-backup-existing",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "coverage-mv-backup-existing",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-mv-backup-none",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "coverage-mv-backup-none",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-ln-verbose",
+      "command": "ln",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "coverage-ln-verbose",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-ln-no-target-directory",
+      "command": "ln",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "coverage-ln-no-target-directory",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-make-fresh-control",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "coverage-make-fresh-control",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-make-always-make",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "coverage-make-always-make",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-make-what-if",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "coverage-make-what-if",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-make-just-print",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "coverage-make-just-print",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-make-silent-control",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "coverage-make-silent-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-make-silent",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "coverage-make-silent",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-make-file",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "coverage-make-file",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:metadata-relations",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "metadata-relations",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:metadata-relations",
+      "command": "find",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::metadata-relations",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-find-reject--newerBm",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "coverage-find-reject--newerBm",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-find-reject--newermB",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "coverage-find-reject--newermB",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-find-reject--newermt",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "coverage-find-reject--newermt",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-sed-in-place-short",
+      "command": "sed",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sed.json",
+      "case_id": "coverage-sed-in-place-short",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-patch-directory",
+      "command": "patch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/patch.json",
+      "case_id": "coverage-patch-directory",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-patch-no-backup-boundary",
+      "command": "patch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/patch.json",
+      "case_id": "coverage-patch-no-backup-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-patch-no-backup-dry-run",
+      "command": "patch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/patch.json",
+      "case_id": "coverage-patch-no-backup-dry-run",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-time--nt-new-old",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-time--nt-new-old",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-time--nt-old-new",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-time--nt-old-new",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-time--nt-new-equal",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-time--nt-new-equal",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-time--ot-old-new",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-time--ot-old-new",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-time--ot-new-old",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-time--ot-new-old",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-time--ot-equal-new",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-time--ot-equal-new",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-time--nt-new-missing",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-time--nt-new-missing",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-test-time--ot-missing-new",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "coverage-test-time--ot-missing-new",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rg-type-listing",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-type-listing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:rg-type-listing",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::rg-type-listing",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:sort-live-spill",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sort.json",
+      "case_id": "sort-live-spill",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:sort-live-spill",
+      "command": "sort",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::sort-live-spill",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rm-root-guard",
+      "command": "rm",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rm.json",
+      "case_id": "rm-root-guard",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:rm-root-guard",
+      "command": "rm",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::rm-root-guard",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:xargs-verbose-argv",
+      "command": "xargs",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/xargs.json",
+      "case_id": "xargs-verbose-argv",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:xargs-verbose-argv",
+      "command": "xargs",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::xargs-verbose-argv",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:timeout-child-lifecycle",
+      "command": "timeout",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/timeout.json",
+      "case_id": "timeout-child-lifecycle",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:timeout-child-lifecycle",
+      "command": "timeout",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::timeout-child-lifecycle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:csplit-fragment-retention",
+      "command": "csplit",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/csplit.json",
+      "case_id": "csplit-fragment-retention",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:csplit-fragment-retention",
+      "command": "csplit",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::csplit-fragment-retention",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-deadline-effects",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-deadline-effects",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-deadline-effects",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-deadline-effects",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-retry-effects",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-retry-effects",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-retry-effects",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-retry-effects",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-refusal-recovery",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-refusal-recovery",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-refusal-recovery",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-refusal-recovery",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-option-effects",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-option-effects",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-option-effects",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-option-effects",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tail-follow-interval",
+      "command": "tail",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tail.json",
+      "case_id": "tail-follow-interval",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:tail-follow-interval",
+      "command": "tail",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::tail-follow-interval",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:stream-failure-prefixes",
+      "command": "gzip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/gzip.json",
+      "case_id": "stream-failure-prefixes",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:stream-failure-prefixes",
+      "command": "gzip",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::stream-failure-prefixes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-base32-wrap-positive",
+      "command": "base32",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/base32.json",
+      "case_id": "coverage-base32-wrap-positive",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-grep-binary-policy-reject",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "coverage-grep-binary-policy-reject",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-touch-create-then-boundary",
+      "command": "touch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/touch.json",
+      "case_id": "coverage-touch-create-then-boundary",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:ls-link-facets",
+      "command": "ls",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ls.json",
+      "case_id": "ls-link-facets",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:ls-link-facets",
+      "command": "ls",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::ls-link-facets",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-ln-hardlink-boundary",
+      "command": "ln",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "coverage-ln-hardlink-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-sort-accessed",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-sort-accessed",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:coverage-rg-sort-modified",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "coverage-rg-sort-modified",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
     }
   ]
 }

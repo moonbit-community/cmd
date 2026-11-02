@@ -868,6 +868,20 @@
       "oracle": false,
       "expected_stdout_text": "<first>\n",
       "expected_stderr_text": "xargs: unsupported capability: non-UTF-8 argument transport\n"
+    },
+    {
+      "id": "xargs-verbose-argv",
+      "command": "xargs",
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

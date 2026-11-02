@@ -740,8 +740,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "creation time is not available",
-      "diagnostic_reason": "Released public metadata has no creation time; status and stdout are exact."
+      "expected_stderr_text": "rg: sorting by creation time isn't supported: creation time is not available on this platform currently\n"
     },
     {
       "id": "rg-regex-unicode",
@@ -3021,6 +3020,726 @@
         "line-regexp"
       ],
       "source_version": "Independent whole-line positive and prefix/suffix negatives."
+    },
+    {
+      "id": "coverage-rg-ignore-file",
+      "command": "rg",
+      "args": [
+        "--ignore-file",
+        "rules",
+        "--files",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "rules",
+          "content_text": "skip\n"
+        },
+        {
+          "path": "tree/skip",
+          "content_text": "x"
+        },
+        {
+          "path": "tree/keep",
+          "content_text": "y"
+        }
+      ],
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "expected_stdout_text": "tree/keep\n",
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize host path separators only."
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-ignore-file-control",
+      "command": "rg",
+      "args": [
+        "--files",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "rules",
+          "content_text": "skip\n"
+        },
+        {
+          "path": "tree/skip",
+          "content_text": "x"
+        },
+        {
+          "path": "tree/keep",
+          "content_text": "y"
+        }
+      ],
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "expected_stdout_text": "tree/keep\ntree/skip\n",
+      "stdout_order": "lines",
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize host path separators only."
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-iglob",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--iglob",
+        "*.TXT",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/A.TXT",
+          "content_text": "a"
+        },
+        {
+          "path": "tree/b.txt",
+          "content_text": "b"
+        },
+        {
+          "path": "tree/c.rs",
+          "content_text": "c"
+        }
+      ],
+      "expected_stdout_text": "tree/A.TXT\ntree/b.txt\n",
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize only host directory separators."
+        }
+      ],
+      "stdout_order": "lines",
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-no-ignore",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--no-ignore",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/.ignore",
+          "content_text": "skip\n"
+        },
+        {
+          "path": "tree/skip",
+          "content_text": "a"
+        },
+        {
+          "path": "tree/keep",
+          "content_text": "b"
+        }
+      ],
+      "expected_stdout_text": "tree/keep\ntree/skip\n",
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize only host directory separators."
+        }
+      ],
+      "stdout_order": "lines",
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-no-ignore-control",
+      "command": "rg",
+      "args": [
+        "--files",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/.ignore",
+          "content_text": "skip\n"
+        },
+        {
+          "path": "tree/skip",
+          "content_text": "a"
+        },
+        {
+          "path": "tree/keep",
+          "content_text": "b"
+        }
+      ],
+      "expected_stdout_text": "tree/keep\n",
+      "stdout_order": "lines",
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize only host directory separators."
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-type-not",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--type-not",
+        "rust",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/main.rs",
+          "content_text": "a"
+        },
+        {
+          "path": "tree/notes.txt",
+          "content_text": "b"
+        }
+      ],
+      "expected_stdout_text": "tree/notes.txt\n",
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize only host directory separators."
+        }
+      ],
+      "stdout_order": "lines",
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-type-add",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--type-add",
+        "proof:*.toy",
+        "--type",
+        "proof",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/a.toy",
+          "content_text": "a"
+        },
+        {
+          "path": "tree/b.txt",
+          "content_text": "b"
+        }
+      ],
+      "expected_stdout_text": "tree/a.toy\n",
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize only host directory separators."
+        }
+      ],
+      "stdout_order": "lines",
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-max-depth",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--max-depth",
+        "1",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/near",
+          "content_text": "a"
+        },
+        {
+          "path": "tree/sub/far",
+          "content_text": "b"
+        }
+      ],
+      "expected_stdout_text": "tree/near\n",
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize only host directory separators."
+        }
+      ],
+      "stdout_order": "lines",
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-max-depth-control",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--max-depth",
+        "2",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/near",
+          "content_text": "a"
+        },
+        {
+          "path": "tree/sub/far",
+          "content_text": "b"
+        }
+      ],
+      "expected_stdout_text": "tree/near\ntree/sub/far\n",
+      "stdout_order": "lines",
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize only host directory separators."
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-sortr",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--sortr",
+        "path",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/a",
+          "content_text": "a"
+        },
+        {
+          "path": "tree/z",
+          "content_text": "z"
+        }
+      ],
+      "expected_stdout_text": "tree/z\ntree/a\n",
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "",
+        "GIT_CONFIG_GLOBAL": ""
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Normalize only host directory separators."
+        }
+      ],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-before-context",
+      "command": "rg",
+      "args": [
+        "-n",
+        "-B1",
+        "hit",
+        "-"
+      ],
+      "stdin_text": "far\nbefore\nhit\nafter\n",
+      "expected_stdout_text": "2-before\n3:hit\n",
+      "expected_status": 0,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-rg-dotall",
+      "command": "rg",
+      "args": [
+        "-U",
+        "--multiline-dotall",
+        "hit.*end",
+        "-"
+      ],
+      "stdin_text": "hit\nend\n",
+      "expected_stdout_text": "hit\nend\n",
+      "expected_status": 0,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-rg-dotall-control",
+      "command": "rg",
+      "args": [
+        "-U",
+        "hit.*end",
+        "-"
+      ],
+      "stdin_text": "hit\nend\n",
+      "expected_stdout_text": "",
+      "expected_status": 1,
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-rg-no-filename",
+      "command": "rg",
+      "args": [
+        "--no-filename",
+        "hit",
+        "one",
+        "two"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "hit one\n"
+        },
+        {
+          "path": "two",
+          "content_text": "hit two\n"
+        }
+      ],
+      "expected_stdout_text": "hit one\nhit two\n",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-no-config",
+      "command": "rg",
+      "args": [
+        "--no-config",
+        "alpha",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "config",
+          "content_text": "--ignore-case\n"
+        },
+        {
+          "path": "hay",
+          "content_text": "ALPHA\n"
+        }
+      ],
+      "environment": {
+        "RIPGREP_CONFIG_PATH": "${WORK}/config"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-rg-encoding",
+      "command": "rg",
+      "args": [
+        "--encoding=latin1",
+        "café",
+        "hay"
+      ],
+      "files": [
+        {
+          "path": "hay",
+          "content_hex": "636166e90a"
+        }
+      ],
+      "expected_stdout_text": "café\n",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-binary",
+      "command": "rg",
+      "args": [
+        "--with-filename",
+        "--binary",
+        "hit",
+        "bin"
+      ],
+      "files": [
+        {
+          "path": "bin",
+          "content_hex": "616263006465660a6869740a"
+        }
+      ],
+      "expected_stdout_text": "bin: binary file matches (found \"\\0\" byte around offset 3)\n",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-pre-glob",
+      "command": "rg",
+      "args": [
+        "--sort=path",
+        "--pre",
+        "${RG_PREPROCESSOR}",
+        "--pre-glob",
+        "*.prep",
+        "transformed|raw",
+        "a.prep",
+        "b.txt"
+      ],
+      "files": [
+        {
+          "path": "a.prep",
+          "content_text": "raw\n"
+        },
+        {
+          "path": "b.txt",
+          "content_text": "raw\n"
+        }
+      ],
+      "environment": {
+        "CMD_RG_PREPROCESSOR": "marker"
+      },
+      "expected_stdout_text": "a.prep:transformed\nb.txt:raw\n",
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-follow-control",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--no-ignore",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/target/file",
+          "content_text": "data"
+        },
+        {
+          "path": "tree/link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "stdout_order": "lines",
+      "expected_stdout_text": "tree/target/file\n",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-follow",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--no-ignore",
+        "-L",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/target/file",
+          "content_text": "data"
+        },
+        {
+          "path": "tree/link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "stdout_order": "lines",
+      "expected_stdout_text": "tree/link/file\ntree/target/file\n",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "rg-type-listing",
+      "command": "rg",
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-rg-sort-accessed",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--sort",
+        "accessed",
+        "--path-separator",
+        "/",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/z-old",
+          "content_text": "old",
+          "mtime": "200001010000.00",
+          "atime": "200001010000.00"
+        },
+        {
+          "path": "tree/a-new",
+          "content_text": "new",
+          "mtime": "202001010000.00",
+          "atime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "tree/z-old\ntree/a-new\n",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-rg-sort-modified",
+      "command": "rg",
+      "args": [
+        "--files",
+        "--sort",
+        "modified",
+        "--path-separator",
+        "/",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/z-old",
+          "content_text": "old",
+          "mtime": "200001010000.00",
+          "atime": "200001010000.00"
+        },
+        {
+          "path": "tree/a-new",
+          "content_text": "new",
+          "mtime": "202001010000.00",
+          "atime": "202001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "tree/z-old\ntree/a-new\n",
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

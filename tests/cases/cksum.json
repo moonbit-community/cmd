@@ -1630,6 +1630,540 @@
         "check",
         "ignore-missing"
       ]
+    },
+    {
+      "id": "coverage-cksum-check-control",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-quiet-good",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--quiet",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-quiet-mismatch",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--quiet",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "0000000000000000000000000000000000000000  payload\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "payload: FAILED\n",
+      "expected_stderr_text": "cksum: WARNING: 1 computed checksum did NOT match\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "0000000000000000000000000000000000000000  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-quiet-malformed",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--quiet",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cksum: WARNING: 1 line is improperly formatted\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-status-good",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--status",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-status-mismatch",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--status",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "0000000000000000000000000000000000000000  payload\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "0000000000000000000000000000000000000000  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-status-malformed",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--strict",
+        "--status",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-missing",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--ignore-missing",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  missing\na9993e364706816aba3e25717850c26c9cd0d89d  payload\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  missing\na9993e364706816aba3e25717850c26c9cd0d89d  payload\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-missing-all",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--ignore-missing",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  missing\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cksum: checks: no file was verified\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  missing\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-lenient",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "cksum: WARNING: 1 line is improperly formatted\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-strict",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--strict",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "cksum: WARNING: 1 line is improperly formatted\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-warn",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "-c",
+        "--warn",
+        "checks"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "payload: OK\n",
+      "expected_stderr_text": "cksum: checks: 2: improperly formatted SHA1 checksum line\ncksum: WARNING: 1 line is improperly formatted\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        },
+        {
+          "path": "checks",
+          "content_text": "a9993e364706816aba3e25717850c26c9cd0d89d  payload\nmalformed\n",
+          "unchanged": true
+        }
+      ],
+      "oracle": false,
+      "source_version": "Independent standard abc digest vector; manually specified success, mismatch and malformed-line diagnostics.",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-cksum-binary-record",
+      "command": "cksum",
+      "args": [
+        "-a",
+        "sha1",
+        "--untagged",
+        "-b",
+        "payload"
+      ],
+      "files": [
+        {
+          "path": "payload",
+          "content_text": "abc"
+        }
+      ],
+      "expected_stdout_text": "a9993e364706816aba3e25717850c26c9cd0d89d *payload\n",
+      "expected_files": [
+        {
+          "path": "payload",
+          "content_text": "abc",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

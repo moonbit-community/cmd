@@ -24,8 +24,6 @@
       "comparison": "contract",
       "source_version": "GNU rm final-dot operand rule; Windows CI regression",
       "expected_stdout_text": "",
-      "expected_stderr_contains": "protected path",
-      "diagnostic_reason": "The path spelling is platform dependent; the refusal, status and complete retained fixture are required.",
       "expected_files": [
         {
           "path": "dir",
@@ -35,7 +33,8 @@
           "path": "kept",
           "content_text": "safe"
         }
-      ]
+      ],
+      "expected_stderr_text": "rm: refusing to remove protected path 'dir/../'\n"
     },
     {
       "id": "rm-final-parent-backslash",
@@ -63,8 +62,6 @@
         "windows"
       ],
       "expected_stdout_text": "",
-      "expected_stderr_contains": "protected path",
-      "diagnostic_reason": "The refusal, status and complete retained fixture are required; command branding differs from upstream.",
       "expected_files": [
         {
           "path": "dir",
@@ -74,7 +71,8 @@
           "path": "kept",
           "content_text": "safe"
         }
-      ]
+      ],
+      "expected_stderr_text": "rm: refusing to remove protected path 'dir\\..\\'\n"
     },
     {
       "id": "phase4-rm-regular",
@@ -1631,6 +1629,20 @@
           "exists": false
         }
       ]
+    },
+    {
+      "id": "rm-root-guard",
+      "command": "rm",
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

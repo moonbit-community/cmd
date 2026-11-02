@@ -225,6 +225,39 @@
       ],
       "source_version": "Documented unsupported --reference boundary, not GNU positive behavior",
       "expected_stderr_text": "chmod: --reference is unavailable: the portable filesystem API cannot read permission bits\n"
+    },
+    {
+      "id": "coverage-chmod-verbose",
+      "command": "chmod",
+      "args": [
+        "-v",
+        "644",
+        "input"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "retained",
+          "mode": 384
+        }
+      ],
+      "expected_stdout_text": "mode of 'input' changed to 0644\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "retained",
+          "mode": 420
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

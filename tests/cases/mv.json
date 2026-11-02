@@ -332,8 +332,9 @@
           "exists": false
         }
       ],
+      "expected_stderr_text": "mv: cannot move 'source' to 'source': source and destination are the same file\n",
       "expected_stderr_contains": "same file",
-      "diagnostic_reason": "GNU and candidate identify a same-file no-op; status, empty stdout and preserved contents are exact."
+      "diagnostic_reason": "Local stderr remains byte-for-byte asserted. The pinned GNU comparison separately requires the same-file cause because diagnostic framing differs; status, empty stdout and preserved files remain exact."
     },
     {
       "id": "repair-fs-mv-same-no-clobber",
@@ -687,8 +688,6 @@
       "host_platforms": [
         "posix"
       ],
-      "expected_stderr_contains": "unsupported capability: file identity",
-      "diagnostic_reason": "Equal timestamps cannot establish identity; reject the ambiguous early-return decision without mutation.",
       "expected_rejection": "unsupported capability: file identity",
       "expected_files": [
         {
@@ -699,7 +698,8 @@
           "path": "destination",
           "content_text": "old"
         }
-      ]
+      ],
+      "expected_stderr_text": "mv: cannot move 'source' to 'destination': unsupported capability: file identity for equal-time interactive/update targets\n"
     },
     {
       "id": "repair-fs-mv-interactive-no-eof",
@@ -1033,6 +1033,265 @@
       "source_version": "workspace cli/mv@0.2.6 metadata contract",
       "expected_stdout_text": "mv 0.2.6\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-mv-force",
+      "command": "mv",
+      "args": [
+        "-i",
+        "-f",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "201001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-mv-verbose",
+      "command": "mv",
+      "args": [
+        "-v",
+        "source",
+        "destination"
+      ],
+      "stdin_text": "n\n",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "201001010000.00"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "renamed 'source' -> 'destination'\n",
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "coverage-mv-backup-numbered",
+      "command": "mv",
+      "args": [
+        "-f",
+        "--backup=numbered",
+        "source",
+        "destination"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        },
+        {
+          "path": "destination.~2~",
+          "exists": true,
+          "content_text": "old"
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        },
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-mv-backup-existing",
+      "command": "mv",
+      "args": [
+        "-f",
+        "--backup=existing",
+        "source",
+        "destination"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        },
+        {
+          "path": "destination.~2~",
+          "exists": true,
+          "content_text": "old"
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        },
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-mv-backup-none",
+      "command": "mv",
+      "args": [
+        "-f",
+        "--backup=none",
+        "source",
+        "destination"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "destination",
+          "content_text": "old",
+          "mtime": "201001010000.00"
+        },
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "destination.~1~",
+          "content_text": "older"
+        },
+        {
+          "path": "destination.~2~",
+          "exists": false
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        },
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "content_text": "new"
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

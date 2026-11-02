@@ -178,6 +178,346 @@
         "absence-effect"
       ],
       "source_version": "Documented no-create mode on a missing pathname; existing-file timestamp updates remain unsupported"
+    },
+    {
+      "id": "coverage-touch-access-time-boundary",
+      "command": "touch",
+      "args": [
+        "-a",
+        "missing",
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "retained"
+        },
+        {
+          "path": "reference",
+          "content_text": "reference"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "touch: selecting or setting timestamps is unavailable in the portable filesystem API\n",
+      "expected_rejection": "timestamps",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "existing",
+          "kind": "file",
+          "content_text": "retained",
+          "unchanged": true
+        },
+        {
+          "path": "reference",
+          "kind": "file",
+          "content_text": "reference",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-touch-modification-time-boundary",
+      "command": "touch",
+      "args": [
+        "-m",
+        "missing",
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "retained"
+        },
+        {
+          "path": "reference",
+          "content_text": "reference"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "touch: selecting or setting timestamps is unavailable in the portable filesystem API\n",
+      "expected_rejection": "timestamps",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "existing",
+          "kind": "file",
+          "content_text": "retained",
+          "unchanged": true
+        },
+        {
+          "path": "reference",
+          "kind": "file",
+          "content_text": "reference",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-touch-date-boundary",
+      "command": "touch",
+      "args": [
+        "-d",
+        "2020-01-01",
+        "missing",
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "retained"
+        },
+        {
+          "path": "reference",
+          "content_text": "reference"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "touch: selecting or setting timestamps is unavailable in the portable filesystem API\n",
+      "expected_rejection": "timestamps",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "existing",
+          "kind": "file",
+          "content_text": "retained",
+          "unchanged": true
+        },
+        {
+          "path": "reference",
+          "kind": "file",
+          "content_text": "reference",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-touch-reference-boundary",
+      "command": "touch",
+      "args": [
+        "-r",
+        "reference",
+        "missing",
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "retained"
+        },
+        {
+          "path": "reference",
+          "content_text": "reference"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "touch: selecting or setting timestamps is unavailable in the portable filesystem API\n",
+      "expected_rejection": "timestamps",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "existing",
+          "kind": "file",
+          "content_text": "retained",
+          "unchanged": true
+        },
+        {
+          "path": "reference",
+          "kind": "file",
+          "content_text": "reference",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-touch-stamp-boundary",
+      "command": "touch",
+      "args": [
+        "-t",
+        "202001010000.00",
+        "missing",
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "retained"
+        },
+        {
+          "path": "reference",
+          "content_text": "reference"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "touch: selecting or setting timestamps is unavailable in the portable filesystem API\n",
+      "expected_rejection": "timestamps",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "existing",
+          "kind": "file",
+          "content_text": "retained",
+          "unchanged": true
+        },
+        {
+          "path": "reference",
+          "kind": "file",
+          "content_text": "reference",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-touch-time-boundary",
+      "command": "touch",
+      "args": [
+        "--time=access",
+        "missing",
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "retained"
+        },
+        {
+          "path": "reference",
+          "content_text": "reference"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "touch: selecting or setting timestamps is unavailable in the portable filesystem API\n",
+      "expected_rejection": "timestamps",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "existing",
+          "kind": "file",
+          "content_text": "retained",
+          "unchanged": true
+        },
+        {
+          "path": "reference",
+          "kind": "file",
+          "content_text": "reference",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-touch-no-create-existing",
+      "command": "touch",
+      "args": [
+        "-c",
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "retained"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.5\n",
+      "expected_files": [
+        {
+          "path": "existing",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "coverage-touch-create-then-boundary",
+      "command": "touch",
+      "args": [
+        "created",
+        "existing"
+      ],
+      "files": [
+        {
+          "path": "existing",
+          "content_text": "retained",
+          "mtime": "200001010000.00",
+          "mode": 420
+        }
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 1,
+      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.5\n",
+      "expected_files": [
+        {
+          "path": "created",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "existing",
+          "content_text": "retained",
+          "mtime": "946684800:0",
+          "mode": 420
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

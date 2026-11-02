@@ -2,6 +2,7 @@
 async fn run_connect_proxy(
   server : @socket.TcpServer,
   requests : Ref[Int32],
+  targets? : Array[String],
 ) -> Unit {
   server.run_forever() <| ((client, _) => {
     requests.val = requests.val + 1
@@ -14,6 +15,9 @@ async fn run_connect_proxy(
       return
     }
     let authority = line[8:end].to_owned()
+    if targets is Some(targets) {
+      targets.push(authority)
+    }
     let destination = @socket.Tcp::connect(@socket.Addr::parse(authority))
     defer destination.close()
     client.write("HTTP/1.1 200 Connection Established\r\n\r\n")

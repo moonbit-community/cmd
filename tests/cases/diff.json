@@ -1976,6 +1976,62 @@
         }
       ],
       "source_version": "Independently captured fixed GNU diffutils3.12 default repeated-anchor alignment, including sparse/dense frequency and length-threshold controls; no candidate output was used. Local contract bytes supplement the pinned Linux differential profile."
+    },
+    {
+      "id": "coverage-diff-unified-lines",
+      "command": "diff",
+      "args": [
+        "-U1",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "far\nbefore\nold\nafter\nend\n"
+        },
+        {
+          "path": "b",
+          "content_text": "far\nbefore\nnew\nafter\nend\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "--- a\n+++ b\n@@ -2,3 +2,3 @@\n before\n-old\n+new\n after\n",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
+    },
+    {
+      "id": "coverage-diff-context-lines",
+      "command": "diff",
+      "args": [
+        "-C1",
+        "--label=a",
+        "--label=b",
+        "a",
+        "b"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "far\nbefore\nold\nafter\nend\n"
+        },
+        {
+          "path": "b",
+          "content_text": "far\nbefore\nnew\nafter\nend\n"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "*** a\n--- b\n***************\n*** 2,4 ****\n  before\n! old\n  after\n--- 2,4 ----\n  before\n! new\n  after\n",
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "stdin_text": ""
     }
   ]
 }

@@ -1914,6 +1914,20 @@
       ],
       "source_version": "GNU coreutils 9.11 C profile; R resource controls",
       "oracle": true
+    },
+    {
+      "id": "csplit-fragment-retention",
+      "command": "csplit",
+      "comparison": "scenario",
+      "timeout_ms": 30000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
     }
   ]
 }

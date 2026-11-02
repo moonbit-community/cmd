@@ -79,6 +79,27 @@ pub async fn execute_scenario(
         "diff-directory-devices-boundary" =>
           diff_directory_devices_boundary_scenario(root, work)
         "process-lifecycle" => process_lifecycle_scenario(root, work)
+        "yes-stream-lifecycle" =>
+          yes_stream_lifecycle_scenario(root, work, proof?)
+        "compression-selectors" =>
+          compression_selectors_scenario(root, work, proof?)
+        "metadata-relations" => metadata_scenario(root, work, proof?)
+        "rg-type-listing" => type_listing_scenario(root, work, proof?)
+        "sort-live-spill" => sort_spill_scenario(root, work, proof?)
+        "rm-root-guard" => removal_guard_scenario(root, work, proof?)
+        "xargs-verbose-argv" => xargs_verbose_scenario(root, work, proof?)
+        "timeout-child-lifecycle" =>
+          timeout_command_scenario(root, work, proof?)
+        "csplit-fragment-retention" =>
+          csplit_retention_scenario(root, work, proof?)
+        "network-deadline-effects" =>
+          network_deadlines_scenario(root, work, proof?)
+        "network-retry-effects" => network_retries_scenario(root, work, proof?)
+        "network-refusal-recovery" => refused_retry_scenario(root, work, proof?)
+        "network-option-effects" => network_options_scenario(root, work, proof?)
+        "tail-follow-interval" => follow_interval_scenario(root, work, proof?)
+        "stream-failure-prefixes" => failure_prefix_scenario(root, work, proof?)
+        "ls-link-facets" => link_dereference_scenario(root, work, proof?)
         "network-auth-cookie" => network_cli_scenario(root, work, proof?)
         "network-auth-cookie-oracle" =>
           network_cli_scenario(root, work, oracle_image?)
