@@ -367,6 +367,13 @@ fn diff_paths(path : String, base : String) -> String? {
   }
   let ita = components(path)
   let itb = components(base)
+  // Paths on distinct Windows volumes cannot be made relative.
+  if @platform.os() == Windows &&
+    ita.get(0) is Some(volume) &&
+    volume.has_suffix(":") &&
+    ita.get(0) != itb.get(0) {
+    return None
+  }
   let comps : Array[String] = []
   let mut a = 0
   let mut b = 0
@@ -408,6 +415,11 @@ fn diff_paths(path : String, base : String) -> String? {
 /// The components of a path (Rust's `Path::components`, simplified: the
 /// root is a component, empty and inner `.` components are skipped).
 fn components(path : String) -> Array[String] {
+  let path = if @platform.os() == Windows {
+    path.replace_all(old="\\", new="/")
+  } else {
+    path
+  }
   let out = []
   if path.has_prefix("/") {
     out.push("/")

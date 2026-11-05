@@ -33,7 +33,9 @@ Development; no publication.
   acceptance remain separate gates.
 - Update CI to MoonBit `0.10.19+bee578715`, migrate deprecated derive syntax
   while retaining existing trait methods, and use the current string-view API
-  in test infrastructure. Full-workspace checks retain `--deny-warn`.
+  in test infrastructure. Full-workspace checks retain `--deny-warn`. Use the
+  controlled MoonBit child for allowed-process policy checks on every platform,
+  and handle mixed Windows separators when reporting Typst dependencies.
 
 ## 2026-11-03
 

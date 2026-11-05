@@ -178,9 +178,41 @@ async fn check_process_and_network_policy(
     failures,
   )
   @fs.write_file(makefile, b".PHONY: all\nall:\n\t@printf policy-make-ok\n")
-  let env = moon_run(root, "process-echo.json", "env", [
-    "-i", "echo", "process-policy-ok",
-  ]) catch {
+  // Use the controlled MoonBit child; Windows does not provide an external
+  // echo executable independently of the runner's shell and PATH.
+  let child = @harness.option_child_path()
+  let child_args = [child, "--option-test-helper", "printf", "%s\\n"]
+  let process_policy : Json = {
+    "allow": [
+      {
+        "program": Json(child),
+        "args_prefix": ["--option-test-helper", "printf", "%s\\n"],
+      },
+    ],
+  }
+  let allowed_policy = "runtime-process-child.json"
+  let allowed_cwd_policy = "runtime-process-child-cwd.json"
+  let allowed_path = root_path(root, "tests/fixtures/policy/" + allowed_policy)
+  let allowed_cwd_path = root_path(
+    root,
+    "tests/fixtures/policy/" + allowed_cwd_policy,
+  )
+  @fs.write_file(
+    allowed_path,
+    ({ "process": process_policy } : Json).stringify(),
+  )
+  defer @fs.remove(allowed_path)
+  @fs.write_file(
+    allowed_cwd_path,
+    ({ "fs": { "read": [Json(root)] }, "process": process_policy } : Json).stringify(),
+  )
+  defer @fs.remove(allowed_cwd_path)
+  let env = moon_run(
+    root,
+    allowed_policy,
+    "env",
+    ["-i", ..child_args, "process-policy-ok"],
+  ) catch {
     err => {
       failures.push("env: allowed process failed: \{err}")
       return
@@ -188,12 +220,15 @@ async fn check_process_and_network_policy(
   }
   record(
     stdout_is(env, b"process-policy-ok\n"),
-    "env: allowed process output mismatch",
+    "env: allowed process output mismatch: status=\{env.status}, stdout=\{env.stdout}, stderr=\{env.stderr}",
     failures,
   )
-  let env_cwd = moon_run(root, "process-echo-cwd.json", "env", [
-    "-C", "tests/fixtures/policy", "echo", "cwd-policy-ok",
-  ]) catch {
+  let env_cwd = moon_run(
+    root,
+    allowed_cwd_policy,
+    "env",
+    ["-C", "tests/fixtures/policy", ..child_args, "cwd-policy-ok"],
+  ) catch {
     err => {
       failures.push("env: allowed cwd process failed: \{err}")
       return
@@ -201,14 +236,14 @@ async fn check_process_and_network_policy(
   }
   record(
     stdout_is(env_cwd, b"cwd-policy-ok\n"),
-    "env: -C must use the policy-visible child working directory",
+    "env: -C must use the policy-visible child working directory: status=\{env_cwd.status}, stdout=\{env_cwd.stdout}, stderr=\{env_cwd.stderr}",
     failures,
   )
   let xargs = moon_run(
     root,
-    "process-echo.json",
+    allowed_policy,
     "xargs",
-    ["-n", "1", "echo"],
+    ["-n", "1", ..child_args],
     stdin=b"one two\n",
   ) catch {
     err => {
@@ -218,14 +253,14 @@ async fn check_process_and_network_policy(
   }
   record(
     stdout_is(xargs, b"one\ntwo\n"),
-    "xargs: allowed process output mismatch",
+    "xargs: allowed process output mismatch: status=\{xargs.status}, stdout=\{xargs.stdout}, stderr=\{xargs.stderr}",
     failures,
   )
   let xargs_parallel = moon_run(
     root,
-    "process-echo.json",
+    allowed_policy,
     "xargs",
-    ["-P", "2", "-n", "1", "echo"],
+    ["-P", "2", "-n", "1", ..child_args],
     stdin=b"parallel-one parallel-two\n",
   ) catch {
     err => {
@@ -237,12 +272,17 @@ async fn check_process_and_network_policy(
     xargs_parallel.status == 0 &&
     @harness.contains_bytes(xargs_parallel.stdout, "parallel-one") &&
     @harness.contains_bytes(xargs_parallel.stdout, "parallel-two"),
-    "xargs: bounded parallel output mismatch",
+    "xargs: bounded parallel output mismatch: status=\{xargs_parallel.status}, stdout=\{xargs_parallel.stdout}, stderr=\{xargs_parallel.stderr}",
     failures,
   )
-  let find_exec = moon_run(root, "process-echo-cwd.json", "find", [
-    "tests/fixtures/policy", "-maxdepth", "0", "-exec", "echo", "{}", ";",
-  ]) catch {
+  let find_exec = moon_run(
+    root,
+    allowed_cwd_policy,
+    "find",
+    [
+      "tests/fixtures/policy", "-maxdepth", "0", "-exec", ..child_args, "{}", ";",
+    ],
+  ) catch {
     err => {
       failures.push("find: allowed child process failed: \{err}")
       return
@@ -254,9 +294,12 @@ async fn check_process_and_network_policy(
     failures,
   )
   if @harness.command_available("timeout") {
-    let timeout = moon_run(root, "process-echo.json", "timeout", [
-      "1s", "echo", "timeout-policy-ok",
-    ]) catch {
+    let timeout = moon_run(
+      root,
+      allowed_policy,
+      "timeout",
+      ["1s", ..child_args, "timeout-policy-ok"],
+    ) catch {
       err => {
         failures.push("timeout: allowed process failed: \{err}")
         return
@@ -264,7 +307,7 @@ async fn check_process_and_network_policy(
     }
     record(
       stdout_is(timeout, b"timeout-policy-ok\n"),
-      "timeout: allowed process output mismatch",
+      "timeout: allowed process output mismatch: status=\{timeout.status}, stdout=\{timeout.stdout}, stderr=\{timeout.stderr}",
       failures,
     )
   }

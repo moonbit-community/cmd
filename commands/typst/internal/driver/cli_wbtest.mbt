@@ -35,7 +35,18 @@ test "relative paths" {
   )
   if @platform.os() == Windows {
     assert_eq(diff_paths("/a/x/c.typ", "/a/b"), Some("..\\x\\c.typ"))
+    assert_eq(diff_paths("D:/work/docs", "D:\\work\\docs"), Some(""))
+    assert_eq(
+      diff_paths("D:\\work\\docs\\main.typ", "D:/work/docs"),
+      Some("main.typ"),
+    )
+    assert_eq(diff_paths("D:/work/docs", "C:/work/docs"), None)
+    assert_eq(
+      strip_path_prefix("D:\\work\\docs\\main.typ", "D:/work/docs"),
+      Some("main.typ"),
+    )
   } else {
+    assert_eq(components("a\\b/c"), ["a\\b", "c"])
     @debug.debug_inspect(
       diff_paths("/a/x/c.typ", "/a/b"),
       content=(
