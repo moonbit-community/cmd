@@ -3,9 +3,9 @@
 Date: 2026-09-05
 Updated: 2026-11-05
 
-`cli/typst@0.1.0` is an unpublished development candidate. Its migrated CLI,
+`cli/typst@0.1.0` is published. Its migrated CLI,
 document environment and watcher use a pure MoonBit platform adapter; the
-engine remains external at `moonbitlang/typst@0.1.10`. Local Wasm assertions
+engine remains external at `moonbitlang/typst@0.1.10`. Exact-version MoonX assertions
 cover evaluation, imports, embedded fonts, PDF/PNG/SVG export, binary stdout,
 selected pages, dependency output, write failures and watch recompilation.
 The inherited CLI also exposes HTML/bundle export and local template setup;
@@ -18,10 +18,11 @@ viewer opening, performance traces and the HTML watch server (`--no-serve`
 is required). Jobs remain single-threaded. File reads retain whole inputs;
 canonicalization is lexical, symlink identity/containment is not guaranteed,
 terminal detection is unavailable and local time defaults to UTC. Unlock
-conditions are recorded in ADR-0003. Pinned Typst 0.15.1 Linux evaluation
-comparisons are registered. Three-platform execution and exact-version MoonX
-acceptance are pending. The current 79 published coordinates remain unchanged;
-typst is the first-release candidate and timeout remains local-only among 81 modules.
+conditions are recorded in ADR-0003. Seven pinned Typst 0.15.1 Linux evaluation
+comparisons pass. All 80 coordinates pass local MoonX and
+[three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41957907959),
+including watch shutdown and cleanup. The previous 79 coordinates and their
+frozen expectations remain unchanged; timeout remains local-only among 81 modules.
 The inherited relative-link watcher fixture is Unix-only because the public
 filesystem API cannot create that fixture on Windows. Ordinary file-watch
 recompilation has a registered CLI assertion on all three platforms.

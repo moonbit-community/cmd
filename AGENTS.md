@@ -208,17 +208,18 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-11-01 release: core is 0.9.1.
-  Published 26 changed command versions; retained the other 53 coordinates, giving
-  79 published commands among 80 local modules. Core dependencies are 26 commands
-  on 0.9.1, 26 on 0.9.0 and 23 on 0.8.2; echo/false/sleep/true remain independent.
+- Current registry baseline after the 2026-11-05 release: core remains 0.9.1.
+  Published the first cli/typst@0.1.0 release and retained the other 79 coordinates,
+  giving 80 published commands among 81 local modules. Core dependencies remain
+  26 commands on 0.9.1, 26 on 0.9.0 and 23 on 0.8.2;
+  echo/false/sleep/true/typst do not depend on core.
   timeout remains unpublished and local-only. Exact coordinates and independent
   expectations are in tests/release/latest.json and latest-cases.json.
-  Source commit c5c016c passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/41294367461).
-  All 27 uploads/builds were verified. Local exact-version MoonX and
-  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751)
-  passed all 79 coordinates with zero failures, including pinned Linux comparison.
-  Counts and exclusions are in CHANGELOG.md under 2026-11-01. This does not
+  Source commit c3f5973 passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/41952232874).
+  The single upload and registry build were verified. Local exact-version MoonX and
+  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41957907959)
+  passed all 80 coordinates with zero failures, including pinned Linux comparison.
+  Counts and exclusions are in CHANGELOG.md under 2026-11-05. This does not
   establish full upstream parity or formal performance acceptance.
   Current latest/candidate snapshots remain independent. Retired published and
   historical archives are preserved in Git at 234f960, rather than duplicated

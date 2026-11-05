@@ -150,7 +150,13 @@ async fn typst_watch_scenario(
   @fs.write_file(work + "/main.typ", source)
   let output = work + "/watched.svg"
   let changed = svg.replace_all(old="#000000", new="#ff0000")
+  let (reader_out, child_stdout) = @process.read_from_process()
+  let (reader_err, child_stderr) = @process.read_from_process()
+  defer reader_out.close()
+  defer reader_err.close()
   @async.with_task_group(group => {
+    let out_task = group.spawn(() => reader_out.read_all().binary())
+    let err_task = group.spawn(() => reader_err.read_all().binary())
     let child = @process.spawn(
       group,
       @harness.command_program(),
@@ -158,9 +164,11 @@ async fn typst_watch_scenario(
         "watch", "--ignore-system-fonts", "--no-fullscreen", "main.typ", "watched.svg",
       ]),
       cwd=work,
-      stdout=@process.redirect_to_file(work + "/stdout"),
-      stderr=@process.redirect_to_file(work + "/stderr"),
-      cancel_handler=@process.hard_cancel(),
+      stdout=child_stdout,
+      stderr=child_stderr,
+      // On Windows, CTRL_BREAK reaches the MoonX console group, including
+      // its Moonrun child. TerminateProcess on MoonX alone leaves it alive.
+      cancel_handler=@process.graceful_cancel(timeout=1000),
     )
     @async.with_timeout(10000, () => {
       while !@fs.exists(output) || @fs.read_file(output).text() != svg {
@@ -179,7 +187,37 @@ async fn typst_watch_scenario(
       }
     })
     child.cancel()
-    child.wait() |> ignore
+    @async.with_timeout(5000, () => {
+      child.wait() |> ignore
+      @fs.write_file(work + "/stdout", out_task.wait())
+      @fs.write_file(work + "/stderr", err_task.wait())
+    })
+    if @async.platform is Windows {
+      // Pipe EOF and the wrapper's exit are insufficient to prove that the
+      // descendant has released its working directory. Require that release.
+      let moved = work + ".released"
+      let last_error = Ref("")
+      let released = @async.with_timeout_opt(5000, () => {
+        for ;; {
+          let renamed = try @fs.rename(work, moved) catch {
+            error => {
+              last_error.val = error.to_string()
+              false
+            }
+          } noraise {
+            _ => true
+          }
+          if renamed {
+            @fs.rename(moved, work)
+            break
+          }
+          @async.sleep(10)
+        }
+      })
+      guard released is Some(_) else {
+        fail("watch child retained its working directory: " + last_error.val)
+      }
+    }
     assert_eq(@fs.read_file(output).text(), changed)
     assert_eq(@fs.read_file(work + "/stdout").binary(), b"")
     if proof is Some(proof) {
