@@ -4,8 +4,7 @@ Compile and inspect Typst documents for MoonX.
 
 Version: `cli/typst@0.1.0`, using `moonbitlang/typst@0.1.10`.
 The repository's [release inventory](../../tests/release/latest.json) records
-accepted coordinates and their independent expected cases. This version is
-currently a release candidate.
+accepted coordinates and their independent expected cases.
 
 ```sh
 moonx cli/typst@0.1.0 COMMAND [OPTIONS]
