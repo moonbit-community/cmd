@@ -21,6 +21,8 @@ Linux. It does not publish or modify committed files.
 after its selected versions have been uploaded. The internal release runner
 accepts `functional`, `oracle` and `all`; it has no legacy suite aliases.
 `--command` and `--case` are diagnostic subsets, not full acceptance.
+Only a manifest explicitly marked as a candidate may select the canonical
+`../cases/manifest.json`; other parent-directory paths remain rejected.
 
 After a separately authorized publication and successful exact-coordinate
 acceptance, promote coordinates and their independent expectations through a
