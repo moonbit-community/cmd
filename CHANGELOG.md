@@ -36,6 +36,11 @@ Development; no publication.
   in test infrastructure. Full-workspace checks retain `--deny-warn`. Use the
   controlled MoonBit child for allowed-process policy checks on every platform,
   and handle mixed Windows separators when reporting Typst dependencies.
+- Keep the sort spill regression's full input, output and cleanup assertions;
+  allow 30 seconds for the child to finish within the existing 60-second case
+  deadline. Windows passed at 14.27 seconds in PR validation but exceeded the
+  former 15-second inner wait on the first main run. This is test scheduling
+  headroom, not a product performance result.
 
 ## 2026-11-03
 

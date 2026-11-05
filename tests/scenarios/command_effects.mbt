@@ -118,7 +118,10 @@ async fn sort_spill_scenario(
       Json(seen).stringify(indent=2),
     )
     writer.close()
-    let status = @async.with_timeout(15000, () => child.wait())
+    // Thousands of small merge files take over 14 seconds on Windows CI.
+    // Leave headroom within this case's existing 60-second overall deadline;
+    // the live-run, exact output and cleanup requirements remain mandatory.
+    let status = @async.with_timeout(30000, () => child.wait())
     let stdout = @fs.read_file(stdout_path).binary()
     let stderr = @fs.read_file(stderr_path).binary()
     let actual : Json = {
