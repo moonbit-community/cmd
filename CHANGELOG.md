@@ -14,23 +14,29 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-05
 
-Development; no publication.
+Development and publication.
 
-- Add `cli/typst@0.1.0` as a local Wasm candidate: migrate the existing CLI,
-  document environment, font/package discovery and watcher; retain the
-  typesetting engine as `moonbitlang/typst@0.1.10`. Replace the command's
-  platform implementation with released public MoonBit APIs, including binary
-  standard streams and output-error propagation.
-- Local macOS validation passes all 1,884 Wasm package tests (84 for Typst),
-  204 Native tool tests and 2,520 functional checks, with 21 platform exclusions
-  and zero failures. Typst checks include metadata without stdin consumption, evaluation/imports,
-  PDF file/stdout identity, PNG dimensions, page selection, dependency output,
-  output failure and watch recompilation. Retain explicit platform and feature
-  boundaries; no full upstream parity or performance claim is made.
-- Register 81 local commands while retaining all 79 published coordinates.
-  Add the first Typst candidate, pinned Linux Typst 0.15.1 comparisons and an
-  explicit untimed performance disposition. Publication and exact-version
-  acceptance remain separate gates.
+- Publish the first `cli/typst@0.1.0` from `c3f5973` after
+  [three-platform main validation](https://github.com/moonbit-community/cmd/actions/runs/41952232874).
+  Verify the upload and registry build. Migrate the CLI, document environment,
+  font/package discovery and watcher while retaining the external
+  `moonbitlang/typst@0.1.10` engine. The pure MoonBit Wasm adapter uses public
+  APIs for binary standard streams and output-error propagation.
+- Exact-version MoonX acceptance covers all 80 coordinates. Local macOS passes
+  2,361 checks with 21 platform exclusions; [published CI](https://github.com/moonbit-community/cmd/actions/runs/41957907959)
+  passes Linux 2,368/18, macOS 2,361/21 and Windows 2,206/176 (passes/skips), all
+  with zero failures, including seven pinned Typst 0.15.1 evaluation comparisons.
+  Promote only Typst and its 21 cases; preserve the previous 79 coordinates and
+  frozen expectations. Timeout remains local-only among 81 modules. Local first
+  downloads timed out; official prebuild bytes were SHA-256 verified and cached
+  before the successful MoonX run. No workspace-built Wasm replaced the release.
+- Development validation passes 1,884 Wasm package tests (84 for Typst), 204
+  Native tool tests and 2,520 local macOS functional checks, with 21 platform
+  exclusions and zero failures. Typst assertions cover metadata without stdin
+  consumption, evaluation/imports, PDF file/stdout identity, PNG dimensions,
+  pages, dependency output, output failure and watch recompilation. Retain
+  explicit feature/platform limits and an untimed disposition; this does not
+  establish full upstream parity or performance acceptance.
 - Update CI to MoonBit `0.10.19+bee578715`, migrate deprecated derive syntax
   while retaining existing trait methods, and use the current string-view API
   in test infrastructure. Full-workspace checks retain `--deny-warn`. Use the
@@ -40,7 +46,10 @@ Development; no publication.
   allow 30 seconds for the child to finish within the existing 60-second case
   deadline. Windows passed at 14.27 seconds in PR validation but exceeded the
   former 15-second inner wait on the first main run. This is test scheduling
-  headroom, not a product performance result.
+  headroom, not a product performance result. Published watch tests now stop
+  the console group, await stream EOF and verify Windows working-directory
+  release; the initial direct-wrapper cancellation failed cleanup and was not
+  counted as acceptance.
 
 ## 2026-11-03
 

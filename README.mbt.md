@@ -24,6 +24,7 @@ acceptance have separate manual workflows; see [tests](tests/README.md).
 - [x] Environment, execution and network: `curl`, `env`, `false`, `make`,
   `printenv`, `pwd`, `sh`, `sleep`, `test`, `true`, `wget`, `which`, `xargs`,
   and `yes`.
+- [x] Typesetting: `typst`.
 - [ ] Planned command modules: `awk`, `chgrp`, `chown`, `clear`, `df`, `du`,
   `free`, `groups`, `hostname`, `id`, `install`, `kill`, `link`, `nproc`,
   `ps`, `readlink`, `stat`, `stty`, `tar`, `truncate`, `tput`, `tty`, `uname`,
@@ -34,8 +35,8 @@ The `timeout` package is local-only while a portable public process-group
 interface is unavailable. Its status is recorded in the support record and it
 is not a published MoonX feature.
 
-The [Typst command](commands/typst/README.md) is an unpublished development
-candidate. It migrates the CLI and platform adaptation while depending on the
+The [Typst command](commands/typst/README.md) is published as `cli/typst@0.1.0`.
+It migrates the CLI and platform adaptation while depending on the
 external MoonBit typesetting engine; PDF/PNG/SVG compilation and watch run as
 Wasm. It does not invoke an installed Typst executable.
 

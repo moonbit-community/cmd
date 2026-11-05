@@ -73,11 +73,14 @@ Preserve the migrated upstream tests and keep command-specific integration tests
 private. Registered CLI evidence covers metadata, evaluation, imports, embedded
 fonts, exact SVG, PDF file/stdout identity, PNG dimensions, page selection,
 dependency output, broken output and watch recompilation. A separate PDF reader
-checks exported page structure. These are local assertions, not Rust Typst
-differential parity. The release policy includes the first-release candidate;
-publication requires three-platform development checks including the registered
-pinned Typst 0.15.1 comparisons on Linux. Exact-coordinate MoonX acceptance
-follows the authorized publication. Typst has an explicit untimed disposition;
+checks exported page structure. Export and watch checks are independent
+assertions; seven evaluation cases also pass pinned Typst 0.15.1 comparisons on
+Linux. This does not establish full Rust Typst parity. The first release,
+`cli/typst@0.1.0`, passed three-platform development checks and
+[exact-coordinate MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/41957907959).
+Published watch tests stop the console group, wait for output-stream EOF and
+require Windows working-directory release before reporting child cleanup.
+Typst has an explicit untimed disposition;
 future performance work requires genuine document/font workloads and a fresh
 baseline containing all 81 command artifacts.
 
