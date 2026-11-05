@@ -221,9 +221,10 @@ pub fn GlobSet::new(globs : ArrayView[Glob]) -> GlobSet raise GlobError {
 ///|
 /// GlobSetBuilder builds a group of patterns that can be used to
 /// simultaneously match a file path.
+#derive(Debug)
 pub struct GlobSetBuilder {
   priv pats : Array[Glob]
-} derive(Debug)
+}
 
 ///|
 /// Create a new `GlobSetBuilder`. A `GlobSetBuilder` can be used to add new

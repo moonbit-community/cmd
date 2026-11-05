@@ -1,10 +1,11 @@
 ///|
+#derive(Debug)
 priv suberror SearchPatternError {
   Regex(String)
   NotAllowed(String)
   InvalidLineTerminator(Byte)
   Banned(Byte)
-} derive(Debug)
+}
 
 ///|
 /// Renders a string like Rust's `{:?}` for `str`.

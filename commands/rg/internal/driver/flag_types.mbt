@@ -1,5 +1,6 @@
 ///|
 /// The category of a flag, used for documentation.
+#derive(Debug, Eq, Compare)
 pub(all) enum Category {
   Input
   Search
@@ -9,7 +10,7 @@ pub(all) enum Category {
   Indexing
   Logging
   OtherBehaviors
-} derive(Debug, Eq, Compare)
+}
 
 ///|
 fn Category::as_str(self : Category) -> String {
@@ -27,13 +28,14 @@ fn Category::as_str(self : Category) -> String {
 
 ///|
 /// The kind of completion to use for a flag's value.
+#derive(Debug, Eq)
 pub(all) enum CompletionType {
   Other
   Filename
   Executable
   Filetype
   Encoding
-} derive(Debug, Eq)
+}
 
 ///|
 /// Static metadata about a flag.
@@ -53,10 +55,11 @@ pub(all) struct FlagDef {
 
 ///|
 /// The value given to a flag.
+#derive(Debug, Eq)
 pub(all) enum FlagValue {
   Switch(Bool)
   Value(String)
-} derive(Debug, Eq)
+}
 
 ///|
 fn FlagValue::unwrap_switch(self : FlagValue) -> Bool {

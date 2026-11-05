@@ -14,6 +14,7 @@ pub fn default_color_specs() -> Array[UserColorSpec] {
 
 ///|
 /// An error that can occur when parsing color specifications.
+#derive(Eq, Debug)
 pub(all) suberror ColorError {
   /// This occurs when an unrecognized output type is used.
   UnrecognizedOutType(String)
@@ -26,7 +27,7 @@ pub(all) suberror ColorError {
   UnrecognizedStyle(String)
   /// This occurs when the format of a color specification is invalid.
   InvalidFormat(String)
-} derive(Eq, Debug)
+}
 
 ///|
 fn ColorError::from_parse_error(err : @termcolor.ParseColorError) -> ColorError {
@@ -59,13 +60,14 @@ pub impl Show for ColorError with fn output(self, logger) {
 /// This set of color specifications represents the various color types that
 /// are supported by the printers in this package. A set of color
 /// specifications can be created from a sequence of `UserColorSpec`s.
+#derive(Eq, Debug)
 pub struct ColorSpecs {
   priv path : @termcolor.ColorSpec
   priv line : @termcolor.ColorSpec
   priv column : @termcolor.ColorSpec
   priv matched : @termcolor.ColorSpec
   priv highlight : @termcolor.ColorSpec
-} derive(Eq, Debug)
+}
 
 ///|
 /// A single color specification provided by the user.
@@ -76,10 +78,11 @@ pub struct ColorSpecs {
 /// a color (for `fg`/`bg`) or a style instruction (`bold`, `nobold`,
 /// `intense`, `nointense`, `underline`, `nounderline`, `italic`,
 /// `noitalic`).
+#derive(Eq, Debug)
 pub struct UserColorSpec {
   priv ty : OutType
   priv value : SpecValue
-} derive(Eq, Debug)
+}
 
 ///|
 /// Convert this user provided color specification to a specification that
@@ -93,21 +96,23 @@ pub fn UserColorSpec::to_color_spec(
 }
 
 ///|
+#derive(Eq, Debug)
 priv enum SpecValue {
   None
   Fg(@termcolor.Color)
   Bg(@termcolor.Color)
   Style(Style)
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 priv enum OutType {
   Path
   Line
   Column
   Match
   Highlight
-} derive(Eq, Debug)
+}
 
 ///|
 priv enum SpecType {
@@ -118,6 +123,7 @@ priv enum SpecType {
 }
 
 ///|
+#derive(Eq, Debug)
 priv enum Style {
   Bold
   NoBold
@@ -127,7 +133,7 @@ priv enum Style {
   NoUnderline
   Italic
   NoItalic
-} derive(Eq, Debug)
+}
 
 ///|
 /// The default set of color specifications: no colors at all.

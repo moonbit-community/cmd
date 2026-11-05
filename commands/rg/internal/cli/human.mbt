@@ -1,10 +1,11 @@
 ///|
 /// An error that occurs when parsing a human readable size description.
+#derive(Debug, Eq)
 pub suberror ParseSizeError {
   InvalidFormat(String)
   InvalidInt(String, String)
   Overflow(String)
-} derive(Debug, Eq)
+}
 
 ///|
 pub fn ParseSizeError::to_string(self : ParseSizeError) -> String {

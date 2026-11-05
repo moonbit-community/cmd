@@ -1,11 +1,12 @@
 ///|
+#derive(Eq, Hash)
 priv struct RegisterState {
   pc : Int32
   position : Int32
   captures : Array[Int32]
   previous : Array[Int32]
   epsilon : Array[Int32]
-} derive(Eq, Hash)
+}
 
 ///|
 priv enum ReferenceResult {

@@ -2,6 +2,7 @@
 /// Summary statistics produced at the end of a search.
 ///
 /// Durations are represented as `Int64` nanoseconds.
+#derive(Eq, Debug)
 pub struct Stats {
   priv mut elapsed : Int64
   priv mut searches : Int64
@@ -10,7 +11,7 @@ pub struct Stats {
   priv mut bytes_printed : Int64
   priv mut matched_lines : Int64
   priv mut matches : Int64
-} derive(Eq, Debug)
+}
 
 ///|
 /// Return a new value for tracking aggregate statistics across searches.

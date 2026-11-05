@@ -55,11 +55,12 @@ priv enum BufferMode {
 }
 
 ///|
+#derive(Eq)
 priv enum CaseMode {
   Sensitive
   Insensitive
   Smart
-} derive(Eq)
+}
 
 ///|
 priv enum ColorChoice {

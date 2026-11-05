@@ -1,10 +1,11 @@
 ///|
+#derive(FromJson)
 struct MetadataObservation {
   status : Int32
   stdout : String
   stderr : String
   unread : String
-} derive(FromJson)
+}
 
 ///|
 // A separate observer retains the inherited input descriptor after the command

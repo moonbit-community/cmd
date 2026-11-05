@@ -1,5 +1,6 @@
 ///|
 /// The kind of a look-around assertion.
+#derive(Debug, Eq, Hash)
 pub(all) enum Look {
   Start
   End
@@ -19,7 +20,7 @@ pub(all) enum Look {
   WordEndHalfAscii
   WordStartHalfUnicode
   WordEndHalfUnicode
-} derive(Debug, Eq, Hash)
+}
 
 ///|
 pub fn Look::as_bit(self : Look) -> UInt32 {
@@ -73,9 +74,10 @@ pub fn Look::reversed(self : Look) -> Look {
 
 ///|
 /// A set of look-around assertions represented as a bit set.
+#derive(Debug, Eq, Hash)
 pub(all) struct LookSet {
   bits : UInt32
-} derive(Debug, Eq, Hash)
+}
 
 ///|
 pub fn LookSet::empty() -> LookSet {

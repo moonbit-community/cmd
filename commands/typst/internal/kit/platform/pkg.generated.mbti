@@ -1,0 +1,143 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/typst/internal/kit/platform"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn absolutize(String) -> String
+
+pub fn arch() -> String
+
+pub fn args() -> Array[String]
+
+pub fn canonicalize(String) -> String raise IoError
+
+pub fn create_dir(String) -> Unit raise IoError
+
+pub fn create_dir_all(String) -> Unit raise IoError
+
+pub fn current_dir() -> String?
+
+pub fn env_var(String) -> String?
+
+pub fn exists(String) -> Bool
+
+pub fn exit(Int32) -> Unit
+
+pub fn file_name(String) -> String?
+
+pub fn flush_stderr() -> Unit
+
+pub fn flush_stdout() -> Unit
+
+pub fn is_absolute(String) -> Bool
+
+pub fn is_dir(String) -> Bool
+
+pub fn is_same_file(String, String) -> Bool raise IoError
+
+pub fn join(String, String) -> String
+
+pub fn knows_local_time_zone() -> Bool
+
+pub fn local_offset(Int64) -> Int32
+
+pub fn lstat_kind(String) -> FileKind raise IoError
+
+pub fn monotonic_nanos() -> Int64
+
+pub fn now_ms() -> Int64
+
+pub fn os() -> Os
+
+pub fn os_error(Int32) -> IoError
+
+pub fn parent(String) -> String?
+
+pub async fn print_stderr(String) -> Unit
+
+pub async fn print_stdout(String) -> Unit raise IoError
+
+pub fn raise_fd_limit() -> Unit
+
+pub fn read_dir(String) -> Array[String] raise IoError
+
+pub fn read_dir_entries(String) -> Array[DirEntry] raise IoError
+
+pub fn read_file(String) -> Bytes raise IoError
+
+pub async fn read_stdin() -> Bytes raise IoError
+
+pub fn rust_debug(IoError) -> String
+
+pub fn separator() -> String
+
+pub fn stat_kind(String) -> FileKind raise IoError
+
+pub fn stderr_is_terminal() -> Bool
+
+pub fn supports_binary_stdout() -> Bool
+
+pub fn supports_ranged_reads() -> Bool
+
+pub fn write_file(String, Bytes) -> Unit raise IoError
+
+pub async fn write_stdout(Bytes) -> Unit raise IoError
+
+pub async fn write_stdout_buffered(Bytes) -> Unit raise IoError
+
+// Errors
+#derive(@debug.Debug)
+pub(all) suberror IoError {
+  IoError(ErrorKind, String)
+}
+pub fn IoError::kind(Self) -> ErrorKind
+pub fn IoError::output(Self, &Logger) -> Unit
+pub fn IoError::to_string(Self) -> String
+pub impl Show for IoError
+
+// Types and methods
+pub(all) struct DirEntry {
+  name : String
+  kind : FileKind?
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum ErrorKind {
+  NotFound
+  PermissionDenied
+  AlreadyExists
+  IsADirectory
+  InvalidInput
+  Unsupported
+  Other
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum FileKind {
+  File
+  Dir
+  Symlink
+  Other
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum Os {
+  Linux
+  MacOs
+  Windows
+}
+
+pub struct RangedFile {
+  // private fields
+}
+pub fn RangedFile::close(Self) -> Unit
+pub fn RangedFile::open(String) -> Self raise IoError
+pub fn RangedFile::read(Self, Int64, Int32) -> Bytes raise IoError
+pub fn RangedFile::size(Self) -> Int64 raise IoError
+
+// Type aliases
+
+// Traits

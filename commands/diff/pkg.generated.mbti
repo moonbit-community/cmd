@@ -10,9 +10,11 @@ import {
 // Errors
 
 // Types and methods
-type Edit derive(Eq, @debug.Debug)
+#derive(Eq, @debug.Debug)
+type Edit
 
-type Line derive(Eq, Hash, @debug.Debug)
+#derive(Eq, Hash, @debug.Debug)
+type Line
 
 // Type aliases
 

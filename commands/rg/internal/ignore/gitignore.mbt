@@ -12,13 +12,14 @@
 ///
 /// This is used to report information about the highest precedent glob that
 /// matched in one or more gitignore files.
+#derive(Debug, Eq)
 pub struct GitignoreGlob {
   priv from : String?
   priv original : String
   priv mut actual : String
   priv mut is_whitelist : Bool
   priv mut is_only_dir : Bool
-} derive(Debug, Eq)
+}
 
 ///|
 /// Returns true if and only if this glob has a `**/` prefix.

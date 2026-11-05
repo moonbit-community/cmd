@@ -1,6 +1,7 @@
 ///|
 /// Runtime case selection and publication policy. This index contains no
 /// change-impact declarations or execution evidence requirements.
+#derive(FromJson, ToJson, Debug)
 pub(all) struct RegistryEntry {
   behavior_id : String
   command : String
@@ -11,14 +12,15 @@ pub(all) struct RegistryEntry {
   aliases : Array[String]
   platforms : Array[String]
   oracle_profile : String
-} derive(FromJson, ToJson, Debug)
+}
 
 ///|
+#derive(FromJson, ToJson, Debug)
 pub(all) struct Registry {
   schema : Int32
   entries : Array[RegistryEntry]
   release_commands : Array[ReleaseCommandMetadata]
-} derive(FromJson, ToJson, Debug)
+}
 
 ///|
 pub fn RegistryEntry::is_case(self : RegistryEntry) -> Bool {

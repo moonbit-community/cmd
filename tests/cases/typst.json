@@ -1,0 +1,427 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "typst-version",
+      "command": "typst",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "must remain unread",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "typst 0.1.0\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-version-short",
+      "command": "typst",
+      "args": [
+        "-V"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "typst 0.1.0\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-arithmetic",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "1 + 2 * 3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "7\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-input",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "--input",
+        "name=moon",
+        "sys.inputs.name"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "\"moon\"\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-pretty",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "--pretty",
+        "(answer: 42, ok: true)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "{\n  \"answer\": 42,\n  \"ok\": true\n}\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-yaml",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "--format=yaml",
+        "(answer: 42,)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "answer: 42\n\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-raw",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "--format=raw",
+        "\"hello\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "hello",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-jobs",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "--jobs=2",
+        "1 + 2 * 3"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "7\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-timestamp",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "--creation-timestamp=0",
+        "datetime.today().display(\"[year]-[month]-[day]\")"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "\"1970-01-01\"\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-stdin",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "--in=-",
+        "query(heading).map(it => it.body.text)"
+      ],
+      "stdin_text": "= Moon\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Moon\"]\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-eval-root-import",
+      "command": "typst",
+      "args": [
+        "eval",
+        "--ignore-system-fonts",
+        "--root=project",
+        "--in=project/main.typ",
+        "query(heading).map(it => it.body.text)"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "project/main.typ",
+          "content_text": "#include \"part.typ\"\n"
+        },
+        {
+          "path": "project/part.typ",
+          "content_text": "= Imported\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Imported\"]\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-query-heading",
+      "command": "typst",
+      "args": [
+        "query",
+        "--ignore-system-fonts",
+        "--field=level",
+        "--one",
+        "main.typ",
+        "heading"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "main.typ",
+          "content_text": "= Moon\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "warning: the `typst query` subcommand is deprecated\n = hint: use `typst eval 'query(heading).first().level' --in main.typ` instead\n\n",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-reject-completions",
+      "command": "typst",
+      "args": [
+        "completions",
+        "bash"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "error: generating shell completions is not supported by this build\n",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-reject-update",
+      "command": "typst",
+      "args": [
+        "update"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "error: self-updating is not enabled for this executable, please update with the package manager or mechanism used for initial installation\n",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-reject-timings",
+      "command": "typst",
+      "args": [
+        "compile",
+        "--ignore-system-fonts",
+        "--timings=trace.json",
+        "main.typ",
+        "out.pdf"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "main.typ",
+          "content_text": "Hello\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "error: performance timings (`--timings`) are not supported by this build\n",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-fonts-embedded",
+      "command": "typst",
+      "args": [
+        "fonts",
+        "--ignore-system-fonts"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "DejaVu Sans Mono\nLibertinus Serif\nNew Computer Modern\nNew Computer Modern Math\n",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-fonts-none",
+      "command": "typst",
+      "args": [
+        "fonts",
+        "--ignore-system-fonts",
+        "--ignore-embedded-fonts"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-compile-svg",
+      "command": "typst",
+      "args": [
+        "compile",
+        "--ignore-system-fonts",
+        "--format=svg",
+        "main.typ",
+        "-"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "main.typ",
+          "content_text": "#set page(width: 20pt, height: 10pt, margin: 0pt)\n#rect(width: 20pt, height: 10pt, fill: black, stroke: none)\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "<svg viewBox=\"0 0 20 10\" width=\"20pt\" height=\"10pt\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:h5=\"http://www.w3.org/1999/xhtml\"><path fill=\"#ffffff\" fill-rule=\"nonzero\" d=\"M 0 0v 10h 20v -10Z \"/><path fill=\"#000000\" fill-rule=\"nonzero\" d=\"M 0 0v 10h 20v -10Z \"/></svg>",
+      "expected_stderr_text": "",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-reject-watch-server",
+      "command": "typst",
+      "args": [
+        "watch",
+        "--format=html",
+        "--features=html",
+        "main.typ",
+        "out.html"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "error: the built-in HTTP server for HTML export is not supported by this build; pass `--no-serve`\n",
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-artifacts",
+      "command": "typst",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "oracle": false,
+      "timeout_ms": 120000
+    },
+    {
+      "id": "typst-watch",
+      "command": "typst",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "oracle": false,
+      "timeout_ms": 120000
+    }
+  ]
+}

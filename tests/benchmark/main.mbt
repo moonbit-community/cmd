@@ -1,4 +1,5 @@
 ///|
+#derive(ToJson)
 priv struct ProfileObservation {
   program : String
   args : Array[String]
@@ -6,9 +7,10 @@ priv struct ProfileObservation {
   stdout : String
   stderr : String
   error : String?
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct TrialRecord {
   phase : String
   pair : Int32
@@ -20,7 +22,7 @@ priv struct TrialRecord {
   stdout_path : String
   stderr_path : String
   stdout_bytes : Int64?
-} derive(ToJson)
+}
 
 ///|
 async fn write_json(path : String, value : Json) -> Unit {

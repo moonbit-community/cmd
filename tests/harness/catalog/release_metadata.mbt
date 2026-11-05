@@ -1,6 +1,7 @@
 ///|
 /// Release support and case selection. Candidate package versions are read
 /// separately from current moon.mod files.
+#derive(FromJson, ToJson, Debug)
 pub(all) struct ReleaseCommandMetadata {
   name : String
   package_name : String
@@ -9,7 +10,7 @@ pub(all) struct ReleaseCommandMetadata {
   policy_sensitive : Bool
   releasable : Bool
   case_ids : Array[String]?
-} derive(FromJson, ToJson, Debug)
+}
 
 ///|
 fn validate_release_commands(registry : Registry) -> Array[String] {

@@ -20,6 +20,7 @@ fn from_async_error(error : Error) -> IgnoreError {
 ///
 /// This is a port of Rust's `ignore::Error`. Its `to_string()` rendering is
 /// identical to the Rust `Display` implementation.
+#derive(Debug)
 pub(all) suberror IgnoreError {
   /// A collection of "soft" errors. These occur when adding an ignore
   /// file partially succeeded.
@@ -44,7 +45,7 @@ pub(all) suberror IgnoreError {
   UnrecognizedFileType(String)
   /// A user specified file type definition could not be parsed.
   InvalidDefinition
-} derive(Debug)
+}
 
 ///|
 /// Returns true if this error is exclusively an I/O error.
@@ -201,6 +202,7 @@ fn PartialErrorBuilder::into_error_option(
 /// information about a particular match. For example, it might identify
 /// the specific gitignore file and the specific glob pattern that caused
 /// the match.
+#derive(Debug)
 pub(all) enum Match[T] {
   /// The path didn't match any glob.
   None
@@ -210,7 +212,7 @@ pub(all) enum Match[T] {
   /// The highest precedent glob matched indicates the path should be
   /// whitelisted.
   Whitelist(T)
-} derive(Debug)
+}
 
 ///|
 /// Returns true if the match result didn't match any globs.

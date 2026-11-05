@@ -1,0 +1,29 @@
+import {
+  "moonbitlang/typst/syntax",
+  "moonbitlang/typst/library",
+  "moonbitlang/typst/eval",
+  "moonbitlang/typst/typst",
+  "moonbitlang/typst/layout",
+  "moonbitlang/typst/html",
+  "moonbitlang/typst/svg",
+  "moonbitlang/typst/render",
+  "moonbitlang/typst/pdf",
+  "moonbitlang/typst/bundle",
+  "moonbitlang/typst/data/serde",
+  "moonbitlang/typst/data/json" @tjson,
+  "moonbitlang/typst/data/yaml",
+  "cli/typst/internal/kit",
+  "cli/typst/internal/kit/platform",
+  "cli/typst/internal/kit/watcher",
+  "moonbitlang/core/encoding/utf8",
+}
+
+supported_targets = "wasm"
+
+import {
+  "moonbitlang/core/env",
+  "moonbitlang/core/debug",
+  "moonbitlang/pdflite" @pdf_read,
+  "moonbitlang/async",
+  "moonbitlang/async/fs" @test_fs,
+} for "wbtest"

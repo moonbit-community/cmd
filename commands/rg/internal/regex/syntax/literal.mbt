@@ -1,10 +1,11 @@
 ///|
 /// A single literal extracted from an HIR, which may be exact (the literal
 /// is a complete match) or inexact (only a prefix of a match).
+#derive(Debug, Eq, Compare)
 pub(all) struct Lit {
   bytes : Bytes
   exact : Bool
-} derive(Debug, Eq, Compare)
+}
 
 ///|
 pub fn Lit::exact(bytes : Bytes) -> Lit {
@@ -43,9 +44,10 @@ fn Lit::keep_last(self : Lit, len : Int32) -> Lit {
 ///|
 /// A sequence of literals. `None` represents the infinite sequence (i.e.
 /// every possible literal).
+#derive(Debug, Eq)
 pub(all) struct Seq {
   mut lits : Array[Lit]?
-} derive(Debug, Eq)
+}
 
 ///|
 pub fn Seq::empty() -> Seq {

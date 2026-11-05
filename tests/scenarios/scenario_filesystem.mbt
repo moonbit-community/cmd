@@ -1,10 +1,11 @@
 ///|
+#derive(ToJson)
 priv struct ScenarioTimestampObservation {
   before_atime : String
   after_atime : String
   before_mtime : String
   after_mtime : String
-} derive(ToJson)
+}
 
 ///|
 fn scenario_timestamp_text(value : (Int64, Int32)) -> String {

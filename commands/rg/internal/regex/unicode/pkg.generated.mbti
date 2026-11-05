@@ -25,10 +25,11 @@ pub fn perl_word() -> Array[(Int32, Int32)]
 pub fn simple_fold(Int32) -> Array[Int32]
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror UnicodeError {
   PropertyNotFound
   PropertyValueNotFound
-} derive(Eq, @debug.Debug)
+}
 
 // Types and methods
 pub(all) enum ClassQuery {

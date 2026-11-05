@@ -1,9 +1,10 @@
 ///|
 /// An error produced by ripgrep's core. The message is fully rendered,
 /// including any context chain (like anyhow's `{:#}` formatting).
+#derive(Debug)
 pub suberror RgError {
   RgError(String)
-} derive(Debug)
+}
 
 ///|
 fn RgError::message(self : RgError) -> String {

@@ -1,0 +1,243 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/typst/internal/kit"
+
+import {
+  "cli/typst/internal/kit/platform",
+  "moonbitlang/core/debug",
+  "moonbitlang/typst/library",
+  "moonbitlang/typst/syntax",
+}
+
+// Values
+pub fn cache_dir() -> String?
+
+pub fn data_dir() -> String?
+
+pub fn embedded() -> Array[(FontSource, @library.FontInfo)]
+
+pub fn emit(ColorWriter, Config, &Files, Diagnostic) -> Unit raise FilesError
+
+pub fn emit_diagnostics(ColorWriter, &DiagnosticWorld, Array[@library.SourceDiagnostic], DiagnosticFormat) -> Unit raise FilesError
+
+pub fn env_allows_color() -> Bool
+
+pub fn file_error_from_io(@platform.IoError, String) -> @library.FileError
+
+pub fn home_dir() -> String?
+
+pub fn rust_trim(String) -> String
+
+pub async fn scan(String) -> Array[(FontSource, @library.FontInfo)]
+
+pub async fn system() -> Array[(FontSource, @library.FontInfo)]
+
+pub let universe_namespace : String
+
+// Errors
+pub(all) suberror FilesError {
+  FileMissing
+  IndexTooLarge(Int32, Int32)
+  LineTooLarge(Int32, Int32)
+  ColumnTooLarge(Int32, Int32)
+  InvalidCharBoundary(Int32)
+  Io(String)
+}
+pub fn FilesError::output(Self, &Logger) -> Unit
+pub fn FilesError::to_string(Self) -> String
+pub impl Show for FilesError
+
+pub(all) suberror StrError {
+  StrError(String)
+}
+pub fn StrError::output(Self, &Logger) -> Unit
+pub fn StrError::to_string(Self) -> String
+pub impl Show for StrError
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub(all) enum Color {
+  Black
+  Blue
+  Green
+  Red
+  Cyan
+  Magenta
+  Yellow
+  White
+  Ansi256(Int32)
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) struct ColorSpec {
+  fg : Color?
+  bold : Bool
+  intense : Bool
+  underline : Bool
+  dimmed : Bool
+  reset : Bool
+}
+pub fn ColorSpec::new() -> Self
+pub fn ColorSpec::with_bold(Self) -> Self
+pub fn ColorSpec::with_dimmed(Self) -> Self
+pub fn ColorSpec::with_fg(Self, Color) -> Self
+pub fn ColorSpec::with_intense(Self) -> Self
+pub fn ColorSpec::with_underline(Self) -> Self
+
+pub struct ColorWriter {
+  // private fields
+}
+pub fn ColorWriter::contents(Self) -> String
+pub fn ColorWriter::new(Bool) -> Self
+pub fn ColorWriter::reset(Self) -> Unit
+pub fn ColorWriter::set_color(Self, ColorSpec) -> Unit
+pub fn ColorWriter::supports_color(Self) -> Bool
+pub fn ColorWriter::take(Self) -> String
+pub fn ColorWriter::write(Self, String) -> Unit
+pub fn ColorWriter::write_char(Self, Char) -> Unit
+pub fn ColorWriter::writeln(Self, String) -> Unit
+
+pub(all) struct Config {
+  display_style : DisplayStyle
+  tab_width : Int32
+  start_context_lines : Int32
+  end_context_lines : Int32
+}
+pub fn Config::default() -> Self
+
+pub(all) struct Diagnostic {
+  severity : Severity
+  message : String
+  labels : Array[Label]
+  notes : Array[String]
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum DiagnosticFormat {
+  Human
+  Short
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum DisplayStyle {
+  Rich
+  Short
+}
+
+pub struct FileStore[L] {
+  // private fields
+}
+pub fn[L] FileStore::dependencies(Self[L]) -> Array[@syntax.FileId]
+pub fn[L : FileLoader] FileStore::file(Self[L], @syntax.FileId) -> Bytes raise @library.FileError
+pub fn[L] FileStore::loader(Self[L]) -> L
+pub fn[L] FileStore::new(L) -> Self[L]
+pub fn[L] FileStore::reset(Self[L]) -> Unit
+pub fn[L : FileLoader] FileStore::source(Self[L], @syntax.FileId) -> @syntax.Source raise @library.FileError
+
+pub(all) enum FontSource {
+  Loaded(@library.Font)
+  Path(path~ : String, index~ : UInt32)
+}
+pub fn FontSource::load(Self) -> @library.Font?
+
+pub struct FontStore {
+  // private fields
+}
+pub fn FontStore::book(Self) -> @library.FontBook
+pub fn FontStore::extend_all(Self, Array[(FontSource, @library.FontInfo)]) -> Unit
+pub fn FontStore::font(Self, Int32) -> @library.Font?
+pub fn FontStore::len(Self) -> Int32
+pub fn FontStore::new() -> Self
+pub fn FontStore::push(Self, (FontSource, @library.FontInfo)) -> Unit
+pub fn FontStore::source(Self, Int32) -> FontSource?
+
+#derive(Eq, @debug.Debug)
+pub(all) struct FsPackages(String)
+pub fn FsPackages::latest_version(Self, @syntax.VersionlessPackageSpec) -> @syntax.PackageVersion?
+pub fn FsPackages::new(String) -> Self
+pub fn FsPackages::obtain(Self, @syntax.PackageSpec) -> FsRoot?
+pub fn FsPackages::path(Self) -> String
+pub fn FsPackages::system_cache() -> Self?
+pub fn FsPackages::system_data() -> Self?
+
+#derive(Eq, Hash, @debug.Debug)
+pub(all) struct FsRoot(String)
+pub fn FsRoot::load(Self, @syntax.VirtualPath) -> Bytes raise @library.FileError
+pub fn FsRoot::new(String) -> Self
+pub fn FsRoot::path(Self) -> String
+pub fn FsRoot::resolve(Self, @syntax.VirtualPath) -> String raise @library.FileError
+
+pub(all) struct Label {
+  style : LabelStyle
+  file_id : @syntax.FileId
+  start : Int32
+  end : Int32
+  message : String
+}
+pub fn Label::primary(@syntax.FileId, Int32, Int32) -> Self
+pub fn Label::secondary(@syntax.FileId, Int32, Int32) -> Self
+pub fn Label::with_message(Self, String) -> Self
+
+#derive(Eq, @debug.Debug)
+pub(all) enum LabelStyle {
+  Primary
+  Secondary
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum Severity {
+  Bug
+  Error
+  Warning
+  Note
+  Help
+}
+
+pub struct SystemPackages {
+  // private fields
+}
+pub fn SystemPackages::cache(Self) -> FsPackages?
+pub fn SystemPackages::data(Self) -> FsPackages?
+pub fn SystemPackages::from_parts(FsPackages?, FsPackages?) -> Self
+pub fn SystemPackages::latest_version(Self, @syntax.VersionlessPackageSpec) -> @syntax.PackageVersion raise StrError
+pub fn SystemPackages::new() -> Self
+pub fn SystemPackages::obtain(Self, @syntax.PackageSpec) -> FsRoot raise @library.PackageError
+
+pub struct Time {
+  // private fields
+}
+pub fn Time::fixed_timestamp(Int64) -> Self raise StrError
+pub fn Time::reset(Self) -> Unit
+pub fn Time::system() -> Self
+pub fn Time::today(Self, @library.Duration?) -> @library.Datetime?
+
+#derive(Eq, @debug.Debug)
+pub(all) struct UtcDateTime {
+  year : Int32
+  month : Int32
+  day : Int32
+  hour : Int32
+  minute : Int32
+  second : Int32
+}
+pub fn UtcDateTime::from_timestamp(Int64) -> Self?
+pub fn UtcDateTime::now() -> Self
+
+// Type aliases
+
+// Traits
+pub(open) trait DiagnosticWorld : @library.World {
+  fn name(Self, @syntax.FileId) -> String
+}
+
+pub(open) trait FileLoader {
+  fn load(Self, @syntax.FileId) -> Bytes raise @library.FileError
+}
+
+pub(open) trait Files {
+  fn name(Self, @syntax.FileId) -> String raise FilesError
+  fn lines(Self, @syntax.FileId) -> @syntax.Lines raise FilesError
+  fn line_index(Self, @syntax.FileId, Int32) -> Int32 raise FilesError
+  fn line_number(Self, @syntax.FileId, Int32) -> Int32 raise FilesError = _
+  fn column_number(Self, @syntax.FileId, Int32, Int32) -> Int32 raise FilesError
+  fn line_range(Self, @syntax.FileId, Int32) -> (Int32, Int32) raise FilesError
+}

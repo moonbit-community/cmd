@@ -1,9 +1,10 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum CompatibilityTier {
   Core
   Extended
   Restricted
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend CompatibilityTier with Eq::{equal, not_equal}
@@ -12,21 +13,24 @@ pub extend CompatibilityTier with Eq::{equal, not_equal}
 pub extend CompatibilityTier with @debug.Debug::{to_repr}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum InputMode {
   NoInput
   OptionalStdin
   FileOrStdin
   StructuredInput
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum OutputMode {
   ByteStream
   LineStream
   StructuredOutput
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum Capability {
   FileRead
   FileWrite
@@ -35,7 +39,7 @@ pub(all) enum Capability {
   PermissionMutation
   SymbolicLink
   ProcessGroupCancellation
-} derive(Eq, Debug)
+}
 
 ///|
 pub(all) struct CommandContract {

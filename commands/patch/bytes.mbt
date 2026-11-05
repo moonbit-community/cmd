@@ -2,10 +2,11 @@
 // Strategy: patch-byte-records
 
 ///|
+#derive(Eq)
 priv struct RawLine {
   value : BytesView
   terminated : Bool
-} derive(Eq)
+}
 
 ///|
 fn raw_lines(data : Bytes) -> Array[RawLine] {

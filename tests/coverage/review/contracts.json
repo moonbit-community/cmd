@@ -5685,6 +5685,210 @@
       "activation": "A real environment proxy receives one CONNECT in the control; --no-proxy must leave the same proxy count at zero while the origin still receives exactly one request and emits exact hello.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
+    },
+    {
+      "command": "typst",
+      "claim": "input",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-eval-input"
+      ],
+      "activation": "An explicit name=moon input evaluates sys.inputs.name to the exact string moon."
+    },
+    {
+      "command": "typst",
+      "claim": "format",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-eval-arithmetic",
+        "typst-eval-yaml",
+        "typst-eval-raw",
+        "typst-compile-svg"
+      ],
+      "activation": "JSON, YAML and raw evaluation produce distinct exact serializations; SVG stdout has two specified rectangular paths, viewport and fills."
+    },
+    {
+      "command": "typst",
+      "claim": "root",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-eval-root-import"
+      ],
+      "activation": "A main file under the specified project root includes a sibling source; querying its heading returns Imported."
+    },
+    {
+      "command": "typst",
+      "claim": "creation-timestamp",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-eval-timestamp"
+      ],
+      "activation": "Epoch zero fixes datetime.today to the independently specified 1970-01-01 date."
+    },
+    {
+      "command": "typst",
+      "claim": "pretty",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-eval-pretty"
+      ],
+      "activation": "The explicit dictionary is serialized with independently specified indentation, line breaks and values."
+    },
+    {
+      "command": "typst",
+      "claim": "jobs",
+      "kind": "accepted-no-op",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-eval-arithmetic",
+        "typst-eval-jobs"
+      ],
+      "activation": "The documented accepted no-op preserves the arithmetic result with an explicit worker count of two; no parallelism claim."
+    },
+    {
+      "command": "typst",
+      "claim": "in",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-eval-stdin",
+        "typst-eval-root-import"
+      ],
+      "activation": "Document context comes from either stdin or a file with an include; introspection returns their distinct expected headings."
+    },
+    {
+      "command": "typst",
+      "claim": "field",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-query-heading"
+      ],
+      "activation": "Selecting heading.level emits the integer 1 instead of the complete element object."
+    },
+    {
+      "command": "typst",
+      "claim": "one",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-query-heading"
+      ],
+      "activation": "Exactly one matched heading emits the scalar level instead of an array."
+    },
+    {
+      "command": "typst",
+      "claim": "ignore-system-fonts",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-fonts-embedded"
+      ],
+      "activation": "With system discovery disabled, the fixed embedded set is exactly four specified families; no host font enumeration claim."
+    },
+    {
+      "command": "typst",
+      "claim": "ignore-embedded-fonts",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-fonts-embedded",
+        "typst-fonts-none"
+      ],
+      "activation": "With system fonts disabled in both cases, disabling embedded fonts changes the four-family listing to empty."
+    },
+    {
+      "command": "typst",
+      "claim": "timings",
+      "kind": "explicit-rejection-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-reject-timings"
+      ],
+      "activation": "Performance trace generation rejects with an exact diagnostic and status before compilation."
+    },
+    {
+      "command": "typst",
+      "claim": "update",
+      "kind": "explicit-rejection-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-reject-update"
+      ],
+      "activation": "Self-update rejects with the exact package-manager diagnostic and status1."
+    },
+    {
+      "command": "typst",
+      "claim": "completions",
+      "kind": "explicit-rejection-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-reject-completions"
+      ],
+      "activation": "Completion generation rejects with an exact diagnostic and status1."
+    },
+    {
+      "command": "typst",
+      "claim": "no-serve",
+      "kind": "explicit-rejection-boundary",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-reject-watch-server"
+      ],
+      "activation": "The default HTML watch HTTP server is an explicit rejection boundary. This assertion does not establish serving or HTML watch rendering."
+    },
+    {
+      "command": "typst",
+      "claim": "pages",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "activation": "A two-page input exports only page 2 to the templated SVG path; page 1 is absent and page 2 matches the independently reviewed rectangle SVG.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/exports"
+          ]
+        }
+      ]
+    },
+    {
+      "command": "typst",
+      "claim": "ppi",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "activation": "PNG IHDR dimensions change from 20x10 at 72ppi to 40x20 at 144ppi for a 20x10pt page.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/exports"
+          ]
+        }
+      ]
+    },
+    {
+      "command": "typst",
+      "claim": "deps",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "activation": "JSON dependencies identify main.typ and out.pdf exactly, alongside verified output creation and preserved source.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/exports"
+          ]
+        }
+      ]
     }
   ],
   "features": [
@@ -5774,6 +5978,56 @@
         }
       ],
       "activation": "A bounded live consumer observes two exact repeated default y records and two operand-joined records, then closes stdout. The actual Wasm child must exit0 with empty stderr within five seconds without test cancellation; hanging producers fail and are cleaned up."
+    },
+    {
+      "command": "typst",
+      "claim": "compile-export",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [
+        "typst-compile-svg"
+      ],
+      "activation": "The command compiles the specified rectangle into exact SVG paths; fixed-time PDF stdout equals file bytes, PNG dimensions and page selection are checked. Package tests separately parse the two-page PDF page tree. This is finite format/transport evidence, not full visual or upstream parity.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/exports"
+          ]
+        }
+      ]
+    },
+    {
+      "command": "typst",
+      "claim": "watch-recompile",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "activation": "After the initial exact black rectangle, source mutation produces the exact red rectangle; the owned watcher child is cancelled and awaited. Repeated writes avoid assuming watcher registration timing. No latency or symlink target replacement claim.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-watch",
+          "assertions": [
+            "typst/watch"
+          ]
+        }
+      ]
+    },
+    {
+      "command": "typst",
+      "claim": "output-failure",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "activation": "A raw binary evaluation writes to a pipe with no consumer; it must exit1, report the output-write failure, and be awaited. The assertion checks the portable failure cause, not platform-specific full error wording.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/output-failure"
+          ]
+        }
+      ]
     }
   ],
   "boundary_dispositions": [

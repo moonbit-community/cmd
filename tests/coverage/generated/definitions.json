@@ -2,8 +2,9 @@
   "schema": 1,
   "profile": "finite independently reviewed current contract definitions; execution must be joined separately",
   "full_semantic_exhaustiveness": false,
-  "catalog_claims": 858,
+  "catalog_claims": 878,
   "commands": [
+    "typst",
     "base32",
     "cksum",
     "base64",
@@ -86,6 +87,451 @@
     "xargs"
   ],
   "obligations": [
+    {
+      "claim_id": "typst:input",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-eval-input"
+      ],
+      "activation": "An explicit name=moon input evaluates sys.inputs.name to the exact string moon.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:format",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-eval-arithmetic",
+        "typst-eval-yaml",
+        "typst-eval-raw",
+        "typst-compile-svg"
+      ],
+      "activation": "JSON, YAML and raw evaluation produce distinct exact serializations; SVG stdout has two specified rectangular paths, viewport and fills.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:root",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-eval-root-import"
+      ],
+      "activation": "A main file under the specified project root includes a sibling source; querying its heading returns Imported.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:creation-timestamp",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-eval-timestamp"
+      ],
+      "activation": "Epoch zero fixes datetime.today to the independently specified 1970-01-01 date.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:pretty",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-eval-pretty"
+      ],
+      "activation": "The explicit dictionary is serialized with independently specified indentation, line breaks and values.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:jobs",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-eval-arithmetic",
+        "typst-eval-jobs"
+      ],
+      "activation": "The documented accepted no-op preserves the arithmetic result with an explicit worker count of two; no parallelism claim.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: accepted-no-op. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:in",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-eval-stdin",
+        "typst-eval-root-import"
+      ],
+      "activation": "Document context comes from either stdin or a file with an include; introspection returns their distinct expected headings.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:field",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-query-heading"
+      ],
+      "activation": "Selecting heading.level emits the integer 1 instead of the complete element object.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:one",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-query-heading"
+      ],
+      "activation": "Exactly one matched heading emits the scalar level instead of an array.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:ignore-system-fonts",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-fonts-embedded"
+      ],
+      "activation": "With system discovery disabled, the fixed embedded set is exactly four specified families; no host font enumeration claim.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:ignore-embedded-fonts",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-fonts-embedded",
+        "typst-fonts-none"
+      ],
+      "activation": "With system fonts disabled in both cases, disabling embedded fonts changes the four-family listing to empty.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:pages",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "A two-page input exports only page 2 to the templated SVG path; page 1 is absent and page 2 matches the independently reviewed rectangle SVG.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/exports"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:ppi",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "PNG IHDR dimensions change from 20x10 at 72ppi to 40x20 at 144ppi for a 20x10pt page.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/exports"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:deps",
+      "command": "typst",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "JSON dependencies identify main.typ and out.pdf exactly, alongside verified output creation and preserved source.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/exports"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:no-serve",
+      "command": "typst",
+      "feature": false,
+      "kind": "boundary",
+      "reviewed": true,
+      "case_ids": [
+        "typst-reject-watch-server"
+      ],
+      "activation": "The default HTML watch HTTP server is an explicit rejection boundary. This assertion does not establish serving or HTML watch rendering.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: explicit-rejection-boundary. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:timings",
+      "command": "typst",
+      "feature": false,
+      "kind": "boundary",
+      "reviewed": true,
+      "case_ids": [
+        "typst-reject-timings"
+      ],
+      "activation": "Performance trace generation rejects with an exact diagnostic and status before compilation.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: explicit-rejection-boundary. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:update",
+      "command": "typst",
+      "feature": false,
+      "kind": "boundary",
+      "reviewed": true,
+      "case_ids": [
+        "typst-reject-update"
+      ],
+      "activation": "Self-update rejects with the exact package-manager diagnostic and status1.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: explicit-rejection-boundary. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:completions",
+      "command": "typst",
+      "feature": false,
+      "kind": "boundary",
+      "reviewed": true,
+      "case_ids": [
+        "typst-reject-completions"
+      ],
+      "activation": "Completion generation rejects with an exact diagnostic and status1.",
+      "scenario_bindings": [],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: explicit-rejection-boundary. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:help",
+      "command": "typst",
+      "kind": "metadata",
+      "reviewed": true,
+      "case_ids": [
+        "metadata:typst"
+      ],
+      "activation": "Shared typed observer checks exact standalone metadata, status0, empty stderr and final LF; after child completion a nonempty inherited stdin marker must remain unread.",
+      "scope": "standalone workspace metadata only; published coordinates use independent frozen expectations",
+      "remaining_facets": [
+        "metadata combinations and ordinary operands"
+      ]
+    },
+    {
+      "claim_id": "typst:version",
+      "command": "typst",
+      "kind": "metadata",
+      "reviewed": true,
+      "case_ids": [
+        "metadata:typst"
+      ],
+      "activation": "Shared typed observer checks exact standalone metadata, status0, empty stderr and final LF; after child completion a nonempty inherited stdin marker must remain unread.",
+      "scope": "standalone workspace metadata only; published coordinates use independent frozen expectations",
+      "remaining_facets": [
+        "metadata combinations and ordinary operands"
+      ]
+    },
     {
       "claim_id": "base32:decode",
       "command": "base32",
@@ -19103,6 +19549,89 @@
       ],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: stream-lifecycle-operation. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:feature/compile-export",
+      "command": "typst",
+      "feature": true,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [
+        "typst-compile-svg"
+      ],
+      "activation": "The command compiles the specified rectangle into exact SVG paths; fixed-time PDF stdout equals file bytes, PNG dimensions and page selection are checked. Package tests separately parse the two-page PDF page tree. This is finite format/transport evidence, not full visual or upstream parity.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/exports"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-operation. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:feature/watch-recompile",
+      "command": "typst",
+      "feature": true,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "After the initial exact black rectangle, source mutation produces the exact red rectangle; the owned watcher child is cancelled and awaited. Repeated writes avoid assuming watcher registration timing. No latency or symlink target replacement claim.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-watch",
+          "assertions": [
+            "typst/watch"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-operation. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "typst:feature/output-failure",
+      "command": "typst",
+      "feature": true,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "A raw binary evaluation writes to a pipe with no consumer; it must exit1, report the output-write failure, and be awaited. The assertion checks the portable failure cause, not platform-specific full error wording.",
+      "scenario_bindings": [
+        {
+          "case_id": "typst-artifacts",
+          "assertions": [
+            "typst/output-failure"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-operation. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
       "remaining_facets": [
         "other spellings, boundaries, interactions and error ordering",
         "resource and lifecycle effects not asserted by these cases"

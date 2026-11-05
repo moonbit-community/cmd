@@ -1,18 +1,33 @@
 ///|
 test "published selection rejects mutable versions and incomplete inventories" {
   let selection : PublishedSelection = {
+    candidate: Some(false),
     base_manifest: "latest-cases.json",
     commands: [{ name: "cat", package_name: "cli/cat", version: "0.2.2", }],
     case_ids: ["cat-case"],
     extra_cases: [],
   }
   assert_eq(published_coordinates(selection)["cat"], "cli/cat@0.2.2")
+  assert_eq(
+    published_coordinates({
+      ..selection,
+      candidate: Some(true),
+      base_manifest: "../cases/manifest.json",
+    })["cat"],
+    "cli/cat@0.2.2",
+  )
   for
     invalid in [
       { ..selection, commands: [], },
       { ..selection, case_ids: [], },
       { ..selection, case_ids: ["cat-case", "cat-case"], },
       { ..selection, base_manifest: "../active-cases.json", },
+      { ..selection, base_manifest: "../cases/manifest.json", },
+      {
+        ..selection,
+        candidate: Some(true),
+        base_manifest: "../../cases/manifest.json",
+      },
       { ..selection, extra_cases: [{}], },
       { ..selection, commands: [selection.commands[0], selection.commands[0]], },
       {

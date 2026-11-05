@@ -9,10 +9,11 @@ import {
 // Values
 
 // Errors
+#derive(@debug.Debug)
 pub suberror RegexError {
   Syntax(@syntax.SyntaxError)
   TooBig(Int32)
-} derive(@debug.Debug)
+}
 pub fn RegexError::to_string(Self) -> String
 pub impl Show for RegexError
 

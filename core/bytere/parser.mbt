@@ -1,4 +1,5 @@
 ///|
+#derive(Eq, Hash)
 priv enum Assertion {
   Begin
   End
@@ -8,7 +9,7 @@ priv enum Assertion {
   WordEnd
   WordBoundary
   NotWordBoundary
-} derive(Eq, Hash)
+}
 
 ///|
 priv enum Tree {

@@ -17,12 +17,14 @@ pub let rg_version : String
 pub async fn run_main(Array[String]) -> Int32
 
 // Errors
+#derive(@debug.Debug)
 pub suberror RgError {
   RgError(String)
-} derive(@debug.Debug)
+}
 pub impl Show for RgError
 
 // Types and methods
+#derive(Compare, Eq, @debug.Debug)
 pub(all) enum Category {
   Input
   Search
@@ -32,15 +34,16 @@ pub(all) enum Category {
   Indexing
   Logging
   OtherBehaviors
-} derive(Compare, Eq, @debug.Debug)
+}
 
+#derive(Eq, @debug.Debug)
 pub(all) enum CompletionType {
   Other
   Filename
   Executable
   Filetype
   Encoding
-} derive(Eq, @debug.Debug)
+}
 
 pub(all) struct FlagDef {
   is_switch : Bool
@@ -56,10 +59,11 @@ pub(all) struct FlagDef {
   completion_type : CompletionType
 }
 
+#derive(Eq, @debug.Debug)
 pub(all) enum FlagValue {
   Switch(Bool)
   Value(String)
-} derive(Eq, @debug.Debug)
+}
 
 pub struct Haystack {
   // private fields

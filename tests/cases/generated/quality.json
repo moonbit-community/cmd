@@ -2,9 +2,9 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2306,
+    "exact-local": 2325,
     "finite-diagnostic": 84,
-    "typed-scenario": 32,
+    "typed-scenario": 34,
     "typed-dynamic-output": 10
   },
   "definitions": [
@@ -19661,6 +19661,224 @@
       "required_work": ""
     },
     {
+      "case_id": "typst-version",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "59f1751494f5ab603cf9a09f9fd2d75832b54e67e24bc1e9370406f8b33a257c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-version-short",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "09954ddf29974b3654414e4815fa02d694b2b96b537e656da30452c87b6d3b80",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-arithmetic",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "6d8db44ba224d8811b31ee00c099a949285d32f6981e18dc23092b0ddf7f3f95",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-input",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "12d8d3070b9ce4c294b9aaac388a03ce9fe6a3978e64e18cf13315a3f6b2c353",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-pretty",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "69f57244fbb886d4fb068aeceffca4971aea3bff5184823e60cd5b642ad5de3f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-yaml",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "4468d42a8e2969238d8b2977bfe182cf357e3e6e33a99f966e9c479fa03b4256",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-raw",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "d649d21f92f04beec1ccd96c8e370bfd3d26a53381162ff1edfac30e45660c3f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-jobs",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "053cc69f6786136c9dde004ce736c9f12e05d7fd5fcb3a78ed423fe2046fe318",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-timestamp",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "862c95a9ff6051a43eb3ea5313c5cbf7ac60eef16d32f6fe03c34b8f7de49985",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-stdin",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "97d796589d5e898d98286ded353e4a667e01dd9c4ab9424661a0f2ec228a8f42",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-eval-root-import",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "ade0479d98cc571f7003217e06b661acc3a79404258796e9611962fbbbbb5390",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-query-heading",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "cb8639cc1ba7dc3bfbeb9e88dc041216e0ba6da4d1e739cdff684da374112b58",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-reject-completions",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "018186aedacdd4c06bf67ac76cb24f30899eef6bc7385b63feb9e80d095a81ce",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-reject-update",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "873b31e50e0c4c33a0d2a69169ff4db503db899805c3871d03acfeca8c9f3de6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-reject-timings",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "ca7303caf330cd6c11e10005b06fd7e53dce4bfb9544caeea9de992d0079ef73",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-fonts-embedded",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "7737d44e0038882dc57bbda56266b762e32f93453e2a559f9d765ab736e1c8e3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-fonts-none",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "033803efe87a69a00190a25c8da18eb966a80619c8b7b352295c7800cbdc2718",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-compile-svg",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "ec6e1ab3c094e29a65bbbb9b03e03a9932992e3307ab7a1da6e7cf97df687a59",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-reject-watch-server",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "f2f0d36f6296c5ba6ec01e76c17781b55ea89c5e35ff7f6f0241364237831220",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "typst-artifacts",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "9365747a2669268692a6cc41b5b91d9bd8712b353bd796c265f501c816133354",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:typst-artifacts"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "typst-watch",
+      "source": "tests/cases/typst.json",
+      "definition_sha256": "b469244c3694d640b2f2c7751aae237a8d177e89f1dfb28800d6bdc8e7788216",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:typst-watch"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "p2-which-direct",
       "source": "tests/cases/which.json",
       "definition_sha256": "55be6ea0d8287582c073cf0099d2990f309043fe479f904fd65e1ad602befe6d",
@@ -30676,6 +30894,77 @@
     },
     "coverage-touch-create-then-boundary": {
       "kind": "exact"
+    },
+    "typst-version": {
+      "kind": "exact"
+    },
+    "typst-version-short": {
+      "kind": "exact"
+    },
+    "typst-eval-arithmetic": {
+      "kind": "exact"
+    },
+    "typst-eval-input": {
+      "kind": "exact"
+    },
+    "typst-eval-pretty": {
+      "kind": "exact"
+    },
+    "typst-eval-yaml": {
+      "kind": "exact"
+    },
+    "typst-eval-raw": {
+      "kind": "exact"
+    },
+    "typst-eval-jobs": {
+      "kind": "exact"
+    },
+    "typst-eval-timestamp": {
+      "kind": "exact"
+    },
+    "typst-eval-stdin": {
+      "kind": "exact"
+    },
+    "typst-eval-root-import": {
+      "kind": "exact"
+    },
+    "typst-query-heading": {
+      "kind": "exact"
+    },
+    "typst-reject-completions": {
+      "kind": "exact"
+    },
+    "typst-reject-update": {
+      "kind": "exact"
+    },
+    "typst-reject-timings": {
+      "kind": "exact"
+    },
+    "typst-fonts-embedded": {
+      "kind": "exact"
+    },
+    "typst-fonts-none": {
+      "kind": "exact"
+    },
+    "typst-compile-svg": {
+      "kind": "exact"
+    },
+    "typst-reject-watch-server": {
+      "kind": "exact"
+    },
+    "typst-artifacts": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:typst-artifacts"
+      ]
+    },
+    "typst-watch": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:typst-watch"
+      ]
     },
     "p2-which-direct": {
       "kind": "exact"

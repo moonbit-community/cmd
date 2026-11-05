@@ -240,6 +240,9 @@
     },
     {
       "name": "rg"
+    },
+    {
+      "name": "typst"
     }
   ],
   "cases": [],
@@ -323,6 +326,7 @@
     "column.json",
     "which.json",
     "date.json",
-    "rg.json"
+    "rg.json",
+    "typst.json"
   ]
 }

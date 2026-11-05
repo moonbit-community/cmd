@@ -8,6 +8,7 @@ import {
 ----
 
 ///|
+#derive(ToJson)
 struct Package {
   name : String
   path : String
@@ -16,15 +17,17 @@ struct Package {
   implementation_lines : Int32
   test_lines : Int32
   public_declarations : Int32
-} derive(ToJson)
+}
 
 ///|
+#derive(FromJson)
 struct StrategyTest {
   file : String
   name : String
-} derive(FromJson)
+}
 
 ///|
+#derive(FromJson)
 struct Strategy {
   id : String
   owner : String
@@ -34,22 +37,24 @@ struct Strategy {
   tests : Array[StrategyTest]
   profiles : Array[String]
   invariant : String
-} derive(FromJson)
+}
 
 ///|
+#derive(FromJson)
 struct Boundary {
   sources : Array[String]
   retain : String
-} derive(FromJson)
+}
 
 ///|
+#derive(FromJson)
 struct ProtectionRegistry {
   schema : Int32
   profiles : Map[String, Array[String]]
   profile_aliases : Map[String, String]?
   boundaries : Array[Boundary]
   strategies : Array[Strategy]
-} derive(FromJson)
+}
 
 ///|
 fn strategy_errors(
@@ -246,8 +251,17 @@ fn package_name(path : String) -> String {
 
 ///|
 fn invalid_driver_dependency(name : String, dependency : String) -> Bool {
-  ["cli/rg/internal/matcher", "cli/rg/internal/searcher"].contains(name) &&
-  dependency == "cli/rg/internal/driver"
+  (
+    ["cli/rg/internal/matcher", "cli/rg/internal/searcher"].contains(name) &&
+    dependency == "cli/rg/internal/driver"
+  ) ||
+  (
+    (
+      name == "cli/typst/internal/kit" ||
+      name.has_prefix("cli/typst/internal/kit/")
+    ) &&
+    dependency == "cli/typst/internal/driver"
+  )
 }
 
 ///|
@@ -372,6 +386,15 @@ async fn main {
     assert_false(invalid_driver_dependency(name, "cli/core/bytesearch"))
   }
   assert_false(invalid_driver_dependency("cli/rg", "cli/rg/internal/driver"))
+  for
+    name in [
+      "cli/typst/internal/kit", "cli/typst/internal/kit/platform", "cli/typst/internal/kit/watcher",
+    ] {
+    assert_true(invalid_driver_dependency(name, "cli/typst/internal/driver"))
+  }
+  assert_false(
+    invalid_driver_dependency("cli/typst", "cli/typst/internal/driver"),
+  )
   let packages : Map[String, Package] = Map([])
   let markers : Map[String, String] = Map([])
   for path in ["core", "commands", "tests"] {
@@ -386,7 +409,7 @@ async fn main {
     })
     .map(p => p.name)
     .collect()
-  assert_eq(commands.length(), 80)
+  assert_eq(commands.length(), 81)
   let reachable : Set[String] = Set([])
   let work = commands.copy()
   while work.pop() is Some(name) {
@@ -471,7 +494,7 @@ async fn main {
     fail("architecture dependency checks failed")
   }
   println(
-    "80 command modules; " +
+    "81 command modules; " +
     packages.length().to_string() +
     " packages; dependency checks passed",
   )

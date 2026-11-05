@@ -1,10 +1,11 @@
 ///|
+#derive(Eq, Hash)
 priv struct ReferenceLimit {
   pc : Int32
   position : Int32
   left : Int32
   right : Int32
-} derive(Eq, Hash)
+}
 
 ///|
 priv struct Sift {

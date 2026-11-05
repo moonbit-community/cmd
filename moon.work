@@ -1,4 +1,5 @@
 members = [
+  "./commands/typst",
   "./commands/rg",
   "./core",
   "./tests",

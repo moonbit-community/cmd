@@ -14,15 +14,17 @@ pub fn validate(Registry) -> Array[String]
 // Errors
 
 // Types and methods
+#derive(@debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct Registry {
   schema : Int32
   entries : Array[RegistryEntry]
   release_commands : Array[ReleaseCommandMetadata]
-} derive(ToJson, @debug.Debug, @json.FromJson)
-pub fn Registry::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-pub fn Registry::to_json(Self) -> Json
+}
+pub fn Registry::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Registry::to_json(Self) -> @json.Json
 pub fn Registry::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct RegistryEntry {
   behavior_id : String
   command : String
@@ -33,12 +35,13 @@ pub(all) struct RegistryEntry {
   aliases : Array[String]
   platforms : Array[String]
   oracle_profile : String
-} derive(ToJson, @debug.Debug, @json.FromJson)
-pub fn RegistryEntry::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+}
+pub fn RegistryEntry::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn RegistryEntry::is_case(Self) -> Bool
-pub fn RegistryEntry::to_json(Self) -> Json
+pub fn RegistryEntry::to_json(Self) -> @json.Json
 pub fn RegistryEntry::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct ReleaseCommandMetadata {
   name : String
   package_name : String
@@ -47,9 +50,9 @@ pub(all) struct ReleaseCommandMetadata {
   policy_sensitive : Bool
   releasable : Bool
   case_ids : Array[String]?
-} derive(ToJson, @debug.Debug, @json.FromJson)
-pub fn ReleaseCommandMetadata::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-pub fn ReleaseCommandMetadata::to_json(Self) -> Json
+}
+pub fn ReleaseCommandMetadata::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ReleaseCommandMetadata::to_json(Self) -> @json.Json
 pub fn ReleaseCommandMetadata::to_repr(Self) -> @debug.Repr
 
 // Type aliases

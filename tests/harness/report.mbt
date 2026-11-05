@@ -1,11 +1,13 @@
 ///|
+#derive(ToJson, Debug)
 pub(all) struct LocalContractReceipt {
   definition_sha256 : String
   passed : Bool
   observations : Array[String]
-} derive(ToJson, Debug)
+}
 
 ///|
+#derive(ToJson, Debug)
 pub(all) struct CaseReport {
   id : String
   command : String
@@ -21,7 +23,7 @@ pub(all) struct CaseReport {
   missing_observations : Array[String]
   local_contract : LocalContractReceipt?
   evidence : String?
-} derive(ToJson, Debug)
+}
 
 ///|
 pub fn CaseReport::semantic_pass(self : CaseReport) -> Bool {

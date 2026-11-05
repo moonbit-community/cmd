@@ -1,0 +1,25 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/typst/internal/kit/watcher"
+
+import {
+  "cli/typst/internal/kit",
+  "moonbitlang/async",
+}
+
+// Values
+pub async fn run(async (@async.TaskGroup[Unit]) -> Unit) -> Unit
+
+// Errors
+
+// Types and methods
+pub struct Watcher {
+  // private fields
+}
+pub fn Watcher::new(String?, @async.TaskGroup[Unit]) -> Self raise @kit.StrError
+pub async fn Watcher::update(Self, Array[String]) -> Unit raise @kit.StrError
+pub async fn Watcher::wait(Self) -> Unit raise @kit.StrError
+
+// Type aliases
+pub type Tasks = @async.TaskGroup[Unit]
+
+// Traits

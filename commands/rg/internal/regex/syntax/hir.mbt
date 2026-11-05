@@ -1,5 +1,6 @@
 ///|
 /// Properties computed for every HIR node.
+#derive(Debug, Eq)
 pub(all) struct Props {
   minimum_len : Int32?
   maximum_len : Int32?
@@ -13,16 +14,18 @@ pub(all) struct Props {
   static_explicit_captures_len : Int32?
   literal : Bool
   alternation_literal : Bool
-} derive(Debug, Eq)
+}
 
 ///|
 /// The high-level intermediate representation of a regular expression.
+#derive(Debug, Eq)
 pub(all) struct Hir {
   kind : HirKind
   props : Props
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum HirKind {
   Empty
   Literal(Bytes)
@@ -32,7 +35,7 @@ pub(all) enum HirKind {
   Capture(index~ : Int32, name~ : String?, Hir)
   Concat(Array[Hir])
   Alternation(Array[Hir])
-} derive(Debug, Eq)
+}
 
 ///|
 let empty_props : Props = {

@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "mooxCLI/cmd-tests/resources"
 
+import {
+  "moonbitlang/core/json",
+}
+
 // Values
 
 // Errors
@@ -8,9 +12,11 @@ package "mooxCLI/cmd-tests/resources"
 // Types and methods
 type ContentEdit
 
-type ContentInput derive(ToJson)
+#derive(@json.ToJson)
+type ContentInput
 
-type Observation derive(ToJson)
+#derive(@json.ToJson)
+type Observation
 
 type Samples
 

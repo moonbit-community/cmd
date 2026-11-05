@@ -1,8 +1,9 @@
 ///|
 /// An error that occurs when a pattern is not valid UTF-8.
+#derive(Debug, Eq)
 pub suberror InvalidPatternError {
   InvalidPatternError(original~ : String, valid_up_to~ : Int32)
-} derive(Debug, Eq)
+}
 
 ///|
 pub fn InvalidPatternError::valid_up_to(self : InvalidPatternError) -> Int32 {
@@ -36,9 +37,10 @@ pub fn pattern_from_bytes(
 
 ///|
 /// An error reading patterns from a file or reader.
+#derive(Debug)
 pub suberror PatternsError {
   PatternsError(String)
-} derive(Debug)
+}
 
 ///|
 fn PatternsError::to_string(self : PatternsError) -> String {

@@ -1,15 +1,17 @@
 ///|
+#derive(Eq, Debug, Hash)
 struct Line {
   value : BytesView
   terminated : Bool
-} derive(Eq, Debug, Hash)
+}
 
 ///|
+#derive(Eq, Debug)
 enum Edit {
   Equal(Line)
   Remove(Line)
   Add(Line)
-} derive(Eq, Debug)
+}
 
 ///|
 fn lines(data : Bytes) -> Array[Line] {

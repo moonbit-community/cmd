@@ -18,31 +18,35 @@ pub fn format_fixed(Double, Int32) -> String
 pub fn write_duration_json(JsonWriter, Int64, sorted_keys? : Bool) -> Unit
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror ColorError {
   UnrecognizedOutType(String)
   UnrecognizedSpecType(String)
   UnrecognizedColor(String, String)
   UnrecognizedStyle(String)
   InvalidFormat(String)
-} derive(Eq, @debug.Debug)
+}
 pub fn ColorError::to_string(Self) -> String
 pub impl Show for ColorError
 
+#derive(Eq, @debug.Debug)
 pub(all) suberror HyperlinkFormatError {
   HyperlinkFormatError(HyperlinkFormatErrorKind)
-} derive(Eq, @debug.Debug)
+}
 pub fn HyperlinkFormatError::to_string(Self) -> String
 pub impl Show for HyperlinkFormatError
 
+#derive(@debug.Debug)
 pub(all) suberror PrinterError {
   PrinterError(String)
-} derive(@debug.Debug)
+}
 pub impl Show for PrinterError
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub struct ColorSpecs {
   // private fields
-} derive(Eq, @debug.Debug)
+}
 pub fn ColorSpecs::column(Self) -> @termcolor.ColorSpec
 pub fn ColorSpecs::default() -> Self
 pub fn ColorSpecs::default_with_color() -> Self
@@ -52,9 +56,10 @@ pub fn ColorSpecs::matched(Self) -> @termcolor.ColorSpec
 pub fn ColorSpecs::new(ArrayView[UserColorSpec]) -> Self
 pub fn ColorSpecs::path(Self) -> @termcolor.ColorSpec
 
+#derive(@debug.Debug)
 pub struct HyperlinkAlias {
   // private fields
-} derive(@debug.Debug)
+}
 
 pub struct HyperlinkConfig {
   // private fields
@@ -69,15 +74,17 @@ pub fn HyperlinkEnvironment::host(Self, String?) -> Self
 pub fn HyperlinkEnvironment::new() -> Self
 pub fn HyperlinkEnvironment::wsl_prefix(Self, String?) -> Self
 
+#derive(Eq, @debug.Debug)
 pub struct HyperlinkFormat {
   // private fields
-} derive(Eq, @debug.Debug)
+}
 pub fn HyperlinkFormat::empty() -> Self
 pub fn HyperlinkFormat::into_config(Self, HyperlinkEnvironment) -> HyperlinkConfig
 pub fn HyperlinkFormat::parse(String) -> Self raise HyperlinkFormatError
 pub fn HyperlinkFormat::to_string(Self) -> String
 pub impl Show for HyperlinkFormat
 
+#derive(Eq, @debug.Debug)
 pub(all) enum HyperlinkFormatErrorKind {
   NoVariables
   NoPathVariable
@@ -86,7 +93,7 @@ pub(all) enum HyperlinkFormatErrorKind {
   InvalidScheme
   InvalidCloseVariable
   UnclosedVariable
-} derive(Eq, @debug.Debug)
+}
 
 pub struct JSON {
   // private fields
@@ -135,9 +142,10 @@ pub fn StandardSink::has_match(Self) -> Bool
 pub fn StandardSink::stats(Self) -> Stats?
 pub impl @searcher.Sink for StandardSink
 
+#derive(Eq, @debug.Debug)
 pub struct Stats {
   // private fields
-} derive(Eq, @debug.Debug)
+}
 pub fn Stats::add_bytes_printed(Self, Int64) -> Unit
 pub fn Stats::add_bytes_searched(Self, Int64) -> Unit
 pub fn Stats::add_elapsed(Self, Int64) -> Unit
@@ -166,6 +174,7 @@ pub fn Summary::new(&@termcolor.WriteColor, kind? : SummaryKind, colors? : Color
 pub fn Summary::sink(Self, &@matcher.Matcher) -> SummarySink
 pub fn Summary::sink_with_path(Self, &@matcher.Matcher, String) -> SummarySink
 
+#derive(Eq, @debug.Debug)
 pub(all) enum SummaryKind {
   Count
   CountMatches
@@ -173,7 +182,7 @@ pub(all) enum SummaryKind {
   PathWithoutMatch
   QuietWithMatch
   QuietWithoutMatch
-} derive(Eq, @debug.Debug)
+}
 
 pub struct SummarySink {
   // private fields
@@ -183,9 +192,10 @@ pub fn SummarySink::match_count(Self) -> Int64
 pub fn SummarySink::stats(Self) -> Stats?
 pub impl @searcher.Sink for SummarySink
 
+#derive(Eq, @debug.Debug)
 pub struct UserColorSpec {
   // private fields
-} derive(Eq, @debug.Debug)
+}
 pub fn UserColorSpec::parse(String) -> Self raise ColorError
 pub fn UserColorSpec::to_color_spec(Self) -> @termcolor.ColorSpec
 

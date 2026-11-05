@@ -244,7 +244,7 @@ async fn main {
     @fs.read_file("tests/benchmark/protection.json").text(),
   )
   guard field(registry, "schema") == Json(2) &&
-    field(registry, "artifact_count") == Json(80) &&
+    field(registry, "artifact_count") == Json(81) &&
     field(registry, "windows") == Json(2) &&
     field(registry, "pairs") == Json(9) &&
     field(registry, "mad_limit") == Json(0.05) &&
@@ -321,8 +321,8 @@ async fn main {
   let commands = command_inventory(baseline)
   assert_eq(
     commands.length(),
-    80,
-    msg="frozen baseline must contain all80 command artifacts",
+    81,
+    msg="frozen baseline must contain all81 command artifacts",
   )
   assert_eq(
     command_inventory(built, shared_core=true),
@@ -491,7 +491,7 @@ async fn main {
     "timing_passed": passed,
     "stage": "complete",
     "artifact_integrity": intact,
-    "artifact_count": 80,
+    "artifact_count": 81,
     "changed_artifacts": changed_count,
     "required_workloads": rows.length(),
     "windows": 2,

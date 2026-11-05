@@ -3,12 +3,13 @@
 
 ///|
 /// An error that occurred while building a regex.
+#derive(Debug)
 pub suberror RegexError {
   /// A syntax error, rendered in the same format as Rust's regex crate.
   Syntax(@syntax.SyntaxError)
   /// The compiled regex exceeded the configured size limit.
   TooBig(Int32)
-} derive(Debug)
+}
 
 ///|
 pub fn RegexError::to_string(self : RegexError) -> String {

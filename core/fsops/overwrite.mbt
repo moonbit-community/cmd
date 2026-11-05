@@ -1,25 +1,28 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum UpdateMode {
   UpdateAll
   UpdateNone
   UpdateNoneFail
   UpdateOlder
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum BackupControl {
   NoBackup
   SimpleBackup
   NumberedBackup
   ExistingBackup
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum OverwriteDecision {
   ReplaceDestination
   SkipDestination
   RejectDestination
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn parse_update_mode(value : String) -> UpdateMode raise FsOpError {

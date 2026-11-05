@@ -4,6 +4,7 @@ priv suberror CliError {
 }
 
 ///|
+#derive(Eq)
 priv enum CompareMode {
   Lexical
   Numeric
@@ -12,7 +13,7 @@ priv enum CompareMode {
   Month
   Version
   Random
-} derive(Eq)
+}
 
 ///|
 priv enum GeneralNumber {

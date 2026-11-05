@@ -1,17 +1,20 @@
 ///|
+#derive(FromJson)
 struct PublishedCommand {
   name : String
   package_name : String
   version : String
-} derive(FromJson)
+}
 
 ///|
+#derive(FromJson)
 struct PublishedSelection {
+  candidate : Bool?
   base_manifest : String
   commands : Array[PublishedCommand]
   case_ids : Array[String]
   extra_cases : Array[Json]
-} derive(FromJson)
+}
 
 ///|
 fn published_coordinates(
@@ -20,7 +23,12 @@ fn published_coordinates(
   guard !selection.commands.is_empty() && !selection.case_ids.is_empty() else {
     fail("published acceptance requires commands and cases")
   }
-  guard @harness.safe_relative_path(selection.base_manifest) else {
+  // Generated candidates use the sibling current corpus; other parent paths
+  // remain rejected, and published snapshots keep their local expectation file.
+  let current_candidate = selection.candidate == Some(true) &&
+    selection.base_manifest == "../cases/manifest.json"
+  guard @harness.safe_relative_path(selection.base_manifest) ||
+    current_candidate else {
     fail("unsafe published case path")
   }
   guard selection.extra_cases.is_empty() else {

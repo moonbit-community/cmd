@@ -30,10 +30,11 @@ pub async fn BlockWriter::write_reader(Self, &@io.Reader) -> Unit
 pub async fn BlockWriter::write_slice(Self, FixedArray[Byte], Int32, Int32) -> Unit
 pub impl @io.Writer for BlockWriter
 
+#derive(Eq, @debug.Debug)
 pub(all) struct Line {
   data : Bytes
   terminated : Bool
-} derive(Eq, @debug.Debug)
+}
 pub fn Line::equal(Self, Self) -> Bool
 pub fn Line::not_equal(Self, Self) -> Bool
 pub fn Line::to_repr(Self) -> @debug.Repr

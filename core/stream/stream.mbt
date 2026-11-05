@@ -7,10 +7,11 @@ pub async fn read_chunk(reader : &@io.Reader) -> Bytes? {
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct Line {
   data : Bytes
   terminated : Bool
-} derive(Eq, Debug)
+}
 
 ///|
 pub struct LineScanner {

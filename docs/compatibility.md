@@ -1,7 +1,30 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-11-01
+Updated: 2026-11-05
+
+`cli/typst@0.1.0` is an unpublished development candidate. Its migrated CLI,
+document environment and watcher use a pure MoonBit platform adapter; the
+engine remains external at `moonbitlang/typst@0.1.10`. Local Wasm assertions
+cover evaluation, imports, embedded fonts, PDF/PNG/SVG export, binary stdout,
+selected pages, dependency output, write failures and watch recompilation.
+The inherited CLI also exposes HTML/bundle export and local template setup;
+the focused export regressions do not establish all of those behaviors or full
+Rust Typst parity. See the [command README](../commands/typst/README.md) and
+[ownership decision](adr/0003-streams.md#typst-command-adaptation).
+
+Typst rejects network package downloads, self-update, completion generation,
+viewer opening, performance traces and the HTML watch server (`--no-serve`
+is required). Jobs remain single-threaded. File reads retain whole inputs;
+canonicalization is lexical, symlink identity/containment is not guaranteed,
+terminal detection is unavailable and local time defaults to UTC. Unlock
+conditions are recorded in ADR-0003. Pinned Typst 0.15.1 Linux evaluation
+comparisons are registered. Three-platform execution and exact-version MoonX
+acceptance are pending. The current 79 published coordinates remain unchanged;
+typst is the first-release candidate and timeout remains local-only among 81 modules.
+The inherited relative-link watcher fixture is Unix-only because the public
+filesystem API cannot create that fixture on Windows. Ordinary file-watch
+recompilation has a registered CLI assertion on all three platforms.
 
 The 2026-11-01 release publishes core 0.9.1 and 26 changed command versions,
 including direct implementation changes and gzip/jq shared-runtime consumers.

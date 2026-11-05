@@ -1,4 +1,5 @@
 ///|
+#derive(FromJson)
 priv struct CorpusCase {
   name : String
   regex : String
@@ -14,7 +15,7 @@ priv struct CorpusCase {
   match_limit : Json
   bounds : Json
   line_terminator : Json
-} derive(FromJson)
+}
 
 ///|
 /// Repository-owned corpus data; this package is imported only by tests.

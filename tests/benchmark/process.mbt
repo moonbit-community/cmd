@@ -1,19 +1,21 @@
 ///|
+#derive(ToJson)
 priv struct BenchmarkInvocation {
   program : String
   args : Array[String]
   cwd : String
   environment : Map[String, String]
   stdin_path : String
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct ProcessObservation {
   elapsed_us : Double
   status : Int32?
   timed_out : Bool
   error : String?
-} derive(ToJson)
+}
 
 ///|
 // Redirect setup is outside timing; process startup, IO, flush and exit are in

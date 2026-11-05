@@ -1,10 +1,12 @@
 ///|
+#derive(FromJson, ToJson)
 priv struct RealInput {
   source : NaturalSource
   target : String
-} derive(FromJson, ToJson)
+}
 
 ///|
+#derive(FromJson, ToJson)
 priv struct FunctionalWorkload {
   id : String
   command : String
@@ -26,14 +28,15 @@ priv struct FunctionalWorkload {
   expected_stderr : String?
   output_relation : String?
   observe : Array[String]?
-} derive(FromJson, ToJson)
+}
 
 ///|
+#derive(FromJson, ToJson)
 priv struct FunctionalManifest {
   schema : Int32
   case_corpus : String
   workloads : Array[FunctionalWorkload]
-} derive(FromJson, ToJson)
+}
 
 ///|
 fn functional_fixture(workload : FunctionalWorkload) -> @harness.Case raise {

@@ -2,6 +2,7 @@
 /// The set of available colors for the terminal foreground/background.
 ///
 /// The `Ansi256` and `Rgb` colors only work in terminals that support them.
+#derive(Eq, Debug)
 pub(all) enum Color {
   Black
   Blue
@@ -13,21 +14,23 @@ pub(all) enum Color {
   White
   Ansi256(Byte)
   Rgb(Byte, Byte, Byte)
-} derive(Eq, Debug)
+}
 
 ///|
 /// The kind of a color parse error.
+#derive(Eq, Debug)
 pub(all) enum ParseColorErrorKind {
   InvalidName
   InvalidAnsi256
   InvalidRgb
-} derive(Eq, Debug)
+}
 
 ///|
 /// An error from parsing an invalid color specification.
+#derive(Eq, Debug)
 pub(all) suberror ParseColorError {
   ParseColorError(kind~ : ParseColorErrorKind, given~ : String)
-} derive(Eq, Debug)
+}
 
 ///|
 /// Return the string that couldn't be parsed as a valid color.
@@ -162,6 +165,7 @@ fn color_from_str_numeric(s : String) -> Color raise ParseColorError {
 ///
 /// The default specification has no colors or styles set, but has `reset`
 /// enabled, which means a reset escape is emitted before applying it.
+#derive(Eq, Debug)
 pub struct ColorSpec {
   priv mut fg_color : Color?
   priv mut bg_color : Color?
@@ -172,7 +176,7 @@ pub struct ColorSpec {
   priv mut italic : Bool
   priv mut reset : Bool
   priv mut strikethrough : Bool
-} derive(Eq, Debug)
+}
 
 ///|
 /// Create a new color specification that has no colors or styles.
@@ -293,9 +297,10 @@ pub fn ColorSpec::clear(self : ColorSpec) -> Unit {
 
 ///|
 /// A hyperlink specification. `uri` is `None` to close a hyperlink.
+#derive(Eq, Debug)
 pub struct HyperlinkSpec {
   uri : Bytes?
-} derive(Eq, Debug)
+}
 
 ///|
 /// Creates a new hyperlink specification that opens a link to `uri`.

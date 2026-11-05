@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "All80 packages accounted for:56 timing commands,2 explicit correctness-only dispositions and22 explained not-timed commands. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
+  "scope": "All81 packages accounted for:56 timing commands,2 explicit correctness-only dispositions and23 explained not-timed commands. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "facet_vocabulary": [
     "bytes",
@@ -1222,6 +1222,17 @@
       "local_case_ids": [
         "checksum-sha512sum-stdin",
         "checksum-sha512sum-binary"
+      ]
+    },
+    {
+      "command": "typst",
+      "disposition": "not-timed",
+      "reason": "The first CLI migration has no registered genuine Typst document/font workload or performance baseline. Functional export/watch contracts are correctness evidence only. Add pinned complete sources and an immutable upstream oracle before timing.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "typst-artifacts",
+        "typst-watch"
       ]
     }
   ],
@@ -3816,5 +3827,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 22
+  "not_timed_command_count": 23
 }

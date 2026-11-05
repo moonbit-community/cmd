@@ -1,5 +1,6 @@
 ///|
 /// Portable fixture description. Text and hex are mutually exclusive.
+#derive(FromJson, ToJson, Debug)
 pub(all) struct FixtureFile {
   path : String
   content_hex : String?
@@ -10,16 +11,18 @@ pub(all) struct FixtureFile {
   atime : String?
   mtime : String?
   readable : Bool?
-} derive(FromJson, ToJson, Debug)
+}
 
 ///|
+#derive(FromJson, ToJson, Debug)
 pub(all) struct Normalization {
   field : String
   rule : String
   comment : String
-} derive(FromJson, ToJson, Debug)
+}
 
 ///|
+#derive(FromJson, ToJson, Debug)
 pub(all) struct ExpectedFile {
   path : String
   exists : Bool?
@@ -36,10 +39,11 @@ pub(all) struct ExpectedFile {
   different_identity_as : String?
   same_mode_as : String?
   mode_mask : Int32?
-} derive(FromJson, ToJson, Debug)
+}
 
 ///|
 /// Schema 1 fields remain readable; optional additions describe schema 2 cases.
+#derive(FromJson, ToJson, Debug)
 pub(all) struct Case {
   id : String
   aliases : Array[String]?
@@ -78,7 +82,7 @@ pub(all) struct Case {
   stdout_order : String?
   expected_stdout_json : Json?
   stdout_json_lines : Bool?
-} derive(FromJson, ToJson, Debug)
+}
 
 ///|
 fn hex_nibble(char : Char) -> Int32? {

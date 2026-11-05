@@ -2,6 +2,17 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "metadata:typst",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:rg-boundary-dfa-budget",
       "command": "rg",
       "status": "boundary",
@@ -28981,6 +28992,259 @@
       "platforms": [
         "posix"
       ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-version",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-version",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-version-short",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-version-short",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-eval-arithmetic",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-arithmetic",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:typst-eval-input",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-input",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:typst-eval-pretty",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-pretty",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:typst-eval-yaml",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-yaml",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-eval-raw",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-raw",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-eval-jobs",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-jobs",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:typst-eval-timestamp",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-timestamp",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:typst-eval-stdin",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-stdin",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:typst-eval-root-import",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-eval-root-import",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:typst-query-heading",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-query-heading",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-reject-completions",
+      "command": "typst",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-reject-completions",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-reject-update",
+      "command": "typst",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-reject-update",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-reject-timings",
+      "command": "typst",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-reject-timings",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-fonts-embedded",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-fonts-embedded",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-fonts-none",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-fonts-none",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-compile-svg",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-compile-svg",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-reject-watch-server",
+      "command": "typst",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-reject-watch-server",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-artifacts",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-artifacts",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:typst-watch",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/typst.json",
+      "case_id": "typst-watch",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:typst-artifacts",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::typst-artifacts",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:typst-watch",
+      "command": "typst",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::typst-watch",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
       "oracle_profile": ""
     }
   ]

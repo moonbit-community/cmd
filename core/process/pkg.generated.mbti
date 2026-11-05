@@ -33,10 +33,11 @@ pub(all) struct ExecutionContext {
 }
 pub fn ExecutionContext::current() -> Self
 
+#derive(Eq, @debug.Debug)
 pub(all) enum LaunchFailure {
   CommandNotFound
   CommandNotInvokable
-} derive(Eq, @debug.Debug)
+}
 pub fn LaunchFailure::equal(Self, Self) -> Bool
 pub fn LaunchFailure::not_equal(Self, Self) -> Bool
 pub fn LaunchFailure::to_repr(Self) -> @debug.Repr

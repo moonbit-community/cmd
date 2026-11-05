@@ -1,5 +1,6 @@
 ///|
 /// The decoder family of an encoding.
+#derive(Eq)
 priv enum EncKind {
   Utf8
   Utf16LE
@@ -14,7 +15,7 @@ priv enum EncKind {
   ShiftJis
   EucKr
   XUserDefined
-} derive(Eq)
+}
 
 ///|
 /// The canonical WHATWG name of the encoding.

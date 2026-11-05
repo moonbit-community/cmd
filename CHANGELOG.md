@@ -12,6 +12,31 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-05
+
+Development; no publication.
+
+- Add `cli/typst@0.1.0` as a local Wasm candidate: migrate the existing CLI,
+  document environment, font/package discovery and watcher; retain the
+  typesetting engine as `moonbitlang/typst@0.1.10`. Replace the command's
+  platform implementation with released public MoonBit APIs, including binary
+  standard streams and output-error propagation.
+- Local macOS validation passes all 1,884 Wasm package tests (84 for Typst),
+  204 Native tool tests and 2,520 functional checks, with 21 platform exclusions
+  and zero failures. Typst checks include metadata without stdin consumption, evaluation/imports,
+  PDF file/stdout identity, PNG dimensions, page selection, dependency output,
+  output failure and watch recompilation. Retain explicit platform and feature
+  boundaries; no full upstream parity or performance claim is made.
+- Register 81 local commands while retaining all 79 published coordinates.
+  Add the first Typst candidate, pinned Linux Typst 0.15.1 comparisons and an
+  explicit untimed performance disposition. Publication and exact-version
+  acceptance remain separate gates.
+- Update CI to MoonBit `0.10.19+bee578715`, migrate deprecated derive syntax
+  while retaining existing trait methods, and use the current string-view API
+  in test infrastructure. Full-workspace checks retain `--deny-warn`. Use the
+  controlled MoonBit child for allowed-process policy checks on every platform,
+  and handle mixed Windows separators when reporting Typst dependencies.
+
 ## 2026-11-03
 
 Development; no publication.

@@ -126,7 +126,7 @@ async test "real coverage cannot remove a required command together with all its
     real_test_replace(coverage, "commands", Json(reduced)),
     rows,
   )
-  assert_true(errors.any(error => error.contains("80-command scope")))
+  assert_true(errors.any(error => error.contains("81-command scope")))
 }
 
 ///|

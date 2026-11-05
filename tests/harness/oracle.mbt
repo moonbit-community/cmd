@@ -1,11 +1,13 @@
 ///|
+#derive(FromJson, ToJson)
 pub(all) struct OracleSource {
   project : String
   version : String
   sha256 : String
-} derive(FromJson, ToJson)
+}
 
 ///|
+#derive(FromJson, ToJson)
 pub(all) struct OracleProfile {
   schema : Int32
   id : String
@@ -18,7 +20,7 @@ pub(all) struct OracleProfile {
   dockerfile_sha256 : String
   versions_script_sha256 : String
   sources : Array[OracleSource]
-} derive(FromJson, ToJson)
+}
 
 ///|
 pub(all) struct OracleIdentity {
