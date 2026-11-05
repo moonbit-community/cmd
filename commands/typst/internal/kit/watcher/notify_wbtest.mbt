@@ -287,6 +287,12 @@ async test "a path that is watched later in a directory" {
 
 ///|
 async test "a link is watched where it is and where its file is" {
+  // The released async filesystem cannot create this relative-link fixture
+  // on Windows. Ordinary file watching is covered by the other watcher tests
+  // and the registered CLI scenario; this retains the upstream Unix fixture.
+  if @platform.os() == Windows {
+    return
+  }
   @async.with_task_group(group => {
     let dir = scratch("link")
     @fs.mkdir("\{dir}/data")
@@ -295,7 +301,9 @@ async test "a link is watched where it is and where its file is" {
     write(file, "1")
     @fs.symlink(target="data/table.csv", link)
     guard @platform.lstat_kind(link) is Symlink else {
-      // This target cannot tell a link.
+      // The synchronous Wasm adapter explicitly exposes only the lexical site.
+      assert_eq(@platform.lstat_kind(link), File)
+      assert_eq(sites(link), [(dir, "table.csv")])
       return
     }
     inspect(sites(link).length(), content="2")

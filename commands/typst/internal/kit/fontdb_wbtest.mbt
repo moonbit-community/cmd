@@ -204,6 +204,11 @@ async fn scanned(name : String, files : Array[(String, Bytes)]) -> String {
   for entry in scan(dir) {
     guard entry.0 is Path(path~, index~) else { continue }
     let file = path[dir.length() + 1:].to_owned()
+    let file = if @platform.os() == Windows {
+      file.replace_all(old="\\", new="/")
+    } else {
+      file
+    }
     match found.get(file) {
       Some(faces) => faces.push((index, entry.1))
       None => found[file] = [(index, entry.1)]

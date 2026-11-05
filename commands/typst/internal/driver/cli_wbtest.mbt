@@ -33,24 +33,32 @@ test "relative paths" {
       #|Some("c.typ")
     ),
   )
-  @debug.debug_inspect(
-    diff_paths("/a/x/c.typ", "/a/b"),
-    content=(
-      #|Some("../x/c.typ")
-    ),
-  )
+  if @platform.os() == Windows {
+    assert_eq(diff_paths("/a/x/c.typ", "/a/b"), Some("..\\x\\c.typ"))
+  } else {
+    @debug.debug_inspect(
+      diff_paths("/a/x/c.typ", "/a/b"),
+      content=(
+        #|Some("../x/c.typ")
+      ),
+    )
+  }
   @debug.debug_inspect(
     diff_paths("/a/b", "/a/b"),
     content=(
       #|Some("")
     ),
   )
-  @debug.debug_inspect(
-    diff_paths("/a", "/a/b/c"),
-    content=(
-      #|Some("../..")
-    ),
-  )
+  if @platform.os() == Windows {
+    assert_eq(diff_paths("/a", "/a/b/c"), Some("..\\.."))
+  } else {
+    @debug.debug_inspect(
+      diff_paths("/a", "/a/b/c"),
+      content=(
+        #|Some("../..")
+      ),
+    )
+  }
   @debug.debug_inspect(diff_paths("rel", "/a"), content="None")
 }
 

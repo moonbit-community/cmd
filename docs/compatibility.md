@@ -22,6 +22,9 @@ conditions are recorded in ADR-0003. Pinned Typst 0.15.1 Linux evaluation
 comparisons are registered. Three-platform execution and exact-version MoonX
 acceptance are pending. The current 79 published coordinates remain unchanged;
 typst is the first-release candidate and timeout remains local-only among 81 modules.
+The inherited relative-link watcher fixture is Unix-only because the public
+filesystem API cannot create that fixture on Windows. Ordinary file-watch
+recompilation has a registered CLI assertion on all three platforms.
 
 The 2026-11-01 release publishes core 0.9.1 and 26 changed command versions,
 including direct implementation changes and gzip/jq shared-runtime consumers.

@@ -51,7 +51,11 @@ test "path helpers" {
     ),
   )
   @debug.debug_inspect(@platform.file_name("/a/.."), content="None")
-  inspect(@platform.join("/a", "b"), content="/a/b")
+  if @platform.os() == Windows {
+    assert_eq(@platform.join("/a", "b"), "/a\\b")
+  } else {
+    inspect(@platform.join("/a", "b"), content="/a/b")
+  }
   inspect(@platform.join("/a/", "b"), content="/a/b")
   inspect(@platform.join("/a", "/b"), content="/b")
 }
