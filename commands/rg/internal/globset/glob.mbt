@@ -55,6 +55,7 @@ fn MatchStrategy::new(pat : Glob) -> MatchStrategy {
 }
 
 ///|
+#derive(Eq, Hash, Debug)
 priv struct GlobOptions {
   /// Whether to match case insensitively.
   case_insensitive : Bool
@@ -72,7 +73,7 @@ priv struct GlobOptions {
   /// When this isn't enabled, an opening `[` without a corresponding `]` is
   /// treated as an error.
   allow_unclosed_class : Bool
-} derive(Eq, Hash, Debug)
+}
 
 ///|
 fn GlobOptions::default() -> GlobOptions {
@@ -86,6 +87,7 @@ fn GlobOptions::default() -> GlobOptions {
 }
 
 ///|
+#derive(Eq, Debug)
 priv enum Token {
   Literal(Char)
   Any
@@ -95,7 +97,7 @@ priv enum Token {
   RecursiveZeroOrMore
   Class(negated~ : Bool, ranges~ : Array[(Char, Char)])
   Alternates(Array[Array[Token]])
-} derive(Eq, Debug)
+}
 
 ///|
 /// Glob represents a successfully parsed shell glob pattern.
@@ -170,12 +172,13 @@ pub impl Debug for GlobMatcher with fn to_repr(self) {
 ///
 /// This builder enables configuring the match semantics of a pattern. For
 /// example, one can make matching case insensitive.
+#derive(Debug)
 pub struct GlobBuilder {
   /// The glob pattern to compile.
   priv glob : String
   /// Options for the pattern.
   priv mut opts : GlobOptions
-} derive(Debug)
+}
 
 ///|
 /// Builds a new pattern with default options.

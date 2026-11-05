@@ -1,9 +1,10 @@
 ///|
 /// Errors that can occur when looking up a Unicode class.
+#derive(Debug, Eq)
 pub(all) suberror UnicodeError {
   PropertyNotFound
   PropertyValueNotFound
-} derive(Debug, Eq)
+}
 
 ///|
 /// Decodes a compact range table produced by `scripts/gen_unicode.py`.

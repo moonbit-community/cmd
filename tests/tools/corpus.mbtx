@@ -11,6 +11,7 @@ import {
 ----
 
 ///|
+#derive(FromJson, ToJson)
 struct RealSource {
   path : String
   sha256 : String
@@ -25,7 +26,7 @@ struct RealSource {
   archive_sha256 : String?
   archive_bytes : Int64?
   archive_member : String?
-} derive(FromJson, ToJson)
+}
 
 ///|
 fn field(value : Json, name : String) -> Json {

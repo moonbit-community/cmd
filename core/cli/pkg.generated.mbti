@@ -15,14 +15,16 @@ pub fn parse(ArrayView[String], ArrayView[OptionSpec]) -> ParsedArgs raise CliEr
 pub fn parse_idle_timeout(String) -> Int32 raise CliError
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror CliError {
   CliError(kind~ : ErrorKind, option~ : String, message~ : String)
-} derive(Eq, @debug.Debug)
+}
 pub fn CliError::equal(Self, Self) -> Bool
 pub fn CliError::not_equal(Self, Self) -> Bool
 pub fn CliError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) enum ErrorKind {
   UnknownOption
   MissingOptionValue
@@ -31,7 +33,7 @@ pub(all) enum ErrorKind {
   InvalidValue
   MissingOperand
   UnsupportedCapability
-} derive(Eq, @debug.Debug)
+}
 pub fn ErrorKind::equal(Self, Self) -> Bool
 pub fn ErrorKind::not_equal(Self, Self) -> Bool
 pub fn ErrorKind::to_repr(Self) -> @debug.Repr

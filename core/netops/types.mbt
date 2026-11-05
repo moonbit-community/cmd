@@ -1,4 +1,5 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum HttpMethod {
   Get
   Head
@@ -9,13 +10,14 @@ pub(all) enum HttpMethod {
   Options
   Trace
   Patch
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct HttpHeader {
   name : String
   value : String
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn http_header(name : String, value : String) -> HttpHeader {
@@ -23,39 +25,44 @@ pub fn http_header(name : String, value : String) -> HttpHeader {
 }
 
 ///|
+#derive(Debug)
 pub(all) enum RequestBody {
   EmptyBody
   BytesBody(Bytes)
   FileBody(String)
   StdinBody
-} derive(Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum RedirectPolicy {
   NoRedirects
   FollowRedirects(Int32)
-} derive(Eq, Debug)
+}
 
 ///|
 /// Scope of explicitly supplied Basic credentials, independent of custom headers.
+#derive(Eq, Debug)
 pub(all) enum BasicCredentialScope {
   InitialOrigin
   AllOrigins
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum TransferFileMode {
   Truncate
   Append
   Unique
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum TransferProfile {
   StrictProfile
   CurlProfile
   WgetProfile
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend TransferProfile with Eq::{equal, not_equal}
@@ -64,6 +71,7 @@ pub extend TransferProfile with Eq::{equal, not_equal}
 pub extend TransferProfile with @debug.Debug::{to_repr}
 
 ///|
+#derive(Debug)
 pub(all) enum TransferOutput {
   StandardOutput
   DiscardOutput
@@ -73,9 +81,10 @@ pub(all) enum TransferOutput {
     content_disposition~ : Bool,
     remove_on_error~ : Bool
   )
-} derive(Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum TransferErrorKind {
   InvalidUrl
   UnsupportedProtocol
@@ -93,15 +102,16 @@ pub(all) enum TransferErrorKind {
   RewindFailure
   OutputFailure
   ProtocolFailure
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum TransferPhase {
   Connection
   Request
   ResponseHeaders
   ResponseBody
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend TransferPhase with Eq::{equal, not_equal}
@@ -110,12 +120,13 @@ pub extend TransferPhase with Eq::{equal, not_equal}
 pub extend TransferPhase with @debug.Debug::{to_repr}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum ResponseFraming {
   Bodyless
   FixedLength(Int64)
   Chunked
   CloseDelimited
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend ResponseFraming with Eq::{equal, not_equal}
@@ -126,13 +137,14 @@ pub extend ResponseFraming with @debug.Debug::{to_repr}
 ///|
 /// Counts include only bytes returned by the reader and completed sink writes.
 /// A failed write may have additional effects that the Writer API cannot report.
+#derive(Eq, Debug)
 pub(all) struct TransferFailureContext {
   phase : TransferPhase
   framing : ResponseFraming?
   received_bytes : Int64
   committed_bytes : Int64
   write_outcome_uncertain : Bool
-} derive(Eq, Debug)
+}
 
 ///|
 pub extend TransferFailureContext with Eq::{equal, not_equal}
@@ -141,6 +153,7 @@ pub extend TransferFailureContext with Eq::{equal, not_equal}
 pub extend TransferFailureContext with @debug.Debug::{to_repr}
 
 ///|
+#derive(Eq, Debug)
 pub(all) suberror TransferError {
   TransferError(
     kind~ : TransferErrorKind,
@@ -148,7 +161,7 @@ pub(all) suberror TransferError {
     status~ : Int32?,
     context~ : TransferFailureContext?
   )
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn parse_http_method(value : String) -> HttpMethod raise TransferError {
@@ -262,6 +275,7 @@ pub fn transfer_options(
 }
 
 ///|
+#derive(Debug)
 pub(all) enum TransferEvent {
   ResponseStarted(
     url~ : String,
@@ -274,7 +288,7 @@ pub(all) enum TransferEvent {
   OutputStarted(path~ : String?, response_offset~ : Int64)
   Progress(received~ : Int64, content_length~ : Int64?)
   Completed(received~ : Int64, content_length~ : Int64?)
-} derive(Debug)
+}
 
 ///|
 pub(all) struct TransferResult {

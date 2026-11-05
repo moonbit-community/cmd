@@ -1,11 +1,12 @@
 ///|
+#derive(Debug, Eq, ToJson)
 pub(all) struct TransferFixtureRequest {
   request_method : String
   path : String
   range : String?
   body : Bytes
   cookies : Array[String]
-} derive(Debug, Eq, ToJson)
+}
 
 ///|
 pub extend TransferFixtureRequest with @debug.Debug::{to_repr}

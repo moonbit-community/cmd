@@ -1,16 +1,18 @@
 ///|
+#derive(Debug, Eq)
 pub(all) enum Capability[T] {
   Available(T)
   Unavailable(String)
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum FileType {
   File
   Dir
   Symlink
   Other
-} derive(Debug, Eq)
+}
 
 ///|
 /// Information available from one directory visit. A non-directory entry
@@ -22,10 +24,11 @@ pub struct DirEntry {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct Metadata {
   file_type : FileType
   len : Int64
-} derive(Debug, Eq)
+}
 
 ///|
 pub fn Metadata::is_file(self : Metadata) -> Bool {
@@ -38,11 +41,12 @@ pub fn Metadata::is_dir(self : Metadata) -> Bool {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct FileTimes {
   modified : Int64?
   accessed : Int64?
   created : Int64?
-} derive(Debug, Eq)
+}
 
 ///|
 pub struct File {
@@ -50,6 +54,7 @@ pub struct File {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum IOErrorKind {
   NotFound
   PermissionDenied
@@ -61,12 +66,13 @@ pub(all) enum IOErrorKind {
   NotADirectory
   Unsupported
   Other
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug)
 pub suberror IOError {
   IOError(kind~ : IOErrorKind, code~ : Int32, message~ : String)
-} derive(Debug)
+}
 
 ///|
 pub fn IOError::kind(self : IOError) -> IOErrorKind {

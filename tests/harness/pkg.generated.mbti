@@ -15,13 +15,13 @@ pub fn append_report(Array[CaseReport], CaseReport) -> Unit
 
 pub fn bytes_equal(Bytes, Bytes) -> Bool
 
-pub fn canonical_json(Json) -> String
+pub fn canonical_json(@json.Json) -> String
 
 pub fn case_directory_name(String) -> String
 
-pub fn case_quality_errors(Case, descriptor? : Json, wired_observers? : Array[String]) -> Array[String]
+pub fn case_quality_errors(Case, descriptor? : @json.Json, wired_observers? : Array[String]) -> Array[String]
 
-pub fn case_quality_kind(Case, descriptor? : Json) -> String
+pub fn case_quality_kind(Case, descriptor? : @json.Json) -> String
 
 pub fn case_stimulus_digest(Case) -> String raise
 
@@ -81,13 +81,13 @@ pub fn input_bytes(String?, String?, String) -> Bytes raise Failure
 
 pub fn is_network_case(Case) -> Bool
 
-pub fn json_digest(Json) -> String
+pub fn json_digest(@json.Json) -> String
 
 pub async fn load_cases(String) -> Array[Case]
 
-pub fn local_quality_descriptor(String) -> Json?
+pub fn local_quality_descriptor(String) -> @json.Json?
 
-pub async fn metadata_contract_snapshot(Array[Case]) -> Json
+pub async fn metadata_contract_snapshot(Array[Case]) -> @json.Json
 
 pub async fn metadata_version(String) -> String
 
@@ -141,15 +141,15 @@ pub fn safe_relative_path(String) -> Bool
 
 pub fn safe_symlink_target(String) -> Bool
 
-pub fn scenario_assertion_errors(Json, Json) -> Array[String]
+pub fn scenario_assertion_errors(@json.Json, @json.Json) -> Array[String]
 
-pub fn scenario_catalog_errors(Json) -> Array[String]
+pub fn scenario_catalog_errors(@json.Json) -> Array[String]
 
-pub async fn scenario_contract_snapshot(Array[Case]) -> Json
+pub async fn scenario_contract_snapshot(Array[Case]) -> @json.Json
 
-pub fn scenario_definition(Json, String) -> Json?
+pub fn scenario_definition(@json.Json, String) -> @json.Json?
 
-pub fn scenario_receipt_errors(Json, Json, required? : Array[String], command? : String) -> Array[String]
+pub fn scenario_receipt_errors(@json.Json, @json.Json, required? : Array[String], command? : String) -> Array[String]
 
 pub fn scenario_text(Bytes) -> String raise
 
@@ -188,6 +188,7 @@ pub async fn write_reports(String, ArrayView[CaseReport], case_definitions_sha25
 // Errors
 
 // Types and methods
+#derive(@debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct Case {
   id : String
   aliases : Array[String]?
@@ -224,16 +225,17 @@ pub(all) struct Case {
   expected_stdout_contains_all : Array[String]?
   expected_stderr_contains_all : Array[String]?
   stdout_order : String?
-  expected_stdout_json : Json?
+  expected_stdout_json : @json.Json?
   stdout_json_lines : Bool?
-} derive(ToJson, @debug.Debug, @json.FromJson)
-pub fn Case::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+}
+pub fn Case::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn Case::input(Self, root? : String, http_base? : String) -> Bytes raise Failure
 pub fn Case::platform_applies(Self) -> Bool
-pub fn Case::to_json(Self) -> Json
+pub fn Case::to_json(Self) -> @json.Json
 pub fn Case::to_repr(Self) -> @debug.Repr
 pub fn Case::working_directory(Self, String) -> String raise Failure
 
+#derive(@debug.Debug, @json.ToJson)
 pub(all) struct CaseReport {
   id : String
   command : String
@@ -249,11 +251,12 @@ pub(all) struct CaseReport {
   missing_observations : Array[String]
   local_contract : LocalContractReceipt?
   evidence : String?
-} derive(ToJson, @debug.Debug)
+}
 pub fn CaseReport::semantic_pass(Self) -> Bool
-pub fn CaseReport::to_json(Self) -> Json
+pub fn CaseReport::to_json(Self) -> @json.Json
 pub fn CaseReport::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct ExpectedFile {
   path : String
   exists : Bool?
@@ -270,11 +273,12 @@ pub(all) struct ExpectedFile {
   different_identity_as : String?
   same_mode_as : String?
   mode_mask : Int32?
-} derive(ToJson, @debug.Debug, @json.FromJson)
-pub fn ExpectedFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-pub fn ExpectedFile::to_json(Self) -> Json
+}
+pub fn ExpectedFile::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ExpectedFile::to_json(Self) -> @json.Json
 pub fn ExpectedFile::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct FixtureFile {
   path : String
   content_hex : String?
@@ -285,26 +289,28 @@ pub(all) struct FixtureFile {
   atime : String?
   mtime : String?
   readable : Bool?
-} derive(ToJson, @debug.Debug, @json.FromJson)
-pub fn FixtureFile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-pub fn FixtureFile::to_json(Self) -> Json
+}
+pub fn FixtureFile::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FixtureFile::to_json(Self) -> @json.Json
 pub fn FixtureFile::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug, @json.ToJson)
 pub(all) struct LocalContractReceipt {
   definition_sha256 : String
   passed : Bool
   observations : Array[String]
-} derive(ToJson, @debug.Debug)
-pub fn LocalContractReceipt::to_json(Self) -> Json
+}
+pub fn LocalContractReceipt::to_json(Self) -> @json.Json
 pub fn LocalContractReceipt::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct Normalization {
   field : String
   rule : String
   comment : String
-} derive(ToJson, @debug.Debug, @json.FromJson)
-pub fn Normalization::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-pub fn Normalization::to_json(Self) -> Json
+}
+pub fn Normalization::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Normalization::to_json(Self) -> @json.Json
 pub fn Normalization::to_repr(Self) -> @debug.Repr
 
 pub(all) struct OracleIdentity {
@@ -320,6 +326,7 @@ pub(all) struct OracleOptions {
   seal_digest : String?
 }
 
+#derive(@json.FromJson, @json.ToJson)
 pub(all) struct OracleProfile {
   schema : Int32
   id : String
@@ -332,17 +339,18 @@ pub(all) struct OracleProfile {
   dockerfile_sha256 : String
   versions_script_sha256 : String
   sources : Array[OracleSource]
-} derive(ToJson, @json.FromJson)
-pub fn OracleProfile::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-pub fn OracleProfile::to_json(Self) -> Json
+}
+pub fn OracleProfile::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OracleProfile::to_json(Self) -> @json.Json
 
+#derive(@json.FromJson, @json.ToJson)
 pub(all) struct OracleSource {
   project : String
   version : String
   sha256 : String
-} derive(ToJson, @json.FromJson)
-pub fn OracleSource::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
-pub fn OracleSource::to_json(Self) -> Json
+}
+pub fn OracleSource::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OracleSource::to_json(Self) -> @json.Json
 
 pub(all) struct RunResult {
   status : Int32
@@ -352,23 +360,24 @@ pub(all) struct RunResult {
 
 pub struct ScenarioProof {
   case_id : String
-  definitions : Array[Json]
-  records : Array[Json]
-  definition_id : Json
+  definitions : Array[@json.Json]
+  records : Array[@json.Json]
+  definition_id : @json.Json
 }
 pub fn ScenarioProof::accepts(Self, String, String) -> Bool
 pub fn ScenarioProof::errors(Self) -> Array[String]
-pub fn ScenarioProof::new(String, Json) -> Self
-pub fn ScenarioProof::observe_equal(Self, String, String, Json, Json) -> Unit
+pub fn ScenarioProof::new(String, @json.Json) -> Self
+pub fn ScenarioProof::observe_equal(Self, String, String, @json.Json, @json.Json) -> Unit
 pub fn ScenarioProof::observe_pair(Self, String, String, String, String) -> Unit
-pub fn ScenarioProof::receipt(Self) -> Json
+pub fn ScenarioProof::receipt(Self) -> @json.Json
 
+#derive(@debug.Debug)
 pub(all) struct SnapshotEntry {
   path : String
   kind : String
   content : Bytes
   metadata : Map[String, String]
-} derive(@debug.Debug)
+}
 pub fn SnapshotEntry::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TimedRun {
@@ -377,16 +386,17 @@ pub(all) struct TimedRun {
   cleanup_error : String?
 }
 
+#derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) struct TransferFixtureRequest {
   request_method : String
   path : String
   range : String?
   body : Bytes
   cookies : Array[String]
-} derive(Eq, ToJson, @debug.Debug)
+}
 pub fn TransferFixtureRequest::equal(Self, Self) -> Bool
 pub fn TransferFixtureRequest::not_equal(Self, Self) -> Bool
-pub fn TransferFixtureRequest::to_json(Self) -> Json
+pub fn TransferFixtureRequest::to_json(Self) -> @json.Json
 pub fn TransferFixtureRequest::to_repr(Self) -> @debug.Repr
 
 // Type aliases

@@ -134,7 +134,7 @@ fn runtime_human(size : Int64, si : Bool) -> String raise {
   let quotient = Float::from_int64(reduced) / Float::from_int64(base)
   let precision = if (reduced + 52L) / base >= 10L { 0 } else { 1 }
   runtime_pad(runtime_decimal(quotient.to_double(), precision), 3) +
-  units.view(start_offset=unit, end_offset=unit + 1).to_owned()
+  units.clamped_view(start=unit, end=unit + 1).to_owned()
 }
 
 ///|
@@ -192,14 +192,14 @@ async fn runtime_text(text : String, sizes : RuntimeSizes) -> String {
       while end < text.length() && text[end] != '}' {
         end += 1
       }
-      let tail = text.view(start_offset=index + 2, end_offset=end).to_owned()
+      let tail = text.clamped_view(start=index + 2, end~).to_owned()
       if tail.has_prefix("STAT_") ||
         tail.has_prefix("HUMAN_SIZE:") ||
         tail.has_prefix("SI_SIZE:") {
         guard end < text.length() else {
           fail("unterminated runtime size token")
         }
-        output.write_view(text.view(start_offset=literal, end_offset=index))
+        output.write_view(text.clamped_view(start=literal, end=index))
         output.write_string(runtime_token(tail, sizes))
         index = end + 1
         literal = index
@@ -208,7 +208,7 @@ async fn runtime_text(text : String, sizes : RuntimeSizes) -> String {
     }
     index += 1
   }
-  output.write_view(text.view(start_offset=literal))
+  output.write_view(text.clamped_view(start=literal))
   output.to_string()
 }
 
@@ -427,9 +427,7 @@ fn runtime_unique_keys(text : String) -> Bool raise {
           index += 1
         }
         if index < text.length() && text[index] == ':' {
-          guard @json.parse(
-              text.view(start_offset=start, end_offset=end).to_owned(),
-            )
+          guard @json.parse(text.clamped_view(start~, end~).to_owned())
             is String(key) &&
             stack.last() is Some(Some(keys)) else {
             return false

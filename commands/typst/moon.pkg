@@ -1,0 +1,10 @@
+import {
+  "cli/typst/internal/driver",
+  "moonbitlang/async",
+  "moonbitlang/core/env",
+  "moonbitlang/x/sys",
+}
+
+supported_targets = "wasm"
+
+pkgtype(kind: "executable")

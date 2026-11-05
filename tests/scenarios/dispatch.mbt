@@ -59,6 +59,8 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "typst-artifacts" => typst_artifacts_scenario(root, work, proof?)
+        "typst-watch" => typst_watch_scenario(root, work, proof?)
         "tee-output-errors" =>
           tee_modes_scenario(root, work, tee_boundary, oracle_image?)
         "tee-output-errors-oracle" =>

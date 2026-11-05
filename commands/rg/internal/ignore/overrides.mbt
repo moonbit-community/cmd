@@ -14,18 +14,20 @@
 /// Note that not all matches necessarily correspond to a specific glob. For
 /// example, if there are one or more whitelist globs and a file path doesn't
 /// match any glob in the set, then the file path is considered to be ignored.
+#derive(Debug)
 pub(all) enum OverrideGlob {
   /// No glob matched, but the file path should still be ignored.
   UnmatchedIgnore
   /// A glob matched.
   Matched(GitignoreGlob)
-} derive(Debug)
+}
 
 ///|
 /// Manages a set of overrides provided explicitly by the end user.
+#derive(Debug)
 pub struct Override {
   priv gi : Gitignore
-} derive(Debug)
+}
 
 ///|
 /// Returns an empty matcher that never matches any file path.

@@ -65,76 +65,84 @@ pub(all) suberror FsOpError {
 }
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) enum BackupControl {
   NoBackup
   SimpleBackup
   NumberedBackup
   ExistingBackup
-} derive(Eq, @debug.Debug)
+}
 pub fn BackupControl::equal(Self, Self) -> Bool
 pub fn BackupControl::not_equal(Self, Self) -> Bool
 pub fn BackupControl::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) struct FileMetadata {
   kind : @fs.FileKind
   size : Int64?
   mtime_seconds : Int64
   mtime_nanoseconds : Int32
-} derive(Eq, @debug.Debug)
+}
 pub fn FileMetadata::equal(Self, Self) -> Bool
 pub fn FileMetadata::not_equal(Self, Self) -> Bool
 pub fn FileMetadata::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) struct FileTimestamp {
   seconds : Int64
   nanoseconds : Int32
-} derive(Eq, @debug.Debug)
+}
 pub fn FileTimestamp::equal(Self, Self) -> Bool
 pub fn FileTimestamp::not_equal(Self, Self) -> Bool
 pub fn FileTimestamp::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum LinkTraversal {
   NeverFollowLinks
   FollowCommandLineLinks
   FollowAllLinks
-} derive(Eq, @debug.Debug)
+}
 pub fn LinkTraversal::equal(Self, Self) -> Bool
 pub fn LinkTraversal::not_equal(Self, Self) -> Bool
 pub fn LinkTraversal::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum OutputMode {
   CreateNew
   CreateOrTruncate
   AppendOrCreate
-} derive(Eq, @debug.Debug)
+}
 pub fn OutputMode::equal(Self, Self) -> Bool
 pub fn OutputMode::not_equal(Self, Self) -> Bool
 pub fn OutputMode::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum OverwriteDecision {
   ReplaceDestination
   SkipDestination
   RejectDestination
-} derive(Eq, @debug.Debug)
+}
 pub fn OverwriteDecision::equal(Self, Self) -> Bool
 pub fn OverwriteDecision::not_equal(Self, Self) -> Bool
 pub fn OverwriteDecision::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum TimestampKind {
   AccessTime
   ModificationTime
   StatusChangeTime
-} derive(Eq, @debug.Debug)
+}
 pub fn TimestampKind::equal(Self, Self) -> Bool
 pub fn TimestampKind::not_equal(Self, Self) -> Bool
 pub fn TimestampKind::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum UpdateMode {
   UpdateAll
   UpdateNone
   UpdateNoneFail
   UpdateOlder
-} derive(Eq, @debug.Debug)
+}
 pub fn UpdateMode::equal(Self, Self) -> Bool
 pub fn UpdateMode::not_equal(Self, Self) -> Bool
 pub fn UpdateMode::to_repr(Self) -> @debug.Repr

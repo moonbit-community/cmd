@@ -1,4 +1,5 @@
 ///|
+#derive(Eq)
 priv enum PatternToken {
   Literal(Byte)
   Any
@@ -6,7 +7,7 @@ priv enum PatternToken {
   DoubleStar
   Class(Bool, Array[(Byte, Byte)])
   Invalid
-} derive(Eq)
+}
 
 ///|
 priv struct TreePattern {

@@ -1,19 +1,21 @@
 ///|
 /// A single position in a regular expression. `offset` is a character
 /// index into the pattern; `line` and `column` are 1-based.
+#derive(Debug, Eq, Compare)
 pub(all) struct Position {
   offset : Int32
   line : Int32
   column : Int32
-} derive(Debug, Eq, Compare)
+}
 
 ///|
 /// A span of a regular expression, from `start` (inclusive) to `end`
 /// (exclusive).
+#derive(Debug, Eq, Compare)
 pub(all) struct Span {
   start : Position
   end : Position
-} derive(Debug, Eq, Compare)
+}
 
 ///|
 fn Span::new(start : Position, end : Position) -> Span {
@@ -36,6 +38,7 @@ fn Span::is_one_line(self : Span) -> Bool {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum LiteralKind {
   Verbatim
   Meta
@@ -44,14 +47,15 @@ pub(all) enum LiteralKind {
   HexFixed(HexLiteralKind)
   HexBrace(HexLiteralKind)
   Special
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum HexLiteralKind {
   X
   UnicodeShort
   UnicodeLong
-} derive(Debug, Eq)
+}
 
 ///|
 fn HexLiteralKind::digits(self : HexLiteralKind) -> Int32 {
@@ -63,11 +67,12 @@ fn HexLiteralKind::digits(self : HexLiteralKind) -> Int32 {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct Literal {
   span : Span
   kind : LiteralKind
   c : Char
-} derive(Debug, Eq)
+}
 
 ///|
 /// If this literal was written as a `\x` hex escape with a value <= 0xFF,
@@ -85,6 +90,7 @@ fn Literal::byte(self : Literal) -> Int32? {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum AssertionKind {
   StartLine
   EndLine
@@ -98,16 +104,18 @@ pub(all) enum AssertionKind {
   WordBoundaryEndAngle
   WordBoundaryStartHalf
   WordBoundaryEndHalf
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ClassPerlKind {
   Digit
   Space
   Word
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ClassAsciiKind {
   Alnum
   Alpha
@@ -123,7 +131,7 @@ pub(all) enum ClassAsciiKind {
   Upper
   Word
   Xdigit
-} derive(Debug, Eq)
+}
 
 ///|
 fn ClassAsciiKind::from_name(name : String) -> ClassAsciiKind? {
@@ -147,25 +155,28 @@ fn ClassAsciiKind::from_name(name : String) -> ClassAsciiKind? {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ClassUnicodeOpKind {
   Equal
   Colon
   NotEqual
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ClassUnicodeKind {
   OneLetter(Char)
   Named(String)
   NamedValue(ClassUnicodeOpKind, String, String)
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct ClassUnicode {
   span : Span
   negated : Bool
   kind : ClassUnicodeKind
-} derive(Debug, Eq)
+}
 
 ///|
 fn ClassUnicode::is_negated(self : ClassUnicode) -> Bool {
@@ -176,13 +187,15 @@ fn ClassUnicode::is_negated(self : ClassUnicode) -> Bool {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ClassSetBinaryOpKind {
   Intersection
   Difference
   SymmetricDifference
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ClassSetItem {
   Empty(Span)
   Literal(Literal)
@@ -192,22 +205,25 @@ pub(all) enum ClassSetItem {
   Perl(Span, ClassPerlKind, Bool)
   Bracketed(ClassBracketed)
   Union(Span, Array[ClassSetItem])
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum ClassSet {
   Item(ClassSetItem)
   BinaryOp(Span, ClassSetBinaryOpKind, ClassSet, ClassSet)
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct ClassBracketed {
   mut span : Span
   negated : Bool
   mut kind : ClassSet
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum Flag {
   CaseInsensitive
   MultiLine
@@ -216,25 +232,28 @@ pub(all) enum Flag {
   Unicode
   CRLF
   IgnoreWhitespace
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum FlagsItemKind {
   Negation
   Flag(Flag)
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct FlagsItem {
   span : Span
   kind : FlagsItemKind
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct Flags {
   mut span : Span
   items : Array[FlagsItem]
-} derive(Debug, Eq)
+}
 
 ///|
 /// Adds an item; returns the index of a duplicate if there was one.
@@ -263,44 +282,50 @@ fn Flags::flag_state(self : Flags, flag : Flag) -> Bool? {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum RepetitionRange {
   Exactly(Int32)
   AtLeast(Int32)
   Bounded(Int32, Int32)
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum RepetitionKind {
   ZeroOrOne
   ZeroOrMore
   OneOrMore
   Range(RepetitionRange)
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct Repetition {
   span : Span
   kind : RepetitionKind
   greedy : Bool
   ast : Ast
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) enum GroupKind {
   CaptureIndex(Int32)
   CaptureName(Int32, String)
   NonCapturing(Flags)
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct Group {
   mut span : Span
   kind : GroupKind
   mut ast : Ast
-} derive(Debug, Eq)
+}
 
 ///|
 /// An abstract syntax tree for a single regular expression.
+#derive(Debug, Eq)
 pub(all) enum Ast {
   Empty(Span)
   SetFlags(Span, Flags)
@@ -314,7 +339,7 @@ pub(all) enum Ast {
   Group(Group)
   Alternation(Span, Array[Ast])
   Concat(Span, Array[Ast])
-} derive(Debug, Eq)
+}
 
 ///|
 fn Ast::span(self : Ast) -> Span {

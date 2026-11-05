@@ -1,14 +1,16 @@
 ///|
+#derive(FromJson, Debug)
 struct CommandRow {
   name : String
-} derive(FromJson, Debug)
+}
 
 ///|
+#derive(FromJson, Debug)
 struct Manifest {
   schema : Int32
   commands : Array[CommandRow]
   cases : Array[OracleCase]
-} derive(FromJson, Debug)
+}
 
 ///|
 fn validate_manifest(manifest : Manifest) -> Array[String] {

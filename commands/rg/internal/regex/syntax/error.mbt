@@ -1,5 +1,6 @@
 ///|
 /// The kind of a syntax or translation error.
+#derive(Debug, Eq)
 pub(all) enum ErrorKind {
   CaptureLimitExceeded
   ClassEscapeInvalid
@@ -43,7 +44,7 @@ pub(all) enum ErrorKind {
   UnicodePropertyValueNotFound
   UnicodePerlClassNotFound
   UnicodeCaseUnavailable
-} derive(Debug, Eq)
+}
 
 ///|
 fn ErrorKind::message(self : ErrorKind) -> String {
@@ -115,9 +116,10 @@ fn ErrorKind::aux_span(self : ErrorKind) -> Span? {
 
 ///|
 /// An error that occurred while parsing or translating a regex.
+#derive(Debug)
 pub suberror SyntaxError {
   SyntaxError(kind~ : ErrorKind, pattern~ : String, span~ : Span)
-} derive(Debug)
+}
 
 ///|
 fn SyntaxError::kind(self : SyntaxError) -> ErrorKind {

@@ -1,6 +1,6 @@
 # Upstream Baselines
 
-Updated: 2026-10-26
+Updated: 2026-11-05
 
 This file fixes the external behavior against which the workspace commands are
 measured. A baseline is an oracle for tests, not a runtime dependency. Product
@@ -28,10 +28,24 @@ code remains pure MoonBit.
 | jq | jq 1.8.2 | `jq`, including its option and filter-language behavior |
 | Vim `xxd` | Vim 9.1.0000 `xxd` | `xxd`; the oracle image pins the exact Vim tag archive and image digest |
 | Imported `jqlog` source | `bobzhang/jqlog@0.1.0` at commit `06a529211343c773d30d2c3aa0231a2456665b7a` | `jqlog`; this is a source-snapshot migration baseline because there is no standard system command named `jqlog` |
+| Typst | Typst 0.15.1 official Linux x86_64 musl binary | `typst`; selected evaluation, inputs, imports and timestamp cases; exported document structure has independent local contracts |
 
 `which` uses explicit PATH/access/PATHEXT contracts; this image does not build a
 separate pinned GNU which executable. `jqlog`'s source label is provenance,
 not an executable oracle. Neither a label nor a host PATH tool proves parity.
+
+The unpublished Typst command migrates CLI/kit sources from
+[`moonbitlang/typst.mbt@5fcffcf09cb1aeed0c00237aaac4a66b4a466c65`](https://github.com/moonbitlang/typst.mbt/tree/5fcffcf09cb1aeed0c00237aaac4a66b4a466c65).
+Its engine dependency is `moonbitlang/typst@0.1.10` (registry distribution
+SHA-256 `671fb51e188bbfd4abd143f7121985c7ae8321d8267e889ee36010f981dfc32d`),
+which records Rust Typst 0.15.1 at
+`e58a63af09032a486b12241d08ebd04131483221` as its upstream baseline.
+These identify source provenance and runtime dependencies. The separate official
+Typst 0.15.1 release binary is the executable oracle; the image records its
+version and verified distribution checksum. A sealed image profile and completed
+differential cases are required before claiming those comparisons passed.
+Raw evaluation output exists in the migrated source but not the official
+0.15.1 binary; its byte/output-failure assertions remain local contracts.
 
 The Phase 0 image is built from
 `ubuntu@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30`.
@@ -56,10 +70,11 @@ Every downloaded source or official binary is verified before use:
 | `binutils-2.44.tar.xz` | `ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237` |
 | `tree-2.2.1.tgz` | `68ac45dc78c0c311ada06200ffc3c285e74223ba208061f8d15ffac25e44b2ec` |
 | ripgrep commit archive | `e2c23831f1057a7e15575a72a64a900b317a86661561a786a36795717d602561` |
+| Typst 0.15.1 `typst-x86_64-unknown-linux-musl.tar.xz` | `a6d077d0a95eed5a2eba715b2dae06be954f624ccbf85758a03f389ded33118c` |
 | `rust-1.97.1-x86_64-unknown-linux-gnu.tar.xz` | `88f28fa9af20594179f85d6df67078dfd6fa93e2f6da5e1e9b0ac4997988ca4f` |
 
 The [Dockerfile](../tests/fixtures/oracle/Dockerfile) is the build authority; its
-17 component stages are assembled in a fixed order. The table above records
+18 component stages are assembled in a fixed order. The table above records
 the current pins, not the latest versions available upstream. Apt build/runtime
 dependencies are not individually pinned by this recipe, so its base digest
 and source hashes alone do not identify a finished executable image.

@@ -1,9 +1,10 @@
 ///|
 /// The byte offsets of a match, relative to the haystack searched.
+#derive(Debug, Eq, Hash)
 pub(all) struct Match {
   start : Int32
   end : Int32
-} derive(Debug, Eq, Hash)
+}
 
 ///|
 pub fn Match::new(start : Int32, end : Int32) -> Match {
@@ -39,10 +40,11 @@ pub fn Match::is_empty(self : Match) -> Bool {
 ///|
 /// A line terminator: either a single byte or CRLF (which means `\n` is the
 /// terminator but a preceding `\r` is also stripped).
+#derive(Debug, Eq, Hash)
 pub(all) enum LineTerminator {
   Byte(Byte)
   CRLF
-} derive(Debug, Eq, Hash)
+}
 
 ///|
 pub fn LineTerminator::byte(b : Byte) -> LineTerminator {
@@ -133,12 +135,13 @@ pub impl Debug for ByteSet with fn to_repr(self) {
 
 ///|
 /// The result of searching for a candidate line.
+#derive(Debug, Eq)
 pub(all) enum LineMatchKind {
   /// A line was confirmed to match; the offset is within that line.
   Confirmed(Int32)
   /// A line may match; the offset is within that line.
   Candidate(Int32)
-} derive(Debug, Eq)
+}
 
 ///|
 /// Capture group positions for a single match. Offsets are relative to the

@@ -18,12 +18,13 @@ priv enum BinaryMode {
 
 ///|
 /// An error raised by the searcher itself.
+#derive(Debug)
 pub suberror SearchError {
   /// A configuration error.
   ConfigError(String)
   /// A generic I/O-like error (e.g. the heap limit was exceeded).
   SearchIOError(String)
-} derive(Debug)
+}
 
 ///|
 pub fn SearchError::to_string(self : SearchError) -> String {

@@ -1,10 +1,11 @@
 ///|
+#derive(Eq, Hash)
 priv struct State {
   pc : Int32
   position : Int32
   captures : Array[Int32]
   previous : Array[Int32]
-} derive(Eq, Hash)
+}
 
 ///|
 // Independent tagged DFS used only to check the ordinary Thompson matcher.

@@ -9,9 +9,10 @@ import {
 pub fn escape(String) -> String
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub suberror GlobError {
   GlobError(glob~ : String?, kind~ : ErrorKind)
-} derive(Eq, @debug.Debug)
+}
 pub fn GlobError::glob(Self) -> String?
 pub fn GlobError::kind(Self) -> ErrorKind
 pub fn GlobError::to_string(Self) -> String
@@ -25,6 +26,7 @@ pub fn Candidate::from_bytes(Bytes) -> Self
 pub fn Candidate::new(String) -> Self
 pub impl @debug.Debug for Candidate
 
+#derive(Eq, @debug.Debug)
 pub(all) enum ErrorKind {
   InvalidRecursive
   UnclosedClass
@@ -34,7 +36,7 @@ pub(all) enum ErrorKind {
   NestedAlternates
   DanglingEscape
   Regex(String)
-} derive(Eq, @debug.Debug)
+}
 pub fn ErrorKind::to_string(Self) -> String
 pub impl Show for ErrorKind
 
@@ -50,9 +52,10 @@ pub impl Hash for Glob
 pub impl Show for Glob
 pub impl @debug.Debug for Glob
 
+#derive(@debug.Debug)
 pub struct GlobBuilder {
   // private fields
-} derive(@debug.Debug)
+}
 pub fn GlobBuilder::allow_unclosed_class(Self, Bool) -> Self
 pub fn GlobBuilder::backslash_escape(Self, Bool) -> Self
 pub fn GlobBuilder::build(Self) -> Glob raise GlobError
@@ -82,9 +85,10 @@ pub fn GlobSet::matches_into(Self, String, Array[Int32]) -> Unit
 pub fn GlobSet::new(ArrayView[Glob]) -> Self raise GlobError
 pub impl Default for GlobSet
 
+#derive(@debug.Debug)
 pub struct GlobSetBuilder {
   // private fields
-} derive(@debug.Debug)
+}
 pub fn GlobSetBuilder::add(Self, Glob) -> Self
 pub fn GlobSetBuilder::build(Self) -> GlobSet raise GlobError
 pub fn GlobSetBuilder::new() -> Self

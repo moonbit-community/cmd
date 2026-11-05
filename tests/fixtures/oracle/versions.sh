@@ -18,6 +18,7 @@ find --version | head -n1
 xargs --version | head -n1
 grep --version | head -n1
 rg --version | head -n1
+typst --version
 wget --version | head -n1
 curl --version | head -n1
 make --version | head -n1

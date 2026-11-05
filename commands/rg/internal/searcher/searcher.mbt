@@ -1,5 +1,6 @@
 ///|
 /// The binary detection mode for a searcher.
+#derive(Debug, Eq)
 pub(all) enum BinaryDetection {
   /// No binary detection.
   BinaryNone
@@ -7,7 +8,7 @@ pub(all) enum BinaryDetection {
   BinaryQuit(Byte)
   /// Replace the given byte with the line terminator.
   BinaryConvert(Byte)
-} derive(Debug, Eq)
+}
 
 ///|
 pub fn BinaryDetection::quit_byte(self : BinaryDetection) -> Byte? {

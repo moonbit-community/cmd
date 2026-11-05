@@ -1,0 +1,24 @@
+import {
+  "moonbitlang/async/fs",
+  "moonbitlang/typst/syntax",
+  "moonbitlang/typst/library",
+  "moonbitlang/typst/otf",
+  "moonbitlang/typst/unicode",
+  "moonbitlang/typst/data/xml",
+  "cli/typst/internal/kit/platform",
+  "moonbitlang/typst/typst_assets/fonts" @assets_fonts,
+  "moonbitlang/core/cmp",
+  "moonbitlang/core/hashset",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/debug",
+}
+
+import {
+  "moonbitlang/core/debug",
+} for "test"
+
+import {
+  "moonbitlang/async",
+} for "wbtest"
+
+supported_targets = "wasm"

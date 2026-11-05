@@ -1,5 +1,6 @@
 ///|
 /// The kind of error that can occur when parsing a glob pattern.
+#derive(Eq, Debug)
 pub(all) enum ErrorKind {
   /// **DEPRECATED**.
   ///
@@ -29,7 +30,7 @@ pub(all) enum ErrorKind {
   DanglingEscape
   /// An error associated with parsing or compiling a regex.
   Regex(String)
-} derive(Eq, Debug)
+}
 
 ///|
 fn ErrorKind::description(self : ErrorKind) -> String {
@@ -62,9 +63,10 @@ pub fn ErrorKind::to_string(self : ErrorKind) -> String {
 
 ///|
 /// Represents an error that can occur when parsing a glob pattern.
+#derive(Eq, Debug)
 pub suberror GlobError {
   GlobError(glob~ : String?, kind~ : ErrorKind)
-} derive(Eq, Debug)
+}
 
 ///|
 /// Return the glob that caused this error, if one exists.

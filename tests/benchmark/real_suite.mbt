@@ -56,8 +56,8 @@ fn real_command_scope() -> Set[String] {
     "nl", "od", "paste", "patch", "printenv", "printf", "pwd", "realpath", "rev",
     "rg", "rm", "rmdir", "sed", "seq", "sh", "sha1sum", "sha256sum", "sha512sum",
     "sleep", "sort", "split", "strings", "tac", "tail", "tee", "test", "timeout",
-    "touch", "tr", "tree", "true", "unexpand", "uniq", "unlink", "wc", "wget", "which",
-    "xargs", "xxd", "yes", "zcat",
+    "touch", "tr", "tree", "true", "typst", "unexpand", "uniq", "unlink", "wc", "wget",
+    "which", "xargs", "xxd", "yes", "zcat",
   ])
 }
 
@@ -66,7 +66,7 @@ fn real_untimed_scope() -> Set[String] {
   Set([
     "basename", "date", "dirname", "echo", "env", "expr", "false", "jqlog", "mkdir",
     "mktemp", "printenv", "printf", "pwd", "realpath", "rmdir", "sleep", "timeout",
-    "touch", "true", "unlink", "which", "yes",
+    "touch", "true", "typst", "unlink", "which", "yes",
   ])
 }
 
@@ -389,7 +389,7 @@ fn real_suite_errors(
   }
   if commands != real_command_scope() {
     errors.push(
-      "real coverage must account for every command in the reviewed80-command scope",
+      "real coverage must account for every command in the reviewed81-command scope",
     )
   }
   errors

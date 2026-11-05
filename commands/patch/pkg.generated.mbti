@@ -16,7 +16,8 @@ type FilePatch
 
 type Hunk
 
-type Line derive(Eq, @debug.Debug)
+#derive(Eq, @debug.Debug)
+type Line
 
 // Type aliases
 

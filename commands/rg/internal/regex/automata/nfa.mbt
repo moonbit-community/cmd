@@ -1,13 +1,15 @@
 ///|
 /// A single byte range transition.
+#derive(Debug, Eq)
 pub(all) struct Transition {
   start : Int32
   end : Int32
   next : Int32
-} derive(Debug, Eq)
+}
 
 ///|
 /// A state in a Thompson NFA.
+#derive(Debug, Eq)
 pub(all) enum State {
   ByteRange(Int32, Int32, Int32)
   Sparse(Array[Transition])
@@ -17,7 +19,7 @@ pub(all) enum State {
   Capture(next~ : Int32, group~ : Int32, slot~ : Int32)
   Fail
   Match
-} derive(Debug, Eq)
+}
 
 ///|
 fn State::is_epsilon(self : State) -> Bool {
@@ -187,9 +189,10 @@ fn Builder::patch(self : Builder, from : Int32, to : Int32) -> Unit {
 
 ///|
 /// An error that occurs when building an NFA.
+#derive(Debug)
 pub suberror BuildError {
   TooBig(Int32)
-} derive(Debug)
+}
 
 ///|
 fn Builder::check_size(self : Builder) -> Unit raise BuildError {

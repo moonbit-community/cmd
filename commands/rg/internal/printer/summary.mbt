@@ -15,6 +15,7 @@ priv struct SummaryConfig {
 
 ///|
 /// The type of summary output (if any) to print.
+#derive(Eq, Debug)
 pub(all) enum SummaryKind {
   /// Show only a count of the total number of matches (counting each line
   /// at most once) found.
@@ -31,7 +32,7 @@ pub(all) enum SummaryKind {
   /// Don't show any output and stop the search once a non-matching file is
   /// found.
   QuietWithoutMatch
-} derive(Eq, Debug)
+}
 
 ///|
 /// Returns true if and only if this output mode requires a file path.
@@ -423,9 +424,10 @@ pub impl @searcher.Sink for SummarySink with fn finish(self, searcher, finish) {
 ///|
 /// An error reported by a printer (the analogue of an `io::Error` created
 /// from a message in the Rust implementation).
+#derive(Debug)
 pub(all) suberror PrinterError {
   PrinterError(String)
-} derive(Debug)
+}
 
 ///|
 pub impl Show for PrinterError with fn output(self, logger) {

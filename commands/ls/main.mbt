@@ -1,17 +1,19 @@
 ///|
+#derive(Eq)
 priv enum SortMode {
   SortByName
   SortByTime
   SortBySize
-} derive(Eq)
+}
 
 ///|
+#derive(Eq)
 priv enum LinkMode {
   NeverFollowLinks
   FollowCommandLineDirectories
   FollowCommandLineLinks
   FollowAllLinks
-} derive(Eq)
+}
 
 ///|
 priv struct LsOptions {

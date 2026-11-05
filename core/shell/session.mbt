@@ -9,11 +9,12 @@ struct Session {
 }
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum SessionResult {
   NeedMoreInput
   Completed(Int32)
   Exit(Int32)
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn Session::new(

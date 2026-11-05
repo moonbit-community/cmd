@@ -1,4 +1,5 @@
 ///|
+#derive(ToJson)
 priv struct FunctionalRow {
   workload : FunctionalWorkload
   role : String
@@ -8,7 +9,7 @@ priv struct FunctionalRow {
   samples : Array[PairedSample]
   result : RowResult?
   probe : Json?
-} derive(ToJson)
+}
 
 ///|
 priv struct FunctionalSide {

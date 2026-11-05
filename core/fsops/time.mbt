@@ -1,15 +1,17 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum TimestampKind {
   AccessTime
   ModificationTime
   StatusChangeTime
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct FileTimestamp {
   seconds : Int64
   nanoseconds : Int32
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn compare_timestamps(left : FileTimestamp, right : FileTimestamp) -> Int32 {

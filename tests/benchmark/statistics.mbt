@@ -1,23 +1,26 @@
 ///|
+#derive(ToJson)
 priv enum PairOrder {
   CandidateFirst
   UpstreamFirst
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct ScheduledPair {
   index : Int32
   block : Int32
   order : PairOrder
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct SamplingPlan {
   warmups : Array[PairOrder]
   pairs : Array[ScheduledPair]
   bootstrap_seed : Bytes
   bootstrap_iterations : Int32
-} derive(ToJson)
+}
 
 ///|
 fn sampling_plan() -> SamplingPlan {
@@ -43,12 +46,14 @@ fn pair_order(index : Int32) -> PairOrder {
 }
 
 ///|
+#derive(ToJson)
 priv struct PairedSample {
   candidate_us : Double
   upstream_us : Double
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct SideStatistics {
   median_us : Double
   p95_us : Double
@@ -56,36 +61,40 @@ priv struct SideStatistics {
   block_medians_us : Array[Double]
   block_drift : Double
   noisy : Bool
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct RatioInterval {
   lower : Double
   upper : Double
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct RowStatistics {
   candidate : SideStatistics
   upstream : SideStatistics
   r50 : Double
   r95 : Double
   r50_interval95 : RatioInterval
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv enum RowVerdict {
   Pass
   Fail
   Inconclusive
-} derive(ToJson)
+}
 
 ///|
+#derive(ToJson)
 priv struct RowResult {
   verdict : RowVerdict
   statistics : RowStatistics?
   reasons : Array[String]
-} derive(ToJson)
+}
 
 ///|
 fn finite_positive(value : Double) -> Bool {

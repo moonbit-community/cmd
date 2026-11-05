@@ -7,11 +7,12 @@ priv struct Thread {
 }
 
 ///|
+#derive(Eq, Hash)
 priv struct Tags {
   pc : Int32
   captures : Array[Int32]
   previous : Array[Int32]
-} derive(Eq, Hash)
+}
 
 ///|
 priv struct Spans {

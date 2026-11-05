@@ -3465,6 +3465,58 @@
         "proof-rg-word-regexp-boundaries",
         "proof-rg-line-regexp-boundaries"
       ]
+    },
+    {
+      "name": "typst",
+      "package_name": "cli/typst",
+      "compare_profile": "typst",
+      "supported_options": [
+        "help",
+        "version",
+        "input",
+        "format",
+        "root",
+        "creation-timestamp",
+        "pretty",
+        "jobs",
+        "in",
+        "field",
+        "one",
+        "ignore-system-fonts",
+        "ignore-embedded-fonts",
+        "pages",
+        "ppi",
+        "deps",
+        "no-serve",
+        "timings",
+        "update",
+        "completions"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "typst-version",
+        "typst-version-short",
+        "typst-eval-arithmetic",
+        "typst-eval-input",
+        "typst-eval-pretty",
+        "typst-eval-yaml",
+        "typst-eval-raw",
+        "typst-eval-jobs",
+        "typst-eval-timestamp",
+        "typst-eval-stdin",
+        "typst-eval-root-import",
+        "typst-query-heading",
+        "typst-reject-completions",
+        "typst-reject-update",
+        "typst-reject-timings",
+        "typst-fonts-embedded",
+        "typst-fonts-none",
+        "typst-compile-svg",
+        "typst-reject-watch-server",
+        "typst-artifacts",
+        "typst-watch"
+      ]
     }
   ]
 }

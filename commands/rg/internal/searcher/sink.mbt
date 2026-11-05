@@ -1,9 +1,10 @@
 ///|
 /// Information passed to a sink when a search finishes.
+#derive(Debug)
 pub(all) struct SinkFinish {
   byte_count : Int64
   binary_byte_offset : Int64?
-} derive(Debug)
+}
 
 ///|
 /// A matching span: one line, adjacent lines for an opted-in sink, or a
@@ -26,11 +27,12 @@ pub(all) struct SinkMatch {
 
 ///|
 /// The kind of context line.
+#derive(Debug, Eq)
 pub(all) enum SinkContextKind {
   Before
   After
   Other
-} derive(Debug, Eq)
+}
 
 ///|
 /// A context line.

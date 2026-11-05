@@ -302,6 +302,19 @@ RUN curl --fail --location --retry 5 \
   && PATH=/opt/rust/bin:$PATH cargo build --release --locked --bin rg \
   && install -m 0755 target/release/rg /oracle/bin/rg
 
+FROM toolchain AS build-typst
+
+ARG TYPST_VERSION=0.15.1
+ARG TYPST_SHA256=a6d077d0a95eed5a2eba715b2dae06be954f624ccbf85758a03f389ded33118c
+
+RUN curl --fail --location --retry 5 \
+      "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-x86_64-unknown-linux-musl.tar.xz" \
+      --output typst.tar.xz \
+  && echo "${TYPST_SHA256}  typst.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file typst.tar.xz \
+  && install -m 0755 typst-x86_64-unknown-linux-musl/typst /oracle/bin/typst \
+  && rm -rf typst.tar.xz typst-x86_64-unknown-linux-musl
+
 FROM toolchain AS oracle
 
 COPY --from=build-coreutils /oracle/ /oracle/
@@ -321,6 +334,7 @@ COPY --from=build-util-linux /oracle/ /oracle/
 COPY --from=build-binutils /oracle/ /oracle/
 COPY --from=build-tree /oracle/ /oracle/
 COPY --from=build-ripgrep /oracle/ /oracle/
+COPY --from=build-typst /oracle/ /oracle/
 
 RUN ln -s /oracle/bin/dash /oracle/bin/sh
 

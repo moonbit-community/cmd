@@ -1,5 +1,6 @@
 ///|
 // Direct-child observations; no benchmark statistics or coverage claims.
+#derive(ToJson)
 struct Observation {
   status : Int32
   elapsed_us : Double
@@ -14,7 +15,7 @@ struct Observation {
   residual_temp_bytes : Int64
   output_bytes : Int64
   timed_out : Bool
-} derive(ToJson)
+}
 
 ///|
 struct Samples {

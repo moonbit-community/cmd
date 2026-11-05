@@ -1,4 +1,5 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum ErrorKind {
   UnknownOption
   MissingOptionValue
@@ -7,12 +8,13 @@ pub(all) enum ErrorKind {
   InvalidValue
   MissingOperand
   UnsupportedCapability
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) suberror CliError {
   CliError(kind~ : ErrorKind, option~ : String, message~ : String)
-} derive(Eq, Debug)
+}
 
 ///|
 pub(all) struct OptionSpec {

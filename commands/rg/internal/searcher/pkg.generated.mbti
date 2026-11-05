@@ -10,19 +10,21 @@ import {
 pub const DEFAULT_BUFFER_CAPACITY : Int32 = 65536
 
 // Errors
+#derive(@debug.Debug)
 pub suberror SearchError {
   ConfigError(String)
   SearchIOError(String)
-} derive(@debug.Debug)
+}
 pub fn SearchError::to_string(Self) -> String
 pub impl Show for SearchError
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) enum BinaryDetection {
   BinaryNone
   BinaryQuit(Byte)
   BinaryConvert(Byte)
-} derive(Eq, @debug.Debug)
+}
 pub fn BinaryDetection::convert_byte(Self) -> Byte?
 pub fn BinaryDetection::quit_byte(Self) -> Byte?
 
@@ -96,16 +98,18 @@ pub(all) struct SinkContext {
   mut line_number : Int64?
 }
 
+#derive(Eq, @debug.Debug)
 pub(all) enum SinkContextKind {
   Before
   After
   Other
-} derive(Eq, @debug.Debug)
+}
 
+#derive(@debug.Debug)
 pub(all) struct SinkFinish {
   byte_count : Int64
   binary_byte_offset : Int64?
-} derive(@debug.Debug)
+}
 
 pub(all) struct SinkMatch {
   mut line_term : @matcher.LineTerminator

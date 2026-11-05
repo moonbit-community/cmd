@@ -1,9 +1,10 @@
 ///|
+#derive(Eq)
 priv enum BinaryMode {
   Report
   Text
   WithoutMatch
-} derive(Eq)
+}
 
 ///|
 priv struct GrepOptions {

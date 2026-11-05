@@ -4,6 +4,7 @@ pub(all) suberror ShellError {
 }
 
 ///|
+#derive(Eq)
 priv enum WordPart {
   Text(String)
   QuotedText(String)
@@ -16,15 +17,17 @@ priv enum WordPart {
   AllArgs(Bool, Bool)
   Arithmetic(String, Bool)
   DefaultVariable(String, String, String, Bool)
-} derive(Eq)
+}
 
 ///|
+#derive(Eq)
 priv struct Word {
   parts : Array[WordPart]
   preserve_empty : Bool
-} derive(Eq)
+}
 
 ///|
+#derive(Eq)
 priv enum Token {
   WordToken(Word)
   Sequence
@@ -42,7 +45,7 @@ priv enum Token {
   LBrace
   RBrace
   CaseEnd
-} derive(Eq)
+}
 
 ///|
 priv struct Redirect {

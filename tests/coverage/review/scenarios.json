@@ -4790,6 +4790,76 @@
           ]
         }
       ]
+    },
+    {
+      "case_id": "typst-artifacts",
+      "assertions": [
+        {
+          "id": "typst/exports",
+          "command": "typst",
+          "relation": "equal",
+          "expected": {
+            "pdf_stream_equals_file": true,
+            "deps": {
+              "inputs": [
+                "main.typ"
+              ],
+              "outputs": [
+                "out.pdf"
+              ]
+            },
+            "ppi_dimensions": true,
+            "selected_page": 2,
+            "svg": "<svg viewBox=\"0 0 20 10\" width=\"20pt\" height=\"10pt\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:h5=\"http://www.w3.org/1999/xhtml\"><path fill=\"#ffffff\" fill-rule=\"nonzero\" d=\"M 0 0v 10h 20v -10Z \"/><path fill=\"#000000\" fill-rule=\"nonzero\" d=\"M 0 0v 10h 20v -10Z \"/></svg>",
+            "source_retained": true
+          },
+          "observations": [
+            "binary-stdout",
+            "output-file",
+            "png-dimensions",
+            "page-selection",
+            "dependency-file",
+            "source-retention"
+          ]
+        },
+        {
+          "id": "typst/output-failure",
+          "command": "typst",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "diagnostic": true,
+            "child_reaped": true
+          },
+          "observations": [
+            "closed-output-pipe",
+            "nonzero-status",
+            "failure-diagnostic",
+            "child-exit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "typst-watch",
+      "assertions": [
+        {
+          "id": "typst/watch",
+          "command": "typst",
+          "relation": "equal",
+          "expected": {
+            "initial": "<svg viewBox=\"0 0 20 10\" width=\"20pt\" height=\"10pt\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:h5=\"http://www.w3.org/1999/xhtml\"><path fill=\"#ffffff\" fill-rule=\"nonzero\" d=\"M 0 0v 10h 20v -10Z \"/><path fill=\"#000000\" fill-rule=\"nonzero\" d=\"M 0 0v 10h 20v -10Z \"/></svg>",
+            "updated": "<svg viewBox=\"0 0 20 10\" width=\"20pt\" height=\"10pt\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:h5=\"http://www.w3.org/1999/xhtml\"><path fill=\"#ffffff\" fill-rule=\"nonzero\" d=\"M 0 0v 10h 20v -10Z \"/><path fill=\"#ff0000\" fill-rule=\"nonzero\" d=\"M 0 0v 10h 20v -10Z \"/></svg>",
+            "child_reaped": true
+          },
+          "observations": [
+            "initial-output",
+            "changed-input",
+            "recompiled-output",
+            "child-exit"
+          ]
+        }
+      ]
     }
   ]
 }

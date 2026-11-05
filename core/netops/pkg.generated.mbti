@@ -23,18 +23,20 @@ pub fn transfer_options(profile? : TransferProfile, request_method? : HttpMethod
 pub fn url_host(String) -> String raise TransferError
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror TransferError {
   TransferError(kind~ : TransferErrorKind, message~ : String, status~ : Int32?, context~ : TransferFailureContext?)
-} derive(Eq, @debug.Debug)
+}
 pub fn TransferError::equal(Self, Self) -> Bool
 pub fn TransferError::not_equal(Self, Self) -> Bool
 pub fn TransferError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) enum BasicCredentialScope {
   InitialOrigin
   AllOrigins
-} derive(Eq, @debug.Debug)
+}
 pub fn BasicCredentialScope::equal(Self, Self) -> Bool
 pub fn BasicCredentialScope::not_equal(Self, Self) -> Bool
 pub fn BasicCredentialScope::to_repr(Self) -> @debug.Repr
@@ -53,14 +55,16 @@ pub(all) enum CustomCookieMode {
   ReplaceStored
 }
 
+#derive(Eq, @debug.Debug)
 pub(all) struct HttpHeader {
   name : String
   value : String
-} derive(Eq, @debug.Debug)
+}
 pub fn HttpHeader::equal(Self, Self) -> Bool
 pub fn HttpHeader::not_equal(Self, Self) -> Bool
 pub fn HttpHeader::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum HttpMethod {
   Get
   Head
@@ -71,39 +75,43 @@ pub(all) enum HttpMethod {
   Options
   Trace
   Patch
-} derive(Eq, @debug.Debug)
+}
 pub fn HttpMethod::equal(Self, Self) -> Bool
 pub fn HttpMethod::not_equal(Self, Self) -> Bool
 pub fn HttpMethod::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum RedirectPolicy {
   NoRedirects
   FollowRedirects(Int32)
-} derive(Eq, @debug.Debug)
+}
 pub fn RedirectPolicy::equal(Self, Self) -> Bool
 pub fn RedirectPolicy::not_equal(Self, Self) -> Bool
 pub fn RedirectPolicy::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) enum RequestBody {
   EmptyBody
   BytesBody(Bytes)
   FileBody(String)
   StdinBody
-} derive(@debug.Debug)
+}
 pub fn RequestBody::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum ResponseFraming {
   Bodyless
   FixedLength(Int64)
   Chunked
   CloseDelimited
-} derive(Eq, @debug.Debug)
+}
 pub fn ResponseFraming::equal(Self, Self) -> Bool
 pub fn ResponseFraming::not_equal(Self, Self) -> Bool
 pub fn ResponseFraming::to_repr(Self) -> @debug.Repr
 
 type StoredCookie
 
+#derive(Eq, @debug.Debug)
 pub(all) enum TransferErrorKind {
   InvalidUrl
   UnsupportedProtocol
@@ -121,36 +129,39 @@ pub(all) enum TransferErrorKind {
   RewindFailure
   OutputFailure
   ProtocolFailure
-} derive(Eq, @debug.Debug)
+}
 pub fn TransferErrorKind::equal(Self, Self) -> Bool
 pub fn TransferErrorKind::not_equal(Self, Self) -> Bool
 pub fn TransferErrorKind::to_repr(Self) -> @debug.Repr
 
+#derive(@debug.Debug)
 pub(all) enum TransferEvent {
   ResponseStarted(url~ : String, status~ : Int32, reason~ : String, headers~ : Array[HttpHeader], content_length~ : Int64?)
   Redirected(status~ : Int32, from~ : String, to~ : String)
   OutputStarted(path~ : String?, response_offset~ : Int64)
   Progress(received~ : Int64, content_length~ : Int64?)
   Completed(received~ : Int64, content_length~ : Int64?)
-} derive(@debug.Debug)
+}
 pub fn TransferEvent::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) struct TransferFailureContext {
   phase : TransferPhase
   framing : ResponseFraming?
   received_bytes : Int64
   committed_bytes : Int64
   write_outcome_uncertain : Bool
-} derive(Eq, @debug.Debug)
+}
 pub fn TransferFailureContext::equal(Self, Self) -> Bool
 pub fn TransferFailureContext::not_equal(Self, Self) -> Bool
 pub fn TransferFailureContext::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum TransferFileMode {
   Truncate
   Append
   Unique
-} derive(Eq, @debug.Debug)
+}
 pub fn TransferFileMode::equal(Self, Self) -> Bool
 pub fn TransferFileMode::not_equal(Self, Self) -> Bool
 pub fn TransferFileMode::to_repr(Self) -> @debug.Repr
@@ -181,28 +192,31 @@ pub(all) struct TransferOptions {
   basic_credential_scope : BasicCredentialScope
 }
 
+#derive(@debug.Debug)
 pub(all) enum TransferOutput {
   StandardOutput
   DiscardOutput
   FileOutput(path~ : String, mode~ : TransferFileMode, content_disposition~ : Bool, remove_on_error~ : Bool)
-} derive(@debug.Debug)
+}
 pub fn TransferOutput::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum TransferPhase {
   Connection
   Request
   ResponseHeaders
   ResponseBody
-} derive(Eq, @debug.Debug)
+}
 pub fn TransferPhase::equal(Self, Self) -> Bool
 pub fn TransferPhase::not_equal(Self, Self) -> Bool
 pub fn TransferPhase::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum TransferProfile {
   StrictProfile
   CurlProfile
   WgetProfile
-} derive(Eq, @debug.Debug)
+}
 pub fn TransferProfile::equal(Self, Self) -> Bool
 pub fn TransferProfile::not_equal(Self, Self) -> Bool
 pub fn TransferProfile::to_repr(Self) -> @debug.Repr

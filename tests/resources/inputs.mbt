@@ -64,13 +64,14 @@ async fn write_input(
 }
 
 ///|
+#derive(ToJson)
 struct ContentInput {
   bytes : Int64
   rows : Int64
   short_record_bytes : Int64
   mixed : Bool
   section_offsets : Array[Int64]
-} derive(ToJson)
+}
 
 ///|
 fn content_width(row : Int64, mixed : Bool) -> Int64 {

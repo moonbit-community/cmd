@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-01
+Updated: 2026-11-05
 
 ## Decision
 
@@ -38,6 +38,48 @@ write is never replayed during cleanup. Budgeted storage is not a process RSS ca
 Public APIs and generated data are not dead code merely because current runtime
 consumers are absent. The [core migration table](../../core/README.md#090-api-changes)
 records versioned API changes; published coordinates remain independent.
+
+## Typst command adaptation
+
+`commands/typst` owns the migrated CLI driver, document environment, font and
+local-package discovery, and watcher. The engine remains the released external
+`moonbitlang/typst@0.1.10` dependency. The upstream executable has no callable
+public dispatcher, and its kit imports its own platform implementation; copying
+only its main function cannot replace that dependency. Keep the necessary kit
+packages private here, with a local pure MoonBit platform adapter. Do not copy
+the evaluator, layout engine, exporters or embedded font assets into cmd, and
+do not introduce a shared core API without a second actual consumer.
+
+The synchronous engine's filesystem callbacks use released `moonbitlang/x/fs`
+APIs. File and font reads can retain complete files. Explicit stdin is read once
+through `moonbitlang/async/stdio` after argument validation and retained by the
+document environment. The same public async API writes binary output and
+propagates write failures to a nonzero exit. Metadata commands do not read stdin.
+No command-owned FFI, native stub or unstable host declaration is used. External
+dependencies may contain code for other targets; only their Wasm implementations
+belong to this product's build.
+
+Lexical canonicalization, path-based identity, unavailable terminal detection
+and UTC local-time fallback remain explicit limitations. Symlink-aware root
+containment is not established. Improve these only with a released synchronous
+public API or a reviewed engine integration that supplies async observations
+without breaking synchronous callbacks. Full recompilation preserves the
+upstream watch model; no performance acceptance is claimed. Network package
+downloads, viewer launching, self-update, completion generation, traces and
+the HTML HTTP server remain rejected. Each capability needs an implementation
+through public MoonBit APIs and registered regression evidence before enabling.
+
+Preserve the migrated upstream tests and keep command-specific integration tests
+private. Registered CLI evidence covers metadata, evaluation, imports, embedded
+fonts, exact SVG, PDF file/stdout identity, PNG dimensions, page selection,
+dependency output, broken output and watch recompilation. A separate PDF reader
+checks exported page structure. These are local assertions, not Rust Typst
+differential parity. The release policy includes the first-release candidate;
+publication requires three-platform development checks including the registered
+pinned Typst 0.15.1 comparisons on Linux. Exact-coordinate MoonX acceptance
+follows the authorized publication. Typst has an explicit untimed disposition;
+future performance work requires genuine document/font workloads and a fresh
+baseline containing all 81 command artifacts.
 
 ## Search ownership and execution
 

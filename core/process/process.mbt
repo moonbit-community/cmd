@@ -26,10 +26,11 @@ pub(all) struct ChildSpec {
 ///|
 /// POSIX command-launch outcomes shared by the upstream `env`, `xargs`, and
 /// `timeout` contracts. Diagnostic wording remains command-owned.
+#derive(Eq, Debug)
 pub(all) enum LaunchFailure {
   CommandNotFound
   CommandNotInvokable
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn launch_failure_status(failure : LaunchFailure) -> Int32 {

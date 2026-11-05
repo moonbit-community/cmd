@@ -11,15 +11,20 @@ import {
 // Errors
 
 // Types and methods
-type CommandRow derive(@debug.Debug, @json.FromJson)
+#derive(@debug.Debug, @json.FromJson)
+type CommandRow
 
-type Manifest derive(@debug.Debug, @json.FromJson)
+#derive(@debug.Debug, @json.FromJson)
+type Manifest
 
-type MetadataObservation derive(@json.FromJson)
+#derive(@json.FromJson)
+type MetadataObservation
 
-type PublishedCommand derive(@json.FromJson)
+#derive(@json.FromJson)
+type PublishedCommand
 
-type PublishedSelection derive(@json.FromJson)
+#derive(@json.FromJson)
+type PublishedSelection
 
 // Type aliases
 

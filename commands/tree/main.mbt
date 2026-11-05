@@ -27,19 +27,21 @@ priv struct TreeOptions {
 }
 
 ///|
+#derive(Eq)
 priv enum TreeFormat {
   Text
   Json
   Html(String)
-} derive(Eq)
+}
 
 ///|
+#derive(Eq)
 priv enum SizeStyle {
   NoSize
   ExactSize
   HumanSize
   SiSize
-} derive(Eq)
+}
 
 ///|
 priv struct TreeInvocation {

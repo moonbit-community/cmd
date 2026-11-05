@@ -16,12 +16,13 @@
 /// For example, if there are one or more selections and a file path doesn't
 /// match any of those selections, then the file path is considered to be
 /// ignored.
+#derive(Debug)
 pub(all) enum TypesGlob {
   /// No glob matched, but the file path should still be ignored.
   UnmatchedIgnore
   /// A glob matched.
   Matched(def~ : FileTypeDef)
-} derive(Debug)
+}
 
 ///|
 /// Return the file type definition that matched, if one exists. A file type
@@ -40,10 +41,11 @@ pub fn TypesGlob::file_type_def(self : TypesGlob) -> FileTypeDef? {
 /// File type definitions can be retrieved in aggregate from a file type
 /// matcher. File type definitions are also reported when its responsible
 /// for a match.
+#derive(Debug, Eq)
 pub struct FileTypeDef {
   priv name : String
   priv globs : Array[String]
-} derive(Debug, Eq)
+}
 
 ///|
 /// Return the name of this file type.
@@ -64,10 +66,11 @@ fn FileTypeDef::clone(self : FileTypeDef) -> FileTypeDef {
 
 ///|
 /// Indicates the type of a selection for a particular file type.
+#derive(Debug)
 priv enum Selection[T] {
   Select(String, T)
   Negate(String, T)
-} derive(Debug)
+}
 
 ///|
 fn[T] Selection::is_negated(self : Selection[T]) -> Bool {

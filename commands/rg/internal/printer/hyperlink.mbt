@@ -28,10 +28,11 @@ fn HyperlinkConfig::default() -> HyperlinkConfig {
 ///
 /// This can be created by parsing a string using `HyperlinkFormat::parse`.
 /// The empty format is valid and corresponds to disabling hyperlinks.
+#derive(Eq, Debug)
 pub struct HyperlinkFormat {
   priv parts : Array[Part]
   priv is_line_dependent : Bool
-} derive(Eq, Debug)
+}
 
 ///|
 /// Creates an empty hyperlink format.
@@ -147,12 +148,13 @@ pub fn HyperlinkFormat::to_string(self : HyperlinkFormat) -> String {
 
 ///|
 /// An alias for a hyperlink format.
+#derive(Debug)
 pub struct HyperlinkAlias {
   priv name : String
   priv description : String
   priv format : String
   priv display_priority : Int32?
-} derive(Debug)
+}
 
 ///|
 fn HyperlinkAlias::find(name : String) -> HyperlinkAlias? {
@@ -230,6 +232,7 @@ pub fn HyperlinkEnvironment::canonicalize(
 
 ///|
 /// The kind of a hyperlink format error.
+#derive(Eq, Debug)
 pub(all) enum HyperlinkFormatErrorKind {
   /// This occurs when there are zero variables in the format.
   NoVariables
@@ -246,13 +249,14 @@ pub(all) enum HyperlinkFormatErrorKind {
   InvalidCloseVariable
   /// This occurs when an unclosed variable is found.
   UnclosedVariable
-} derive(Eq, Debug)
+}
 
 ///|
 /// An error that can occur when parsing a hyperlink format.
+#derive(Eq, Debug)
 pub(all) suberror HyperlinkFormatError {
   HyperlinkFormatError(HyperlinkFormatErrorKind)
-} derive(Eq, Debug)
+}
 
 ///|
 fn HyperlinkFormatError::kind(
@@ -413,6 +417,7 @@ fn FormatBuilder::validate_scheme(
 
 ///|
 /// A hyperlink format part.
+#derive(Eq, Debug)
 priv enum Part {
   /// Static text. Can include invariant values such as the hostname.
   Text(String)
@@ -426,7 +431,7 @@ priv enum Part {
   Line
   /// Placeholder for the column number.
   Column
-} derive(Eq, Debug)
+}
 
 ///|
 fn Part::interpolate_to(

@@ -264,12 +264,13 @@ fn kind_name(kind : @fs.FileKind) -> String {
 }
 
 ///|
+#derive(Debug)
 pub(all) struct SnapshotEntry {
   path : String
   kind : String
   content : Bytes
   metadata : Map[String, String]
-} derive(Debug)
+}
 
 ///|
 async fn snapshot_into(

@@ -208,10 +208,11 @@ fn ranges_is_ascii(a : Array[(Int32, Int32)]) -> Bool {
 /// A character class: either a set of Unicode scalar value ranges or a set
 /// of byte ranges. Ranges are always canonical (sorted, non-overlapping and
 /// non-adjacent).
+#derive(Debug, Eq)
 pub(all) enum Class {
   Unicode(Array[(Int32, Int32)])
   Bytes(Array[(Int32, Int32)])
-} derive(Debug, Eq)
+}
 
 ///|
 pub fn Class::ranges(self : Class) -> Array[(Int32, Int32)] {

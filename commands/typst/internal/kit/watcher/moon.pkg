@@ -1,0 +1,36 @@
+import {
+  "cli/typst/internal/kit",
+  "cli/typst/internal/kit/platform",
+  "moonbitlang/typst/unicode",
+  "moonbitlang/async",
+  "moonbitlang/async/aqueue",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/os_error",
+  "moonbitlang/async/signal",
+}
+
+import {
+  "moonbitlang/core/debug",
+} for "wbtest"
+
+// Upstream's `watcher` feature of typst-kit, as a package of its own.
+// The CLI's async main owns the event loop, also used for font discovery.
+//
+// `@fs.Watcher` exists on the native and wasm targets only. On the others
+// the package is `unsupported.mbt` alone, and moon.pkg has no per-target
+// imports.
+
+warnings = "-unused_package"
+
+supported_targets = "wasm"
+
+options(
+  targets: {
+    "notify.mbt": [ "native", "wasm" ],
+    "notify_wbtest.mbt": [ "native", "wasm" ],
+    "runtime.mbt": [ "native", "wasm" ],
+    "unsupported.mbt": [ "wasm-gc", "js" ],
+    "watcher.mbt": [ "native", "wasm" ],
+    "watcher_wbtest.mbt": [ "native", "wasm" ],
+  },
+)

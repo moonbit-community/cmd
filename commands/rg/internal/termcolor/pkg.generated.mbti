@@ -8,9 +8,10 @@ import {
 // Values
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror ParseColorError {
   ParseColorError(kind~ : ParseColorErrorKind, given~ : String)
-} derive(Eq, @debug.Debug)
+}
 pub fn ParseColorError::invalid(Self) -> String
 pub fn ParseColorError::kind(Self) -> ParseColorErrorKind
 pub fn ParseColorError::to_string(Self) -> String
@@ -48,6 +49,7 @@ pub fn ByteVec::storage(Self) -> FixedArray[Byte]
 pub fn ByteVec::to_bytes(Self) -> Bytes
 pub impl Write for ByteVec
 
+#derive(Eq, @debug.Debug)
 pub(all) enum Color {
   Black
   Blue
@@ -59,12 +61,13 @@ pub(all) enum Color {
   White
   Ansi256(Byte)
   Rgb(Byte, Byte, Byte)
-} derive(Eq, @debug.Debug)
+}
 pub fn Color::parse(String) -> Self raise ParseColorError
 
+#derive(Eq, @debug.Debug)
 pub struct ColorSpec {
   // private fields
-} derive(Eq, @debug.Debug)
+}
 pub fn ColorSpec::bg(Self) -> Color?
 pub fn ColorSpec::bold(Self) -> Bool
 pub fn ColorSpec::clear(Self) -> Unit
@@ -82,9 +85,10 @@ pub fn ColorSpec::set_reset(Self, Bool) -> Self
 pub fn ColorSpec::set_strikethrough(Self, Bool) -> Self
 pub fn ColorSpec::set_underline(Self, Bool) -> Self
 
+#derive(Eq, @debug.Debug)
 pub struct HyperlinkSpec {
   uri : Bytes?
-} derive(Eq, @debug.Debug)
+}
 pub fn HyperlinkSpec::close() -> Self
 pub fn HyperlinkSpec::open(Bytes) -> Self
 
@@ -95,11 +99,12 @@ pub fn NoColor::new(&Write) -> Self
 pub impl Write for NoColor
 pub impl WriteColor for NoColor
 
+#derive(Eq, @debug.Debug)
 pub(all) enum ParseColorErrorKind {
   InvalidName
   InvalidAnsi256
   InvalidRgb
-} derive(Eq, @debug.Debug)
+}
 
 // Type aliases
 

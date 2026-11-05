@@ -1,24 +1,27 @@
 ///|
+#derive(Eq, Debug)
 pub(all) enum Platform {
   Windows
   Posix
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum StandardStream {
   Stdin
   Stdout
   Stderr
-} derive(Eq, Debug)
+}
 
 ///|
 /// Terminal-sensitive output is command policy, not a side effect of reading
 /// stdin. `IfTerminal` is suitable only when the pinned upstream command uses
 /// dynamic terminal feedback for that stream.
+#derive(Eq, Debug)
 pub(all) enum TerminalPolicy {
   Silent
   IfTerminal
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn current() -> Platform {

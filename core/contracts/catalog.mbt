@@ -29,6 +29,20 @@ fn contract(
 ///|
 pub fn command_catalog() -> Array[CommandContract] {
   [
+    // Typesetting is owned by an external MoonBit engine; this command owns
+    // argument policy, local files/fonts/packages, diagnostics and byte streams.
+    contract(
+      "typst",
+      Restricted,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      [
+        "input", "format", "root", "creation-timestamp", "pretty", "jobs", "in",
+        "field", "one", "ignore-system-fonts", "ignore-embedded-fonts", "pages",
+        "ppi", "deps", "no-serve", "timings", "update", "completions",
+      ],
+    ),
     // Encoding emits complete groups before EOF; decoding retains whole input.
     contract("base32", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",

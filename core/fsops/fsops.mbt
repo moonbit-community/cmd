@@ -7,26 +7,29 @@ pub(all) suberror FsOpError {
 /// The creation modes needed by command-specific overwrite policies. The
 /// caller owns the policy decision; this helper only maps it to the portable
 /// MoonBit filesystem primitive.
+#derive(Eq, Debug)
 pub(all) enum OutputMode {
   CreateNew
   CreateOrTruncate
   AppendOrCreate
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) enum LinkTraversal {
   NeverFollowLinks
   FollowCommandLineLinks
   FollowAllLinks
-} derive(Eq, Debug)
+}
 
 ///|
+#derive(Eq, Debug)
 pub(all) struct FileMetadata {
   kind : @fs.FileKind
   size : Int64?
   mtime_seconds : Int64
   mtime_nanoseconds : Int32
-} derive(Eq, Debug)
+}
 
 ///|
 pub fn basename(value : String) -> String {

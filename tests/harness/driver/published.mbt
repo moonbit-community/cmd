@@ -1,17 +1,19 @@
 ///|
+#derive(FromJson)
 struct PublishedCommand {
   name : String
   package_name : String
   version : String
-} derive(FromJson)
+}
 
 ///|
+#derive(FromJson)
 struct PublishedSelection {
   base_manifest : String
   commands : Array[PublishedCommand]
   case_ids : Array[String]
   extra_cases : Array[Json]
-} derive(FromJson)
+}
 
 ///|
 fn published_coordinates(

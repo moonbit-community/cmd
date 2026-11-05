@@ -1,12 +1,14 @@
 ///|
+#derive(Eq)
 priv enum Layout {
   Lines
   Columns
   Across
   Commas
-} derive(Eq)
+}
 
 ///|
+#derive(Eq)
 priv enum QuoteStyle {
   Literal
   Shell
@@ -17,7 +19,7 @@ priv enum QuoteStyle {
   CMaybe
   Escape
   Locale
-} derive(Eq)
+}
 
 ///|
 fn quote_style(value : String) -> QuoteStyle? {

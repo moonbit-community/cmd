@@ -4,10 +4,11 @@ priv suberror PatchError {
 }
 
 ///|
+#derive(Eq, Debug)
 struct Line {
   value : String
   terminated : Bool
-} derive(Eq, Debug)
+}
 
 ///|
 struct Change {

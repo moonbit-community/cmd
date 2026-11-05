@@ -1,11 +1,12 @@
 ///|
 /// An error from running a command.
+#derive(Debug)
 pub suberror CommandError {
   /// An I/O error (e.g. the command could not be spawned).
   CommandIo(@sys.IOError)
   /// The command failed; the payload is its stderr.
   CommandStderr(Bytes)
-} derive(Debug)
+}
 
 ///|
 pub fn CommandError::to_string(self : CommandError) -> String {

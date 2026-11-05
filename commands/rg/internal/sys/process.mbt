@@ -11,11 +11,12 @@ pub struct Process {
 }
 
 ///|
+#derive(Debug, Eq)
 pub(all) struct ProcessOutput {
   status : Int32
   stdout : Bytes
   stderr : Bytes
-} derive(Debug, Eq)
+}
 
 ///|
 pub async fn Process::spawn(

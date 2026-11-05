@@ -1,8 +1,9 @@
 ///|
+#derive(FromJson, ToJson)
 priv struct NaturalSource {
   path : String
   sha256 : String
-} derive(FromJson, ToJson)
+}
 
 ///|
 fn natural_source_errors(source : NaturalSource) -> Array[String] {
