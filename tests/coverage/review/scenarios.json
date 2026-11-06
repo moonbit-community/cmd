@@ -4860,6 +4860,257 @@
           ]
         }
       ]
+    },
+    {
+      "case_id": "serve-static",
+      "assertions": [
+        {
+          "id": "serve/static",
+          "command": "serve",
+          "relation": "equal",
+          "expected": {
+            "responses": [
+              {
+                "target": "/",
+                "status": 200,
+                "bytes": 15,
+                "mime": [
+                  "text/html"
+                ]
+              },
+              {
+                "target": "/nested/",
+                "status": 200,
+                "bytes": 7,
+                "mime": [
+                  "text/html"
+                ]
+              },
+              {
+                "target": "/app.CSS?x=1",
+                "status": 200,
+                "bytes": 7,
+                "mime": [
+                  "text/css"
+                ]
+              },
+              {
+                "target": "/hello%20world.txt",
+                "status": 200,
+                "bytes": 6,
+                "mime": [
+                  "text/plain"
+                ]
+              },
+              {
+                "target": "/data.bin",
+                "status": 200,
+                "bytes": 150003,
+                "mime": [
+                  "application/octet-stream"
+                ]
+              },
+              {
+                "target": "/data.bin",
+                "status": 200,
+                "bytes": 0,
+                "mime": [
+                  "application/octet-stream"
+                ]
+              },
+              {
+                "target": "/../public-private/secret.txt",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/%2e%2e/public-private/secret.txt",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/%2e%2e%5cpublic-private%5csecret.txt",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/file%00",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/%ff",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/file:stream",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/missing",
+                "status": 404,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/empty/",
+                "status": 404,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/data.bin",
+                "status": 405,
+                "bytes": 0,
+                "mime": null
+              }
+            ],
+            "denied_statuses": [],
+            "child_reaped": true
+          },
+          "observations": [
+            "http-status",
+            "http-headers",
+            "http-body",
+            "child-exit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "serve-policy",
+      "assertions": [
+        {
+          "id": "serve/policy",
+          "command": "serve",
+          "relation": "equal",
+          "expected": {
+            "responses": [
+              {
+                "target": "/",
+                "status": 200,
+                "bytes": 15,
+                "mime": [
+                  "text/html"
+                ]
+              },
+              {
+                "target": "/nested/",
+                "status": 200,
+                "bytes": 7,
+                "mime": [
+                  "text/html"
+                ]
+              },
+              {
+                "target": "/app.CSS?x=1",
+                "status": 200,
+                "bytes": 7,
+                "mime": [
+                  "text/css"
+                ]
+              },
+              {
+                "target": "/hello%20world.txt",
+                "status": 200,
+                "bytes": 6,
+                "mime": [
+                  "text/plain"
+                ]
+              },
+              {
+                "target": "/data.bin",
+                "status": 200,
+                "bytes": 150003,
+                "mime": [
+                  "application/octet-stream"
+                ]
+              },
+              {
+                "target": "/data.bin",
+                "status": 200,
+                "bytes": 0,
+                "mime": [
+                  "application/octet-stream"
+                ]
+              },
+              {
+                "target": "/../public-private/secret.txt",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/%2e%2e/public-private/secret.txt",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/%2e%2e%5cpublic-private%5csecret.txt",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/file%00",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/%ff",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/file:stream",
+                "status": 400,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/missing",
+                "status": 404,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/empty/",
+                "status": 404,
+                "bytes": 0,
+                "mime": null
+              },
+              {
+                "target": "/data.bin",
+                "status": 405,
+                "bytes": 0,
+                "mime": null
+              }
+            ],
+            "denied_statuses": [
+              1,
+              1
+            ],
+            "child_reaped": true
+          },
+          "observations": [
+            "http-status",
+            "http-headers",
+            "http-body",
+            "child-exit"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -37,10 +37,22 @@ conditions are recorded in ADR-0003. Seven pinned Typst 0.15.1 Linux evaluation
 comparisons pass. All 80 coordinates pass local MoonX and
 [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41957907959),
 including watch shutdown and cleanup. The previous 79 coordinates and their
-frozen expectations remain unchanged; timeout remains local-only among 81 modules.
-The inherited relative-link watcher fixture is Unix-only because the public
+frozen expectations remain unchanged. The workspace now has 82 command modules;
+timeout and the new serve candidate remain unpublished.
+The inherited Typst relative-link watcher fixture is Unix-only because the public
 filesystem API cannot create that fixture on Windows. Ordinary file-watch
 recompilation has a registered CLI assertion on all three platforms.
+
+The local `cli/serve@0.1.0` candidate serves regular files and index.html over
+HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
+return 400; missing, unreadable, outside-root and nonregular targets return 404.
+There is no listing, SPA fallback or upload. Wasm policy separately limits
+read roots and bind addresses. Hostile concurrent path replacement remains
+unsupported until released public Wasm APIs provide confined descriptor-relative
+opening; neither lexical checks nor current host policy establish that guarantee.
+See the [command README](../commands/serve/README.md) and
+[ADR-0004](adr/0004-filesystem.md). No publication or performance acceptance is
+claimed for this candidate.
 
 The 2026-11-01 release publishes core 0.9.1 and 26 changed command versions,
 including direct implementation changes and gzip/jq shared-runtime consumers.

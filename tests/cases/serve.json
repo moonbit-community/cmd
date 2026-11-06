@@ -1,0 +1,113 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "serve-version",
+      "command": "serve",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "must remain unread",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "serve 0.1.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "serve-reject-port",
+      "command": "serve",
+      "args": [
+        "--port",
+        "65536"
+      ],
+      "stdin_text": "must remain unread",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "serve: invalid port: 65536\n"
+    },
+    {
+      "id": "serve-reject-option",
+      "command": "serve",
+      "args": [
+        "--spa"
+      ],
+      "stdin_text": "must remain unread",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "serve: unknown option: --spa\n"
+    },
+    {
+      "id": "serve-reject-extra-root",
+      "command": "serve",
+      "args": [
+        "one",
+        "two"
+      ],
+      "stdin_text": "must remain unread",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "serve: expected at most one directory\n"
+    },
+    {
+      "id": "serve-reject-missing-port",
+      "command": "serve",
+      "args": [
+        "-p"
+      ],
+      "stdin_text": "must remain unread",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "serve: missing value for -p\n"
+    },
+    {
+      "id": "serve-static",
+      "command": "serve",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "oracle": false,
+      "timeout_ms": 20000
+    },
+    {
+      "id": "serve-policy",
+      "command": "serve",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "oracle": false,
+      "timeout_ms": 20000
+    }
+  ]
+}

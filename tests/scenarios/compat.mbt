@@ -15,9 +15,9 @@ async fn check_catalog(
   failures : Array[String],
 ) -> Unit {
   let catalog = @contracts.command_catalog()
-  if catalog.length() != 81 {
+  if catalog.length() != 82 {
     compat_fail(
-      "catalog: expected 81 commands, got \{catalog.length()}",
+      "catalog: expected 82 commands, got \{catalog.length()}",
       failures,
     )
   }

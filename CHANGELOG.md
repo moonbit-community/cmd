@@ -16,6 +16,12 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development; no publication.
 
+- Add the local `cli/serve@0.1.0` candidate: static GET/HEAD, MIME types,
+  index.html, canonical root checks and launcher-supplied Wasm policy. Keep
+  directory listings and SPA/upload features out of scope. Concurrent hostile
+  path replacement remains an explicit public-API boundary. Published coordinates
+  are unchanged.
+
 - Upgrade workspace modules, standalone test tools and the rg child fixture to
   `moonbitlang/async@0.22.7`. Keep one dependency baseline and update the active
   compression-review descriptions and touch diagnostic to match. Existing

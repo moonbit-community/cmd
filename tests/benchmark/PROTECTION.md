@@ -2,11 +2,11 @@
 
 ## One active real-source inventory
 
-`protect.mbtx` compares all 81 command artifacts against an immutable
+`protect.mbtx` compares all 82 command artifacts against an immutable
 baseline and rejects any changed command without qualifying real timing
 coverage. It uses `real.json` schema 3 and its associated source and coverage
-registries. All 81 packages have a disposition: 171 workloads across 56 timing
-commands, two correctness-only commands (make and sh), and 23 individually
+registries. All 82 packages have a disposition: 171 workloads across 56 timing
+commands, two correctness-only commands (make and sh), and 24 individually
 explained not-timed commands. The 33 complete genuine
 sources total 31,450,998 unique payload bytes, with a 16 MiB per-source cap and
 a 64 MiB suite budget. Counts describe the inventory; they do not establish
