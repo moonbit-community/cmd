@@ -41,8 +41,8 @@ jobs:
           submodules: recursive
       - uses: hustcer/setup-moonbit@v1.23
         with:
-          version: 0.10.19+bee578715
-          core-version: 0.10.19+bee578715
+          version: latest
+          core-version: latest
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Toolchain and report directory

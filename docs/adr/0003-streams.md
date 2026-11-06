@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-05
+Updated: 2026-11-06
 
 ## Decision
 
@@ -16,6 +16,24 @@ Borrow mutable storage only within its valid synchronous scope. Records that
 survive refills must own bytes or retain immutable backing storage. Commit each
 output event once; a declined buffered admission has no effect, and a failed
 write is never replayed during cleanup. Budgeted storage is not a process RSS cap.
+
+Resource cleanup and output flushing have different cancellation contracts.
+Directory removal and direct-child completion expose `nocancel` when their
+implementations already guarantee it; temporary-file rollback is explicitly
+protected. Ln/mv destination rollback remains cancellable: cancellation can
+arrive after the link or rename committed, and restoring the old destination
+then could discard the new result. Preserve both the moved bytes and backup;
+the [mv cancellation regression](../../commands/mv/cancellation_wbtest.mbt)
+injects cancellation immediately after rename. Buffered output flushes remain
+cancellable under downstream backpressure. The affected rollback and output
+functions acknowledge `cancellable_defer` locally;
+shielding those writes could make a cancelled command wait indefinitely for a
+reader. Keep all other warnings enabled. The atomic-commit cancellation test in
+[fsops](../../core/fsops/fsops_test.mbt) requires removal of the staged file while
+preserving the destination; the blocked-writer test in
+[paste](../../commands/paste/output_wbtest.mbt) covers serial and parallel flush
+cancellation. Reconsider shielding output only with a bounded completion
+contract and equivalent cancellation regressions.
 
 ## Package ownership
 

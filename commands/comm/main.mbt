@@ -37,6 +37,8 @@ fn comm_record(prefix : Bytes, line : Bytes, delimiter : Byte) -> Bytes {
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn merge_readers(
   reader1 : &@io.Reader,
   reader2 : &@io.Reader,

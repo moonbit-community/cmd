@@ -86,6 +86,8 @@ fn decode_block(block : Array[Byte], out : Array[Byte]) -> Unit raise CliError {
 ///|
 // Complete groups are emitted as soon as they are accepted. GNU base32
 // preserves this valid prefix when a later group is malformed.
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn decode_to_writer(
   input : Bytes,
   ignore_garbage : Bool,

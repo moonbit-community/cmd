@@ -16,7 +16,7 @@ pub suberror TemporaryError {
 
 // Types and methods
 type Directory
-pub async fn Directory::close(Self) -> Unit
+pub async fn Directory::close(Self) -> Unit nocancel
 pub async fn Directory::new(prefix~ : String, parent? : String?) -> Self
 pub fn Directory::path(Self) -> String
 

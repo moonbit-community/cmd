@@ -450,7 +450,7 @@ async test "walk/stdin and files as roots" {
 ///|
 async test "walk/stdin roots preserve explicit ignore errors and builder reuse" {
   let td = TempDir::new("walk-stdin-ignore")
-  defer td.close()
+  defer @async.protect_from_cancel(() => td.close())
   wfile(td.join("keep"), "alpha\n")
   wfile(td.join("skip"), "alpha\n")
   wfile(td.join("rules"), "skip\n")

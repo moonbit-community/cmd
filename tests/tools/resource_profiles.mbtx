@@ -1,8 +1,8 @@
 ----
 import {
-  "moonbitlang/async@0.22.5",
-  "moonbitlang/async@0.22.5/fs",
-  "moonbitlang/async@0.22.5/shell",
+  "moonbitlang/async@0.22.7",
+  "moonbitlang/async@0.22.7/fs",
+  "moonbitlang/async@0.22.7/shell",
   "moonbitlang/core/env",
 }
 ----
@@ -24,12 +24,9 @@ async fn main {
     let created = @shell.Cmd("docker", ["create", image]).output()
     created.check()
     let container = created.stdout().trim().to_owned()
-    defer @shell.Cmd(
-      "docker",
-      ["rm", container],
-      stdout=Inherit,
-      stderr=Inherit,
-    ).run()
+    defer @async.protect_from_cancel(() => {
+      @shell.Cmd("docker", ["rm", container], stdout=Inherit, stderr=Inherit).run()
+    })
     @shell.Cmd(
       "docker",
       ["cp", container + ":/oracle/.", prefix],

@@ -30,6 +30,8 @@ fn spaces(width : Int32) -> String {
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn process_reader(
   reader : &@io.Reader,
   header_style : String,

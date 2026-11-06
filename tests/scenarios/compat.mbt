@@ -4,7 +4,7 @@ fn compat_fail(message : String, failures : Array[String]) -> Unit {
 }
 
 ///|
-async fn cleanup_compat_fixture(root : String) -> Unit {
+async fn cleanup_compat_fixture(root : String) -> Unit nocancel {
   @async.protect_from_cancel(() => @fs.rmdir(root, recursive=true))
 }
 

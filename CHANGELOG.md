@@ -12,6 +12,36 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-06
+
+Development; no publication.
+
+- Upgrade workspace modules, standalone test tools and the rg child fixture to
+  `moonbitlang/async@0.22.7`. Keep one dependency baseline and update the active
+  compression-review descriptions and touch diagnostic to match. Existing
+  command support boundaries and published coordinates remain unchanged.
+  Preserve sort's empty random-source diagnostic across host error-code changes
+  by rejecting that operand before opening it.
+- Follow the official `latest` toolchain and core in development, published
+  acceptance and resource workflows. Retain resolved-version logs and include
+  them in compilation cache keys. The former 0.10.19 host fails restricted-policy
+  standard-stream initialization after the async upgrade; latest includes the
+  acquired-handle file-kind fix.
+- Expose existing cleanup guarantees as `nocancel` and protect temporary-file
+  cleanup. Keep ln/mv destination rollback cancellable after a committed mutation,
+  with a regression preserving the moved file and backup. Keep output flushes
+  cancellable under backpressure, with local warning declarations and a serial/parallel paste
+  cancellation regression. A deterministic atomic-commit regression catches
+  the previously leaked temporary file on cancellation. Strict checks retain
+  every other warning.
+- Launch rg's process fixtures with Moon's `--quiet` so dependency build notices
+  do not contaminate the fixture's stderr. Preserve the exact stream/status and
+  cancellation assertions while isolating build-tool notices.
+- Standard local macOS validation on latest passes 1,886 Wasm package tests,
+  204 Native tool tests and 2,520 functional checks, with 21 platform exclusions
+  and zero failures. Strict product/tool/script checks, architecture, generated
+  index consistency, coverage proofs, interfaces and formatting pass.
+
 ## 2026-11-05
 
 Development and publication.

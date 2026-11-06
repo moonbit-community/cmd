@@ -6,11 +6,12 @@ async fn random_seed(source : String?) -> Bytes {
       None => raise CliError("sort: secure random source is unavailable")
     }
   }
+  if path == "" {
+    raise CliError("sort: open failed: '': No such file or directory")
+  }
   let file = @fs.open(path, mode=ReadOnly) catch {
-    @os_error.OSError(_) as error => {
-      let name = if path == "" { "''" } else { path }
-      raise CliError("sort: open failed: \{name}: \{os_message(error)}")
-    }
+    @os_error.OSError(_) as error =>
+      raise CliError("sort: open failed: \{path}: \{os_message(error)}")
     error => raise error
   }
   defer file.close()

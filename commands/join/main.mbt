@@ -304,6 +304,8 @@ async fn next_ordered_row(
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn merge_readers(
   reader1 : &@io.Reader,
   reader2 : &@io.Reader,

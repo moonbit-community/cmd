@@ -46,6 +46,8 @@ async fn confirm_overwrite(path : String) -> Bool {
 }
 
 ///|
+// Rollback stays cancellable because cancellation may follow a committed link.
+#warnings("-cancellable_defer")
 async fn create_symlink(
   link_path : String,
   target : String,

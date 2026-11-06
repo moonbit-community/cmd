@@ -63,7 +63,11 @@ async fn freeze_benchmark_file(
     allow_existing=false,
     permission=if executable { 493 } else { 420 },
   )
-  defer (if @fs.exists(pending) { @fs.remove(pending) })
+  defer @async.protect_from_cancel(() => {
+    if @fs.exists(pending) {
+      @fs.remove(pending)
+    }
+  })
   defer output.close()
   let hash = @crypto.SHA256::new()
   let buffer = FixedArray::make(65536, b'\x00')

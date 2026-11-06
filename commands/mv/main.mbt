@@ -70,6 +70,8 @@ async fn rename_move_entry(
 }
 
 ///|
+// Rollback stays cancellable because cancellation may follow a committed rename.
+#warnings("-cancellable_defer")
 async fn move_one(
   source : String,
   target : String,

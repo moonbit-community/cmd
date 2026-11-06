@@ -288,6 +288,8 @@ fn GrepInput::emit_buffered(
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn process_reader(
   reader : &@io.Reader,
   path : String,

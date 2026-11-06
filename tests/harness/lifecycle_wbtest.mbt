@@ -255,7 +255,11 @@ async test "cleanup permission failure retains candidate evidence" {
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   // Restore access even when the regression fails, so a test fault cannot
   // leave deliberately protected directories in the caller's temp root.
-  defer (ignore(run("/bin/chmod", ["700", evidence])) catch { _ => () })
+  defer @async.protect_from_cancel(() => {
+    ignore(run("/bin/chmod", ["700", evidence])) catch {
+      _ => ()
+    }
+  })
   let fixture : Case = @json.from_json({
     "id": "cleanup-failure",
     "command": "protect-evidence",

@@ -78,7 +78,7 @@ pub async fn CommandReader::read(
 /// if it failed. Like ripgrep, a failure without any stderr output is
 /// ignored if the output wasn't read to the end (the command was most likely
 /// killed by the closed pipe).
-pub async fn CommandReader::close(self : CommandReader) -> Unit {
+pub async fn CommandReader::close(self : CommandReader) -> Unit nocancel {
   if self.closed {
     return
   }

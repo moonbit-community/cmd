@@ -137,7 +137,7 @@ pub async fn Process::read(
 }
 
 ///|
-pub async fn Process::finish(self : Process) -> (Int32, Bytes) {
+pub async fn Process::finish(self : Process) -> (Int32, Bytes) nocancel {
   if !self.closed {
     self.closed = true
     if !self.eof {

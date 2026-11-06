@@ -4009,7 +4009,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -4025,7 +4025,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -4041,7 +4041,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -4057,7 +4057,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -4073,7 +4073,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -4089,7 +4089,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -4105,7 +4105,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -4121,7 +4121,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -4137,7 +4137,7 @@
           ]
         }
       ],
-      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.5 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
+      "activation": "The explicit compression selector processes a nonempty repeated/binary payload, produces a smaller valid gzip stream decoded independently by moonbitlang/async/gzip 0.22.7 to the exact original bytes, preserves source content and envelope fields, and overrides a conflicting earlier selector. This is finite compression correctness, not a claimed optimal ratio or performance result.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },

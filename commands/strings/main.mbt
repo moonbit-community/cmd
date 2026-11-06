@@ -76,6 +76,8 @@ fn record_prefix(
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn emit_stream(
   reader : &@io.Reader,
   writer : &@io.Writer,

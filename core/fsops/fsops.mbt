@@ -245,7 +245,11 @@ pub async fn commit_temporary_file(
   destination : String,
   replace~ : Bool = true,
 ) -> Unit {
-  errdefer (cleanup_file_if_exists(temporary) catch { _ => () })
+  errdefer @async.protect_from_cancel(() => {
+    cleanup_file_if_exists(temporary) catch {
+      _ => ()
+    }
+  })
   @fs.rename(temporary, destination, replace~)
 }
 

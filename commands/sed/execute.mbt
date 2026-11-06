@@ -412,6 +412,8 @@ async fn flush_append(
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn execute(
   commands : Array[Command],
   input : Input,

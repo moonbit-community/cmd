@@ -1,7 +1,22 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-11-05
+Updated: 2026-11-06
+
+Workspace development uses `moonbitlang/async@0.22.7` across modules and
+standalone test tools. CI follows the official `latest` toolchain and core and
+records the resolved versions. Async 0.22.7's shared core runtime requires the
+Moonrun acquired-handle file-kind fix
+[`c5ec2b5d`](https://github.com/moonbitlang/moon/commit/c5ec2b5db294aae518e635bd77d8fdb7cc3049ae)
+for restricted-policy standard-stream initialization. The earlier fixed
+`0.10.19+bee578715` host fails these policies; the currently verified official
+latest Moonrun is `0.1.20261104 (940aa18)`.
+This dependency upgrade does not enable new command
+features or lift existing filesystem/process boundaries. In particular,
+`Directory::open` and `Directory::remove` in async 0.22.7 do not support Wasm.
+Published coordinates and their frozen expectations remain independent in
+`tests/release/latest.json` and `latest-cases.json`; no package is published by
+this development change.
 
 `cli/typst@0.1.0` is published. Its migrated CLI,
 document environment and watcher use a pure MoonBit platform adapter; the

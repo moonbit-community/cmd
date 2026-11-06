@@ -275,6 +275,42 @@ async test "metadata and atomic commit expose completed files only" {
 }
 
 ///|
+async test "cancelled atomic commit removes temporary file and preserves target" {
+  @async.with_timeout(5000, () => {
+    let root = @fs.tmpdir(prefix="mooncmd-fsops-commit-cancel-")
+    defer @fs.rmdir(root, recursive=true)
+    let temporary = @fsops.join(root, "download.part")
+    let destination = @fsops.join(root, "download")
+    @fs.write_file(temporary, b"new")
+    @fs.write_file(destination, b"original")
+    @async.with_task_group(group => {
+      let ready : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
+      let release : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
+      let task = group.spawn(() => {
+        @async.protect_from_cancel(() => {
+          ready.put(())
+          ignore(release.get())
+        })
+        @fsops.commit_temporary_file(temporary, destination)
+      })
+      ignore(ready.get())
+      task.cancel()
+      release.put(())
+      let cancelled = try {
+        task.wait()
+        false
+      } catch {
+        @async.WaitedTaskAlreadyCancelled => true
+        error => raise error
+      }
+      assert_true(cancelled)
+    })
+    assert_false(@fs.exists(temporary))
+    assert_eq(@fs.read_file(destination).binary(), b"original")
+  })
+}
+
+///|
 async test "failed atomic commit removes temporary file and preserves target" {
   let root = @fs.tmpdir(prefix="mooncmd-fsops-commit-failure")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
