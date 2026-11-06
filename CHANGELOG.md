@@ -20,6 +20,8 @@ Development; no publication.
   `moonbitlang/async@0.22.7`. Keep one dependency baseline and update the active
   compression-review descriptions and touch diagnostic to match. Existing
   command support boundaries and published coordinates remain unchanged.
+  Preserve sort's empty random-source diagnostic across host error-code changes
+  by rejecting that operand before opening it.
 - Follow the official `latest` toolchain and core in development, published
   acceptance and resource workflows. Retain resolved-version logs and include
   them in compilation cache keys. The former 0.10.19 host fails restricted-policy
