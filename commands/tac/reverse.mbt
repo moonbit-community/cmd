@@ -239,7 +239,7 @@ async fn reverse_spooled(
 // A cleanup-only failure is observable; a primary failure keeps its diagnostic.
 async fn with_spool_cleanup(
   operation : async () -> Unit,
-  cleanup : async () -> Unit,
+  cleanup : async () -> Unit nocancel,
 ) -> Unit {
   {
     errdefer (cleanup() catch { _ => () })

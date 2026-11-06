@@ -66,7 +66,7 @@ async test "flush consumes partial writes once even when cleanup runs" {
   let output = @buffer.Buffer()
   output.write_bytes(b"abcdef")
   let failed = try {
-    defer @stream.flush_buffer(writer, output)
+    defer @async.protect_from_cancel(() => @stream.flush_buffer(writer, output))
     @stream.flush_buffer(writer, output)
     false
   } catch {

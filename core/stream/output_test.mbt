@@ -77,7 +77,7 @@ async test "failed shared output never replays a partially written prefix" {
   let output = @stream.BlockWriter::new(sink, size=8)
   output.write_bytes(b"abcdef")
   let failed = try {
-    defer output.flush()
+    defer @async.protect_from_cancel(() => output.flush())
     output.flush()
     false
   } catch {

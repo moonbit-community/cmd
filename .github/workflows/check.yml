@@ -41,21 +41,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Compute compilation cache key
-        id: cache-key
-        env:
-          CACHE_PREFIX: wasm-ci-v5-${{ runner.os }}-${{ runner.arch }}-0.10.19-wasm-release-tools-debug-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg', '!**/.mooncakes/**', '!**/_build/**', '!**/target/**') }}
-        run: echo "prefix=$CACHE_PREFIX" >> "$GITHUB_OUTPUT"
       - uses: hustcer/setup-moonbit@v1.23
         with:
-          version: 0.10.19+bee578715
-          core-version: 0.10.19+bee578715
+          version: latest
+          core-version: latest
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Toolchain and report directory
         run: |
           mkdir -p test-reports
           moon version --all | tee test-reports/toolchain.log
+      - name: Compute compilation cache key
+        id: cache-key
+        env:
+          CACHE_PREFIX: wasm-ci-v6-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('test-reports/toolchain.log') }}-wasm-release-tools-debug-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg', '!**/.mooncakes/**', '!**/_build/**', '!**/target/**') }}
+        run: echo "prefix=$CACHE_PREFIX" >> "$GITHUB_OUTPUT"
       - uses: actions/cache/restore@v4
         id: compilation-cache
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.use_cache }}

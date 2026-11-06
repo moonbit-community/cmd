@@ -39,6 +39,8 @@ fn parse_delimiters(spec : String) -> Array[Bytes] raise DelimiterError {
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn paste_serial(
   scanner : @stream.LineScanner,
   delimiters : Array[Bytes],
@@ -59,6 +61,8 @@ async fn paste_serial(
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn paste_parallel(
   scanners : Array[@stream.LineScanner],
   delimiters : Array[Bytes],

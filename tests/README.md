@@ -83,7 +83,9 @@ are retained. Reports and driver/source receipts stay under the fresh report
 root, outside versioned definitions.
 
 Development CI runs all applicable Wasm checks on Linux, macOS and Windows,
-with pinned upstream comparisons on Linux. Mainline changes require a PR,
+using the official `latest` toolchain and core, with pinned upstream comparisons
+on Linux. Every run records its resolved toolchain; compilation caches include
+that identity. Mainline changes require a PR,
 the three checks and actual-main validation. Resource observations and exact
 [published acceptance](release/README.md) are separate manual workflows.
 Correctness, finite coverage, upstream agreement and performance retain their

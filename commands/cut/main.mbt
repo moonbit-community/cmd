@@ -281,6 +281,8 @@ async fn cut_no_fields(
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn process_reader(
   reader : &@io.Reader,
   field_ranges : Array[(Int32, Int32)]?,

@@ -164,16 +164,18 @@ async fn move_one(
     None
   }
   let mut failure_message = "move did not complete"
-  errdefer (if backup is Some(path) {
-    restore(target, path) catch {
-      recovery => {
-        let recovery_message = match recovery {
-          @fsops.FsOpError(message) => message
-          _ => recovery.to_string()
+  errdefer @async.protect_from_cancel(() => {
+    if backup is Some(path) {
+      restore(target, path) catch {
+        recovery => {
+          let recovery_message = match recovery {
+            @fsops.FsOpError(message) => message
+            _ => recovery.to_string()
+          }
+          raise @fsops.FsOpError(
+            "\{failure_message}; cannot restore '\{target}' from backup '\{path}': \{recovery_message}",
+          )
         }
-        raise @fsops.FsOpError(
-          "\{failure_message}; cannot restore '\{target}' from backup '\{path}': \{recovery_message}",
-        )
       }
     }
   })

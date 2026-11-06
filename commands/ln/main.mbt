@@ -51,9 +51,11 @@ async fn create_symlink(
   target : String,
   backup_path : String?,
 ) -> Unit {
-  errdefer (match backup_path {
-    Some(backup) => @fsops.restore_backup(link_path, backup) catch { _ => () }
-    None => ()
+  errdefer @async.protect_from_cancel(() => {
+    match backup_path {
+      Some(backup) => @fsops.restore_backup(link_path, backup) catch { _ => () }
+      None => ()
+    }
   })
   @fs.symlink(link_path, target~)
 }

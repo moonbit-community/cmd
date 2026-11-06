@@ -60,7 +60,7 @@ pub impl Show for PatternsError
 pub struct CommandReader {
   // private fields
 }
-pub async fn CommandReader::close(Self) -> Unit
+pub async fn CommandReader::close(Self) -> Unit nocancel
 pub async fn CommandReader::new(String, Array[String], stdin_path? : String) -> Self
 pub async fn CommandReader::read(Self, FixedArray[Byte], Int32, Int32) -> Int32
 pub async fn CommandReader::read_to_end(Self) -> Bytes

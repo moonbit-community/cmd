@@ -395,6 +395,8 @@ async fn compressed_block(
 }
 
 ///|
+// Deferred output remains cancellable if the downstream writer stalls.
+#warnings("-cancellable_defer")
 async fn inflate(
   bits : Bits,
   writer : &@io.Writer,

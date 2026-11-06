@@ -19,7 +19,7 @@ async test "shared stdout translates I/O errors once and never replays on cleanu
   @termcolor.Write::write_bytes(writer, b"queued")
   assert_eq(sink.calls.val, 0)
   let converted = try {
-    defer @termcolor.Write::flush(writer)
+    defer @async.protect_from_cancel(() => @termcolor.Write::flush(writer))
     @termcolor.Write::flush(writer)
     false
   } catch {

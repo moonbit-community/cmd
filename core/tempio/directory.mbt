@@ -45,7 +45,7 @@ pub fn Directory::path(self : Directory) -> String {
 
 ///|
 /// Idempotent after success. A failed cleanup remains retryable.
-pub async fn Directory::close(self : Directory) -> Unit {
+pub async fn Directory::close(self : Directory) -> Unit nocancel {
   if !self.closed {
     @fs.rmdir(self.path, recursive=true)
     self.closed = true

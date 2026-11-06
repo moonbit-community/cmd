@@ -20,15 +20,24 @@ Development; no publication.
   `moonbitlang/async@0.22.7`. Keep one dependency baseline and update the active
   compression-review descriptions and touch diagnostic to match. Existing
   command support boundaries and published coordinates remain unchanged.
-- Local macOS diagnostic validation passes 1,884 Wasm package tests, 204 Native
-  tool tests and 2,520 functional checks, with 21 platform exclusions and zero
-  failures. The local 0.10.20 compiler's new warning 98 also blocks the unchanged
-  0.22.5 strict baseline; diagnostic runs exclude only that warning outside the
-  repository. Required CI retains its pinned toolchain and strict checks.
+- Follow the official `latest` toolchain and core in development, published
+  acceptance and resource workflows. Retain resolved-version logs and include
+  them in compilation cache keys. The former 0.10.19 host fails restricted-policy
+  standard-stream initialization after the async upgrade; latest includes the
+  acquired-handle file-kind fix.
+- Expose existing cleanup guarantees as `nocancel` and protect temporary-file
+  rollback and resource restoration. Keep output flushes cancellable under
+  backpressure, with local warning declarations and a serial/parallel paste
+  cancellation regression. A deterministic atomic-commit regression catches
+  the previously leaked temporary file on cancellation. Strict checks retain
+  every other warning.
 - Launch rg's process fixtures with Moon's `--quiet` so dependency build notices
-  do not contaminate the fixture's stderr. The initial three-platform package
-  run exposed two such failures per platform; preserve the exact stream/status
-  and cancellation assertions while isolating build-tool notices.
+  do not contaminate the fixture's stderr. Preserve the exact stream/status and
+  cancellation assertions while isolating build-tool notices.
+- Standard local macOS validation on latest passes 1,886 Wasm package tests,
+  204 Native tool tests and 2,520 functional checks, with 21 platform exclusions
+  and zero failures. Strict product/tool/script checks, architecture, generated
+  index consistency, coverage proofs, interfaces and formatting pass.
 
 ## 2026-11-05
 
