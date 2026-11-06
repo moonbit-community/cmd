@@ -56,6 +56,7 @@ async test "cancelled process reads still close pipes and reap the direct child"
   defer @fs.rmdir(root, recursive=true)
   let process = Process::spawn("moon", [
     "run",
+    "--quiet",
     "internal/sys/testdata/process_fixture.mbtx",
     "--target-dir",
     root + "/build",

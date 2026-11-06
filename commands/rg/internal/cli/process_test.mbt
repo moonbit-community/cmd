@@ -4,6 +4,7 @@ async test "CommandReader stops a command early without error" {
   defer @fs.rmdir(root, recursive=true)
   let rdr = @cli.CommandReader::new("moon", [
     "run",
+    "--quiet",
     "internal/sys/testdata/process_fixture.mbtx",
     "--target-dir",
     root + "/build",

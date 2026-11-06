@@ -25,6 +25,10 @@ Development; no publication.
   failures. The local 0.10.20 compiler's new warning 98 also blocks the unchanged
   0.22.5 strict baseline; diagnostic runs exclude only that warning outside the
   repository. Required CI retains its pinned toolchain and strict checks.
+- Launch rg's process fixtures with Moon's `--quiet` so dependency build notices
+  do not contaminate the fixture's stderr. The initial three-platform package
+  run exposed two such failures per platform; preserve the exact stream/status
+  and cancellation assertions while isolating build-tool notices.
 
 ## 2026-11-05
 

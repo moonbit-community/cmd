@@ -68,6 +68,7 @@ async test "released filesystem operations preserve files links and error bounda
 fn fixture_args(root : String, mode : String) -> Array[String] {
   [
     "run",
+    "--quiet",
     "internal/sys/testdata/process_fixture.mbtx",
     "--target-dir",
     root + "/build",
