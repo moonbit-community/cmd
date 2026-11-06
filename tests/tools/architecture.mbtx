@@ -409,7 +409,7 @@ async fn main {
     })
     .map(p => p.name)
     .collect()
-  assert_eq(commands.length(), 81)
+  assert_eq(commands.length(), 82)
   let reachable : Set[String] = Set([])
   let work = commands.copy()
   while work.pop() is Some(name) {
@@ -494,7 +494,7 @@ async fn main {
     fail("architecture dependency checks failed")
   }
   println(
-    "81 command modules; " +
+    "82 command modules; " +
     packages.length().to_string() +
     " packages; dependency checks passed",
   )

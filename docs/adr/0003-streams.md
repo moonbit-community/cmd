@@ -100,7 +100,19 @@ Published watch tests stop the console group, wait for output-stream EOF and
 require Windows working-directory release before reporting child cleanup.
 Typst has an explicit untimed disposition;
 future performance work requires genuine document/font workloads and a fresh
-baseline containing all 81 command artifacts.
+baseline containing all current command artifacts.
+
+## Static HTTP serving
+
+`commands/serve` owns its CLI, URL-to-file mapping, MIME table and bounded
+file-copy loop. Use released `moonbitlang/async@0.22.7` HTTP and filesystem
+APIs without another server framework or shared core mechanism. GET/HEAD,
+index.html and explicit error responses are the complete initial scope.
+The module is independent of cli/core and has an untimed disposition in the
+[real workload registry](../../tests/benchmark/real-coverage.json); registered
+request/policy scenarios establish correctness only. Add a genuine HTTP workload
+and fresh 82-artifact baseline before making performance claims. Path confinement
+and its missing race-resistant API are owned by ADR-0004.
 
 ## Search ownership and execution
 

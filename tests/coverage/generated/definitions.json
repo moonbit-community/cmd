@@ -2,8 +2,9 @@
   "schema": 1,
   "profile": "finite independently reviewed current contract definitions; execution must be joined separately",
   "full_semantic_exhaustiveness": false,
-  "catalog_claims": 878,
+  "catalog_claims": 882,
   "commands": [
+    "serve",
     "typst",
     "base32",
     "cksum",
@@ -87,6 +88,100 @@
     "xargs"
   ],
   "obligations": [
+    {
+      "claim_id": "serve:host",
+      "command": "serve",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed.",
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "serve:port",
+      "command": "serve",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed.",
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "serve:help",
+      "command": "serve",
+      "kind": "metadata",
+      "reviewed": true,
+      "case_ids": [
+        "metadata:serve"
+      ],
+      "activation": "Shared typed observer checks exact standalone metadata, status0, empty stderr and final LF; after child completion a nonempty inherited stdin marker must remain unread.",
+      "scope": "standalone workspace metadata only; published coordinates use independent frozen expectations",
+      "remaining_facets": [
+        "metadata combinations and ordinary operands"
+      ]
+    },
+    {
+      "claim_id": "serve:version",
+      "command": "serve",
+      "kind": "metadata",
+      "reviewed": true,
+      "case_ids": [
+        "metadata:serve"
+      ],
+      "activation": "Shared typed observer checks exact standalone metadata, status0, empty stderr and final LF; after child completion a nonempty inherited stdin marker must remain unread.",
+      "scope": "standalone workspace metadata only; published coordinates use independent frozen expectations",
+      "remaining_facets": [
+        "metadata combinations and ordinary operands"
+      ]
+    },
     {
       "claim_id": "typst:input",
       "command": "typst",
@@ -19627,6 +19722,105 @@
           "case_id": "typst-artifacts",
           "assertions": [
             "typst/output-failure"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-operation. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "serve:feature/primary-operation",
+      "command": "serve",
+      "feature": true,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed.",
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-operation. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "serve:feature/mime-types",
+      "command": "serve",
+      "feature": true,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed.",
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-operation. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "serve:feature/path-safety",
+      "command": "serve",
+      "feature": true,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed.",
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
           ]
         }
       ],

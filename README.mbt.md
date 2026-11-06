@@ -25,6 +25,8 @@ acceptance have separate manual workflows; see [tests](tests/README.md).
   `printenv`, `pwd`, `sh`, `sleep`, `test`, `true`, `wget`, `which`, `xargs`,
   and `yes`.
 - [x] Typesetting: `typst`.
+- [x] Local static HTTP server: [`serve`](commands/serve/README.md)
+  (development candidate; not published).
 - [ ] Planned command modules: `awk`, `chgrp`, `chown`, `clear`, `df`, `du`,
   `free`, `groups`, `hostname`, `id`, `install`, `kill`, `link`, `nproc`,
   `ps`, `readlink`, `stat`, `stty`, `tar`, `truncate`, `tput`, `tty`, `uname`,

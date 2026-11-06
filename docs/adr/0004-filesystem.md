@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-01
+Updated: 2026-11-06
 
 ## Decision
 
@@ -14,6 +14,21 @@ hard-link and readlink operations required by the boundaries below. Host
 observers, private APIs and FFI do not expand the product's capabilities.
 
 ## Mutation and identity boundaries
+
+Serve decodes URL paths once and rejects traversal, invalid UTF-8, control bytes
+and Windows path aliases before filesystem access. Canonical file/index targets
+must remain inside the canonical service root with a component boundary;
+only regular files are opened. Launcher-supplied Wasm policy can separately
+grant root-only reads and loopback bind, without writes or outbound connections.
+It does not replace URL containment checks when the caller grants broader reads.
+Path canonicalization and open remain separate operations: released async 0.22.7
+does not provide descriptor-relative confined opening on Wasm, and the current
+host policy does not establish race-free filesystem isolation. Hostile concurrent
+replacement is an explicit unsupported boundary. Reopen this decision when a
+released public Wasm API and host provide confined descriptor-relative opens;
+require concurrent symlink/ancestor replacement regressions before expanding the
+claim. [Serve scenarios](../../tests/scenarios/serve.mbt) test exact file/MIME
+responses, encoded traversal, POSIX outside-root links, and restrictive policy.
 
 | Operation | Supported behavior and deliberate limit | Condition for expansion |
 | --- | --- | --- |

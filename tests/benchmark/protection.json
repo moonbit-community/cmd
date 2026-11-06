@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "artifact_count": 81,
+  "artifact_count": 82,
   "timing": "Complete release Wasm processes with input, output and exit; no MoonX and no startup subtraction",
   "windows": 2,
   "pairs": 9,
@@ -8,7 +8,7 @@
   "drift_limit": 0.1,
   "slowdown_limit": 1.05,
   "slowdown_policy": "The shared-foundation integration accepts the measured small abstraction costs. A ratio above this review boundary is never offset against another workload's gain.",
-  "coverage_policy": "Compare all81 releaseWasm artifacts. Changed artifacts require actual genuine-input timing rows; correctness-only dispositions cannot qualify a performance change. Every applicable required real mode and local boundary witness must complete. No synthetic or command-specific timing runner.",
+  "coverage_policy": "Compare all82 releaseWasm artifacts. Changed artifacts require actual genuine-input timing rows; correctness-only dispositions cannot qualify a performance change. Every applicable required real mode and local boundary witness must complete. No synthetic or command-specific timing runner.",
   "profile_aliases": {},
   "profiles": {
     "base32": [

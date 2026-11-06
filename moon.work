@@ -82,4 +82,5 @@ members = [
   "./commands/column",
   "./commands/which",
   "./commands/date",
+  "./commands/serve",
 ]

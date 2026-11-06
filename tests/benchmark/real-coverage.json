@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "All81 packages accounted for:56 timing commands,2 explicit correctness-only dispositions and23 explained not-timed commands. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
+  "scope": "All82 packages accounted for:56 timing commands,2 explicit correctness-only dispositions and24 explained not-timed commands. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "facet_vocabulary": [
     "bytes",
@@ -1233,6 +1233,17 @@
       "local_case_ids": [
         "typst-artifacts",
         "typst-watch"
+      ]
+    },
+    {
+      "command": "serve",
+      "disposition": "not-timed",
+      "reason": "The minimal long-running HTTP server has no registered genuine HTTP workload or performance baseline. Finite request and policy scenarios are correctness evidence only. Add an immutable multi-request transport workload before timing.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "serve-static",
+        "serve-policy"
       ]
     }
   ],
@@ -3827,5 +3838,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 23
+  "not_timed_command_count": 24
 }

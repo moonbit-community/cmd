@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "coverage_manifest_sha256": "064dfa76365d42c2c10ee550d25c6676a6571e0f3d81cda704646e8068c1d0d4",
+  "coverage_manifest_sha256": "a1e19c3fc4e54c3c309b99d1bc7e4dfa9ef768ac9453c11e2b8507cf2939ee6c",
   "independent_review_sha256": "4578de1df2c05666ea9bb9020104ef8636d36ba8ad97a3d071245f03f118b803",
-  "reviewed_definitions": 888,
+  "reviewed_definitions": 895,
   "remaining_catalog_labels": 0,
   "new_fixture_or_observer_catalog_labels": 0,
   "existing_fixture_assertion_upgrade_catalog_labels": 0,
