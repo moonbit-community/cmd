@@ -12,6 +12,20 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-06
+
+Development; no publication.
+
+- Upgrade workspace modules, standalone test tools and the rg child fixture to
+  `moonbitlang/async@0.22.7`. Keep one dependency baseline and update the active
+  compression-review descriptions and touch diagnostic to match. Existing
+  command support boundaries and published coordinates remain unchanged.
+- Local macOS diagnostic validation passes 1,884 Wasm package tests, 204 Native
+  tool tests and 2,520 functional checks, with 21 platform exclusions and zero
+  failures. The local 0.10.20 compiler's new warning 98 also blocks the unchanged
+  0.22.5 strict baseline; diagnostic runs exclude only that warning outside the
+  repository. Required CI retains its pinned toolchain and strict checks.
+
 ## 2026-11-05
 
 Development and publication.

@@ -16,7 +16,7 @@ description = "jq command for MoonX."
 
 import {
   "cli/core@0.9.1",
-  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.7",
   "moonbitlang/x@0.5.5",
   "bobzhang/moonjq@0.2.0",
 }

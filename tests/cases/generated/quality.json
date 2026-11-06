@@ -19643,7 +19643,7 @@
     {
       "case_id": "coverage-touch-no-create-existing",
       "source": "tests/cases/touch.json",
-      "definition_sha256": "55edc213313a7fce5a50a84b5fcb971e32fc489882607574cc81ee868bb17cd0",
+      "definition_sha256": "71c954ddc3dfe1988d44bb5086fc7b2a9e7059fe798008ef95009730d20f7f35",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19653,7 +19653,7 @@
     {
       "case_id": "coverage-touch-create-then-boundary",
       "source": "tests/cases/touch.json",
-      "definition_sha256": "92174568936a06767b9137eb55b0c5a2fa96588d112270a853991f74c32103b2",
+      "definition_sha256": "748f728c3d41204c64f7e03c625165f2d07ad24c890ab8ce942243302392fd64",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

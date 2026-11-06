@@ -16,6 +16,6 @@ description = "strings command for MoonX."
 
 import {
   "cli/core@0.8.2",
-  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.7",
   "moonbitlang/x@0.5.5",
 }

@@ -1,7 +1,15 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-11-05
+Updated: 2026-11-06
+
+Workspace development uses `moonbitlang/async@0.22.7` across modules and
+standalone test tools. This dependency upgrade does not enable new command
+features or lift existing filesystem/process boundaries. In particular,
+`Directory::open` and `Directory::remove` in async 0.22.7 do not support Wasm.
+Published coordinates and their frozen expectations remain independent in
+`tests/release/latest.json` and `latest-cases.json`; no package is published by
+this development change.
 
 `cli/typst@0.1.0` is published. Its migrated CLI,
 document environment and watcher use a pure MoonBit platform adapter; the

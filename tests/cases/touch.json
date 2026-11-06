@@ -466,7 +466,7 @@
         }
       ],
       "expected_status": 1,
-      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.5\n",
+      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.7\n",
       "expected_files": [
         {
           "path": "existing",
@@ -499,7 +499,7 @@
         "posix"
       ],
       "expected_status": 1,
-      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.5\n",
+      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.7\n",
       "expected_files": [
         {
           "path": "created",

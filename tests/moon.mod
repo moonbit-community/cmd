@@ -16,6 +16,6 @@ description = "Unified compatibility, policy, and pinned-oracle runner for the c
 
 import {
   "cli/core@0.9.1",
-  "moonbitlang/async@0.22.5",
+  "moonbitlang/async@0.22.7",
   "moonbitlang/x@0.5.5",
 }
