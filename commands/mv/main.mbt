@@ -70,6 +70,8 @@ async fn rename_move_entry(
 }
 
 ///|
+// Rollback stays cancellable because cancellation may follow a committed rename.
+#warnings("-cancellable_defer")
 async fn move_one(
   source : String,
   target : String,
@@ -164,18 +166,16 @@ async fn move_one(
     None
   }
   let mut failure_message = "move did not complete"
-  errdefer @async.protect_from_cancel(() => {
-    if backup is Some(path) {
-      restore(target, path) catch {
-        recovery => {
-          let recovery_message = match recovery {
-            @fsops.FsOpError(message) => message
-            _ => recovery.to_string()
-          }
-          raise @fsops.FsOpError(
-            "\{failure_message}; cannot restore '\{target}' from backup '\{path}': \{recovery_message}",
-          )
+  errdefer (if backup is Some(path) {
+    restore(target, path) catch {
+      recovery => {
+        let recovery_message = match recovery {
+          @fsops.FsOpError(message) => message
+          _ => recovery.to_string()
         }
+        raise @fsops.FsOpError(
+          "\{failure_message}; cannot restore '\{target}' from backup '\{path}': \{recovery_message}",
+        )
       }
     }
   })

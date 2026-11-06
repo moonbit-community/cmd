@@ -46,16 +46,16 @@ async fn confirm_overwrite(path : String) -> Bool {
 }
 
 ///|
+// Rollback stays cancellable because cancellation may follow a committed link.
+#warnings("-cancellable_defer")
 async fn create_symlink(
   link_path : String,
   target : String,
   backup_path : String?,
 ) -> Unit {
-  errdefer @async.protect_from_cancel(() => {
-    match backup_path {
-      Some(backup) => @fsops.restore_backup(link_path, backup) catch { _ => () }
-      None => ()
-    }
+  errdefer (match backup_path {
+    Some(backup) => @fsops.restore_backup(link_path, backup) catch { _ => () }
+    None => ()
   })
   @fs.symlink(link_path, target~)
 }

@@ -28,8 +28,9 @@ Development; no publication.
   standard-stream initialization after the async upgrade; latest includes the
   acquired-handle file-kind fix.
 - Expose existing cleanup guarantees as `nocancel` and protect temporary-file
-  rollback and resource restoration. Keep output flushes cancellable under
-  backpressure, with local warning declarations and a serial/parallel paste
+  cleanup. Keep ln/mv destination rollback cancellable after a committed mutation,
+  with a regression preserving the moved file and backup. Keep output flushes
+  cancellable under backpressure, with local warning declarations and a serial/parallel paste
   cancellation regression. A deterministic atomic-commit regression catches
   the previously leaked temporary file on cancellation. Strict checks retain
   every other warning.
