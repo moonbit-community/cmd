@@ -3409,9 +3409,25 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "o5-filter-stdout-inherited"
+        "o5-filter-stdout-inherited",
+        "f31-split-raw-file-test-file-slash",
+        "f31-split-raw-file-test-file-double-slash",
+        "f31-split-raw-file-test-file-link-slash",
+        "f31-split-raw-file-test-file-link-double-slash",
+        "f31-split-raw-file-test-file-chain-slash",
+        "f31-split-raw-file-test-file-chain-double-slash",
+        "f31-split-raw-file-test-dangling-slash",
+        "f31-split-raw-file-test-file-parent",
+        "f31-split-raw-file-test-file-link-parent",
+        "f31-split-raw-file-test-directory-slash",
+        "f31-split-raw-file-test-directory-double-slash",
+        "f31-split-raw-file-test-directory-link-slash",
+        "f31-split-raw-file-test-directory-link-double-slash",
+        "f31-split-raw-file-test-directory-chain-slash",
+        "f31-split-raw-file-test-directory-chain-double-slash",
+        "f31-split-raw-file-test-unsuffixed-links"
       ],
-      "activation": "-b2 --filter runs the specified printf/cat filter on explicit abcde, requiring exactly paa:abpab:cdpac:e on inherited stdout. This proves chunk stdin and FILE naming are routed to the child; file absence and arbitrary child lifecycle are not inferred from expected_files:[]."
+      "activation": "-b2 --filter runs the specified printf/cat filter on explicit abcde, requiring exactly paa:abpab:cdpac:e on inherited stdout. This proves chunk stdin and FILE naming are routed to the child; file absence and arbitrary child lifecycle are not inferred from expected_files:[]. Sixteen additional POSIX raw-path definitions execute actual file predicates through two per-piece filters with required output files: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence."
     },
     {
       "command": "csplit",
@@ -5077,9 +5093,25 @@
       "claim": "silent",
       "case_ids": [
         "coverage-make-silent",
-        "coverage-make-silent-control"
+        "coverage-make-silent-control",
+        "f31-make-raw-file-test-file-slash",
+        "f31-make-raw-file-test-file-double-slash",
+        "f31-make-raw-file-test-file-link-slash",
+        "f31-make-raw-file-test-file-link-double-slash",
+        "f31-make-raw-file-test-file-chain-slash",
+        "f31-make-raw-file-test-file-chain-double-slash",
+        "f31-make-raw-file-test-dangling-slash",
+        "f31-make-raw-file-test-file-parent",
+        "f31-make-raw-file-test-file-link-parent",
+        "f31-make-raw-file-test-directory-slash",
+        "f31-make-raw-file-test-directory-double-slash",
+        "f31-make-raw-file-test-directory-link-slash",
+        "f31-make-raw-file-test-directory-link-double-slash",
+        "f31-make-raw-file-test-directory-chain-slash",
+        "f31-make-raw-file-test-directory-chain-double-slash",
+        "f31-make-raw-file-test-unsuffixed-links"
       ],
-      "activation": "A non-@ recipe prints its command and hello normally; -s removes only the command echo while retaining exact recipe output.",
+      "activation": "A non-@ recipe prints its command and hello normally; -s removes only the command echo while retaining exact recipe output. Sixteen additional POSIX raw-path definitions execute actual file predicates through silent recipes: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },

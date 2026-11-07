@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "coverage_manifest_sha256": "691b8e201ee5b83caaf1b54bb4d68d09b33666b9695732557d3f8bc1378c4e5a",
+  "coverage_manifest_sha256": "153bfc68c244fa6f07b7589f9262599d4ca707b001aef8609fd18526891ba581",
   "independent_review_sha256": "d4965ce6187b71d7896caab440d695bd79fac24e2fa20d371c26e8562a349ffe",
   "reviewed_definitions": 888,
   "remaining_catalog_labels": 0,
@@ -657,7 +657,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "The retained-c fixtures bind their exact finite shell-language outputs and statuses; unsupported array syntax now requires the complete rejection diagnostic before any command effects.",
+      "current_activation": "The retained-c fixtures bind their exact finite shell-language outputs and statuses; unsupported array syntax now requires the complete rejection diagnostic before any command effects. Sixteen additional POSIX raw-path definitions execute actual file predicates through -c command source: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence.",
       "current_case_ids": [
         "compat-shell-line-3",
         "compat-shell-line-12",
@@ -667,7 +667,23 @@
         "compat-shell-line-59",
         "compat-shell-line-68",
         "compat-shell-line-95",
-        "p0-sh-public-error"
+        "p0-sh-public-error",
+        "f31-sh-raw-file-test-file-slash",
+        "f31-sh-raw-file-test-file-double-slash",
+        "f31-sh-raw-file-test-file-link-slash",
+        "f31-sh-raw-file-test-file-link-double-slash",
+        "f31-sh-raw-file-test-file-chain-slash",
+        "f31-sh-raw-file-test-file-chain-double-slash",
+        "f31-sh-raw-file-test-dangling-slash",
+        "f31-sh-raw-file-test-file-parent",
+        "f31-sh-raw-file-test-file-link-parent",
+        "f31-sh-raw-file-test-directory-slash",
+        "f31-sh-raw-file-test-directory-double-slash",
+        "f31-sh-raw-file-test-directory-link-slash",
+        "f31-sh-raw-file-test-directory-link-double-slash",
+        "f31-sh-raw-file-test-directory-chain-slash",
+        "f31-sh-raw-file-test-directory-chain-double-slash",
+        "f31-sh-raw-file-test-unsuffixed-links"
       ],
       "current_scenario_bindings": [],
       "current_remaining_facets": [

@@ -1,6 +1,6 @@
 name = "cli/core"
 
-version = "0.9.4"
+version = "0.9.5"
 
 readme = "README.md"
 

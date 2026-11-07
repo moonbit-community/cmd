@@ -2,12 +2,12 @@
 
 Run a Make language subset for MoonX.
 
-Published: `cli/make@0.2.7`, using `cli/core@0.9.4`.
-Exact-coordinate acceptance and earlier release evidence are recorded in the
+Development candidate: `cli/make@0.2.8`, using `cli/core@0.9.5`.
+Publication and exact-coordinate acceptance remain pending. Earlier release evidence is recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
-moonx cli/make@0.2.7 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
+moonx cli/make@0.2.8 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
 ```
 
 ## Supported scope
@@ -77,6 +77,11 @@ the exact borrowed byte on success/failure/cancellation and preserves the owner'
 FIFO. Its implicit slot is distinct from a borrowed token. Descriptor-pipe and
 Windows semaphore authentication reject explicitly.
 
+Recipe file tests apply the POSIX trailing-slash directory requirement to every
+file predicate and both timestamp-comparison operands. Directory links ending
+in a slash select their directory, not the link itself; unsuffixed links retain
+their ordinary behavior. See [sh](../sh/README.md) for size-capability boundaries.
+
 ## Options
 
 | Option | Description |
@@ -114,8 +119,8 @@ Windows semaphore authentication reject explicitly.
 ## Examples
 
 ```sh
-moonx cli/make@0.2.7 -n
-moonx cli/make@0.2.7 -f build.mk -j 2 all
+moonx cli/make@0.2.8 -n
+moonx cli/make@0.2.8 -f build.mk -j 2 all
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

@@ -35967,6 +35967,630 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-file-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-file-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-file-double-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-file-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-file-link-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-file-link-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-file-link-double-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-file-link-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-file-chain-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-file-chain-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-file-chain-double-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-file-chain-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-dangling-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-dangling-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-file-parent",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-file-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-file-link-parent",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-file-link-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-directory-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-directory-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-directory-double-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-directory-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-directory-link-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-directory-link-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-directory-link-double-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-directory-link-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-directory-chain-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-directory-chain-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-directory-chain-double-slash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-directory-chain-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-raw-file-test-unsuffixed-links",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-raw-file-test-unsuffixed-links",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-file-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-file-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-file-double-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-file-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-file-link-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-file-link-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-file-link-double-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-file-link-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-file-chain-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-file-chain-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-file-chain-double-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-file-chain-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-dangling-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-dangling-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-file-parent",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-file-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-file-link-parent",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-file-link-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-directory-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-directory-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-directory-double-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-directory-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-directory-link-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-directory-link-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-directory-link-double-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-directory-link-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-directory-chain-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-directory-chain-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-directory-chain-double-slash",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-directory-chain-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-raw-file-test-unsuffixed-links",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-raw-file-test-unsuffixed-links",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-file-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-file-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-file-double-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-file-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-file-link-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-file-link-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-file-link-double-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-file-link-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-file-chain-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-file-chain-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-file-chain-double-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-file-chain-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-dangling-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-dangling-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-file-parent",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-file-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-file-link-parent",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-file-link-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-directory-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-directory-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-directory-double-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-directory-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-directory-link-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-directory-link-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-directory-link-double-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-directory-link-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-directory-chain-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-directory-chain-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-directory-chain-double-slash",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-directory-chain-double-slash",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-raw-file-test-unsuffixed-links",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-raw-file-test-unsuffixed-links",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

@@ -2,6 +2,16 @@
 
 Shared runtime packages used by the independently published command modules.
 
+## 0.9.5 development candidate
+
+Apply the POSIX trailing-slash directory requirement to every shell file
+predicate and both timestamp-comparison operands. Validate the original path
+before resolving valid directory links; their trailing slash selects the
+directory, so link predicates are false. Unsuffixed links retain their existing
+behavior. This also repairs make recipes and split filters on macOS 15, whose
+metadata API can otherwise return a regular target for a file link ending in
+a slash. Publication and three-platform exact-coordinate acceptance are pending.
+
 ## 0.9.4 changes
 
 Reject unmatched shell reserved words, incomplete logical expressions and empty

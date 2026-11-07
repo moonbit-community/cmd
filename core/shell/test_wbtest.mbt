@@ -1,4 +1,75 @@
 ///|
+async test "POSIX trailing separators require directories for every file predicate" {
+  guard !(@async.platform is Windows) else { return }
+  let root = @fs.tmpdir(prefix="cmd-sh-test-directory-suffix-")
+  defer @fs.rmdir(root, recursive=true)
+  @fs.write_file(root + "/known", "data")
+  @fs.mkdir(root + "/directory")
+  @fs.symlink(root + "/file-link", target="known")
+  @fs.symlink(root + "/directory-link", target="directory")
+  @fs.symlink(root + "/dangling", target="missing")
+  let errors : ShellTestOutput = { bytes: [], }
+  let session = Session::new(cwd=root, env={}, error=errors)
+  for
+    value in [
+      "known/", "known//", "file-link/", "file-link//", "dangling/", "known/../known",
+      "file-link/../known",
+    ] {
+    assert_eq(test_mtime(value, session.context), None)
+    for
+      operator in [
+        "-e", "-f", "-d", "-b", "-c", "-p", "-S", "-L", "-h", "-r", "-w", "-x", "-s",
+      ] {
+      assert_eq(
+        run_builtin(["test", operator, value], session.context),
+        Some(1),
+        msg="test \{operator} '\{value}'",
+      )
+    }
+    for operator in ["-nt", "-ot"] {
+      assert_eq(
+        run_builtin(["test", value, operator, "known"], session.context),
+        Some(1),
+        msg="invalid left timestamp operand: \{value}",
+      )
+      assert_eq(
+        run_builtin(["test", "known", operator, value], session.context),
+        Some(1),
+        msg="invalid right timestamp operand: \{value}",
+      )
+    }
+  }
+  for
+    value in [
+      "directory/", "directory//", "directory-link/", "directory-link//",
+    ] {
+    for operator in ["-d", "-e"] {
+      assert_eq(
+        run_builtin(["test", operator, value], session.context),
+        Some(0),
+      )
+    }
+    for operator in ["-f", "-L", "-h"] {
+      assert_eq(
+        run_builtin(["test", operator, value], session.context),
+        Some(1),
+      )
+    }
+    assert_eq(
+      test_mtime(value, session.context),
+      Some(@fs.mtime(root + "/directory")),
+    )
+  }
+  assert_eq(run_builtin(["test", "-f", "file-link"], session.context), Some(0))
+  assert_eq(run_builtin(["test", "-L", "file-link"], session.context), Some(0))
+  assert_eq(
+    run_builtin(["test", "-L", "directory-link"], session.context),
+    Some(0),
+  )
+  assert_eq(errors.text(), "")
+}
+
+///|
 async test "test file predicates preserve empty paths missing components and not-directory errors" {
   let root = @fs.tmpdir(prefix="cmd-sh-test-")
   defer @fs.rmdir(root, recursive=true)

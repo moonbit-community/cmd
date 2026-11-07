@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2805,
+    "exact-local": 2853,
     "finite-diagnostic": 180,
     "typed-scenario": 43,
     "typed-dynamic-output": 12
@@ -6014,7 +6014,7 @@
     {
       "case_id": "release-metadata-sh-help",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "724a6889de843278482d6e6f2ea53246b22856ebbba7ad09c931f98f03164a19",
+      "definition_sha256": "8d13213650bbed4555f196f9a94b4abec71d909f990d6b7df3980115ea605b91",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6024,7 +6024,7 @@
     {
       "case_id": "release-metadata-sh-version",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "069d097263effe313bf29549d3d28874c81371f303f231b0fddf9523b32a35fe",
+      "definition_sha256": "4372113999796ac9b2f1699a2b198e24f6cb3450107e076067001888501539e7",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7572,6 +7572,166 @@
       "case_id": "f31-sh-eof-valid-logical-compounds",
       "source": "tests/cases/sh.json",
       "definition_sha256": "4ce7750c567b9a1e1cc1c283f5ba48e331cc8829044d8565b491c65287ce384a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-file-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "181a3289117fda43ae92cbda51a3029b51e9873af1f9aca88e79845ea8ffa6f9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-file-double-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "2d29b38c4139bf970413e2fb76967fb7dd598335f25278d89acadf5fca787899",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-file-link-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "b65a011a2b1b8242c488199e9719ab3aed7f6fcc639014b6319246d40c896f10",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-file-link-double-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "6806e199d147521caa346dc5e166a85995de16ea1a13ff90ea02e64576c8cde3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-file-chain-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0ee62a33e5fbbb964ff233fd4c5ab40e30d71b40ffefb9e8e3d9cef76b5bbb26",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-file-chain-double-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "b4e763a1cc44f9843a31272e1c71798273c84d41b9a50b59fb736e11e124b9b6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-dangling-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "5ce0bf421c9b06a0efe8317d99f8d9aff93096597248527d30768432f1fca89d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-file-parent",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0c34855316f4ae1d645268ebd74d20fe6b95dde91ed140512d0e310702a9c5b1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-file-link-parent",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "3393b3b24e8e198b91f8e63ef0c17aaa728e9f424c30066015e622fd6e4aa516",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-directory-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "f0aa2eba8282a3f4fd3caada5b0b61c84f92d200ed535daa1445922d1afc6e21",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-directory-double-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "d13c83bc6ebe6d78a75ad7b695c3a327e298564a59feb311c352fd73ce186977",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-directory-link-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "d8cbbdf0ee43f0f52c799c774be2f1c838caabd0190708131b8c159c4c918992",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-directory-link-double-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "9712d76fa394127af8925b345ef0c98bdbf896eeb996a8798c964ac23a6f54ac",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-directory-chain-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "e6c6f32d3526718f0c227603ead951c61409bb2fba034033d2446a6ac7929990",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-directory-chain-double-slash",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "d8bea6d20d2e89c5782ee4cc42cf1332a802098b808519c1aa244cd6950dc840",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-raw-file-test-unsuffixed-links",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "e8f45f407fb1b25ad4c599039a019f506202dad98a27a5ef58b28fca58709872",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16942,7 +17102,7 @@
     {
       "case_id": "release-metadata-make-help",
       "source": "tests/cases/make.json",
-      "definition_sha256": "dcd1a8089ecf9f530921f002386fe379ecdc8ab46749a16ee504ce489afdbb4c",
+      "definition_sha256": "34c7a249615c014cfc33aa7d121a867eabe9d7284dee6f3da6546cc652ebb514",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16952,7 +17112,7 @@
     {
       "case_id": "release-metadata-make-version",
       "source": "tests/cases/make.json",
-      "definition_sha256": "c1578acf4127bb78c54de2ae7b5afb090fdeb684939393d5b93ac9fbd7cfb88d",
+      "definition_sha256": "32107500b0dd5f5cd065ae49ff0183992cfc651bc61dce2d6716b617dca5a6d9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18903,6 +19063,166 @@
       "descriptor": {
         "kind": "diagnostic-fragment",
         "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-file-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f7f5fbfc2ab4c45cb37bc4f6d343c20cdc78658a5947fe1045ed50ce2de187b7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-file-double-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "d21764c72174cbc146b13ce279e43f3b985010112871fa21fff58f2ca1e0a352",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-file-link-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f8f77426a2e0e33bb252a2ce9c99de2d04a601a157974be836769e1fef23d0ec",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-file-link-double-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "95259113d0f269bf4c7b42b2d5c910f6697b7fcb92ef55e809ed60e3d968d1e1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-file-chain-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "3dd668154e3be8fb20d387d6314f02dbe28595c5031dd3c067696f2f7b845748",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-file-chain-double-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "6765310946148a38c11dd19448f76159fb99100e56954148b8ce140cfe7b2d58",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-dangling-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "5f448e6bd54e43c836aa5b69faeb7b591ac67aa7b6281dcb940c14e8cc0cbdb5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-file-parent",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "e93c9fd26bd62241471970da66e3f9e8d99e45a3b3dbac466882781b6f775223",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-file-link-parent",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "68276e180462997ca9111d4dee6ec50ef5dcc8b2a301ef57fe31cc6cb26787c2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-directory-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "fd6fbd3dfdd6bbceef55876e05496bf27f4bec25aade25d75f7220aab4221c32",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-directory-double-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1e9b4bcf9bf26efb6cac63ed18152307dd28ce4e8785ea77160f1c4937eb7ee3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-directory-link-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c95c7bea9355a389fb2d88d1ffca9c82a4e75a42c323a9f229f8a1d282669c18",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-directory-link-double-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "4784d2a56e02c909bf5bb4a3268ace769778c8f797ec6a33740bb623942e97ed",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-directory-chain-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "625138e9e031b1de7a14e1b8596e4d6b6d621a538aa33879387995a37d507148",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-directory-chain-double-slash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "0ea5eac37cd166839133f3855e43b8c9c59af6cf061b2c4f844b288f23a77b08",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-raw-file-test-unsuffixed-links",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "a1a5c3bda6c13215c6e3ca0e532b9d9b38bf720741a29bd50468ae7a59af6c3d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -24505,7 +24825,7 @@
     {
       "case_id": "release-metadata-split-help",
       "source": "tests/cases/split.json",
-      "definition_sha256": "005b9ffd0464ab29adec8d7c2982c28d3306bd68c5d15a9c4b40daa3415f01eb",
+      "definition_sha256": "96674643cca334d6648411a24c6989c121351f866892cf7813e2ed7a04b4067a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24515,7 +24835,7 @@
     {
       "case_id": "release-metadata-split-version",
       "source": "tests/cases/split.json",
-      "definition_sha256": "a598f2d91df7bc9a3605632088b198148fee236918c15db2af9551fe90a08ba9",
+      "definition_sha256": "789a53d6ddd4102013a7ff8d46a675c35a1b3bdb5316d0b4c1702542fc453952",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -25037,6 +25357,166 @@
       "case_id": "f31-split-eof-filter-continuation",
       "source": "tests/cases/split.json",
       "definition_sha256": "0cdfcc4f277900dc12f4609a91c6411377c25a3bf83b2a6a98da2096bc2d8931",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-file-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "0f4ca6004a132a57818ebcea61dfe915b14e2215bd1e378553f596fef0085cd4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-file-double-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "1f89d3c6ee25aac00c900d82bdf3eea3c5fcb915f9d18350f67a12be83e74794",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-file-link-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "88ca4296920e8eed8ee050a269ce832361eb6a27956107c8e4d2637b9dca0037",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-file-link-double-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "266bbe5cb52cd80a30cc1a6710313fa971dea467539c25e0c3928a2bd3022c8e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-file-chain-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "01598d62807948f3d2e78b3a94a289c313ddeef4d69ca1b9fa5c570d0b2154ae",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-file-chain-double-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "d2dedd89a0dad892a5a4b0cc2c9ff2c2a5cb436ab87ba33b9002d1380b34cea6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-dangling-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "b24993550a4f9ef74a6cad65ae932ef9bf3aea15b6071e2779def95f6c20d93c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-file-parent",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "e445fd302e48faf097891d19ec758d54903e732fae8045a6f67ac7d1d889b269",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-file-link-parent",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "f6862ab4765189495a7de2f32283c8bffbd9ccf0b7aa08eda81ba88b7e39a7b2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-directory-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "db93bfeea68a96cfd8c206bc838c5ff09e45df5002061b21b2ab04449afcf194",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-directory-double-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "06431e5c9a1649cdba9735774f62c349a573373ffb7b9b37553ef1ac2dfd6fe5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-directory-link-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "b4bdaf73d5c0a51dce713e80be87c7af0996479afb4c42e3fffc814c2ff1b49c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-directory-link-double-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "8e08a6d0311e5ae2ad92ed44d9ea59da2c4ef08955ad1e3cfadb787301768301",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-directory-chain-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "cdfb430bec99ceebadea25c4f33b3a6fb8daef70bb48299c1c40d0cf52850164",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-directory-chain-double-slash",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "5f3edb5c8c281ec5dec2198c7ccf697ecd7b674dfebf4c70a72177546ba8eebd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-raw-file-test-unsuffixed-links",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "acb7284f1f3121601ace620dd2c74fb88e2532e84b01f697df040940d0f80c05",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -33208,6 +33688,54 @@
     "f31-sh-eof-valid-logical-compounds": {
       "kind": "exact"
     },
+    "f31-sh-raw-file-test-file-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-file-double-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-file-link-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-file-link-double-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-file-chain-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-file-chain-double-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-dangling-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-file-parent": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-file-link-parent": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-directory-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-directory-double-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-directory-link-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-directory-link-double-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-directory-chain-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-directory-chain-double-slash": {
+      "kind": "exact"
+    },
+    "f31-sh-raw-file-test-unsuffixed-links": {
+      "kind": "exact"
+    },
     "phase3-tr-range": {
       "kind": "exact"
     },
@@ -36724,6 +37252,54 @@
       "kind": "diagnostic-fragment",
       "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
     },
+    "f31-make-raw-file-test-file-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-file-double-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-file-link-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-file-link-double-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-file-chain-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-file-chain-double-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-dangling-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-file-parent": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-file-link-parent": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-directory-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-directory-double-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-directory-link-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-directory-link-double-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-directory-chain-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-directory-chain-double-slash": {
+      "kind": "exact"
+    },
+    "f31-make-raw-file-test-unsuffixed-links": {
+      "kind": "exact"
+    },
     "phase3-sort-basic": {
       "kind": "exact"
     },
@@ -38624,6 +39200,54 @@
       "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
     },
     "f31-split-eof-filter-continuation": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-file-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-file-double-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-file-link-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-file-link-double-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-file-chain-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-file-chain-double-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-dangling-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-file-parent": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-file-link-parent": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-directory-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-directory-double-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-directory-link-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-directory-link-double-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-directory-chain-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-directory-chain-double-slash": {
+      "kind": "exact"
+    },
+    "f31-split-raw-file-test-unsuffixed-links": {
       "kind": "exact"
     },
     "phase4-touch-create": {

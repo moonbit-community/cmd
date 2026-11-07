@@ -2,12 +2,12 @@
 
 Run shell scripts and sessions for MoonX.
 
-Published: `cli/sh@0.2.8`, using `cli/core@0.9.4`.
-Exact-coordinate acceptance and earlier release evidence are recorded in the
+Development candidate: `cli/sh@0.2.9`, using `cli/core@0.9.5`.
+Publication and exact-coordinate acceptance remain pending. Earlier release evidence is recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
-moonx cli/sh@0.2.8 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
+moonx cli/sh@0.2.9 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
 ```
 
 ## Supported scope
@@ -68,8 +68,11 @@ separate queries do not promise an atomic identity snapshot. The current macOS
 public API cannot measure directory sizes; both directories and links to them
 therefore produce an explicit size-capability error, including under `!`, `-a`
 and `-o`. Linux directory sizes remain supported.
-On POSIX, a trailing slash requires a directory even when a host query
-permissively returns a regular symlink target.
+On POSIX, every file predicate and both timestamp-comparison operands require
+a trailing slash to name a directory, even when a host query permissively
+returns a regular symlink target. A trailing slash on a valid directory link
+selects the directory: -d/-e succeed and -L/-h are false. Unsuffixed links
+retain their ordinary behavior.
 
 - This is a finite shell subset; background jobs and complete Bash/POSIX grammar
   are not claimed.
@@ -86,8 +89,8 @@ permissively returns a regular symlink target.
 ## Examples
 
 ```sh
-moonx cli/sh@0.2.8 -c 'echo hello'
-moonx cli/sh@0.2.8 script.sh
+moonx cli/sh@0.2.9 -c 'echo hello'
+moonx cli/sh@0.2.9 script.sh
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

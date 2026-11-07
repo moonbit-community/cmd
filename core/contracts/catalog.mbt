@@ -325,6 +325,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     // Named/default export policy and secondary prerequisites retain GNU order.
     // Recipes expand before execution; each target constructs its environment once.
     // Shell argv, NUL-truncated captures and errors retain actual shell status.
+    // Every file-test operand preserves the POSIX trailing-slash directory rule.
     // Inherited POSIX FIFO tokens are separate from local -j scheduling;
     // descriptor-pipe and Windows semaphore authentication reject explicitly.
     contract(
@@ -341,6 +342,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     // Shared sessions implement arithmetic side effects, backticks, expanded
     // heredocs, loop levels, printf/test and actual stdout/stderr aliases.
     // File-size tests follow target metadata and reject unavailable sizes.
+    // All file predicates and timestamp operands enforce POSIX directory suffixes.
     // Syntax rejects before command-list effects; complete EOF continuations run.
     // External output-transfer failures retain their error identity.
     // Descriptor import/closure and terminal job control remain boundaries.
@@ -496,6 +498,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       exit_codes=[0, 1, 2],
     ),
     // Filters share syntax, EOF continuation and output-failure session contracts.
+    // File tests retain raw POSIX lookup and trailing-slash directory requirements.
     contract(
       "split",
       Restricted,

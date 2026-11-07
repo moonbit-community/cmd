@@ -1687,7 +1687,23 @@
         "f31-make-eof-assignment-forced-blank-argument",
         "f31-make-eof-function-forced-continuation",
         "f31-make-eof-assignment-forced-continuation",
-        "f31-make-eof-empty-recursive-selector"
+        "f31-make-eof-empty-recursive-selector",
+        "f31-make-raw-file-test-file-slash",
+        "f31-make-raw-file-test-file-double-slash",
+        "f31-make-raw-file-test-file-link-slash",
+        "f31-make-raw-file-test-file-link-double-slash",
+        "f31-make-raw-file-test-file-chain-slash",
+        "f31-make-raw-file-test-file-chain-double-slash",
+        "f31-make-raw-file-test-dangling-slash",
+        "f31-make-raw-file-test-file-parent",
+        "f31-make-raw-file-test-file-link-parent",
+        "f31-make-raw-file-test-directory-slash",
+        "f31-make-raw-file-test-directory-double-slash",
+        "f31-make-raw-file-test-directory-link-slash",
+        "f31-make-raw-file-test-directory-link-double-slash",
+        "f31-make-raw-file-test-directory-chain-slash",
+        "f31-make-raw-file-test-directory-chain-double-slash",
+        "f31-make-raw-file-test-unsuffixed-links"
       ]
     },
     {
@@ -2234,7 +2250,23 @@
         "f31-sh-eof-stdin-complete-continuation",
         "f31-sh-eof-command-incomplete-if",
         "f31-sh-eof-command-incomplete-quote",
-        "f31-sh-eof-valid-logical-compounds"
+        "f31-sh-eof-valid-logical-compounds",
+        "f31-sh-raw-file-test-file-slash",
+        "f31-sh-raw-file-test-file-double-slash",
+        "f31-sh-raw-file-test-file-link-slash",
+        "f31-sh-raw-file-test-file-link-double-slash",
+        "f31-sh-raw-file-test-file-chain-slash",
+        "f31-sh-raw-file-test-file-chain-double-slash",
+        "f31-sh-raw-file-test-dangling-slash",
+        "f31-sh-raw-file-test-file-parent",
+        "f31-sh-raw-file-test-file-link-parent",
+        "f31-sh-raw-file-test-directory-slash",
+        "f31-sh-raw-file-test-directory-double-slash",
+        "f31-sh-raw-file-test-directory-link-slash",
+        "f31-sh-raw-file-test-directory-link-double-slash",
+        "f31-sh-raw-file-test-directory-chain-slash",
+        "f31-sh-raw-file-test-directory-chain-double-slash",
+        "f31-sh-raw-file-test-unsuffixed-links"
       ]
     },
     {
@@ -3548,7 +3580,23 @@
         "f31-split-shared-shell-filter",
         "f31-split-test-size-targets",
         "f31-split-export-audit-filter-reserved",
-        "f31-split-eof-filter-continuation"
+        "f31-split-eof-filter-continuation",
+        "f31-split-raw-file-test-file-slash",
+        "f31-split-raw-file-test-file-double-slash",
+        "f31-split-raw-file-test-file-link-slash",
+        "f31-split-raw-file-test-file-link-double-slash",
+        "f31-split-raw-file-test-file-chain-slash",
+        "f31-split-raw-file-test-file-chain-double-slash",
+        "f31-split-raw-file-test-dangling-slash",
+        "f31-split-raw-file-test-file-parent",
+        "f31-split-raw-file-test-file-link-parent",
+        "f31-split-raw-file-test-directory-slash",
+        "f31-split-raw-file-test-directory-double-slash",
+        "f31-split-raw-file-test-directory-link-slash",
+        "f31-split-raw-file-test-directory-link-double-slash",
+        "f31-split-raw-file-test-directory-chain-slash",
+        "f31-split-raw-file-test-directory-chain-double-slash",
+        "f31-split-raw-file-test-unsuffixed-links"
       ]
     },
     {

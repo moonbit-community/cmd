@@ -8,6 +8,23 @@ fn test_path(value : String, context : Context) -> String {
 }
 
 ///|
+// A POSIX trailing separator requires a directory, including through links.
+// Some Darwin metadata calls return a file link's target kind despite that
+// separator. Validate the raw lookup before resolving a valid directory;
+// resolution also prevents -L/-h from observing its final link instead.
+async fn test_lookup_path(path : String) -> String? {
+  if !(@async.platform is Windows) && path.has_suffix("/") {
+    if @fs.kind(path) != Directory {
+      None
+    } else {
+      Some(@fs.realpath(path))
+    }
+  } else {
+    Some(path)
+  }
+}
+
+///|
 async fn test_file(
   operator : String,
   value : String,
@@ -16,8 +33,10 @@ async fn test_file(
   if value == "" {
     return false
   }
-  let path = test_path(value, context)
   try {
+    guard test_lookup_path(test_path(value, context)) is Some(path) else {
+      return false
+    }
     match operator {
       "-e" => @fs.exists(path)
       "-f" => @fs.kind(path) == Regular
@@ -33,16 +52,8 @@ async fn test_file(
       "-s" => {
         // Validate the raw lookup before canonicalization can remove a
         // non-directory parent component. Size itself must follow the target.
-        let kind = @fs.kind(path)
-        // Some macOS versions report a regular symlink target even with a
-        // trailing slash. POSIX still requires that operand to be a directory.
-        if !(@async.platform is Windows) &&
-          path.has_suffix("/") &&
-          kind != Directory {
-          false
-        } else {
-          @fs.file_size(@fs.realpath(path)) > 0L
-        }
+        ignore(@fs.kind(path))
+        @fs.file_size(@fs.realpath(path)) > 0L
       }
       _ => false
     }
@@ -62,7 +73,12 @@ async fn test_mtime(value : String, context : Context) -> (Int64, Int32)? {
   if value == "" {
     return None
   }
-  Some(@fs.mtime(test_path(value, context))) catch {
+  try {
+    guard test_lookup_path(test_path(value, context)) is Some(path) else {
+      return None
+    }
+    Some(@fs.mtime(path))
+  } catch {
     @os_error.OSError(_) => None
     err => raise err
   }

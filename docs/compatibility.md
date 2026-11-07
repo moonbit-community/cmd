@@ -77,6 +77,15 @@ this profile does not relabel those omissions as implemented.
 
 ## Current delivery and historical acceptance
 
+Development candidate core 0.9.5 with make 0.2.8, sh 0.2.9 and split 0.1.10
+extends the POSIX trailing-slash directory check to all shell file predicates
+and both timestamp-comparison operands. A later independent audit found that
+0.9.4 guarded only size tests, leaving macOS 15 file-link lookups exposed.
+Actual sh, make-recipe and split-filter regressions cover single/double slashes,
+link chains, invalid parent components, valid directory links and unsuffixed
+controls. Publication and three-platform acceptance remain pending, and issue
+#31 remains open. Earlier successful acceptance retains its finite scope.
+
 The current 2026-11-08 language/export release publishes core 0.9.4, make 0.2.7,
 sh 0.2.8 and split 0.1.9 from `aa6b769`, retaining the other 77 command coordinates.
 [Actual-main development checks](https://github.com/moonbit-community/cmd/actions/runs/42415858402)
