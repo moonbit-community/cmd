@@ -126,8 +126,19 @@ fn checked_add(
 
 ///|
 fn normalized_args(args : ArrayView[String]) -> Array[String] {
-  args.map(arg => {
-    match arg {
+  let result : Array[String] = []
+  let mut options = true
+  let mut value_next = false
+  for arg in args {
+    if value_next || !options {
+      result.push(arg)
+      value_next = false
+      continue
+    }
+    if arg == "--" {
+      options = false
+    }
+    let normalized = match arg {
       "-ps" | "-postscript" | "--postscript" | "-plain" => "--plain"
       "--revert" | "-revert" => "--reverse"
       "-autoskip" => "--autoskip"
@@ -144,7 +155,22 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
       "-include" => "--include"
       _ => arg
     }
-  })
+    result.push(normalized)
+    if options {
+      value_next = [
+        "--group", "--offset", "--cols", "--seek", "--len", "--name",
+      ].contains(normalized)
+      if normalized.has_prefix("-") && !normalized.has_prefix("--") {
+        for offset in 1..<normalized.length() {
+          if normalized[offset] is ('g' | 'o' | 'c' | 's' | 'l' | 'n') {
+            value_next = offset + 1 == normalized.length()
+            break
+          }
+        }
+      }
+    }
+  }
+  result
 }
 
 ///|

@@ -93,6 +93,8 @@ fn help_message() -> String {
     #|The fixed Linux C-locale profile reverses bytes and rejects non-ASCII records.
     #|An explicit - is a filename, as in the frozen util-linux profile.
     #|Input streams one record at a time; memory follows the longest record.
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
   message
 }
 
@@ -100,13 +102,13 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("rev 0.1.6\n")
+    @stdio.stdout.write("rev 0.1.7\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [@cli.flag("help")]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("rev: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

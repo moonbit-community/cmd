@@ -40,7 +40,7 @@ fn strip_suffix(name : String, suffix : String) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("basename 0.2.3\n")
+    @stdio.stdout.write("basename 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -52,7 +52,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("basename: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -62,7 +62,7 @@ async fn main {
   let operands = parsed.operands
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }

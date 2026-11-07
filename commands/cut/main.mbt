@@ -360,7 +360,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cut 0.2.5\n")
+    @stdio.stdout.write("cut 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
@@ -377,13 +377,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("cut: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
@@ -400,7 +400,7 @@ async fn main {
         @stdio.stderr.write(
           "cut: the delimiter must be a single byte in C locale\n",
         )
-        @sys.exit(2)
+        @sys.exit(1)
         return
       }
       if encoded.is_empty() {
@@ -427,7 +427,7 @@ async fn main {
     @stdio.stderr.write(
       "cut: you must specify a list of fields (-f) or characters (-c)\n",
     )
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   if fields_spec is None &&
@@ -463,7 +463,7 @@ async fn main {
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

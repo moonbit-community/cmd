@@ -16,6 +16,10 @@ fn help_message() -> String {
     #|      --traditional        accept old offset and label operands
     #|      --help                 display this help and exit
     #|      --version              display version and exit
+    #|
+    #|Project format aliases: --named = -a; --octal-byte = -b; --character = -c.
+    #|--decimal = -d; --int = -i; --long = -l; --octal = -o; --signed = -s.
+    #|--hex = -x; --float = -f; --double = -e; --double-F = -F.
   message
 }
 
@@ -108,7 +112,7 @@ fn settings(parsed : @cli.ParsedArgs) -> DumpState raise OdError {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("od 0.1.3\n")
+    @stdio.stdout.write("od 0.1.4\n")
     return
   }
   let args : Array[String] = []

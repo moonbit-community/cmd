@@ -15,7 +15,7 @@ fn valid_logical_path(path : String) -> Bool {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("pwd 0.2.3\n")
+    @stdio.stdout.write("pwd 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -26,13 +26,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("pwd: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: pwd [-L|-P]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: pwd [-L|-P]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }

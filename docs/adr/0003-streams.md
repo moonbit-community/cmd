@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-06
+Updated: 2026-11-07
 
 ## Decision
 
@@ -36,6 +36,27 @@ cancellation. Reconsider shielding output only with a bounded completion
 contract and equivalent cancellation regressions.
 
 ## Package ownership
+
+Argument normalization belongs to each command. Consume option values and
+respect `--` before expanding aliases; values and filenames that resemble an
+implementation key must remain data. Reject private keys as raw options rather
+than accidentally exposing adapter internals. The shared catalog's option
+strings are semantic coverage identifiers, not a complete accepted-argv grammar.
+The existing identifiers remain stable; exact public spellings, project aliases
+and diagnostic limits are recorded in the
+[support profile](../compatibility.md#extensions-and-diagnostics), command help
+and READMEs. This clarification changes no core runtime/API and does not require
+a core release. Reconsider the metadata representation only if a real consumer
+needs a separately validated spelling grammar; do not derive acceptance from
+catalog membership.
+
+Ordinary usage errors retain command-specific upstream status contracts.
+Capability refusals are distinct, as are committed bytes/effects before an
+error. Local exact diagnostic assertions may use a documented narrower
+upstream category comparison for host messages or help trailers; neither
+generic text nor a nonzero status alone establishes correctness. The f17 cases
+exercise the actual aliases, empty/invalid input, literal operands and option
+values. Generated index/coverage records are definitions, not execution receipts.
 
 | Package | Responsibility |
 | --- | --- |

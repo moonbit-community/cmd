@@ -63,6 +63,8 @@ fn help_message() -> String {
     #|      --tab              indent with tabs
     #|  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)
     #|  -M, --monochrome-output disable colors, including when -C is present
+    #|
+    #|Option values and operands after -- remain literal during alias normalization.
   help
 }
 
@@ -105,8 +107,19 @@ fn sort_json(value : Json) -> Json {
 fn prepare_args(args : ArrayView[String]) -> Array[String] raise ArgError {
   let prepared : Array[String] = []
   let mut index = 0
+  let mut options = true
+  let mut value_next = false
   while index < args.length() {
     let arg = args[index]
+    if value_next || !options {
+      prepared.push(arg)
+      value_next = false
+      index += 1
+      continue
+    }
+    if arg == "--" {
+      options = false
+    }
     if arg == "--arg" || arg == "--argjson" {
       if index + 2 >= args.length() {
         raise ArgError("\{arg} requires NAME and VALUE")
@@ -116,6 +129,17 @@ fn prepare_args(args : ArrayView[String]) -> Array[String] raise ArgError {
     } else {
       prepared.push(arg)
       index += 1
+      if options {
+        value_next = ["--from-file", "--indent"].contains(arg)
+        if arg.has_prefix("-") && !arg.has_prefix("--") {
+          for offset in 1..<arg.length() {
+            if arg[offset] == 'f' {
+              value_next = offset + 1 == arg.length()
+              break
+            }
+          }
+        }
+      }
     }
   }
   prepared
@@ -343,7 +367,7 @@ fn status_for_results(values : Array[Json]) -> Int32 {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("jq 0.2.6\n")
+    @stdio.stdout.write("jq 0.2.7\n")
     return
   }
   let args = @env.args()[1:]

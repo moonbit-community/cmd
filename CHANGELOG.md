@@ -16,6 +16,18 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development; no publication.
 
+- Repair the finite diagnostic and extension profile for issue #22: preserve
+  Base32/Base64 failure prefixes and canonical padding, apply rmdir's real
+  removal/ignore policy, honor echo's POSIX environment, and keep option values
+  and literal operands intact during alias normalization. Correct ordinary
+  usage statuses without changing capability refusals. Name project aliases in
+  help/READMEs and reject accidentally exposed parser keys. Candidate coordinates
+  change only for the affected commands; published expectations remain frozen.
+- Local macOS validation of the diagnostic/extension candidate passes 1,897
+  Wasm package tests, 204 Native test-tool tests and 2,760 functional checks,
+  with 28 platform exclusions and zero failures. Interface, format, architecture
+  and definition-consistency checks pass; three-platform and published acceptance
+  remain separate requirements.
 - Prepare tree 0.1.6 with name-only, non-following link entries in text, JSON and
   HTML. Dangling/cyclic links no longer abort a normal listing; `-d` selects real
   child directories while retaining explicit operands. Selected-link sizes and

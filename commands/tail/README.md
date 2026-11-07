@@ -1,9 +1,12 @@
 # tail
 
+Development candidate: `cli/tail@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Print and follow input endings for MoonX.
 
 ```sh
-moonx cli/tail@0.2.4 [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]
+moonx cli/tail@0.2.5 [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]
 ```
 
 ## Supported scope
@@ -22,6 +25,12 @@ Print the last ten lines by default. +K starts at the Kth record/byte. File foll
 | `-s, --sleep-interval=SECONDS` | Set follow polling interval; default 1. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Streamed last-N selection retains the selected suffix plus at most one input
@@ -35,8 +44,8 @@ Print the last ten lines by default. +K starts at the Kth record/byte. File foll
 ## Examples
 
 ```sh
-moonx cli/tail@0.2.4 -n 20 app.log
-moonx cli/tail@0.2.4 -f app.log
+moonx cli/tail@0.2.5 -n 20 app.log
+moonx cli/tail@0.2.5 -f app.log
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

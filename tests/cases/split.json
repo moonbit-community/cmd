@@ -141,8 +141,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/split@0.1.5 metadata contract",
-      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nLine-byte and unknown-size partition layouts require temporary write access.\n",
+      "source_version": "workspace cli/split@0.1.6 metadata contract",
+      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -160,8 +160,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/split@0.1.5 metadata contract",
-      "expected_stdout_text": "split 0.1.5\n",
+      "source_version": "workspace cli/split@0.1.6 metadata contract",
+      "expected_stdout_text": "split 0.1.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -2545,6 +2545,57 @@
         "bytes",
         "hex-suffixes"
       ]
+    },
+    {
+      "id": "f17-split-unknown-option",
+      "command": "split",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-split-missing-option-value",
+      "command": "split",
+      "args": [
+        "--bytes"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: option requires a value: 'bytes'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
     }
   ]
 }

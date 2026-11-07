@@ -59,6 +59,8 @@ fn help_message() -> String {
     #|
     #|  -i, --initial       do not convert tabs after nonblank characters
     #|  -t, --tabs=LIST     use ascending tab stops; /N repeats absolute, +N relative
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
   message
 }
 
@@ -75,7 +77,7 @@ async fn read_input(path : String) -> Bytes {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("expand 0.1.4\n")
+    @stdio.stdout.write("expand 0.1.5\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -85,7 +87,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("expand: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

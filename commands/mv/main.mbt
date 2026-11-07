@@ -29,10 +29,28 @@ fn unverified_windows_link_rename() -> Bool {
 }
 
 ///|
-fn normalized_args(args : ArrayView[String]) -> Array[String] {
+fn normalized_args(
+  args : ArrayView[String],
+) -> Array[String] raise @cli.CliError {
   let result : Array[String] = []
   let mut options = true
+  let mut value_next = false
   for arg in args {
+    if value_next {
+      result.push(arg)
+      value_next = false
+      continue
+    }
+    if options &&
+      ["--update-mode", "--backup-control"].any(name => {
+        arg == name || arg.has_prefix(name + "=")
+      }) {
+      raise @cli.CliError(
+        kind=UnknownOption,
+        option=arg,
+        message="unknown option",
+      )
+    }
     if options && arg == "--" {
       options = false
       result.push(arg)
@@ -46,6 +64,17 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
       result.push("--backup-control=" + arg[9:].to_owned())
     } else {
       result.push(arg)
+    }
+    if options {
+      value_next = arg == "--suffix"
+      if arg.has_prefix("-") && !arg.has_prefix("--") {
+        for offset in 1..<arg.length() {
+          if arg[offset] == 'S' {
+            value_next = offset + 1 == arg.length()
+            break
+          }
+        }
+      }
     }
   }
   result
@@ -209,7 +238,7 @@ async fn move_one(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("mv 0.2.6\n")
+    @stdio.stdout.write("mv 0.2.7\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
@@ -227,13 +256,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("mv: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
+      "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
     )
     return
   }
@@ -251,7 +280,7 @@ async fn main {
   let update = @fsops.parse_update_mode(update_text) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("mv: \{message}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -263,7 +292,7 @@ async fn main {
   let backup = @fsops.parse_backup_control(backup_text) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("mv: \{message}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

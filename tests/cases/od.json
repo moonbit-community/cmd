@@ -264,8 +264,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/od@0.1.3 metadata contract",
-      "expected_stdout_text": "Usage: od [OPTION]... [FILE]...\nDump concatenated files, or stdin when no FILE or FILE - is given.\n  -A, --address-radix=d|o|x|n  address base, or no addresses\n  -j, --skip-bytes=N          skip N input bytes\n  -N, --read-bytes=N          print at most N bytes\n  -t, --format=TYPE           a, c, integers 1/2/4/8; floats 2/4/8/16; optional z\n  -a -b -c -d -i -l -o -s -x  traditional named/integer formats\n  -f -e -F                    traditional float or double formats\n      --endian=little|big     byte order (default little)\n  -w[N], --width[=N]         bytes per line (default 16, bare option 32)\n  -v, --output-duplicates    do not replace repeated blocks with *\n  -S N, --strings[=N]       print NUL-terminated printable strings (default 3)\n      --traditional        accept old offset and label operands\n      --help                 display this help and exit\n      --version              display version and exit\n",
+      "source_version": "workspace cli/od@0.1.4 metadata contract",
+      "expected_stdout_text": "Usage: od [OPTION]... [FILE]...\nDump concatenated files, or stdin when no FILE or FILE - is given.\n  -A, --address-radix=d|o|x|n  address base, or no addresses\n  -j, --skip-bytes=N          skip N input bytes\n  -N, --read-bytes=N          print at most N bytes\n  -t, --format=TYPE           a, c, integers 1/2/4/8; floats 2/4/8/16; optional z\n  -a -b -c -d -i -l -o -s -x  traditional named/integer formats\n  -f -e -F                    traditional float or double formats\n      --endian=little|big     byte order (default little)\n  -w[N], --width[=N]         bytes per line (default 16, bare option 32)\n  -v, --output-duplicates    do not replace repeated blocks with *\n  -S N, --strings[=N]       print NUL-terminated printable strings (default 3)\n      --traditional        accept old offset and label operands\n      --help                 display this help and exit\n      --version              display version and exit\n\nProject format aliases: --named = -a; --octal-byte = -b; --character = -c.\n--decimal = -d; --int = -i; --long = -l; --octal = -o; --signed = -s.\n--hex = -x; --float = -f; --double = -e; --double-F = -F.\n",
       "expected_stderr_text": ""
     },
     {
@@ -283,8 +283,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/od@0.1.3 metadata contract",
-      "expected_stdout_text": "od 0.1.3\n",
+      "source_version": "workspace cli/od@0.1.4 metadata contract",
+      "expected_stdout_text": "od 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -1604,6 +1604,278 @@
       "expected_status": 0,
       "comparison": "contract",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "f17-od-alias-character",
+      "command": "od",
+      "args": [
+        "-An",
+        "--character"
+      ],
+      "stdin_hex": "610a00ff",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "   a  \\n  \\0 377\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "character"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified od-escaped-characters; project spellings have no upstream-invocation parity claim.",
+      "aliases": []
+    },
+    {
+      "id": "f17-od-alias-float",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "--float"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o7-od-alias-fF; project spellings have no upstream-invocation parity claim.",
+      "expected_stdout_hex": "202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a202020202020202020202020202020302020202020202020202020202020203020202020202020202020202020202030202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": false,
+      "coverage": [
+        "float"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-od-alias-double",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "--double"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o7-od-alias-fD; project spellings have no upstream-invocation parity claim.",
+      "expected_stdout_hex": "20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": false,
+      "coverage": [
+        "double"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-od-alias-double-F",
+      "command": "od",
+      "args": [
+        "-An",
+        "-v",
+        "-w16",
+        "--double-F"
+      ],
+      "stdin_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o7-od-alias-fD; project spellings have no upstream-invocation parity claim.",
+      "expected_stdout_hex": "20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a20202020202020202020202020202020202020202020202030202020202020202020202020202020202020202020202020300a",
+      "expected_stderr_hex": "",
+      "oracle": false,
+      "coverage": [
+        "double"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-od-alias-named",
+      "command": "od",
+      "args": [
+        "-An",
+        "--named"
+      ],
+      "stdin_hex": "000a417f",
+      "expected_stdout_text": " nul  nl   A del\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "named"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 project long format alias; independent expected bytes retained from coverage-od-named."
+    },
+    {
+      "id": "f17-od-alias-octal-byte",
+      "command": "od",
+      "args": [
+        "-An",
+        "--octal-byte"
+      ],
+      "stdin_hex": "0001ff",
+      "expected_stdout_text": " 000 001 377\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "octal-byte"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 project long format alias; independent expected bytes retained from coverage-od-octal-byte."
+    },
+    {
+      "id": "f17-od-alias-decimal",
+      "command": "od",
+      "args": [
+        "-An",
+        "--decimal"
+      ],
+      "stdin_hex": "0100ffff03",
+      "expected_stdout_text": "     1 65535     3\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "decimal"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 project long format alias; independent expected bytes retained from coverage-od-decimal."
+    },
+    {
+      "id": "f17-od-alias-int",
+      "command": "od",
+      "args": [
+        "-An",
+        "--int"
+      ],
+      "stdin_hex": "ffffffff0100000003",
+      "expected_stdout_text": "          -1           1           3\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "int"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 project long format alias; independent expected bytes retained from coverage-od-int."
+    },
+    {
+      "id": "f17-od-alias-long",
+      "command": "od",
+      "args": [
+        "-An",
+        "--long"
+      ],
+      "stdin_hex": "ffffffffffffffff010000000000000003",
+      "expected_stdout_text": "                   -1                    1\n                    3\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "long"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 project long format alias; independent expected bytes retained from coverage-od-long."
+    },
+    {
+      "id": "f17-od-alias-octal",
+      "command": "od",
+      "args": [
+        "-An",
+        "--octal"
+      ],
+      "stdin_hex": "616263",
+      "expected_stdout_text": " 061141 000143\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "octal"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 project long format alias; independent expected bytes retained from coverage-od-octal."
+    },
+    {
+      "id": "f17-od-alias-signed",
+      "command": "od",
+      "args": [
+        "-An",
+        "--signed"
+      ],
+      "stdin_hex": "ffff00800100",
+      "expected_stdout_text": "     -1 -32768      1\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "signed"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 project long format alias; independent expected bytes retained from coverage-od-signed."
+    },
+    {
+      "id": "f17-od-alias-hex",
+      "command": "od",
+      "args": [
+        "-An",
+        "--hex"
+      ],
+      "stdin_hex": "0102ff",
+      "expected_stdout_text": " 0201 00ff\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "comparison": "contract",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "hex"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 project long format alias; independent expected bytes retained from coverage-od-hex."
     }
   ]
 }

@@ -102,7 +102,7 @@ async fn paste_parallel(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("paste 0.2.4\n")
+    @stdio.stdout.write("paste 0.2.5\n")
     return
   }
   let args = @env.args()[1:]
@@ -114,13 +114,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("paste: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: paste [-s] [-d LIST] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: paste [-s] [-d LIST] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }

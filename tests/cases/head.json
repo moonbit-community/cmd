@@ -187,10 +187,10 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
+      "source_version": "Issue #22: ordinary usage failure status corrected to the fixed command baseline; capability refusals remain separate.",
       "expected_stdout_text": "",
       "expected_stderr_text": "head: invalid count: 'bad'\n"
     },
@@ -260,8 +260,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/head@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/head@0.2.5 metadata contract",
+      "expected_stdout_text": "Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -279,8 +279,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/head@0.2.4 metadata contract",
-      "expected_stdout_text": "head 0.2.4\n",
+      "source_version": "workspace cli/head@0.2.5 metadata contract",
+      "expected_stdout_text": "head 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -341,6 +341,57 @@
         "lines"
       ],
       "source_version": "Independent forced-header rendering for one file; default single-file output has no header."
+    },
+    {
+      "id": "f17-head-unknown-option",
+      "command": "head",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "head: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-head-missing-option-value",
+      "command": "head",
+      "args": [
+        "--lines"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "head: option requires a value: 'lines'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
     }
   ]
 }

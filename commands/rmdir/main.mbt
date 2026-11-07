@@ -1,23 +1,58 @@
 ///|
+fn directory_not_empty(error : @os_error.OSError) -> Bool {
+  let @os_error.OSError(code, ..) = error
+  // Public OSError carries the host error number: ENOTEMPTY on POSIX,
+  // ERROR_DIR_NOT_EMPTY on Windows. EEXIST is the other POSIX spelling.
+  error.is_EEXIST() ||
+  code ==
+  (match @async.platform {
+    Linux => 39
+    MacOS => 66
+    Windows => 145
+  })
+}
+
+///|
+async fn ignored_removal_failure(
+  path : String,
+  error : @os_error.OSError,
+) -> Bool {
+  if directory_not_empty(error) {
+    return true
+  }
+  let @os_error.OSError(code, ..) = error
+  // GNU also checks nonemptiness after permission, read-only and busy errors.
+  // Never let that check turn a non-directory or symbolic link into success.
+  let may_mask_nonempty = error.is_EACCES() ||
+    (!(@async.platform is Windows) && (code == 1 || code == 16 || code == 30))
+  if !may_mask_nonempty {
+    return false
+  }
+  try
+    @fs.kind(path, follow_symlink=false) == Directory &&
+    !@fs.readdir(path, include_hidden=true, include_special=false, sort=false).is_empty()
+  catch {
+    _ => false
+  }
+}
+
+///|
 async fn remove_directory(
   path : String,
   ignore_non_empty : Bool,
   verbose : Bool,
 ) -> Bool {
-  if ignore_non_empty {
-    let entries = @fs.readdir(
-      path,
-      include_hidden=true,
-      include_special=false,
-      sort=false,
-    )
-    if !entries.is_empty() {
-      return true
-    }
-  }
-  @fs.rmdir(path)
   if verbose {
-    @stdio.stdout.write("rmdir: removed directory '\{path}'\n")
+    @stdio.stdout.write("rmdir: removing directory, '\{path}'\n")
+  }
+  @fs.rmdir(path) catch {
+    @os_error.OSError(_) as error => {
+      if ignore_non_empty && ignored_removal_failure(path, error) {
+        return false
+      }
+      raise error
+    }
+    error => raise error
   }
   true
 }
@@ -26,7 +61,7 @@ async fn remove_directory(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("rmdir 0.2.3\n")
+    @stdio.stdout.write("rmdir 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -38,13 +73,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("rmdir: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\n  -p, --parents                  remove empty parents, stopping at the first failure\n  -v, --verbose                  report each removal attempt before it runs\n      --ignore-fail-on-non-empty  suppress only failures attributable to nonemptiness\n  -I is a project short alias of --ignore-fail-on-non-empty, not a GNU option.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
@@ -62,18 +97,14 @@ async fn main {
     let mut current = directory
     let mut keep_going = true
     while keep_going {
-      ignore(
-        remove_directory(current, ignore_non_empty, verbose) catch {
-          err => {
-            @stdio.stderr.write(
-              "rmdir: failed to remove '\{current}': \{err}\n",
-            )
-            failed = true
-            break
-          }
-        },
-      )
-      if !parents {
+      let removed = remove_directory(current, ignore_non_empty, verbose) catch {
+        err => {
+          @stdio.stderr.write("rmdir: failed to remove '\{current}': \{err}\n")
+          failed = true
+          break
+        }
+      }
+      if !removed || !parents {
         break
       }
       let parent = @fsops.dirname(current)

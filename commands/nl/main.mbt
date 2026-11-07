@@ -88,7 +88,7 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("nl 0.2.5\n")
+    @stdio.stdout.write("nl 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
@@ -108,13 +108,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("nl: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
@@ -130,7 +130,7 @@ async fn main {
     let (label, style) = entry
     if !(style is ("a" | "t" | "n")) {
       @stdio.stderr.write("nl: invalid \{label} numbering style: '\{style}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -140,7 +140,7 @@ async fn main {
       @stdio.stderr.write(
         "nl: invalid line number field width: '\{width_text}'\n",
       )
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -148,7 +148,7 @@ async fn main {
     @stdio.stderr.write(
       "nl: invalid line number field width: '\{width_text}'\n",
     )
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let separator = parsed.last_value("number-separator").unwrap_or("\t")
@@ -158,7 +158,7 @@ async fn main {
       @stdio.stderr.write(
         "nl: invalid starting line number: '\{starting_text}'\n",
       )
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -168,7 +168,7 @@ async fn main {
       @stdio.stderr.write(
         "nl: invalid line number increment: '\{increment_text}'\n",
       )
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -178,7 +178,7 @@ async fn main {
       @stdio.stderr.write(
         "nl: invalid blank-line group size: '\{join_blank_text}'\n",
       )
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -186,13 +186,13 @@ async fn main {
     @stdio.stderr.write(
       "nl: invalid blank-line group size: '\{join_blank_text}'\n",
     )
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let number_format = parsed.last_value("number-format").unwrap_or("rn")
   if !(number_format is ("ln" | "rn" | "rz")) {
     @stdio.stderr.write("nl: invalid line number format: '\{number_format}'\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let section_delimiter = match parsed.last_value("section-delimiter") {

@@ -28,9 +28,25 @@
         "repair-alias-base32-decode",
         "release-metadata-base32-help",
         "release-metadata-base32-version",
-        "base32-nonzero-tail-bits-accepted",
+        "base32-nonzero-tail-bits-rejected",
         "base32-prefix-before-malformed-padding",
-        "proof-base32-ignore-garbage"
+        "proof-base32-ignore-garbage",
+        "f17-base32-unknown-option",
+        "f17-base32-missing-option-value",
+        "f17-base32-decode-0",
+        "f17-base32-decode-1",
+        "f17-base32-decode-2",
+        "f17-base32-decode-3",
+        "f17-base32-decode-4",
+        "f17-base32-decode-5",
+        "f17-base32-decode-6",
+        "f17-base32-decode-7",
+        "f17-base32-decode-8",
+        "f17-base32-decode-9",
+        "f17-base32-decode-10",
+        "f17-base32-decode-11",
+        "f17-base32-decode-12",
+        "f17-base32-decode-13"
       ]
     },
     {
@@ -137,7 +153,9 @@
         "o4-expand-signed-overflow",
         "o4-expand-long-tabs-alias",
         "o4-expand-repeated-fixed-tabs",
-        "o4-expand-int64-stop"
+        "o4-expand-int64-stop",
+        "f17-expand-unknown-option",
+        "f17-expand-missing-option-value"
       ]
     },
     {
@@ -213,7 +231,9 @@
         "o10-realpath-strip-last-alias",
         "release-metadata-realpath-help",
         "release-metadata-realpath-version",
-        "o10-realpath-relative-root-self"
+        "o10-realpath-relative-root-self",
+        "f17-realpath-unknown-option",
+        "f17-realpath-missing-option-value"
       ]
     },
     {
@@ -238,7 +258,8 @@
         "release-metadata-rev-help",
         "release-metadata-rev-version",
         "proof-rev-record-boundary-1024",
-        "proof-rev-record-boundary-8192"
+        "proof-rev-record-boundary-8192",
+        "f17-rev-unknown-option"
       ]
     },
     {
@@ -305,7 +326,9 @@
         "o6-tac-syntax-question",
         "p0-tac-lines",
         "release-metadata-tac-help",
-        "release-metadata-tac-version"
+        "release-metadata-tac-version",
+        "f17-tac-unknown-option",
+        "f17-tac-missing-option-value"
       ]
     },
     {
@@ -441,7 +464,20 @@
         "tree-links-explicit-dirs-json",
         "tree-links-size-ignore-filter",
         "tree-links-size-dirs-filter",
-        "tree-links-windows-junction-trailing-separator"
+        "tree-links-windows-junction-trailing-separator",
+        "f17-tree-alias-all",
+        "f17-tree-alias-dirs-only",
+        "f17-tree-alias-full-path",
+        "f17-tree-alias-level",
+        "f17-tree-alias-json",
+        "f17-tree-alias-html",
+        "f17-tree-alias-title",
+        "f17-tree-alias-pattern",
+        "f17-tree-alias-ignore",
+        "f17-tree-alias-size",
+        "f17-tree-alias-human-readable",
+        "f17-tree-alias-color",
+        "f17-tree-alias-no-color"
       ]
     },
     {
@@ -485,7 +521,9 @@
         "o4-unexpand-all-then-first-only",
         "o4-unexpand-isolated-space",
         "o4-unexpand-space-run",
-        "o4-unexpand-initial-backspace"
+        "o4-unexpand-initial-backspace",
+        "f17-unexpand-unknown-option",
+        "f17-unexpand-missing-option-value"
       ]
     },
     {
@@ -546,7 +584,21 @@
         "compat-catalog-line-366",
         "repair-alias-base64-decode",
         "release-metadata-base64-help",
-        "release-metadata-base64-version"
+        "release-metadata-base64-version",
+        "f17-base64-unknown-option",
+        "f17-base64-missing-option-value",
+        "f17-base64-decode-0",
+        "f17-base64-decode-1",
+        "f17-base64-decode-2",
+        "f17-base64-decode-3",
+        "f17-base64-decode-4",
+        "f17-base64-decode-5",
+        "f17-base64-decode-6",
+        "f17-base64-decode-7",
+        "f17-base64-decode-8",
+        "f17-base64-decode-9",
+        "f17-base64-decode-10",
+        "f17-base64-decode-11"
       ]
     },
     {
@@ -568,7 +620,9 @@
         "release-metadata-basename-version",
         "proof-basename-multiple-operands",
         "proof-basename-literal-suffix-implies-multiple",
-        "proof-basename-zero-terminator"
+        "proof-basename-zero-terminator",
+        "f17-basename-unknown-option",
+        "f17-basename-missing-option-value"
       ]
     },
     {
@@ -596,7 +650,12 @@
         "proof-cat-number-empty-record",
         "proof-cat-nonblank-overrides-number-first",
         "proof-cat-nonblank-overrides-number-last",
-        "proof-cat-unicode-path-binary-tail"
+        "proof-cat-unicode-path-binary-tail",
+        "f17-cat-unknown-option",
+        "f17-cat-alias-unbuffered",
+        "f17-cat-help-short",
+        "f17-cat-ends-nonprinting",
+        "f17-cat-tabs-nonprinting"
       ]
     },
     {
@@ -616,7 +675,8 @@
         "release-metadata-chmod-version",
         "compat-text-chmod-reference-rejected",
         "compat-filesystem-windows-chmod-boundary",
-        "proof-chmod-reference-boundary-preserves-mode"
+        "proof-chmod-reference-boundary-preserves-mode",
+        "f17-chmod-unknown-option"
       ]
     },
     {
@@ -687,7 +747,12 @@
         "o1-comm-delim-repeat-same",
         "o1-comm-total-zero",
         "o1-comm-order-nocheck-check",
-        "o1-comm-pairable-buried-disorder"
+        "o1-comm-pairable-buried-disorder",
+        "f17-comm-unknown-option",
+        "f17-comm-help-short",
+        "f17-comm-suppress-1",
+        "f17-comm-suppress-2",
+        "f17-comm-suppress-3"
       ]
     },
     {
@@ -713,7 +778,17 @@
         "proof-cp-no-clobber-preserves-existing",
         "quality-cp-recursive-command-line-link",
         "quality-cp-recursive-command-line-link-control",
-        "quality-cp-update-older-fixed-times"
+        "quality-cp-update-older-fixed-times",
+        "f17-cp-unknown-option",
+        "f17-cp-missing-option-value",
+        "f17-cp-reject-update-mode-bare",
+        "f17-cp-reject-update-mode-value",
+        "f17-cp-reject-backup-control-bare",
+        "f17-cp-reject-backup-control-value",
+        "f17-cp-alias-dereference-command-line",
+        "f17-cp-suffix-value-short",
+        "f17-cp-suffix-value-long",
+        "f17-cp-literal-internal-looking-operand"
       ]
     },
     {
@@ -809,7 +884,9 @@
         "o1-cut-complement-all-undelimited",
         "o1-cut-selection-conflict",
         "o1-cut-input-delimiter-conflict",
-        "o1-cut-suppress-conflict"
+        "o1-cut-suppress-conflict",
+        "f17-cut-unknown-option",
+        "f17-cut-missing-option-value"
       ]
     },
     {
@@ -831,7 +908,8 @@
         "compat-catalog-line-340",
         "compat-catalog-line-349",
         "release-metadata-dirname-version",
-        "proof-dirname-zero-multiple"
+        "proof-dirname-zero-multiple",
+        "f17-dirname-unknown-option"
       ]
     },
     {
@@ -857,7 +935,19 @@
         "p0-echo-enable-escapes",
         "p0-echo-disable-escapes",
         "p9-echo-octal-per-argument",
-        "proof-echo-disable-escapes-precedence"
+        "proof-echo-disable-escapes-precedence",
+        "f17-echo-posix-empty-0",
+        "f17-echo-posix-set-0",
+        "f17-echo-posix-empty-1",
+        "f17-echo-posix-set-1",
+        "f17-echo-posix-empty-2",
+        "f17-echo-posix-set-2",
+        "f17-echo-posix-empty-3",
+        "f17-echo-posix-set-3",
+        "f17-echo-posix-empty-4",
+        "f17-echo-posix-set-4",
+        "f17-echo-posix-metadata-help",
+        "f17-echo-posix-metadata-version"
       ]
     },
     {
@@ -1030,7 +1120,9 @@
         "release-metadata-head-version",
         "repair-alias-head-zero-terminated",
         "proof-head-quiet-real-multiple-files",
-        "proof-head-verbose-single-file"
+        "proof-head-verbose-single-file",
+        "f17-head-unknown-option",
+        "f17-head-missing-option-value"
       ]
     },
     {
@@ -1084,7 +1176,17 @@
         "o1-join-order-last-check",
         "o1-join-header-data-order",
         "o1-join-default-late-order",
-        "o1-join-explicit-fields-header-auto"
+        "o1-join-explicit-fields-header-auto",
+        "f17-join-unknown-option",
+        "f17-join-missing-option-value",
+        "f17-join-alias-field1",
+        "f17-join-alias-field2",
+        "f17-join-alias-separator",
+        "f17-join-alias-after",
+        "f17-join-alias-only",
+        "f17-join-alias-empty",
+        "f17-join-alias-output",
+        "f17-join-help-short"
       ]
     },
     {
@@ -1159,7 +1261,19 @@
         "proof-jq-indent-one",
         "proof-jq-tab-indent",
         "proof-jq-logs-skips-invalid-lines",
-        "proof-jq-exit-empty-result"
+        "proof-jq-exit-empty-result",
+        "f17-jq-alias-logs-short",
+        "f17-jq-literal-binding-looking-file",
+        "f17-jq-literal-filter-file-short",
+        "f17-jq-literal-filter-file-long",
+        "f17-jq-logs-conflict-null-input-short",
+        "f17-jq-logs-conflict-null-input-long",
+        "f17-jq-logs-conflict-raw-input-short",
+        "f17-jq-logs-conflict-raw-input-long",
+        "f17-jq-logs-all-invalid",
+        "f17-jq-logs-empty-exit",
+        "f17-jq-logs-slurp",
+        "f17-jq-logs-retains-filter-error"
       ]
     },
     {
@@ -1209,7 +1323,14 @@
         "compat-filesystem-symbolic-link",
         "compat-filesystem-windows-ln-boundary",
         "quality-ln-relative-cross-directory",
-        "quality-ln-relative-control"
+        "quality-ln-relative-control",
+        "f17-ln-unknown-option",
+        "f17-ln-missing-option-value",
+        "f17-ln-reject-backup-control-bare",
+        "f17-ln-reject-backup-control-value",
+        "f17-ln-alias-no-dereference",
+        "f17-ln-suffix-value-short",
+        "f17-ln-suffix-value-long"
       ]
     },
     {
@@ -1343,7 +1464,18 @@
         "repair-alias-ls-classify",
         "repair-alias-ls-dereference-command-line",
         "proof-ls-dereference-directory-operand",
-        "proof-ls-preserve-directory-symlink-operand"
+        "proof-ls-preserve-directory-symlink-operand",
+        "f17-ls-alias-one",
+        "f17-ls-alias-columns",
+        "f17-ls-alias-across",
+        "f17-ls-alias-commas",
+        "f17-ls-alias-sort-time",
+        "f17-ls-alias-sort-size",
+        "f17-ls-alias-physical",
+        "f17-ls-alias-physical-short-order",
+        "f17-ls-alias-physical-long-order",
+        "f17-ls-alias-quote-name",
+        "f17-ls-alias-quote-abbreviation"
       ]
     },
     {
@@ -1403,7 +1535,9 @@
         "o10-mkdir-windows-existing-symbolic-noop",
         "o10-mkdir-symbolic-invalid-before-operands",
         "quality-mkdir-symbolic-special-darwin",
-        "quality-mkdir-sticky-only-darwin"
+        "quality-mkdir-sticky-only-darwin",
+        "f17-mkdir-unknown-option",
+        "f17-mkdir-missing-option-value"
       ]
     },
     {
@@ -1440,7 +1574,16 @@
         "async-0225-mv-directory-symbolic-link",
         "async-0225-mv-windows-junction-no-clobber",
         "async-0225-mv-windows-symbolic-link-no-clobber",
-        "mv-windows-wasm-links-boundary"
+        "mv-windows-wasm-links-boundary",
+        "f17-mv-unknown-option",
+        "f17-mv-missing-option-value",
+        "f17-mv-reject-update-mode-bare",
+        "f17-mv-reject-update-mode-value",
+        "f17-mv-reject-backup-control-bare",
+        "f17-mv-reject-backup-control-value",
+        "f17-mv-suffix-value-short",
+        "f17-mv-suffix-value-long",
+        "f17-mv-literal-internal-looking-operand"
       ]
     },
     {
@@ -1464,7 +1607,9 @@
         "proof-nl-zero-padded-number-format",
         "proof-nl-unnumbered-padding",
         "proof-nl-unnumbered-custom-separator",
-        "proof-nl-unnumbered-utf8-separator"
+        "proof-nl-unnumbered-utf8-separator",
+        "f17-nl-unknown-option",
+        "f17-nl-missing-option-value"
       ]
     },
     {
@@ -1488,7 +1633,9 @@
         "proof-paste-serial-delimiter-cycle",
         "release-metadata-paste-help",
         "release-metadata-paste-version",
-        "repair-alias-paste-zero-terminated"
+        "repair-alias-paste-zero-terminated",
+        "f17-paste-unknown-option",
+        "f17-paste-missing-option-value"
       ]
     },
     {
@@ -1564,7 +1711,8 @@
         "repair-alias-pwd-logical",
         "phase3-pwd-working-directory",
         "release-metadata-pwd-version",
-        "compat-text-pwd-invalid-logical-fallback"
+        "compat-text-pwd-invalid-logical-fallback",
+        "f17-pwd-unknown-option"
       ]
     },
     {
@@ -1618,7 +1766,8 @@
         "release-metadata-rm-version",
         "repair-alias-rm-recursive",
         "rm-final-parent-backslash",
-        "rm-final-parent-slash"
+        "rm-final-parent-slash",
+        "f17-rm-unknown-option"
       ]
     },
     {
@@ -1635,7 +1784,17 @@
         "release-metadata-rmdir-help",
         "phase4-rmdir-ignore-nonempty",
         "release-metadata-rmdir-version",
-        "compat-text-rmdir-partial-order"
+        "compat-text-rmdir-partial-order",
+        "f17-rmdir-unknown-option",
+        "f17-rmdir-ignore-short",
+        "f17-rmdir-ignore-short-regular",
+        "f17-rmdir-ignore-short-missing",
+        "f17-rmdir-ignore-short-symlink",
+        "f17-rmdir-ignore-long",
+        "f17-rmdir-ignore-long-regular",
+        "f17-rmdir-ignore-long-missing",
+        "f17-rmdir-ignore-long-symlink",
+        "f17-rmdir-ignored-failure-stops-parents"
       ]
     },
     {
@@ -1917,7 +2076,10 @@
         "r3-sort-reverse",
         "r3-sort-zero-percent-unique-temporary",
         "r3-sort-buffer-fanin-random",
-        "proof-sort-dictionary-order-activation"
+        "proof-sort-dictionary-order-activation",
+        "f17-sort-reject-check-quiet-bare",
+        "f17-sort-reject-check-quiet-value",
+        "f17-sort-output-value-internal-looking"
       ]
     },
     {
@@ -1955,7 +2117,9 @@
         "release-metadata-tail-version",
         "repair-alias-tail-follow",
         "repair-alias-tail-sleep-interval",
-        "proof-tail-verbose-single-file"
+        "proof-tail-verbose-single-file",
+        "f17-tail-unknown-option",
+        "f17-tail-missing-option-value"
       ]
     },
     {
@@ -1991,7 +2155,8 @@
         "release-metadata-tee-version",
         "tee-default-pipe-boundary",
         "tee-output-errors",
-        "tee-output-errors-oracle"
+        "tee-output-errors-oracle",
+        "f17-tee-unknown-option"
       ]
     },
     {
@@ -2032,7 +2197,12 @@
         "touch-existing-boundary",
         "release-metadata-touch-version",
         "compat-text-touch-date-rejected",
-        "proof-touch-no-create-missing"
+        "proof-touch-no-create-missing",
+        "f17-touch-unknown-option",
+        "f17-touch-missing-option-value",
+        "f17-touch-rejected-alias-access-time",
+        "f17-touch-rejected-alias-modification-time",
+        "f17-touch-rejected-alias-stamp"
       ]
     },
     {
@@ -2070,7 +2240,8 @@
         "release-metadata-tr-version",
         "repair-alias-tr-truncate-set1",
         "repair-alias-tr-squeeze-repeats",
-        "p9-tr-octal-overflow-consumption"
+        "p9-tr-octal-overflow-consumption",
+        "f17-tr-unknown-option"
       ]
     },
     {
@@ -2135,7 +2306,9 @@
         "o1-uniq-count-all-conflict",
         "o1-uniq-group-selection-conflict",
         "o1-uniq-empty-method-rejected",
-        "o1-uniq-D-attached-text-is-cluster"
+        "o1-uniq-D-attached-text-is-cluster",
+        "f17-uniq-unknown-option",
+        "f17-uniq-missing-option-value"
       ]
     },
     {
@@ -2199,7 +2372,9 @@
         "o1-wc-c-profile-bytes-chars-binary",
         "o1-wc-total-only-all-counters-binary",
         "proof-wc-c-byte-nbsp-scalar",
-        "proof-wc-c-byte-nbsp-vector"
+        "proof-wc-c-byte-nbsp-vector",
+        "f17-wc-unknown-option",
+        "f17-wc-missing-option-value"
       ]
     },
     {
@@ -2380,7 +2555,22 @@
         "release-metadata-xxd-help",
         "release-metadata-xxd-version",
         "repair-alias-xxd-reverse",
-        "repair-alias-xxd-seek"
+        "repair-alias-xxd-seek",
+        "f17-xxd-unknown-option",
+        "f17-xxd-alias-little",
+        "f17-xxd-alias-littleendian",
+        "f17-xxd-alias-ebcdic-long",
+        "f17-xxd-alias-ebcdic-word",
+        "f17-xxd-alias-group-equals",
+        "f17-xxd-alias-offset-equals",
+        "f17-xxd-alias-cols-equals",
+        "f17-xxd-alias-len-equals",
+        "f17-xxd-alias-seek-equals",
+        "f17-xxd-alias-name-equals",
+        "f17-xxd-help-short",
+        "f17-xxd-literal-option-looking-file",
+        "f17-xxd-literal-name-short",
+        "f17-xxd-literal-name-long"
       ]
     },
     {
@@ -2488,7 +2678,19 @@
         "od-skip-past-eof",
         "od-verbose-blocks",
         "release-metadata-od-help",
-        "release-metadata-od-version"
+        "release-metadata-od-version",
+        "f17-od-alias-character",
+        "f17-od-alias-float",
+        "f17-od-alias-double",
+        "f17-od-alias-double-F",
+        "f17-od-alias-named",
+        "f17-od-alias-octal-byte",
+        "f17-od-alias-decimal",
+        "f17-od-alias-int",
+        "f17-od-alias-long",
+        "f17-od-alias-octal",
+        "f17-od-alias-signed",
+        "f17-od-alias-hex"
       ]
     },
     {
@@ -2774,7 +2976,8 @@
         "sed-spec-append-join-missing-quiet",
         "sed-spec-append-next-missing-default",
         "sed-spec-append-next-missing-quiet",
-        "proof-sed-in-place-boundary-preserves-source"
+        "proof-sed-in-place-boundary-preserves-source",
+        "f17-sed-alias-extended"
       ]
     },
     {
@@ -2857,7 +3060,12 @@
         "diff-directory-devices-boundary",
         "quality-diff-sparse-repeated-anchors",
         "quality-diff-dense-repeated-anchors",
-        "quality-diff-scaled-repeated-anchors"
+        "quality-diff-scaled-repeated-anchors",
+        "f17-diff-reject-unified-lines-bare",
+        "f17-diff-reject-unified-lines-value",
+        "f17-diff-reject-context-lines-bare",
+        "f17-diff-reject-context-lines-value",
+        "f17-diff-label-value-internal-looking"
       ]
     },
     {
@@ -2992,7 +3200,9 @@
         "p1-split-existing-boundary",
         "p1-split-lines",
         "release-metadata-split-help",
-        "release-metadata-split-version"
+        "release-metadata-split-version",
+        "f17-split-unknown-option",
+        "f17-split-missing-option-value"
       ]
     },
     {
@@ -3057,7 +3267,9 @@
         "s1-csplit-pattern-backreference",
         "s1-csplit-word-assertion",
         "o6-csplit-windows-suffix-name-boundary",
-        "r2-csplit-quiet"
+        "r2-csplit-quiet",
+        "f17-csplit-unknown-option",
+        "f17-csplit-missing-option-value"
       ]
     },
     {
@@ -3143,7 +3355,9 @@
         "o3-fmt-prefix-tab-indent-plain",
         "o3-fmt-prefix-body-tabs-plain",
         "o3-fmt-prefix-hanging-tagged",
-        "o3-fmt-prefix-blank-leading-tagged"
+        "o3-fmt-prefix-blank-leading-tagged",
+        "f17-fmt-numeric-prefix-short",
+        "f17-fmt-numeric-prefix-long"
       ]
     },
     {
@@ -3286,7 +3500,10 @@
         "repair-final-date-negative-year",
         "repair-edge-date-unsupported-format",
         "repair-final-date-inline-dst-offset",
-        "repair-final-date-invalid-diagnostic"
+        "repair-final-date-invalid-diagnostic",
+        "f17-date-literal-date-short",
+        "f17-date-literal-date-long",
+        "f17-date-iso-abbreviation"
       ]
     },
     {
@@ -3334,7 +3551,9 @@
         "repair-strings-wide-B",
         "repair-strings-wide-L",
         "repair-strings-wide-b",
-        "repair-strings-wide-l"
+        "repair-strings-wide-l",
+        "f17-strings-invalid-encoding",
+        "f17-strings-invalid-radix"
       ]
     },
     {

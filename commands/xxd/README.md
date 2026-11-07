@@ -1,9 +1,12 @@
 # xxd
 
+Development candidate: `cli/xxd@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Create and reverse hex dumps for MoonX.
 
 ```sh
-moonx cli/xxd@0.2.4 [OPTION]... [INFILE [OUTFILE]]
+moonx cli/xxd@0.2.5 [OPTION]... [INFILE [OUTFILE]]
 ```
 
 ## Supported scope
@@ -30,6 +33,24 @@ Display files or stdin as hex, bits or include text; reverse addressed hex, plai
 | `-n, --name=NAME` | C include symbol |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project aliases: --little/-littleendian select -e; --ebcdic/-ebcdic select -E.
+Project long-option syntax also accepts =VALUE for --cols, --group, --len,
+--name, --offset and --seek; these forms are not Vim xxd argument equivalence.
+-h/--help use the project metadata contract: stdout and status 0.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
+## Argument and exit-status contract
+
+Usage errors exit 1; runtime errors retain their command-specific statuses:
+input/open errors use 2, output errors use 3, input seek errors use 4, and
+backward output/offset errors use 5. Option values and operands after `--`
+remain literal.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Existing output files are rejected. Backward stdin seeks and backward writes to stdout are unsupported.
@@ -38,8 +59,8 @@ Display files or stdin as hex, bits or include text; reverse addressed hex, plai
 ## Examples
 
 ```sh
-moonx cli/xxd@0.2.4 -p data.bin
-printf '68690a' | moonx cli/xxd@0.2.4 -r -p
+moonx cli/xxd@0.2.5 -p data.bin
+printf '68690a' | moonx cli/xxd@0.2.5 -r -p
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

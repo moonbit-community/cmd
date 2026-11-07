@@ -24,6 +24,11 @@ fn help_message() -> String {
     #|  -z, --zero-terminated  End records with NUL instead of newline.
     #|
     #|Use '-' as a file name to read stdin.
+    #|
+    #|Project aliases: --suppress-1 = -1; --suppress-2 = -2; --suppress-3 = -3.
+    #|-h is a project alias of --help.
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
   message
 }
 
@@ -114,7 +119,7 @@ async fn merge_readers(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("comm 0.2.5\n")
+    @stdio.stdout.write("comm 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
@@ -131,7 +136,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("comm: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -169,12 +174,12 @@ async fn main {
     @stdio.stderr.write(
       "comm: expected exactly two files\n\n" + help_message() + "\n",
     )
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   if files[0] == "-" && files[1] == "-" {
     @stdio.stderr.write("comm: both inputs cannot be standard input\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   try {

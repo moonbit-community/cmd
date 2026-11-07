@@ -3,6 +3,71 @@
 Date: 2026-09-05
 Updated: 2026-11-07
 
+## Extensions and diagnostics
+
+Issue #22 governs the finite existing option surface. The current candidate
+versions are in [candidate.json](../tests/release/candidate.json); published
+versions and expectations remain frozen in latest.json and latest-cases.json.
+Candidate definitions and manual reviews are not execution or publication evidence.
+
+| Command/profile | Public spelling and deliberate distinction |
+| --- | --- |
+| cat | --show-ends-nonprinting/-e, --show-tabs-nonprinting/-t, --unbuffered/-u and -h/--help; these long combined/no-op aliases and -h are project spellings. |
+| comm, join | comm --suppress-1/2/3 and -h; join --field1/2, --separator, --after, --only, --empty, --output and -h are project aliases of existing short options. |
+| od, strings | od's named, octal-byte, character, decimal, int, long, octal, signed, hex, float, double and double-F long format aliases; strings --octal/-o are project spellings. |
+| ls | --one/columns/across/commas/sort-time/access-time/change-time/sort-size and -P/--no-dereference are project aliases/extensions. --quote-name is the GNU spelling; --quote remains its abbreviation. |
+| tree | --all/dirs-only/full-path/level/json/html/title/pattern/ignore/size/human-readable/color/no-color are project aliases, not tree 2.2.1 long-option parity. |
+| sed, cp | sed --extended aliases -r/-E; GNU spells it --regexp-extended. cp --dereference-command-line aliases -H, which is short-only in GNU cp. |
+| base64, rmdir | base64 -D aliases --decode; rmdir -I aliases --ignore-fail-on-non-empty. Neither short spelling is a GNU coreutils claim. |
+| jq | -l/--logs is the documented project JSONL profile, including malformed-line skipping, slurp and -e behavior; it is not upstream jq -l. |
+| hexdump, xxd | hexdump forward skip on stdin discards bytes without seeking. xxd --little/-littleendian and --ebcdic/-ebcdic, plus =VALUE long forms, are documented project syntax. xxd help uses the project stdout/status-0 metadata contract. |
+| touch, which | touch --access-time/modification-time/stamp are rejection aliases for unavailable timestamp setters. which -s/--silent follows the explicit project quiet-status profile. |
+| curl, wget | --idle-timeout is an independently tested project body-idle deadline; it is not an upstream option spelling. Total timeout and partial output remain distinct contracts. |
+
+Options documented as aliases are exercised with their actual argv spelling
+and independently specified bytes, status and applicable filesystem effects.
+Parser implementation keys (cp/mv update-mode and backup-control, ln
+backup-control and the former no-dereference-target, sort check-quiet, diff
+unified-lines/context-lines) are not public argv options. Public --update=MODE,
+--backup=CONTROL, ln --no-dereference, sort -C/--check=quiet and diff -U/-C
+remain available. Normalization preserves option values and literal operands
+after `--`; a value that looks like a private key is still data.
+
+Ordinary option/operand failures use status 1 for the repaired GNU coreutils
+commands and util-linux rev. Xxd usage errors use 1 while runtime errors retain
+their distinct input/output/seek statuses. Strings rejects unknown encodings with 1 and explicitly refuses
+recognized unsupported wide encodings with 2. This is not a repository-wide
+replacement of status 2: ls, sort, diff, grep, printenv and capability refusals
+retain their command-specific contracts. Controlled parser and codec diagnostic
+bytes are asserted exactly. Host-dependent rmdir failures assert the rejected
+operand, status, stdout and retained paths; they are not exact-message coverage.
+Where upstream punctuation/help trailers or host OS messages differ,
+the pinned comparison states its narrower diagnostic-category assertion while
+still comparing status, stdout and effects. No claim of universal GNU message
+or quoting parity is made.
+
+GNU 9.11 Base32/Base64 decode vectors now check canonical tail bits, missing
+padding, concatenated padded groups and the exact bytes committed before a
+later invalid symbol. Incomplete explicit padding differs between the two
+decoders: Base32's incomplete quantum emits nothing, whereas Base64 can emit
+determined bytes. A failed output write is never retried. Base32 still reads
+the whole encoded input; Base64 decodes incrementally.
+
+Rmdir attempts removal before classifying failure. Ignoring nonemptiness never
+treats a failed regular-file, missing-path or POSIX symlink removal as success,
+and parent removal stops at an ignored failure. On Windows an actual successful
+junction removal removes the junction and retains its referent; this is a
+platform contract, not POSIX symlink behavior. Verbose output records attempts
+before their effects. Echo honors POSIXLY_CORRECT's escape and initial -n rules,
+with the explicit standalone help/version metadata exception retained.
+
+The authoritative finite definitions are [tests/cases](../tests/cases), with
+reviewed facets in [tests/coverage/review](../tests/coverage/review). Additional
+locale, filesystem metadata, grammar and HTTP behavior remain separate issues;
+this profile does not relabel those omissions as implemented.
+
+## Current delivery and historical acceptance
+
 The tree 0.1.6 development candidate lists symbolic links as named leaves without
 following targets, including dangling and cyclic links. Text/HTML omit target
 text; JSON identifies links explicitly. Links count as files, and `-d` excludes

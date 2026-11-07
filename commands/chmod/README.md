@@ -1,9 +1,12 @@
 # chmod
 
+Development candidate: `cli/chmod@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Change file permissions for MoonX.
 
 ```sh
-moonx cli/chmod@0.2.4 [-R] [-v] MODE FILE...
+moonx cli/chmod@0.2.5 [-R] [-v] MODE FILE...
 ```
 
 ## Supported scope
@@ -19,6 +22,12 @@ Set numeric modes on POSIX hosts. Complete symbolic assignments such as `u=rw,g=
 | `-v, --verbose` | Describe processed entries. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Windows permission changes and `--reference` are unsupported.
@@ -28,8 +37,8 @@ Set numeric modes on POSIX hosts. Complete symbolic assignments such as `u=rw,g=
 ## Examples
 
 ```sh
-moonx cli/chmod@0.2.4 644 report.txt
-moonx cli/chmod@0.2.4 u=rw,g=r,o= report.txt
+moonx cli/chmod@0.2.5 644 report.txt
+moonx cli/chmod@0.2.5 u=rw,g=r,o= report.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

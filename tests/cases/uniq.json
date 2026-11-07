@@ -81,10 +81,10 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
+      "source_version": "Issue #22: ordinary usage failure status corrected to the fixed command baseline; capability refusals remain separate.",
       "expected_stdout_text": "",
       "coverage": [
         "skip-fields"
@@ -187,8 +187,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/uniq@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: uniq [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/uniq@0.2.6 metadata contract",
+      "expected_stdout_text": "Usage: uniq [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -206,8 +206,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/uniq@0.2.5 metadata contract",
-      "expected_stdout_text": "uniq 0.2.5\n",
+      "source_version": "workspace cli/uniq@0.2.6 metadata contract",
+      "expected_stdout_text": "uniq 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -555,6 +555,57 @@
       "expected_status": 0,
       "comparison": "contract",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "f17-uniq-unknown-option",
+      "command": "uniq",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "uniq: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-uniq-missing-option-value",
+      "command": "uniq",
+      "args": [
+        "--skip-fields"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "uniq: option requires a value: 'skip-fields'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
     }
   ]
 }

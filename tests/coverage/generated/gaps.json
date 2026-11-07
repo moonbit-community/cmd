@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "coverage_manifest_sha256": "f5cf782a03dc62df1db0b8c7db11d6175cdc2b1f4c947e1a68151c751e169b20",
-  "independent_review_sha256": "4578de1df2c05666ea9bb9020104ef8636d36ba8ad97a3d071245f03f118b803",
+  "coverage_manifest_sha256": "016b1a330b93d0d561b8ec47fbf47fb3bfe31bed5e5c4747912a06aa67bcb272",
+  "independent_review_sha256": "d4965ce6187b71d7896caab440d695bd79fac24e2fa20d371c26e8562a349ffe",
   "reviewed_definitions": 888,
   "remaining_catalog_labels": 0,
   "new_fixture_or_observer_catalog_labels": 0,
@@ -16,19 +16,33 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Known RFC4648 inputs decode to exact bytes, including the retained nonzero-tail-bit profile. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
+      "current_activation": "Known RFC4648 inputs decode to exact bytes, with canonical tail bits; nonzero tail bits reject after retaining the determined prefix. The fixed GNU9.11/gnulib vectors separately bind absent padding, incomplete explicit padding, concatenated groups and malformed later symbols. An incomplete explicit Base32 quantum emits no bytes from that quantum, while an earlier completed group remains. Lowercase input rejects. Exact stdout/stderr/status are independent expectations; definitions do not establish a runtime pass.",
       "current_case_ids": [
         "base32-rfc4648-decode",
-        "base32-nonzero-tail-bits-accepted",
+        "base32-nonzero-tail-bits-rejected",
         "base32-uppercase-only",
-        "base32-prefix-before-malformed-padding"
+        "base32-prefix-before-malformed-padding",
+        "f17-base32-decode-0",
+        "f17-base32-decode-1",
+        "f17-base32-decode-2",
+        "f17-base32-decode-3",
+        "f17-base32-decode-4",
+        "f17-base32-decode-5",
+        "f17-base32-decode-6",
+        "f17-base32-decode-7",
+        "f17-base32-decode-8",
+        "f17-base32-decode-9",
+        "f17-base32-decode-10",
+        "f17-base32-decode-11",
+        "f17-base32-decode-12",
+        "f17-base32-decode-13"
       ],
       "current_scenario_bindings": [],
       "current_remaining_facets": [
         "other spellings, boundaries, interactions and error ordering",
         "resource and lifecycle effects not asserted by these cases"
       ],
-      "narrow_exact_scope_reminder": "Known RFC4648 inputs decode to exact bytes, including the retained nonzero-tail-bit profile. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
+      "narrow_exact_scope_reminder": "Known RFC4648 inputs decode to exact bytes, with canonical tail bits; nonzero tail bits reject after retaining the determined prefix. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
       "review_action": "The stated finite facet now has required assertions. A fresh applicable execution must qualify every binding; skipped platforms and wider unstated semantics are not covered by this definition review."
     },
     {
@@ -55,11 +69,23 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Explicit-D decodes known aGk= to hi. Lowercase-d malformed padding and invalid input length require complete diagnostics, status and the original emitted-prefix bytes.",
+      "current_activation": "The project -D alias decodes known aGk= to hi. Fixed GNU9.11/gnulib vectors bind absent padding, concatenated padded groups, canonical tail bits and determined bytes before later invalid symbols, including incomplete explicit padding. Every failure asserts its independent exact prefix and invalid-input diagnostic/status1; successful concatenated YQ== groups yield aa. Definitions alone are not runtime or upstream execution evidence.",
       "current_case_ids": [
         "compat-text-line-642",
         "compat-text-line-633",
-        "compat-text-line-652"
+        "compat-text-line-652",
+        "f17-base64-decode-0",
+        "f17-base64-decode-1",
+        "f17-base64-decode-2",
+        "f17-base64-decode-3",
+        "f17-base64-decode-4",
+        "f17-base64-decode-5",
+        "f17-base64-decode-6",
+        "f17-base64-decode-7",
+        "f17-base64-decode-8",
+        "f17-base64-decode-9",
+        "f17-base64-decode-10",
+        "f17-base64-decode-11"
       ],
       "current_scenario_bindings": [],
       "current_remaining_facets": [

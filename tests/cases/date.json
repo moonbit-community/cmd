@@ -79,14 +79,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "date 0.1.4\n",
+      "expected_stdout_text": "date 0.1.5\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/date@0.1.4 metadata contract",
+      "source_version": "workspace cli/date@0.1.5 metadata contract",
       "aliases": [
         "release-metadata-date-version"
       ]
@@ -550,9 +550,71 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/date@0.1.4 metadata contract",
-      "expected_stdout_text": "Usage: date [OPTION]... [+FORMAT]\nPrint time in TZ or the host local timezone.\n  -u, --utc           use UTC\n  -d, --date=TEXT     ISO date/time or @SECONDS (up to 9 fractional digits)\n  -I[PRECISION], --iso-8601[=PRECISION]\n                      date, hours, minutes, seconds, or ns\n  -R, --rfc-email     RFC email timestamp\n      --help          display this help and exit\n      --version       display version and exit\nFormats: %Y %y %m %d %e %H %M %S %j %a %A %b %h %B %F %T %R %s %N %z %Z %%\nRelative date parsing and setting the clock are unsupported.\n",
+      "source_version": "workspace cli/date@0.1.5 metadata contract",
+      "expected_stdout_text": "Usage: date [OPTION]... [+FORMAT]\nPrint time in TZ or the host local timezone.\n  -u, --utc           use UTC\n  -d, --date=TEXT     ISO date/time or @SECONDS (up to 9 fractional digits)\n  -I[PRECISION], --iso-8601[=PRECISION]\n                      date, hours, minutes, seconds, or ns\n  -R, --rfc-email     RFC email timestamp\n      --help          display this help and exit\n      --version       display version and exit\nFormats: %Y %y %m %d %e %H %M %S %j %a %A %b %h %B %F %T %R %s %N %z %Z %%\nRelative date parsing and setting the clock are unsupported.\nOption values and operands after -- remain literal during alias normalization.\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "f17-date-literal-date-short",
+      "command": "date",
+      "args": [
+        "-d",
+        "-I"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "date: invalid date '-I'\n",
+      "oracle": false,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
+    },
+    {
+      "id": "f17-date-literal-date-long",
+      "command": "date",
+      "args": [
+        "--date",
+        "--iso-8601"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "date: invalid date '--iso-8601'\n",
+      "oracle": false,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
+    },
+    {
+      "id": "f17-date-iso-abbreviation",
+      "command": "date",
+      "args": [
+        "-u",
+        "-d",
+        "@0",
+        "--iso"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "1970-01-01\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     }
   ]
 }

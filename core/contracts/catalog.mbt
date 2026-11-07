@@ -27,6 +27,11 @@ fn contract(
 }
 
 ///|
+// Options are stable semantic coverage identifiers, not an accepted-argv grammar.
+// For example update-mode/backup-control, no-dereference-target, check-quiet and
+// unified-lines/context-lines describe public option behavior through command
+// adapters, but their raw long spellings are private. Public/project aliases and
+// diagnostic contracts are recorded in docs/compatibility.md and CLI cases.
 pub fn command_catalog() -> Array[CommandContract] {
   [
     // Typesetting is owned by an external MoonBit engine; this command owns
@@ -43,7 +48,8 @@ pub fn command_catalog() -> Array[CommandContract] {
         "ppi", "deps", "no-serve", "timings", "update", "completions",
       ],
     ),
-    // Encoding emits complete groups before EOF; decoding retains whole input.
+    // Encoding emits complete groups before EOF; decoding retains whole input,
+    // validates canonical tails and preserves determined failure-prefix bytes.
     contract("base32", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
     ]),
@@ -51,6 +57,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "algorithm", "length", "base64", "raw", "untagged", "tag", "binary", "text",
       "zero", "check", "ignore-missing", "quiet", "status", "strict", "warn",
     ]),
+    // Incremental canonical decoding accepts EOF padding and adjacent padded
+    // groups, committing determined bytes once even when later input fails.
     contract("base64", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
     ]),
@@ -74,6 +82,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "1", "2", "after", "empty", "only", "output", "t", "check-order", "nocheck-order",
       "header", "help", "ignore-case", "zero-terminated",
     ]),
+    // logs/-l is the project's JSONL mode; it is not an upstream jq option.
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
       "color-output", "monochrome-output", "compact-output", "exit-status", "from-file",
       "indent", "join-output", "logs", "null-input", "raw-input", "sort-keys", "slurp",
@@ -124,6 +133,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("wc", Core, FileOrStdin, LineStream, [FileRead], [
       "bytes", "chars", "files0-from", "lines", "max-line-length", "total", "words",
     ]),
+    // Usage errors are 1; runtime input/output/seek statuses remain distinct.
+    // The little/ebcdic aliases and =VALUE syntax have explicit project contracts.
     contract(
       "xxd",
       Core,
@@ -150,6 +161,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       exit_codes=[0, 1, 2],
     ),
     contract("dirname", Core, NoInput, LineStream, [], ["zero"]),
+    // POSIXLY_CORRECT enables escapes and admits option parsing only after
+    // initial -n; standalone metadata retains the project exception.
     contract("echo", Core, NoInput, ByteStream, [], [
       "enable-escapes", "disable-escapes", "help", "no-newline", "version",
     ]),
@@ -180,6 +193,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "line-number", "line-regexp", "no-filename", "no-messages", "null-data", "only-matching",
       "quiet", "recursive", "regexp", "text", "with-filename", "word-regexp",
     ]),
+    // no-dereference/-P and named layout/time aliases are project extensions;
+    // quote names the GNU --quote-name behavior, also accepting --quote.
     contract("ls", Core, NoInput, LineStream, [FileRead], [
       "all", "almost-all", "classify", "directory", "recursive", "sort-time", "access-time",
       "change-time", "reverse", "sort-size", "dereference-command-line", "dereference",
@@ -231,6 +246,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "dir", "force", "interactive", "preserve-root", "no-preserve-root", "recursive",
       "verbose",
     ]),
+    // Project -I aliases ignore-fail-on-non-empty. Only actual failed removals
+    // are classified; ignored failures stop parents and verbose records attempts.
     contract("rmdir", Extended, NoInput, LineStream, [FileWrite], [
       "ignore-fail-on-non-empty", "parents", "verbose",
     ]),

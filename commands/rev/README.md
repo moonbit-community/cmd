@@ -1,9 +1,12 @@
 # rev
 
+Development candidate: `cli/rev@0.1.7`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Reverse each input record for MoonX.
 
 ```sh
-moonx cli/rev@0.1.6 [OPTION]... [FILE]...
+moonx cli/rev@0.1.7 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -16,6 +19,12 @@ Read files or stdin and reverse each record, retaining its terminator.
 | --- | --- |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 The local development candidate batches ASCII validation and reversal into a fixed 64 KiB output buffer; cross-chunk records still require longest-record storage.
@@ -26,8 +35,8 @@ The local development candidate batches ASCII validation and reversal into a fix
 ## Examples
 
 ```sh
-printf 'abc\n' | moonx cli/rev@0.1.6
-moonx cli/rev@0.1.6 notes.txt
+printf 'abc\n' | moonx cli/rev@0.1.7
+moonx cli/rev@0.1.7 notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

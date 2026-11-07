@@ -1,9 +1,12 @@
 # basename
 
+Development candidate: `cli/basename@0.2.4`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Extract path names for MoonX.
 
 ```sh
-moonx cli/basename@0.2.3 [-a] [-s SUFFIX] [-z] NAME [SUFFIX]
+moonx cli/basename@0.2.4 [-a] [-s SUFFIX] [-z] NAME [SUFFIX]
 ```
 
 ## Supported scope
@@ -19,6 +22,12 @@ Remove directory components and optionally a suffix. Paths are processed without
 | `-z, --zero` | End each result with NUL. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Suffix removal is literal, not pattern matching.
@@ -26,8 +35,8 @@ Remove directory components and optionally a suffix. Paths are processed without
 ## Examples
 
 ```sh
-moonx cli/basename@0.2.3 /tmp/report.txt
-moonx cli/basename@0.2.3 -s .txt report.txt notes.txt
+moonx cli/basename@0.2.4 /tmp/report.txt
+moonx cli/basename@0.2.4 -s .txt report.txt notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

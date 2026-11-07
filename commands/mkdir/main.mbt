@@ -2,7 +2,7 @@
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("mkdir 0.2.5\n")
+    @stdio.stdout.write("mkdir 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
@@ -14,13 +14,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("mkdir: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755 on Linux and 1777 on macOS; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\n",
+      "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755 on Linux and 1777 on macOS; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }

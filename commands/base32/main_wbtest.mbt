@@ -40,7 +40,14 @@ test "base32 rejects lowercase and preserves decoded prefix" {
   }
   assert_eq(lowercase, b"rejected")
   let tail : Array[Byte] = []
-  decode_block(b"MZ======".to_array(), tail)
+  assert_true(
+    try {
+      decode_block(b"MZ======".to_array(), tail)
+      false
+    } catch {
+      CliError(_) => true
+    },
+  )
   assert_eq(Bytes::from_array(tail), b"f")
   let prefix : Array[Byte] = []
   let result = try decode_block(b"MY=XXXXX".to_array(), prefix) catch {

@@ -8,7 +8,7 @@ fn base32_value(c : Char) -> Int32 raise CliError {
   match c {
     'A'..<='Z' => c.to_int() - 0x41
     '2'..<='7' => c.to_int() - 0x32 + 26
-    _ => raise CliError("base32: invalid input character: '\{c}'")
+    _ => raise CliError("base32: invalid input")
   }
 }
 
@@ -41,19 +41,20 @@ fn encode_groups(
 ///|
 fn decode_block(block : Array[Byte], out : Array[Byte]) -> Unit raise CliError {
   if block.length() != 8 {
-    raise CliError("base32: invalid input length")
+    raise CliError("base32: invalid input")
   }
   let c0 = base32_value(block[0].to_int().unsafe_to_char())
   let c1 = base32_value(block[1].to_int().unsafe_to_char())
   // GNU emits each byte as soon as its required symbols are checked.
   out.push(((c0 << 3) | (c1 >> 2)).to_byte())
   if block[2] == b'=' {
-    if block[3] != b'=' ||
+    if (c1 & 3) != 0 ||
+      block[3] != b'=' ||
       block[4] != b'=' ||
       block[5] != b'=' ||
       block[6] != b'=' ||
       block[7] != b'=' {
-      raise CliError("base32: invalid padding")
+      raise CliError("base32: invalid input")
     }
     return
   }
@@ -61,23 +62,28 @@ fn decode_block(block : Array[Byte], out : Array[Byte]) -> Unit raise CliError {
   let c3 = base32_value(block[3].to_int().unsafe_to_char())
   out.push(((c1 << 6) | (c2 << 1) | (c3 >> 4)).to_byte())
   if block[4] == b'=' {
-    if block[5] != b'=' || block[6] != b'=' || block[7] != b'=' {
-      raise CliError("base32: invalid padding")
+    if (c3 & 15) != 0 ||
+      block[5] != b'=' ||
+      block[6] != b'=' ||
+      block[7] != b'=' {
+      raise CliError("base32: invalid input")
     }
     return
   }
   let c4 = base32_value(block[4].to_int().unsafe_to_char())
   out.push(((c3 << 4) | (c4 >> 1)).to_byte())
   if block[5] == b'=' {
-    if block[6] != b'=' || block[7] != b'=' {
-      raise CliError("base32: invalid padding")
+    if (c4 & 1) != 0 || block[6] != b'=' || block[7] != b'=' {
+      raise CliError("base32: invalid input")
     }
     return
   }
   let c5 = base32_value(block[5].to_int().unsafe_to_char())
   let c6 = base32_value(block[6].to_int().unsafe_to_char())
   out.push(((c4 << 7) | (c5 << 2) | (c6 >> 3)).to_byte())
-  if block[7] != b'=' {
+  if block[7] == b'=' {
+    guard (c6 & 7) == 0 else { raise CliError("base32: invalid input") }
+  } else {
     let c7 = base32_value(block[7].to_int().unsafe_to_char())
     out.push(((c6 << 5) | c7).to_byte())
   }
@@ -100,11 +106,8 @@ async fn decode_to_writer(
     }
     let c = byte.to_int().unsafe_to_char()
     let valid = (c >= 'A' && c <= 'Z') || (c >= '2' && c <= '7') || c == '='
-    if !valid {
-      if ignore_garbage {
-        continue
-      }
-      raise CliError("base32: invalid input character: '\{c}'")
+    if !valid && ignore_garbage {
+      continue
     }
     block.push(byte)
     if block.length() == 8 {
@@ -124,7 +127,27 @@ async fn decode_to_writer(
     }
   }
   if !block.is_empty() {
-    raise CliError("base32: invalid input length")
+    if !block.contains(b'=') {
+      while block.length() < 8 {
+        block.push(b'=')
+      }
+    }
+    let decoded : Array[Byte] = []
+    decode_block(block, decoded) catch {
+      CliError(message) => {
+        if !decoded.is_empty() {
+          writer.write(Bytes::from_array(decoded)) catch {
+            write_err => raise CliError("base32: write failed: \{write_err}")
+          }
+        }
+        raise CliError(message)
+      }
+    }
+    if !decoded.is_empty() {
+      writer.write(Bytes::from_array(decoded)) catch {
+        write_err => raise CliError("base32: write failed: \{write_err}")
+      }
+    }
   }
 }
 
@@ -156,7 +179,7 @@ async fn convert(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("base32 0.1.5\n")
+    @stdio.stdout.write("base32 0.1.6\n")
     return
   }
   let args = @env.args()[1:]
@@ -168,32 +191,32 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("base32: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nEncoding emits complete groups before EOF; later input errors may leave partial output.\n",
+      "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nEncoding emits complete groups before EOF; later input errors may leave partial output.\nDecoding checks canonical tail bits and preserves complete-block failure prefixes.\nMissing final padding is accepted; incomplete explicit padding rejects (GNU 9.11).\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
   if parsed.operands.length() > 1 {
     @stdio.stderr.write("base32: extra operand: '\{parsed.operands[1]}'\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let wrap_text = parsed.last_value("wrap").unwrap_or("76")
   let wrap = @string.parse_int(wrap_text) catch {
     _ => {
       @stdio.stderr.write("base32: invalid wrap size: '\{wrap_text}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if wrap < 0 {
     @stdio.stderr.write("base32: invalid wrap size: '\{wrap_text}'\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let path = if parsed.operands.is_empty() { "-" } else { parsed.operands[0] }

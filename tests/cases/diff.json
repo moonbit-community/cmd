@@ -347,8 +347,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/diff@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: diff [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare files, directories or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\n-i ignores ASCII case; -w ignores whitespace; -b ignores changes in whitespace.\n-Z ignores trailing whitespace; -B ignores blank-only change groups.\n--strip-trailing-cr removes one CR before each LF on input, including displayed lines.\n-r recurses; -N treats missing files as empty; --unidirectional-new-file applies only to the left side.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nNon-C locale collation and link-target-text comparison remain unsupported.\n",
+      "source_version": "workspace cli/diff@0.2.5 metadata contract",
+      "expected_stdout_text": "Usage: diff [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare files, directories or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\n-i ignores ASCII case; -w ignores whitespace; -b ignores changes in whitespace.\n-Z ignores trailing whitespace; -B ignores blank-only change groups.\n--strip-trailing-cr removes one CR before each LF on input, including displayed lines.\n-r recurses; -N treats missing files as empty; --unidirectional-new-file applies only to the left side.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nNon-C locale collation and link-target-text comparison remain unsupported.\nOption values and operands after -- remain literal during alias normalization.\n",
       "expected_stderr_text": ""
     },
     {
@@ -366,8 +366,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/diff@0.2.4 metadata contract",
-      "expected_stdout_text": "diff 0.2.4\n",
+      "source_version": "workspace cli/diff@0.2.5 metadata contract",
+      "expected_stdout_text": "diff 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -2032,6 +2032,226 @@
       "comparison": "contract",
       "expected_stderr_text": "",
       "stdin_text": ""
+    },
+    {
+      "id": "f17-diff-reject-unified-lines-bare",
+      "command": "diff",
+      "args": [
+        "--unified-lines",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "diff: unknown option\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-diff-reject-unified-lines-value",
+      "command": "diff",
+      "args": [
+        "--unified-lines=always",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "diff: unknown option\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-diff-reject-context-lines-bare",
+      "command": "diff",
+      "args": [
+        "--context-lines",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "diff: unknown option\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-diff-reject-context-lines-value",
+      "command": "diff",
+      "args": [
+        "--context-lines=always",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "diff: unknown option\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-diff-label-value-internal-looking",
+      "command": "diff",
+      "args": [
+        "-u",
+        "--label",
+        "--unified-lines",
+        "--label",
+        "right",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "x\n"
+        },
+        {
+          "path": "right",
+          "content_text": "y\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "--- --unified-lines\n+++ right\n@@ -1 +1 @@\n-x\n+y\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "left",
+          "content_text": "x\n",
+          "unchanged": true
+        },
+        {
+          "path": "right",
+          "content_text": "y\n",
+          "unchanged": true
+        }
+      ]
     }
   ]
 }

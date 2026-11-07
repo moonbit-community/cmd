@@ -1,9 +1,12 @@
 # wc
 
+Development candidate: `cli/wc@0.2.6`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Count input records and bytes for MoonX.
 
 ```sh
-moonx cli/wc@0.2.5 [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]
+moonx cli/wc@0.2.6 [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]
 ```
 
 ## Supported scope
@@ -22,6 +25,12 @@ Read files or stdin and count lines, words and bytes by default. Supports select
 | `--total=WHEN` | Select auto (default), always, never or only. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Unicode character counting and other locale profiles are unsupported.
@@ -39,8 +48,8 @@ Read files or stdin and count lines, words and bytes by default. Supports select
 ## Examples
 
 ```sh
-moonx cli/wc@0.2.5 -l notes.txt
-printf 'one two\nthree\n' | moonx cli/wc@0.2.5
+moonx cli/wc@0.2.6 -l notes.txt
+printf 'one two\nthree\n' | moonx cli/wc@0.2.6
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

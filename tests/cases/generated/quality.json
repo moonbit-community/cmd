@@ -2,8 +2,8 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2345,
-    "finite-diagnostic": 84,
+    "exact-local": 2563,
+    "finite-diagnostic": 91,
     "typed-scenario": 34,
     "typed-dynamic-output": 12
   },
@@ -98,7 +98,7 @@
     {
       "case_id": "release-metadata-cp-help",
       "source": "tests/cases/cp.json",
-      "definition_sha256": "d65cc3247778238c23160ad4ff8f9f960dd1cd55af17540bcbfa7241c8123d50",
+      "definition_sha256": "58280a873bd4b8bb91961d283396147f18eca32b37f67841dd2766da19f38043",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -108,7 +108,7 @@
     {
       "case_id": "release-metadata-cp-version",
       "source": "tests/cases/cp.json",
-      "definition_sha256": "5f39f0e7e7acdb5eec8faf80fcb633d418b195e18f48e4ff12d29e785747b071",
+      "definition_sha256": "043b19a2e9ac15ffc091569224b99ed36e689ae70591875ba9a58fa24ee7b7bb",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -290,6 +290,106 @@
       "case_id": "coverage-cp-update-short",
       "source": "tests/cases/cp.json",
       "definition_sha256": "ca6bc37f654a577fda2feba73d4ae1a42331549c3fd040d7227c744834e7e8c4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-unknown-option",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "464c1143571b8948fcb346843ce5a62b8135c5ac2ac5e6a9d63947803d8ffc7d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-missing-option-value",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "85358d4473ce9d893c20e6fda0b77499d935aa36719803af12fdf67ef7b1755f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-reject-update-mode-bare",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "1577ac008248db925ceb480a413085e387971954bfef254d389b3d5f6476d787",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-reject-update-mode-value",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "d80aba87b28b1ae5eeecdfa79548a8ba420ff61e94248779a1fba208d4b65e58",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-reject-backup-control-bare",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "884375b22aea1f350cea46f077f2f865eb2ff086c7cf39281511f41a0e065ac8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-reject-backup-control-value",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "73fd02c2b42491e1440977a93b2100f63a975d65821a47b31ebffdc8990bb36d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-alias-dereference-command-line",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "c3ef23ea5014ee90458c29a0f4633b087055b1fe426a83554dc73cf98bf4ceb3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-suffix-value-short",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "b6809fb858fa023894375595105e419f6b275735f8067e3f9031efc0dbcecb62",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-suffix-value-long",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "e3e2a72a6d93f134af2da53bc287a6c82f7f68b15b97ba9f5deff45f1a0f76e2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cp-literal-internal-looking-operand",
+      "source": "tests/cases/cp.json",
+      "definition_sha256": "99d9cfb281b1decebc0d6462f9fbe1248fa520910bc2f5adf4041a7de8acca7e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -782,7 +882,7 @@
     {
       "case_id": "release-metadata-jq-help",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "cbe4c968fa2cfbc39024985dc742da2c521a8672737d6e6a7cf10b0ebc6db0a2",
+      "definition_sha256": "c3fec94157c8e1798888afbc99ecf2ace2a7411a6bab8e4c25f3a71c9456672f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -792,7 +892,7 @@
     {
       "case_id": "release-metadata-jq-version",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "0f56d0dc62ff7ed8ca8e86c8b026cf2ab2f87510b8890c3b4c5bc6175af949c3",
+      "definition_sha256": "b5fca53eeacff5b1c35324de89a46c49e40bbfea07d37cfb4081562dcb19858e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -920,6 +1020,127 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-jq-alias-logs-short",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "5060b701095cee6dc889daef3b3e6692d418414ba5cdeb7dbf2a6a8b3f21e9ee",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-literal-binding-looking-file",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "c92ff67569c2e925a41e5d3fc0a8392c7c09e7db023b9a322d0a383fd2b24557",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-literal-filter-file-short",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "f415986e1bb924c0adb15ce4974876ed5da9d4138f01ed5eb0f5ce8509c5330c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-literal-filter-file-long",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "725cdb013e8a1a19882c533a02092528d5021a37213512b0836b9bd660acc839",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-logs-conflict-null-input-short",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "392629d4bdcb207ad4315084997cfc1f2026a9d164108c2f6ece33e70ef6eba6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-logs-conflict-null-input-long",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "227bd06829229ed2856c46c78f43f4618078a7ff4a2efc62fe13f76ef3737ee6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-logs-conflict-raw-input-short",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "2dbbfd5942b928ed633a0e0a8019607138d941e3ca917d41817c60694eaebfcb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-logs-conflict-raw-input-long",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "e998df53b58bdf4322b673e673b7db733d5232ef91bbdfd14557db35945b7903",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-logs-all-invalid",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "47946937742e901ef14d0a365d5a961689df73693756139a22b708481b036b78",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-logs-empty-exit",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "84b3a75dd0a18143d06dd05300a29cd7b291010605257d5fc1186e1b99bc4e4d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-logs-slurp",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "8986ed47dce98cf17fc370efa570517b9caf0dbf421865681bf28fdc1d84e0ca",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-logs-retains-filter-error",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "976307a894d628fbbb43b80ffa9062dd56b68369c6307d91be846cc796de06a5",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Evaluator wording differs; status, type-error token and empty stdout are required."
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase4-ln-symbolic",
       "source": "tests/cases/ln.json",
       "definition_sha256": "0706720d5608ea09cc26f1837c8f4cf5decd1c933e3b6b2e379b999616d904c3",
@@ -1032,7 +1253,7 @@
     {
       "case_id": "release-metadata-ln-help",
       "source": "tests/cases/ln.json",
-      "definition_sha256": "10330aea3f878c7a0000f0e9c2eb67d4591f08d426a981cfc6f994b7b3dfe592",
+      "definition_sha256": "5a27625d96025cd8f0ea21f0cfb71a12f9ba43f4fd2ced102fadcdf155d7e707",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1042,7 +1263,7 @@
     {
       "case_id": "release-metadata-ln-version",
       "source": "tests/cases/ln.json",
-      "definition_sha256": "585b950b794d3666127493e2995cf90c509a4718fee10b7f3cb15a3c1968bfaf",
+      "definition_sha256": "9f7442d8bf44294f3fca12e0d9c58f5da742aa09edee4f78bbe3f14ae0be6fd9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1123,6 +1344,86 @@
       "case_id": "coverage-ln-hardlink-boundary",
       "source": "tests/cases/ln.json",
       "definition_sha256": "7f0295af952d82fa44ca6f13cf2070064e378d013818ff1f99172eae36768a36",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ln-unknown-option",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "4f6af70eba110de7ad5e094a34eb7b0a067d654b54e50b62427a7ee2c8df3a29",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ln-missing-option-value",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "cf6f7c6598d1fd022d662993ada5371777c8c1b8fbaecb2553ff7e4d712ea65b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ln-reject-backup-control-bare",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "92327059cbc27620ee183b786a92b89ee2c9fa6ee9d1c5e107c155146a0c8399",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ln-reject-backup-control-value",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "3d2e5e1f2a8bc935e96d9619501d8ff6adc3d0767d8fe7d82ff3c25d1dd3d800",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ln-alias-no-dereference",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "a0550791bf98c064fbe29c772343c24bd20e9076cf49d95eb9e49ed17e74ce6f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ln-suffix-value-short",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "c4871eb375d88f5d874e649b88561d1770708f7f20cd2908518092b2e760bf09",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ln-suffix-value-long",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "b80914345088b261aee28e0b46d99fceebc63751f8d4b89ac547e4359e93b182",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ln-reject-no-dereference-target",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "4893fc8ad8cfcd23555c987ed4f716fdcf482930b5939dff45619499336db928",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1426,7 +1727,7 @@
     {
       "case_id": "release-metadata-ls-help",
       "source": "tests/cases/ls.json",
-      "definition_sha256": "15c9d0f3458a2f5533867e3c92a396bba665a71d97920500fa3b26a535bbbd02",
+      "definition_sha256": "851c7ba2fd443287c3e9ef22fcc79001d9b3c2c846630c724ac430b4235c978e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1436,7 +1737,7 @@
     {
       "case_id": "release-metadata-ls-version",
       "source": "tests/cases/ls.json",
-      "definition_sha256": "7cac103b4359916c4a76eda8042bc3a147929e54e13f576e43717850bb9fccd0",
+      "definition_sha256": "ccc720ad0fd2244eacd0c8790ccde4c0f39ed17c157b2a22ed505b0c5f2a1be0",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2239,6 +2540,116 @@
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
+      "case_id": "f17-ls-alias-one",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "19e72f6da4c62af0334f75f5fca3c98ee69204444496dca466354ee3218ccd68",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-columns",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "9f324cbb945447c77da6be5d1831028864071bbca4214206a843d4d4bf53b0e6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-across",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "e0af7d703539954fbc95689d268e0b80b12fa2c850121668b029e542e2cc986b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-commas",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "19153e8452fa5f412191c3a8c75dcd6597ee4f42158fed0e458b76a914e2d7b1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-sort-time",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "2c4cb314c7ec976c8ae648be6d1dfc21ac771a9796ec1278ba1921483f115b36",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-sort-size",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "d8f46a0780ff8aa5d72ef1791bbb5f9eb51b0262e3b68180dc7335dd6e472f45",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-physical",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "6a0e277a094326d7eac0cf0033746e5770896c611a08b466346d4043db1520b7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-physical-short-order",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "efc83fd04de6a96211f42ef62b7149576268f39edc62442fe8581001bd0771d6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-physical-long-order",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "f429c12e471288443a5770826f8c28b769f9e6188e89f26f9dd836ab40b8e561",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-quote-name",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "1b932137496d14ca7f148f44160cd05f439bb7f639fc4bf99ec70d0fbcf1a640",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-ls-alias-quote-abbreviation",
+      "source": "tests/cases/ls.json",
+      "definition_sha256": "54a2c2453f0991b5b73fba64c1857a6fcc9d6872d26146ceca4c18a0c5c1a3d6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "mv-windows-wasm-links-boundary",
       "source": "tests/cases/mv.json",
       "definition_sha256": "1b9214c78cd11aca1b84ad3c9d5a37f76146682a36315a92623f42dcb0e34bc0",
@@ -2470,7 +2881,7 @@
     {
       "case_id": "release-metadata-mv-help",
       "source": "tests/cases/mv.json",
-      "definition_sha256": "7c9ed29ab5317b54b431fbc35455f27e8889fb5d06a6e09b5b080bcb05181f96",
+      "definition_sha256": "6d1b762952d9579b1cbe24b0f1bc594d070ca02013b6ddac0691684795e38362",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2480,7 +2891,7 @@
     {
       "case_id": "release-metadata-mv-version",
       "source": "tests/cases/mv.json",
-      "definition_sha256": "06cea65587332d8b2dc730ca3372a59b817fed516d30b587e0a6a95860173635",
+      "definition_sha256": "0be7194d877b94aa6a68a663942e1a899aaa752b730d4ef403290cfe58c142b6",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2538,6 +2949,96 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-mv-unknown-option",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "86013c34c5dae3bf69b0ff959cce1ed5e05ae96ff643070c1f075adde058c55d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mv-missing-option-value",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "9b2d20c044772f221e1358b79d315018697b397f9f28b8c54dacd39cd8c2c35f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mv-reject-update-mode-bare",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "33d26fc6bcd30d3b69a556f5dcba43c6c35bac309e3dd269aa20e06d795de570",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mv-reject-update-mode-value",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "cac5cf1c5881e4f4be04efc5a8cebfc0bd8d1339027efff2b3003ac7660c8f02",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mv-reject-backup-control-bare",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "82fe207081c92fda61709e0b49d2cf811ddabd6cfe7537c5e08392f9c9ccc47e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mv-reject-backup-control-value",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "6a851331cdcf15c9bae54580225dde388bdde010760c4d4407069c86105bc139",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mv-suffix-value-short",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "27b59203ae67fd33d2509901c9fdd85a1bb0629f7ba57f4ba9c88d2a6807f236",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mv-suffix-value-long",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "55b51b4d7c8a1be38de49f9782d1c7ea1b5693abd68b718cf478e570c0b43495",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mv-literal-internal-looking-operand",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "6d32c5275f6430d091929a4296023b174fa7cd5314e2f86103e63d44e1e21919",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p9-nl-number-format",
       "source": "tests/cases/nl.json",
       "definition_sha256": "4b480d0bf81455550e5d0d60478ad703e8ffec1a080a94588eada88503ef354c",
@@ -2580,7 +3081,7 @@
     {
       "case_id": "release-metadata-nl-help",
       "source": "tests/cases/nl.json",
-      "definition_sha256": "8af4751cf9a2e1e6b47f3c75612d9832c44e7937ff38b35becd3db79d458d6e9",
+      "definition_sha256": "962dfe122462b5cd09dede0b225e9ce39788f288c0f50251c3ac38b59a7b8485",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2590,7 +3091,7 @@
     {
       "case_id": "release-metadata-nl-version",
       "source": "tests/cases/nl.json",
-      "definition_sha256": "cbf3c75d138eeca0ca24f09db8df2067f18bcdc66d82a765fb1744cf681534a6",
+      "definition_sha256": "4db4d7122dd98a5fdfd9741b8c5545fd9bf211cb445dd7497193c78c0761909e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2691,6 +3192,26 @@
       "case_id": "coverage-nl-delimiter",
       "source": "tests/cases/nl.json",
       "definition_sha256": "9e6726062688ea313c5f6b6cdb5c29a34133763e2331551cbd27c969859f6a03",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-nl-unknown-option",
+      "source": "tests/cases/nl.json",
+      "definition_sha256": "93f1fe8417d6a29588da2587f61416187887c04b00a42e57215269274ddf0fca",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-nl-missing-option-value",
+      "source": "tests/cases/nl.json",
+      "definition_sha256": "9e8ff76cb2052723f191b1f9ac814ef10ec5656c568836bb984521e2f214192b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2810,7 +3331,7 @@
     {
       "case_id": "release-metadata-od-help",
       "source": "tests/cases/od.json",
-      "definition_sha256": "558869269e04bc136306ddff9aa0787bdb2d2a606a567eb136aecb9dd1b37e5b",
+      "definition_sha256": "0e626f62452b17a9e1aaed4d02708be330c8b77b2d1a90de9460582e0b78cf74",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2820,7 +3341,7 @@
     {
       "case_id": "release-metadata-od-version",
       "source": "tests/cases/od.json",
-      "definition_sha256": "fa683740f1e2fd3015d6531e0b52ce42ff46ca6ee7bd349f2f9dc09ad2f46892",
+      "definition_sha256": "342b3d674e34b46f60b82ad9a2301dc0bb55b0c1ccd90aceedd441dacb14399a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -3382,6 +3903,126 @@
       "case_id": "coverage-od-hex",
       "source": "tests/cases/od.json",
       "definition_sha256": "4bed701a7e44a517371060f8143672eded3c3c78b1b02e846feeb1f9d9300534",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-character",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "56f2ed2ca0fc586cdf738d7404679680314f3edd988b8078a85262b5594a44ae",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-float",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "cafc45ea87e3b650001acca9bb921df398779aa543304fd71392cab17e7b43a7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-double",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "e1926b0e15d1bdf9a1b972c994cbac3e7662c3d3bdf9927f081fa1b3b74adbcc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-double-F",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "4fcb10c3e58676f066a108b6cb88ecbe308e3a33d20bd0046ed783eb94c20349",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-named",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "60bce941bebfd130af0cbf87063052f9966114b5cf7feb747d08f8ec30e68d0e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-octal-byte",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "78941a2ab4d21110d8004bb6079fb3fef12e98d38dc464845981727e5351c32c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-decimal",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "e1dac729696ca9ab61786b792e2b076a887e95593a4a78b2f2298a960df23447",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-int",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "199eb0afa387ceb4983b3c8d11fa63fb5f5002b1780cebc97319aab421394881",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-long",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "90cf1d5b85d80a2d394fee50aa1577c1c74a301d52a27f261b415afe444f016a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-octal",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "d804e8b837026f34a9e725c67c0e2080deb94255d7239ec14a09f1b5b1ec7fff",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-signed",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "aad918c0d11ed4d75bb3b0351c5d7ff1347094fd5a6a0fcf2a6f197942a24afe",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-od-alias-hex",
+      "source": "tests/cases/od.json",
+      "definition_sha256": "90eec75953e66b12064c208fbd0ad33f6f21842f34e2117e4495e550349ebe21",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4724,7 +5365,7 @@
     {
       "case_id": "release-metadata-rm-help",
       "source": "tests/cases/rm.json",
-      "definition_sha256": "3a17405d9466b8bdb35bbce568aa805085f956d3b3c22d47ee5d333a195701b9",
+      "definition_sha256": "76af533b8e8a6319c4d7f3354371b305f1598dc9137be18d96cd7e7125be47bc",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -4734,7 +5375,7 @@
     {
       "case_id": "release-metadata-rm-version",
       "source": "tests/cases/rm.json",
-      "definition_sha256": "b69297cb1c02c9080317991ad09650bc2d5bca2a525d915fb6e68048de65ee65",
+      "definition_sha256": "c09a28c56e510f71864c4e8fb46f5fe43d7112c4f6ec87fb93e262c345035c44",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -5054,6 +5695,16 @@
         ]
       },
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f17-rm-unknown-option",
+      "source": "tests/cases/rm.json",
+      "definition_sha256": "afa6f8141fed6c6ef889967b8bfe41730482e625edcc15c2cea479a4b6f68365",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
     },
     {
       "case_id": "phase5-sh-command-positional",
@@ -5464,7 +6115,7 @@
     {
       "case_id": "compat-text-line-837",
       "source": "tests/cases/tr.json",
-      "definition_sha256": "d680aeb1a63fbe54d9819b511f1471b8d87f52e3c83dd8e9d3ebfab522fb6aeb",
+      "definition_sha256": "52d3ca59608c29cda9cba6fc6cb3d1d392b3c636c28bc9a595d9ce1c410d5784",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -5475,7 +6126,7 @@
     {
       "case_id": "compat-text-line-838",
       "source": "tests/cases/tr.json",
-      "definition_sha256": "4feab84dec1344cfe18e352d394aecc9e2cb976b189215e58dc4b29720ce9fe8",
+      "definition_sha256": "27ef110cd8590652f8a788cfad39ef8f119536a0b680a47b4161b592584827c1",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -5506,7 +6157,7 @@
     {
       "case_id": "compat-catalog-line-385",
       "source": "tests/cases/tr.json",
-      "definition_sha256": "7e411c4ac70a0657a60a882234d467fc476b7f5c39a41ac8389d541cc319a952",
+      "definition_sha256": "01fb2c81f9419218a67e6920dd71c7b5ed08c0dafb6e15a50cb8050ad81dc723",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -5557,7 +6208,7 @@
     {
       "case_id": "release-metadata-tr-help",
       "source": "tests/cases/tr.json",
-      "definition_sha256": "58d9db906be5a2304bd135cdbb88da2cd477b3536d1b78e8380a9da0595038fe",
+      "definition_sha256": "72bfeacc1a49301ae1c73aa3c745e4365729aedbfe105ee4189dd01d9f12f5e9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -5567,7 +6218,17 @@
     {
       "case_id": "release-metadata-tr-version",
       "source": "tests/cases/tr.json",
-      "definition_sha256": "b8e7874bce584d97df46803186108a098dff6e4a0971597b940a8bf286acf9e9",
+      "definition_sha256": "8b9c69e98d9c484acfb7b1f6747cd2954a89fe1e3970053d47e437fce4faf943",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tr-unknown-option",
+      "source": "tests/cases/tr.json",
+      "definition_sha256": "3d8e3c042399b705d2bc3d7f2bcd31dacbc43c94b98ae1cb7b514817c61fa2ce",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -5718,7 +6379,7 @@
     {
       "case_id": "release-metadata-wc-help",
       "source": "tests/cases/wc.json",
-      "definition_sha256": "0c5e40bff68170df8031320c1b67956c9e62eaddebc88a9aca80732c237679fb",
+      "definition_sha256": "b200755e7ebf06ad131fa8072c94500867409baf1f37e9e0ba3d26447e385ddf",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -5728,7 +6389,7 @@
     {
       "case_id": "release-metadata-wc-version",
       "source": "tests/cases/wc.json",
-      "definition_sha256": "304581bd228e510cd7f8ab919e7cb6c25da3e196ea9aaeb2634c0852fe4390a3",
+      "definition_sha256": "d39a6c41ceae7829412c1be20456ec8bcc03904340cfdb74f52284e14b6bd05f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6016,6 +6677,26 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-wc-unknown-option",
+      "source": "tests/cases/wc.json",
+      "definition_sha256": "f7b2562b34ca90010c473cb6c9c1334e439c307b8c33e5ab1655aa9a20741f7f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-wc-missing-option-value",
+      "source": "tests/cases/wc.json",
+      "definition_sha256": "b49723f472855a6e038d3be11f08f8cb49edb6df9231c080171f61afcc4dfb08",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase0-cat-double-dash",
       "source": "tests/cases/cat.json",
       "definition_sha256": "ced83fea5db3c505431b0fba6decf69925b953e6332b024bbb481d408244864d",
@@ -6108,7 +6789,7 @@
     {
       "case_id": "release-metadata-cat-help",
       "source": "tests/cases/cat.json",
-      "definition_sha256": "44c4d4677dd1bb5467bd61a861ba69a10274b5b70117c9a2fe87c20fcee2c6e1",
+      "definition_sha256": "0203d9c2ac4e67059a8a85e1fee88c797e50256b77b57d1e681fad40a7dee6fc",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6118,7 +6799,7 @@
     {
       "case_id": "release-metadata-cat-version",
       "source": "tests/cases/cat.json",
-      "definition_sha256": "252906328ae79304f5f57d6b8b8a11f7fc58a2b46acd717b92748884abe4f424",
+      "definition_sha256": "b9b0130aaa4a950075a02beb0379944965895e252d94ee451d103916fd42d676",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6189,6 +6870,56 @@
       "case_id": "coverage-cat-nonprinting",
       "source": "tests/cases/cat.json",
       "definition_sha256": "96460b5c7027a64db3e25555dab6d1dfe28645f5213d013901da5fe9e7f9c15b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cat-unknown-option",
+      "source": "tests/cases/cat.json",
+      "definition_sha256": "f8e9cc55655343af3627fd2542d724313d2c05768343f08ee9e847e269832a5a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cat-alias-unbuffered",
+      "source": "tests/cases/cat.json",
+      "definition_sha256": "4684c8b649b706dbaed5e0517b13deb21270e5a84a9c235fbee018ed26fb00ef",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cat-help-short",
+      "source": "tests/cases/cat.json",
+      "definition_sha256": "d1542f4dcac5730f56a52fdb3a33244a69bacc267b5c75e2213bbc01022bf5cf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cat-ends-nonprinting",
+      "source": "tests/cases/cat.json",
+      "definition_sha256": "afb5440f1e8ddf0916aea170ffd4db88ea4f4bcebde6df41d1438d87a78c5af1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cat-tabs-nonprinting",
+      "source": "tests/cases/cat.json",
+      "definition_sha256": "8b4c1f8bdad91168b62f84aecd5da9ceb6f570dc37ab2bd03ad807208775f531",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6409,7 +7140,7 @@
     {
       "case_id": "compat-text-line-693",
       "source": "tests/cases/cut.json",
-      "definition_sha256": "8e9e60dcf7e6cc6d95e0561939c5f13a5f2b0344e5a32623f195bcd018c0dfd3",
+      "definition_sha256": "38bc1f0051e24f2f441a81991c5c2f97b75bf4e4b005ccce9044d34425a9eba5",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -6440,7 +7171,7 @@
     {
       "case_id": "compat-catalog-line-374",
       "source": "tests/cases/cut.json",
-      "definition_sha256": "087795a90db26eb85403123bf684c64b73713147c2b34951ff8dafa3812d311d",
+      "definition_sha256": "b64ff0074af89b03c7257c65c872f03fcf29405d5c07bb0790b05d353c1b3ee2",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -6461,7 +7192,7 @@
     {
       "case_id": "release-metadata-cut-help",
       "source": "tests/cases/cut.json",
-      "definition_sha256": "d2d671ba90f35b14d737b0b0b0059dbfd463f47d565458f444cae9703dc51fa7",
+      "definition_sha256": "8441c01bdad2e715f291a09a4b67949456d5d33e7d4d916a4e03bff2f57b8910",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6471,7 +7202,7 @@
     {
       "case_id": "release-metadata-cut-version",
       "source": "tests/cases/cut.json",
-      "definition_sha256": "cda5037caedb388abb9528b8bee78ee97c1946abb016594661690c8e35e1f4e0",
+      "definition_sha256": "12ca76dc0aab0e41847b613a31e7b07a0d5520935f2021a5e78186077c09212b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6592,6 +7323,26 @@
       "case_id": "o1-cut-suppress-conflict",
       "source": "tests/cases/cut.json",
       "definition_sha256": "4c339e50694e2093f3d04e57be83b2cf112dbbb74255eb0df8e74a99004501fa",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cut-unknown-option",
+      "source": "tests/cases/cut.json",
+      "definition_sha256": "0e7812bf17ad16c6f81fb551a239f74d4db678c878d69bc8cf5efbdf2216a9d5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-cut-missing-option-value",
+      "source": "tests/cases/cut.json",
+      "definition_sha256": "1ce06d0cb00fae5517ec26362045623c4fcc2bc9d16c066875adb8a4a2bf1b83",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7200,7 +7951,7 @@
     {
       "case_id": "release-metadata-fmt-help",
       "source": "tests/cases/fmt.json",
-      "definition_sha256": "f71a30dac39417543e7cabe2a449579b18b54a363758f6f39b9d004679cfc02e",
+      "definition_sha256": "696d7375850ab4c72975bcce64814928b3ec15855993539d24808b6c6e4a7727",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7210,7 +7961,7 @@
     {
       "case_id": "release-metadata-fmt-version",
       "source": "tests/cases/fmt.json",
-      "definition_sha256": "69e8670185dc7fc3c53b379ce8430371cd5f9de188352a82515717ac4f427262",
+      "definition_sha256": "f94d0f7f5a44787f50cf7917c61f1d044abf4f3181f5682c09ace4a1574aca39",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7458,6 +8209,26 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-fmt-numeric-prefix-short",
+      "source": "tests/cases/fmt.json",
+      "definition_sha256": "e278da0263d183d8611f4c019e694f0ad78f3d82b7932a222c19971d27ee4d48",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-fmt-numeric-prefix-long",
+      "source": "tests/cases/fmt.json",
+      "definition_sha256": "9382f9643b4713e92af19c5fdc54eb8997a3e5f31728acbaf67fb6b2199c5db3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase3-pwd-working-directory",
       "source": "tests/cases/pwd.json",
       "definition_sha256": "ac278f33fb9251670cfd4e424d128bd56e7b38ed70538a3d043457cba6cb57c3",
@@ -7490,7 +8261,7 @@
     {
       "case_id": "release-metadata-pwd-help",
       "source": "tests/cases/pwd.json",
-      "definition_sha256": "51049368a73844907db563e9e8fb78656ad38ccf80cf1586cc83893f5f5511c5",
+      "definition_sha256": "4d09ea8e9801dfacb4de0ed35b7726efcdccd06f07ef132b60d1c468017051a1",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7500,7 +8271,7 @@
     {
       "case_id": "release-metadata-pwd-version",
       "source": "tests/cases/pwd.json",
-      "definition_sha256": "0c9dafe4278aa384eed3ffbb79d43630eaad00785f5ad543371672a2e079b3eb",
+      "definition_sha256": "e52feaa5d928a3e28463199bb0ca31bdced008b30ac6e466dd495ea2fe99248c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7528,6 +8299,16 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-pwd-unknown-option",
+      "source": "tests/cases/pwd.json",
+      "definition_sha256": "8e5afa273c780bd7cfb0c6f66112797e6ab135de1d773abde43edce8098cb7aa",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p0-rev-lines",
       "source": "tests/cases/rev.json",
       "definition_sha256": "50e12f6b4bca3726f774120531de9618caa438912254410c619c30d000b65c81",
@@ -7540,7 +8321,7 @@
     {
       "case_id": "release-metadata-rev-help",
       "source": "tests/cases/rev.json",
-      "definition_sha256": "2310e1a7379889afa453553bcbf8c03e26e59934b6a33ae29a535b2439ecdbd5",
+      "definition_sha256": "fafb74b2b203fb102857a8a5bb4ee9ee6092e2fd089ac50c387a4f7a04d15b2a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7550,7 +8331,7 @@
     {
       "case_id": "release-metadata-rev-version",
       "source": "tests/cases/rev.json",
-      "definition_sha256": "717be859653274a2fc478ca03c335c4752faee742f5f860d28a226ad08d46f07",
+      "definition_sha256": "67324b430f042657df47bcb775d05b6cc848f271fe3072d8235bafdfacab169d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7641,6 +8422,16 @@
       "case_id": "proof-rev-record-boundary-8192",
       "source": "tests/cases/rev.json",
       "definition_sha256": "19ed2fb61429d99be55305781803f7e13dd15b3c8e13879f42265ae238e92632",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rev-unknown-option",
+      "source": "tests/cases/rev.json",
+      "definition_sha256": "cf9d487970015c8cb3366bbeadf7fdd91367bd16dac46cc6ff69b3b0a2318a59",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7840,7 +8631,7 @@
     {
       "case_id": "release-metadata-sed-help",
       "source": "tests/cases/sed.json",
-      "definition_sha256": "6032e17cb2336f6cc5e25d24b7210e2e71f560a78b493afe62c4c9103b54032d",
+      "definition_sha256": "c4fe3f25e8e7535b8bb14fbd1a7ac92587384503c2c8af1cd02db02fea29fb89",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7850,7 +8641,7 @@
     {
       "case_id": "release-metadata-sed-version",
       "source": "tests/cases/sed.json",
-      "definition_sha256": "db24bfbba3e2c3b5511117582bf5c61c7ff6b9c07cf3c04bfb1129b87f83efc4",
+      "definition_sha256": "02b1c36a7c8905b9e8e9a05726051ee4eff83b100bf2527e0dffc17c3ce5e7e7",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -8862,6 +9653,16 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-sed-alias-extended",
+      "source": "tests/cases/sed.json",
+      "definition_sha256": "443f073756fc0389d2cc136c10da4287b535768e6c128c408fce5128befab082",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p0-seq-version",
       "source": "tests/cases/seq.json",
       "definition_sha256": "38f890affabf4466d12ed0073d70a9d1e218e06a1f67eea9faf1ca622e4320bd",
@@ -9311,7 +10112,7 @@
     {
       "case_id": "release-metadata-tac-help",
       "source": "tests/cases/tac.json",
-      "definition_sha256": "3c9e8753493d054967abbfd7fc5a345493aa3cc3abe7da64cec841cdf2350a0a",
+      "definition_sha256": "d6f2e40f5affc3fb53b8e53830a50abbfc361bcc3003c3c10e2cb51476ccc43d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -9321,7 +10122,7 @@
     {
       "case_id": "release-metadata-tac-version",
       "source": "tests/cases/tac.json",
-      "definition_sha256": "08d1d211c6a5a46e7dc4fa99043247d0eaba8acceabfe362c540c0da1ddc752c",
+      "definition_sha256": "ad18ebcf1d54916aa53df5954a286fa2e8bc97de040d08d4aec93511e7739545",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -9809,6 +10610,26 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-tac-unknown-option",
+      "source": "tests/cases/tac.json",
+      "definition_sha256": "0850fbffaf629f9a37169c5d993dcf25f07880f34422c9703a8941b60f004c90",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tac-missing-option-value",
+      "source": "tests/cases/tac.json",
+      "definition_sha256": "60189e791d4aec883fa247b0495d27eda0015a52115eea213162a58f56de96ee",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase0-tee-filesystem",
       "source": "tests/cases/tee.json",
       "definition_sha256": "f34d3b9181986a6ec26c9beee652cdb9c1c66b7807a4afa788319df1a2db2938",
@@ -9842,7 +10663,7 @@
     {
       "case_id": "release-metadata-tee-help",
       "source": "tests/cases/tee.json",
-      "definition_sha256": "0b6707887cc540618f9a52aa94ae3100ea4884e78e2895dfc3fa474461bf3b44",
+      "definition_sha256": "50a5042ab0d44c96a031df1678881f5cd3130e350193554191be8ab0a41885f0",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -9852,7 +10673,7 @@
     {
       "case_id": "release-metadata-tee-version",
       "source": "tests/cases/tee.json",
-      "definition_sha256": "d4511485fef9cffbcf038bd93a6b17497262d4fdb6a424772d1bc8dbd08c4864",
+      "definition_sha256": "28d2ddd9be4f3230f91735d0a05ba9f2a140fd58e5c9c6abeda82de1fe217797",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10042,6 +10863,16 @@
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
+      "case_id": "f17-tee-unknown-option",
+      "source": "tests/cases/tee.json",
+      "definition_sha256": "0ac328c2712b4560f8983e78fb8f23b0412fdd97ffe969e2d3825fc549c8fd9e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p7-xxd-include",
       "source": "tests/cases/xxd.json",
       "definition_sha256": "14031480c104359388089c0692edbb910fec0d7b1dfe5678184ec5e8fb0d71e9",
@@ -10124,7 +10955,7 @@
     {
       "case_id": "release-metadata-xxd-help",
       "source": "tests/cases/xxd.json",
-      "definition_sha256": "b40fe774bfae607076d943e890363a14301ee7e11e5187bb5490bc65fbb6efa4",
+      "definition_sha256": "d3f1ceafad935495e0b57ec2f7ab7800f6be53d749cf1d82583fce40df1fff22",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10134,7 +10965,7 @@
     {
       "case_id": "release-metadata-xxd-version",
       "source": "tests/cases/xxd.json",
-      "definition_sha256": "5310ab71b6f7221a6083a27d907d0a9bdcc7e3856f20fa9baa7ed05849c1b381",
+      "definition_sha256": "59c92c2538f4a79d73d3d468f50c65a58448fa1ab87c28a3b6e9a4eb3f9e9d00",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10682,6 +11513,166 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-xxd-unknown-option",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "006d5d5545094fa6113f59549bc773ed45c5639df38a60ef651ebc99859116e2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-little",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "b5e66ae87cbfb07fb1ff2236ffb83951775250bbdf6f0854b0038f41839f1430",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-littleendian",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "e9734288fa7e395ead0f153511ea7d4cdbb116d1486f08940efe2cc0f6bec4da",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-ebcdic-long",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "6e73e55acc7feed8e4545e472ba9f4758849c4878419390f184aabadf2e9f62d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-ebcdic-word",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "29bb308494e3a16add40da2e2aaeac036b24bce73e704205d25600d570837b2f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-group-equals",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "c1659ba0a9b45b146027b257de4ca90219815c0f8b8aa18b077b6fa9dd3bd63c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-offset-equals",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "15d22ffd25c4a4b5b4480307c18ba71f44c1b502187a0bae41d94ef0d11e546a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-cols-equals",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "84a78bf3214f3340bee79da0f115777e07f9e742827dfe27414d5612d74809a6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-len-equals",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "25b6e1e7d0cab3c3a006cd0e8173342baab607850d016949062563fcf1308e2f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-seek-equals",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "5307437e758636eb8f989e5483f8942023ac9be78ca9ac16ba55d2e8914e28a1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-alias-name-equals",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "6b7c646d01befdff59d6c448d33e4bc878dc40975425cd9b3e898df73c578d88",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-help-short",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "76cadd2a87237adacc1dccb57bf67618980ea16e6d0dff0091f0b07e66d22d6d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-literal-option-looking-file",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "a3756d0717d2b4cd661557b0d9c8071b5629be4a289a58c26275de54f7f60975",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-literal-name-short",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "6d8ae5e263e1a6e6b11a30ceb7430d48c9ea85c0d042a69cb18a107d385f1bc2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-literal-name-long",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "b9fe590bfbcf50bae05578f8dd387812d8ed38678e06515cfda47e7ed0105521",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-xxd-invalid-short-option",
+      "source": "tests/cases/xxd.json",
+      "definition_sha256": "fe3b3b9fbeabfe100b63377c79fc36149c58e894562e0091c9e7213fd54aa6bf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "release-metadata-yes-help",
       "source": "tests/cases/yes.json",
       "definition_sha256": "b6648b02a169d22e52a98efec0a80513173a21e6941993e0b73cf48f9cbae7e1",
@@ -10790,7 +11781,7 @@
     {
       "case_id": "compat-catalog-line-375",
       "source": "tests/cases/comm.json",
-      "definition_sha256": "a4b6dd8e2b59e3b1e8ed8daafc0261651e9cfe9b877b3d019dd31c11139d885f",
+      "definition_sha256": "ebed9a51e11a73c49b9eee618a5d9018a049b4fafdc19647bff66a0f99bf5d90",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -10811,7 +11802,7 @@
     {
       "case_id": "release-metadata-comm-help",
       "source": "tests/cases/comm.json",
-      "definition_sha256": "ace1314602a340cfa37eb59254f074b0aa12167dfc29b339aa5640c333603a77",
+      "definition_sha256": "8c262b81e435971433dc3882d151c9028afc01a10dad8c54898a8f43d1945570",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10821,7 +11812,7 @@
     {
       "case_id": "release-metadata-comm-version",
       "source": "tests/cases/comm.json",
-      "definition_sha256": "4d0cff05d97a3a32523afe6c1de7a4b1b00ba5edb97639265736b336f0449312",
+      "definition_sha256": "54f3646b7ac591ce141cb82ee23ae408c890d47b50d9b607ea839ff69bb9c421",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -10932,6 +11923,56 @@
       "case_id": "o1-comm-pairable-buried-disorder",
       "source": "tests/cases/comm.json",
       "definition_sha256": "39f8dea115eb013255916f239b07dde79255a2a519e8a33d3410e35239f41870",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-comm-unknown-option",
+      "source": "tests/cases/comm.json",
+      "definition_sha256": "dbcddf481379030412f414b6345a613026b03fe5497851300d252707a969b4dc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-comm-help-short",
+      "source": "tests/cases/comm.json",
+      "definition_sha256": "767df58425c7c8517b40f44a2b4108fbe9c88e80c8b790d9fea6ca4c04a73df9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-comm-suppress-1",
+      "source": "tests/cases/comm.json",
+      "definition_sha256": "a82d77b2750a46d35e5f532cdd145318c9f988bb5629584f3e4ce46c8e9e7367",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-comm-suppress-2",
+      "source": "tests/cases/comm.json",
+      "definition_sha256": "eca973da125b09a5533562a4694de88aababb147afc9aa0155228deacb8c8df8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-comm-suppress-3",
+      "source": "tests/cases/comm.json",
+      "definition_sha256": "71e83e4eaa7b673b4ac148b7ad22fc7bcff00aeeac45f9b070fb35f6a1b886ec",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -11433,7 +12474,7 @@
     {
       "case_id": "p2-date-version",
       "source": "tests/cases/date.json",
-      "definition_sha256": "4eda9d7a1253b8a49005dae0e7fe6848e79fbf1ab6e3fd2e00108eebb3aa016d",
+      "definition_sha256": "7b5ae67f25fb8e776bd9e5481d6258f0194cb9116a511e9626e9a2a37009c745",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -11637,7 +12678,37 @@
     {
       "case_id": "release-metadata-date-help",
       "source": "tests/cases/date.json",
-      "definition_sha256": "e2165c89447ae640aa06abafde2e62b7b3a2ce974048d807a447be5102ac9139",
+      "definition_sha256": "05949fe6cc90a777692c5a6698df35f8834b79d9e27cd99bb1d7c25b8130400d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-date-literal-date-short",
+      "source": "tests/cases/date.json",
+      "definition_sha256": "bdd8e891bf69b558ab56c486cfd087c6b2bff062a0304eb35e492f19f24a4cd9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-date-literal-date-long",
+      "source": "tests/cases/date.json",
+      "definition_sha256": "b27c3398e51fc6d59fcaf73f3e02a5becde17b897cf59b800580d9fed4f4626f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-date-iso-abbreviation",
+      "source": "tests/cases/date.json",
+      "definition_sha256": "44f41b72231b5f212a61718d90c8303b5bc14574fbae6af6be071efd70f0ebbe",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -11747,7 +12818,7 @@
     {
       "case_id": "release-metadata-diff-help",
       "source": "tests/cases/diff.json",
-      "definition_sha256": "da437011329ddedcb6d4daf1a8a8ff6177c9b07c2e6ef0c06cd7cab9f748bbb8",
+      "definition_sha256": "2a105b28bf056f1fa25b8fcc6feed4fce9ec4179e5abcd5829133312635bd870",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -11757,7 +12828,7 @@
     {
       "case_id": "release-metadata-diff-version",
       "source": "tests/cases/diff.json",
-      "definition_sha256": "fcfc3c6a30d6dabce3ba17cf6dc5c014efb8e80053d1fd7ef1f45406001895eb",
+      "definition_sha256": "bfa2978b92b1983b420b3615cb77b6b7732793ab4533659a5b3e41f0f4b2075c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -12199,6 +13270,56 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-diff-reject-unified-lines-bare",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "7c225b8ba22c6297814cf4a1fa9cb7232d0726dae366ea74cbc8c4de38e97f1b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-diff-reject-unified-lines-value",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "968908108670a915b00852b15d645c0ddd35703c2c97dbae3cb2d63f7fcf0cc2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-diff-reject-context-lines-bare",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "1bf462490a9542f12f315480ff9902714b83cca4612de6efd34355d9e1ab492a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-diff-reject-context-lines-value",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "f22f0ab82daa1036a9d35e6784c800113d4e5dba188c85ef21a24f352c84acc8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-diff-label-value-internal-looking",
+      "source": "tests/cases/diff.json",
+      "definition_sha256": "857cde7008a17df2953651635fdc18d52a934a3433470469d328ed91cd78f53d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase3-echo-basic",
       "source": "tests/cases/echo.json",
       "definition_sha256": "ae2b2089309b897743ac17b654a6c2611db5520a600d514f3a5199f764b64a54",
@@ -12221,7 +13342,7 @@
     {
       "case_id": "p0-echo-version",
       "source": "tests/cases/echo.json",
-      "definition_sha256": "d3fc7591d7b1a455dca73597fe879fea668411f9327ed17dbbd458521a2fa1e9",
+      "definition_sha256": "f8ac358185931cfb1190d70c06de9763a0de7808fa47632628f2cae0784b6cb9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -12231,7 +13352,7 @@
     {
       "case_id": "p0-echo-help",
       "source": "tests/cases/echo.json",
-      "definition_sha256": "fefd5e0d9ea7f9aa2ea6577738454b1fbfd8df077b66b87bba8147ed92b54091",
+      "definition_sha256": "05e4c7a12195f15fe5081bf1882ab0c3edd67b6cca6fd1b19e3d0a3527dfd0be",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -12292,6 +13413,126 @@
       "case_id": "proof-echo-disable-escapes-precedence",
       "source": "tests/cases/echo.json",
       "definition_sha256": "998ca6a494760b9b5ee8181a3c3487bd773eccd74e84cb697f7996f821994947",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-empty-0",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "7975c2f59e7b1105921741406c88c0df3c63af41a6c8c0acab3c2f9487acfaa6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-set-0",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "6460353ed56b72fad316e95be214785af2f1dc432b15e40978a384c7d692a348",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-empty-1",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "37e50545eec5b81f7a10d0bd1e0d4dc70a8381efa7b4028697d2cd1e76534e5f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-set-1",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "f0c16cd4245a7bd18da9fed6a7de0476a8bd242124b763eb6b96328843ff00a9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-empty-2",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "55acb28c94320d8996b7b516f094dfb1c7ba6a681dae20ab8d7ca5ea6741f3b7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-set-2",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "ab89584a4ec872971bc4bd114fb148416c426546c9f627a51c5518399948428d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-empty-3",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "eda4fc28ef75d948f3dd603226f65a9a76029e51488fe24b0255ef98622d8c0e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-set-3",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "b40cfcedcffaf9fa0844b36eca0098bf1f8047b6779fd03a0b98ac731e11b21b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-empty-4",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "7440f4397360435019ede7bc00489641126c463b3e48131e576b0184db7cd568",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-set-4",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "d1ff98c6e6a63ccf5ca23fd1d5617b50e77d3a7a4d749d25234cc2f31cb93030",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-metadata-help",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "91405f1ecb93f05d0889ec88e324a12abe994e6558844be4f5deef1928e9d4c4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-echo-posix-metadata-version",
+      "source": "tests/cases/echo.json",
+      "definition_sha256": "23cf8e0cf24c72dbfcd6991189bc5df9ecde0cc4b6f4ee4eb8cd960876d99f3e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13529,7 +14770,7 @@
     {
       "case_id": "compat-text-line-591",
       "source": "tests/cases/head.json",
-      "definition_sha256": "ba10bd4327e668986a82ea06533a6297742c4fe3cd60d91de04b65e5b42afa22",
+      "definition_sha256": "9b539b8545cb06389d427ddf18facf475bb81b72f5e69499de76e8dde12416cd",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13569,7 +14810,7 @@
     {
       "case_id": "release-metadata-head-help",
       "source": "tests/cases/head.json",
-      "definition_sha256": "e4a5d2e4a44d2e8cf176d317f483bbae71d17293062429b08dde8993d94e9d26",
+      "definition_sha256": "a3dc7e06630bcb50fa8eb5f33257a98db84ed3dc855f66a6ed74a18781d6070b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13579,7 +14820,7 @@
     {
       "case_id": "release-metadata-head-version",
       "source": "tests/cases/head.json",
-      "definition_sha256": "bcbf983df2706dc0e751344fbe6f87d37d738245bab1ed6c9dcd46484ff47930",
+      "definition_sha256": "4628a7e09c5dad0e7883376af2e46a87eb55fec41f67455b59581d19f9cd3000",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13600,6 +14841,26 @@
       "case_id": "proof-head-verbose-single-file",
       "source": "tests/cases/head.json",
       "definition_sha256": "451b037761d064a3fde72fe448433c7b97104a72b98d85ed41c935f7643c21ae",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-head-unknown-option",
+      "source": "tests/cases/head.json",
+      "definition_sha256": "b494a54b8332a67ab7fbc2925e52fa3a83d0a1ba4f3be22f073d3fa54482781f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-head-missing-option-value",
+      "source": "tests/cases/head.json",
+      "definition_sha256": "caef4f48a5c05af62e421dee68fbb1f609c6ea246a894c1d543705390dbe9d48",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13689,7 +14950,7 @@
     {
       "case_id": "release-metadata-join-help",
       "source": "tests/cases/join.json",
-      "definition_sha256": "fe92366b0149d60cf8391db656b7e737ac38a3285dc2521b287f637dbccb383a",
+      "definition_sha256": "264fb8bc408d8290b2c36243fbfa50a1116287416f2d373269cbb2cb6c2127a6",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13699,7 +14960,7 @@
     {
       "case_id": "release-metadata-join-version",
       "source": "tests/cases/join.json",
-      "definition_sha256": "d33f19d1599e8e1134a1e4b4b9b7b152d37cd537b55e132616ce07928a0c43fb",
+      "definition_sha256": "5a82de93d19f953bcbbb96a9436041821259fa0868be8942f6cf947500175be6",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -13890,6 +15151,106 @@
       "case_id": "o1-join-explicit-fields-header-auto",
       "source": "tests/cases/join.json",
       "definition_sha256": "9a40471c020ba0e4f0ba927ec42156f140d7836b64bcefd9aa1a5a4ac30434db",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-unknown-option",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "a2269aa117564568398b3833fff22e1917e5b677c73c7fcc78c3e7c26b4a2e85",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-missing-option-value",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "07e6d79b9a4f2c7d0f6b24f6a7571f3415093a2d20095f9dc8bfac61f1f0d5e8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-alias-field1",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "bb50a7b21ee318166da946c3098e7600b196129046c0e811fec9ccb3248f2b2c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-alias-field2",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "16d1141769e880b9809746c920c33485f8ef5ae348dc07ea1501e5b9ee41dcf8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-alias-separator",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "b27ffcac70d0562d10e9291ca277a277d0a5e04ad95adb461530250938c8fa8e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-alias-after",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "2b5044186f1786c9a8f525ace5f7acdd699fe959a44d559c5e5bbc8daacd2098",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-alias-only",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "ea10683ccaaf5527a9a981df9e763bccfd4cfee1652e890de2be8c547ccd5dfd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-alias-empty",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "bf9c6f9307a59c83bff82a876d939210306f027e60a40621a8e7fea30a830211",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-alias-output",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "40c804535dc710e7b9fd76d2dee3f19cd7f5af7948cc94bc1ef70398c2060ab6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-join-help-short",
+      "source": "tests/cases/join.json",
+      "definition_sha256": "058b2f75f4d5fa490cd7afa5fca393928faa3bada62c77471e57f0bc9f8ccd40",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -14344,7 +15705,7 @@
     {
       "case_id": "release-metadata-sort-help",
       "source": "tests/cases/sort.json",
-      "definition_sha256": "8466a524484764a068b07e77822c9a00d7c4fa236654cefa880b2770fb7b934c",
+      "definition_sha256": "ab69dcd6dc37a2f5103ff9a2a5de7e2bbbb3ddf10cdb4991061b10ddade52ede",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -14354,7 +15715,7 @@
     {
       "case_id": "release-metadata-sort-version",
       "source": "tests/cases/sort.json",
-      "definition_sha256": "742892d50797308c76a47fddc4d623cbadbd6a8a9f39a130db75338bf74330b9",
+      "definition_sha256": "188839b8670ee40cd601fc80a0b23970faed5792c172a4ccc9f09c7083a2cb08",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15076,6 +16437,36 @@
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
+      "case_id": "f17-sort-reject-check-quiet-bare",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "df5f1dccda166fd992df8d012ad9252510d88fffacbd686eee89199a3ecb5303",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-sort-reject-check-quiet-value",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "adb91fb2fabd8cf5c014fadb7e4fcccda398a848258ca00010126cf61009fa6d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-sort-output-value-internal-looking",
+      "source": "tests/cases/sort.json",
+      "definition_sha256": "e593b4d6d6b3200e4dd83a63deb416d16e92661e24d37b9a615e39208e10c935",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase3-tail-line-count",
       "source": "tests/cases/tail.json",
       "definition_sha256": "e650e89a41dba71d0e97922349bebde683591215769dd0fa2192d10efbb4d231",
@@ -15118,7 +16509,7 @@
     {
       "case_id": "compat-tail-negative-interval",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "d6131fc6e3ae223b29d13bb2f373389b2f7ad5ea9af80dee654235471a287ed5",
+      "definition_sha256": "e248c2c6369d7f578b9c91bad3024d4b3ddabb5a70be12e921ba26cc48e85f8b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15128,7 +16519,7 @@
     {
       "case_id": "compat-tail-infinite-interval",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "848c39470eff672dfaf3b83e7968d7950157f0196bcb6b230bfafbc2a77151bb",
+      "definition_sha256": "4a9f2ec16bc389c4415738efe2bc079d7054aebcd1bae80c26787b0494c2ce4c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15138,7 +16529,7 @@
     {
       "case_id": "compat-tail-follow-name-boundary",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "db3e90476989d7960212ffcbf54423a33b36aeb2b8bee847137394272f8d43d8",
+      "definition_sha256": "6400215238a21a3caa21acfbcdf2130de387e77d6d70373add31607bef029ba5",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -15179,7 +16570,7 @@
     {
       "case_id": "release-metadata-tail-help",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "4e78724f69ee6117e03356abce7d34b4f9f84ff08ed02590f5bc0221b9d60c8c",
+      "definition_sha256": "6195e979f087ab9a37867e486d832547e6ca1ad44b34cc162d598504ba555175",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15189,7 +16580,7 @@
     {
       "case_id": "release-metadata-tail-version",
       "source": "tests/cases/tail.json",
-      "definition_sha256": "3fc1f045b958d3e9f042d57245412625626750d04aa5ec09c39adc55fe74688b",
+      "definition_sha256": "b3e762bbc5b256486034f3e2a0ea2005c32b92dfed3503e6c4ce200c33c4c9ca",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15339,6 +16730,26 @@
         ]
       },
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f17-tail-unknown-option",
+      "source": "tests/cases/tail.json",
+      "definition_sha256": "26ca821ef7104411a34802f904d6e2e8c9f039a8de53d684a834d8d963077595",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tail-missing-option-value",
+      "source": "tests/cases/tail.json",
+      "definition_sha256": "3db78bea7f7060db1e1e2c7a1b6b69bccd145cf6d40ec4ecd7798066493454cc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
     },
     {
       "case_id": "phase3-test-string",
@@ -15533,7 +16944,7 @@
     {
       "case_id": "release-metadata-tree-help",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "ba39702580fee7014d121920ed02f6e1cd9ad5eed3c9e4e0c9d7bafc634fa9dc",
+      "definition_sha256": "6df74b9c0cc1ebe97805473629ed5bb29eb70d4ccb98c2e7f94ae6f42f63b140",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16674,6 +18085,136 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-tree-alias-all",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "64663c15d6cf1129375e6131af52a4f0f77237a8a35015b8cba3e14d80f838e8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-dirs-only",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "d8a67f4151ffa92c03259661549d1fe2030b3ab38d902ea40ef7e68ff613c067",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-full-path",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "f056840f8f8bcac91e0927e70c6c929645fcdeba20353864fe616f7efe327e59",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-level",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "ba129be43e4faa49d05595b3fb274508d315af8e194122e5abbb86ed65fac13c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-json",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "9ca96f9d5f5928cde4489244db684092704f6f6d7f4cd7f5a4e89f00d802cdfc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-html",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "eb0da81de35e3f61be17bbabf4c3456f694999705f734043ee1520b31b717d81",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-title",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "28c3e8b7367dcc311889fb643204acef025ddbe9f7fd9aa02ecb1803fdfea751",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-pattern",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "f40c54d73286e447601c722213597a4bfd5838aa7bcfa056edd4be1e8c05082c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-ignore",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "0734d4dd8de6bf61d7691168708cc45894e669bf5e7ebf58aeb545655b128db9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-size",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "5d3d81275120dcc57f70e5cb5f7b2a116445b3ff4c8a0b289fa8905ae0291024",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-human-readable",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "607bc054cf0111760e420987bb32f38a01d1cb341e06c16d1ee899904e0e2c82",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-color",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "d02d9052c7147e5832852034a4b1ba69e4db2492c938f676e324383c8b75095a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-tree-alias-no-color",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "faf9bce0d49aa58a6f7e8ad32be396b3fc9da3f1cea698869d102665d48de16d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p0-true-version",
       "source": "tests/cases/true.json",
       "definition_sha256": "a8995b0c65373b42a2dee7798e5a48449dfc086c93a1e1b288a36bf8bfdf6f03",
@@ -16746,7 +18287,7 @@
     {
       "case_id": "compat-text-line-494",
       "source": "tests/cases/uniq.json",
-      "definition_sha256": "08b4c49e9bd74024df43c63253955bab49e65b3c92bcc29ab3df85a4f5157f6e",
+      "definition_sha256": "f680b0bc2ea3908a27c63e05e5784d153579a5429793a36159cd613ace37cf65",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16796,7 +18337,7 @@
     {
       "case_id": "release-metadata-uniq-help",
       "source": "tests/cases/uniq.json",
-      "definition_sha256": "a532039fa3b2a475152693d2d07cb585ba42a89eee39e7a5750217b8cd08dfda",
+      "definition_sha256": "c87c893fa2f2072f1db3125bd918d7f433140c2e6f46cdab852d13fd4f7e1a97",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16806,7 +18347,7 @@
     {
       "case_id": "release-metadata-uniq-version",
       "source": "tests/cases/uniq.json",
-      "definition_sha256": "b40ca5e742abf85607d0b95cd9e4500c04c5c1464eb0d0f34463e61f35efe987",
+      "definition_sha256": "53f8918d8e6aec7576dbcce6836a1e461bcbab5385c8e02b894c42473bb2a990",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16977,6 +18518,26 @@
       "case_id": "coverage-uniq-unique",
       "source": "tests/cases/uniq.json",
       "definition_sha256": "f44e249ba04fb7bee81df948ebf0410733fbc27d98330debbbe238a512401f84",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-uniq-unknown-option",
+      "source": "tests/cases/uniq.json",
+      "definition_sha256": "50913289286026a80abd01be9fc02431ef0e65250bc793a7e66e2d3f9adde474",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-uniq-missing-option-value",
+      "source": "tests/cases/uniq.json",
+      "definition_sha256": "c7a12527116eaef7499376fc3f82aa404ac0b83443728f6ecdb3d41f474beaf4",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -17569,7 +19130,7 @@
     {
       "case_id": "release-metadata-chmod-help",
       "source": "tests/cases/chmod.json",
-      "definition_sha256": "f9561feffccf9ad52baa17ed0986e1fdfbea9e5d02dc26c49cd7858a03e47866",
+      "definition_sha256": "ac6431f9f9210ad36b9093c8ee2c1c6bc80b2f2c8cfc4db820d5f9fec5bfbb8a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -17579,7 +19140,7 @@
     {
       "case_id": "release-metadata-chmod-version",
       "source": "tests/cases/chmod.json",
-      "definition_sha256": "af9a5060f7ca9744860c4ba964c75e0ba1377076638235bcff7bb89b7614cdd2",
+      "definition_sha256": "78a325c3ab85725a37a8f4038a21e28540f69900f716e5f211651bf9d9bf52e2",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -17600,6 +19161,16 @@
       "case_id": "coverage-chmod-verbose",
       "source": "tests/cases/chmod.json",
       "definition_sha256": "6a59a61f4006bae9fe4ad3cb0cde7c0d6b2d496e477ff1696135c39810b88fb4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-chmod-unknown-option",
+      "source": "tests/cases/chmod.json",
+      "definition_sha256": "976c230570eb88c6f36a086a5e9a0b271e90e6fb5ccb3718849b6d8613c8a7df",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18401,7 +19972,7 @@
     {
       "case_id": "release-metadata-mkdir-help",
       "source": "tests/cases/mkdir.json",
-      "definition_sha256": "94516af78986a712e39b6e9d89e3702e849f06b84fd624da0920c6f1ee2e0373",
+      "definition_sha256": "ff273bc5b8cdabf055c010f9643ac8e892e4a0c1487b6d8da13c1d5291739147",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18411,7 +19982,7 @@
     {
       "case_id": "release-metadata-mkdir-version",
       "source": "tests/cases/mkdir.json",
-      "definition_sha256": "0a337c8cb4b2b9052f3730207e8205ca8687bde21df50ae052efe383c8648938",
+      "definition_sha256": "609e442200030f0ef52a3c2c5794eb2a4adfc0723f53808365e80b6ae8cf64a1",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18619,6 +20190,26 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-mkdir-unknown-option",
+      "source": "tests/cases/mkdir.json",
+      "definition_sha256": "85aa2f9b5c003dd75fedf427e932c1e2a378ab272d1d5379aa19a597faac3c35",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-mkdir-missing-option-value",
+      "source": "tests/cases/mkdir.json",
+      "definition_sha256": "4aee653a8e812a1e71cc1ebf27a6301a8a03104de458af1902161790e247e147",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase3-paste-parallel",
       "source": "tests/cases/paste.json",
       "definition_sha256": "1560094967ced1648f850bd76ded62393a1f3d9f632dbc04634d055c24d995af",
@@ -18701,7 +20292,7 @@
     {
       "case_id": "release-metadata-paste-help",
       "source": "tests/cases/paste.json",
-      "definition_sha256": "37e4fd07d11df17e97c417a7e22f9794362c1237857d635f0f405cd145f98ba7",
+      "definition_sha256": "87977c91138be058ffc60591bd9494fcda621fcba5c9d76c3f2af71b189cd29f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18711,7 +20302,7 @@
     {
       "case_id": "release-metadata-paste-version",
       "source": "tests/cases/paste.json",
-      "definition_sha256": "abff58f51768d3d3e6b0b195e3d7f1dfcbcdc414bbbc8435ac9ddca371878aa4",
+      "definition_sha256": "4b98b3388a82ad2b6203c2dc58ee350e266f4ccb286511d72283c0884b2d0eb6",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -18722,6 +20313,26 @@
       "case_id": "proof-paste-serial-delimiter-cycle",
       "source": "tests/cases/paste.json",
       "definition_sha256": "fdff38e3dcedc5c0e25314a8da4a6afa69ef35ec95d657388e483cd583a84ae9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-paste-unknown-option",
+      "source": "tests/cases/paste.json",
+      "definition_sha256": "9434c1ef2303e38b3e520c24c77db61627c2a3bbd363d0b226fa4d11bb7bed7f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-paste-missing-option-value",
+      "source": "tests/cases/paste.json",
+      "definition_sha256": "30d37f91bb48bf0ff2cf28d038786d6f3d48bbdbbbb55ac201adc55073e72519",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19122,7 +20733,7 @@
     {
       "case_id": "release-metadata-rmdir-help",
       "source": "tests/cases/rmdir.json",
-      "definition_sha256": "adc40744dce70688de9a4a8137716796fb812d059007dc42d1b58dba6f37ee11",
+      "definition_sha256": "236049283c979731388e18b08b34c88cec1aa00eb27e769b8954fb22a784539e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19132,7 +20743,7 @@
     {
       "case_id": "release-metadata-rmdir-version",
       "source": "tests/cases/rmdir.json",
-      "definition_sha256": "08fbcb9ec76d491b6a098a0757d6bc3aa83515ce641d91b828b3739eb5618e81",
+      "definition_sha256": "dd8c2b2284b8193aa120f492c2b17f2bf6b37643fd00f6de64ddfaecc3586f11",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19142,7 +20753,7 @@
     {
       "case_id": "coverage-rmdir-parents-verbose",
       "source": "tests/cases/rmdir.json",
-      "definition_sha256": "589b7c9f7118fa778c8cdd2c9eeedb081b19710fd00d4eaa898f5b975feb3441",
+      "definition_sha256": "3f5b2a52b6ffd39d61221b780eedb33f52ca860a452119ee4412ad4265d79ea0",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19153,6 +20764,152 @@
       "case_id": "coverage-rmdir-parent-nonempty",
       "source": "tests/cases/rmdir.json",
       "definition_sha256": "c356c62ce086527157d0674ac684ea2ed3f4e1b35ed637e34028a73e99d9873f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-unknown-option",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "332138041cffaac73dde3dcd4ee32a845dc994c51cec18074afe7115bc158843",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignore-short",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "519407d3164a98f085daf7728c50f95e9352f5f091833c7e5e07a1276de179fc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignore-short-regular",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "77bf64d7d295896eded88f24140a7d020262208734cc732a0987c10d166fd42d",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignore-short-missing",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "91f8c647132c26232e87997c0dc91a94b7468796b202fbbefc35cf52f2c09970",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignore-short-symlink",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "c15656ed59381a29842c0fb2b3d18c9549d52ac89cc386427405b84f89cbb021",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignore-long",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "64c278e18649ca60b8025ec82aaae572f45103326fdda2e69b2b1129929ae4bb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignore-long-regular",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "e5531e42f0a28f1acd1f9a56c058ae8f6bb93ac26669dc8713f128242aa120ac",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignore-long-missing",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "3500459ae6f714190ed0861e1e961a2ac60992a1a0c6e733750952afdf2915d6",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignore-long-symlink",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "a7ce1d8f60435be16046d88892c07f524935a26a70e2b7350a0305bbd009ed01",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-ignored-failure-stops-parents",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "4de81c84de1b23c55fbba948a12967537ca1912a74631549a92ca32cf0f829f7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-windows-junction-default",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "c6b6df6a0f596adcfdb148b4c63928563c44cac6f3ee52a1ae22fe65614699a1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-windows-junction-short",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "5218f9e8faab345981b5a8e9295219c62bad81e9dabf579638bee968e8f88f9e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-windows-junction-long",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "50a5b048beddad54aa269c44e640e93e6e5638cb331b8d8c148c76143fe8bbf2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-rmdir-long-ignored-failure-stops-parents",
+      "source": "tests/cases/rmdir.json",
+      "definition_sha256": "e78dc140e3f53cb0e5d0c2453aaba477637fc6eb99f910605ad8462f2e5728e5",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19264,7 +21021,7 @@
     {
       "case_id": "release-metadata-split-help",
       "source": "tests/cases/split.json",
-      "definition_sha256": "58e5c2aa0dc2db077405fd8c042e5c59d1de5c69166cde699d6a623f036b41c6",
+      "definition_sha256": "323abc4b2cbed0d36e0bdc7cbc3b0a22bf0faba4cf021b9597b7eb0402e21ab2",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19274,7 +21031,7 @@
     {
       "case_id": "release-metadata-split-version",
       "source": "tests/cases/split.json",
-      "definition_sha256": "bf3eba2f18472276007ad67eee4f78358e84cd7e13ddb30f1a64fd40fc39c117",
+      "definition_sha256": "b96e40dfacc7ccd9cb58e42b8b70fe30b3ae8b4291be3123fe2af91c29253961",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19742,6 +21499,26 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-split-unknown-option",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "d0465d741a23e3db9b28da4742c6c75638afbb2a7b76aa74f76a80026af0b82d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-split-missing-option-value",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "5971a66b0f9c72922cbc5e5a3632fc6d6d38cac417741822b2eb449903de1ff2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "phase4-touch-create",
       "source": "tests/cases/touch.json",
       "definition_sha256": "93fab0ec8dc9bcb3bb27798630f2bbdecec64124a0de56a9a58561ba0c546241",
@@ -19776,7 +21553,7 @@
     {
       "case_id": "compat-catalog-line-358",
       "source": "tests/cases/touch.json",
-      "definition_sha256": "a9cc4d7171b630a39ad1573bf27c785ec5164beded0c52bcd6c2a538d0475f65",
+      "definition_sha256": "3da0da6a38d09807687fa0e673a8dd4ce5f5d9b06cbab5a289577af2939ccf50",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -19787,7 +21564,7 @@
     {
       "case_id": "release-metadata-touch-help",
       "source": "tests/cases/touch.json",
-      "definition_sha256": "215fafa038468e1308fcf99e2355641c2e19bcef4bf6f44e6cefce262bc87b6f",
+      "definition_sha256": "69105c513467d3ad5e129ce6450012f72a98575832cafe89f6ee9e50fdfef68c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19797,7 +21574,7 @@
     {
       "case_id": "release-metadata-touch-version",
       "source": "tests/cases/touch.json",
-      "definition_sha256": "15311232d6073c134d3996870936cba97177e5296caee429cd7b88a56dbf3383",
+      "definition_sha256": "d9c5715b58fc962085d1caf384e3ed2c4d0cc6594dff5edec40ea3a012b88b95",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19888,6 +21665,56 @@
       "case_id": "coverage-touch-create-then-boundary",
       "source": "tests/cases/touch.json",
       "definition_sha256": "748f728c3d41204c64f7e03c625165f2d07ad24c890ab8ce942243302392fd64",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-touch-unknown-option",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "b523517ddf49bf2e7ac53151b6087f701f4ae896b563c1f0f814f03dbea932be",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-touch-missing-option-value",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "3ce7011b7f3ef258dcf0cc37d14d4897717644df751671c9eb3d3735c20253df",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-touch-rejected-alias-access-time",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "fcdb05efcb98fbb7cb527890f7a7fa7207292e29ec7a63dd148845ffd7312357",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-touch-rejected-alias-modification-time",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "680240b7ace502856d6039207b6629c16e1b7541d1e562ef64c8731422b1e8be",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-touch-rejected-alias-stamp",
+      "source": "tests/cases/touch.json",
+      "definition_sha256": "789fae394d485f92bb15041830f2b69e0e52a66e62c52180cc475ede89606ae3",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20125,7 +21952,7 @@
     {
       "case_id": "p2-which-version",
       "source": "tests/cases/which.json",
-      "definition_sha256": "61f1f3db9e15f577075866da3d72c7bdf2c5760cc129cf932fd38887078e5d59",
+      "definition_sha256": "76268c9cd28ac02be5f04584998b69916d70a64a17868cd2d9a2f2cae3af247d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20276,7 +22103,7 @@
     {
       "case_id": "release-metadata-which-help",
       "source": "tests/cases/which.json",
-      "definition_sha256": "b45047b2c5c4560805810d97a72a7c04db08adb8d972d70f37729b4642cbecdf",
+      "definition_sha256": "3827be7136b3e608802caccb204b947df8e41bb38c9ca1e289bdbc55a9343441",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20680,7 +22507,7 @@
     {
       "case_id": "base32-uppercase-only",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "93e5c6eceeddfef170c4fa37a5682c8b4b7c95e94f64d8c6e44aba4ab474febd",
+      "definition_sha256": "85e3c3ec6f1c39873e7fa61ffa7a5caf7598a52bcd9edc36887790f36a57aa8c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20688,9 +22515,9 @@
       "required_work": ""
     },
     {
-      "case_id": "base32-nonzero-tail-bits-accepted",
+      "case_id": "base32-nonzero-tail-bits-rejected",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "2cc7e8c240c76e593846238fb87589419e4f33411529157ebdd380db6f9709ba",
+      "definition_sha256": "4cdb933652d43023537b17449f5bab78f77c0ff03dc2eacedee2eaffaf46eae5",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20700,7 +22527,7 @@
     {
       "case_id": "base32-prefix-before-malformed-padding",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "6326b36489d7a4cd51aa0f34a9310572ec1e6c2988554af3f021e8ce195717d8",
+      "definition_sha256": "11804d7271ddcf7fe39fe929a469ecc2b047bda3761fadd1dc4992a871b6d514",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20710,7 +22537,7 @@
     {
       "case_id": "base32-negative-wrap",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "d834ddc6a3b22075fc3a2605f39975683f444931f41644aa11069bd98ab2bf1e",
+      "definition_sha256": "2dda0bbb3f0878b292211885c59e4fe5113776f1c00fd974699e1f127c1b05c1",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20730,7 +22557,7 @@
     {
       "case_id": "release-metadata-base32-help",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "6870d0a702fbe473927a91ceadb120745976738e107664d7fa6ece99df912a37",
+      "definition_sha256": "344a61e13c3297b67d6d60a39989057b106d2583d116481c1e5fc3527dd04593",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20740,7 +22567,7 @@
     {
       "case_id": "release-metadata-base32-version",
       "source": "tests/cases/base32.json",
-      "definition_sha256": "4c42aaf573ac4bb79ae84cf8b8ab677c9633511af927793eb28b080a366fe9db",
+      "definition_sha256": "6ba8397b6da85f7ef7c1119c7f5eeb5926d9407a07ed5bc4943acaec8642b101",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20761,6 +22588,166 @@
       "case_id": "coverage-base32-wrap-positive",
       "source": "tests/cases/base32.json",
       "definition_sha256": "4dc5ebf39c32ff2a310ee2192f932b7dea0cc78824c626498b5fa24f1c751490",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-unknown-option",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "cd10e7fb5e58197ce9a1b694f1d144045dca3d5d3fa06f55ab39ec4f14d1310b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-missing-option-value",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "d204610d5717e88dc9f94be3be45eec5c08a577c8fff8b721cf4eda64d611b84",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-0",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "31948ec56ca14befb6d573de4cb0ba6d5000888f1974916a8d2338221a079959",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-1",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "a47046ae22b6975a8dc957c8e174080f9ffbda1aae1fa997ecbd9bfa0335538d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-2",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "2188bc8fb6f2732c7da54cfd19732ca7a6e296aec4bb541a9a56f93e9a4e2684",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-3",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "4bbd66db2946aabab452f84cbc9e71fbfebb04b709f14930bf2da89e7f5d9722",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-4",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "7201c166228fa8a6538da0657eeca84670e957350fe1df0179ecf4f373e8a608",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-5",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "5d48f7b2d91da64e00f767d32d889954d232399ba7b61c2cb86afc32b8d9b835",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-6",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "208bada989b54de4b319effc9434ae43e5c5017eec61db8c4de2a5483e63532b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-7",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "da98705017825959c0a426ce4369df63d87102c25fadecbf39e70129fd24e30a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-8",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "739febb62ef1e51c00dd9f28b845eec7bd63445fd5d02afaddd9965391dc5d28",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-9",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "389fd2bb5669f7330844e8125fab63be9b4ecb717d0708e472018da171e8dd34",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-10",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "20d865bdd14f9cf2544bb50a8c5d5f62e936bbe0f84b95a834300eb60fb7f519",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-11",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "7fc08b2260d37f27d1c02bc6a85e652883030954d26524ef708ef9373e7cafaf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-12",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "945ac1d1f240657f0b2d7b48e3acbd6a18ff51fba4d1c95769d47c3169535d46",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base32-decode-13",
+      "source": "tests/cases/base32.json",
+      "definition_sha256": "6c4c79de401c33275a5a8b6a6c375ebd8914ee1a29f84bceef979ce3811254ec",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20800,7 +22787,7 @@
     {
       "case_id": "compat-text-line-633",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "967aaee4d871895c77a18c6a6d2e669d8f1c977c379965bad1b7099bf144d346",
+      "definition_sha256": "0ecc7451d23fed9f979f8f190f774b2347c8645b18b0f44548e8dcd073b8c56b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20840,7 +22827,7 @@
     {
       "case_id": "compat-text-line-652",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "e117d8736a36cc30dea4e0b377e6fe4ba8b7d645ee26dbbcc99850abb544fd39",
+      "definition_sha256": "84824eb3199ff9262ff854c81e7df33526d88a1b5300fdc49a5cc883833e867e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20860,7 +22847,7 @@
     {
       "case_id": "compat-catalog-line-366",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "c54bc81bfea6fd20efff7d0f4f2df8c531d6ddc5e8ecde4d270fd42aeb3299e1",
+      "definition_sha256": "97323f678198e4bdf9ae210893d6aa8f74049e986a0e3a6f6c7674ec7b830c2d",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
@@ -20891,7 +22878,7 @@
     {
       "case_id": "release-metadata-base64-help",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "77a9fa241c944eabb2ae89efe04459bd7525a2fc4befc5b4652a15307079a3ac",
+      "definition_sha256": "728c8ef25fa5e26d7ae91aeeac61ff47717caa3a9705b97303f54e8d0054a1d5",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -20901,7 +22888,147 @@
     {
       "case_id": "release-metadata-base64-version",
       "source": "tests/cases/base64.json",
-      "definition_sha256": "7f0064c73fd562a192a3b1b5523dbce70b6a4841f3581d82528f65863714abb4",
+      "definition_sha256": "18b92598ad99fd31099754156e31402d85a9309fa6b6c949b29980bfd2559e0d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-unknown-option",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "a67e271d7bd5fb448222d2c9e363ce976ca3b01a86abd29253f473b50e96ea4e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-missing-option-value",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "db4f19b5af5acea9d5cc7016f3ad5561fc53faad29d1faebd89e0af534e0023c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-0",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "27991cf4f2f848461ea38b01d9394adfa259fae6700ee2fbfd889b26d971ae6c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-1",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "fd921f6b2716512c56af4a0128e6e35109e19100b9e3f3be67bf8bba4ccecc15",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-2",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "d6a96cbfb6a6af379430e889462e2f86b9f6ec875de854d2e417743096b580de",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-3",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "6f660f3ace878417ac433d84a009a06f9989c2f302a52d309cbb2a8be0a086bd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-4",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "31df92f61baed12440260a82fcc49af52f4fe1934c52010453b8b4a22ae9ed3a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-5",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "44e2d9467bb47a47426c1ea7768f31e0b1bf91d55c36d4257a3d17104b58a4e6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-6",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "a430bad859768fe556466d1465ba8074234904994d5028e43a3087fc44acaf09",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-7",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "81579e0b06e67543254fa68d1101908288e1a80b671c11dcee63c6cba08ff9b3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-8",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "4c4004f8c79ebe1c0635231326ee730063de3db508e987ff3777a421de73a1b5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-9",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "f0c5a0fee548172a1e892a33ca0a9754d7cf2935e6dbcaaac4324b469b37da5b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-10",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "36d05457f8a0847e21ba34195d46bb56df9970eb804544aea853a7dfe7728d0f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-base64-decode-11",
+      "source": "tests/cases/base64.json",
+      "definition_sha256": "70714b1cdfb947963a004f5e9f9e72c5b7b2060ae2e92062d20c7ebc2de73ec8",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21154,7 +23281,7 @@
     {
       "case_id": "release-metadata-csplit-help",
       "source": "tests/cases/csplit.json",
-      "definition_sha256": "3f21d430c141f335977b3e5ae1c8c362984fba95beee4a351fed5b7e831a940d",
+      "definition_sha256": "a4fb5e492fd2b6d7694f1bfaf9ac5c1cb08cf8952cbfaa8f47f7491cb0114960",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21164,7 +23291,7 @@
     {
       "case_id": "release-metadata-csplit-version",
       "source": "tests/cases/csplit.json",
-      "definition_sha256": "edf35718d70b9b3a46d83ec2241cba6c46a6b98ab3624609a52e752a85f05f26",
+      "definition_sha256": "e8e31c29a66abbf998d2cf7c0eb17bb712978c58bcc3b98bc6c0495c1692582a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21566,6 +23693,26 @@
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
+      "case_id": "f17-csplit-unknown-option",
+      "source": "tests/cases/csplit.json",
+      "definition_sha256": "9d1ab6c72a5740cf11f08cb2ace12e89ecc1df182d16dead40635199b51211a4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-csplit-missing-option-value",
+      "source": "tests/cases/csplit.json",
+      "definition_sha256": "e5c796563fb49a4d7701117e25b0579a090be0b10da0f2192bb55bdb6bc2a4e4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p0-expand-basic-tabs",
       "source": "tests/cases/expand.json",
       "definition_sha256": "717041542f55fa117b49a3f0f3e4badebe0d3959398271244f0013854523c2da",
@@ -21608,7 +23755,7 @@
     {
       "case_id": "release-metadata-expand-help",
       "source": "tests/cases/expand.json",
-      "definition_sha256": "9d52dfccd83f1e3cfd321d52773bee9103cf1e7320be458c488cf9367a69cf3d",
+      "definition_sha256": "004f6aa0ab95ef828bd6073bca292e54d3eaabea5c541feece0a51924480f2f2",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21618,7 +23765,7 @@
     {
       "case_id": "release-metadata-expand-version",
       "source": "tests/cases/expand.json",
-      "definition_sha256": "e21587e8c2a2754707b03a693688c80cfddf6150084e7c809891308ae5fe2919",
+      "definition_sha256": "821bf261cd80f51eda6efe07677ca5898034e45f5548beeec3befd457f0861df",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21789,6 +23936,26 @@
       "case_id": "o4-expand-int64-stop",
       "source": "tests/cases/expand.json",
       "definition_sha256": "1ef0c162c7252ccfbb88c8e2997e9485f34ff4c5023a4c4ca36e37d6bd61102f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-expand-unknown-option",
+      "source": "tests/cases/expand.json",
+      "definition_sha256": "70c817c44c3b5416740fda7d0cb9906a6431e4ee27c72b694acc0aace9946c5e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-expand-missing-option-value",
+      "source": "tests/cases/expand.json",
+      "definition_sha256": "3c0ec322fa733bdbf317afd80ca39a9541fb893b1c60999e497f65333959660c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22773,7 +24940,7 @@
     {
       "case_id": "release-metadata-dirname-help",
       "source": "tests/cases/dirname.json",
-      "definition_sha256": "039f135c277ddf6ba3c2b08c7b28530521c031c19d8190caa0075519a6c0cdca",
+      "definition_sha256": "19c513e27aac8f7ed45fffbdbf210c4ae4a8ab4a245e6e8907dea75434699eb2",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22783,7 +24950,7 @@
     {
       "case_id": "release-metadata-dirname-version",
       "source": "tests/cases/dirname.json",
-      "definition_sha256": "42af4ca25d35de52e9a7e8e928a68b0b1564760fcec64c9ac9fe36c6b8913fcf",
+      "definition_sha256": "63a45b0d199e68052f6d38977c2fe2f716114ca16f21df427fcc787ed0c54a1f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22794,6 +24961,16 @@
       "case_id": "proof-dirname-zero-multiple",
       "source": "tests/cases/dirname.json",
       "definition_sha256": "a547425c97e5db1dedb03f5e5071aa01116303113a281a170d6d05c7a3e0ab75",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-dirname-unknown-option",
+      "source": "tests/cases/dirname.json",
+      "definition_sha256": "ad3d7bc735bf7125897a1374da828fb217c1ab9145350b1b3e33da223f243a4e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22933,7 +25110,7 @@
     {
       "case_id": "release-metadata-hexdump-help",
       "source": "tests/cases/hexdump.json",
-      "definition_sha256": "4cf848ba504fe4deb92e4f2515f227d89e12e808a24a032f4a3abf95cc39d2b3",
+      "definition_sha256": "1a9c2bbcc303d0a329dc26a242c97eb6e277317f8c003f0aed555281b3f4ee52",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22943,7 +25120,7 @@
     {
       "case_id": "release-metadata-hexdump-version",
       "source": "tests/cases/hexdump.json",
-      "definition_sha256": "47868c3f906bd19c0d4984d1109a73c2362374aabe22068a8e4bf270033c8553",
+      "definition_sha256": "75308f0f0d372c76e4124f1395a12cf7ce5575d29c8d32c9debfa15f3c37aaf3",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -23693,7 +25870,7 @@
     {
       "case_id": "p2-strings-version",
       "source": "tests/cases/strings.json",
-      "definition_sha256": "d0741f801de365c7e99c2ec2acba6b680ec095f62a5d97775113d3975c5e294a",
+      "definition_sha256": "146679b2273df4c4b3d325bc3cb37df00611c1d0f47d908a9fad17ed381458e5",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -23883,7 +26060,7 @@
     {
       "case_id": "release-metadata-strings-help",
       "source": "tests/cases/strings.json",
-      "definition_sha256": "5b982fee87f74f3d2543d0d39fd7f68d0923cfe6cca9e4d40dfe1fa7c6ebc8df",
+      "definition_sha256": "5088547a550d1fef567caddc985d2be6b62d4eecb718c49f2c7755533e5dbcdd",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -23934,6 +26111,26 @@
       "case_id": "o7-35-strings-separator-eight-bit",
       "source": "tests/cases/strings.json",
       "definition_sha256": "76466435184fe3d15af6ed1afb0abb8690d6ddb0cdef8e87f4fb946245c0e71a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-strings-invalid-encoding",
+      "source": "tests/cases/strings.json",
+      "definition_sha256": "5a3bfd5105d5c678560a0dbdab600627a39a5620c7e46f0f91de84b7463abe4e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-strings-invalid-radix",
+      "source": "tests/cases/strings.json",
+      "definition_sha256": "936bfcbaf78a82fb60c806b81e9c217768a1e260fc64d5a8f376d51dcb958157",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24014,7 +26211,7 @@
     {
       "case_id": "release-metadata-basename-help",
       "source": "tests/cases/basename.json",
-      "definition_sha256": "73a332ed8dc9a3d825ae32b372b8aeace5064a0bce5d383479b54a60deda3760",
+      "definition_sha256": "1f9bdd34c2821bf9a04bc0a3ad0b93b41788223076a59a183a0fbc18c2b2d989",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24024,7 +26221,7 @@
     {
       "case_id": "release-metadata-basename-version",
       "source": "tests/cases/basename.json",
-      "definition_sha256": "8440c50ede52b2cd7cdd38e068bc1298cf6776efdba7f1a8a19fc10a8cfae792",
+      "definition_sha256": "c07afa48612d8da8e18e2dafd57dab70c96a1e790a3f98fedfc285b3417cead1",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24055,6 +26252,26 @@
       "case_id": "proof-basename-zero-terminator",
       "source": "tests/cases/basename.json",
       "definition_sha256": "ff9d91ad6a02d68c171903eb6f6391d8c2677c81bb05575ddfd752e1ad7a01e4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-basename-unknown-option",
+      "source": "tests/cases/basename.json",
+      "definition_sha256": "a4e4ef416ee33a77cb4ca13447ddad09aeae6dcd11f2f5cde778cc192bd47019",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-basename-missing-option-value",
+      "source": "tests/cases/basename.json",
+      "definition_sha256": "16666a4c2dd4ac0523ca7927397066407af2f211c548c377bcb087863d5bc5b9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24125,7 +26342,7 @@
     {
       "case_id": "release-metadata-realpath-help",
       "source": "tests/cases/realpath.json",
-      "definition_sha256": "bb8a6b97a168cb4beb71b9fb394cf4e278d5893f93daf1f1d87670fab33e73bd",
+      "definition_sha256": "00970d317d83db415541ab599904417c2491863bc9950e9b1023d605e1ea5925",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24135,7 +26352,7 @@
     {
       "case_id": "release-metadata-realpath-version",
       "source": "tests/cases/realpath.json",
-      "definition_sha256": "1ed940e612576fe15c27c1d53f01a00af8372f64f833476491286dc13a3aa85e",
+      "definition_sha256": "0f8c408fe5d09503fadaac025940d3eba5cac40e9760ac80845cfbcea97c221b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24413,6 +26630,26 @@
       "required_work": ""
     },
     {
+      "case_id": "f17-realpath-unknown-option",
+      "source": "tests/cases/realpath.json",
+      "definition_sha256": "1fb5cede5fa8d90da00a867802b256d0aad18b9c4f55f4eac715c3309493a548",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-realpath-missing-option-value",
+      "source": "tests/cases/realpath.json",
+      "definition_sha256": "e0fca839eb956c1cccc6ae269a1e0d84daff5d579d1e0cecc62d314b3b23aa1a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "p0-unexpand-leading",
       "source": "tests/cases/unexpand.json",
       "definition_sha256": "fc2e3b29e167738ca49d813254946bf02aabd57d21863bae14f0edece58d2459",
@@ -24465,7 +26702,7 @@
     {
       "case_id": "release-metadata-unexpand-help",
       "source": "tests/cases/unexpand.json",
-      "definition_sha256": "be25c842d9bd6e77b31ffa8b946c4ddfb8711c2d1bc01bfcf069839b94a4cb3d",
+      "definition_sha256": "ebd9c1801b1a0475b49aab86167c1bd050095161f7cdfaf0fd875b84fbe53f18",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24475,7 +26712,7 @@
     {
       "case_id": "release-metadata-unexpand-version",
       "source": "tests/cases/unexpand.json",
-      "definition_sha256": "1b8b31b81720763f25345b13b8179b8d40a241fe637584d3e0513df1209d61da",
+      "definition_sha256": "e8dcca4099d3a59d992cfd849bf8705aa33d1a40d300037a31a55bedc60a08be",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -24716,6 +26953,26 @@
       "case_id": "o4-unexpand-initial-backspace",
       "source": "tests/cases/unexpand.json",
       "definition_sha256": "d5783f47e726f16acb135388b727a25e20faf3604f6d39eca6791be2c1a31249",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-unexpand-unknown-option",
+      "source": "tests/cases/unexpand.json",
+      "definition_sha256": "b7b59c579ede9ea81809abab6768e0bdc8f3466525b6dfa475d9f49fd3adfe17",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-unexpand-missing-option-value",
+      "source": "tests/cases/unexpand.json",
+      "definition_sha256": "94ef7a09bb81d76a3522253d615b80742d98c1bc705e5fcdafc5dafdbb3e8abd",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -25156,6 +27413,36 @@
     "coverage-cp-update-short": {
       "kind": "exact"
     },
+    "f17-cp-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-cp-missing-option-value": {
+      "kind": "exact"
+    },
+    "f17-cp-reject-update-mode-bare": {
+      "kind": "exact"
+    },
+    "f17-cp-reject-update-mode-value": {
+      "kind": "exact"
+    },
+    "f17-cp-reject-backup-control-bare": {
+      "kind": "exact"
+    },
+    "f17-cp-reject-backup-control-value": {
+      "kind": "exact"
+    },
+    "f17-cp-alias-dereference-command-line": {
+      "kind": "exact"
+    },
+    "f17-cp-suffix-value-short": {
+      "kind": "exact"
+    },
+    "f17-cp-suffix-value-long": {
+      "kind": "exact"
+    },
+    "f17-cp-literal-internal-looking-operand": {
+      "kind": "exact"
+    },
     "phase3-jq-property": {
       "kind": "exact"
     },
@@ -25345,6 +27632,43 @@
     "proof-jq-exit-empty-result": {
       "kind": "exact"
     },
+    "f17-jq-alias-logs-short": {
+      "kind": "exact"
+    },
+    "f17-jq-literal-binding-looking-file": {
+      "kind": "exact"
+    },
+    "f17-jq-literal-filter-file-short": {
+      "kind": "exact"
+    },
+    "f17-jq-literal-filter-file-long": {
+      "kind": "exact"
+    },
+    "f17-jq-logs-conflict-null-input-short": {
+      "kind": "exact"
+    },
+    "f17-jq-logs-conflict-null-input-long": {
+      "kind": "exact"
+    },
+    "f17-jq-logs-conflict-raw-input-short": {
+      "kind": "exact"
+    },
+    "f17-jq-logs-conflict-raw-input-long": {
+      "kind": "exact"
+    },
+    "f17-jq-logs-all-invalid": {
+      "kind": "exact"
+    },
+    "f17-jq-logs-empty-exit": {
+      "kind": "exact"
+    },
+    "f17-jq-logs-slurp": {
+      "kind": "exact"
+    },
+    "f17-jq-logs-retains-filter-error": {
+      "kind": "diagnostic-fragment",
+      "reason": "Evaluator wording differs; status, type-error token and empty stdout are required."
+    },
     "phase4-ln-symbolic": {
       "kind": "exact"
     },
@@ -25406,6 +27730,30 @@
       "kind": "exact"
     },
     "coverage-ln-hardlink-boundary": {
+      "kind": "exact"
+    },
+    "f17-ln-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-ln-missing-option-value": {
+      "kind": "exact"
+    },
+    "f17-ln-reject-backup-control-bare": {
+      "kind": "exact"
+    },
+    "f17-ln-reject-backup-control-value": {
+      "kind": "exact"
+    },
+    "f17-ln-alias-no-dereference": {
+      "kind": "exact"
+    },
+    "f17-ln-suffix-value-short": {
+      "kind": "exact"
+    },
+    "f17-ln-suffix-value-long": {
+      "kind": "exact"
+    },
+    "f17-ln-reject-no-dereference-target": {
       "kind": "exact"
     },
     "phase3-ls-basic": {
@@ -25747,6 +28095,39 @@
         "scenario:ls-link-facets"
       ]
     },
+    "f17-ls-alias-one": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-columns": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-across": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-commas": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-sort-time": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-sort-size": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-physical": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-physical-short-order": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-physical-long-order": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-quote-name": {
+      "kind": "exact"
+    },
+    "f17-ls-alias-quote-abbreviation": {
+      "kind": "exact"
+    },
     "mv-windows-wasm-links-boundary": {
       "kind": "scenario",
       "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
@@ -25843,6 +28224,33 @@
     "coverage-mv-backup-none": {
       "kind": "exact"
     },
+    "f17-mv-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-mv-missing-option-value": {
+      "kind": "exact"
+    },
+    "f17-mv-reject-update-mode-bare": {
+      "kind": "exact"
+    },
+    "f17-mv-reject-update-mode-value": {
+      "kind": "exact"
+    },
+    "f17-mv-reject-backup-control-bare": {
+      "kind": "exact"
+    },
+    "f17-mv-reject-backup-control-value": {
+      "kind": "exact"
+    },
+    "f17-mv-suffix-value-short": {
+      "kind": "exact"
+    },
+    "f17-mv-suffix-value-long": {
+      "kind": "exact"
+    },
+    "f17-mv-literal-internal-looking-operand": {
+      "kind": "exact"
+    },
     "p9-nl-number-format": {
       "kind": "exact"
     },
@@ -25889,6 +28297,12 @@
       "kind": "exact"
     },
     "coverage-nl-delimiter": {
+      "kind": "exact"
+    },
+    "f17-nl-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-nl-missing-option-value": {
       "kind": "exact"
     },
     "od-default-partial-word": {
@@ -26097,6 +28511,42 @@
       "kind": "exact"
     },
     "coverage-od-hex": {
+      "kind": "exact"
+    },
+    "f17-od-alias-character": {
+      "kind": "exact"
+    },
+    "f17-od-alias-float": {
+      "kind": "exact"
+    },
+    "f17-od-alias-double": {
+      "kind": "exact"
+    },
+    "f17-od-alias-double-F": {
+      "kind": "exact"
+    },
+    "f17-od-alias-named": {
+      "kind": "exact"
+    },
+    "f17-od-alias-octal-byte": {
+      "kind": "exact"
+    },
+    "f17-od-alias-decimal": {
+      "kind": "exact"
+    },
+    "f17-od-alias-int": {
+      "kind": "exact"
+    },
+    "f17-od-alias-long": {
+      "kind": "exact"
+    },
+    "f17-od-alias-octal": {
+      "kind": "exact"
+    },
+    "f17-od-alias-signed": {
+      "kind": "exact"
+    },
+    "f17-od-alias-hex": {
       "kind": "exact"
     },
     "rg-boundary-dfa-budget": {
@@ -26618,6 +29068,9 @@
         "scenario:rm-root-guard"
       ]
     },
+    "f17-rm-unknown-option": {
+      "kind": "exact"
+    },
     "phase5-sh-command-positional": {
       "kind": "exact"
     },
@@ -26780,6 +29233,9 @@
     "release-metadata-tr-version": {
       "kind": "exact"
     },
+    "f17-tr-unknown-option": {
+      "kind": "exact"
+    },
     "phase3-wc-lines": {
       "kind": "exact"
     },
@@ -26913,6 +29369,12 @@
     "proof-wc-c-byte-nbsp-vector": {
       "kind": "exact"
     },
+    "f17-wc-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-wc-missing-option-value": {
+      "kind": "exact"
+    },
     "phase0-cat-double-dash": {
       "kind": "exact"
     },
@@ -26965,6 +29427,21 @@
       "kind": "exact"
     },
     "coverage-cat-nonprinting": {
+      "kind": "exact"
+    },
+    "f17-cat-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-cat-alias-unbuffered": {
+      "kind": "exact"
+    },
+    "f17-cat-help-short": {
+      "kind": "exact"
+    },
+    "f17-cat-ends-nonprinting": {
+      "kind": "exact"
+    },
+    "f17-cat-tabs-nonprinting": {
       "kind": "exact"
     },
     "p9-cmp-different": {
@@ -27088,6 +29565,12 @@
       "kind": "exact"
     },
     "o1-cut-suppress-conflict": {
+      "kind": "exact"
+    },
+    "f17-cut-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-cut-missing-option-value": {
       "kind": "exact"
     },
     "phase5-env-clean-null": {
@@ -27354,6 +29837,12 @@
     "o3-fmt-prefix-blank-leading-tagged": {
       "kind": "exact"
     },
+    "f17-fmt-numeric-prefix-short": {
+      "kind": "exact"
+    },
+    "f17-fmt-numeric-prefix-long": {
+      "kind": "exact"
+    },
     "phase3-pwd-working-directory": {
       "kind": "exact"
     },
@@ -27373,6 +29862,9 @@
       "kind": "exact"
     },
     "coverage-pwd-physical": {
+      "kind": "exact"
+    },
+    "f17-pwd-unknown-option": {
       "kind": "exact"
     },
     "p0-rev-lines": {
@@ -27409,6 +29901,9 @@
       "kind": "exact"
     },
     "proof-rev-record-boundary-8192": {
+      "kind": "exact"
+    },
+    "f17-rev-unknown-option": {
       "kind": "exact"
     },
     "s1-sed-nullable-reference-address": {
@@ -27778,6 +30273,9 @@
     "coverage-sed-in-place-short": {
       "kind": "exact"
     },
+    "f17-sed-alias-extended": {
+      "kind": "exact"
+    },
     "p0-seq-version": {
       "kind": "exact"
     },
@@ -28067,6 +30565,12 @@
     "o6-tac-emacs-unmatched-close": {
       "kind": "exact"
     },
+    "f17-tac-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-tac-missing-option-value": {
+      "kind": "exact"
+    },
     "phase0-tee-filesystem": {
       "kind": "exact"
     },
@@ -28145,6 +30649,9 @@
       "required_observers": [
         "scenario:tee-default-pipe-boundary"
       ]
+    },
+    "f17-tee-unknown-option": {
+      "kind": "exact"
     },
     "p7-xxd-include": {
       "kind": "exact"
@@ -28338,6 +30845,54 @@
     "o8-xxd-reverse-existing-output-rejection": {
       "kind": "exact"
     },
+    "f17-xxd-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-little": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-littleendian": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-ebcdic-long": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-ebcdic-word": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-group-equals": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-offset-equals": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-cols-equals": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-len-equals": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-seek-equals": {
+      "kind": "exact"
+    },
+    "f17-xxd-alias-name-equals": {
+      "kind": "exact"
+    },
+    "f17-xxd-help-short": {
+      "kind": "exact"
+    },
+    "f17-xxd-literal-option-looking-file": {
+      "kind": "exact"
+    },
+    "f17-xxd-literal-name-short": {
+      "kind": "exact"
+    },
+    "f17-xxd-literal-name-long": {
+      "kind": "exact"
+    },
+    "f17-xxd-invalid-short-option": {
+      "kind": "exact"
+    },
     "release-metadata-yes-help": {
       "kind": "exact"
     },
@@ -28418,6 +30973,21 @@
       "kind": "exact"
     },
     "o1-comm-pairable-buried-disorder": {
+      "kind": "exact"
+    },
+    "f17-comm-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-comm-help-short": {
+      "kind": "exact"
+    },
+    "f17-comm-suppress-1": {
+      "kind": "exact"
+    },
+    "f17-comm-suppress-2": {
+      "kind": "exact"
+    },
+    "f17-comm-suppress-3": {
       "kind": "exact"
     },
     "transfer-curl-cookie-line-injection": {
@@ -28657,6 +31227,15 @@
     "release-metadata-date-help": {
       "kind": "exact"
     },
+    "f17-date-literal-date-short": {
+      "kind": "exact"
+    },
+    "f17-date-literal-date-long": {
+      "kind": "exact"
+    },
+    "f17-date-iso-abbreviation": {
+      "kind": "exact"
+    },
     "p1-diff-normal": {
       "kind": "exact"
     },
@@ -28826,6 +31405,21 @@
     "coverage-diff-context-lines": {
       "kind": "exact"
     },
+    "f17-diff-reject-unified-lines-bare": {
+      "kind": "exact"
+    },
+    "f17-diff-reject-unified-lines-value": {
+      "kind": "exact"
+    },
+    "f17-diff-reject-context-lines-bare": {
+      "kind": "exact"
+    },
+    "f17-diff-reject-context-lines-value": {
+      "kind": "exact"
+    },
+    "f17-diff-label-value-internal-looking": {
+      "kind": "exact"
+    },
     "phase3-echo-basic": {
       "kind": "exact"
     },
@@ -28854,6 +31448,42 @@
       "kind": "exact"
     },
     "proof-echo-disable-escapes-precedence": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-empty-0": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-set-0": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-empty-1": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-set-1": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-empty-2": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-set-2": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-empty-3": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-set-3": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-empty-4": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-set-4": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-metadata-help": {
+      "kind": "exact"
+    },
+    "f17-echo-posix-metadata-version": {
       "kind": "exact"
     },
     "p1-expr-precedence": {
@@ -29261,6 +31891,12 @@
     "proof-head-verbose-single-file": {
       "kind": "exact"
     },
+    "f17-head-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-head-missing-option-value": {
+      "kind": "exact"
+    },
     "p9-join-check-order": {
       "kind": "exact"
     },
@@ -29346,6 +31982,36 @@
       "kind": "exact"
     },
     "o1-join-explicit-fields-header-auto": {
+      "kind": "exact"
+    },
+    "f17-join-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-join-missing-option-value": {
+      "kind": "exact"
+    },
+    "f17-join-alias-field1": {
+      "kind": "exact"
+    },
+    "f17-join-alias-field2": {
+      "kind": "exact"
+    },
+    "f17-join-alias-separator": {
+      "kind": "exact"
+    },
+    "f17-join-alias-after": {
+      "kind": "exact"
+    },
+    "f17-join-alias-only": {
+      "kind": "exact"
+    },
+    "f17-join-alias-empty": {
+      "kind": "exact"
+    },
+    "f17-join-alias-output": {
+      "kind": "exact"
+    },
+    "f17-join-help-short": {
       "kind": "exact"
     },
     "phase5-make-include-cli-variable": {
@@ -29708,6 +32374,15 @@
         "scenario:sort-live-spill"
       ]
     },
+    "f17-sort-reject-check-quiet-bare": {
+      "kind": "exact"
+    },
+    "f17-sort-reject-check-quiet-value": {
+      "kind": "exact"
+    },
+    "f17-sort-output-value-internal-looking": {
+      "kind": "exact"
+    },
     "phase3-tail-line-count": {
       "kind": "exact"
     },
@@ -29790,6 +32465,12 @@
       "required_observers": [
         "scenario:tail-follow-interval"
       ]
+    },
+    "f17-tail-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-tail-missing-option-value": {
+      "kind": "exact"
     },
     "phase3-test-string": {
       "kind": "exact"
@@ -30235,6 +32916,45 @@
     "tree-links-windows-junction-trailing-separator": {
       "kind": "exact"
     },
+    "f17-tree-alias-all": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-dirs-only": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-full-path": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-level": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-json": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-html": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-title": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-pattern": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-ignore": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-size": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-human-readable": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-color": {
+      "kind": "exact"
+    },
+    "f17-tree-alias-no-color": {
+      "kind": "exact"
+    },
     "p0-true-version": {
       "kind": "exact"
     },
@@ -30326,6 +33046,12 @@
       "kind": "exact"
     },
     "coverage-uniq-unique": {
+      "kind": "exact"
+    },
+    "f17-uniq-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-uniq-missing-option-value": {
       "kind": "exact"
     },
     "transfer-wget-chunk-initial-eof": {
@@ -30515,6 +33241,9 @@
       "kind": "exact"
     },
     "coverage-chmod-verbose": {
+      "kind": "exact"
+    },
+    "f17-chmod-unknown-option": {
       "kind": "exact"
     },
     "p0-cksum-stdin": {
@@ -30822,6 +33551,12 @@
     "quality-mkdir-sticky-only-darwin": {
       "kind": "exact"
     },
+    "f17-mkdir-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-mkdir-missing-option-value": {
+      "kind": "exact"
+    },
     "phase3-paste-parallel": {
       "kind": "exact"
     },
@@ -30853,6 +33588,12 @@
       "kind": "exact"
     },
     "proof-paste-serial-delimiter-cycle": {
+      "kind": "exact"
+    },
+    "f17-paste-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-paste-missing-option-value": {
       "kind": "exact"
     },
     "patch-unified-dry-run": {
@@ -30983,6 +33724,54 @@
       "kind": "exact"
     },
     "coverage-rmdir-parent-nonempty": {
+      "kind": "exact"
+    },
+    "f17-rmdir-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-rmdir-ignore-short": {
+      "kind": "exact"
+    },
+    "f17-rmdir-ignore-short-regular": {
+      "kind": "diagnostic-fragment",
+      "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+    },
+    "f17-rmdir-ignore-short-missing": {
+      "kind": "diagnostic-fragment",
+      "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+    },
+    "f17-rmdir-ignore-short-symlink": {
+      "kind": "diagnostic-fragment",
+      "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+    },
+    "f17-rmdir-ignore-long": {
+      "kind": "exact"
+    },
+    "f17-rmdir-ignore-long-regular": {
+      "kind": "diagnostic-fragment",
+      "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+    },
+    "f17-rmdir-ignore-long-missing": {
+      "kind": "diagnostic-fragment",
+      "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+    },
+    "f17-rmdir-ignore-long-symlink": {
+      "kind": "diagnostic-fragment",
+      "reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target."
+    },
+    "f17-rmdir-ignored-failure-stops-parents": {
+      "kind": "exact"
+    },
+    "f17-rmdir-windows-junction-default": {
+      "kind": "exact"
+    },
+    "f17-rmdir-windows-junction-short": {
+      "kind": "exact"
+    },
+    "f17-rmdir-windows-junction-long": {
+      "kind": "exact"
+    },
+    "f17-rmdir-long-ignored-failure-stops-parents": {
       "kind": "exact"
     },
     "phase3-sleep-zero": {
@@ -31161,6 +33950,12 @@
     "o5-hex-start-letter-safe-arithmetic": {
       "kind": "exact"
     },
+    "f17-split-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-split-missing-option-value": {
+      "kind": "exact"
+    },
     "phase4-touch-create": {
       "kind": "exact"
     },
@@ -31207,6 +34002,21 @@
       "kind": "exact"
     },
     "coverage-touch-create-then-boundary": {
+      "kind": "exact"
+    },
+    "f17-touch-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-touch-missing-option-value": {
+      "kind": "exact"
+    },
+    "f17-touch-rejected-alias-access-time": {
+      "kind": "exact"
+    },
+    "f17-touch-rejected-alias-modification-time": {
+      "kind": "exact"
+    },
+    "f17-touch-rejected-alias-stamp": {
       "kind": "exact"
     },
     "typst-version": {
@@ -31456,7 +34266,7 @@
     "base32-uppercase-only": {
       "kind": "exact"
     },
-    "base32-nonzero-tail-bits-accepted": {
+    "base32-nonzero-tail-bits-rejected": {
       "kind": "exact"
     },
     "base32-prefix-before-malformed-padding": {
@@ -31478,6 +34288,54 @@
       "kind": "exact"
     },
     "coverage-base32-wrap-positive": {
+      "kind": "exact"
+    },
+    "f17-base32-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-base32-missing-option-value": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-0": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-1": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-2": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-3": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-4": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-5": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-6": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-7": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-8": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-9": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-10": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-11": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-12": {
+      "kind": "exact"
+    },
+    "f17-base32-decode-13": {
       "kind": "exact"
     },
     "phase0-base64-stdin": {
@@ -31521,6 +34379,48 @@
       "kind": "exact"
     },
     "release-metadata-base64-version": {
+      "kind": "exact"
+    },
+    "f17-base64-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-base64-missing-option-value": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-0": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-1": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-2": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-3": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-4": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-5": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-6": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-7": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-8": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-9": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-10": {
+      "kind": "exact"
+    },
+    "f17-base64-decode-11": {
       "kind": "exact"
     },
     "p2-column-table": {
@@ -31725,6 +34625,12 @@
         "scenario:csplit-fragment-retention"
       ]
     },
+    "f17-csplit-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-csplit-missing-option-value": {
+      "kind": "exact"
+    },
     "p0-expand-basic-tabs": {
       "kind": "exact"
     },
@@ -31792,6 +34698,12 @@
       "kind": "exact"
     },
     "o4-expand-int64-stop": {
+      "kind": "exact"
+    },
+    "f17-expand-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-expand-missing-option-value": {
       "kind": "exact"
     },
     "p1-gunzip-concatenated": {
@@ -32104,6 +35016,9 @@
       "kind": "exact"
     },
     "proof-dirname-zero-multiple": {
+      "kind": "exact"
+    },
+    "f17-dirname-unknown-option": {
       "kind": "exact"
     },
     "hexdump-one-byte-hex": {
@@ -32448,6 +35363,12 @@
     "o7-35-strings-separator-eight-bit": {
       "kind": "exact"
     },
+    "f17-strings-invalid-encoding": {
+      "kind": "exact"
+    },
+    "f17-strings-invalid-radix": {
+      "kind": "exact"
+    },
     "compat-catalog-line-277": {
       "kind": "dynamic",
       "reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact.",
@@ -32490,6 +35411,12 @@
       "kind": "exact"
     },
     "proof-basename-zero-terminator": {
+      "kind": "exact"
+    },
+    "f17-basename-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-basename-missing-option-value": {
       "kind": "exact"
     },
     "phase3-printenv-selected": {
@@ -32598,6 +35525,12 @@
     "coverage-realpath-zero": {
       "kind": "exact"
     },
+    "f17-realpath-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-realpath-missing-option-value": {
+      "kind": "exact"
+    },
     "p0-unexpand-leading": {
       "kind": "exact"
     },
@@ -32689,6 +35622,12 @@
       "kind": "exact"
     },
     "o4-unexpand-initial-backspace": {
+      "kind": "exact"
+    },
+    "f17-unexpand-unknown-option": {
+      "kind": "exact"
+    },
+    "f17-unexpand-missing-option-value": {
       "kind": "exact"
     },
     "phase3-sha256sum-stdin": {

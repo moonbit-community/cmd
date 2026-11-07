@@ -225,9 +225,10 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "repair-fs-ln-no-dereference"
+        "repair-fs-ln-no-dereference",
+        "f17-ln-alias-no-dereference"
       ],
-      "activation": "-sfn replaces a destination symlink itself with target source and requires directory/source absent; it therefore distinguishes replacing the link from writing inside its referent."
+      "activation": "-sfn and the actual public --no-dereference spelling replace a destination symlink itself with target source and require directory/source absent; they distinguish replacing the link from writing inside its referent. no-dereference-target is only a stable catalog semantic identifier, not a supported long option."
     },
     {
       "command": "realpath",
@@ -2503,7 +2504,8 @@
       "claim": "parents",
       "case_ids": [
         "coverage-rmdir-parents-verbose",
-        "coverage-rmdir-parent-nonempty"
+        "coverage-rmdir-parent-nonempty",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
       "kind": "supported-option",
       "activation": "-p removes each disposable empty ancestor in child-first order, retains a nonempty ancestor and its sibling sentinel with explicit suppression, and never removes the fixture root.",
@@ -2513,10 +2515,11 @@
       "command": "rmdir",
       "claim": "verbose",
       "case_ids": [
-        "coverage-rmdir-parents-verbose"
+        "coverage-rmdir-parents-verbose",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
       "kind": "supported-option",
-      "activation": "-v reports the exact three removed directory paths in child-first order and the top directory must actually be absent.",
+      "activation": "-v reports each removal attempt before it occurs. The successful nested case requires all three directory paths absent; the ignored-failure case requires only the first attempt and retains the nonempty child and ancestors, proving parent traversal stops.",
       "disposition": "reviewed-definition"
     },
     {
@@ -2524,10 +2527,13 @@
       "claim": "ignore-fail-on-non-empty",
       "case_ids": [
         "phase4-rmdir-ignore-nonempty",
-        "coverage-rmdir-parent-nonempty"
+        "coverage-rmdir-parent-nonempty",
+        "f17-rmdir-ignore-short",
+        "f17-rmdir-ignore-long",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
       "kind": "supported-option",
-      "activation": "Explicit suppression returns 0 with empty streams for a nonempty operand or parent, retaining the child bytes while still removing the empty descendant.",
+      "activation": "Both project -I and public --ignore-fail-on-non-empty return0 for an actual nonempty directory while retaining child bytes. Suppression stops parent traversal. These finite bindings require exact streams/status and filesystem effects. Separate f17 regular-file, missing-path and POSIX symlink controls require status1, empty stdout, an operand-specific diagnostic and preserved files; their host-dependent diagnostic substrings do not qualify as exact diagnostic coverage. Definitions are not execution evidence.",
       "disposition": "reviewed-definition"
     },
     {

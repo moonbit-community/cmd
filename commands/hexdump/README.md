@@ -1,9 +1,12 @@
 # hexdump
 
+Development candidate: `cli/hexdump@0.1.4`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Display binary data for MoonX.
 
 ```sh
-moonx cli/hexdump@0.1.3 [OPTION]... [FILE]...
+moonx cli/hexdump@0.1.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -29,6 +32,13 @@ Concatenate files or stdin and display numeric/character formats. Supports custo
 | `-v, --no-squeezing` | display duplicate blocks |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project extension: forward -s/--skip on stdin discards bytes without seeking.
+The util-linux 2.40 pipe-input seek rejection is not claimed compatible.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
 ## Limitations
 
 - Numeric words use little-endian byte order. Locale-aware character rendering is unsupported.
@@ -37,8 +47,8 @@ Concatenate files or stdin and display numeric/character formats. Supports custo
 ## Examples
 
 ```sh
-moonx cli/hexdump@0.1.3 -C data.bin
-moonx cli/hexdump@0.1.3 -s16 -n32 -v data.bin
+moonx cli/hexdump@0.1.4 -C data.bin
+moonx cli/hexdump@0.1.4 -s16 -n32 -v data.bin
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

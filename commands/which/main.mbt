@@ -73,7 +73,7 @@ async fn candidates(name : String) -> Array[String] {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("which 0.1.4\n")
+    @stdio.stdout.write("which 0.1.5\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -90,7 +90,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: which [-as] NAME...\nFind executable regular files in PATH. Windows uses PATHEXT.\n  -a, --all     print all matches\n  -s, --silent  return status without output\n      --help    display this help and exit\n      --version display version and exit\n",
+      "Usage: which [-as] NAME...\nFind executable regular files in PATH. Windows uses PATHEXT.\n  -a, --all     print all matches\n  -s, --silent  return status without output\n      --help    display this help and exit\n      --version display version and exit\n-s/--silent follows this project's explicit quiet-status profile; it does not\nclaim the option surface of every GNU/BSD which implementation.\n",
     )
     return
   }

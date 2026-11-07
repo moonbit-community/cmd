@@ -15,6 +15,21 @@ observers, private APIs and FFI do not expand the product's capabilities.
 
 ## Mutation and identity boundaries
 
+Rmdir's ignore-nonempty policy classifies a failed removal, rather than reading
+a directory first and reporting simulated success. Typed OSError values identify
+ENOTEMPTY (Linux 39, macOS 66, Windows 145) and EEXIST. GNU's additional
+permission/busy/read-only cases are ignored only after observing a real,
+non-followed directory with entries. Regular files, missing paths and directory
+symlinks retain failure on POSIX. Windows follows the actual public removal
+result: [RemoveDirectoryW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw)
+can remove a junction itself while preserving its nonempty referent. The Windows
+junction cases assert that distinct platform contract. Parent removal stops on the first failed/ignored child,
+and verbose messages precede each attempted syscall. The local removal tests
+and tests/cases/rmdir.json assert both status and retained paths; POSIX link
+fixtures are platform-scoped. These pathname observations do not eliminate
+concurrent replacement races. Stronger guarantees require public handle-relative
+directory operations supported on Wasm, plus race regressions.
+
 | Operation | Supported behavior and deliberate limit | Condition for expansion |
 | --- | --- | --- |
 | cp | New destinations with --no-preserve=mode follow umask. Default preservation and existing-file overwrite refuse; no-clobber/update skips remain. | Public mode, identity and handle operations; alias and partial-effect tests |

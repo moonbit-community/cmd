@@ -29,6 +29,11 @@ fn help_message() -> String {
     #|  -z           End records with NUL instead of newline.
     #|
     #|Use '-' as a file name to read stdin.
+    #|
+    #|Project aliases: --field1 = -1; --field2 = -2; --separator = -t.
+    #|--after = -a; --only = -v; --empty = -e; --output = -o; -h = --help.
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
   message
 }
 
@@ -524,7 +529,7 @@ async fn merge_readers(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("join 0.2.5\n")
+    @stdio.stdout.write("join 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
@@ -545,7 +550,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("join: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -558,13 +563,13 @@ async fn main {
       let number = @string.parse_int(value) catch {
         _ => {
           @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-          @sys.exit(2)
+          @sys.exit(1)
           return
         }
       }
       if number < 1 {
         @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-        @sys.exit(2)
+        @sys.exit(1)
         return
       }
       number
@@ -576,13 +581,13 @@ async fn main {
       let number = @string.parse_int(value) catch {
         _ => {
           @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-          @sys.exit(2)
+          @sys.exit(1)
           return
         }
       }
       if number < 1 {
         @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-        @sys.exit(2)
+        @sys.exit(1)
         return
       }
       number
@@ -596,7 +601,7 @@ async fn main {
         @stdio.stderr.write(
           "join: the separator must be a single byte in C locale\n",
         )
-        @sys.exit(2)
+        @sys.exit(1)
         return
       }
       Some(encoded[0])
@@ -606,14 +611,14 @@ async fn main {
   let all = parse_file_numbers(parsed, "after") catch {
     err => {
       @stdio.stderr.write("\{err}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   let only = parse_file_numbers(parsed, "only") catch {
     err => {
       @stdio.stderr.write("\{err}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -665,12 +670,12 @@ async fn main {
     @stdio.stderr.write(
       "join: expected exactly two files\n\n" + help_message() + "\n",
     )
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   if files[0] == "-" && files[1] == "-" {
     @stdio.stderr.write("join: both inputs cannot be standard input\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   try {

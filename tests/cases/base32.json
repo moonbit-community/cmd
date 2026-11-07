@@ -44,10 +44,11 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "base32: invalid input character: 'm'\n"
+      "expected_stderr_text": "base32: invalid input\n",
+      "oracle": true
     },
     {
-      "id": "base32-nonzero-tail-bits-accepted",
+      "id": "base32-nonzero-tail-bits-rejected",
       "command": "base32",
       "args": [
         "-d"
@@ -55,11 +56,16 @@
       "stdin_text": "MZ======",
       "files": [],
       "environment": {},
-      "expected_status": 0,
+      "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "f",
-      "expected_stderr_text": ""
+      "expected_stderr_text": "base32: invalid input\n",
+      "aliases": [
+        "base32-nonzero-tail-bits-accepted"
+      ],
+      "oracle": true,
+      "source_version": "Issue #22 corrects an erroneous current expectation: GNU9.11 rejects noncanonical MZ====== after committing f. Frozen published expectations remain unchanged."
     },
     {
       "id": "base32-prefix-before-malformed-padding",
@@ -74,7 +80,8 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "f",
-      "expected_stderr_text": "base32: invalid padding\n"
+      "expected_stderr_text": "base32: invalid input\n",
+      "oracle": true
     },
     {
       "id": "base32-negative-wrap",
@@ -85,11 +92,12 @@
       "stdin_text": "foo",
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "base32: invalid wrap size: '-1'\n"
+      "expected_stderr_text": "base32: invalid wrap size: '-1'\n",
+      "source_version": "Issue #22: ordinary usage failure status corrected to the fixed command baseline; capability refusals remain separate."
     },
     {
       "id": "repair-alias-base32-decode",
@@ -122,8 +130,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/base32@0.1.5 metadata contract",
-      "expected_stdout_text": "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nEncoding emits complete groups before EOF; later input errors may leave partial output.\n",
+      "source_version": "workspace cli/base32@0.1.6 metadata contract",
+      "expected_stdout_text": "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nEncoding emits complete groups before EOF; later input errors may leave partial output.\nDecoding checks canonical tail bits and preserves complete-block failure prefixes.\nMissing final padding is accepted; incomplete explicit padding rejects (GNU 9.11).\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -141,8 +149,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/base32@0.1.5 metadata contract",
-      "expected_stdout_text": "base32 0.1.5\n",
+      "source_version": "workspace cli/base32@0.1.6 metadata contract",
+      "expected_stdout_text": "base32 0.1.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -180,6 +188,337 @@
       "expected_status": 0,
       "comparison": "contract",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "f17-base32-unknown-option",
+      "command": "base32",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "base32: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-base32-missing-option-value",
+      "command": "base32",
+      "args": [
+        "--wrap"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "base32: option requires a value: 'wrap'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
+    },
+    {
+      "id": "f17-base32-decode-0",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MFRGG",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "abc",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-1",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MFRGG===",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "abc",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-2",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MFRGGZDFMFRGG",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "abcdeabc",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-3",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MFRGGZDF=",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "abcde",
+      "expected_stderr_text": "base32: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-4",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "IE",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "A",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-5",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "IFBA",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "AB",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-6",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "IFBEG",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "ABC",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-7",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "IFBA====\nIE",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "ABA",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-8",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "IFBA====\nIFBA====",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "ABAB",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-9",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MY=",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "base32: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-10",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MFRGGZDFMY=",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "abcde",
+      "expected_stderr_text": "base32: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-11",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MZXR====",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "fo",
+      "expected_stderr_text": "base32: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-12",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MZXW7===",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "foo",
+      "expected_stderr_text": "base32: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base32-decode-13",
+      "command": "base32",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MZXW6YR=",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "foob",
+      "expected_stderr_text": "base32: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
     }
   ]
 }

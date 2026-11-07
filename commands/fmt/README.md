@@ -1,9 +1,12 @@
 # fmt
 
+Development candidate: `cli/fmt@0.1.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Reformat text paragraphs for MoonX.
 
 ```sh
-moonx cli/fmt@0.1.4 [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]
+moonx cli/fmt@0.1.5 [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]
 ```
 
 ## Supported scope
@@ -23,6 +26,12 @@ Read files or stdin, preserve indentation and separate paragraphs at blank lines
 | `-p, --prefix=PREFIX` | Reformat matching prefixed lines only. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Option values and operands after -- remain literal during alias normalization.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Uses C-byte columns, not Unicode display widths. A long word can exceed the selected width.
@@ -31,8 +40,8 @@ Read files or stdin, preserve indentation and separate paragraphs at blank lines
 ## Examples
 
 ```sh
-moonx cli/fmt@0.1.4 -w 60 notes.txt
-moonx cli/fmt@0.1.4 -s -w 40 notes.txt
+moonx cli/fmt@0.1.5 -w 60 notes.txt
+moonx cli/fmt@0.1.5 -s -w 40 notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

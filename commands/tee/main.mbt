@@ -194,7 +194,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("tee: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -205,12 +205,12 @@ async fn main {
       "  -p                       ignore broken output pipes; continue other sinks\n" +
       "      --output-error[=MODE] warn, warn-nopipe, exit, exit-nopipe\n" +
       "      --help               display this help and exit\n" +
-      "      --version            display version and exit\n",
+      "      --version            display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("tee 0.2.3\n")
+    @stdio.stdout.write("tee 0.2.4\n")
     return
   }
   let mut mode = Traditional

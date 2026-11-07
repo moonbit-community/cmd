@@ -1,9 +1,12 @@
 # strings
 
+Development candidate: `cli/strings@0.1.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Extract printable byte sequences for MoonX.
 
 ```sh
-moonx cli/strings@0.1.4 [OPTION]... [FILE]...
+moonx cli/strings@0.1.5 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -23,6 +26,18 @@ Scan complete files or stdin for runs of at least four printable bytes by defaul
 | `-s, --output-separator=STR` | separate accepted strings with STR |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project alias: --octal selects -o; it is not a binutils long option.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
+## Argument and exit-status contract
+
+Unknown encoding selectors exit 1; recognized unsupported wide encodings explicitly exit 2.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Wide encodings, object-section selection, locale decoding and GNU Unicode rendering modes are unsupported.
@@ -30,8 +45,8 @@ Scan complete files or stdin for runs of at least four printable bytes by defaul
 ## Examples
 
 ```sh
-moonx cli/strings@0.1.4 -n 6 -t d data.bin
-printf 'hello\000world\n' | moonx cli/strings@0.1.4
+moonx cli/strings@0.1.5 -n 6 -t d data.bin
+printf 'hello\000world\n' | moonx cli/strings@0.1.5
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)
