@@ -1,17 +1,23 @@
 # split
 
-Development candidate: `cli/split@0.1.7`, using `cli/core@0.9.2`. Publication is separate;
-[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+Development candidate: `cli/split@0.1.8`, using `cli/core@0.9.3`.
+Publication is pending. Earlier exact-coordinate acceptance is recorded in the
+[changelog](../../CHANGELOG.md#2026-11-08).
 
 Split input into pieces for MoonX.
 
 ```sh
-moonx cli/split@0.1.7 [OPTION]... [FILE [PREFIX]]
+moonx cli/split@0.1.8 [OPTION]... [FILE [PREFIX]]
 ```
 
 ## Supported scope
 
 Split files or stdin by records, bytes, bounded line bytes or N-way partitions. Default is 1000 records per piece with names xaa, xab, etc.
+
+Filter `test -s` follows final targets and queries metadata without opening them.
+Missing/cyclic targets are false; unavailable sizes such as macOS directories
+produce explicit shell errors. Filters retain responsibility for handling errors
+and for their explicit output files.
 
 Filter sessions inherit the shared shell's arithmetic assignments, backticks,
 expanded here-documents, standard stream aliases, loop control and finite
@@ -48,8 +54,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/split@0.1.7 -l 100 input.txt part-
-moonx cli/split@0.1.7 -b 64K -d input.bin chunk-
+moonx cli/split@0.1.8 -l 100 input.txt part-
+moonx cli/split@0.1.8 -b 64K -d input.bin chunk-
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

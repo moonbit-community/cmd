@@ -1571,7 +1571,8 @@
         "f31-make-final-prerequisite-shell-pipeline",
         "f31-make-final-prerequisite-shell-quoted-equal",
         "f31-make-final-target-shell-colon",
-        "f31-make-final-inline-expanded-equal"
+        "f31-make-final-inline-expanded-equal",
+        "f31-make-test-size-targets"
       ]
     },
     {
@@ -2081,7 +2082,15 @@
         "f31-sh-boundary-test-owner",
         "f31-sh-test-raw-link-paths",
         "f31-sh-printf-linux-nan-signs",
-        "f31-sh-test-windows-parent-path"
+        "f31-sh-test-windows-parent-path",
+        "f31-sh-test-size-targets",
+        "f31-sh-test-size-raw-components",
+        "f31-sh-test-size-macos-directory",
+        "f31-sh-test-size-macos-link",
+        "f31-sh-test-size-macos-expression-recovery",
+        "f31-sh-test-size-linux-directories",
+        "f31-sh-test-size-platform",
+        "f31-sh-test-size-posix"
       ]
     },
     {
@@ -3392,7 +3401,8 @@
         "release-metadata-split-version",
         "f17-split-unknown-option",
         "f17-split-missing-option-value",
-        "f31-split-shared-shell-filter"
+        "f31-split-shared-shell-filter",
+        "f31-split-test-size-targets"
       ]
     },
     {

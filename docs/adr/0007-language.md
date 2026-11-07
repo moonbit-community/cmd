@@ -39,8 +39,20 @@ Builtin printf uses 64-bit integer parsing, binary64 formats and the fixed Linux
 Dash 8192-byte output profile. Allocation state survives builtin output but empty
 conversions do not allocate. Large conversions flush bounded storage; submitted
 failed writes are not replayed. Width/precision is bounded at 1,000,000. Test uses
-finite argument-count grammar, checked decimal integers and raw paths; only typed
-OS errors become false predicates, while cancellation and other errors propagate.
+finite argument-count grammar, checked decimal integers and raw paths. Ordinary
+typed lookup errors become false predicates; cancellation and other errors
+propagate. File-size tests validate the raw lookup, resolve final links, then
+query the target's metadata without opening or reading its contents. The raw
+lookup matters because canonicalization alone can remove a non-directory parent
+component. The separate queries do not establish an atomic identity snapshot.
+On POSIX, require a Directory result for an operand ending in a slash: macOS 15
+can otherwise report a regular symlink target for that spelling. Directory and
+directory-link operands with trailing slashes still use their actual metadata.
+An actual ENOTSUP size result becomes an explicit status-2 capability error,
+including within negation and compound test expressions. Do not fabricate zero
+or uniformly reject directories: Linux exposes directory sizes, whereas the
+current macOS API rejects them. Keep this boundary until the released public
+API returns real sizes, with directory and directory-link regressions.
 Forward raw paths to the host without a project-level lexical simplification.
 Windows retains its [documented path normalization](https://learn.microsoft.com/dotnet/standard/io/file-path-formats#path-normalization),
 for ordinary paths, including a missing component followed by `..`; device paths

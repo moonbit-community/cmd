@@ -338,6 +338,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     ),
     // Shared sessions implement arithmetic side effects, backticks, expanded
     // heredocs, loop levels, printf/test and actual stdout/stderr aliases.
+    // File-size tests follow target metadata and reject unavailable sizes.
     // Descriptor import/closure and terminal job control remain boundaries.
     contract(
       "sh",

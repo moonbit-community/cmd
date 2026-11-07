@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "candidate": true,
-  "core_version": "0.9.2",
+  "core_version": "0.9.3",
   "base_manifest": "../cases/manifest.json",
   "commands": [
     {
@@ -509,7 +509,7 @@
     {
       "name": "make",
       "package_name": "cli/make",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "published": false,
       "compare_profile": "make",
       "supported_options": [
@@ -781,7 +781,7 @@
     {
       "name": "sh",
       "package_name": "cli/sh",
-      "version": "0.2.6",
+      "version": "0.2.7",
       "published": false,
       "compare_profile": "posix",
       "supported_options": [
@@ -883,7 +883,7 @@
     {
       "name": "split",
       "package_name": "cli/split",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -2202,6 +2202,7 @@
     "f31-make-computed-name",
     "f31-make-gnu-jobserver",
     "f31-sh-test-precedence",
+    "f31-sh-test-size-posix",
     "fold-missing-then-good",
     "g1-zcat-levels-ignored",
     "mkdir-parent-leaf-mode",
@@ -2476,6 +2477,7 @@
     "f31-make-long-jobs-value",
     "f31-sh-audit-case-nested",
     "f31-sh-heredoc-expansion",
+    "f31-sh-test-size-targets",
     "fold-binary-byte-profile",
     "g1-gunzip-levels-ignored",
     "g2-gzip-named-crc-prefix",
@@ -2634,6 +2636,7 @@
     "f31-sh-audit-case-heredoc",
     "f31-sh-test-lone-negation",
     "f31-sh-test-nbsp-rejected",
+    "f31-sh-test-size-platform",
     "f31-sh-test-two-negations",
     "f31-sh-test-unicode-order",
     "g1-gzip-levels-decompress",
@@ -2753,6 +2756,7 @@
     "f17-xxd-alias-littleendian",
     "f17-xxd-literal-name-short",
     "f31-make-recipe-leading-at",
+    "f31-make-test-size-targets",
     "f31-sh-assignment-compound",
     "f31-sh-audit-case-comments",
     "f31-sh-boundary-test-owner",
@@ -2903,7 +2907,9 @@
     "f31-sh-printf-prefix-number",
     "f31-sh-substitution-comment",
     "f31-sh-test-missing-rhs-and",
+    "f31-sh-test-size-macos-link",
     "f31-sh-test-three-negations",
+    "f31-split-test-size-targets",
     "hexdump-skip-stdin-boundary",
     "network-transfer-boundaries",
     "o1-comm-order-nocheck-check",
@@ -3405,6 +3411,7 @@
     "f31-sh-loop-count-reject-prefix",
     "f31-sh-temporary-prefix-effects",
     "f31-sh-test-and-evaluates-error",
+    "f31-sh-test-size-raw-components",
     "f31-sh-test-windows-parent-path",
     "o1-cut-complement-output-ranges",
     "o1-cut-input-delimiter-conflict",
@@ -3496,6 +3503,7 @@
     "f31-sh-test-double-negated-unary",
     "f31-sh-test-hexadecimal-rejected",
     "f31-sh-test-missing-rhs-in-group",
+    "f31-sh-test-size-macos-directory",
     "f31-sh-test-underscores-rejected",
     "o1-comm-pairable-buried-disorder",
     "o1-cut-overlapping-output-ranges",
@@ -3626,6 +3634,7 @@
     "f31-sh-heredoc-continued-body-tabs",
     "f31-sh-increment-project-extension",
     "f31-sh-test-binary-prefix-rejected",
+    "f31-sh-test-size-linux-directories",
     "f31-sh-test-unary-looking-equality",
     "f31-sh-test-unary-missing-argument",
     "network-transfer-boundaries-oracle",
@@ -3821,6 +3830,7 @@
     "f31-make-final-prerequisite-shell-pipeline",
     "f31-make-qmark-01-phony-target-file-exists",
     "f31-sh-audit-case-subject-and-pattern-word",
+    "f31-sh-test-size-macos-expression-recovery",
     "f31-sh-test-top-level-parenthesis-equality",
     "o1-uniq-all-repeated-separate-abbreviation",
     "o10-mkdir-symbolic-invalid-before-operands",

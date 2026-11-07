@@ -30,10 +30,28 @@ async fn test_file(
       "-r" => @fs.can_read(path)
       "-w" => @fs.can_write(path)
       "-x" => @fs.can_execute(path)
-      "-s" => @fs.file_size(path) > 0L
+      "-s" => {
+        // Validate the raw lookup before canonicalization can remove a
+        // non-directory parent component. Size itself must follow the target.
+        let kind = @fs.kind(path)
+        // Some macOS versions report a regular symlink target even with a
+        // trailing slash. POSIX still requires that operand to be a directory.
+        if !(@async.platform is Windows) &&
+          path.has_suffix("/") &&
+          kind != Directory {
+          false
+        } else {
+          @fs.file_size(@fs.realpath(path)) > 0L
+        }
+      }
       _ => false
     }
   } catch {
+    @os_error.OSError(code, ..) if operator == "-s" &&
+      code == @os_error.errno_ENOTSUP =>
+      raise ShellError(
+        "test: '-s' target size is unavailable through the public filesystem API: '\{value}'",
+      )
     @os_error.OSError(_) => false
     err => raise err
   }

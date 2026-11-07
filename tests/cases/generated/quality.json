@@ -2,9 +2,9 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2711,
+    "exact-local": 2719,
     "finite-diagnostic": 120,
-    "typed-scenario": 41,
+    "typed-scenario": 43,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -6014,7 +6014,7 @@
     {
       "case_id": "release-metadata-sh-help",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "67cb974ffa01d6419f817cc0be86b836361cbf97e23fc4d4875984318fdba796",
+      "definition_sha256": "fca556adecf77271ab3832f4ba9c37b68a127cf3e259a8192d93e3e949966e05",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6024,7 +6024,7 @@
     {
       "case_id": "release-metadata-sh-version",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "3523e1114348000c09ea2721aad2807c29180f968f6b3637a8bec9994fe936e2",
+      "definition_sha256": "3b0b9754b436bfae0942c67a395a6a651d36ccafbf122d53d520ffd070fab22c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7175,6 +7175,94 @@
         "kind": "exact"
       },
       "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-size-targets",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "be1234f22eab399e6c19eefece50491ce2d9d510d0813f7fadac9dd6d6c9f11a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-size-raw-components",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "090e0dbe3ebf9ee510291dc84026b3c9db23a82513a15cf54f7d48b054ffd26f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-size-macos-directory",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "3a978e29f5e2dea2ef9f725e243572f9a6ac31327b036053e0d47afefa66de4f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-size-macos-link",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "c85072fc2ea937d3c88b2a3ff1f567854b0e2fa944d92e1793102c5ff2056f78",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-size-macos-expression-recovery",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "d93f02ae98f7d29692813211c1fb2e8728e711ad133437607bee6959bc69c9e6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-size-linux-directories",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "a790a8dfb34e356a39529949026bd399635ae6b5d4335c12c019ed92eda5c383",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-size-platform",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "dcbc647dfed0e19d10dd5beaa52a63706e8b63bd8c9097a9afba6c0e387e2fce",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-sh-test-size-platform"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-sh-test-size-posix",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "54ace7f49143e90ebe40d40f85f0abeea1de969da837461df065c52076b20623",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-sh-test-size-posix"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "phase3-tr-range",
@@ -16540,7 +16628,7 @@
     {
       "case_id": "release-metadata-make-help",
       "source": "tests/cases/make.json",
-      "definition_sha256": "e32919c9b450cd4d9a065f5dc051e3c04ff48de8777d63c4e64086492d32eaf2",
+      "definition_sha256": "6a771bc3322ea34cf8d6e438c5d07fd8e166d77b244ed7f17fbcc4a4245a84bd",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16550,7 +16638,7 @@
     {
       "case_id": "release-metadata-make-version",
       "source": "tests/cases/make.json",
-      "definition_sha256": "e742beb6f9d6a6ea053729bc86c760e12ca98f2fc0c5cf57984f6c28ed9677d7",
+      "definition_sha256": "7d3932319e7ad76b89a5b8c6912382ef0631a0282bffcccac18b1600a5af6472",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -17303,6 +17391,16 @@
       "case_id": "f31-make-final-inline-expanded-equal",
       "source": "tests/cases/make.json",
       "definition_sha256": "742e2ab352f2da4d7d13d5cf90abdfb8988dc413eb8ac1d52401439e0c1451cc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-test-size-targets",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "6d8bb30358dca001d0aa719317f77936d363b16d516a17343a2b5d8d174c226e",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22908,7 +23006,7 @@
     {
       "case_id": "release-metadata-split-help",
       "source": "tests/cases/split.json",
-      "definition_sha256": "6ca379385215672dbd1b2dde53f91139455a1d614b07930aaea66a455d50f267",
+      "definition_sha256": "eece176e51cb25f7ecf8cd3c1384ebf6171b84914f3138b8684a5b529eb91668",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22918,7 +23016,7 @@
     {
       "case_id": "release-metadata-split-version",
       "source": "tests/cases/split.json",
-      "definition_sha256": "537994b30c2ef87e948eda78002591e6d7ac0f345457ae5300d806699bd55be8",
+      "definition_sha256": "81875e28e6124c5286a57de5ac5d52e9f458151dee131d2d8844c14356d2647b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -23409,6 +23507,16 @@
       "case_id": "f31-split-shared-shell-filter",
       "source": "tests/cases/split.json",
       "definition_sha256": "5f17db1d129c2bd343ae8d6dd90275c3be0500ea73bacd9329b780420ab5f30c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-test-size-targets",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "e275130f6550d9c8cc25eeb59064c0698f7e5c59c0b507ec0687b63d7363a814",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -31437,6 +31545,38 @@
     "f31-sh-test-windows-parent-path": {
       "kind": "exact"
     },
+    "f31-sh-test-size-targets": {
+      "kind": "exact"
+    },
+    "f31-sh-test-size-raw-components": {
+      "kind": "exact"
+    },
+    "f31-sh-test-size-macos-directory": {
+      "kind": "exact"
+    },
+    "f31-sh-test-size-macos-link": {
+      "kind": "exact"
+    },
+    "f31-sh-test-size-macos-expression-recovery": {
+      "kind": "exact"
+    },
+    "f31-sh-test-size-linux-directories": {
+      "kind": "exact"
+    },
+    "f31-sh-test-size-platform": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-sh-test-size-platform"
+      ]
+    },
+    "f31-sh-test-size-posix": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-sh-test-size-posix"
+      ]
+    },
     "phase3-tr-range": {
       "kind": "exact"
     },
@@ -34570,6 +34710,9 @@
     "f31-make-final-inline-expanded-equal": {
       "kind": "exact"
     },
+    "f31-make-test-size-targets": {
+      "kind": "exact"
+    },
     "phase3-sort-basic": {
       "kind": "exact"
     },
@@ -36460,6 +36603,9 @@
       "kind": "exact"
     },
     "f31-split-shared-shell-filter": {
+      "kind": "exact"
+    },
+    "f31-split-test-size-targets": {
       "kind": "exact"
     },
     "phase4-touch-create": {

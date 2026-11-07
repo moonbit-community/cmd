@@ -9,6 +9,7 @@ import {
   "moonbitlang/async/gzip",
   "moonbitlang/async/http",
   "moonbitlang/async/io",
+  "moonbitlang/async/os_error",
   "moonbitlang/async/process",
   "moonbitlang/async/socket",
   "moonbitlang/async/stdio",
