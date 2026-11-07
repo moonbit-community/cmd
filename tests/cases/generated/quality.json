@@ -2,10 +2,10 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2325,
+    "exact-local": 2345,
     "finite-diagnostic": 84,
     "typed-scenario": 34,
-    "typed-dynamic-output": 10
+    "typed-dynamic-output": 12
   },
   "definitions": [
     {
@@ -15533,7 +15533,7 @@
     {
       "case_id": "release-metadata-tree-help",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "92c2faaf0eaa514ac84902be7b094e65ae7f0e6b26510788b91ea56044d82b40",
+      "definition_sha256": "ba39702580fee7014d121920ed02f6e1cd9ad5eed3c9e4e0c9d7bafc634fa9dc",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15543,7 +15543,7 @@
     {
       "case_id": "release-metadata-tree-version",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "bb258daceb2833eea3f2bcd3d104ec38b1b7e4c3132a6544a67ea42e46af7032",
+      "definition_sha256": "af174b09ef32f5ce0e8658c1755118a9e42fada8b85bee92b4c9238c949b1770",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16243,7 +16243,7 @@
     {
       "case_id": "o12-boundary-readlink",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "821378679951197420dbc48753def79369d1c3de7bfd5116e57ba3343ebb84a7",
+      "definition_sha256": "18ad84bb99a101e58fb46f9438201ee119393e62e2f992515acfe5ec1b2fc533",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16263,7 +16263,7 @@
     {
       "case_id": "o12-html-default",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "039252bd4fa7488bcd7aee9c6dea710a2976868d98d3e99decf486bc5509700f",
+      "definition_sha256": "516ed343ce126ae5959acb4bf740ea928deaea8e96624df1de81819004979ce7",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16273,7 +16273,7 @@
     {
       "case_id": "o12-html-offset",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "250dccfb55cf3decd22ce667264c533faac23d6872739f70ccb5b6acc6bb4397",
+      "definition_sha256": "9385bae2cf9105d2116c70bf6046b33789167dcdb2656caaf22d15c86364e947",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16283,7 +16283,7 @@
     {
       "case_id": "o12-html-directories-color",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "a7d3e517439e68150bda489a9fd2b48fa77be3bf6db801afa2fb84d1903eef7c",
+      "definition_sha256": "45358bce5ba70afa9425b47f37650a686d492acfe9fea93c6a1a76ec1a12bd7c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16293,7 +16293,7 @@
     {
       "case_id": "o12-html-file-size",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "fbf8493de439fb3b68801c12a8bd93c842f804b34000a4e660b7ee17652f9fb6",
+      "definition_sha256": "d5066dfacaaee270f770c08ca3d58873e89aa499d8b587963043468d18a00061",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16303,7 +16303,7 @@
     {
       "case_id": "o12-html-safe-title-base",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "82d1918415598f757735574c51d20f5388293ec8cd0e534f727ee60ad66db43d",
+      "definition_sha256": "cbf61dd36b0e529b6e8a8eec2925a87d12dcde9a05b40f6262518de3c3d3ec03",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16313,7 +16313,7 @@
     {
       "case_id": "o12-html-safe-name",
       "source": "tests/cases/tree.json",
-      "definition_sha256": "ab7957e8d5f89c1d2720b1f0a320891e67110292511321196b17571c5f0818ab",
+      "definition_sha256": "a08d9c3ea94df33ab73542332f65f3d3093155da3e120a8abc7edfb504eeb35a",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16438,6 +16438,240 @@
         ]
       },
       "required_work": "Execute the named complete independent runtime or metadata assertion; the descriptor itself is not evidence."
+    },
+    {
+      "case_id": "tree-links-default",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "034c188cd794e87204bb2b183d831f3aff6fd40eaace40e557d9fcd488e39fa4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-dirs-only",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "579676c2a2206e57f7ef919d639d7882f689c0dfa1c214b4ef643c4d88b269d9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-pattern-prune",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "c30637d0411bee26e4613e5bcfbf8382d45ca5998630f4b352bb2fab96929fca",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-ignore",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "edf050a5505f9fdfd449147d9d1ff9d9086aa87610f3b6bad7ff4421478975d1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-full-path",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "3296eb55c0d99e75a1f5baf07e84ba412d2f20accdac6d676a2cbc67a9b148db",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-depth-limit",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "daeb7dd90e0d6ae5951a6be486881eb894e6b2f48b9c09a51eecc3dd6d129cfa",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-filelimit",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "e8aad84f37455151af496e52e266dcc926b41e3a5d5a78e787478c1a8d5ecb5a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-root-json",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "afdf99d0c0954fdd7e85d759a99a5ea0706ab07cb6a6634f9364a709fcec9a96",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-json",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "8d5c166ea2e7d6c1464ba0be1b279c9c8da654b9bc032668cebf4c648a0df3b2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-color",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "9d196226c9a39115a9c6cd6c2ce775b66ee4e41f3bc5ba9d68b2b1d741e02929",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-html",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "97d6dc5ccc71604dd422f216aa38711c4a31fa13c9749dfb56b4b53aced5f9b8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-size--s",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "729e10f09d5761258c1ba77688da658a46ea21106386039ac23f7286adf5d38e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-size--h",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "cc54fb58763b3da69ab641e0ccb0c9edcea5076d6282efec62388c167ef79245",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-size---si",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "1642b18a0a18f56d494c995869ee4c97f05a919311435fe145590473b299d799",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-size---du",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "ab3fd218abe14318c4b2b0e1c4f9c0d15c7420d9abb268b6a47c1d0f262e3f05",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-target-color-boundary",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "c9d3c7abd4e647ffe182aa8dbf60cc3c8d22ebfafc47d5040dbc5b80e7fafdc0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-windows-junction",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "08f0a75553a534b15afaacbbc913958d1ad9d6fb3921bf114b44cddc3c96e59d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-explicit-dirs",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "0f8bdf357ae322977620ba6f41603de3c059cbb96f8befb2df91098f3d8ab983",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-explicit-dirs-json",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "d1bd9191d5f5ddcd066b44ea8766d5d4f96f25361a361d5dd43a44c06817c1f9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "tree-links-size-ignore-filter",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "2c9773f4c98f411ae9106d134d87b161761b9a3c89b6aea46885079757c622a0",
+      "classification": "typed-dynamic-output",
+      "descriptor": {
+        "kind": "dynamic",
+        "reason": "Independent public STAT_SIZE observations resolve directory-size fields; exact bytes, status and stderr verify that filtered links do not trigger link-size rejection. No upstream comparison is claimed for this case.",
+        "required_observers": [
+          "dynamic:tree-links-size-ignore-filter"
+        ],
+        "streams": [
+          "stdout"
+        ]
+      },
+      "required_work": "Execute the named complete independent runtime or metadata assertion; the descriptor itself is not evidence."
+    },
+    {
+      "case_id": "tree-links-size-dirs-filter",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "f91fbcc4d043b842f7e3853d33143e1aca8b847457b8e45fdd642e1e9932ad4d",
+      "classification": "typed-dynamic-output",
+      "descriptor": {
+        "kind": "dynamic",
+        "reason": "Independent public STAT_SIZE observations resolve directory-size fields; exact bytes, status and stderr verify that filtered links do not trigger link-size rejection. No upstream comparison is claimed for this case.",
+        "required_observers": [
+          "dynamic:tree-links-size-dirs-filter"
+        ],
+        "streams": [
+          "stdout"
+        ]
+      },
+      "required_work": "Execute the named complete independent runtime or metadata assertion; the descriptor itself is not evidence."
+    },
+    {
+      "case_id": "tree-links-windows-junction-trailing-separator",
+      "source": "tests/cases/tree.json",
+      "definition_sha256": "2650238392d43b56642705d29e314d4c8ea0bfffee3e58d73f62386f2ce1b8c2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
     },
     {
       "case_id": "p0-true-version",
@@ -29920,6 +30154,86 @@
       "streams": [
         "stdout"
       ]
+    },
+    "tree-links-default": {
+      "kind": "exact"
+    },
+    "tree-links-dirs-only": {
+      "kind": "exact"
+    },
+    "tree-links-pattern-prune": {
+      "kind": "exact"
+    },
+    "tree-links-ignore": {
+      "kind": "exact"
+    },
+    "tree-links-full-path": {
+      "kind": "exact"
+    },
+    "tree-links-depth-limit": {
+      "kind": "exact"
+    },
+    "tree-links-filelimit": {
+      "kind": "exact"
+    },
+    "tree-links-root-json": {
+      "kind": "exact"
+    },
+    "tree-links-json": {
+      "kind": "exact"
+    },
+    "tree-links-color": {
+      "kind": "exact"
+    },
+    "tree-links-html": {
+      "kind": "exact"
+    },
+    "tree-links-size--s": {
+      "kind": "exact"
+    },
+    "tree-links-size--h": {
+      "kind": "exact"
+    },
+    "tree-links-size---si": {
+      "kind": "exact"
+    },
+    "tree-links-size---du": {
+      "kind": "exact"
+    },
+    "tree-links-target-color-boundary": {
+      "kind": "exact"
+    },
+    "tree-links-windows-junction": {
+      "kind": "exact"
+    },
+    "tree-links-explicit-dirs": {
+      "kind": "exact"
+    },
+    "tree-links-explicit-dirs-json": {
+      "kind": "exact"
+    },
+    "tree-links-size-ignore-filter": {
+      "kind": "dynamic",
+      "reason": "Independent public STAT_SIZE observations resolve directory-size fields; exact bytes, status and stderr verify that filtered links do not trigger link-size rejection. No upstream comparison is claimed for this case.",
+      "required_observers": [
+        "dynamic:tree-links-size-ignore-filter"
+      ],
+      "streams": [
+        "stdout"
+      ]
+    },
+    "tree-links-size-dirs-filter": {
+      "kind": "dynamic",
+      "reason": "Independent public STAT_SIZE observations resolve directory-size fields; exact bytes, status and stderr verify that filtered links do not trigger link-size rejection. No upstream comparison is claimed for this case.",
+      "required_observers": [
+        "dynamic:tree-links-size-dirs-filter"
+      ],
+      "streams": [
+        "stdout"
+      ]
+    },
+    "tree-links-windows-junction-trailing-separator": {
+      "kind": "exact"
     },
     "p0-true-version": {
       "kind": "exact"

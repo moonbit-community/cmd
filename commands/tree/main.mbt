@@ -87,13 +87,45 @@ fn join_path(parent : String, child : String) -> String {
 }
 
 ///|
+fn windows_root_length(chars : Array[Char]) -> Int32 {
+  let separator = (c : Char) => c == '/' || c == '\\'
+  if chars.length() >= 3 && chars[1] == ':' && separator(chars[2]) {
+    return 3
+  }
+  if chars.length() < 2 || !separator(chars[0]) || !separator(chars[1]) {
+    return 1
+  }
+  let device = chars.length() >= 4 &&
+    (chars[2] == '?' || chars[2] == '.') &&
+    separator(chars[3])
+  let extended_unc = device &&
+    chars.length() >= 8 &&
+    String::from_array(chars[4:7]).to_upper() == "UNC" &&
+    separator(chars[7])
+  let mut offset = if extended_unc { 8 } else if device { 4 } else { 2 }
+  let components = if device && !extended_unc { 1 } else { 2 }
+  for _ in 0..<components {
+    while offset < chars.length() && !separator(chars[offset]) {
+      offset += 1
+    }
+    if offset < chars.length() {
+      offset += 1
+    }
+  }
+  offset
+}
+
+///|
 fn trim_trailing_slashes(path : String) -> String {
   if path == "" {
     return path
   }
   let chars : Array[Char] = path.iter().collect()
   let mut end = chars.length()
-  while end > 1 && chars[end - 1] == '/' {
+  let windows = @async.platform is Windows
+  let root_length = if windows { windows_root_length(chars) } else { 1 }
+  while end > root_length &&
+        (chars[end - 1] == '/' || (windows && chars[end - 1] == '\\')) {
     end -= 1
   }
   let out = StringBuilder()
@@ -302,9 +334,9 @@ async fn collect_node(
               _ => raise TreeError("cannot access '\{path}'")
             }
         }
-        if kind == SymLink {
+        if kind == SymLink && options.size != NoSize {
           raise TreeError(
-            "symbolic links are outside the supported profile: '\{path}'",
+            "symbolic-link sizes require unavailable public metadata: '\{path}'",
           )
         }
         if options.html_colors && kind == Regular {
@@ -350,15 +382,7 @@ async fn collect_node(
             let entry_kind = @fs.kind(entry_path, follow_symlink=false) catch {
               _ => raise TreeError("cannot access '\{entry_path}'")
             }
-            let directory = entry_kind == Directory ||
-              (
-                entry_kind == SymLink &&
-                options.directories_only &&
-                (@fs.kind(entry_path, follow_symlink=true) catch {
-                  _ => Unknown
-                }) ==
-                Directory
-              )
+            let directory = entry_kind == Directory
             if options.directories_only && !directory {
               continue
             }
@@ -385,7 +409,7 @@ async fn collect_node(
           Some(
             "\{accepted.length()} entries exceeds filelimit, not opening dir",
           )
-        } else if depth == 0 && kind != Directory {
+        } else if depth == 0 && kind != Directory && kind != SymLink {
           Some("error opening dir")
         } else {
           None
@@ -551,14 +575,15 @@ fn usage() -> String {
   "  --filelimit N limits entries before traversal; --noreport omits totals.\n" +
   "  -s, -h, --si and --du use public size metadata; unsupported host metadata reports an error.\n" +
   "  -C forces explicit type/extension colors; -n disables unforced color.\n" +
-  "  Mode-based colors and symlink targets require unavailable public metadata APIs.\n"
+  "  Symlinks are named leaves; -d selects real child directories, retaining explicit operands.\n" +
+  "  Symlink target text/sizes and mode-based colors require unavailable public metadata APIs.\n"
 }
 
 ///|
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tree 0.1.5\n")
+    @stdio.stdout.write("tree 0.1.6\n")
     return
   }
   let invocation = parse_arguments(@env.args()[1:].to_owned()) catch {

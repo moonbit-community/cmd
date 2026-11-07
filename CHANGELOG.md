@@ -12,6 +12,16 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-07
+
+Development; no publication.
+
+- Prepare tree 0.1.6 with name-only, non-following link entries in text, JSON and
+  HTML. Dangling/cyclic links no longer abort a normal listing; `-d` selects real
+  child directories while retaining explicit operands. Selected-link sizes and
+  target-dependent colors retain
+  explicit rejection contracts. Published tree 0.1.5 expectations stay frozen.
+
 ## 2026-11-06
 
 Development; no publication.

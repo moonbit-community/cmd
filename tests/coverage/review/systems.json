@@ -635,9 +635,12 @@
       "disposition": "reviewed-definition",
       "case_ids": [
         "o12-more-1",
-        "o12-more-20"
+        "o12-more-20",
+        "tree-links-dirs-only",
+        "tree-links-explicit-dirs",
+        "tree-links-explicit-dirs-json"
       ],
-      "activation": "-d removes regular files from text and JSON trees while retaining nested directories and adjusted report counts."
+      "activation": "-d removes regular files from text and JSON trees while retaining nested directories and adjusted report counts. The name-only link profile excludes discovered links, retaining explicit link operands with zero directory counts (POSIX CLI link fixtures)."
     },
     {
       "command": "tree",
@@ -668,9 +671,11 @@
       "case_ids": [
         "o12-basic-2",
         "o12-basic-3",
-        "o12-more-29"
+        "o12-more-29",
+        "tree-links-json",
+        "tree-links-root-json"
       ],
-      "activation": "-J emits exact structured entry hierarchy and counts, including a size-bearing file. -JC remains JSON without ANSI rather than turning into colored text."
+      "activation": "-J emits exact structured entry hierarchy and counts, including a size-bearing file. -JC remains JSON without ANSI rather than turning into colored text. Exact POSIX link cases identify link leaves and preserve report counts without target fields or traversal."
     },
     {
       "command": "tree",
@@ -679,9 +684,10 @@
       "disposition": "reviewed-definition",
       "case_ids": [
         "o12-html-safe-title-base",
-        "o12-html-safe-name"
+        "o12-html-safe-name",
+        "tree-links-html"
       ],
-      "activation": "-H emits complete expected HTML with escaped display names and escaped href attributes, including quotes, ampersands and angle brackets. This is generated presentation, not network retrieval."
+      "activation": "-H emits complete expected HTML with escaped display names and escaped href attributes, including quotes, ampersands and angle brackets. This is generated presentation, not network retrieval. A dangling-link CLI operand emits the full expected HTML with LINK classification and no invented target text (POSIX fixture)."
     },
     {
       "command": "tree",
