@@ -1,7 +1,8 @@
 # split
 
-Development candidate: `cli/split@0.1.7`, using `cli/core@0.9.2`. Publication is separate;
-[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+Published package: `cli/split@0.1.7`, using `cli/core@0.9.2`.
+Dated exact-coordinate acceptance is recorded in the
+[changelog](../../CHANGELOG.md#2026-11-08).
 
 Split input into pieces for MoonX.
 

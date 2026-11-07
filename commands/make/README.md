@@ -2,9 +2,9 @@
 
 Run a Make language subset for MoonX.
 
-Development candidate: `cli/make@0.2.5`, using `cli/core@0.9.2`.
-Publication and exact-coordinate acceptance are recorded separately in
-[latest.json](../../tests/release/latest.json).
+Published package: `cli/make@0.2.5`, using `cli/core@0.9.2`.
+Dated exact-coordinate acceptance is recorded in the
+[changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
 moonx cli/make@0.2.5 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]

@@ -2,7 +2,7 @@
 
 Shared runtime packages used by the independently published command modules.
 
-## 0.9.2 development candidate
+## 0.9.2 changes
 
 The shared shell used by sh, make recipes and split filters implements arithmetic
 assignment/increment/conditional expressions, backticks, expanded here-documents,
@@ -10,8 +10,9 @@ stdout/stderr descriptor aliases, loop levels and the finite printf/test profile
 Stateful substitution parsing preserves case/function grammar and interactive
 continuation. Ordered redirection effects and committed failure-prefix output
 remain observable. See [ADR-0007](../docs/adr/0007-language.md) for the explicit
-descriptor, terminal and grammar boundaries. Publication and exact-coordinate
-acceptance remain separate from this candidate.
+descriptor, terminal and grammar boundaries. Version 0.9.2 is published;
+dated exact-coordinate acceptance is recorded in the
+[changelog](../CHANGELOG.md#2026-11-08).
 
 ## 0.9.1 changes
 

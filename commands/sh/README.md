@@ -2,9 +2,9 @@
 
 Run shell scripts and sessions for MoonX.
 
-Development candidate: `cli/sh@0.2.6`, using `cli/core@0.9.2`.
-Publication and exact-coordinate acceptance are recorded separately in
-[latest.json](../../tests/release/latest.json).
+Published package: `cli/sh@0.2.6`, using `cli/core@0.9.2`.
+Dated exact-coordinate acceptance is recorded in the
+[changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
 moonx cli/sh@0.2.6 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]

@@ -14,7 +14,7 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-08
 
-Development candidates; publication and three-platform acceptance pending.
+Development and publication.
 
 - Extend the shared shell with arithmetic side effects, backticks, expanded
   here-documents, actual stdout/stderr aliases, loop levels and finite printf/test
@@ -24,10 +24,23 @@ Development candidates; publication and three-platform acceptance pending.
   and recursive Wasm invocation. Inherit existing POSIX FIFO jobservers with
   exact token ownership/return; keep descriptor/Windows semaphore/new-server
   boundaries explicit and recursive fallback children serial.
-- Prepare core 0.9.2, sh 0.2.6, make 0.2.5 and split 0.1.7; retain other package
-  coordinates and frozen published expectations. Add independent audit
-  counterexamples and real session/stream/recursive/FIFO regressions. Definitions
-  and local checks do not establish publication or complete upstream parity.
+- Publish core 0.9.2, make 0.2.5, sh 0.2.6 and split 0.1.7 from `e739345` after
+  [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42396312258)
+  and independent source/receipt audit. Verify all four uploads, registry builds
+  and package checksums; isolated make/sh/split source consumers use the uploaded
+  core. Retain the other 77 command coordinates: 80 published commands among
+  81 local modules, with timeout local-only.
+- Local exact-version MoonX acceptance passes all 80 coordinates with 2,781
+  passes, zero failures and 30 platform exclusions. The
+  [published CI](https://github.com/moonbit-community/cmd/actions/runs/42397826082)
+  passes Linux 2,792/0/25, macOS 2,781/0/30 and Windows 2,584/0/227
+  (pass/fail/platform exclusions), including all six fixed Linux oracle
+  scenarios. Freeze 2,646 definitions: retain all 2,470 earlier IDs, update only
+  six help/version outputs and add 176 F31 cases. Each platform's development
+  checks pass 1,964 Wasm and 205 Native test-tool tests. Isolated make/split
+  sources pass 26/8 Wasm tests; all three isolated commands pass actual smoke
+  checks against registry core 0.9.2. Sh has no package tests of its own.
+  Full upstream parity and formal performance acceptance are not claimed.
 
 ## 2026-11-07
 
