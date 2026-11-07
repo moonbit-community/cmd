@@ -30,7 +30,7 @@ async fn expansion_environment(
   automatic : Map[String, String],
   depth : Int32,
   cwd : String,
-  exported : Set[String],
+  exported : ExportPolicy,
   state : Expansion,
 ) -> Map[String, String] {
   state.environment_depth += 1
@@ -41,7 +41,7 @@ async fn expansion_environment(
   if state.original.get("SHELL") is Some(shell) {
     result["SHELL"] = shell
   }
-  for name in exported {
+  for name in exported.names(variables) {
     if variables.contains(name) {
       result[name] = lookup_variable(
         name,
@@ -88,29 +88,58 @@ async fn shell_result(
   automatic : Map[String, String],
   depth : Int32,
   cwd : String,
-  exported : Set[String],
+  exported : ExportPolicy,
   state : Expansion,
   trim_newlines~ : Bool,
 ) -> String {
-  // An empty expansion does not start a shell or replace the previous status.
-  if script.trim().is_empty() {
+  // GNU expands the selectors even when argv construction finds no command.
+  let shell = lookup_variable(
+    "SHELL",
+    variables,
+    automatic,
+    depth,
+    cwd~,
+    exported~,
+    state~,
+  )
+  let flags = lookup_variable(
+    ".SHELLFLAGS",
+    variables,
+    automatic,
+    depth,
+    cwd~,
+    exported~,
+    state~,
+  )
+  let ifs = lookup_variable(
+    "IFS",
+    variables,
+    automatic,
+    depth,
+    cwd~,
+    exported~,
+    state~,
+  )
+  guard make_shell_source(
+      script,
+      ifs,
+      force_shell=(shell != "" && !default_shell_profile(shell)) ||
+        (flags != "" && flags != "-c"),
+    )
+    is Some(script) else {
     return ""
   }
   let environment = expansion_environment(
     variables, automatic, depth, cwd, exported, state,
   )
-  let (status, result) = @shell.capture(
-    script,
-    name="make",
-    cwd~,
-    env=environment,
-  )
-  variables[".SHELLSTATUS"] = { value: status.to_string(), immediate: true, }
-  let text = match result.split_once("\u0000") {
-    Some((before, _)) => before.to_owned()
-    None => result
+  let (status, result) = if script == "" {
+    @stdio.stderr.write("sh: -c requires an argument\n")
+    (2, "")
+  } else {
+    capture_shell(script, environment, cwd)
   }
-  let normalized = text.replace_all(old="\r\n", new="\n")
+  variables[".SHELLSTATUS"] = { value: status.to_string(), immediate: true, }
+  let normalized = result.replace_all(old="\r\n", new="\n")
   let mut length = normalized.length()
   if trim_newlines {
     while length > 0 && normalized[length - 1] == '\n' {

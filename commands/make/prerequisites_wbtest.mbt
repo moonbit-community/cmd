@@ -4,7 +4,7 @@ fn secondary_database() -> Database {
     cwd: ".",
     variables: Map([]),
     command_line_variables: Map([]),
-    exported: Set([]),
+    exported: ExportPolicy::new([]),
     rules: Map([]),
     default_target: None,
     secondary_expansion: false,

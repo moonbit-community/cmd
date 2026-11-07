@@ -62,6 +62,12 @@ assignments and runs builtins or actual child processes. Substitutions copy
 context and capture bytes; external stdout/stderr aliases use one process pipe
 through [streams](../../core/shell/streams.mbt). Textual captures decode only
 after collection, so storage grows with captured output rather than pipe size.
+EOF reparses a pending continued line; complete jobs execute once while unfinished
+grammar rejects. Reserved words and required compound lists are checked before
+the command list runs. External launch errors are classified at the launch call;
+unexpected stdout/stderr pump failures keep their error type across task groups
+and command substitution and stop later commands. The explicit closed-pipe path
+retains its status 141 contract.
 
 Substitution closing candidates are parsed with the same contextual grammar
 as scripts, including case patterns and incomplete function headers. This
@@ -76,8 +82,25 @@ preserve warning order at exact boundaries. Empty conversions do not warm it.
 Make resolves [secondary prerequisites](../../commands/make/prerequisites.mbt)
 before [planning the dependency graph](../../commands/make/scheduler.mbt).
 The graph retains target/dependency tasks and schedules each shared target once.
-Recipe expansion/environment construction holds a mutex; child execution does
-not. `$?` uses a single pre-recipe snapshot, including virtual -W timestamps.
+The [recipe adapter](../../commands/make/recipes.mbt) expands every recipe for a
+target before executing its first command. Its environment is evaluated lazily
+once per target; empty/colon/dry-run lines avoid export side effects. These phases
+hold a mutex; child execution does not. `$?` uses a single pre-recipe snapshot,
+including virtual -W timestamps. Fatal variable expansion prevents queued targets
+from starting even under `-k`; ordinary recipe failures retain keep-going policy.
+
+[Export policy](../../commands/make/exports.mbt) separates explicit decisions,
+initial environment/command-line origin and default export. Shell-valued recursive
+exports use the original environment; names are snapshotted before evaluation
+because `.SHELLSTATUS` can mutate the variable map. Make's private
+[argument construction](../../commands/make/shell_source.mbt) evaluates selectors
+before constructing an environment and preserves GNU's direct-argv versus shell
+handling of LF and continuation. It retains O(source plus argv bytes), and quoted
+argv is interpreted by the pure MoonBit shell. No-command calls skip the
+environment entirely. [Capture](../../commands/make/shell_capture.mbt) retains
+stdout bytes, truncates at the first NUL and decodes only that prefix; its storage
+still grows with total captured output. Actual shell-language errors retain their
+status and prior output, while nonlanguage transfer errors propagate.
 The [FIFO jobserver](../../commands/make/jobserver.mbt) has one implicit slot and
 borrows exact bytes for additional work. A mutex admits one reader at a time;
 racing implicit-slot acquisition prevents waiting forever for a token after a

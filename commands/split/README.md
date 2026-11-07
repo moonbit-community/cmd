@@ -1,13 +1,13 @@
 # split
 
-Development candidate: `cli/split@0.1.8`, using `cli/core@0.9.3`.
+Development candidate: `cli/split@0.1.9`, using `cli/core@0.9.4`.
 Publication is pending. Earlier exact-coordinate acceptance is recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 Split input into pieces for MoonX.
 
 ```sh
-moonx cli/split@0.1.8 [OPTION]... [FILE [PREFIX]]
+moonx cli/split@0.1.9 [OPTION]... [FILE [PREFIX]]
 ```
 
 ## Supported scope
@@ -53,9 +53,15 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 
 ## Examples
 
+Filter syntax errors, including unmatched reserved words and empty required
+compound lists, fail before that command list writes files. The filter's actual
+status propagates and its owned input/task is closed by the existing lifecycle.
+A complete filter ending in backslash-LF executes at EOF; genuinely unfinished
+syntax still fails.
+
 ```sh
-moonx cli/split@0.1.8 -l 100 input.txt part-
-moonx cli/split@0.1.8 -b 64K -d input.bin chunk-
+moonx cli/split@0.1.9 -l 100 input.txt part-
+moonx cli/split@0.1.9 -b 64K -d input.bin chunk-
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -142,7 +142,7 @@
         "help"
       ],
       "source_version": "workspace cli/split@0.1.6 metadata contract",
-      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nFilters support shared shell arithmetic assignment, backticks and expanded here-documents.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
+      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nFilters support shared shell arithmetic assignment, backticks and expanded here-documents.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nMalformed shell command lists reject before execution; complete EOF continuations execute.\n",
       "expected_stderr_text": ""
     },
     {
@@ -161,7 +161,7 @@
         "version"
       ],
       "source_version": "workspace cli/split@0.1.6 metadata contract",
-      "expected_stdout_text": "split 0.1.8\n",
+      "expected_stdout_text": "split 0.1.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -2765,6 +2765,77 @@
         "type",
         "symlink-target"
       ]
+    },
+    {
+      "id": "f31-split-export-audit-filter-reserved",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=printf wrong > marker; then",
+        "-",
+        "piece-"
+      ],
+      "files": [],
+      "stdin_text": "a\nb\n",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "piece-aa",
+          "exists": false
+        },
+        {
+          "path": "piece-ab",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent required filter syntax/error effects; pinned Linux coreutils execution remains a separate required witness",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-split-eof-filter-continuation",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line; printf '%s\\n' \"$line\" > \"$FILE\"\\\n",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
     }
   ]
 }

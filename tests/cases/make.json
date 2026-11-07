@@ -215,7 +215,7 @@
         "help"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, recursive exports, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
+      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-150"
@@ -239,7 +239,7 @@
         "version"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "make 0.2.6\n",
+      "expected_stdout_text": "make 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -3260,6 +3260,3845 @@
         "type",
         "symlink-target"
       ]
+    },
+    {
+      "id": "f31-make-export-ordinary-default",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent||changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-bare-all",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nexport\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "file|set|changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-bare-none",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nunexport\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent||changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-last-unexport",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nexport\nunexport\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent||changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-last-export",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nunexport\nexport\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "file|set|changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-named-before-all",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nunexport QA31E_F\nexport\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent|set|changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-named-after-all",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nexport\nunexport QA31E_F\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent|set|changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-directive-after-rule",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\nexport\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "file|set|changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-expanded-empty-list",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nexport $(QA31E_UNDEFINED)\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent||changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-expanded-empty-unexport",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nexport\nunexport $(QA31E_UNDEFINED)\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "file|set|changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-included-policy",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_EMPTY=\nQA31E_ENV=changed\nexport QA31E_EX=explicit\nunexport QA31E_NO=hidden\nexport\ninclude Policy.mk\nall:\n\t@printf '%s|%s|%s|%s|%s|%s\\n' \"$${QA31E_F-absent}\" \"$${QA31E_EMPTY+set}\" \"$$QA31E_ENV\" \"$$QA31E_CLI\" \"$$QA31E_EX\" \"$${QA31E_NO-absent}\"\n"
+        },
+        {
+          "path": "Policy.mk",
+          "content_text": "unexport\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent||changed|cli|explicit|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-undefined-placeholder",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export QA31E_UNDEFINED\nunexport QA31E_HIDDEN\nQA31E_UNDEFINED ?= wrong\nQA31E_HIDDEN ?= wrong\nall:\n\t@printf '<%s>|<%s>|%s|%s\\n' '$(QA31E_UNDEFINED)' '$(QA31E_HIDDEN)' \"$${QA31E_UNDEFINED+set}\" \"$${QA31E_HIDDEN+set}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|<>|set|\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-unexport-recursive",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_VALUE=value\nunexport QA31E_ENV=$(QA31E_LATER)\nQA31E_LATER=late\nexport\nall:\n\t@printf '%s|%s\\n' '$(QA31E_ENV)' \"$${QA31E_ENV-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "late|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-unexport-immediate",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_VALUE=value\nunexport QA31E_ENV := $(QA31E_VALUE)\nQA31E_LATER=late\nexport\nall:\n\t@printf '%s|%s\\n' '$(QA31E_ENV)' \"$${QA31E_ENV-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "value|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-unexport-append",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_VALUE=value\nunexport QA31E_ENV += tail\nQA31E_LATER=late\nexport\nall:\n\t@printf '%s|%s\\n' '$(QA31E_ENV)' \"$${QA31E_ENV-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "seed tail|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-unexport-conditional",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_VALUE=value\nunexport QA31E_ENV ?= wrong\nQA31E_LATER=late\nexport\nall:\n\t@printf '%s|%s\\n' '$(QA31E_ENV)' \"$${QA31E_ENV-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "seed|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-keyword-variable-target",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export = first\nexport export = second\nunexport unexport=local\nexport\tunexport\nall: export\n\t@printf '%s|%s|%s\\n' '$(export)' \"$$export\" \"$$unexport\"\nexport:\n\t@printf 'target:%s\\n' '$@'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "target:export\nsecond|second|local\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-keyword-tab",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_VALUE=value\nexport\tQA31E_VALUE\nunexport\tQA31E_ENV\nall:\n\t@printf '%s|%s\\n' \"$$QA31E_VALUE\" \"$${QA31E_ENV-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "value|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-keyword-cr",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_VALUE=value\nexport\rQA31E_VALUE\nunexport\rQA31E_ENV\nall:\n\t@printf '%s|%s\\n' \"$$QA31E_VALUE\" \"$${QA31E_ENV-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "value|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-keyword-vertical-tab",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_VALUE=value\nexport\u000bQA31E_VALUE\nunexport\u000bQA31E_ENV\nall:\n\t@printf '%s|%s\\n' \"$$QA31E_VALUE\" \"$${QA31E_ENV-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "value|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-keyword-form-feed",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_VALUE=value\nexport\fQA31E_VALUE\nunexport\fQA31E_ENV\nall:\n\t@printf '%s|%s\\n' \"$$QA31E_VALUE\" \"$${QA31E_ENV-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "value|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-shell-policy-phases",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_F=file\nQA31E_BEFORE := $(shell printf '%s' \"$${QA31E_F-absent}\")\nexport\nQA31E_DURING := $(shell printf '%s' \"$${QA31E_F-absent}\")\nunexport\nQA31E_AFTER := $(shell printf '%s' \"$${QA31E_F-absent}\")\nall:\n\t@printf '%s|%s|%s|%s\\n' '$(QA31E_BEFORE)' '$(QA31E_DURING)' '$(QA31E_AFTER)' \"$${QA31E_F-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent|file|absent|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-special-target-phase",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".EXPORT_ALL_VARIABLES:\nQA31E_F=file\nunexport QA31E_NO=hidden\nQA31E_BEFORE := $(shell printf '%s' \"$${QA31E_F-absent}\")\nunexport\nall:\n\t@printf '%s|%s|%s\\n' '$(QA31E_BEFORE)' \"$$QA31E_F\" \"$${QA31E_NO-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "absent|file|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-shell-recursion",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export\nQA31E_HI=$(shell printf 'inner:%s' \"$$QA31E_HI\")\nall:\n\t@printf '%s\\n' \"$$QA31E_HI\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "inner:seed\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-side-effects",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export\nQA31E_VALUE=$(shell printf x >> marker; printf value)\nall:\n\t@printf '%s\\n' \"$$QA31E_VALUE\"\n\t@printf '%s\\n' \"$$QA31E_VALUE\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "value\nvalue\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "x"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-child-default-policy",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "QA31E_PARENT=parent\nexport\nall:\n\t@$(MAKE) -f Child.mk\n"
+        },
+        {
+          "path": "Child.mk",
+          "content_text": "QA31E_LOCAL=child\nall:\n\t@printf '%s|%s|%s|%s|%s\\n' '$(QA31E_PARENT)' \"$$QA31E_PARENT\" '$(QA31E_LOCAL)' \"$${QA31E_LOCAL-absent}\" \"$${MAKE-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "parent|parent|child|absent|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-child-cli-transport",
+      "command": "make",
+      "args": [
+        "-s",
+        "QA31E_CLI=cli",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export\nunexport QA31E_CLI QA31E_ENV\nall:\n\t@printf 'parent:%s|%s\\n' \"$${QA31E_CLI-absent}\" \"$${QA31E_ENV-absent}\"\n\t@$(MAKE) -f Child.mk\n"
+        },
+        {
+          "path": "Child.mk",
+          "content_text": "QA31E_LOCAL=local\nall:\n\t@printf 'child:%s|%s|%s|%s\\n' '$(QA31E_CLI)' \"$$QA31E_CLI\" \"$${QA31E_ENV-absent}\" \"$${QA31E_LOCAL-absent}\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SHELL": "/original-shell",
+        "QA31E_ENV": "seed",
+        "QA31E_HI": "seed"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "parent:absent|absent\nchild:cli|cli|absent|absent\n",
+      "expected_stderr_text": "",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 export contracts and independently executed fixed-source GNU Make/Dash vectors; no execution claim from this definition"
+    },
+    {
+      "id": "f31-make-export-phase-environment-once",
+      "command": "make",
+      "args": [
+        "-s",
+        "-f",
+        "Environment.mk",
+        "two",
+        "empty",
+        "colon",
+        "comment"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Environment.mk",
+          "content_text": "export V=$(shell printf x >> $@.env; printf value)\ntwo:\n\t@printf 'one:%s\\n' \"$$V\"\n\t@printf 'two:%s\\n' \"$$V\"\nempty:\n\t@\ncolon:\n\t@:\ncomment:\n\t@# comment only\ndry:\n\t@printf skipped\nforced:\n\t+@printf 'one:%s\\n' \"$$V\"\n\t+@printf 'two:%s\\n' \"$$V\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "one:value\ntwo:value\n",
+      "expected_files": [
+        {
+          "path": "two.env",
+          "content_text": "x"
+        },
+        {
+          "path": "comment.env",
+          "content_text": "x"
+        },
+        {
+          "path": "empty.env",
+          "exists": false
+        },
+        {
+          "path": "colon.env",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 target-expansion and environment lifecycle observations; receipts remain separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-phase-dry-run-and-forced",
+      "command": "make",
+      "args": [
+        "-f",
+        "Environment.mk",
+        "-n",
+        "dry",
+        "forced"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Environment.mk",
+          "content_text": "export V=$(shell printf x >> $@.env; printf value)\ntwo:\n\t@printf 'one:%s\\n' \"$$V\"\n\t@printf 'two:%s\\n' \"$$V\"\nempty:\n\t@\ncolon:\n\t@:\ncomment:\n\t@# comment only\ndry:\n\t@printf skipped\nforced:\n\t+@printf 'one:%s\\n' \"$$V\"\n\t+@printf 'two:%s\\n' \"$$V\"\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "printf skipped\nprintf 'one:%s\\n' \"$V\"\none:value\nprintf 'two:%s\\n' \"$V\"\ntwo:value\n",
+      "expected_files": [
+        {
+          "path": "forced.env",
+          "content_text": "x"
+        },
+        {
+          "path": "dry.env",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 target-expansion and environment lifecycle observations; receipts remain separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-phase-recipe-expansion-order",
+      "command": "make",
+      "args": [
+        "-f",
+        "Expansion.mk",
+        "ordering"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Expansion.mk",
+          "content_text": "BAD=$(BAD)\nordering:\n\t@printf A >> order\n\t@printf '%s' '$(shell printf B >> order; printf result)' >> order\nfailure:\n\t@false\n\t@printf '%s' '$(shell printf L >> later-expansion)' > later-execution\nexpanderror:\n\t@printf first > first-execution\n\t@printf '%s' '$(BAD)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "order",
+          "content_text": "BAresult"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 target-expansion and environment lifecycle observations; receipts remain separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-phase-expansion-before-failed-recipe",
+      "command": "make",
+      "args": [
+        "-f",
+        "Expansion.mk",
+        "failure"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Expansion.mk",
+          "content_text": "BAD=$(BAD)\nordering:\n\t@printf A >> order\n\t@printf '%s' '$(shell printf B >> order; printf result)' >> order\nfailure:\n\t@false\n\t@printf '%s' '$(shell printf L >> later-expansion)' > later-execution\nexpanderror:\n\t@printf first > first-execution\n\t@printf '%s' '$(BAD)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "later-expansion",
+          "content_text": "L"
+        },
+        {
+          "path": "later-execution",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 target-expansion and environment lifecycle observations; receipts remain separate from definitions",
+      "expected_stderr_contains": "failure",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+    },
+    {
+      "id": "f31-make-export-phase-expansion-before-first-recipe",
+      "command": "make",
+      "args": [
+        "-f",
+        "Expansion.mk",
+        "expanderror"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Expansion.mk",
+          "content_text": "BAD=$(BAD)\nordering:\n\t@printf A >> order\n\t@printf '%s' '$(shell printf B >> order; printf result)' >> order\nfailure:\n\t@false\n\t@printf '%s' '$(shell printf L >> later-expansion)' > later-execution\nexpanderror:\n\t@printf first > first-execution\n\t@printf '%s' '$(BAD)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "first-execution",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 target-expansion and environment lifecycle observations; receipts remain separate from definitions",
+      "expected_stderr_contains": "references itself",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+    },
+    {
+      "id": "f31-make-export-phase-fatal-environment-keep-going",
+      "command": "make",
+      "args": [
+        "-f",
+        "Error.mk",
+        "-k",
+        "first",
+        "second"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Error.mk",
+          "content_text": "export BAD=$(BAD)\nfirst:\n\tprintf first > first.marker\nsecond:\n\tprintf second > second.marker\ncolon:\n\t@:\nempty:\n\t@\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "printf first > first.marker\n",
+      "expected_files": [
+        {
+          "path": "first.marker",
+          "exists": false
+        },
+        {
+          "path": "second.marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 target-expansion and environment lifecycle observations; receipts remain separate from definitions",
+      "expected_stderr_contains": "references itself",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+    },
+    {
+      "id": "f31-make-export-phase-dry-run-no-environment",
+      "command": "make",
+      "args": [
+        "-f",
+        "Error.mk",
+        "-n",
+        "first",
+        "second"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Error.mk",
+          "content_text": "export BAD=$(BAD)\nfirst:\n\tprintf first > first.marker\nsecond:\n\tprintf second > second.marker\ncolon:\n\t@:\nempty:\n\t@\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "printf first > first.marker\nprintf second > second.marker\n",
+      "expected_files": [
+        {
+          "path": "first.marker",
+          "exists": false
+        },
+        {
+          "path": "second.marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 target-expansion and environment lifecycle observations; receipts remain separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-phase-empty-and-colon-no-environment",
+      "command": "make",
+      "args": [
+        "-s",
+        "-f",
+        "Error.mk",
+        "colon",
+        "empty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Error.mk",
+          "content_text": "export BAD=$(BAD)\nfirst:\n\tprintf first > first.marker\nsecond:\n\tprintf second > second.marker\ncolon:\n\t@:\nempty:\n\t@\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "first.marker",
+          "exists": false
+        },
+        {
+          "path": "second.marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 target-expansion and environment lifecycle observations; receipts remain separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-function-incomplete-if",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell if)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-incomplete-if",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != if\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-function-prefix-incomplete-if",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf prefix; if)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-prefix-incomplete-if",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf prefix; if\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-function-prefix-invalid-then",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf prefix; then)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-prefix-invalid-then",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf prefix; then\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-function-arithmetic",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf prefix; : $$((1/0)))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<prefix>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "zero",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-arithmetic",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf prefix; : $$((1/0))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<prefix>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "zero",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-function-nounset",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf prefix; set -u; printf \"$$QA31_UNSET\")\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<prefix>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "QA31_UNSET",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-nounset",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf prefix; set -u; printf \"$$QA31_UNSET\"\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<prefix>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "QA31_UNSET",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-function-test-error",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf prefix; test bad -eq 1)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<prefix>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "test",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-test-error",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf prefix; test bad -eq 1\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<prefix>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "test",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-function-exit-seven",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf prefix; exit 7)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<prefix>|7|7|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-exit-seven",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf prefix; exit 7\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<prefix>|7|7|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-function-nul-exit",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf 'a\\000b'; exit 7)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<a>|7|7|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-nul-exit",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf 'a\\000b'; exit 7\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<a>|7|7|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-function-nul-invalid-suffix",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf 'a\\000\\377'; exit 7)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<a>|7|7|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-nul-invalid-suffix",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf 'a\\000\\377'; exit 7\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<a>|7|7|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-function-nul-nounset",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf 'a\\000b'; set -u; printf \"$$QA31_UNSET\")\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<a>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "QA31_UNSET",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-nul-nounset",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf 'a\\000b'; set -u; printf \"$$QA31_UNSET\"\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<a>|2|2|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "QA31_UNSET",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-function-missing-command",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell QA31_MISSING_COMMAND)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|127|127|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "QA31_MISSING_COMMAND",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-missing-command",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != QA31_MISSING_COMMAND\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|127|127|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "QA31_MISSING_COMMAND",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-make-shell-capture-function-newlines",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf 'line\\n\\n'; exit 7)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<line>|7|7|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-assignment-newlines",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf 'line\\n\\n'; exit 7\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nAFTER := $(.SHELLSTATUS)\nRECOVERED := $(shell printf recovered)\nFINAL := $(.SHELLSTATUS)\nall:\n\t@printf '<%s>|%s|%s|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(AFTER)' '$(RECOVERED)' '$(FINAL)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<line >|7|7|recovered|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-capture-export-modifier-chains",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export export F=one\nexport unexport X=two\nunexport export Y=three\nall:\n\t@printf '%s|%s|%s|<%s>|<%s>|<%s>\\n' '$(F)' '$(X)' '$(Y)' \"$$F\" \"$${X-unset}\" \"$$Y\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "one|two|three|<one>|<unset>|<three>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-bare-form-feed",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\nexport\f\nall:\n\t@printf '%s\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "hello\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-unexport-bare-form-feed",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\nexport\nunexport\f\nall:\n\t@printf '<%s>\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-assignment-form-feed",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export\fVALUE=hello\nall:\n\t@printf '<%s>|<%s>|<%s>\\n' '$(export\fVALUE)' '$(\fVALUE)' '$(VALUE)'\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<hello>|<>|<>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-bare-vertical-tab",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\nexport\u000b\nall:\n\t@printf '%s\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "hello\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-unexport-bare-vertical-tab",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\nexport\nunexport\u000b\nall:\n\t@printf '<%s>\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-assignment-vertical-tab",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export\u000bVALUE=hello\nall:\n\t@printf '<%s>|<%s>|<%s>\\n' '$(export\u000bVALUE)' '$(\u000bVALUE)' '$(VALUE)'\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<hello>|<>|<>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-ignored-recipe-incomplete",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@-if\n\t@printf '%s\\n' recovered\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "recovered\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-make-export-audit-ignored-recipe-reserved",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@-printf prefix; then\n\t@printf '%s\\n' recovered\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "recovered\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-make-export-audit-ignored-recipe-arithmetic",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@-printf prefix; : $$((1/0))\n\t@printf '%s\\n' recovered\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "prefixrecovered\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "zero",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-make-export-audit-ignored-recipe-nounset",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@-printf prefix; set -u; printf \"$$QA31_UNSET\"\n\t@printf '%s\\n' recovered\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "prefixrecovered\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "QA31_UNSET",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-make-export-audit-invalid-text-capture",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell printf '\\377\\000')\nall:\n\t@printf wrong > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Explicit finite UTF8/assignment-modifier profile rejection; no GNU behavior equality claim",
+      "expected_stderr_contains": "shell output before its first NUL is not valid UTF-8",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ.",
+      "expected_rejection": "shell output before its first NUL is not valid UTF-8"
+    },
+    {
+      "id": "f31-make-export-audit-unsupported-modifier-override",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export override VALUE=bad\nall:\n\t@printf wrong > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Explicit finite UTF8/assignment-modifier profile rejection; no GNU behavior equality claim",
+      "expected_stderr_contains": "assignment modifier 'override' is outside the supported make profile",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ.",
+      "expected_rejection": "assignment modifier 'override' is outside the supported make profile"
+    },
+    {
+      "id": "f31-make-export-audit-unsupported-modifier-private",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export private VALUE=bad\nall:\n\t@printf wrong > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Explicit finite UTF8/assignment-modifier profile rejection; no GNU behavior equality claim",
+      "expected_stderr_contains": "assignment modifier 'private' is outside the supported make profile",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ.",
+      "expected_rejection": "assignment modifier 'private' is outside the supported make profile"
+    },
+    {
+      "id": "f31-make-export-audit-leading-export-form-feed",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\n\fexport\nall:\n\t@printf '<%s>\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<hello>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-leading-unexport-form-feed",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\nexport\n\funexport\nall:\n\t@printf '<%s>\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-leading-export-vertical-tab",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\n\u000bexport\nall:\n\t@printf '<%s>\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<hello>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-leading-unexport-vertical-tab",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\nexport\n\u000bunexport\nall:\n\t@printf '<%s>\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-assignment-carriage-return",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export\rVALUE=hello\nall:\n\t@printf '<%s>|<%s>|<%s>\\n' '$(export\rVALUE)' '$(\rVALUE)' '$(VALUE)'\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<hello>|<>|<>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-leading-export-carriage-return",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\n\rexport\nall:\n\t@printf '<%s>\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<hello>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-export-audit-leading-unexport-carriage-return",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE=hello\nexport\n\runexport\nall:\n\t@printf '<%s>\\n' \"$$VALUE\"\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>\n",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-function-fast-literal-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before\nif",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<before if>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-assignment-fast-literal-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before\nif",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<before if>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-function-slow-semicolon-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before;\nif",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2|2\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact make success, empty captured value, shell status 2 and a continued recipe distinguish a shell syntax error from a fatal make error; source locations differ."
+    },
+    {
+      "id": "f31-make-shell-lf-assignment-slow-semicolon-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before;\nif",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2|2\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact make success, empty captured value, shell status 2 and a continued recipe distinguish a shell syntax error from a fatal make error; source locations differ."
+    },
+    {
+      "id": "f31-make-shell-lf-function-slow-comment-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before # comment\nprintf after",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<before>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-assignment-slow-comment-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before # comment\nprintf after",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<before>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-function-fast-single-quote-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf 'before\nafter'",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<before after>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-assignment-fast-single-quote-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf 'before\nafter'",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<before after>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-function-slow-double-quote-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf \"before\nafter\"",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<beforeafter>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-assignment-slow-double-quote-lf",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf \"before\nafter\"",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<beforeafter>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-function-fast-continuation",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before\\\nafter",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<beforeafter>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-assignment-fast-continuation",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before\\\nafter",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<beforeafter>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-function-slow-nonstandard-ifs",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before\nif",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "IFS=:\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<beforeif>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-shell-lf-assignment-slow-nonstandard-ifs",
+      "command": "make",
+      "args": [
+        "-s",
+        "SCRIPT=printf before\nif",
+        "all"
+      ],
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "IFS=:\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nEMPTY := $(shell )\nall:\n\t@printf '<%s>|%s|%s\\n' '$(VALUE)' '$(SAVED)' '$(.SHELLSTATUS)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<beforeif>|0|0\n",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Make 4.4.1 read.c/variable.c/job.c default /bin/sh contracts. The sealed Linux oracle is required; custom-SHELL newline observations are not substituted.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-function-no-command-empty",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-assignment-no-command-empty",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": ""
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-function-no-command-blanks",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": " \t"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-assignment-no-command-blanks",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": " \t"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-function-no-command-continuation",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\\\n"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-assignment-no-command-continuation",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\\\n"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-function-no-command-padded-continuation",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": " \t\\\n \t"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-assignment-no-command-padded-continuation",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": " \t\\\n \t"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-function-no-command-forced",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nIFS=:\nPRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": " \t"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-assignment-no-command-forced",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nIFS=:\nPRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": " \t"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|7\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "exists": false
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-function-literal-lf-name",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\n"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|127\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "file",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    {
+      "id": "f31-make-eof-assignment-literal-lf-name",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\n"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|127\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "file",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    {
+      "id": "f31-make-eof-function-literal-cr-name",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\r"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|127\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "file",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    {
+      "id": "f31-make-eof-assignment-literal-cr-name",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "PRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\r"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|127\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "file",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    {
+      "id": "f31-make-eof-function-forced-missing-argument",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nPRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": " \t\n"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "requires an argument",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    {
+      "id": "f31-make-eof-assignment-forced-missing-argument",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nPRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": " \t\n"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|2\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "requires an argument",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    {
+      "id": "f31-make-eof-function-forced-blank-argument",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nPRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\n \t"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|0\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-assignment-forced-blank-argument",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nPRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\n \t"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|0\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-function-forced-continuation",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nPRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE := $(shell $(SCRIPT))\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\\\n"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|0\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-assignment-forced-continuation",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nPRIOR := $(shell exit 7)\nexport QA31_EFFECT=$(shell printf x >> calls; printf value)\nVALUE != $(SCRIPT)\nSAVED := $(.SHELLSTATUS)\nunexport QA31_EFFECT\nall:\n\t@printf '<%s>|%s\\n' '$(VALUE)' '$(SAVED)'\n\t@printf recovered > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        "SCRIPT": "\\\n"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<>|0\n",
+      "expected_files": [
+        {
+          "path": "calls",
+          "content_text": "x"
+        },
+        {
+          "path": "marker",
+          "content_text": "recovered"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-eof-empty-recursive-selector",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "BAD=$(BAD)\nIFS=$(BAD)\nVALUE := $(shell )\nall:\n\t@printf wrong > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "references itself",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
     }
   ]
 }

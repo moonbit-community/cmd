@@ -2,12 +2,12 @@
 
 Run a Make language subset for MoonX.
 
-Development candidate: `cli/make@0.2.6`, using `cli/core@0.9.3`.
+Development candidate: `cli/make@0.2.7`, using `cli/core@0.9.4`.
 Publication is pending. Earlier exact-coordinate acceptance is recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
-moonx cli/make@0.2.6 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
+moonx cli/make@0.2.7 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
 ```
 
 ## Supported scope
@@ -23,7 +23,40 @@ Computed assignment/export names expand once. `=`, `:=`, `::=`, `:::=`, `?=`,
 Recursive export evaluation uses the original environment to break shell-valued
 export recursion, while ordinary variable recursion reports an error. `.SHELLSTATUS`
 records the actual shell result; `$(shell ...)` and `!=` have distinct trailing
-newline rules. Recipe expansion and environment construction are serialized.
+newline rules. Shell syntax/runtime errors record status 2 and retain any output
+already written; they do not become fatal make variable errors. Captured output
+ends at its first NUL before UTF-8 decoding; invalid UTF-8 before that point is
+an explicit profile error. A shell error in a recipe remains subject to its `-`
+prefix.
+
+Shell functions and assignments use GNU's default `/bin/sh` argument construction
+before running the pure MoonBit interpreter. Literal LF bytes can be part of a
+direct argument; the shell path removes raw LF while preserving original
+backslash-LF pairs. Single quotes, double quotes, make's `IFS` and an explicit
+`SHELL=sh` select different paths. An invocation with no command preserves the
+previous `.SHELLSTATUS` and does not construct an exported environment. This
+argument handling does not add a host-shell implementation or a full GNU
+external-program behavior claim.
+
+Bare `export` enables default export for names beginning with an ASCII letter or
+underscore and continuing with ASCII letters, digits or underscores. Bare
+`unexport` restores the ordinary environment/command-line defaults; explicit
+named export and unexport decisions still win. Named directives create empty
+simple variables when the name is undefined, so a later `?=` leaves them empty.
+Both directives support assignments and computed names. Assignment modifier
+chains use the last export/unexport flag; ordinary name lists remain literal.
+Complete assignments are recognized before modifiers: nonblank whitespace may
+belong to a variable's name, while bare directives accept GNU's six ASCII
+whitespace characters.
+`.EXPORT_ALL_VARIABLES` takes effect after all makefiles have been read.
+
+All recipe variable references for a target expand before its first command.
+The target's exported environment is then evaluated once, before its first
+executed command, and reused for its remaining recipes. Empty recipes, pure `:`
+and ordinary `-n` lines do not create that environment; forced/recursive dry-run
+recipes do. Make variable recursion errors are fatal even with `-k`, while
+actual recipe exit failures retain keep-going behavior. Expansion and environment
+construction remain serialized; recipe execution can overlap across targets.
 
 `.SECONDEXPANSION` affects subsequent declarations and expands escaped variables
 with target automatic variables before dependency planning. Repeated declarations,
@@ -67,7 +100,7 @@ Windows semaphore authentication reject explicitly.
   to stay within each occupied parent slot. This is an explicit scheduling limit.
 - Descriptor-pipe import, Windows named semaphore inheritance, full GNU builtin
   functions/rules, archive/order-only/target-specific/grouped/double-colon rules,
-  special control targets and bare export-all reject. Known unsupported functions
+  other special control targets and override/private assignments reject. Known unsupported functions
   reject before argument expansion, including lazy branches with side effects;
   unknown ordinary variable names keep normal empty-value semantics.
 - Explicit `SHELL` assignments accept only literal `sh` or `/bin/sh` as names
@@ -81,8 +114,8 @@ Windows semaphore authentication reject explicitly.
 ## Examples
 
 ```sh
-moonx cli/make@0.2.6 -n
-moonx cli/make@0.2.6 -f build.mk -j 2 all
+moonx cli/make@0.2.7 -n
+moonx cli/make@0.2.7 -f build.mk -j 2 all
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

@@ -1,6 +1,6 @@
 name = "cli/make"
 
-version = "0.2.6"
+version = "0.2.7"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "make command for MoonX."
 
 import {
-  "cli/core@0.9.3",
+  "cli/core@0.9.4",
   "moonbitlang/async@0.22.7",
   "moonbitlang/x@0.5.5",
 }

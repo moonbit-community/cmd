@@ -70,7 +70,16 @@ pub fn Session::last_signal(self : Session) -> Int32? {
 
 ///|
 pub async fn Session::feed(self : Session, source : String) -> SessionResult {
-  if self.finished || self.context.exited {
+  if self.finished {
+    return Exit(
+      if self.context.exited {
+        self.context.exit_status
+      } else {
+        self.context.last_status
+      },
+    )
+  }
+  if self.context.exited {
     return Exit(self.context.exit_status)
   }
   self.context.expansion_failed = false
@@ -103,19 +112,42 @@ pub async fn Session::feed(self : Session, source : String) -> SessionResult {
 }
 
 ///|
-/// Kept async to share the session driver contract with feed and future IO cleanup.
-#warnings("-unused_async")
 pub async fn Session::finish(self : Session) -> SessionResult {
   if self.finished {
-    return Exit(self.context.last_status)
-  }
-  if !self.pending.is_empty() {
-    self.pending.reset()
-    self.context.last_status = 2
-    self.finished = true
-    raise ShellError("unexpected end of input")
+    return Exit(
+      if self.context.exited {
+        self.context.exit_status
+      } else {
+        self.context.last_status
+      },
+    )
   }
   self.finished = true
+  if !self.pending.is_empty() {
+    let text = self.pending.to_string()
+    self.pending.reset()
+    let jobs = parse_input(text) catch {
+      IncompleteSyntax(_) => {
+        self.context.last_status = 2
+        raise ShellError("unexpected end of input")
+      }
+      InvalidSyntax(message) => {
+        self.context.last_status = 2
+        raise ShellError(message)
+      }
+    }
+    errdefer {
+      self.context.last_status = 2
+    }
+    let status = run_jobs(jobs, self.context)
+    return Exit(
+      if self.context.exited {
+        self.context.exit_status
+      } else {
+        status
+      },
+    )
+  }
   Exit(
     if self.context.exited {
       self.context.exit_status
@@ -181,10 +213,11 @@ pub async fn run(
   match session.feed(script) {
     Exit(status) => status
     Completed(status) => status
-    NeedMoreInput => {
-      ignore(session.finish())
-      2
-    }
+    NeedMoreInput =>
+      match session.finish() {
+        Completed(status) | Exit(status) => status
+        NeedMoreInput => 2
+      }
   }
 }
 

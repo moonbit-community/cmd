@@ -2,8 +2,8 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2719,
-    "finite-diagnostic": 120,
+    "exact-local": 2805,
+    "finite-diagnostic": 180,
     "typed-scenario": 43,
     "typed-dynamic-output": 12
   },
@@ -6014,7 +6014,7 @@
     {
       "case_id": "release-metadata-sh-help",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "fca556adecf77271ab3832f4ba9c37b68a127cf3e259a8192d93e3e949966e05",
+      "definition_sha256": "724a6889de843278482d6e6f2ea53246b22856ebbba7ad09c931f98f03164a19",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6024,7 +6024,7 @@
     {
       "case_id": "release-metadata-sh-version",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "3b0b9754b436bfae0942c67a395a6a651d36ccafbf122d53d520ffd070fab22c",
+      "definition_sha256": "069d097263effe313bf29549d3d28874c81371f303f231b0fddf9523b32a35fe",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7263,6 +7263,320 @@
         ]
       },
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-sh-shell-capture-reserved-then",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "6e90720ed2a9401ccda16f81d7aa5ee61af52a526427b21deeec7281ed8f809c",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-reserved-else",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "336cf0d07fce240c30c47a0727c76631e41417298255f8c45574c8d8d81983d4",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-reserved-elif",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ab9244a6ac4389216565a7d95332d6e46f8f100a8566b088b82c0216d917ce14",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-reserved-fi",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "00050d2bb4930b13289a300901e3ecc9ace7a5c4ef3cb54f6f5bd5d113c79602",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-reserved-do",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "a75f8377e896626710a5edd60b0a0c24b77079a94a5ceda20ff3fdf960ecf37a",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-reserved-done",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "1cb26ba53c2ef163b0ad90a381c236135e3eccfee52a86e513465d3f4a981782",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-reserved-in",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "31062884e582689f55646700e0f3257d4650c34a2b588d52370d5b8d421f09c0",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-reserved-esac",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "6e8730e19c35c14d5cfde60b25063db632cdda6039dd958b4d66c0d116897e83",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-pipe-reserved",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "2300f66434b29c4cb8051db074300ba0f977b2b802200c63b230722406880fba",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-assignment-before-word",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "330565dd53499cd02b785bc3d787d278e8de76bf0433795b9ce07704550c9eb7",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-shell-capture-redirect-before-word",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "f7382aeec37b438a0139b5192f9468bf30d721dadd452a489c3b32a9c5ee6634",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-if-and-close",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "51fa3a99483cb565be5d7040cfa63bb574f3010d23e50fad71d6ea65394f8101",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-while-or-close",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "eb4bc2f4955fcec4d6d77a95ff8d3db55f1ab66e0f99c20faf15891a44653216",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-group-and-close",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "c852ee75ca781bc4b4134b64483c3bb5b37ff682d9ad1f68568b77664edcab89",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-if-empty-body",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0a03be321b350c9a42d7512e275324c445d97ce471be11e3ffc50bed031f3398",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-if-empty-condition",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "8e74d691af5eb6a3c6d3667adc1d7af809428921b9709fa0207f7cf8a032177f",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-for-empty-body",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ed91fde02cf0239c0d3a6cc3308d9f04f1b12d68197212a3da0b257399514250",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-if-empty-else",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "163786d85adc464b3950820fdbde884d644762b37ad81aec2ad38eefa9d35ef8",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-function-empty",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "90d1d33c72f60a44a2302469d7eb4101ee1dba72a9baa9046fc416b6088d7e5e",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-subshell-empty",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "4757461bad3bb13ce35963741c2315151b2f83ac1f62052ca0127e15364561ae",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-group-empty",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "bf67cca299c7782f74095ee7e61e4be78d841b5d2d8a697c4a6e7ec6afa33546",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-while-empty-condition",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "5c3565ad7024ad3644595db040efa5ad4080d6de0df585188519f2fa00261322",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-export-audit-empty-case-arms",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "d3296fb0310cf4ff043ebbedd6d61d987410eb6e0732e3cb901995d18f1c69c5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-eof-command-empty-continuation",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "3ea2d88064521ddc24faeb278cb38a671c15077d04bcd3fdd9245f1f7c04136a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-eof-command-complete-continuation",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "993a763bd5bd631e84636087675a6f64b6aaab367a8c47786c175aa6e2a1883e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-eof-stdin-complete-continuation",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ee3fa44d6e0d7379e7538204735828a7aa90cea577ecfe6de04e7f6f5758ec1d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-eof-command-incomplete-if",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "089227405e5b4e3487e38344b88ee813f436f212cbc4ea49d4aa796e2c28bfa5",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-eof-command-incomplete-quote",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "dc140aee8709a7c05b77dd3ef40971fc969ec18ff2c57ba6a388c1c56c734951",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-eof-valid-logical-compounds",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "4ce7750c567b9a1e1cc1c283f5ba48e331cc8829044d8565b491c65287ce384a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
     },
     {
       "case_id": "phase3-tr-range",
@@ -16628,7 +16942,7 @@
     {
       "case_id": "release-metadata-make-help",
       "source": "tests/cases/make.json",
-      "definition_sha256": "6a771bc3322ea34cf8d6e438c5d07fd8e166d77b244ed7f17fbcc4a4245a84bd",
+      "definition_sha256": "dcd1a8089ecf9f530921f002386fe379ecdc8ab46749a16ee504ce489afdbb4c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -16638,7 +16952,7 @@
     {
       "case_id": "release-metadata-make-version",
       "source": "tests/cases/make.json",
-      "definition_sha256": "7d3932319e7ad76b89a5b8c6912382ef0631a0282bffcccac18b1600a5af6472",
+      "definition_sha256": "c1578acf4127bb78c54de2ae7b5afb090fdeb684939393d5b93ac9fbd7cfb88d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -17404,6 +17718,1191 @@
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-ordinary-default",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "4d3c156fcef320d6225b4f84060f4f60a67813680f1d2f2cbf7dd24113a606ac",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-bare-all",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "73efbc5c89dd4b607137668fdc01b810397a38748bc2dd8b6784b8e42cbb5ada",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-bare-none",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "e25e37488d8c2ec11298e804011fec0fe5356f6999dd5194c55b303100e9936d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-last-unexport",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "111b4e930f61b4cd55d838df95713fbc857ec06185ff9ec9081fc73905fdbaf5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-last-export",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f4b81e7371706ec695bc086045f4b4749f571a5bfa27aec582fee1e634a0ebb3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-named-before-all",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "a20d81acacb915f6fc98ee4c5b8228fc3f22357dc7d83905f176cab503115647",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-named-after-all",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8769522bf7715ad10ea948547007410e8eac5e30752f80c4669a3c929f9eb322",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-directive-after-rule",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f9696d32eca89767f07d103ac0ecfa999639313ca3ce024bb6989083a88e429b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-expanded-empty-list",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "6620d83e7b598e7f1d6f2753096f6c789873e3d0c21a93b9d06e45e0453ed8fd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-expanded-empty-unexport",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "83f1c1d0f5b02c6f783ba2b56973d775371855ffa2a62647b5b6eb378395464c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-included-policy",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "da6ba2f2d91a22adb18425a46f0539a8a7558df50ef77bfe0c8405620a8e9a50",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-undefined-placeholder",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "d69a132e144d6baed213a1ec7bab6cf51752508708697837a9552e90dfd8e9dc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-unexport-recursive",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "a1328034bce955601c0f0bce794e6b60944fb7201ae96fdc49c0f599697adc3c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-unexport-immediate",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "483955e0a35a18197d5e7faf83c610d9a07fdc48a64fc1f9bd6f0938bb0efdb2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-unexport-append",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "17f0b3a74a79c6823fe126ffdf9f12030a0fe8f474e4d2f7cd75ec6ee2901775",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-unexport-conditional",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8e0a91c153159675e7238b5613504f8306d13353b28ceae75fcc1f1f550855c7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-keyword-variable-target",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "df149b40579d679f7c7dd5d339629e58b2f578e56a7ec49bddf0829d55f986c8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-keyword-tab",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c6972eebfe93317a87431701f25379ac90d35838c6f3f2d717a60fb0b71a12b9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-keyword-cr",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8098bd2bcce7136a94a07f86751eb8770d5715215b3373c924653749d98b6dc9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-keyword-vertical-tab",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "718bb7fa8398b59c7ffb5f81df38e22653670397f8203a4e24850e4a567cf858",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-keyword-form-feed",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "81e850f0805bac4f9822dbcbe339837390b3d7f78913d9c6f0a22f04adb9bedf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-shell-policy-phases",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f8ac90c909f00f0917a642f25da6afb76cd06306f781738f5d181d3c5a3c4b78",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-special-target-phase",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "9138f1b7d8d4e8f6a2613fd09dc692df85324efaf5d0ff29526bf50a4481867e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-shell-recursion",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "412def4a07dcbf2690087e4f84cafb77a8787734d387273dde686cd1fd0f30c8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-side-effects",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "079e0485beccfc2a2ce1e36d9429fdc141427db7862cd3d7107d154875dc0702",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-child-default-policy",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8c5a7d1b546b32f31a982a5035cfdc4ab33269631ba02b051bfb16452f47db4f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-child-cli-transport",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "6282a744c075f59fdc47b13261094b283b1ccd64cd7918420870898d3e228c73",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-phase-environment-once",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "91f984d7834129f9483ef43588b9b7f03d456abee71dc3526c5b3a3956eba801",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-phase-dry-run-and-forced",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "10cb2d20133e17aa63b423afd7c340d1e57d6abb3a5112297964e0f1d9af8f19",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-phase-recipe-expansion-order",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "0400725c5bf32ec47273ae55772972946db2057f78d1512290fad4a68d3f712e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-phase-expansion-before-failed-recipe",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "06e8d7e03cfb1a32d41e3dc5a5620d5250a44929ab01f34c95e257de179e46e6",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-phase-expansion-before-first-recipe",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "36ae832721f8e9b681b1df7ea1e581d09ded9e45afb14a23922a32c67c436f8b",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-phase-fatal-environment-keep-going",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c69267832ca2f874646fa31a41672e1969d57e63f2445bc0ac61f92661696ad5",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-phase-dry-run-no-environment",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "78781a86008e825e30d841805021da059306379bc03b44a89e6dee65deb62253",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-phase-empty-and-colon-no-environment",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ab90d184fced24291a1f5b36be0b119f54d6e664dd381aef41b8e52ea046bc29",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-incomplete-if",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "d3704a7ed99c9c6dd879bd53c65495c63f9868d734c9c70bc795b4821fe8b0fe",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-incomplete-if",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "3b08acb2e96b99132938c1f0e186ad366cc3b128d1620ad361a45960b0788331",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-prefix-incomplete-if",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1ff03370cda0bee533122491a1ac79b6d82a9747aeadd102f0cca5a37b705672",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-prefix-incomplete-if",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1df14cc3e8ac1165897aa6329e7cce3de465f1ba315b78427be561dccd51c4e2",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-prefix-invalid-then",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ef7f180c9ed40666952acabad1966006065955c709e06d730bd048cccf8bc44f",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-prefix-invalid-then",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ef10ffdaaaed09af254b5f01f4ce2c09b40ed1e534746f094206dad45c68a733",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-arithmetic",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ef22f69cdfa6c00bdd46f9103471a274d302a578ed70193935bafd0ec74d44b8",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-arithmetic",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "bd6ccbe9000435774a4c95c5c3b50a7e0cab0b4330df8c4fa971ba2ba110b8e8",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-nounset",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c28c38b7562d986c9a25c2eff5c4521b705b4fa5bbb5eef7b9dd740656f58c65",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-nounset",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "56dded5c992ab28c44b65d263b9ff0a8dd1fc8d692d6f89a626e863a76bd385d",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-test-error",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "4eb210d61f5a71f02c11a1eadae4a3a77686938a49226feaa2b01ad13483770d",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-test-error",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "6e3b54edadcb4434a0fd9cf240fd0ccaed3ff310fdb779e1488fbe927d27d2d5",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-exit-seven",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "6386847cb7cb869885b39b9197322f5e7acaaf9c4d5f81caa817e8e47a0ca313",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-exit-seven",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "887cc0f0d14294f89dc6fa2c86a1257f0611e64159abeef1f3e5d67515f96c36",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-nul-exit",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f4b334440f00979d639fae7f08432f576d2e9791bf90884dee1d522bd73e8a86",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-nul-exit",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "10383eafb0cf78257696656117e9aa9eaead00bd4d010ad90acfa505eb3b0b16",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-nul-invalid-suffix",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1885e3fcd1b1daf4af56542496665f7a9671e6ce3079037259efa501bfaae37b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-nul-invalid-suffix",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "84915d020400eef603334ceb217140857077583383e2e51b0aac8661220073c1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-nul-nounset",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "5130afdfda77aab0af1bea901527e73085af0d5cd611f7e4ea43811ae872d9f5",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-nul-nounset",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1d460e9957c03aec3731986972cc58382dd3ebdee8cf78ec539fd17b2559b986",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-missing-command",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "82c927cb7d95ea982cac879b3781ff394cd3fee1799671cb15f4a1dc68f1839f",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-missing-command",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "db3347d466f9337d5b91392c5be67ed3f8add56831a154bd35de4f4009edb543",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-function-newlines",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "94a57f81d353396786db04bed9acbfd88db1b280310277cb3c454607b1eb58fb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-assignment-newlines",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "9bbf20867b2baf8e93e97a93a0c9d08d0594d12c812b07df3ecb3371506bfd35",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-capture-export-modifier-chains",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "e68c405cf4bf54dcdc1676e3e224d1590dd3a9526cd6827da61ee803b93c75b9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-bare-form-feed",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "be4f65181a1c705f7573411df151cf977e304be30b56c605154892d06179cd4f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-unexport-bare-form-feed",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "878e59b0686bb4ce2afddb01a5492b647a29896d4c2150227c5ae39ded253d65",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-assignment-form-feed",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "3624ea8a338c431b77b30057d8572ae7e6d31180257080fbbaa780418723b3e4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-bare-vertical-tab",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ab0ebf9900d8f97f3d95c650c97c9b8b9a357c7cc5bb663164be326f7aeb5721",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-unexport-bare-vertical-tab",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f60741a60ef0749104134e0f5a8aa884ce2ff58d9b85ef41be3c327391755814",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-assignment-vertical-tab",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "92e09d14e4e2a61fe4ea8b7341f0c111f83aad830ab7789d5b725ede4922ec93",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-ignored-recipe-incomplete",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ceeafefdf8999af8003c9c64d059033683873b3069f223d6e3a314f12a263141",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-ignored-recipe-reserved",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "90d470642d542ab38ebd9910fa421a563756c9ecf6a2c685a47e923741eb58d6",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-ignored-recipe-arithmetic",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "a50fa16df5de2be5865222c23de2b0963175d33d1b996cb139641db5269fb743",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-ignored-recipe-nounset",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "d3150629a677c91802e791509bf9f4e7d643714820fdcf9c5075b2c842cd9b2c",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-invalid-text-capture",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "29185764a2f552f434ef7da4075f9019f8856be402d586473be528a78537c429",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-unsupported-modifier-override",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "9b13718c80287a9543da9fb5a4a41f8e11168eb9186a2292b34602a6586beb1e",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-unsupported-modifier-private",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "e4ee59211644f78e2b71736dbf11e1e2537a3c7b4393818a1e36616d893a51d4",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-leading-export-form-feed",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "31755c91d3a53f01ca7b326eda70063d94623617631c3b111b462734ec3d67dc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-leading-unexport-form-feed",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "78768b8fc54d6d677e3cf36dfeebb05198cc7a15b2f754f677f34d2a20241f73",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-leading-export-vertical-tab",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1612105209c645f9af86e2ee69f9cf0d82307dbb78efc7467917177647a0fb4b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-leading-unexport-vertical-tab",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "321999676ce0f0f52af0b029e5921b1f67a37df5bbb2192fa0303b4c7ee48682",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-assignment-carriage-return",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "463327f429955138534119dd10a8d9f22cd9a40d192f20f4bf3eebfc3756042d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-leading-export-carriage-return",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "0dc86c188e564c796b1899b72b2bc3136825156d88365fa7b0dfdf5a869e1091",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-audit-leading-unexport-carriage-return",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "346296de3f4ef7fb28aa26860a28fad8273f7d68d1ca53cb7420e190a3bdb298",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-function-fast-literal-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ee50ac05a6cc716330865ffc67b1729c309ba2648395bfc5211081233397e29c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-assignment-fast-literal-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "3adf88103781dadb915d92607f42e34c215c0ac5b1bf4bf610e0b99684aa31a2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-function-slow-semicolon-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "bda99d3c2da069da1987caa610b57b5b5257eef49f742758b20d4b2ea177391e",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact make success, empty captured value, shell status 2 and a continued recipe distinguish a shell syntax error from a fatal make error; source locations differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-assignment-slow-semicolon-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "d36e0ff22c0c859f7acd01b7647ff6f4419e30f5dc913413225c9ebd7d9aad46",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact make success, empty captured value, shell status 2 and a continued recipe distinguish a shell syntax error from a fatal make error; source locations differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-function-slow-comment-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "09330bc8090a889e0eb361d2ac7006808cc8f310229280d900547160584e04f2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-assignment-slow-comment-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "a852eee6c6715d08e69b419117cf32366ed39658be709660b79e648b59864f48",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-function-fast-single-quote-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "4812b0b1ce4d0963796f3733ba005464e8874f58a83fa50f7f1a6875a94b3658",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-assignment-fast-single-quote-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "d141692853b0c5fea4c19ba1d946bbb08b9066cdc2fd889553d4b061d73565a4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-function-slow-double-quote-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "d9a9b0c1892236c5b4e440170114a04b196dd83757a90d9cc3895d525bba76ca",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-assignment-slow-double-quote-lf",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "250cdd4a4a8cfd7bdfd3c8e7e31f5e7d67a09e75f576679bb3b95f43980c14a0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-function-fast-continuation",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "b0dd59695c995cce1524c476a37e7b1e66cca21ab0fa758bf2eb51cc738b170f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-assignment-fast-continuation",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1fc72818f98b090fe5d4ee2c838874f626b45f6210e75453d25e5ac3cf2c7355",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-function-slow-nonstandard-ifs",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c81092f59f4153c5ba2513a105f775bb75174d8a22a8a68e93d322b1cf68b5d0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-lf-assignment-slow-nonstandard-ifs",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8b31c9ace93fd8d3568d24b9c4ce4f94ec4ad2bce5bb2d513477f6e2645ac7c7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-no-command-empty",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "722d734cc03dd7a790b293486cb2c5cfe440b802e4f61a33dc529fee326e43b4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-no-command-empty",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "5c2d85e1a015d01f31e27073746df606830258936858ad6fd8e356d67041438a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-no-command-blanks",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "de53d59f197d8838919ef7515e6985a600a6f05acbd10bcd4d690b36b105b56c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-no-command-blanks",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "47706fb15e4118c9a9e3af8f09f5b30eb48e3e6a2c7d870022caed181cc646d0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-no-command-continuation",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "3846f0f0ea87f042ad318b9eaaf72fc42ce9bc0df9601ffbb17566bbc38e4e33",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-no-command-continuation",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "cd16945c4f537f6cdfa1ff795943cc13823dc5d043cbc1f153ca7fe743636aee",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-no-command-padded-continuation",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "72b147177feee1d2f0f6de3fc17e682b2d77fee184e4c35e88b19e22b94fc421",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-no-command-padded-continuation",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "10927aaf883c9bdd0db5ec5264bbacfcf333517e58f6712c9baeda7b64739ea5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-no-command-forced",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "4f2ee56e91481432116c28fb23dc67882c5349b3cac60f0e41acf0351ec2f9ce",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-no-command-forced",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c95fc096546037ae00981abae55ebfacfdaeb0d7772b99eb975e554b896d8977",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-literal-lf-name",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "16df93857ab9bde5b8e9697ddc54b86983f9b4897aedd2658ac8dcdafc284774",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-literal-lf-name",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "b262c938a97523fca5046f40bb6feb29370989087951bc0d4434162d5b7aff92",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-literal-cr-name",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "09294a6cd35eb9ebeed309db4d999d118e81776de9b43c98710bf40be554e7c8",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-literal-cr-name",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8d5cac8ac296a42a6cebd6fcd644716961501e057362a986e96fde79d5ad5ce7",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-forced-missing-argument",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "86f3e19435b636efb261920d6ac3251e8c65cefbc38da018fa68b50787b523f4",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-forced-missing-argument",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "03a68bceee4b14c54ccf1aea6687cd5f209e3cbca76f22fc3591e30f6143150d",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-forced-blank-argument",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "aaac171ccfd698b663a9509f9763119cd2e97760b3f644bca7957ccf85e0801f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-forced-blank-argument",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "4859675a22c20198349bb8ae8fcbc56ad871227905308789cee3a40ff3f61dc3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-function-forced-continuation",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "2fc82363b5ed76f635f1ba81379cf94be0fb30fc09318606553e50f7faded80d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-assignment-forced-continuation",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "9068da0cd0d07920882d8f4408d20d7abf5421cfd9caa86067645e236f225cc0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-eof-empty-recursive-selector",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "40577df445ae3fc145eca35da3fb33518f6517ac420ba30dad5ebef7c2f10100",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
       },
       "required_work": ""
     },
@@ -23006,7 +24505,7 @@
     {
       "case_id": "release-metadata-split-help",
       "source": "tests/cases/split.json",
-      "definition_sha256": "eece176e51cb25f7ecf8cd3c1384ebf6171b84914f3138b8684a5b529eb91668",
+      "definition_sha256": "005b9ffd0464ab29adec8d7c2982c28d3306bd68c5d15a9c4b40daa3415f01eb",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -23016,7 +24515,7 @@
     {
       "case_id": "release-metadata-split-version",
       "source": "tests/cases/split.json",
-      "definition_sha256": "81875e28e6124c5286a57de5ac5d52e9f458151dee131d2d8844c14356d2647b",
+      "definition_sha256": "a598f2d91df7bc9a3605632088b198148fee236918c15db2af9551fe90a08ba9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -23517,6 +25016,27 @@
       "case_id": "f31-split-test-size-targets",
       "source": "tests/cases/split.json",
       "definition_sha256": "e275130f6550d9c8cc25eeb59064c0698f7e5c59c0b507ec0687b63d7363a814",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-export-audit-filter-reserved",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "77a65663fb09ada7aa76127f1395d197f936211d60f0fb48f1389966a040601a",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-eof-filter-continuation",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "0cdfcc4f277900dc12f4609a91c6411377c25a3bf83b2a6a98da2096bc2d8931",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -31577,6 +33097,117 @@
         "scenario:f31-sh-test-size-posix"
       ]
     },
+    "f31-sh-shell-capture-reserved-then": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-reserved-else": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-reserved-elif": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-reserved-fi": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-reserved-do": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-reserved-done": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-reserved-in": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-reserved-esac": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-pipe-reserved": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-assignment-before-word": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-shell-capture-redirect-before-word": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-sh-export-audit-if-and-close": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-while-or-close": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-group-and-close": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-if-empty-body": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-if-empty-condition": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-for-empty-body": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-if-empty-else": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-function-empty": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-subshell-empty": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-group-empty": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-while-empty-condition": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-sh-export-audit-empty-case-arms": {
+      "kind": "exact"
+    },
+    "f31-sh-eof-command-empty-continuation": {
+      "kind": "exact"
+    },
+    "f31-sh-eof-command-complete-continuation": {
+      "kind": "exact"
+    },
+    "f31-sh-eof-stdin-complete-continuation": {
+      "kind": "exact"
+    },
+    "f31-sh-eof-command-incomplete-if": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    "f31-sh-eof-command-incomplete-quote": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    "f31-sh-eof-valid-logical-compounds": {
+      "kind": "exact"
+    },
     "phase3-tr-range": {
       "kind": "exact"
     },
@@ -34713,6 +36344,386 @@
     "f31-make-test-size-targets": {
       "kind": "exact"
     },
+    "f31-make-export-ordinary-default": {
+      "kind": "exact"
+    },
+    "f31-make-export-bare-all": {
+      "kind": "exact"
+    },
+    "f31-make-export-bare-none": {
+      "kind": "exact"
+    },
+    "f31-make-export-last-unexport": {
+      "kind": "exact"
+    },
+    "f31-make-export-last-export": {
+      "kind": "exact"
+    },
+    "f31-make-export-named-before-all": {
+      "kind": "exact"
+    },
+    "f31-make-export-named-after-all": {
+      "kind": "exact"
+    },
+    "f31-make-export-directive-after-rule": {
+      "kind": "exact"
+    },
+    "f31-make-export-expanded-empty-list": {
+      "kind": "exact"
+    },
+    "f31-make-export-expanded-empty-unexport": {
+      "kind": "exact"
+    },
+    "f31-make-export-included-policy": {
+      "kind": "exact"
+    },
+    "f31-make-export-undefined-placeholder": {
+      "kind": "exact"
+    },
+    "f31-make-export-unexport-recursive": {
+      "kind": "exact"
+    },
+    "f31-make-export-unexport-immediate": {
+      "kind": "exact"
+    },
+    "f31-make-export-unexport-append": {
+      "kind": "exact"
+    },
+    "f31-make-export-unexport-conditional": {
+      "kind": "exact"
+    },
+    "f31-make-export-keyword-variable-target": {
+      "kind": "exact"
+    },
+    "f31-make-export-keyword-tab": {
+      "kind": "exact"
+    },
+    "f31-make-export-keyword-cr": {
+      "kind": "exact"
+    },
+    "f31-make-export-keyword-vertical-tab": {
+      "kind": "exact"
+    },
+    "f31-make-export-keyword-form-feed": {
+      "kind": "exact"
+    },
+    "f31-make-export-shell-policy-phases": {
+      "kind": "exact"
+    },
+    "f31-make-export-special-target-phase": {
+      "kind": "exact"
+    },
+    "f31-make-export-shell-recursion": {
+      "kind": "exact"
+    },
+    "f31-make-export-side-effects": {
+      "kind": "exact"
+    },
+    "f31-make-export-child-default-policy": {
+      "kind": "exact"
+    },
+    "f31-make-export-child-cli-transport": {
+      "kind": "exact"
+    },
+    "f31-make-export-phase-environment-once": {
+      "kind": "exact"
+    },
+    "f31-make-export-phase-dry-run-and-forced": {
+      "kind": "exact"
+    },
+    "f31-make-export-phase-recipe-expansion-order": {
+      "kind": "exact"
+    },
+    "f31-make-export-phase-expansion-before-failed-recipe": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+    },
+    "f31-make-export-phase-expansion-before-first-recipe": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+    },
+    "f31-make-export-phase-fatal-environment-keep-going": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the failing target or recursive-variable category alongside exact status, stdout and file effects. GNU source-location and project diagnostic spelling differ; this does not claim byte-identical stderr."
+    },
+    "f31-make-export-phase-dry-run-no-environment": {
+      "kind": "exact"
+    },
+    "f31-make-export-phase-empty-and-colon-no-environment": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-function-incomplete-if": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-assignment-incomplete-if": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-function-prefix-incomplete-if": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-assignment-prefix-incomplete-if": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-function-prefix-invalid-then": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-assignment-prefix-invalid-then": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-function-arithmetic": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-assignment-arithmetic": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-function-nounset": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-assignment-nounset": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-function-test-error": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-assignment-test-error": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-function-exit-seven": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-assignment-exit-seven": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-function-nul-exit": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-assignment-nul-exit": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-function-nul-invalid-suffix": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-assignment-nul-invalid-suffix": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-function-nul-nounset": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-assignment-nul-nounset": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-function-missing-command": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-assignment-missing-command": {
+      "kind": "diagnostic-fragment",
+      "reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    "f31-make-shell-capture-function-newlines": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-assignment-newlines": {
+      "kind": "exact"
+    },
+    "f31-make-shell-capture-export-modifier-chains": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-bare-form-feed": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-unexport-bare-form-feed": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-assignment-form-feed": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-bare-vertical-tab": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-unexport-bare-vertical-tab": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-assignment-vertical-tab": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-ignored-recipe-incomplete": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-make-export-audit-ignored-recipe-reserved": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-make-export-audit-ignored-recipe-arithmetic": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-make-export-audit-ignored-recipe-nounset": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-make-export-audit-invalid-text-capture": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-make-export-audit-unsupported-modifier-override": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-make-export-audit-unsupported-modifier-private": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-make-export-audit-leading-export-form-feed": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-leading-unexport-form-feed": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-leading-export-vertical-tab": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-leading-unexport-vertical-tab": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-assignment-carriage-return": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-leading-export-carriage-return": {
+      "kind": "exact"
+    },
+    "f31-make-export-audit-leading-unexport-carriage-return": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-function-fast-literal-lf": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-assignment-fast-literal-lf": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-function-slow-semicolon-lf": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact make success, empty captured value, shell status 2 and a continued recipe distinguish a shell syntax error from a fatal make error; source locations differ."
+    },
+    "f31-make-shell-lf-assignment-slow-semicolon-lf": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact make success, empty captured value, shell status 2 and a continued recipe distinguish a shell syntax error from a fatal make error; source locations differ."
+    },
+    "f31-make-shell-lf-function-slow-comment-lf": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-assignment-slow-comment-lf": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-function-fast-single-quote-lf": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-assignment-fast-single-quote-lf": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-function-slow-double-quote-lf": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-assignment-slow-double-quote-lf": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-function-fast-continuation": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-assignment-fast-continuation": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-function-slow-nonstandard-ifs": {
+      "kind": "exact"
+    },
+    "f31-make-shell-lf-assignment-slow-nonstandard-ifs": {
+      "kind": "exact"
+    },
+    "f31-make-eof-function-no-command-empty": {
+      "kind": "exact"
+    },
+    "f31-make-eof-assignment-no-command-empty": {
+      "kind": "exact"
+    },
+    "f31-make-eof-function-no-command-blanks": {
+      "kind": "exact"
+    },
+    "f31-make-eof-assignment-no-command-blanks": {
+      "kind": "exact"
+    },
+    "f31-make-eof-function-no-command-continuation": {
+      "kind": "exact"
+    },
+    "f31-make-eof-assignment-no-command-continuation": {
+      "kind": "exact"
+    },
+    "f31-make-eof-function-no-command-padded-continuation": {
+      "kind": "exact"
+    },
+    "f31-make-eof-assignment-no-command-padded-continuation": {
+      "kind": "exact"
+    },
+    "f31-make-eof-function-no-command-forced": {
+      "kind": "exact"
+    },
+    "f31-make-eof-assignment-no-command-forced": {
+      "kind": "exact"
+    },
+    "f31-make-eof-function-literal-lf-name": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    "f31-make-eof-assignment-literal-lf-name": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    "f31-make-eof-function-literal-cr-name": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    "f31-make-eof-assignment-literal-cr-name": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    "f31-make-eof-function-forced-missing-argument": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    "f31-make-eof-assignment-forced-missing-argument": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    "f31-make-eof-function-forced-blank-argument": {
+      "kind": "exact"
+    },
+    "f31-make-eof-assignment-forced-blank-argument": {
+      "kind": "exact"
+    },
+    "f31-make-eof-function-forced-continuation": {
+      "kind": "exact"
+    },
+    "f31-make-eof-assignment-forced-continuation": {
+      "kind": "exact"
+    },
+    "f31-make-eof-empty-recursive-selector": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
     "phase3-sort-basic": {
       "kind": "exact"
     },
@@ -36606,6 +38617,13 @@
       "kind": "exact"
     },
     "f31-split-test-size-targets": {
+      "kind": "exact"
+    },
+    "f31-split-export-audit-filter-reserved": {
+      "kind": "diagnostic-fragment",
+      "reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    "f31-split-eof-filter-continuation": {
       "kind": "exact"
     },
     "phase4-touch-create": {

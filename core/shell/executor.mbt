@@ -68,6 +68,50 @@ async fn builtin_error(context : Context, message : String) -> Int32 {
 }
 
 ///|
+async fn copy_child_input(reader : &@io.Reader, writer : &@io.Writer) -> Unit {
+  let buffer : FixedArray[Byte] = FixedArray::make(8192, 0)
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  while reader.read(buffer) is count && count > 0 {
+    writer.write(bytes[:count]) catch {
+      @io.PipeClosed => return
+      // This is the owned pipe's write, not the source read. A child may close
+      // stdin before consuming it; its own exit status remains authoritative.
+      @os_error.OSError(_) => return
+      error => raise error
+    }
+  }
+}
+
+///|
+async fn launch_external(
+  prepared : Prepared,
+  context : Context,
+  stdin? : &@async_process.ProcessInput,
+  stdout? : &@async_process.ProcessOutput,
+  stderr? : &@async_process.ProcessOutput,
+) -> Int32 {
+  @child_process.run(
+    @child_process.child(prepared.argv[0], prepared.argv[1:].to_owned(), context={
+      cwd: context.cwd,
+      env: prepared.env,
+    }),
+    stdin?,
+    stdout?,
+    stderr?,
+  ) catch {
+    @os_error.OSError(_) as error => {
+      write_output(context, "sh: \{prepared.argv[0]}: \{error}\n", error=true)
+      if error.is_ENOENT() || error.is_ENOTDIR() {
+        127
+      } else {
+        126
+      }
+    }
+    error => raise error
+  }
+}
+
+///|
 async fn run_external(prepared : Prepared, context : Context) -> Int32 {
   @async.with_task_group() <| group => {
     let stdin : &@async_process.ProcessInput? = match context.input {
@@ -77,10 +121,9 @@ async fn run_external(prepared : Prepared, context : Context) -> Int32 {
         group.spawn_bg(
           () => {
             defer writer.close()
-            writer.write_reader(reader)
+            copy_child_input(reader, writer)
           },
           no_wait=true,
-          allow_failure=true,
         )
         Some(input)
       }
@@ -93,15 +136,7 @@ async fn run_external(prepared : Prepared, context : Context) -> Int32 {
         writer.write_reader(reader)
       })
       return normalize_status(
-        @child_process.run(
-          @child_process.child(prepared.argv[0], prepared.argv[1:].to_owned(), context={
-            cwd: context.cwd,
-            env: prepared.env,
-          }),
-          stdin?,
-          stdout=output,
-          stderr=output,
-        ),
+        launch_external(prepared, context, stdin?, stdout=output, stderr=output),
         context,
       )
     }
@@ -129,15 +164,7 @@ async fn run_external(prepared : Prepared, context : Context) -> Int32 {
       None
     }
     normalize_status(
-      @child_process.run(
-        @child_process.child(prepared.argv[0], prepared.argv[1:].to_owned(), context={
-          cwd: context.cwd,
-          env: prepared.env,
-        }),
-        stdin?,
-        stdout?,
-        stderr?,
-      ),
+      launch_external(prepared, context, stdin?, stdout?, stderr?),
       context,
     )
   }
@@ -324,17 +351,14 @@ async fn eval_statement(statement : Statement, context : Context) -> Int32 {
 }
 
 ///|
-async fn run_substitution(
-  script : String,
-  parent : Context,
-) -> (Int32, String) raise ShellError {
+async fn run_substitution(script : String, parent : Context) -> (Int32, String) {
   let buffer : CaptureBuffer = { bytes: [], }
   let nested = clone_context(parent, capture=buffer)
   nested.output = None
   nested.output_channel = nested.output_channel.max(nested.error_channel) + 1
   let status = run_jobs(parse(script), nested) catch {
     ShellError(message) => raise ShellError("command substitution: \{message}")
-    err => raise ShellError("command substitution: \{err}")
+    err => raise err
   }
   (if nested.exited { nested.exit_status } else { status }, buffer.text())
 }
@@ -396,13 +420,7 @@ async fn execute_prepared(prepared : Prepared, context : Context) -> Int32 {
           let status = run_jobs(body, context)
           context.return_status.unwrap_or(status)
         }
-        None =>
-          run_external(prepared, context) catch {
-            err => {
-              write_output(context, "sh: \{err}\n", error=true)
-              127
-            }
-          }
+        None => run_external(prepared, context)
       }
   }
 }
@@ -417,6 +435,7 @@ async fn run_command(command : Command, context : Context) -> Int32 {
       context.exit_status = 2
       return builtin_error(context, message)
     }
+    error => raise error
   }
   let redirects = prepare_redirects(command.redirects, context) catch {
     ShellError(message) => {
@@ -425,6 +444,7 @@ async fn run_command(command : Command, context : Context) -> Int32 {
       context.exit_status = 2
       return builtin_error(context, message)
     }
+    error => raise error
   }
   let previous_input = context.input
   let previous_output = context.output
@@ -451,7 +471,10 @@ async fn run_command(command : Command, context : Context) -> Int32 {
     for redirect in redirects {
       match redirect {
         ReadPath(path) => {
-          let file = @fs.open(path, mode=ReadOnly)
+          let file = @fs.open(path, mode=ReadOnly) catch {
+            @os_error.OSError(_) as error => raise ShellError(error.to_string())
+            error => raise error
+          }
           files.push(file)
           context.input = Some(file)
         }
@@ -471,7 +494,10 @@ async fn run_command(command : Command, context : Context) -> Int32 {
             mode=WriteOnly,
             create_mode=if append { OpenOrCreate } else { CreateOrTruncate },
             append~,
-          )
+          ) catch {
+            @os_error.OSError(_) as error => raise ShellError(error.to_string())
+            error => raise error
+          }
           files.push(file)
           let channel = context.output_channel.max(context.error_channel) + 1
           if error {
@@ -526,6 +552,7 @@ async fn run_command(command : Command, context : Context) -> Int32 {
         context.exit_status = 2
         return builtin_error(context, message)
       }
+      error => raise error
     }
     execute_prepared(prepared, context)
   } catch {
@@ -544,19 +571,7 @@ async fn run_command(command : Command, context : Context) -> Int32 {
       }
       141
     }
-    err => {
-      if !redirected && special_builtin(argv.get(0).unwrap_or("")) {
-        context.exited = true
-        context.expansion_failed = true
-        context.exit_status = 2
-      }
-      write_output(context, "sh: \{err}\n", error=true)
-      if redirected {
-        1
-      } else {
-        2
-      }
-    }
+    err => raise err
   }
 }
 
