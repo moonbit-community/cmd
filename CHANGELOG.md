@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
+- Prepare core 0.9.5, make 0.2.8, sh 0.2.9 and split 0.1.10 after independent
+  audit found a macOS 15 raw-path gap beyond size predicates. Apply the POSIX
+  trailing-slash directory requirement to all file predicates and both timestamp
+  operands, with actual sh/recipe/filter regressions. Publication and required
+  three-platform acceptance remain pending; issue #31 remains open.
 - Extend the finite shell/make language profile with arithmetic side effects,
   backticks, expanded here-documents, standard-stream aliases, loop levels,
   printf/test, variable/export recursion, secondary expansion and SHELLSTATUS.

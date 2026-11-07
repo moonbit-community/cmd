@@ -1014,7 +1014,7 @@ async fn run(arguments : Array[String]) -> Unit {
       jobs = @string.parse_int(argument[2:])
     } else if options && (argument == "-h" || argument == "--help") {
       @stdio.stdout.write(
-        "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\n",
+        "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\nOn POSIX, every file-test operand ending in a slash must name a directory.\n",
       )
       return
     } else if options && argument.has_prefix("-") && argument != "-" {
@@ -1210,7 +1210,7 @@ async fn run(arguments : Array[String]) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("make 0.2.7\n")
+    @stdio.stdout.write("make 0.2.8\n")
     return
   }
   run(@env.args()[1:].to_owned()) catch {

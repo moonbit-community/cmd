@@ -1,13 +1,13 @@
 # split
 
-Published: `cli/split@0.1.9`, using `cli/core@0.9.4`.
-Exact-coordinate acceptance and earlier release evidence are recorded in the
+Development candidate: `cli/split@0.1.10`, using `cli/core@0.9.5`.
+Publication and exact-coordinate acceptance remain pending. Earlier release evidence is recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 Split input into pieces for MoonX.
 
 ```sh
-moonx cli/split@0.1.9 [OPTION]... [FILE [PREFIX]]
+moonx cli/split@0.1.10 [OPTION]... [FILE [PREFIX]]
 ```
 
 ## Supported scope
@@ -17,7 +17,10 @@ Split files or stdin by records, bytes, bounded line bytes or N-way partitions. 
 Filter `test -s` follows final targets and queries metadata without opening them.
 Missing/cyclic targets are false; unavailable sizes such as macOS directories
 produce explicit shell errors. Filters retain responsibility for handling errors
-and for their explicit output files.
+and for their explicit output files. On POSIX, every file predicate and both
+timestamp-comparison operands require a trailing slash to name a directory.
+Directory links ending in a slash select their directory, so -L/-h are false;
+unsuffixed links retain their ordinary behavior.
 
 Filter sessions inherit the shared shell's arithmetic assignments, backticks,
 expanded here-documents, standard stream aliases, loop control and finite
@@ -60,8 +63,8 @@ A complete filter ending in backslash-LF executes at EOF; genuinely unfinished
 syntax still fails.
 
 ```sh
-moonx cli/split@0.1.9 -l 100 input.txt part-
-moonx cli/split@0.1.9 -b 64K -d input.bin chunk-
+moonx cli/split@0.1.10 -l 100 input.txt part-
+moonx cli/split@0.1.10 -b 64K -d input.bin chunk-
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)
