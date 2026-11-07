@@ -59,6 +59,8 @@ separate queries do not promise an atomic identity snapshot. The current macOS
 public API cannot measure directory sizes; both directories and links to them
 therefore produce an explicit size-capability error, including under `!`, `-a`
 and `-o`. Linux directory sizes remain supported.
+On POSIX, a trailing slash requires a directory even when a host query
+permissively returns a regular symlink target.
 
 - This is a finite shell subset; background jobs and complete Bash/POSIX grammar
   are not claimed.

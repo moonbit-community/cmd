@@ -68,6 +68,7 @@ async test "test size preserves POSIX intermediate symlinks before parent compon
   for
     name in [
       "missing/../real/marker", "marker/../real/marker", "real/marker/", "file-link/",
+      "file-link//",
     ] {
     let actual = run_builtin(["test", "-s", name], session.context)
     if actual != Some(1) {
@@ -140,7 +141,7 @@ async test "test size preserves directory capability errors through expressions 
   } noraise {
     size => Some(size)
   }
-  for name in ["directory", "link"] {
+  for name in ["directory", "link", "directory/", "link/"] {
     let errors : ShellTestOutput = { bytes: [], }
     let session = Session::new(cwd=root, env={}, error=errors)
     match available {

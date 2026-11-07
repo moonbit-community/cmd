@@ -33,8 +33,16 @@ async fn test_file(
       "-s" => {
         // Validate the raw lookup before canonicalization can remove a
         // non-directory parent component. Size itself must follow the target.
-        let _ = @fs.kind(path)
-        @fs.file_size(@fs.realpath(path)) > 0L
+        let kind = @fs.kind(path)
+        // Some macOS versions report a regular symlink target even with a
+        // trailing slash. POSIX still requires that operand to be a directory.
+        if !(@async.platform is Windows) &&
+          path.has_suffix("/") &&
+          kind != Directory {
+          false
+        } else {
+          @fs.file_size(@fs.realpath(path)) > 0L
+        }
       }
       _ => false
     }

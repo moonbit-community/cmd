@@ -2883,7 +2883,7 @@
       "command": "sh",
       "args": [
         "-c",
-        "for path in alias/../marker missing/../real/marker marker/../real/marker real/marker/ file-link/; do test -s \"$path\"; printf '%s|' $?; done"
+        "for path in alias/../marker missing/../real/marker marker/../real/marker real/marker/ file-link/ file-link//; do test -s \"$path\"; printf '%s|' $?; done"
       ],
       "stdin_text": "",
       "files": [
@@ -2912,7 +2912,7 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "0|1|1|1|1|",
+      "expected_stdout_text": "0|1|1|1|1|1|",
       "expected_stderr_text": "",
       "normalizations": [],
       "comparison": "contract",
@@ -3073,7 +3073,7 @@
       "command": "sh",
       "args": [
         "-c",
-        "test -s directory; printf '%s|' $?; test -s link; printf '%s' $?"
+        "test -s directory; printf '%s|' $?; test -s link; printf '%s|' $?; test -s directory/; printf '%s|' $?; test -s link/; printf '%s' $?"
       ],
       "stdin_text": "",
       "files": [
@@ -3089,7 +3089,7 @@
       ],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "0|0",
+      "expected_stdout_text": "0|0|0|0",
       "expected_stderr_text": "",
       "normalizations": [],
       "comparison": "contract",

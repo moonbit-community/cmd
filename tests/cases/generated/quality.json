@@ -7189,7 +7189,7 @@
     {
       "case_id": "f31-sh-test-size-raw-components",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "2ef002778e6677af52935df4e58ef6672542c344c788520d6dc48334ec116263",
+      "definition_sha256": "090e0dbe3ebf9ee510291dc84026b3c9db23a82513a15cf54f7d48b054ffd26f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -7229,7 +7229,7 @@
     {
       "case_id": "f31-sh-test-size-linux-directories",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "a152b6155fd9957280c18974b0f55da59cf7f8f56f7d3a1a638d05885c11bfb4",
+      "definition_sha256": "a790a8dfb34e356a39529949026bd399635ae6b5d4335c12c019ed92eda5c383",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
