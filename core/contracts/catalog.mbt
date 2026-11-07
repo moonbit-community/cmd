@@ -322,6 +322,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       ],
       exit_codes=[0, 125, 126, 127],
     ),
+    // Recursive variables/exports and secondary prerequisites retain GNU order.
+    // Inherited POSIX FIFO tokens are separate from local -j scheduling;
+    // descriptor-pipe and Windows semaphore authentication reject explicitly.
     contract(
       "make",
       Restricted,
@@ -333,6 +336,9 @@ pub fn command_catalog() -> Array[CommandContract] {
         "what-if",
       ],
     ),
+    // Shared sessions implement arithmetic side effects, backticks, expanded
+    // heredocs, loop levels, printf/test and actual stdout/stderr aliases.
+    // Descriptor import/closure and terminal job control remain boundaries.
     contract(
       "sh",
       Restricted,

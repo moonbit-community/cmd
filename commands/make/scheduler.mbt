@@ -6,13 +6,13 @@ priv struct BuildNode {
 }
 
 ///|
-fn plan_target(
+async fn plan_target(
   target : String,
   database : Database,
   visiting : Set[String],
   planned : Set[String],
   order : Array[BuildNode],
-) -> Unit raise MakeError {
+) -> Unit {
   if planned.contains(target) {
     return
   }
@@ -34,9 +34,10 @@ fn plan_target(
     }
   }
   let dependencies = match rule {
-    Some(rule) => rule.dependencies
+    Some(rule) => resolve_prerequisites(rule, database)
     None => []
   }
+  let rule = rule.map(rule => { ..rule, dependencies, })
   for dependency in dependencies {
     plan_target(dependency, database, visiting, planned, order)
   }
@@ -52,28 +53,44 @@ async fn execute_target(
   settings : Settings,
 ) -> Unit {
   let target_path = path_in(settings.cwd, node.target)
+  let target_virtual = settings.what_if.contains(node.target)
   guard node.rule is Some(rule) else {
-    if !@fs.exists(target_path) {
+    if !target_virtual && !@fs.exists(target_path) {
       raise MakeError("no rule to make target '\{node.target}'")
     }
     return
   }
-  let target_exists = if rule.phony { false } else { @fs.exists(target_path) }
-  let mut rebuild = settings.always_make || rule.phony || !target_exists
-  if !rebuild {
-    for dependency in rule.dependencies {
-      let dependency_path = path_in(settings.cwd, dependency)
-      if settings.what_if.contains(dependency) ||
-        (@fs.exists(dependency_path) && newer(dependency_path, target_path)) ||
-        database.rules.get(dependency) is Some({ phony: true, .. }) {
-        rebuild = true
-        break
-      }
+  let target_exists = target_virtual || (!rule.phony && @fs.exists(target_path))
+  let newer_dependencies : Array[String] = []
+  for dependency in rule.dependencies {
+    let dependency_path = path_in(settings.cwd, dependency)
+    let dependency_virtual = settings.what_if.contains(dependency)
+    if !target_exists ||
+      settings.always_make ||
+      (dependency_virtual && !target_virtual) ||
+      (
+        !dependency_virtual &&
+        (
+          database.rules.get(dependency) is Some({ phony: true, .. }) ||
+          !@fs.exists(dependency_path) ||
+          (!target_virtual && newer(dependency_path, target_path))
+        )
+      ) {
+      newer_dependencies.push(dependency)
     }
   }
+  let rebuild = settings.always_make ||
+    !target_exists ||
+    !newer_dependencies.is_empty()
   if rebuild {
     for recipe in rule.recipes {
-      let status = run_recipe(recipe, rule, database, settings)
+      let status = run_recipe(
+        recipe,
+        rule,
+        database,
+        settings,
+        newer_dependencies~,
+      )
       if status != 0 {
         raise MakeError(
           "recipe for '\{node.target}' failed with status \{status}",
@@ -115,23 +132,31 @@ async fn build_targets(
             return false
           }
         }
-        slots.acquire()
-        defer slots.release()
-        if failures.val > 0 && !settings.keep_going {
-          return false
-        }
-        execute(node, database, settings) catch {
-          err => {
-            failures.val += 1
-            let message = match err {
-              MakeError(message) => message
-              _ => err.to_string()
-            }
-            @stdio.stderr.write("make: \{message}\n")
+        let action : async () -> Bool = () => {
+          if failures.val > 0 && !settings.keep_going {
             return false
           }
+          execute(node, database, settings) catch {
+            err => {
+              failures.val += 1
+              let message = match err {
+                MakeError(message) => message
+                _ => err.to_string()
+              }
+              @stdio.stderr.write("make: \{message}\n")
+              return false
+            }
+          }
+          true
         }
-        true
+        match settings.jobserver {
+          Some(server) => server.with_slot(action)
+          None => {
+            slots.acquire()
+            defer slots.release()
+            action()
+          }
+        }
       })
     }
     for task in tasks.values() {

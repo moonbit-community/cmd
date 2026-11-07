@@ -32133,6 +32133,2085 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-assignment-right-associative",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-assignment-right-associative",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-assignment-word-effects",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-assignment-word-effects",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-temporary-prefix-effects",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-temporary-prefix-effects",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-argv-before-prefix",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-argv-before-prefix",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-assignment-compound",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-assignment-compound",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-short-circuit-conditional",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-short-circuit-conditional",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-arithmetic-substitutions",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-arithmetic-substitutions",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-backticks-state-quoting",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-backticks-state-quoting",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-backticks-nested",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-backticks-nested",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-backticks-status",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-backticks-status",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-substitution-comment",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-substitution-comment",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-substitution-hash-in-word",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-substitution-hash-in-word",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-descriptor-copy-order",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-descriptor-copy-order",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-descriptor-input-copy",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-descriptor-input-copy",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-loop-break-level",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-loop-break-level",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-loop-continue-level",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-loop-continue-level",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-loop-count-c-whitespace",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-loop-count-c-whitespace",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-increment-project-extension",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-increment-project-extension",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-heredoc-expansion",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-heredoc-expansion",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-heredoc-quoted",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-heredoc-quoted",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-heredoc-multiple",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-heredoc-multiple",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-heredoc-header-tail",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-heredoc-header-tail",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-heredoc-tabs",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-heredoc-tabs",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-heredoc-delimiter-continuation",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-heredoc-delimiter-continuation",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-heredoc-continued-body-tabs",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-heredoc-continued-body-tabs",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-heredoc-substitution-close",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-heredoc-substitution-close",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-format-escapes",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-format-escapes",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-argument-escapes",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-argument-escapes",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-bytes-and-precision",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-bytes-and-precision",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-integer-fields",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-integer-fields",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-stars",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-stars",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-floats",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-floats",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-blank-number",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-blank-number",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-prefix-number",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-prefix-number",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-empty-quoted",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-empty-quoted",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-range",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-range",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-b-padding-stop",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-b-padding-stop",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-no-operands",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-no-operands",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-lone-negation",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-lone-negation",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-two-negations",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-two-negations",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-three-negations",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-three-negations",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-four-negations",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-four-negations",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-double-negated-unary",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-double-negated-unary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-double-negated-empty-group",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-double-negated-empty-group",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-triple-negated-string",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-triple-negated-string",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-top-level-negation-equality",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-top-level-negation-equality",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-grouped-negation-equality",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-grouped-negation-equality",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-compound-negation-equality",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-compound-negation-equality",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-top-level-parenthesis-equality",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-top-level-parenthesis-equality",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-compound-parenthesis-equality",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-compound-parenthesis-equality",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-unary-looking-equality",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-unary-looking-equality",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-unary-missing-argument",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-unary-missing-argument",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-unary-operator-argument",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-unary-operator-argument",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-missing-rhs-and",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-missing-rhs-and",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-missing-rhs-or",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-missing-rhs-or",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-missing-rhs-in-group",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-missing-rhs-in-group",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-grouped-and-as-string",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-grouped-and-as-string",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-or-evaluates-error",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-or-evaluates-error",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-and-evaluates-error",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-and-evaluates-error",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-precedence",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-precedence",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-decimal-leading-zero",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-decimal-leading-zero",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-decimal-leading-sign",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-decimal-leading-sign",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-hexadecimal-rejected",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-hexadecimal-rejected",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-octal-prefix-rejected",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-octal-prefix-rejected",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-binary-prefix-rejected",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-binary-prefix-rejected",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-underscores-rejected",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-underscores-rejected",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-vertical-tab-accepted",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-vertical-tab-accepted",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-form-feed-accepted",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-form-feed-accepted",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-nbsp-rejected",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-nbsp-rejected",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-blank-rejected",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-blank-rejected",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-empty-rejected",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-empty-rejected",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-signed-minimum",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-signed-minimum",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-signed-maximum",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-signed-maximum",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-overflow-rejected",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-overflow-rejected",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-unicode-order",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-unicode-order",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-double-equals-extension",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-double-equals-extension",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-redirect-effects",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-redirect-effects",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-arithmetic-prefix-failure",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-arithmetic-prefix-failure",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-loop-count-reject-prefix",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-loop-count-reject-prefix",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-loop-count-reject-underscore",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-loop-count-reject-underscore",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-recursive-export",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-recursive-export",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-empty-shell-status",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-empty-shell-status",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-shell-assignment",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-shell-assignment",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-secondary-variable",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-secondary-variable",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-secondary-automatic",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-secondary-automatic",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-cli-recursive",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-cli-recursive",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-cli-conditional",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-cli-conditional",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-cli-shell",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-cli-shell",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-computed-name",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-computed-name",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-nul-output",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-nul-output",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-invocation-level",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-invocation-level",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-makefile-flags-append",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-makefile-flags-append",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-makefile-flags-replace",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-makefile-flags-replace",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-recipe-leading-plus",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-recipe-leading-plus",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-recipe-leading-at",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-recipe-leading-at",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-recipe-separated-prefix",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-recipe-separated-prefix",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-secondary-dependency-order",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-secondary-dependency-order",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-export-automatic",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-export-automatic",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-language-session",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-language-session",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:f31-sh-language-session",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-sh-language-session",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-merged-child",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-merged-child",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:f31-sh-merged-child",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-sh-merged-child",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-recursive-language",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-recursive-language",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:f31-make-recursive-language",
+      "command": "make",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-make-recursive-language",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-basic",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-basic",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-nested",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-nested",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-parenthesized-pattern",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-parenthesized-pattern",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-no-last-terminator",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-no-last-terminator",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-subject-and-pattern-word",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-subject-and-pattern-word",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-quoted-close-pattern",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-quoted-close-pattern",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-quoted-esac-pattern",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-quoted-esac-pattern",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-command-subject",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-command-subject",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-subshell-body",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-subshell-body",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-comments",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-comments",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-case-heredoc",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-case-heredoc",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-ordinary-case-argument-control",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-ordinary-case-argument-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-ordinary-comment-control",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-ordinary-comment-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-continued-comment-boundary",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-continued-comment-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-continued-word-hash-control",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-continued-word-hash-control",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-audit-stdin-case-continuation",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-audit-stdin-case-continuation",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-audit-computed-export",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-computed-export",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-audit-computed-cli-dollar",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-computed-cli-dollar",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-audit-cli-shell-level",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-cli-shell-level",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-audit-self-immediate-dollar",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-self-immediate-dollar",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-audit-self-immediate-recursive-dollar",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-self-immediate-recursive-dollar",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-audit-self-recursive-space-dollar",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-self-recursive-space-dollar",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-long-jobs-value",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-long-jobs-value",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-short-jobs-value",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-short-jobs-value",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-fifo",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-fifo",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:f31-make-fifo",
+      "command": "make",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-make-fifo",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-gnu-jobserver",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-gnu-jobserver",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:f31-make-gnu-jobserver",
+      "command": "make",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-make-gnu-jobserver",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-state",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-state",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:f31-sh-printf-state",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-sh-printf-state",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-state-oracle",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-state-oracle",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:f31-sh-printf-state-oracle",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-sh-printf-state-oracle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-boundary-additional-descriptor",
+      "command": "sh",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-boundary-additional-descriptor",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-boundary-descriptor-close",
+      "command": "sh",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-boundary-descriptor-close",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-boundary-descriptor-direction",
+      "command": "sh",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-boundary-descriptor-direction",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-boundary-test-identity",
+      "command": "sh",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-boundary-test-identity",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-boundary-test-terminal",
+      "command": "sh",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-boundary-test-terminal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-boundary-test-owner",
+      "command": "sh",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-boundary-test-owner",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-boundary-descriptor-jobserver",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-boundary-descriptor-jobserver",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-boundary-windows-fifo",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-boundary-windows-fifo",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-test-raw-link-paths",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-raw-link-paths",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-shared-shell-filter",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-shared-shell-filter",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-missing-target",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-missing-target",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-up-to-date",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-up-to-date",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-mixed-timestamps",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-mixed-timestamps",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-always-make-old",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-always-make-old",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-what-if-old",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-what-if-old",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-what-if-missing-no-rule",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-what-if-missing-no-rule",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-what-if-target",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-what-if-target",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-phony-prerequisite-file-exists",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-phony-prerequisite-file-exists",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-phony-target-file-exists",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-phony-target-file-exists",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-missing-dependency-no-recipe",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-missing-dependency-no-recipe",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-missing-dependency-empty-recipe",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-missing-dependency-empty-recipe",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-missing-dependency-blank-tab",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-missing-dependency-blank-tab",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-missing-dependency-noop-recipe",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-missing-dependency-noop-recipe",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-multiple-recipes-snapshot",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-multiple-recipes-snapshot",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-01-secondary-context",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-01-secondary-context",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-whatif-02-always-what-if-goal",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-whatif-02-always-what-if-goal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-whatif-02-always-what-if-phony-dependency",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-whatif-02-always-what-if-phony-dependency",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-whatif-02-what-if-goal-phony-dependency",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-whatif-02-what-if-goal-phony-dependency",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-qmark-whatif-02-what-if-phony-goal-old-dependency",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-qmark-whatif-02-what-if-phony-goal-old-dependency",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-custom-shell",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-custom-shell",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-shell-flags",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-shell-flags",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-unsupported-error-function",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-unsupported-error-function",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-unsupported-lazy-function",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-unsupported-lazy-function",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-unsupported-substitution-reference",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-unsupported-substitution-reference",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-unsupported-oneshell",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-unsupported-oneshell",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-unsupported-order-only",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-unsupported-order-only",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-unsupported-archive",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-unsupported-archive",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-audit-boundary-unsupported-grouped-targets",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-audit-boundary-unsupported-grouped-targets",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-printf-linux-nan-signs",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-printf-linux-nan-signs",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-final-empty-environment-shellflags",
+      "command": "make",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-final-empty-environment-shellflags",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-make-final-inline-quoted-hash",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-final-inline-quoted-hash",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-final-inline-nested-reference-semicolon",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-final-inline-nested-reference-semicolon",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-final-prerequisite-shell-pipeline",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-final-prerequisite-shell-pipeline",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-final-prerequisite-shell-quoted-equal",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-final-prerequisite-shell-quoted-equal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-final-target-shell-colon",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-final-target-shell-colon",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-final-inline-expanded-equal",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-final-inline-expanded-equal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-windows-parent-path",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-windows-parent-path",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
     }
   ]
 }

@@ -215,7 +215,7 @@
         "help"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, recursive exports, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-150"
@@ -239,7 +239,7 @@
         "version"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "make 0.2.4\n",
+      "expected_stdout_text": "make 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -511,6 +511,2625 @@
       "comparison": "contract",
       "expected_stderr_text": "",
       "stdin_text": ""
+    },
+    {
+      "id": "f31-make-recursive-export",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export HI = $(shell printf 'inner:%s' \"$$HI\")\nall:\n\t@printf '%s\\n' \"$$HI\"\n"
+        }
+      ],
+      "environment": {
+        "HI": "seed",
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "inner:seed\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-make-empty-shell-status",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "A := $(shell exit 7)\nBEFORE := $(.SHELLSTATUS)\nE := $(shell )\nall:\n\t@printf '%s|%s\\n' '$(BEFORE)' '$(.SHELLSTATUS)'\n"
+        }
+      ],
+      "environment": {
+        "HI": "seed",
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "7|7\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-make-shell-assignment",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE != printf 'a\\nb\\n\\n'; exit 3\nSAVED := $(.SHELLSTATUS)\nall:\n\t@printf '%s|%s\\n' '$(VALUE)' '$(SAVED)'\n"
+        }
+      ],
+      "environment": {
+        "HI": "seed",
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a b |3\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-make-secondary-variable",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".SECONDEXPANSION:\nLIST = first\nall: $$(LIST)\n\t@printf 'all\\n'\nLIST = second\nfirst:\n\t@printf 'first\\n'\nsecond:\n\t@printf 'second\\n'\n"
+        }
+      ],
+      "environment": {
+        "HI": "seed",
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "second\nall\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-make-secondary-automatic",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".SECONDEXPANSION:\nall_DEPS = leaf\nall: $$($$@_DEPS)\n\t@printf 'all\\n'\nleaf:\n\t@printf 'leaf\\n'\n"
+        }
+      ],
+      "environment": {
+        "HI": "seed",
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "leaf\nall\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-make-cli-recursive",
+      "command": "make",
+      "args": [
+        "X=$(Y)",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "Y=local\nall:\n\t@printf '<%s>\\n' '$(X)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<local>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-cli-conditional",
+      "command": "make",
+      "args": [
+        "X?=$(Y)",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "Y=local\nall:\n\t@printf '<%s>\\n' '$(X)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<local>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-cli-shell",
+      "command": "make",
+      "args": [
+        "X!=printf value",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@printf '<%s>|<%s>\\n' '$(X)' '$(.SHELLSTATUS)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<value>|<0>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-computed-name",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "$(shell printf VARIABLE)=value\nall:\n\t@printf '<%s>\\n' '$(VARIABLE)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<value>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-nul-output",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "A := $(shell printf 'a\\000b\\n')\nB != printf 'c\\000d\\n'\nall:\n\t@printf '<%s>|<%s>\\n' '$(A)' '$(B)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<a>|<c>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-invocation-level",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "MAKELEVEL=9\nOBS := $(shell printf '%s' \"$$MAKELEVEL\")\nall:\n\t@printf '%s|%s|%s\\n' '$(MAKELEVEL)' \"$$MAKELEVEL\" '$(OBS)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "9|1|1\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-makefile-flags-append",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "MAKEFLAGS += -n\nall:\n\t@printf '%s' ran > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "printf '%s' ran > marker\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-makefile-flags-replace",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "MAKEFLAGS = -n\nall:\n\t@printf '%s' ran > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "printf '%s' ran > marker\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-recipe-leading-plus",
+      "command": "make",
+      "args": [
+        "-n",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t  +printf '%s' ran > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "printf '%s' ran > marker\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "kind": "file",
+          "content_text": "ran"
+        }
+      ]
+    },
+    {
+      "id": "f31-make-recipe-leading-at",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t  @printf '%s' ran > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "kind": "file",
+          "content_text": "ran"
+        }
+      ]
+    },
+    {
+      "id": "f31-make-recipe-separated-prefix",
+      "command": "make",
+      "args": [
+        "-n",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@ +printf '%s' ran > marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "printf '%s' ran > marker\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "kind": "file",
+          "content_text": "ran"
+        }
+      ]
+    },
+    {
+      "id": "f31-make-secondary-dependency-order",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".SECONDEXPANSION:\nall: a $$< $$^ $$+\n\t@printf '%s|%s|%s\\n' '$<' '$^' '$+'\nall: b $$< $$^ $$+\na b:\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "a|a b|a b a a a\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-export-automatic",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "export TARGET=$@\nexport FIRST=$<\nall: leaf\n\t@printf '%s|%s\\n' \"$$TARGET\" \"$$FIRST\"\nleaf:\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "all|leaf\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-make-recursive-language",
+      "command": "make",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 15000
+    },
+    {
+      "id": "f31-make-audit-computed-export",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "NAME = QA31_EXPORTED\nexport $(NAME) = ok\nall:\n\t@printf '<%s>|<%s>\\n' '$(QA31_EXPORTED)' \"$$QA31_EXPORTED\"\n"
+        },
+        {
+          "path": "Child.mk",
+          "content_text": "all:\n\t@printf '<%s>\\n' '$(VALUE)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "2"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>|<ok>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-make-audit-computed-cli-dollar",
+      "command": "make",
+      "args": [
+        "NAME:=$$X",
+        "$(NAME)=ok",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@printf '<%s>\\n' '$($$X)'\n"
+        },
+        {
+          "path": "Child.mk",
+          "content_text": "all:\n\t@printf '<%s>\\n' '$(VALUE)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "2"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-make-audit-cli-shell-level",
+      "command": "make",
+      "args": [
+        "OBS!=printf '%s' \"$$MAKELEVEL\"",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@printf '<%s>|<%s>\\n' '$(OBS)' \"$$MAKELEVEL\"\n"
+        },
+        {
+          "path": "Child.mk",
+          "content_text": "all:\n\t@printf '<%s>\\n' '$(VALUE)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "2"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<1>|<3>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-make-audit-self-immediate-dollar",
+      "command": "make",
+      "args": [
+        "VALUE:=$$MARK",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@$(MAKE) -f Child.mk\n"
+        },
+        {
+          "path": "Child.mk",
+          "content_text": "all:\n\t@printf '<%s>\\n' '$(VALUE)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "2"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<ARK>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-make-audit-self-immediate-recursive-dollar",
+      "command": "make",
+      "args": [
+        "VALUE:::=$$MARK",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@$(MAKE) -f Child.mk\n"
+        },
+        {
+          "path": "Child.mk",
+          "content_text": "all:\n\t@printf '<%s>\\n' '$(VALUE)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "2"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<$MARK>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-make-audit-self-recursive-space-dollar",
+      "command": "make",
+      "args": [
+        "VALUE=a $$MARK b",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@$(MAKE) -f Child.mk\n"
+        },
+        {
+          "path": "Child.mk",
+          "content_text": "all:\n\t@printf '<%s>\\n' '$(VALUE)'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "2"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<a $MARK b>\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-make-long-jobs-value",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "MAKEFLAGS = --jobs 2\nall:\n\t@printf 'ok\\n'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "ok\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true
+    },
+    {
+      "id": "f31-make-short-jobs-value",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "MAKEFLAGS = -j 2\nall:\n\t@printf 'ok\\n'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "ok\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true
+    },
+    {
+      "id": "f31-make-fifo",
+      "command": "make",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "timeout_ms": 60000,
+      "oracle": false
+    },
+    {
+      "id": "f31-make-gnu-jobserver",
+      "command": "make",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "oracle-scenario",
+      "host_platforms": [
+        "linux"
+      ],
+      "timeout_ms": 60000,
+      "oracle": false
+    },
+    {
+      "id": "f31-make-boundary-descriptor-jobserver",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@printf forbidden >marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "-j2 --jobserver-auth=3,4",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "make: jobserver descriptor pipes and named semaphores require public descriptor-import or semaphore APIs; use FIFO authentication\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "expected_rejection": "jobserver descriptor pipes and named semaphores require public descriptor-import or semaphore APIs; use FIFO authentication"
+    },
+    {
+      "id": "f31-make-boundary-windows-fifo",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@printf forbidden >marker\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "-j2 --jobserver-auth=fifo:unopened",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "make: FIFO jobserver inheritance is unavailable on Windows\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "expected_rejection": "FIFO jobserver inheritance is unavailable on Windows",
+      "host_platforms": [
+        "windows"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-missing-target",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: old\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<old>|<old>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-up-to-date",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: old\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-mixed-timestamps",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: old new old new\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<new>|<old new old new>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-always-make-old",
+      "command": "make",
+      "args": [
+        "-s",
+        "-B",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: old\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<old>|<old>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-what-if-old",
+      "command": "make",
+      "args": [
+        "-s",
+        "-W",
+        "old",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: old\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<old>|<old>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-what-if-missing-no-rule",
+      "command": "make",
+      "args": [
+        "-s",
+        "-W",
+        "ghost",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: ghost\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<ghost>|<ghost>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-what-if-target",
+      "command": "make",
+      "args": [
+        "-s",
+        "-W",
+        "all",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: old\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-phony-prerequisite-file-exists",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".PHONY: phony\nall: old phony\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<phony>|<old phony>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-phony-target-file-exists",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".PHONY: all\nall: old\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<old>|<old>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-missing-dependency-no-recipe",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "ghost:\nall: ghost\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<ghost>|<ghost>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-missing-dependency-empty-recipe",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "ghost: ;\nall: ghost\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<ghost>|<ghost>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-missing-dependency-blank-tab",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "ghost:\n\t\nall: ghost\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<ghost>|<ghost>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-missing-dependency-noop-recipe",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "ghost:\n\t@:\nall: ghost\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<ghost>|<ghost>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-multiple-recipes-snapshot",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: old new\n\t@printf '%s' '$?' > first\n\t@printf updated > all\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "all",
+          "content_text": "original",
+          "mtime": "202001010001.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<new>|<old new>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "kind": "file",
+          "content_text": "new"
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-01-secondary-context",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".SECONDEXPANSION:\nall: old $$?\n\t@printf '<%s>|<%s>\\n' '$?' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file",
+          "mtime": "202001010000.00"
+        },
+        {
+          "path": "new",
+          "content_text": "new",
+          "mtime": "202001010002.00"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<old>|<old>\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "first",
+          "exists": false
+        },
+        {
+          "path": "ghost",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-make-qmark-whatif-02-always-what-if-goal",
+      "command": "make",
+      "args": [
+        "-s",
+        "-B",
+        "-W",
+        "all",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: old\n\t@printf '<%s>' '$?'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<old>",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only"
+    },
+    {
+      "id": "f31-make-qmark-whatif-02-always-what-if-phony-dependency",
+      "command": "make",
+      "args": [
+        "-s",
+        "-B",
+        "-W",
+        "dep",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".PHONY: dep\ndep:\n\t@printf ran > marker\nall: dep\n\t@printf '<%s>' '$?'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<dep>",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "kind": "file",
+          "content_text": "ran"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only"
+    },
+    {
+      "id": "f31-make-qmark-whatif-02-what-if-goal-phony-dependency",
+      "command": "make",
+      "args": [
+        "-s",
+        "-W",
+        "all",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".PHONY: dep\nall: dep\n\t@printf '<%s>' '$?'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "<dep>",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only"
+    },
+    {
+      "id": "f31-make-qmark-whatif-02-what-if-phony-goal-old-dependency",
+      "command": "make",
+      "args": [
+        "-s",
+        "-W",
+        "all",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".PHONY: all\nall: old\n\t@printf '<%s>' '$?'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "phony",
+          "content_text": "ordinary file"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent GNU Make 4.4.1 timestamp, what-if and phony observations; fixed timestamp fixtures are POSIX-only"
+    },
+    {
+      "id": "f31-make-audit-boundary-custom-shell",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL := /tmp/cmd-issue31-audit-boundaries-01/absent-interpreter\nall:\n\t@printf ran > marker\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "SHELL requires the literal built-in sh profile",
+      "expected_rejection": "SHELL requires the literal built-in sh profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-audit-boundary-shell-flags",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".SHELLFLAGS := -e -c\nall:\n\t@false; printf ran > marker\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": ".SHELLFLAGS requires the literal built-in sh profile",
+      "expected_rejection": ".SHELLFLAGS requires the literal built-in sh profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-audit-boundary-unsupported-error-function",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(error stop)\nall:\n\t@printf ran > marker\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "GNU function 'error' is outside the supported make profile",
+      "expected_rejection": "GNU function 'error' is outside the supported make profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-audit-boundary-unsupported-lazy-function",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE := $(if yes,ok,$(shell printf wrong > side-effect))\nall:\n\t@printf '<%s>' '$(VALUE)'\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "GNU function 'if' is outside the supported make profile",
+      "expected_rejection": "GNU function 'if' is outside the supported make profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-audit-boundary-unsupported-substitution-reference",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "VALUE = input.c\nall:\n\t@printf '<%s>' '$(VALUE:.c=.o)'\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "substitution references are outside the supported make profile",
+      "expected_rejection": "substitution references are outside the supported make profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-audit-boundary-unsupported-oneshell",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".ONESHELL:\nall:\n\t@VALUE=kept\n\t@printf '<%s>' \"$$VALUE\"\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "special target '.ONESHELL' is outside the supported make profile",
+      "expected_rejection": "special target '.ONESHELL' is outside the supported make profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-audit-boundary-unsupported-order-only",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "all: | input\n\t@printf '<%s>' '$^'\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "order-only prerequisites are outside the supported make profile",
+      "expected_rejection": "order-only prerequisites are outside the supported make profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-audit-boundary-unsupported-archive",
+      "command": "make",
+      "args": [
+        "lib.a(member)"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "lib.a(member):\n\t@printf '<%s>|<%s>' '$@' '$%'\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "archive members are outside the supported make profile",
+      "expected_rejection": "archive members are outside the supported make profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-audit-boundary-unsupported-grouped-targets",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": ".PHONY: all\nall: a b\na b &:\n\t@printf 'run\\n'\n"
+        },
+        {
+          "path": "input",
+          "content_text": "input"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_contains": "grouped targets are outside the supported make profile",
+      "expected_rejection": "grouped targets are outside the supported make profile",
+      "diagnostic_reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context.",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "side-effect",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false
+    },
+    {
+      "id": "f31-make-final-empty-environment-shellflags",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nall:\n\t@printf ran > marker\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "new",
+          "content_text": "new"
+        },
+        {
+          "path": "old=x",
+          "content_text": "equals"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0",
+        ".SHELLFLAGS": ""
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
+      "expected_stderr_contains": ".SHELLFLAGS requires the literal built-in sh profile",
+      "expected_rejection": ".SHELLFLAGS requires the literal built-in sh profile",
+      "diagnostic_reason": "Status 2 and absent recipe marker establish rejection before execution; the diagnostic names the unsupported inherited empty selector."
+    },
+    {
+      "id": "f31-make-final-inline-quoted-hash",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nall: ; @printf '%s' '#literal'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "new",
+          "content_text": "new"
+        },
+        {
+          "path": "old=x",
+          "content_text": "equals"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "#literal",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-final-inline-nested-reference-semicolon",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nall: $(shell (printf old); printf ' new'); @printf '%s' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "new",
+          "content_text": "new"
+        },
+        {
+          "path": "old=x",
+          "content_text": "equals"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "old new",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-final-prerequisite-shell-pipeline",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nall: $(shell printf old | cat)\n\t@printf '%s' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "new",
+          "content_text": "new"
+        },
+        {
+          "path": "old=x",
+          "content_text": "equals"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "old",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-final-prerequisite-shell-quoted-equal",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nall: $(shell printf '%s' old=x)\n\t@printf '%s' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "new",
+          "content_text": "new"
+        },
+        {
+          "path": "old=x",
+          "content_text": "equals"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "old=x",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-final-target-shell-colon",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\n$(shell printf all; :): old\n\t@printf '%s' '$+'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "new",
+          "content_text": "new"
+        },
+        {
+          "path": "old=x",
+          "content_text": "equals"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "old",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-final-inline-expanded-equal",
+      "command": "make",
+      "args": [
+        "-s",
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "Makefile",
+          "content_text": "SHELL=sh\nX=hello\nall: ; @printf '%s' '$(X)=ok'\n"
+        },
+        {
+          "path": "old",
+          "content_text": "old"
+        },
+        {
+          "path": "new",
+          "content_text": "new"
+        },
+        {
+          "path": "old=x",
+          "content_text": "equals"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "hello=ok",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
+      "expected_stderr_text": ""
     }
   ]
 }

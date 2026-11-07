@@ -12,6 +12,23 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-08
+
+Development candidates; publication and three-platform acceptance pending.
+
+- Extend the shared shell with arithmetic side effects, backticks, expanded
+  here-documents, actual stdout/stderr aliases, loop levels and finite printf/test
+  semantics. Preserve contextual case/function parsing, interactive continuation,
+  ordered redirection effects and output before failures.
+- Implement make variable/export recursion, secondary prerequisites, SHELLSTATUS
+  and recursive Wasm invocation. Inherit existing POSIX FIFO jobservers with
+  exact token ownership/return; keep descriptor/Windows semaphore/new-server
+  boundaries explicit and recursive fallback children serial.
+- Prepare core 0.9.2, sh 0.2.6, make 0.2.5 and split 0.1.7; retain other package
+  coordinates and frozen published expectations. Add independent audit
+  counterexamples and real session/stream/recursive/FIFO regressions. Definitions
+  and local checks do not establish publication or complete upstream parity.
+
 ## 2026-11-07
 
 Development and publication.

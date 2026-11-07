@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-07
+Updated: 2026-11-08
 
 ## Decision
 
@@ -49,6 +49,19 @@ writer, then requires owned directories absent and unowned files preserved.
 Only cleanup is shielded; output backpressure remains cancellable.
 
 ## Package ownership
+
+The shared shell owns interpretation for sh, make recipes and split filters.
+Keep printf parsing, test expressions, here-document scanning and stream aliases
+private to that package. Make-specific expansion, prerequisite planning and
+jobserver token ownership remain in the make command. These are actual consumers
+and existing domain boundaries, not a new generic command framework. Shell
+captures retain raw bytes; merged child stdout/stderr use a single pipe, and
+printf clears submitted output before awaiting the writer so cleanup cannot
+replay a failed write. See [ADR-0007](0007-language.md) for finite language scope.
+The candidate changes shared behavior and therefore requires core 0.9.2 plus
+updated sh/make/split dependencies. Other command coordinates stay unchanged.
+No timing cost or performance acceptance is established by source changes or
+correctness receipts; changed artifacts remain subject to the protection registry.
 
 Argument normalization belongs to each command. Consume option values and
 respect `--` before expanding aliases; values and filenames that resemble an

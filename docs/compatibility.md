@@ -725,6 +725,13 @@ claiming success; `local-only` is absent from MoonX by design.
 
 ## Per-command support
 
+The issue #31 development candidate `split@0.1.7` uses the expanded pure MoonBit
+shell filter language from `core@0.9.2`, including arithmetic assignments,
+backticks and expanded here-documents. Actual filter regressions retain `$FILE`,
+stdin and child-status contracts. This candidate does not update the frozen
+published coordinates or claim full shell compatibility; see
+[ADR-0007](adr/0007-language.md).
+
 | Command | Status | Measured profile | Observed boundary or open evidence |
 | --- | --- | --- | --- |
 | `fold` | subset verified | Byte/control-column folding, width, space breaks, files/stdin | C-locale profile; verify UTF-8 separately |
@@ -766,7 +773,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain |
 | `ls` | subset verified | Existing traversal/sort/link profile plus C quoting, columns/across/commas, width/tab stops and explicit type/suffix/link colors | `-P` is a project extension; enabled raw-mode/capability/link-count predicates and automatic color reject. Long/ownership/inode/block formats remain outside scope |
-| `make` | subset verified | Real `-j` dependency scheduling, shared prerequisites once, failed-dependency propagation, `-k`, `$(shell ...)`, `.SHELLSTATUS`, cwd and exported recipe variables | No GNU jobserver/full Make grammar claim; shell-function export recursion and full GNU variable semantics remain project work |
+| `make` | development candidate 0.2.5 | Dependency-ready `-j`, shared prerequisites, failure propagation, variable flavors/computed names, recursive exports and Wasm submakes, `.SECONDEXPANSION`, `.SHELLSTATUS`, existing POSIX FIFO jobserver tokens | New FIFO creation, descriptor-pipe import and Windows semaphores need public APIs; no full GNU function/rule/database claim; without inherited FIFO recursive children use `-j1`; [language boundaries](adr/0007-language.md) |
 | `mkdir` | subset verified | `-p`, numeric and umask-independent symbolic `-m`, requested leaf mode and existing no-ops | Truly umask-dependent results, unknown parent raw mode/owner adjustments and unavailable Windows setters reject |
 | `mktemp` | subset verified | Final X-run/default/inferred/explicit suffix rules, tmpdir precedence, quiet errors and exclusive secure-random files/directories | No unsafe `-u`; POSIX mode relationships and Windows supported effects have separate scenarios |
 | `mv` | subset verified | Files/dirs, -f/-n/-i, -T/-v, selected backup/suffix/update, same-entry/hard-link no-op failures and refusal status 1 | Equal-time interactive/update targets reject without public identity; no-clobber remains a successful skip; metadata-preserving EXDEV fallback remains unavailable |
@@ -780,7 +787,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `rev` | subset verified | Published 0.1.4 reverses one ASCII/NUL record at a time into buffered output under the fixed Linux C profile, with invalid-record rejection, prefix retention and later-file continuation | Storage follows the longest record; non-ASCII records fail before output and multibyte locale semantics remain outside the profile |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
 | `seq` | subset verified | Published 0.2.3 adds single-conversion `-f`, frozen-ABI rounding and endpoint recovery; default +/- step, -w/-s and streaming output remain | Default path retains 4096-character/exponent/scale limits; formatted path uses the selected Extended80 range, not the host ABI; formal performance remains open |
-| `sh` | subset verified | Persistent `-i` line REPL and opaque Session; export/local variables, cwd, quoting/IFS/glob, arithmetic, substitution, read, bounded printf/test, functions and pipeline state isolation | No public isatty/raw/editing/recoverable SIGINT/job control/exec; remaining interpreter grammar restrictions are project work, listed in command README |
+| `sh` | development candidate 0.2.6 | Persistent Session, arithmetic assignments/conditional expressions, backticks, expanded here-documents, stdout/stderr aliases, loop levels, binary64 printf and finite test grammar, contextual case/function substitution parsing | Increment and test `==` are project extensions; descriptor import/closure/direction, identity/owner/mode metadata and terminal operations reject; no full POSIX/Bash or locale claim; [language boundaries](adr/0007-language.md) |
 | `sha256sum` | subset verified | File/stdin digest, tags, escaped/tagged manifests and quiet/status/strict/warn/ignore-missing verification | Windows text transformation remains outside the selected C byte profile |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
 | `sort` | subset verified | Published 0.2.3 retains stable/merge/output and exact seeded GNU random order and adds buffer-size, temporary-directory and batch-size controls | Percentage budgets require public physical-memory capacity; existing merge-output identity/error effects reject explicitly, and non-C locale and formal RSS/performance remain open |

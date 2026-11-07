@@ -183,6 +183,7 @@ async fn expand_default(
 async fn expand_startup_path(
   value : String,
   context : Context,
+  escape_quote~ : Bool = true,
 ) -> String raise ShellError {
   let chars = value.iter().collect()
   let parts : Array[WordPart] = []
@@ -192,7 +193,10 @@ async fn expand_startup_path(
     let char = chars[index]
     if char == '\\' &&
       index + 1 < chars.length() &&
-      chars[index + 1] is ('$' | '`' | '"' | '\\' | '\n') {
+      (
+        chars[index + 1] is ('$' | '`' | '\\' | '\n') ||
+        (escape_quote && chars[index + 1] == '"')
+      ) {
       if chars[index + 1] != '\n' {
         literal.write_char(chars[index + 1])
       }
@@ -206,7 +210,12 @@ async fn expand_startup_path(
       }
       index = next
     } else if char == '`' {
-      raise ShellError("backtick command substitution is not supported")
+      flush_literal(parts, literal, quoted=true)
+      let (part, next) = parse_backtick_input(chars, index, true) catch {
+        issue => raise issue.shell_error()
+      }
+      parts.push(part)
+      index = next
     } else {
       literal.write_char(char)
       index += 1
@@ -294,7 +303,7 @@ async fn expand_word(
       }
       Arithmetic(expression, quoted) =>
         append_value(
-          evaluate_arithmetic(expression, context).to_string(),
+          evaluate_arithmetic(expand_startup_path(expression, context), context).to_string(),
           quoted || scalar,
           ifs,
           fields,
@@ -436,37 +445,99 @@ fn split_assignment(value : String) -> (String, String)? {
 }
 
 ///|
-async fn prepare(
+fn retain_assignment_expansion_effects(
+  before : Map[String, String],
+  expansion : Context,
+  parent : Context,
+  assignments : Map[String, String],
+) -> Unit {
+  for name, value in expansion.env {
+    if before.get(name) != Some(value) {
+      if assignments.contains(name) {
+        assignments[name] = value
+      } else {
+        parent.env[name] = value
+      }
+    }
+  }
+}
+
+///|
+async fn prepare_words(
   command : Command,
   context : Context,
-) -> Prepared raise ShellError {
+) -> (Array[String], Array[Word]) raise ShellError {
   context.substitution_status = None
   let argv : Array[String] = []
-  let assignments : Map[String, String] = Map([])
-  let assignment_context = clone_context(context)
+  let assignment_words : Array[Word] = []
+  let mut prefix = true
   for word in command.words {
-    let assignment = argv.is_empty() &&
+    if prefix &&
       (match word.parts.get(0) {
         Some(Text(value)) => split_assignment(value) is Some(_)
         _ => false
-      })
-    if assignment {
-      let value = expand_word(
-        word,
-        assignment_context,
-        split=false,
-        pathname=false,
-      ).join("")
-      guard split_assignment(value) is Some((name, assigned)) else {
-        raise ShellError("invalid assignment")
-      }
-      assignments[name] = assigned
-      assignment_context.env[name] = assigned
-      if assignment_context.substitution_status is Some(status) {
-        context.substitution_status = Some(status)
-      }
+      }) {
+      assignment_words.push(word)
     } else {
+      prefix = false
       argv.append(expand_word(word, context))
+    }
+  }
+  (argv, assignment_words)
+}
+
+///|
+async fn prepare_redirects(
+  redirects : Array[Redirect],
+  context : Context,
+) -> Array[ExpandedRedirect] raise ShellError {
+  let result : Array[ExpandedRedirect] = []
+  for redirect in redirects {
+    result.push(
+      match redirect {
+        InputFile(word) => ReadPath(expand_path(word, context))
+        OutputFile(word, append, error) =>
+          WritePath(expand_path(word, context), append, error)
+        HereDocument(body, expand) => HereBody(body, expand)
+        CopyDescriptor(destination, word) =>
+          CopyTarget(
+            destination,
+            expand_word(word, context, split=false, pathname=false).join(""),
+          )
+      },
+    )
+  }
+  result
+}
+
+///|
+async fn prepare_assignments(
+  argv : Array[String],
+  assignment_words : Array[Word],
+  context : Context,
+) -> Prepared raise ShellError {
+  let assignments : Map[String, String] = Map([])
+  let assignment_context = clone_context(context)
+  for word in assignment_words {
+    let before = Map(assignment_context.env.to_array())
+    let value = {
+      errdefer retain_assignment_expansion_effects(
+        before, assignment_context, context, assignments,
+      )
+      expand_word(word, assignment_context, split=false, pathname=false).join(
+        "",
+      )
+    }
+    retain_assignment_expansion_effects(
+      before, assignment_context, context, assignments,
+    )
+    guard split_assignment(value) is Some((name, assigned)) else {
+      raise ShellError("invalid assignment")
+    }
+    assignments[name] = assigned
+    assignment_context.env[name] = assigned
+    if assignment_context.substitution_status is Some(status) {
+      context.substitution_status = Some(status)
     }
   }
   let env : Map[String, String] = Map([])
@@ -476,27 +547,5 @@ async fn prepare(
     }
   }
   env.merge_in_place(assignments)
-  let stdin = match command.stdin {
-    Some(word) => Some(expand_path(word, context))
-    None => None
-  }
-  let stdout = match command.stdout {
-    Some(redirect) =>
-      Some((expand_path(redirect.target, context), redirect.append))
-    None => None
-  }
-  let stderr = match command.stderr {
-    Some(redirect) =>
-      Some((expand_path(redirect.target, context), redirect.append))
-    None => None
-  }
-  {
-    argv,
-    env,
-    assignments,
-    stdin,
-    stdin_data: command.stdin_data,
-    stdout,
-    stderr,
-  }
+  { argv, env, assignments, }
 }
