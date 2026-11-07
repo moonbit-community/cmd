@@ -7560,11 +7560,11 @@
     {
       "case_id": "f31-sh-eof-command-incomplete-quote",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "dc140aee8709a7c05b77dd3ef40971fc969ec18ff2c57ba6a388c1c56c734951",
+      "definition_sha256": "cf12ed5e3b693c7f36946ba42df053e6c821bafec9a64db2731146f2bbde0131",
       "classification": "finite-diagnostic",
       "descriptor": {
         "kind": "diagnostic-fragment",
-        "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+        "reason": "An unfinished quoted command fails with status 2 before any command-list effects. The quote category is required in both diagnostics; shell prefixes, line numbers and wording differ."
       },
       "required_work": ""
     },
@@ -33203,7 +33203,7 @@
     },
     "f31-sh-eof-command-incomplete-quote": {
       "kind": "diagnostic-fragment",
-      "reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      "reason": "An unfinished quoted command fails with status 2 before any command-list effects. The quote category is required in both diagnostics; shell prefixes, line numbers and wording differ."
     },
     "f31-sh-eof-valid-logical-compounds": {
       "kind": "exact"

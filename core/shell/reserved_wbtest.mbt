@@ -84,13 +84,16 @@ async test "EOF executes complete continued commands but rejects incomplete gram
     assert_eq(@utf8.decode(Bytes::from_array(output.bytes)), expected)
   }
   for
-    source in [
-      "if true; then \\\n", "printf 'unclosed\\\n", "cat <<EOF\nbody\\\n",
+    (source, reason) in [
+      ("if true; then \\\n", "incomplete: unexpected empty command list"),
+      ("printf 'unclosed\\\n", "unterminated quote"),
+      ("cat <<EOF\nbody\\\n", "unterminated here-document"),
     ] {
     let session = Session::new()
     assert_eq(session.feed(source), NeedMoreInput)
     try session.finish() catch {
-      ShellError(message) => assert_eq(message, "unexpected end of input")
+      ShellError(message) =>
+        assert_eq(message, "unexpected end of input: " + reason)
       error => raise error
     } noraise {
       _ => fail("EOF accepted incomplete grammar")

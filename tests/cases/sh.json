@@ -3921,9 +3921,9 @@
       "comparison": "contract",
       "oracle": true,
       "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
-      "expected_stderr_contains": "end",
+      "expected_stderr_contains": "quote",
       "expected_stderr_ends_with_newline": true,
-      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+      "diagnostic_reason": "An unfinished quoted command fails with status 2 before any command-list effects. The quote category is required in both diagnostics; shell prefixes, line numbers and wording differ."
     },
     {
       "id": "f31-sh-eof-valid-logical-compounds",

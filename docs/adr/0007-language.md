@@ -14,7 +14,8 @@ Reserved words are contextual at command and pipeline-stage starts. Required
 compound lists and logical right operands reject before execution; ordinary
 arguments, quoted words, top-level emptiness and empty case arms remain valid.
 EOF reparses a pending continued line and executes it if complete; incomplete
-quotes, here-documents and compounds still reject. All Session adapters use that
+quotes, here-documents and compounds still reject with the parse cause retained
+after the EOF diagnostic prefix. All Session adapters use that
 actual finish status. Child launch OS errors are classified at the launch call,
 outside stdout/stderr pumps; unexpected pump and other nonlanguage failures
 propagate with their identity and stop subsequent commands. The explicit

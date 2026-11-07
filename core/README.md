@@ -8,7 +8,8 @@ Reject unmatched shell reserved words, incomplete logical expressions and empty
 required compound lists before executing their command list. Quoted command
 names, ordinary arguments and empty case arms retain their distinct grammar.
 At EOF, execute a complete command ending in a continued line while rejecting
-unfinished grammar. Unexpected external child output/diagnostic transfer errors
+unfinished grammar and retaining the specific parse error in the EOF diagnostic.
+Unexpected external child output/diagnostic transfer errors
 propagate without replay or running later commands; closed pipes retain status
 141 and launch errors retain 126/127 statuses.
 This candidate is unpublished; the accepted 0.9.3 release remains recorded below.

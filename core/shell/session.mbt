@@ -127,9 +127,9 @@ pub async fn Session::finish(self : Session) -> SessionResult {
     let text = self.pending.to_string()
     self.pending.reset()
     let jobs = parse_input(text) catch {
-      IncompleteSyntax(_) => {
+      IncompleteSyntax(message) => {
         self.context.last_status = 2
-        raise ShellError("unexpected end of input")
+        raise ShellError("unexpected end of input: " + message)
       }
       InvalidSyntax(message) => {
         self.context.last_status = 2

@@ -16,7 +16,7 @@ Unmatched reserved words, missing logical operands and empty required compound
 lists report syntax errors before that command list executes. Quoted words and
 arguments remain ordinary text; empty case arms and an empty script are valid.
 At EOF, a complete continued command executes; unfinished quotes or compound
-syntax still reject. Unexpected child stdout/stderr transfer errors propagate
+syntax still reject with their specific parse error. Unexpected child stdout/stderr transfer errors propagate
 without replaying writes or executing subsequent commands; closed pipes retain
 the existing status 141 contract. Launch failures identify
 the command and use status 127 for missing commands or 126 for other OS errors.
