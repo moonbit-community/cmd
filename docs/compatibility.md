@@ -1,7 +1,15 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-11-06
+Updated: 2026-11-07
+
+The tree 0.1.6 development candidate lists symbolic links as named leaves without
+following targets, including dangling and cyclic links. Text/HTML omit target
+text; JSON identifies links explicitly. Links count as files, and `-d` excludes
+discovered links while retaining explicit operands. Selected-link sizes and
+`ln=target` coloring reject explicitly. These are
+documented extensions of the former all-links rejection, not full upstream
+link-display parity. Published tree 0.1.5 and its frozen expectations are unchanged.
 
 Workspace development uses `moonbitlang/async@0.22.7` across modules and
 standalone test tools. CI follows the official `latest` toolchain and core and

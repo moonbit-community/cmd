@@ -29246,6 +29246,292 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-default",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-default",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-dirs-only",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-dirs-only",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-pattern-prune",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-pattern-prune",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-ignore",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-ignore",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-full-path",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-full-path",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-depth-limit",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-depth-limit",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-filelimit",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-filelimit",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-root-json",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-root-json",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-json",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-json",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-color",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-color",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-html",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-html",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-size--s",
+      "command": "tree",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-size--s",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-size--h",
+      "command": "tree",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-size--h",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-size---si",
+      "command": "tree",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-size---si",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-size---du",
+      "command": "tree",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-size---du",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-target-color-boundary",
+      "command": "tree",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-target-color-boundary",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-windows-junction",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-windows-junction",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-explicit-dirs",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-explicit-dirs",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-explicit-dirs-json",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-explicit-dirs-json",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-size-ignore-filter",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-size-ignore-filter",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-size-dirs-filter",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-size-dirs-filter",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tree-links-windows-junction-trailing-separator",
+      "command": "tree",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tree.json",
+      "case_id": "tree-links-windows-junction-trailing-separator",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
     }
   ]
 }

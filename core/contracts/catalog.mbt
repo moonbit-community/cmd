@@ -242,6 +242,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("tee", Extended, OptionalStdin, ByteStream, [FileWrite], [
       "append", "output-error",
     ]),
+    // Links are named leaves; -d filters children, retaining explicit operands.
+    // Link targets and sizes remain unavailable rather than inferred from referents.
     contract("tree", Core, NoInput, LineStream, [FileRead], [
       "all", "dirs-only", "full-path", "level", "noreport", "json", "html", "title",
       "pattern", "ignore", "matchdirs", "ignore-case", "prune", "filelimit", "size",

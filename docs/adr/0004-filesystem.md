@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-01
+Updated: 2026-11-07
 
 ## Decision
 
@@ -52,7 +52,7 @@ Missing link privileges/observers fail the fixture. See
 | mkdir/chmod | Numeric chmod follows operand links and skips recursively encountered links. Mkdir applies leaf modes and accepts mask-independent omitted-who results. Parent-mode, temporary-owner and unavailable Windows setter cases remain narrow limits. |
 | rm | Explicit -i/-I uses original operand-count/recursive rules and a byte reader. Automatic write-protect prompting needs terminal state and raw permissions. |
 | ls | Selected layouts, quoting, ordering and explicit colors use actual metadata. Execute access does not substitute for mode bits; automatic color needs terminal detection. |
-| tree | Iterative traversal and postorder totals use actual metadata. macOS directory-size queries may reject. Selected link text/mode colors need APIs; filtered-out links do not trigger them. |
+| tree | Iterative traversal and postorder totals use actual metadata. Links are named leaves, never traversed, and count as files; -d selects actual child directories while retaining explicit operands. JSON preserves link type and HTML link color. Target text and selected-link sizes remain unavailable; filtered-out links do not trigger size rejection. macOS directory-size queries may reject. |
 | mktemp | Secure public randomness, exclusive creation and bounded collision retries establish ownership. No unsafe -u or inferred Windows ACL parity. |
 | csplit names | Windows trailing dot/space names reject until verbatim creation, reading, enumeration and cleanup work. POSIX padding remains supported. |
 | diff directories | Report FIFO/socket kinds without reading them. Distinct device numbers require public metadata. |
@@ -65,6 +65,14 @@ context and an observer permitted to change those bits. The earlier
 restricted-versus-unrestricted Darwin comparison was invalid; the
 [historical correction](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr/0004-filesystem.md#mutation-and-identity-boundaries)
 preserves its scope. Group-dependent setgid evidence remains platform-specific.
+
+Tree's name-only link profile resolves issue #74 without fabricating readlink
+text or replacing it with realpath. Dangling and cyclic links remain displayable.
+Size requests reject selected links before querying their referents, and
+`ln=target` color requests reject instead of following the target. Reopen target
+display and link-size support only with released public APIs and exact link,
+dangling-target and no-follow tests. The CLI contracts in `tests/cases/tree.json`
+and private traversal tests in `commands/tree/symlink_wbtest.mbt` own this scope.
 
 ## Verification and reconsideration
 

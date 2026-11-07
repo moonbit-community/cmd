@@ -3,12 +3,20 @@
 Display directory trees for MoonX.
 
 ```sh
-moonx cli/tree@0.1.5 [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]
+moonx cli/tree@0.1.6 [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]
 ```
 
 ## Supported scope
 
 List sorted trees as ASCII text, JSON or HTML, with patterns, depth limits, pruning, sizes and explicit color.
+
+Symbolic links, including dangling links and links to directories, are displayed
+as named leaves without reading or following their targets. JSON identifies them
+as `link`; text and HTML omit the unavailable `-> target` text. Each selected link
+counts as one file. `-d` selects actual directories among discovered children
+and excludes their links. An explicit link operand remains a leaf, including
+with `-d` (whose report counts directories only). This is a documented subset of upstream
+tree's link display, not full target-display or dereferencing compatibility.
 
 ## Options
 
@@ -26,15 +34,18 @@ List sorted trees as ASCII text, JSON or HTML, with patterns, depth limits, prun
 
 ## Limitations
 
-- Selected symlinks, ownership, permissions and inode/device reports are unsupported.
+- Link target text, ownership, permissions and inode/device reports are unsupported.
+- Size modes reject selected links rather than displaying the referent's size.
+  Filtered links do not trigger this restriction. Link colors use `ln` (HTML uses
+  `LINK`) without classifying referents or dangling targets; `ln=target` is rejected.
 - Mode-based text color selectors and HTML executable coloring are unsupported. Directory sizes can fail on platforms without that metadata.
 - Names and ordering use C-byte rules; automatic terminal color is unavailable.
 
 ## Examples
 
 ```sh
-moonx cli/tree@0.1.5 -L 2 --noreport project/
-moonx cli/tree@0.1.5 -J --noreport project/
+moonx cli/tree@0.1.6 -L 2 --noreport project/
+moonx cli/tree@0.1.6 -J --noreport project/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)
