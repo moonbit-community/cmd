@@ -30,6 +30,11 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 
 ## Limitations
 
+Spool cleanup is protected from cancellation by the command, including when
+the published core dependency exposes directory close as cancellable. A primary
+operation failure retains its diagnostic; an otherwise successful operation
+reports cleanup failure.
+
 The local development candidate batches fixed-separator ranges within each 64 KiB block, including multi-byte separators. With no partial separator match, it skips bytes that cannot start a reverse match. Input spooling and cross-block record semantics are unchanged; memory remains bounded by the block and separator sizes.
 
 - Empty regex separators and locale-aware matching are unsupported.

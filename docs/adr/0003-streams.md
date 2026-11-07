@@ -35,6 +35,19 @@ preserving the destination; the blocked-writer test in
 cancellation. Reconsider shielding output only with a bounded completion
 contract and equivalent cancellation regressions.
 
+The `tac` command shields its spool cleanup callback through public
+`async.protect_from_cancel`. The published core 0.9.0 interface declares directory
+close cancellable, unlike the current workspace annotation. Requiring a
+`nocancel` callback would therefore compile in the workspace but fail an
+isolated packaged check. The command's protection preserves real temporary-file
+cleanup after cancellation without forcing a core release; its cancellation
+test includes a cancellable suspension before removal. Publication dry runs
+must validate the extracted module against its published dependencies.
+Sort likewise protects owned spool removal against the published core 0.9.1
+interface. Its regression observes real disk runs before cancelling a blocked
+writer, then requires owned directories absent and unowned files preserved.
+Only cleanup is shielded; output backpressure remains cancellable.
+
 ## Package ownership
 
 Argument normalization belongs to each command. Consume option values and

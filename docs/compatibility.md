@@ -32,6 +32,11 @@ unified-lines/context-lines) are not public argv options. Public --update=MODE,
 --backup=CONTROL, ln --no-dereference, sort -C/--check=quiet and diff -U/-C
 remain available. Normalization preserves option values and literal operands
 after `--`; a value that looks like a private key is still data.
+Jq's `-f`/`--from-file` is a mode flag, not a value-consuming option: its first
+positional argument names the filter file, other options continue to parse,
+and repeated -f is idempotent. Leading-dash filter filenames require `--` or
+an explicit path prefix. Missing files and `--from-file=FILE` reject. The fixed
+jq 1.8.2 comparison includes both rejected and successful argument arrangements.
 
 Ordinary option/operand failures use status 1 for the repaired GNU coreutils
 commands and util-linux rev. Xxd usage errors use 1 while runtime errors retain

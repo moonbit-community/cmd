@@ -32045,6 +32045,94 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f17-jq-file-mode-leading-dash-short",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "f17-jq-file-mode-leading-dash-short",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f17-jq-file-mode-leading-dash-long",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "f17-jq-file-mode-leading-dash-long",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f17-jq-file-mode-intervening-option",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "f17-jq-file-mode-intervening-option",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f17-jq-file-mode-cluster",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "f17-jq-file-mode-cluster",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f17-jq-file-mode-repeated",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "f17-jq-file-mode-repeated",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f17-jq-file-mode-after-program",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "f17-jq-file-mode-after-program",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f17-jq-file-mode-missing",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "f17-jq-file-mode-missing",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f17-jq-file-mode-attached-long",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "f17-jq-file-mode-attached-long",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

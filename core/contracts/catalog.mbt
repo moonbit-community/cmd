@@ -83,6 +83,7 @@ pub fn command_catalog() -> Array[CommandContract] {
       "header", "help", "ignore-case", "zero-terminated",
     ]),
     // logs/-l is the project's JSONL mode; it is not an upstream jq option.
+    // from-file/-f selects the first positional as a filter file; it is a flag.
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
       "color-output", "monochrome-output", "compact-output", "exit-status", "from-file",
       "indent", "join-output", "logs", "null-input", "raw-input", "sort-keys", "slurp",

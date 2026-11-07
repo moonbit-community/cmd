@@ -614,9 +614,13 @@ async fn sort_sources(
     roots: Array::make(temporary_directories.length().max(1), None),
     next: 0,
   }
-  defer (for root in spool.roots {
-    if root is Some(root) {
-      root.close()
+  // The published core interface exposes close as cancellable. The command
+  // owns cleanup protection even when the workspace annotation is stronger.
+  defer @async.protect_from_cancel(() => {
+    for root in spool.roots {
+      if root is Some(root) {
+        root.close()
+      }
     }
   })
   let runs : Array[Run] = []

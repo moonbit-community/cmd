@@ -1022,7 +1022,7 @@
         "help"
       ],
       "source_version": "workspace cli/jq@0.2.7 metadata contract",
-      "expected_stdout_text": "Usage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file FILE    read the filter from FILE\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n",
+      "expected_stdout_text": "Usage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "expected_stderr_text": ""
     },
     {
@@ -1394,13 +1394,13 @@
         }
       ],
       "environment": {},
-      "expected_status": 0,
+      "expected_status": 2,
       "normalizations": [],
       "comparison": "contract",
-      "expected_stdout_text": "2\n",
-      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: argument preparation failed: --arg requires NAME and VALUE\n",
       "oracle": true,
-      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "source_version": "jq1.8.2 src/main.c sets FROM_FILE without consuming the next token. The first Linux differential exposed the former erroneous success expectation; the oracle remains enabled.",
       "expected_files": [
         {
           "path": "--arg",
@@ -1412,7 +1412,9 @@
           "content_text": "{\"a\":2}\n",
           "unchanged": true
         }
-      ]
+      ],
+      "expected_stderr_contains": "--arg",
+      "diagnostic_reason": "The local preparation diagnostic is exact. jq1.8.2 also parses --arg as an option, requires two arguments, emits no stdout and exits2; its help trailer differs. All original files must remain unchanged."
     },
     {
       "id": "f17-jq-literal-filter-file-long",
@@ -1435,13 +1437,13 @@
         }
       ],
       "environment": {},
-      "expected_status": 0,
+      "expected_status": 2,
       "normalizations": [],
       "comparison": "contract",
-      "expected_stdout_text": "2\n",
-      "expected_stderr_text": "",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: argument preparation failed: --arg requires NAME and VALUE\n",
       "oracle": true,
-      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "source_version": "jq1.8.2 src/main.c sets FROM_FILE without consuming the next token. The first Linux differential exposed the former erroneous success expectation; the oracle remains enabled.",
       "expected_files": [
         {
           "path": "--arg",
@@ -1453,7 +1455,9 @@
           "content_text": "{\"a\":2}\n",
           "unchanged": true
         }
-      ]
+      ],
+      "expected_stderr_contains": "--arg",
+      "diagnostic_reason": "The local preparation diagnostic is exact. jq1.8.2 also parses --arg as an option, requires two arguments, emits no stdout and exits2; its help trailer differs. All original files must remain unchanged."
     },
     {
       "id": "f17-jq-logs-conflict-null-input-short",
@@ -1470,7 +1474,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file FILE    read the filter from FILE\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n",
+      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1489,7 +1493,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file FILE    read the filter from FILE\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n",
+      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1508,7 +1512,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file FILE    read the filter from FILE\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n",
+      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1527,7 +1531,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file FILE    read the filter from FILE\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n",
+      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1611,6 +1615,358 @@
       "diagnostic_reason": "Evaluator wording differs; status, type-error token and empty stdout are required.",
       "aliases": [],
       "oracle": false
+    },
+    {
+      "id": "f17-jq-file-mode-leading-dash-short",
+      "command": "jq",
+      "args": [
+        "-c",
+        "-f",
+        "--",
+        "--arg",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "--arg",
+          "content_text": ".a"
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "--arg",
+          "content_text": ".a",
+          "unchanged": true
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files."
+    },
+    {
+      "id": "f17-jq-file-mode-leading-dash-long",
+      "command": "jq",
+      "args": [
+        "-c",
+        "--from-file",
+        "--",
+        "--arg",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "--arg",
+          "content_text": ".a"
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "--arg",
+          "content_text": ".a",
+          "unchanged": true
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files."
+    },
+    {
+      "id": "f17-jq-file-mode-intervening-option",
+      "command": "jq",
+      "args": [
+        "-f",
+        "-c",
+        "filter",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "filter",
+          "content_text": ".a"
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "filter",
+          "content_text": ".a",
+          "unchanged": true
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files."
+    },
+    {
+      "id": "f17-jq-file-mode-cluster",
+      "command": "jq",
+      "args": [
+        "-fc",
+        "filter",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "filter",
+          "content_text": ".a"
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "filter",
+          "content_text": ".a",
+          "unchanged": true
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files."
+    },
+    {
+      "id": "f17-jq-file-mode-repeated",
+      "command": "jq",
+      "args": [
+        "-ff",
+        "--from-file",
+        "-c",
+        "filter",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "filter",
+          "content_text": ".a"
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "filter",
+          "content_text": ".a",
+          "unchanged": true
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files."
+    },
+    {
+      "id": "f17-jq-file-mode-after-program",
+      "command": "jq",
+      "args": [
+        "filter",
+        "-fc",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "filter",
+          "content_text": ".a"
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "filter",
+          "content_text": ".a",
+          "unchanged": true
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files."
+    },
+    {
+      "id": "f17-jq-file-mode-missing",
+      "command": "jq",
+      "args": [
+        "-f"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "filter",
+          "content_text": ".a"
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "filter",
+          "content_text": ".a",
+          "unchanged": true
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: --from-file requires a filter file\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "oracle": true,
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files.",
+      "expected_stderr_contains": "jq",
+      "diagnostic_reason": "Exact local diagnostic is asserted. Upstream uses usage/unknown-option wording; compare the shared program/option identifier, status2, empty stdout and preserved files, without claiming identical message grammar."
+    },
+    {
+      "id": "f17-jq-file-mode-attached-long",
+      "command": "jq",
+      "args": [
+        "--from-file=filter",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "filter",
+          "content_text": ".a"
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "filter",
+          "content_text": ".a",
+          "unchanged": true
+        },
+        {
+          "path": "input",
+          "content_text": "{\"a\":2}\n",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: flag does not accept a value: 'from-file'\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "oracle": true,
+      "coverage": [
+        "from-file"
+      ],
+      "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files.",
+      "expected_stderr_contains": "from-file",
+      "diagnostic_reason": "Exact local diagnostic is asserted. Upstream uses usage/unknown-option wording; compare the shared program/option identifier, status2, empty stdout and preserved files, without claiming identical message grammar."
     }
   ]
 }

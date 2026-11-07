@@ -1273,7 +1273,15 @@
         "f17-jq-logs-all-invalid",
         "f17-jq-logs-empty-exit",
         "f17-jq-logs-slurp",
-        "f17-jq-logs-retains-filter-error"
+        "f17-jq-logs-retains-filter-error",
+        "f17-jq-file-mode-leading-dash-short",
+        "f17-jq-file-mode-leading-dash-long",
+        "f17-jq-file-mode-intervening-option",
+        "f17-jq-file-mode-cluster",
+        "f17-jq-file-mode-repeated",
+        "f17-jq-file-mode-after-program",
+        "f17-jq-file-mode-missing",
+        "f17-jq-file-mode-attached-long"
       ]
     },
     {
@@ -1330,7 +1338,8 @@
         "f17-ln-reject-backup-control-value",
         "f17-ln-alias-no-dereference",
         "f17-ln-suffix-value-short",
-        "f17-ln-suffix-value-long"
+        "f17-ln-suffix-value-long",
+        "f17-ln-reject-no-dereference-target"
       ]
     },
     {
@@ -1794,7 +1803,11 @@
         "f17-rmdir-ignore-long-regular",
         "f17-rmdir-ignore-long-missing",
         "f17-rmdir-ignore-long-symlink",
-        "f17-rmdir-ignored-failure-stops-parents"
+        "f17-rmdir-ignored-failure-stops-parents",
+        "f17-rmdir-windows-junction-default",
+        "f17-rmdir-windows-junction-short",
+        "f17-rmdir-windows-junction-long",
+        "f17-rmdir-long-ignored-failure-stops-parents"
       ]
     },
     {
@@ -2570,7 +2583,8 @@
         "f17-xxd-help-short",
         "f17-xxd-literal-option-looking-file",
         "f17-xxd-literal-name-short",
-        "f17-xxd-literal-name-long"
+        "f17-xxd-literal-name-long",
+        "f17-xxd-invalid-short-option"
       ]
     },
     {

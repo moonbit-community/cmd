@@ -26,7 +26,7 @@ Apply jq-compatible filters to consecutive JSON values, files or stdin. Supports
 | `-l, --logs` | skip non-JSON lines (project extension) |
 | `-S, --sort-keys` | sort object keys recursively |
 | `-e, --exit-status` | return 1 for false/null, 4 for no result |
-| `-f, --from-file FILE` | read the filter from FILE |
+| `-f, --from-file` | read the first positional argument as a filter file |
 | `--arg NAME VALUE` | bind a string variable |
 | `--argjson NAME JSON` | bind a JSON variable |
 | `--indent N` | indentation -1 (tabs) through 7 |
@@ -38,6 +38,13 @@ Apply jq-compatible filters to consecutive JSON values, files or stdin. Supports
 ## Argument and exit-status contract
 
 Option values and operands after -- remain literal during alias normalization.
+
+`-f`/`--from-file` is a mode flag, matching jq 1.8.2: the first positional
+argument names the filter file, and later positionals name input files. Options
+can occur before or after the filename. Repeated `-f` is idempotent; it does not
+select multiple filters. Use `-f -- --arg input` for a filter filename `--arg`,
+or prefix the filename with `./`. Missing filenames and attached long values
+(`--from-file=FILE`) reject; `-f --arg input` still parses `--arg` as an option.
 
 See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
 

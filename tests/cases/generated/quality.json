@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2563,
+    "exact-local": 2571,
     "finite-diagnostic": 91,
     "typed-scenario": 34,
     "typed-dynamic-output": 12
@@ -882,7 +882,7 @@
     {
       "case_id": "release-metadata-jq-help",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "c3fec94157c8e1798888afbc99ecf2ace2a7411a6bab8e4c25f3a71c9456672f",
+      "definition_sha256": "90b1317fa2d9d88cfa0d9fa9b172259572e7e6e0bab9f4de0eb695fa3f797c24",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1042,7 +1042,7 @@
     {
       "case_id": "f17-jq-literal-filter-file-short",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "f415986e1bb924c0adb15ce4974876ed5da9d4138f01ed5eb0f5ce8509c5330c",
+      "definition_sha256": "1f0916e32dec6ec8690a6ee6750b54fde4918f662c66176e4023fee4fc47164b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1052,7 +1052,7 @@
     {
       "case_id": "f17-jq-literal-filter-file-long",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "725cdb013e8a1a19882c533a02092528d5021a37213512b0836b9bd660acc839",
+      "definition_sha256": "e5a14c8f5db86654f1849681b04f577c3610ef09a45f0d2b7eb8b25247d50675",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1062,7 +1062,7 @@
     {
       "case_id": "f17-jq-logs-conflict-null-input-short",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "392629d4bdcb207ad4315084997cfc1f2026a9d164108c2f6ece33e70ef6eba6",
+      "definition_sha256": "c76f8c763fae2dd2ab20df53a3b436f095b753d2bd0d9e7ef7c743cb48843451",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1072,7 +1072,7 @@
     {
       "case_id": "f17-jq-logs-conflict-null-input-long",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "227bd06829229ed2856c46c78f43f4618078a7ff4a2efc62fe13f76ef3737ee6",
+      "definition_sha256": "fdddbfdefbb37414ce4de930ce2284f6ae92831fce51b37ef777edf5c135282b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1082,7 +1082,7 @@
     {
       "case_id": "f17-jq-logs-conflict-raw-input-short",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "2dbbfd5942b928ed633a0e0a8019607138d941e3ca917d41817c60694eaebfcb",
+      "definition_sha256": "f264c0efb2f2aa24d31e37c6fa3fbf2a43186e02227c2b27fd36be9c5771a482",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1092,7 +1092,7 @@
     {
       "case_id": "f17-jq-logs-conflict-raw-input-long",
       "source": "tests/cases/jq.json",
-      "definition_sha256": "e998df53b58bdf4322b673e673b7db733d5232ef91bbdfd14557db35945b7903",
+      "definition_sha256": "a217c8d85f036927d7bdd598dc5ee6598d4b37af39a15ef8f1de0ec8a5e510de",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1137,6 +1137,86 @@
       "descriptor": {
         "kind": "diagnostic-fragment",
         "reason": "Evaluator wording differs; status, type-error token and empty stdout are required."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-file-mode-leading-dash-short",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "6e3cb4e5736238498e487d1c581e4cc70f50b32bc70f5ac1cd1f7f7927530810",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-file-mode-leading-dash-long",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "fdb6582d7a461a0dba5a2ffc5cc0d305731981efc5ba34c7ce67981bd5c40371",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-file-mode-intervening-option",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "02dd1f90af227785f289c79ac26f5dacda851fb840053b385ba0a65f73ae32c0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-file-mode-cluster",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "a2e0c385bc175398841454f8e40d21659698850bb2a9e4fdb246d9c6c666a1b7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-file-mode-repeated",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "def4243c52d92ebb93cd9d042a11f6bd805c66302bc2c1dc5465bf05b22495c2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-file-mode-after-program",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "038632baa023e3905da4f5546eecae884424d29384bf8ffdfd1149ea4cf6f32d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-file-mode-missing",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "b45436678338bb05368645d3c2e30ee626a290f09bd8810b3f0a1dbafddf740b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f17-jq-file-mode-attached-long",
+      "source": "tests/cases/jq.json",
+      "definition_sha256": "25bf1c5cf19330d7c6d179fe3f3542b5b94125ec3bdced72727c9d12f73a5cb8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
       },
       "required_work": ""
     },
@@ -27668,6 +27748,30 @@
     "f17-jq-logs-retains-filter-error": {
       "kind": "diagnostic-fragment",
       "reason": "Evaluator wording differs; status, type-error token and empty stdout are required."
+    },
+    "f17-jq-file-mode-leading-dash-short": {
+      "kind": "exact"
+    },
+    "f17-jq-file-mode-leading-dash-long": {
+      "kind": "exact"
+    },
+    "f17-jq-file-mode-intervening-option": {
+      "kind": "exact"
+    },
+    "f17-jq-file-mode-cluster": {
+      "kind": "exact"
+    },
+    "f17-jq-file-mode-repeated": {
+      "kind": "exact"
+    },
+    "f17-jq-file-mode-after-program": {
+      "kind": "exact"
+    },
+    "f17-jq-file-mode-missing": {
+      "kind": "exact"
+    },
+    "f17-jq-file-mode-attached-long": {
+      "kind": "exact"
     },
     "phase4-ln-symbolic": {
       "kind": "exact"

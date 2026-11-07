@@ -1,4 +1,29 @@
 ///|
+test "jq file mode selects the first positional without consuming options" {
+  for
+    args in [
+      ["-f", "-c", "filter", "input"],
+      ["-fc", "filter", "input"],
+      ["-ff", "-c", "filter", "input"],
+      ["--from-file", "--from-file", "-c", "filter", "input"],
+      ["filter", "-fc", "input"],
+    ] {
+    guard parse_cli(args) is Run(options) else { fail("file mode options") }
+    assert_true(options.query is File("filter"))
+    assert_true(options.inputs is [File("input")])
+    assert_true(options.compact_output)
+  }
+  guard parse_cli(["-f", "--", "--arg", "input"]) is Run(options) else {
+    fail("literal filter filename")
+  }
+  assert_true(options.query is File("--arg"))
+  assert_true(options.inputs is [File("input")])
+  assert_true(parse_cli(["-f", "--arg", "input"]) is Error(_))
+  assert_true(parse_cli(["-f"]) is Error(_))
+  assert_true(parse_cli(["--from-file=filter"]) is Error(_))
+}
+
+///|
 test "jq sort and output modes are deterministic" {
   let value = @json.parse("{\"z\":1,\"a\":2}")
   assert_eq(

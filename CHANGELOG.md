@@ -23,11 +23,19 @@ Development; no publication.
   usage statuses without changing capability refusals. Name project aliases in
   help/READMEs and reject accidentally exposed parser keys. Candidate coordinates
   change only for the affected commands; published expectations remain frozen.
-- Local macOS validation of the diagnostic/extension candidate passes 1,897
-  Wasm package tests, 204 Native test-tool tests and 2,760 functional checks,
+  The fixed Linux comparison also corrects jq -f to a mode flag selecting the
+  first positional file, including clustered/repeated flags and literal -- operands.
+  Isolated publication checks also exposed tac/sort cleanup assumptions about
+  unpublished core annotations; command-local cancellation protection preserves
+  their existing dependency coordinates and real temporary cleanup.
+- Local macOS validation of the diagnostic/extension candidate passes 1,899
+  Wasm package tests, 204 Native test-tool tests and 2,768 functional checks,
   with 28 platform exclusions and zero failures. Interface, format, architecture
   and definition-consistency checks pass; three-platform and published acceptance
   remain separate requirements.
+  All 46 affected modules pass publication dry runs. Extracted sort/tac modules
+  also pass 34/14 Wasm tests against their published core 0.9.1/0.9.0 dependencies,
+  including real cancellation cleanup. These checks do not create releases.
 - Prepare tree 0.1.6 with name-only, non-following link entries in text, JSON and
   HTML. Dangling/cyclic links no longer abort a normal listing; `-d` selects real
   child directories while retaining explicit operands. Selected-link sizes and

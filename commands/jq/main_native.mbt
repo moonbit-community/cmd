@@ -56,7 +56,7 @@ fn help_message() -> String {
     #|  -l, --logs              skip non-JSON lines (project extension)
     #|  -S, --sort-keys         sort object keys recursively
     #|  -e, --exit-status       return 1 for false/null, 4 for no result
-    #|  -f, --from-file FILE    read the filter from FILE
+    #|  -f, --from-file         read the first positional argument as a filter file
     #|      --arg NAME VALUE   bind a string variable
     #|      --argjson NAME JSON bind a JSON variable
     #|      --indent N         indentation -1 (tabs) through 7
@@ -65,6 +65,7 @@ fn help_message() -> String {
     #|  -M, --monochrome-output disable colors, including when -C is present
     #|
     #|Option values and operands after -- remain literal during alias normalization.
+    #|-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.
   help
 }
 
@@ -130,15 +131,7 @@ fn prepare_args(args : ArrayView[String]) -> Array[String] raise ArgError {
       prepared.push(arg)
       index += 1
       if options {
-        value_next = ["--from-file", "--indent"].contains(arg)
-        if arg.has_prefix("-") && !arg.has_prefix("--") {
-          for offset in 1..<arg.length() {
-            if arg[offset] == 'f' {
-              value_next = offset + 1 == arg.length()
-              break
-            }
-          }
-        }
+        value_next = arg == "--indent"
       }
     }
   }
@@ -163,7 +156,7 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
     @cli.flag("exit-status", short='e'),
     @cli.flag("color-output", short='C'),
     @cli.flag("monochrome-output", short='M'),
-    @cli.option("from-file", short='f'),
+    @cli.flag("from-file", short='f'),
     @cli.option("indent"),
     @cli.flag("tab"),
     @cli.option("arg"),
@@ -256,15 +249,16 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
     }
   }
   let positionals = parsed.operands
-  let filter_files = parsed.values("from-file")
-  let query = match filter_files.length() {
-    0 => QuerySource::Inline(positionals.get(0).unwrap_or("."))
-    1 => File(filter_files[0])
-    _ => return Error("error: multiple filters provided\n\n" + help_message())
+  let query = if parsed.contains("from-file") {
+    guard positionals.get(0) is Some(path) else {
+      return Error("jq: --from-file requires a filter file\n" + help_message())
+    }
+    QuerySource::File(path)
+  } else {
+    QuerySource::Inline(positionals.get(0).unwrap_or("."))
   }
-  let input_start = if filter_files.is_empty() { 1 } else { 0 }
   let inputs : Array[InputSource] = []
-  for index in input_start..<positionals.length() {
+  for index in 1..<positionals.length() {
     let path = positionals[index]
     if path == "-" {
       inputs.push(Stdin)

@@ -2339,9 +2339,19 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [
-        "proof-jq-from-file-filter"
+        "proof-jq-from-file-filter",
+        "f17-jq-literal-filter-file-short",
+        "f17-jq-literal-filter-file-long",
+        "f17-jq-file-mode-leading-dash-short",
+        "f17-jq-file-mode-leading-dash-long",
+        "f17-jq-file-mode-intervening-option",
+        "f17-jq-file-mode-cluster",
+        "f17-jq-file-mode-repeated",
+        "f17-jq-file-mode-after-program",
+        "f17-jq-file-mode-missing",
+        "f17-jq-file-mode-attached-long"
       ],
-      "activation": "--from-file filter reads actual .a source from a fixture, applies it to stdin object a=2 and emits2 LF. This is filter loading, unlike jqlog -f input-file selection.",
+      "activation": "The original --from-file filter contract retains exact2 LF from stdin a=2. File mode is a flag: clustered/repeated/intervening/late options still select the first positional as the filter file; -- admits a leading-dash filename. Without --, --arg is parsed as an option and its missing value fails2. Missing program and attached long values fail2 without output or filesystem changes. All local streams are exact; the fixed jq1.8.2 comparison uses stated narrower diagnostics where help wording differs. This is filter loading, unlike jqlog -f input-file selection.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",

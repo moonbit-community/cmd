@@ -43,6 +43,11 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 
 ## Limitations
 
+Cancellation protects removal of owned spool directories even with the published
+core dependency. The regression waits until real disk runs exist, cancels a
+blocked output write, and requires the owned runs removed while preserving
+unowned files. Output writes themselves remain cancellable.
+
 - Multiple explicit keys share one field-boundary scan per record. Preparation
   borrows selected byte ranges before producing owned keys; numeric fields retain
   exact canonical decimal digits, including across temporary runs.
