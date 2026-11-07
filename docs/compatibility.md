@@ -5,10 +5,14 @@ Updated: 2026-11-07
 
 ## Extensions and diagnostics
 
-Issue #22 governs the finite existing option surface. The current candidate
-versions are in [candidate.json](../tests/release/candidate.json); published
-versions and expectations remain frozen in latest.json and latest-cases.json.
-Candidate definitions and manual reviews are not execution or publication evidence.
+Issue #22 governs the finite existing option surface. The 2026-11-07 release
+published 46 changed command coordinates while retaining core 0.9.1 and the
+other 34 command coordinates. Exact versions and independently frozen
+expectations are in [latest.json](../tests/release/latest.json) and
+[latest-cases.json](../tests/release/latest-cases.json).
+[Three-platform exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42379717812)
+passed all 80 coordinates, including fixed Linux upstream comparison.
+Candidate definitions and manual reviews remain separate from execution evidence.
 
 | Command/profile | Public spelling and deliberate distinction |
 | --- | --- |
@@ -73,13 +77,14 @@ this profile does not relabel those omissions as implemented.
 
 ## Current delivery and historical acceptance
 
-The tree 0.1.6 development candidate lists symbolic links as named leaves without
+Published tree 0.1.6 lists symbolic links as named leaves without
 following targets, including dangling and cyclic links. Text/HTML omit target
 text; JSON identifies links explicitly. Links count as files, and `-d` excludes
 discovered links while retaining explicit operands. Selected-link sizes and
 `ln=target` coloring reject explicitly. These are
 documented extensions of the former all-links rejection, not full upstream
-link-display parity. Published tree 0.1.5 and its frozen expectations are unchanged.
+link-display parity. Earlier tree 0.1.5 evidence retains its dated scope in
+CHANGELOG.md and Git; it is not rewritten as acceptance of the new behavior.
 
 Workspace development uses `moonbitlang/async@0.22.7` across modules and
 standalone test tools. CI follows the official `latest` toolchain and core and
@@ -92,9 +97,11 @@ latest Moonrun is `0.1.20261104 (940aa18)`.
 This dependency upgrade does not enable new command
 features or lift existing filesystem/process boundaries. In particular,
 `Directory::open` and `Directory::remove` in async 0.22.7 do not support Wasm.
-Published coordinates and their frozen expectations remain independent in
-`tests/release/latest.json` and `latest-cases.json`; no package is published by
-this development change.
+The 2026-11-06 dependency update alone created no releases. The 46 command
+versions published on 2026-11-07 use the current dependency declarations;
+the other 34 coordinates retain their previously published builds.
+Published coordinates and frozen expectations remain independent inputs in
+`tests/release/latest.json` and `latest-cases.json`.
 
 `cli/typst@0.1.0` is published. Its migrated CLI,
 document environment and watcher use a pure MoonBit platform adapter; the
@@ -111,21 +118,21 @@ viewer opening, performance traces and the HTML watch server (`--no-serve`
 is required). Jobs remain single-threaded. File reads retain whole inputs;
 canonicalization is lexical, symlink identity/containment is not guaranteed,
 terminal detection is unavailable and local time defaults to UTC. Unlock
-conditions are recorded in ADR-0003. Seven pinned Typst 0.15.1 Linux evaluation
-comparisons pass. All 80 coordinates pass local MoonX and
+conditions are recorded in ADR-0003. In the 2026-11-05 acceptance, seven pinned
+Typst 0.15.1 Linux evaluation comparisons passed. All 80 coordinates passed local MoonX and
 [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41957907959),
-including watch shutdown and cleanup. The previous 79 coordinates and their
-frozen expectations remain unchanged; timeout remains local-only among 81 modules.
+including watch shutdown and cleanup. At that release, the previous 79 coordinates
+and their frozen expectations remained unchanged, with timeout local-only among 81 modules.
 The inherited relative-link watcher fixture is Unix-only because the public
 filesystem API cannot create that fixture on Windows. Ordinary file-watch
 recompilation has a registered CLI assertion on all three platforms.
 
-The 2026-11-01 release publishes core 0.9.1 and 26 changed command versions,
+The 2026-11-01 release published core 0.9.1 and 26 changed command versions,
 including direct implementation changes and gzip/jq shared-runtime consumers.
-These commands select core 0.9.1; the other 53 published coordinates retain
-their dependencies. Exact versions are in
-[latest.json](../tests/release/latest.json), with independent
-expectations in latest-cases.json. All 27 uploads/builds and all 79 coordinates
+Those commands selected core 0.9.1; the other 53 published coordinates retained
+their dependencies. The source and scope of those historical coordinates are
+recorded in the [2026-11-01 release record](../CHANGELOG.md#2026-11-01).
+All 27 uploads/builds and all 79 coordinates
 passed local MoonX and [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751),
 including pinned Linux comparison. Counts and scope are summarized in
 [CHANGELOG.md](../CHANGELOG.md#2026-11-01); full performance acceptance remains open.
@@ -140,7 +147,7 @@ their explicit fallbacks. The preceding 2026-11-01 macOS Wasm resource failures
 and subsequent repair evidence retain their dated scope in
 [performance guide](performance/README.md); buffer release is not an immediate RSS guarantee.
 
-Published audit repairs include core 0.9.1, cp 0.2.4, find 0.2.5,
+The 2026-11-01 audit repairs included core 0.9.1, cp 0.2.4, find 0.2.5,
 mv 0.2.6, rm 0.2.4, sort 0.2.6, tail 0.2.4 and xargs 0.2.4. Xargs dispatches
 complete batches before EOF and replenishes individual parallel slots; later
 input errors can follow completed child effects. Ordinary child exits 126/127
@@ -161,12 +168,11 @@ newly accepted coordinates.
 
 The 2026-10-30 release published `cli/core@0.9.0` and 43 command packages:
 42 updates and the first `cli/rg@0.1.0` release. Another 36 command coordinates
-remain unchanged, giving 79 published commands; `timeout` remains local-only.
+remained unchanged, giving 79 published commands; `timeout` was local-only.
 All 44 uploads and registry builds were verified. Local exact-version MoonX
 acceptance passed 2,180 checks with 19 skips and zero failures across all 79
-coordinates. [latest.json](../tests/release/latest.json) and its
-independent expected cases select the exact published inventory. The
-[release summary](../CHANGELOG.md#2026-10-30) records source CI and three-platform
+coordinates. The dated
+[release summary](../CHANGELOG.md#2026-10-30) records that inventory's source CI and three-platform
 published acceptance.
 
 The current development test policy requires source-bound independent local

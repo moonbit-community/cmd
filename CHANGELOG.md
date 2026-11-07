@@ -14,33 +14,37 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-07
 
-Development; no publication.
+Development and publication.
 
 - Repair the finite diagnostic and extension profile for issue #22: preserve
-  Base32/Base64 failure prefixes and canonical padding, apply rmdir's real
-  removal/ignore policy, honor echo's POSIX environment, and keep option values
-  and literal operands intact during alias normalization. Correct ordinary
-  usage statuses without changing capability refusals. Name project aliases in
-  help/READMEs and reject accidentally exposed parser keys. Candidate coordinates
-  change only for the affected commands; published expectations remain frozen.
-  The fixed Linux comparison also corrects jq -f to a mode flag selecting the
-  first positional file, including clustered/repeated flags and literal -- operands.
-  Isolated publication checks also exposed tac/sort cleanup assumptions about
-  unpublished core annotations; command-local cancellation protection preserves
-  their existing dependency coordinates and real temporary cleanup.
-- Local macOS validation of the diagnostic/extension candidate passes 1,899
-  Wasm package tests, 204 Native test-tool tests and 2,768 functional checks,
-  with 28 platform exclusions and zero failures. Interface, format, architecture
-  and definition-consistency checks pass; three-platform and published acceptance
-  remain separate requirements.
-  All 46 affected modules pass publication dry runs. Extracted sort/tac modules
-  also pass 34/14 Wasm tests against their published core 0.9.1/0.9.0 dependencies,
-  including real cancellation cleanup. These checks do not create releases.
-- Prepare tree 0.1.6 with name-only, non-following link entries in text, JSON and
+  Base32/Base64 failure prefixes and canonical padding, apply rmdir's actual
+  removal/ignore policy, honor echo's POSIX environment, and preserve option
+  values and literal operands during alias normalization. Correct ordinary
+  usage statuses, name project aliases, reject private parser keys, and match
+  jq's file-mode flag semantics. Sort/tac protect owned temporary cleanup
+  against their existing published core interfaces, including cancellation.
+- Publish tree 0.1.6 with name-only, non-following link entries in text, JSON and
   HTML. Dangling/cyclic links no longer abort a normal listing; `-d` selects real
   child directories while retaining explicit operands. Selected-link sizes and
-  target-dependent colors retain
-  explicit rejection contracts. Published tree 0.1.5 expectations stay frozen.
+  target-dependent colors retain explicit rejection contracts.
+- Publish 46 changed command coordinates from `847e66a` after
+  [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42377993139)
+  and independent source/receipt audit. Keep core 0.9.1 and the other 34 command
+  coordinates unchanged: 80 published commands among 81 local modules, with
+  timeout local-only. Verify every upload, registry build and package checksum;
+  retain the failed tail transport attempt before its verified successful retry.
+  Exact coordinates and 2,470 independently frozen definitions are in
+  `tests/release/latest.json` and `latest-cases.json`.
+- Exact-version MoonX acceptance passes all 80 coordinates: local macOS has
+  2,609 passes, zero failures and 28 platform exclusions;
+  [published CI](https://github.com/moonbit-community/cmd/actions/runs/42379717812)
+  has Linux 2,618/0/23, macOS 2,609/0/28 and Windows 2,427/0/210
+  (pass/fail/platform exclusions). Linux includes the fixed upstream oracle,
+  all four Linux-only oracle scenarios and 126 F17 differential cases. Each
+  platform's development checks pass 1,899 Wasm and 204 Native test-tool tests;
+  isolated sort/tac packages pass 34/14 Wasm tests against core 0.9.1/0.9.0.
+  These receipts do not establish full upstream parity or formal performance
+  acceptance; older releases retain their dated evidence in Git.
 
 ## 2026-11-06
 
