@@ -221,7 +221,7 @@ measurements remain separate evidence categories.
 | Share dump-reader loops (C01) | Keep owner-local loops: opening, zero limits, over-skip, rendering and finalization differ. A narrower allocation change needs short-read, EOF, budget and failed-write evidence. |
 | Reduce core visibility (C02) | `teddy_max_literals`, `Algorithm::hex_length` and `gzipops/cli.help` remain public after a restored trial. Make an intentional API decision before changing them. |
 | Remove published platform helpers (C02) | Local non-use of `is_cross_device_error`, `native_separator` and `accepts_separator` does not establish external non-use; choose a compatibility policy first. |
-| Make `Session::finish` synchronous (C02) | Still a proposal: its public function type and sh/make/split artifacts change. Require a deliberate API revision and affected-command measurements. |
+| Make `Session::finish` synchronous (C02) | Retain async: EOF now reparses pending source and may execute async `run_jobs`. The earlier synchronous trial predates this behavior and is no longer applicable. Reconsider only if command execution is deliberately moved to another async API while preserving EOF and adapter contracts. |
 
 ## Verification and reconsideration
 

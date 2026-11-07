@@ -2,7 +2,7 @@
 
 Shared runtime packages used by the independently published command modules.
 
-## 0.9.4 development
+## 0.9.4 changes
 
 Reject unmatched shell reserved words, incomplete logical expressions and empty
 required compound lists before executing their command list. Quoted command
@@ -12,7 +12,10 @@ unfinished grammar and retaining the specific parse error in the EOF diagnostic.
 Unexpected external child output/diagnostic transfer errors
 propagate without replay or running later commands; closed pipes retain status
 141 and launch errors retain 126/127 statuses.
-This candidate is unpublished; the accepted 0.9.3 release remains recorded below.
+Published from `aa6b769` after three-platform development checks. The uploaded
+make/sh/split consumers then passed exact-version MoonX acceptance. The
+[changelog](../CHANGELOG.md#2026-11-08) records the finite
+results and the earlier 0.9.3 release remains described below.
 
 ## 0.9.3 changes
 

@@ -77,36 +77,38 @@ this profile does not relabel those omissions as implemented.
 
 ## Current delivery and historical acceptance
 
-The first 2026-11-08 release published core 0.9.2, make 0.2.5, sh 0.2.6 and split 0.1.7
-from `e739345` after three-platform development checks and independent audit.
-The remaining 77 command coordinates are retained. All 80 exact MoonX coordinates
-pass [published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42397826082):
-Linux 2,792/0/25, macOS 2,781/0/30 and Windows 2,584/0/227
-(pass/fail/platform exclusions). Linux includes all six immutable-oracle
-scenarios, including GNU FIFO jobserver cooperation and Dash printf output state.
+The current 2026-11-08 language/export release publishes core 0.9.4, make 0.2.7,
+sh 0.2.8 and split 0.1.9 from `aa6b769`, retaining the other 77 command coordinates.
+[Actual-main development checks](https://github.com/moonbit-community/cmd/actions/runs/42415858402)
+and independent source/receipt audit pass. All 80 exact MoonX coordinates pass
+[published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42417285800),
+including fixed Linux comparison and all six required oracle scenarios.
+The [changelog](../CHANGELOG.md#2026-11-08) records platform counts and exclusions.
+The independently frozen 2,802 definitions retain all previous 2,656 IDs, update
+six help/version outputs and add 146 F31 cases; candidate expectations remain
+independent. Registry builds, upload checksums and actual isolated consumers of
+the uploaded core were verified. Make's failed transport, confirmed version
+absence and successful retry remain separate receipts.
+
+The completed named profile includes default/named export and unexport,
+`.EXPORT_ALL_VARIABLES`, recipe expansion/environment phases, shell capture
+status, GNU argument construction, contextual syntax rejection and EOF execution.
+Unexpected child-output failures preserve their identity without replay or later
+commands. The shell's `test -s` validates raw paths, follows final targets and
+reads metadata without opening files; unavailable target sizes reject explicitly.
+Linux directory sizes and the macOS ENOTSUP boundary have actual observations.
 The FIFO fixture bridges host Wasm and container GNU through a real shared FIFO;
-it does not claim an OS parent-child relationship. The 2,646 frozen definitions
-retain all prior IDs with six help/version updates and 176 added F31 cases.
+it does not claim an OS parent-child relationship. Native tests cover test tools;
+product acceptance follows the Wasm delivery policy.
 See [ADR-0007](adr/0007-language.md) for grammar, descriptor and terminal limits;
 full POSIX/GNU parity and formal performance acceptance are not established.
 
-Later independent audit reproduced a missing `test -s` case in this release:
-a dangling link incorrectly returned true because the link's own size was used.
-Unavailable directory sizes also became false. These legacy errors prevent
-closing issue #31. The follow-up published versions core 0.9.3, make 0.2.6,
-sh 0.2.7 and split 0.1.8 validate raw paths, resolve final targets and read
-metadata without opening files. Actual ENOTSUP becomes status 2; the macOS
-directory boundary is explicit while Linux directory sizes remain supported.
-The size repair's [exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42407243329)
-passes all 80 coordinates: Linux 2,799/0/28, macOS 2,790/0/31 and Windows
-2,588/0/233. Local macOS also passes 2,790/0/31. All four uploads, registry
-builds and package checksums were verified after actual-main development CI
-at `5545ad7`. The 2,656 frozen definitions retain all previous IDs, change six
-metadata outputs and add ten size cases; Linux includes all six immutable-oracle
-scenarios. New evidence remains separate from the earlier finite receipts.
-A subsequent review found missing make default export/unexport behavior from
-the original #31 scope. That issue remains open while this project work is
-implemented and independently accepted; it is not an upstream API blocker.
+Earlier core 0.9.2 and 0.9.3 releases retain their dated finite evidence. Independent
+reviews subsequently found size and export omissions; the successful earlier
+receipts did not establish those missing behaviors. Their exact coordinates,
+counts and limitations remain in the [earlier record](https://github.com/moonbit-community/cmd/blob/aa6b769031fb0f5d90298ddbc5f7fb2fad044d38/CHANGELOG.md#2026-11-08).
+The current repair closes those implementation gaps without rewriting historical
+expectations or relabeling project grammar omissions as upstream API blockers.
 
 Published tree 0.1.6 lists symbolic links as named leaves without
 following targets, including dangling and cyclic links. Text/HTML omit target
@@ -757,13 +759,15 @@ claiming success; `local-only` is absent from MoonX by design.
 
 ## Per-command support
 
-The issue #31 candidate `split@0.1.8` uses the expanded pure MoonBit
-shell filter language from `core@0.9.3`, including arithmetic assignments,
+Published `split@0.1.9` uses the expanded pure MoonBit
+shell filter language from `core@0.9.4`, including arithmetic assignments,
 backticks and expanded here-documents. Actual filter regressions retain `$FILE`,
 stdin and child-status contracts. Its target-size repair follows final links,
 does not open unreadable files or FIFOs, and rejects unavailable target sizes.
-This candidate still requires exact-version acceptance. Dated prior publication and acceptance are recorded
-in [CHANGELOG.md](../CHANGELOG.md#2026-11-08); full shell compatibility is not claimed. See
+Complete EOF continuations execute with their actual final status. Exact-version
+MoonX acceptance passed on all three platforms; the finite results and earlier
+versions are recorded in [CHANGELOG.md](../CHANGELOG.md#2026-11-08).
+Full shell compatibility is not claimed. See
 [ADR-0007](adr/0007-language.md).
 
 | Command | Status | Measured profile | Observed boundary or open evidence |
@@ -807,7 +811,7 @@ in [CHANGELOG.md](../CHANGELOG.md#2026-11-08); full shell compatibility is not c
 | `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain |
 | `ls` | subset verified | Existing traversal/sort/link profile plus C quoting, columns/across/commas, width/tab stops and explicit type/suffix/link colors | `-P` is a project extension; enabled raw-mode/capability/link-count predicates and automatic color reject. Long/ownership/inode/block formats remain outside scope |
-| `make` | candidate subset 0.2.7 | Dependency-ready `-j`, shared prerequisites, variable flavors/computed names, named/default export and unexport, `.EXPORT_ALL_VARIABLES`, recursive Wasm submakes, recipe expansion/environment phases, GNU shell argv and `.SHELLSTATUS`, `.SECONDEXPANSION`, existing POSIX FIFO tokens | Invalid UTF-8 before a capture's first NUL rejects; unavailable target sizes reject; new FIFO creation, descriptor-pipe import and Windows semaphores need public APIs; no full GNU function/rule/database claim; without inherited FIFO recursive children use `-j1`; [language boundaries](adr/0007-language.md) |
+| `make` | subset verified | Dependency-ready `-j`, shared prerequisites, variable flavors/computed names, named/default export and unexport, `.EXPORT_ALL_VARIABLES`, recursive Wasm submakes, recipe expansion/environment phases, GNU shell argv and `.SHELLSTATUS`, `.SECONDEXPANSION`, existing POSIX FIFO tokens | Invalid UTF-8 before a capture's first NUL rejects; unavailable target sizes reject; new FIFO creation, descriptor-pipe import and Windows semaphores need public APIs; no full GNU function/rule/database claim; without inherited FIFO recursive children use `-j1`; [language boundaries](adr/0007-language.md) |
 | `mkdir` | subset verified | `-p`, numeric and umask-independent symbolic `-m`, requested leaf mode and existing no-ops | Truly umask-dependent results, unknown parent raw mode/owner adjustments and unavailable Windows setters reject |
 | `mktemp` | subset verified | Final X-run/default/inferred/explicit suffix rules, tmpdir precedence, quiet errors and exclusive secure-random files/directories | No unsafe `-u`; POSIX mode relationships and Windows supported effects have separate scenarios |
 | `mv` | subset verified | Files/dirs, -f/-n/-i, -T/-v, selected backup/suffix/update, same-entry/hard-link no-op failures and refusal status 1 | Equal-time interactive/update targets reject without public identity; no-clobber remains a successful skip; metadata-preserving EXDEV fallback remains unavailable |
@@ -821,7 +825,7 @@ in [CHANGELOG.md](../CHANGELOG.md#2026-11-08); full shell compatibility is not c
 | `rev` | subset verified | Published 0.1.4 reverses one ASCII/NUL record at a time into buffered output under the fixed Linux C profile, with invalid-record rejection, prefix retention and later-file continuation | Storage follows the longest record; non-ASCII records fail before output and multibyte locale semantics remain outside the profile |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
 | `seq` | subset verified | Published 0.2.3 adds single-conversion `-f`, frozen-ABI rounding and endpoint recovery; default +/- step, -w/-s and streaming output remain | Default path retains 4096-character/exponent/scale limits; formatted path uses the selected Extended80 range, not the host ABI; formal performance remains open |
-| `sh` | candidate subset 0.2.8 | Persistent Session, arithmetic assignments/conditional expressions, backticks, expanded here-documents, stdout/stderr aliases, loop levels, finite printf/test, contextual syntax rejection and EOF continuation; output-transfer failures propagate; `test -s` follows target metadata | Unavailable target sizes reject; increment and test `==` are project extensions; descriptor import/closure/direction, identity/owner/mode metadata and terminal operations reject; no full POSIX/Bash or locale claim; [language boundaries](adr/0007-language.md) |
+| `sh` | subset verified | Persistent Session, arithmetic assignments/conditional expressions, backticks, expanded here-documents, stdout/stderr aliases, loop levels, finite printf/test, contextual syntax rejection and EOF continuation; unexpected child-output failures propagate; `test -s` follows target metadata | Unavailable target sizes reject; increment and test `==` are project extensions; descriptor import/closure/direction, identity/owner/mode metadata and terminal operations reject; no full POSIX/Bash or locale claim; [language boundaries](adr/0007-language.md) |
 | `sha256sum` | subset verified | File/stdin digest, tags, escaped/tagged manifests and quiet/status/strict/warn/ignore-missing verification | Windows text transformation remains outside the selected C byte profile |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
 | `sort` | subset verified | Published 0.2.3 retains stable/merge/output and exact seeded GNU random order and adds buffer-size, temporary-directory and batch-size controls | Percentage budgets require public physical-memory capacity; existing merge-output identity/error effects reject explicitly, and non-C locale and formal RSS/performance remain open |

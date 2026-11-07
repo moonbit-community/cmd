@@ -153,9 +153,10 @@ databases, archive/order-only/target-specific semantics and override/private ass
 outside this finite profile. Grammar gaps are project work, not automatically
 runtime blockers.
 
-Session::finish currently contains no async operation, but its async type is
-already public. A successful synchronous trial is only a candidate for an
-intentional core API revision; see [ADR-0003](0003-streams.md#pending-cleanup-decisions).
+Session::finish reparses pending source and can run a complete continued command
+through async run_jobs. Its async public type is required by that execution
+contract. The earlier synchronous trial predates EOF execution and is no longer
+applicable; see [ADR-0003](0003-streams.md#pending-cleanup-decisions).
 
 ## Verification and reconsideration
 
