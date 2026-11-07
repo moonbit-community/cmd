@@ -2716,6 +2716,43 @@
       "expected_stderr_hex": "",
       "oracle": true,
       "coverage": []
+    },
+    {
+      "id": "f31-sh-test-windows-parent-path",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e missing/../known; printf '%s|' $?; test -f missing/../known; printf '%s|' $?; test -s missing/../known; printf '%s|' $?; test -d missing/../known; printf '%s|' $?; test missing/../known -nt known; printf '%s' $?"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "known",
+          "content_text": "data"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0|0|0|1|1",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "known",
+          "kind": "file",
+          "content_text": "data"
+        }
+      ],
+      "host_platforms": [
+        "windows"
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Windows host path normalization profile; independent File.Exists/ReadAllText observer in core/shell/test_wbtest.mbt must pass in Windows package CI"
     }
   ]
 }

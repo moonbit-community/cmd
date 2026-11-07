@@ -6,14 +6,19 @@ async test "test file predicates preserve empty paths missing components and not
   @fs.mkdir(root + "/directory")
   let errors : ShellTestOutput = { bytes: [], }
   let session = Session::new(cwd=root, env={}, error=errors)
-  for value in ["", "missing/../known", "known/child"] {
+  let invalid_paths = ["", "missing", "known/child"]
+  if !(@async.platform is Windows) {
+    invalid_paths.append(["missing/../known", "known/../known"])
+  }
+  for value in invalid_paths {
     for
       operator in [
         "-e", "-f", "-d", "-b", "-c", "-p", "-S", "-L", "-h", "-r", "-w", "-x", "-s",
       ] {
-      assert_eq(
-        run_builtin(["test", operator, value], session.context),
-        Some(1),
+      let actual = run_builtin(["test", operator, value], session.context)
+      assert_true(
+        actual == Some(1),
+        msg="expected false: test \{operator} '\{value}'",
       )
     }
     for operator in ["-nt", "-ot"] {
@@ -34,6 +39,52 @@ async test "test file predicates preserve empty paths missing components and not
     run_builtin(["test", "known", "-nt", "known"], session.context),
     Some(1),
   )
+}
+
+///|
+async test "Windows file predicates retain the host normalized parent-component profile" {
+  guard @async.platform is Windows else { return }
+  let root = @fs.tmpdir(prefix="cmd-sh-windows-path-")
+  defer @fs.rmdir(root, recursive=true)
+  @fs.write_file(root + "/known", "data")
+  // This external observer only establishes the native Windows path contract.
+  // The product still passes raw paths to the public MoonBit filesystem API.
+  let (status, output) = @async.with_timeout(10000, () => {
+    @async_process.collect_stdout(
+      "powershell.exe",
+      [
+        "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference = 'Stop'; $r = $env:MOONCMD_SHELL_PATH_ROOT; [Console]::Write(([IO.File]::Exists($r + '/missing/../known')).ToString() + '|' + [IO.File]::ReadAllText($r + '/missing/../known') + '|' + ([IO.File]::Exists($r + '/known/child')).ToString() + '|' + ([IO.File]::Exists($r + '/missing')).ToString())",
+      ],
+      extra_env=Map([("MOONCMD_SHELL_PATH_ROOT", root)]),
+    )
+  }) catch {
+    error => fail("required Windows path observer failed: \{error}")
+  }
+  assert_eq(status, 0)
+  assert_eq(output.text(), "True|data|False|False")
+  let errors : ShellTestOutput = { bytes: [], }
+  let session = Session::new(cwd=root, env={}, error=errors)
+  for value in ["missing/../known", "known/../known"] {
+    for operator in ["-e", "-f", "-s"] {
+      assert_eq(
+        run_builtin(["test", operator, value], session.context),
+        Some(0),
+      )
+    }
+    for operator in ["-d", "-b", "-c", "-p", "-S", "-L", "-h"] {
+      assert_eq(
+        run_builtin(["test", operator, value], session.context),
+        Some(1),
+      )
+    }
+    for operator in ["-nt", "-ot"] {
+      assert_eq(
+        run_builtin(["test", value, operator, "known"], session.context),
+        Some(1),
+      )
+    }
+  }
+  assert_eq(errors.text(), "")
 }
 
 ///|

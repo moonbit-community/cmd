@@ -34199,6 +34199,19 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-windows-parent-path",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-windows-parent-path",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
     }
   ]
 }

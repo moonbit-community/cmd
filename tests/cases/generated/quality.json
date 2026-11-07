@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2710,
+    "exact-local": 2711,
     "finite-diagnostic": 120,
     "typed-scenario": 41,
     "typed-dynamic-output": 12
@@ -7160,6 +7160,16 @@
       "case_id": "f31-sh-printf-linux-nan-signs",
       "source": "tests/cases/sh.json",
       "definition_sha256": "0b01af806a1d05a57ed01bece465386442fadbd89151d76f04b938b94158561b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-windows-parent-path",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "3bf9cddc47c1594267caf92304d005b6148bfe74037d68a456c5dd9b76473390",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -31422,6 +31432,9 @@
       "kind": "exact"
     },
     "f31-sh-printf-linux-nan-signs": {
+      "kind": "exact"
+    },
+    "f31-sh-test-windows-parent-path": {
       "kind": "exact"
     },
     "phase3-tr-range": {

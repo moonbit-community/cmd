@@ -48,6 +48,10 @@ Supports quoting, variables/exports, substitutions, pipelines, redirections, con
 
 ## Limitations
 
+File predicates pass paths unchanged to the host filesystem. Windows normalizes
+`component/..` before lookup; POSIX requires the component to exist as a directory.
+The Windows profile has a separate native file observer and CLI regression.
+
 - This is a finite shell subset; background jobs and complete Bash/POSIX grammar
   are not claimed.
 - No automatic TTY detection, line editing or recoverable Ctrl-C. exec/fg/bg/jobs/wait are rejected.
