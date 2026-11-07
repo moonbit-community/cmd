@@ -69,7 +69,45 @@ async test "test size preserves POSIX intermediate symlinks before parent compon
     name in [
       "missing/../real/marker", "marker/../real/marker", "real/marker/", "file-link/",
     ] {
-    assert_eq(run_builtin(["test", "-s", name], session.context), Some(1))
+    let actual = run_builtin(["test", "-s", name], session.context)
+    if actual != Some(1) {
+      let path = root + "/" + name
+      let kind = try @fs.kind(path) catch {
+        error => "error: " + error.to_string()
+      } noraise {
+        kind =>
+          "regular=\{kind == Regular},directory=\{kind == Directory},link=\{kind == SymLink}"
+      }
+      let nofollow = try @fs.kind(path, follow_symlink=false) catch {
+        error => "error: " + error.to_string()
+      } noraise {
+        kind =>
+          "regular=\{kind == Regular},directory=\{kind == Directory},link=\{kind == SymLink}"
+      }
+      let resolved = @fs.realpath(path) catch {
+        error => "error: " + error.to_string()
+      }
+      let resolved_kind = try @fs.kind(resolved) catch {
+        error => "error: " + error.to_string()
+      } noraise {
+        kind =>
+          "regular=\{kind == Regular},directory=\{kind == Directory},link=\{kind == SymLink}"
+      }
+      let size = try @fs.file_size(path) catch {
+        error => "error: " + error.to_string()
+      } noraise {
+        size => size.to_string()
+      }
+      let resolved_size = try @fs.file_size(resolved) catch {
+        error => "error: " + error.to_string()
+      } noraise {
+        size => size.to_string()
+      }
+      println(
+        "size lookup diagnostic: name=\{name}, path=\{Json(path).stringify()}, kind=\{kind}, nofollow_kind=\{nofollow}, realpath=\{resolved}, resolved_kind=\{resolved_kind}, raw_size=\{size}, resolved_size=\{resolved_size}; fixture alias -> real/nested, file-link -> real/marker",
+      )
+    }
+    assert_eq(actual, Some(1), msg=name)
   }
   assert_eq(errors.text(), "")
 }

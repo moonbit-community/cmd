@@ -78,8 +78,63 @@ async fn shell_size_platform_scenario(
   }
 
   @fs.mkdir(work + "/directory")
-  @fs.symlink(work + "/directory-link", target="directory", force_symlink=true)
-  assert_eq(@fs.kind(work + "/directory-link", follow_symlink=false), SymLink)
+  let directory_target = @fs.realpath(work + "/directory")
+  let directory_link = work + "/directory-link"
+  observations.push({
+    "link_path": directory_link,
+    "requested_target": directory_target,
+  })
+  @fs.write_file(
+    observation_path,
+    Json(observations).stringify(indent=2) + "\n",
+  )
+  @fs.symlink(directory_link, target=directory_target, force_symlink=true)
+  if @async.platform is Windows {
+    let observed = @harness.run_with_deadline(
+      "powershell.exe",
+      [
+        "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference = 'Stop'; [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); $item = Get-Item -LiteralPath $env:CMD_SIZE_DIRECTORY_LINK -Force; [pscustomobject]@{kind=$item.LinkType; target=@($item.Target)[0]; attributes=$item.Attributes.ToString(); directory=(($item.Attributes -band [IO.FileAttributes]::Directory) -ne 0)} | ConvertTo-Json -Compress",
+      ],
+      10000,
+      stdin=b"",
+      extra_env={ "CMD_SIZE_DIRECTORY_LINK": directory_link },
+    )
+    observations.push({
+      "observer": "Windows directory symlink attributes",
+      "status": observed.output.status,
+      "stdout": @harness.scenario_text(observed.output.stdout),
+      "stderr": @harness.scenario_text(observed.output.stderr),
+      "timed_out": observed.timed_out,
+      "cleanup_error": observed.cleanup_error
+      .map(value => Json(value))
+      .unwrap_or(Json(null)),
+    })
+    @fs.write_file(
+      observation_path,
+      Json(observations).stringify(indent=2) + "\n",
+    )
+    assert_false(observed.timed_out)
+    assert_eq(observed.cleanup_error, None)
+    assert_eq(observed.output.status, 0)
+    assert_eq(observed.output.stderr, b"")
+    assert_true(
+      @json.parse(@harness.scenario_text(observed.output.stdout))
+      is { "kind": String("SymbolicLink"), "directory": True, .. },
+      msg="real Windows directory symlink required",
+    )
+  }
+  assert_eq(@fs.kind(directory_link, follow_symlink=false), SymLink)
+  let resolved_directory = @fs.realpath(directory_link)
+  observations.push({
+    "link_path": directory_link,
+    "resolved_target": resolved_directory,
+    "expected_target": directory_target,
+  })
+  @fs.write_file(
+    observation_path,
+    Json(observations).stringify(indent=2) + "\n",
+  )
+  assert_eq(resolved_directory, directory_target)
   // The Native observer records the host API capability independently of the
   // Wasm product. Linux also has sealed Dash comparison; macOS has fixed
   // rejection cases. An unexpected observer error is an infrastructure failure.
@@ -90,7 +145,21 @@ async fn shell_size_platform_scenario(
     size => Some(size)
   }
   for name in ["directory", "directory-link"] {
-    assert_eq(@fs.kind(work + "/" + name), Directory)
+    let kind = @fs.kind(work + "/" + name) catch {
+      @os_error.OSError(_) as error => {
+        observations.push({
+          "path": name,
+          "native_kind_error": error.to_string(),
+        })
+        @fs.write_file(
+          observation_path,
+          Json(observations).stringify(indent=2) + "\n",
+        )
+        raise error
+      }
+      error => raise error
+    }
+    assert_eq(kind, Directory, msg=name)
     let result = scenario_run(
       work,
       root,
