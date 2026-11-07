@@ -16,60 +16,48 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
-- Extend the shared shell with arithmetic side effects, backticks, expanded
-  here-documents, actual stdout/stderr aliases, loop levels and finite printf/test
-  semantics. Preserve contextual case/function parsing, interactive continuation,
-  ordered redirection effects and output before failures.
-- Implement make variable/export recursion, secondary prerequisites, SHELLSTATUS
-  and recursive Wasm invocation. Inherit existing POSIX FIFO jobservers with
-  exact token ownership/return; keep descriptor/Windows semaphore/new-server
-  boundaries explicit and recursive fallback children serial.
-- Publish core 0.9.2, make 0.2.5, sh 0.2.6 and split 0.1.7 from `e739345` after
-  [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42396312258)
-  and independent source/receipt audit. Verify all four uploads, registry builds
-  and package checksums; isolated make/sh/split source consumers use the uploaded
-  core. Retain the other 77 command coordinates: 80 published commands among
-  81 local modules, with timeout local-only.
-- Local exact-version MoonX acceptance passes all 80 coordinates with 2,781
-  passes, zero failures and 30 platform exclusions. The
-  [published CI](https://github.com/moonbit-community/cmd/actions/runs/42397826082)
-  passes Linux 2,792/0/25, macOS 2,781/0/30 and Windows 2,584/0/227
-  (pass/fail/platform exclusions), including all six fixed Linux oracle
-  scenarios. Freeze 2,646 definitions: retain all 2,470 earlier IDs, update only
-  six help/version outputs and add 176 F31 cases. Each platform's development
-  checks pass 1,964 Wasm and 205 Native test-tool tests. Isolated make/split
-  sources pass 26/8 Wasm tests; all three isolated commands pass actual smoke
-  checks against registry core 0.9.2. Sh has no package tests of its own.
-  Full upstream parity and formal performance acceptance are not claimed.
-- A later independent audit found missing file-size cases: the shared `test -s`
-  measured final links themselves and hid unavailable target sizes as false.
-  Those earlier finite receipts remain valid for their selected cases, but do
-  not close issue #31. Publish core 0.9.3, make 0.2.6, sh 0.2.7 and split 0.1.8
-  from `5545ad7` with target-following metadata, raw POSIX trailing-slash checks
-  and explicit ENOTSUP rejection. Independent source/receipt audit and
-  [actual-main development CI](https://github.com/moonbit-community/cmd/actions/runs/42405602598)
-  pass, including 1,968 Wasm product tests and 205 Native test-tool tests on each
-  platform. Verify all four uploads, registry builds, package checksums and
-  actual isolated make/sh/split consumers of the uploaded core.
-- The size repair's [exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42407243329)
-  passes all 80 coordinates: local macOS 2,790/0/31, Linux 2,799/0/28,
-  macOS 2,790/0/31 and Windows 2,588/0/233 (pass/fail/platform exclusions).
-  Linux includes the fixed oracle and all six Linux-only oracle scenarios.
-  Freeze 2,656 definitions: all previous 2,646 IDs remain, with six metadata
-  output updates and ten added size cases. Their real link/type/size observations
-  include Linux directory sizes, macOS capability errors and Windows directory
-  symlink target identity. This is finite correctness acceptance, not full
-  upstream parity or formal performance acceptance.
-- A separate review of the original issue #31 scope found omitted make default
-  export/unexport behavior and related variable/environment semantics. Keep
-  #31 open while implementing and independently accepting that follow-up; the
-  successful size-repair release does not establish those missing behaviors.
-- Develop core 0.9.4, make 0.2.7, sh 0.2.8 and split 0.1.9 with named/default
-  export policy, GNU recipe expansion/environment phases, shell error status
-  capture and reserved-word/compound-list validation. Add actual CLI output,
-  status, recovery and file-effect assertions, including make's argument
-  construction for literal newlines. Publication and final acceptance remain
-  pending; the independently frozen size-repair coordinates stay unchanged.
+- Extend the finite shell/make language profile with arithmetic side effects,
+  backticks, expanded here-documents, standard-stream aliases, loop levels,
+  printf/test, variable/export recursion, secondary expansion and SHELLSTATUS.
+  Preserve persistent state, ordered effects and failure prefixes. Existing
+  POSIX FIFO jobservers retain exact token ownership/return; descriptor pipes,
+  Windows semaphores and server creation remain explicit API boundaries.
+- First publish core 0.9.2, make 0.2.5, sh 0.2.6 and split 0.1.7 from `e739345`
+  after [development CI](https://github.com/moonbit-community/cmd/actions/runs/42396312258)
+  and independent audit. Its [exact acceptance](https://github.com/moonbit-community/cmd/actions/runs/42397826082)
+  covers 80 coordinates and 2,646 frozen definitions. Preserve the dated counts,
+  exclusions and limitations in the [earlier release record](https://github.com/moonbit-community/cmd/blob/aa6b769031fb0f5d90298ddbc5f7fb2fad044d38/CHANGELOG.md#2026-11-08).
+  Later audits found size and export omissions; these finite results did not
+  establish completion of issue #31.
+- Publish the size repair as core 0.9.3, make 0.2.6, sh 0.2.7 and split 0.1.8
+  from `5545ad7`, with target-following metadata, raw path checks and explicit
+  unavailable-size errors. [Actual-main CI](https://github.com/moonbit-community/cmd/actions/runs/42405602598)
+  and [exact acceptance](https://github.com/moonbit-community/cmd/actions/runs/42407243329)
+  pass; its 2,656 definitions preserve the previous IDs and add ten size cases.
+  Linux directory sizes, macOS capability errors and Windows link targets have
+  real observations. The separately identified export omissions remained open
+  until the following repair; earlier evidence keeps its original scope.
+- Publish core 0.9.4, make 0.2.7, sh 0.2.8 and split 0.1.9 from `aa6b769` after
+  [actual-main development CI](https://github.com/moonbit-community/cmd/actions/runs/42415858402)
+  and independent source/receipt audit. Implement named/default export policy,
+  recipe expansion/environment phases, actual shell error status and NUL capture,
+  GNU argument construction, contextual syntax rejection and complete EOF
+  continuation. Preserve unexpected child-output failures without replay.
+  Verify all four uploads, registry builds and package checksums; retain make's
+  failed transport, confirmed registry absence and successful retry separately.
+  Keep the other 77 coordinates: 80 published commands among 81 local modules,
+  with timeout local-only.
+- [Exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42417285800)
+  passes all 80 coordinates: local macOS 2,936/0/31, Linux 2,945/0/28,
+  macOS 2,936/0/31 and Windows 2,734/0/233 (pass/fail/platform exclusions).
+  Linux includes the fixed oracle and all six required oracle scenarios.
+  Freeze 2,802 definitions: all 2,656 previous IDs remain, with six metadata
+  output updates and 146 added F31 cases. Each development platform passes
+  1,993 Wasm product tests and 205 Native test-tool tests. Isolated make/split
+  sources pass 44/8 Wasm tests; all three consumers exercise the uploaded core,
+  including export/EOF behavior. Sh has no package tests of its own. This is
+  finite correctness acceptance, not full GNU/POSIX parity or formal performance
+  acceptance.
 
 ## 2026-11-07
 
@@ -92,8 +80,9 @@ Development and publication.
   coordinates unchanged: 80 published commands among 81 local modules, with
   timeout local-only. Verify every upload, registry build and package checksum;
   retain the failed tail transport attempt before its verified successful retry.
-  Exact coordinates and 2,470 independently frozen definitions are in
-  `tests/release/latest.json` and `latest-cases.json`.
+  Exact coordinates and 2,470 independently frozen definitions were recorded in
+  [latest.json](https://github.com/moonbit-community/cmd/blob/20772c0/tests/release/latest.json)
+  and [latest-cases.json](https://github.com/moonbit-community/cmd/blob/20772c0/tests/release/latest-cases.json).
 - Exact-version MoonX acceptance passes all 80 coordinates: local macOS has
   2,609 passes, zero failures and 28 platform exclusions;
   [published CI](https://github.com/moonbit-community/cmd/actions/runs/42379717812)
