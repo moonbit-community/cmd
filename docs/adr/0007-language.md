@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-01
+Updated: 2026-11-08
 
 ## Decision
 
@@ -22,18 +22,77 @@ literal quotes, spaces and ordinary backslashes while applying supported
 parameter/arithmetic/command substitutions and double-quoted escape rules.
 Split filters reuse this Session; env -S retains a distinct word grammar.
 
-Make -j schedules dependency-ready targets concurrently, runs shared prerequisites
-once and propagates failures. Command substitution normalizes newlines and
-updates .SHELLSTATUS. This is not a jobserver implementation.
+Arithmetic assignment, compound operations, increments and conditional/short-circuit
+expressions preserve evaluation order. Increments and test's `==` remain project
+extensions beyond Dash. Backticks and `$()` isolate state. For each candidate `)`,
+the substitution scanner reuses the grammar to distinguish case patterns and
+function/group syntax. Prefix reparsing favors one contextual grammar; reconsider
+incremental parsing only with measured long-script need and retained regressions.
+
+Here-documents retain expansion, quoting, tab stripping and continuation rules.
+Expand argv and redirection targets before ordered opens, then apply temporary
+prefix assignments. Preserve earlier file/output effects if a later step fails.
+Stdout/stderr aliases use one actual child pipe for merged byte order. Capture
+bytes before UTF-8 decoding and reject invalid textual captures.
+
+Builtin printf uses 64-bit integer parsing, binary64 formats and the fixed Linux
+Dash 8192-byte output profile. Allocation state survives builtin output but empty
+conversions do not allocate. Large conversions flush bounded storage; submitted
+failed writes are not replayed. Width/precision is bounded at 1,000,000. Test uses
+finite argument-count grammar, checked decimal integers and raw paths; only typed
+OS errors become false predicates, while cancellation and other errors propagate.
+
+Make -j schedules dependency-ready targets and shared prerequisites once.
+Computed names, assignment flavors, exports, MAKELEVEL and MAKEFLAGS retain their
+separate phases. Shell-valued export recursion can use the original environment;
+ordinary recursive variables fail. Recipe expansion/environment construction is
+serialized while execution remains concurrent. `$(shell ...)` and `!=` preserve
+distinct trailing-newline rules and actual .SHELLSTATUS. Secondary expansion
+resolves automatic-variable prerequisites before planning, retaining observed GNU
+4.4.1 recipe-bearing declaration order and `$<`/`$^`/`$+` semantics.
+
+Recipe `$?` snapshots distinct changed prerequisites once per target, including
+phony/missing dependencies, -B and -W virtual times. Secondary expansion sees
+the GNU empty `$?` context. -W retains dependency planning and does not suppress
+rebuilding requested by -B or changed phony dependencies. Inline recipes share
+the same recipe-bearing group order and preserve literal hash bytes. Parse rule
+separators outside balanced references, retaining shell punctuation inside them.
+
+Explicit SHELL selects only the literal built-in `sh`/`/bin/sh` profile and
+.SHELLFLAGS only literal -c, including rejection of an inherited empty value.
+Reject custom or computed selectors before their
+side effects; never invoke a host interpreter. Inherited environment SHELL is
+not an interpreter selector and remains in child environments unless explicitly
+exported. Known unsupported GNU functions are recognized using GNU's six ASCII
+space characters and reject before expanding arguments, so a lazy unselected
+branch cannot execute. Unknown variable names retain normal variable semantics.
+
+Inherited POSIX FIFO jobservers are separate from local -j. Track one implicit
+slot and borrowed exact bytes independently. Serialized acquisition races the
+implicit slot against a token, returning any simultaneously acquired extra byte
+before execution. Protected cleanup returns owned tokens once on success, failure
+or cancellation. Failed returns propagate without retrying possibly submitted
+bytes. Close owned handles without removing the server's FIFO. `$(MAKE)` launches
+this Wasm command; without an inherited server, recursive children receive -j1
+to stay within the occupied parent slot.
 
 ## Limits and rejected alternatives
 
 Do not delegate interpretation to a host shell, treat an external command as
 exec replacement, or use character-device kind as isatty. Terminal editing,
 completion, resizing, recoverable SIGINT and job control need distinct APIs.
-Grammar limits such as background syntax, fd duplication, backticks and wider
-arithmetic/loop forms are project work, not automatically runtime blockers.
-Unsupported forms fail explicitly rather than producing successful empty output.
+Descriptor numbers above 2, closure and access-direction changes require public
+descriptor import/duplication/closure APIs. Standard output aliases do not establish
+arbitrary inheritance. Test identity, owner/group/mode-bit and terminal predicates
+need their public metadata/terminal APIs. Make descriptor-pipe authentication and
+Windows semaphores require public import/semaphore APIs; new FIFO servers need a
+public FIFO creation API. These operations reject and reopen only with the
+relevant public API and actual platform regressions.
+
+Complete POSIX/Bash grammar, background jobs, GNU make builtin rule/function
+databases, archive/order-only/target-specific semantics and export-all remain
+outside this finite profile. Grammar gaps are project work, not automatically
+runtime blockers.
 
 Session::finish currently contains no async operation, but its async type is
 already public. A successful synchronous trial is only a candidate for an
@@ -47,10 +106,16 @@ and named-script branches; current repairs do not rewrite frozen published
 expectations.
 
 Continuous-input scenarios observe immediate execution, prompts, ENV, persistent
-state, child input and recovery. Make uses ready/ack tests for real overlap,
-shared prerequisites and failure propagation. Pipe tests do not establish PTY
-or job-control support. Expand grammar with oracle-backed regressions and
-terminal features only with public lifecycle interfaces.
+state, child input, fragmented substitutions and recovery. Make ready/ack tests
+observe overlap, shared prerequisites, recursive children and exact FIFO byte
+return. Private tests inject cancellation and token-return failure. The Linux
+GNU server scenario passes authentication from an actual GNU child through a
+shared-file test bridge to the host Wasm client. It validates FIFO protocol, not
+an operating-system parent/child relationship, and avoids mounting account
+credentials inside the oracle container. The sealed Linux profile separately
+checks printf buffer boundaries and diagnostic positions. Definitions are not
+execution receipts; local checks do not establish three-platform or published
+acceptance. Pipe tests do not establish PTY or job-control support.
 
 Implementation: [Session](../../core/shell/session.mbt),
 [executor](../../core/shell/executor.mbt),

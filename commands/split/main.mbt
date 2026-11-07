@@ -16,6 +16,7 @@ fn help_message() -> String {
     #|      --help               display this help and exit
     #|      --version            display version and exit
     #|Existing named outputs are refused; filters own their explicit file writes.
+    #|Filters support shared shell arithmetic assignment, backticks and expanded here-documents.
     #|Line-byte and unknown-size partition layouts require temporary write access.
     #|
     #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
@@ -84,7 +85,7 @@ async fn process(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("split 0.1.6\n")
+    @stdio.stdout.write("split 0.1.7\n")
     return
   }
   let parsed = parse_args(@env.args()[1:]) catch {
@@ -99,7 +100,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("split 0.1.6\n")
+    @stdio.stdout.write("split 0.1.7\n")
     return
   }
   try {

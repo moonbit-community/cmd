@@ -1,17 +1,21 @@
 # split
 
-Development candidate: `cli/split@0.1.6`. Publication is separate;
+Development candidate: `cli/split@0.1.7`, using `cli/core@0.9.2`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Split input into pieces for MoonX.
 
 ```sh
-moonx cli/split@0.1.6 [OPTION]... [FILE [PREFIX]]
+moonx cli/split@0.1.7 [OPTION]... [FILE [PREFIX]]
 ```
 
 ## Supported scope
 
 Split files or stdin by records, bytes, bounded line bytes or N-way partitions. Default is 1000 records per piece with names xaa, xab, etc.
+
+Filter sessions inherit the shared shell's arithmetic assignments, backticks,
+expanded here-documents, standard stream aliases, loop control and finite
+printf/test profile. See [sh](../sh/README.md) for grammar and API boundaries.
 
 ## Options
 
@@ -44,8 +48,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/split@0.1.6 -l 100 input.txt part-
-moonx cli/split@0.1.6 -b 64K -d input.bin chunk-
+moonx cli/split@0.1.7 -l 100 input.txt part-
+moonx cli/split@0.1.7 -b 64K -d input.bin chunk-
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

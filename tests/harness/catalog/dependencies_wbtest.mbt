@@ -67,7 +67,9 @@ async test "workspace dependency manifests keep one async baseline and the selec
     fail("published manifest must name its core coordinate")
   }
   let published_core_coordinate = "cli/core@" + published_core
-  let retained_core_coordinates = ["cli/core@0.8.2", "cli/core@0.9.0"]
+  let retained_core_coordinates = [
+    "cli/core@0.8.2", "cli/core@0.9.0", "cli/core@0.9.1",
+  ]
   let commands = command_names(root + "commands")
   assert_eq(commands.length(), 81)
   let independent = ["echo", "false", "sleep", "true", "typst"]

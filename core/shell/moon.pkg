@@ -1,9 +1,11 @@
 import {
   "moonbitlang/core/debug",
   "cli/core/process" @child_process,
+  "cli/core/numfmt",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/io",
+  "moonbitlang/async/os_error",
   "moonbitlang/async/process" @async_process,
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",

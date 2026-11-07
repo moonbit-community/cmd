@@ -55,10 +55,7 @@ fn Parser::take_reserved(
 ///|
 fn Parser::parse_command(self : Parser) -> Command raise ParseIssue {
   let words : Array[Word] = []
-  let mut stdin : Word? = None
-  let mut stdin_data : String? = None
-  let mut stdout : Redirect? = None
-  let mut stderr : Redirect? = None
+  let redirects : Array[Redirect] = []
   let mut keep = true
   while keep {
     match self.peek() {
@@ -68,38 +65,39 @@ fn Parser::parse_command(self : Parser) -> Command raise ParseIssue {
       }
       Some(RedirectIn) => {
         self.pos += 1
-        stdin = Some(self.take_word())
+        redirects.push(InputFile(self.take_word()))
       }
-      Some(RedirectHereDoc) => {
+      Some(RedirectHereDoc(value, expand)) => {
         self.pos += 1
-        match self.take_word().parts {
-          [Text(value)] => stdin_data = Some(value)
-          _ => raise InvalidSyntax("invalid here-document body")
-        }
+        redirects.push(HereDocument(value, expand))
       }
       Some(RedirectOut) => {
         self.pos += 1
-        stdout = Some({ target: self.take_word(), append: false, })
+        redirects.push(OutputFile(self.take_word(), false, false))
       }
       Some(RedirectAppend) => {
         self.pos += 1
-        stdout = Some({ target: self.take_word(), append: true, })
+        redirects.push(OutputFile(self.take_word(), true, false))
       }
       Some(RedirectError) => {
         self.pos += 1
-        stderr = Some({ target: self.take_word(), append: false, })
+        redirects.push(OutputFile(self.take_word(), false, true))
       }
       Some(RedirectErrorAppend) => {
         self.pos += 1
-        stderr = Some({ target: self.take_word(), append: true, })
+        redirects.push(OutputFile(self.take_word(), true, true))
+      }
+      Some(RedirectCopy(descriptor)) => {
+        self.pos += 1
+        redirects.push(CopyDescriptor(descriptor, self.take_word()))
       }
       _ => keep = false
     }
   }
-  if words.is_empty() {
+  if words.is_empty() && redirects.is_empty() {
     raise self.expected("expected a command")
   }
-  { words, stdin, stdin_data, stdout, stderr, }
+  { words, redirects, }
 }
 
 ///|
@@ -183,17 +181,20 @@ fn Parser::parse_case(self : Parser) -> Statement raise ParseIssue {
   self.skip_sequences()
   let arms : Array[CaseArm] = []
   while self.peek_word() != Some("esac") {
+    if self.peek() == Some(LParen) {
+      self.pos += 1
+    }
     let patterns : Array[Word] = []
     while self.peek() != Some(RParen) {
       patterns.push(self.take_word())
       if self.peek() == Some(Pipe) {
         self.pos += 1
       } else if self.peek() != Some(RParen) {
-        raise InvalidSyntax("expected ')' in case")
+        raise self.expected("expected ')' in case")
       }
     }
     self.pos += 1
-    let body = self.parse_until([])
+    let body = self.parse_until(["esac"])
     arms.push({ patterns, body, })
     if self.peek() == Some(CaseEnd) {
       self.pos += 1
@@ -253,11 +254,15 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ParseIssue {
     Some("for") => self.parse_for()
     Some("while") => self.parse_loop(false)
     Some("until") => self.parse_loop(true)
-    Some(name) if self.pos + 3 < self.tokens.length() &&
+    Some(name) if self.pos + 2 < self.tokens.length() &&
       self.tokens[self.pos + 1] == LParen &&
-      self.tokens[self.pos + 2] == RParen &&
-      self.tokens[self.pos + 3] == LBrace => {
-      self.pos += 4
+      self.tokens[self.pos + 2] == RParen => {
+      self.pos += 3
+      self.skip_sequences()
+      if self.peek() != Some(LBrace) {
+        raise self.expected("expected function body")
+      }
+      self.pos += 1
       let body = self.parse_until([])
       if self.peek() != Some(RBrace) {
         raise IncompleteSyntax("unterminated function body")
@@ -289,6 +294,18 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ParseIssue {
       }
     _ => Pipeline(self.parse_pipeline())
   }
+}
+
+///|
+fn command_substitution_closes(source : String) -> Bool raise ParseIssue {
+  // Reserved words are contextual: a case pattern consumes its own ')'.
+  // Reuse the grammar instead of treating every unquoted ')' as a close.
+  let parser : Parser = { tokens: lex_input(source), pos: 0, }
+  ignore(parser.parse_until([])) catch {
+    IncompleteSyntax(_) => return false
+    issue => raise issue
+  }
+  parser.pos == parser.tokens.length() - 1 && parser.peek() == Some(RParen)
 }
 
 ///|

@@ -69,6 +69,25 @@ pub async fn execute_scenario(
           tee_modes_scenario(root, work, tee_boundary, oracle_image?)
         "sh-interactive-session" =>
           shell_interactive_scenario(root, work, proof?)
+        "f31-sh-language-session" =>
+          shell_language_session_scenario(root, work, proof?)
+        "f31-sh-merged-child" => shell_merged_child_scenario(root, work, proof?)
+        "f31-sh-printf-state" => printf_state_scenario(root, work, proof?)
+        "f31-sh-printf-state-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("printf state oracle requires a sealed oracle")
+          }
+          printf_state_scenario(root, work, oracle_image=image)
+        }
+        "f31-make-recursive-language" =>
+          make_recursive_language_scenario(root, work, proof?)
+        "f31-make-fifo" => make_fifo_scenario(root, work, proof?)
+        "f31-make-gnu-jobserver" => {
+          guard oracle_image is Some(image) else {
+            fail("GNU jobserver scenario requires a sealed oracle")
+          }
+          make_gnu_jobserver_scenario(root, work, image)
+        }
         "make-ready-ack" => make_concurrency_scenario(root, work, proof?)
         "filesystem-fidelity" =>
           filesystem_fidelity_scenario(root, work, proof?)

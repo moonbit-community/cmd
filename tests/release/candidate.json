@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "candidate": true,
-  "core_version": "0.9.1",
+  "core_version": "0.9.2",
   "base_manifest": "../cases/manifest.json",
   "commands": [
     {
@@ -509,7 +509,7 @@
     {
       "name": "make",
       "package_name": "cli/make",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "make",
       "supported_options": [
@@ -781,7 +781,7 @@
     {
       "name": "sh",
       "package_name": "cli/sh",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "published": false,
       "compare_profile": "posix",
       "supported_options": [
@@ -883,7 +883,7 @@
     {
       "name": "split",
       "package_name": "cli/split",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [

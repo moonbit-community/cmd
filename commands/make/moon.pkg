@@ -3,6 +3,7 @@ import {
   "cli/core/shell",
   "moonbitlang/async",
   "moonbitlang/async/fs",
+  "moonbitlang/async/io",
   "moonbitlang/async/semaphore",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
@@ -10,6 +11,10 @@ import {
   "moonbitlang/x/path",
   "moonbitlang/x/sys",
 }
+
+import {
+  "moonbitlang/async/pipe",
+} for "wbtest"
 
 supported_targets = "native+wasm"
 

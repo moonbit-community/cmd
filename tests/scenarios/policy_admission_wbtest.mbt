@@ -106,3 +106,36 @@ async test "policy admission accepts the mv test observer without production pro
   assert_true(manifest.contains("} for \"wbtest\""))
   assert_false(admission_has_process_authority(manifest))
 }
+
+///|
+test "make shell profile data cannot admit direct host execution" {
+  let comparison = "literal == \"/bin/sh\""
+  let default_value = "variables[\"SHELL\"] = { value: \"/bin/sh\", immediate: true, }"
+  assert_false(
+    admission_has_unsafe_source("make", "boundaries.mbt", comparison),
+  )
+  assert_false(admission_has_unsafe_source("make", "main.mbt", default_value))
+  assert_true(admission_has_unsafe_source("make", "other.mbt", comparison))
+  assert_true(admission_has_unsafe_source("sh", "main.mbt", default_value))
+  assert_true(
+    admission_has_unsafe_source(
+      "make",
+      "main.mbt",
+      default_value + "\n@process.run(\"/bin/sh\", args)",
+    ),
+  )
+  assert_true(
+    admission_has_unsafe_source(
+      "make",
+      "boundaries.mbt",
+      comparison + "\nspawn_orphan(program)",
+    ),
+  )
+  assert_true(
+    admission_has_unsafe_source(
+      "make",
+      "boundaries.mbt",
+      comparison + "\n@process.run(\"/bin/sh\", args)",
+    ),
+  )
+}

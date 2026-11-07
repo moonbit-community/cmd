@@ -52,6 +52,46 @@ Storage depends on the unfinished item, current/pending batch and active child
 arguments. A byte budget does not prove a process RSS bound. Keep process limits
 and cancellation semantics in [ADR-0006](../adr/0006-process.md).
 
+## Shell interpretation and make scheduling
+
+[Session.feed](../../core/shell/session.mbt) retains incomplete input, then
+[lexer](../../core/shell/lexer.mbt) and [parser](../../core/shell/parser.mbt)
+construct executable jobs. Arithmetic/word expansion precedes ordered
+redirection opens; [executor](../../core/shell/executor.mbt) applies temporary
+assignments and runs builtins or actual child processes. Substitutions copy
+context and capture bytes; external stdout/stderr aliases use one process pipe
+through [streams](../../core/shell/streams.mbt). Textual captures decode only
+after collection, so storage grows with captured output rather than pipe size.
+
+Substitution closing candidates are parsed with the same contextual grammar
+as scripts, including case patterns and incomplete function headers. This
+reparses prefixes and allocates token/AST storage; it is a correctness decision,
+not a throughput optimization. An incremental parser may replace it only while
+preserving nested substitution, case, quote, comment and here-document cases.
+[Printf](../../core/shell/printf.mbt) retains at most an 8192-byte output buffer
+between conversions; individual formatted fields can be larger and width/precision
+is bounded at 1,000,000. Buffer allocation state is separate from occupancy to
+preserve warning order at exact boundaries. Empty conversions do not warm it.
+
+Make resolves [secondary prerequisites](../../commands/make/prerequisites.mbt)
+before [planning the dependency graph](../../commands/make/scheduler.mbt).
+The graph retains target/dependency tasks and schedules each shared target once.
+Recipe expansion/environment construction holds a mutex; child execution does
+not. `$?` uses a single pre-recipe snapshot, including virtual -W timestamps.
+The [FIFO jobserver](../../commands/make/jobserver.mbt) has one implicit slot and
+borrows exact bytes for additional work. A mutex admits one reader at a time;
+racing implicit-slot acquisition prevents waiting forever for a token after a
+local task completes. Both completed acquisitions are accounted for before
+execution. Token cleanup is protected from cancellation and never retries a
+possibly submitted failed return.
+
+These changes have correctness receipts rather than performance acceptance.
+The common [case registry](../../tests/cases/index.json) binds shell sessions,
+merged streams, printf boundaries, recursive make and real FIFO observations.
+The Linux GNU-server bridge proves protocol interoperability through shared FIFO
+authentication, not an operating-system parent relationship. Definitions and
+ready/ack timing observations do not establish throughput or constant-memory use.
+
 ## Copy and filesystem operations
 
 Cp reuses [fsops](../../core/fsops/) preflight and exclusive-copy mechanisms with

@@ -11,6 +11,9 @@ async test "shell expansion keeps status newline rules and immediate assignment"
     exported: Set([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(
     "X := $(shell printf first)\nX += $(shell printf second)\n", database, ".", 0,
@@ -40,6 +43,9 @@ async test "parallel scheduler deduplicates dependencies and propagates failures
     exported: Set([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(
     ".PHONY: all shared left right\nall: left right\nleft: shared\nright: shared\nshared:\n",
@@ -48,6 +54,8 @@ async test "parallel scheduler deduplicates dependencies and propagates failures
   let settings : Settings = {
     cwd: ".",
     jobs: 2,
+    jobserver: None,
+    expansion_lock: @async.Mutex(),
     silent: true,
     dry_run: false,
     always_make: false,
@@ -120,6 +128,9 @@ async test "make parser expands variables and merges rule dependencies" {
     exported: Set([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(
     "NAME = output\n$(NAME): first\n$(NAME): second\n\tprintf $@:$<:$^\n", database,
@@ -142,6 +153,9 @@ async test "make parser marks phony targets declared before their rule" {
     exported: Set([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(".PHONY: clean\nclean:\n\techo clean\n", database, ".", 0)
   guard database.rules.get("clean") is Some(rule) else {
@@ -160,6 +174,9 @@ async test "make conditionals select one rule and pattern dependencies use stems
     exported: Set([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(
     "MODE = yes\nifeq ($(MODE),yes)\nall: ready\n\techo yes\nelse\nall:\n\techo no\nendif\n%.o: %.c\n\techo $* $<\nfoo.o: %.o: %.c\n\techo $*\n",

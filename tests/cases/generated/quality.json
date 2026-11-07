@@ -2,9 +2,9 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 2571,
-    "finite-diagnostic": 91,
-    "typed-scenario": 34,
+    "exact-local": 2710,
+    "finite-diagnostic": 120,
+    "typed-scenario": 41,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -6014,7 +6014,7 @@
     {
       "case_id": "release-metadata-sh-help",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "f40b5e18dcf6e054191413eed381fce786b99f44e1eecf532606fcb9b4037d1d",
+      "definition_sha256": "67cb974ffa01d6419f817cc0be86b836361cbf97e23fc4d4875984318fdba796",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6024,7 +6024,7 @@
     {
       "case_id": "release-metadata-sh-version",
       "source": "tests/cases/sh.json",
-      "definition_sha256": "0a1957d65c47ee92b7645ddc17c4555099ac6afb166f14e6b03f6bf89270b8a8",
+      "definition_sha256": "3523e1114348000c09ea2721aad2807c29180f968f6b3637a8bec9994fe936e2",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -6045,6 +6045,1121 @@
       "case_id": "proof-sh-stdin-positional-no-terminator",
       "source": "tests/cases/sh.json",
       "definition_sha256": "1787c46919e9056347e82a8d5cccee52c117036aec27a31ab93d18a851b77cf6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-assignment-right-associative",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "17395ae3bdd2f5d73617aeeae0de066e435464e49ab72726dff8e768ac327ccb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-assignment-word-effects",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "c8d9b895f57e03e2565d8f7ba22a17deca507b0735f10d8b7b272d602e7a4566",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-temporary-prefix-effects",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "5329dc6e60f6b795ec49fea252ed5212533f3c7e1b843427566b4d2c9be40ffe",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-argv-before-prefix",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "01402d992c8f2c823cf4e78edae901967e1f3bee024822cd7a622ef1c803e7ae",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-assignment-compound",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "6a96b125e4646ba1bf4081eb0c94161850f2405c7e0ef05f4e3ae18bc01f3a5e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-short-circuit-conditional",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "34e9ebae2ec66dfb0e772eed68211828376146a2cb2d18ee7c7434dcf67f4a17",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-arithmetic-substitutions",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "905df9889faba3f84b3bf1546d47ea0e95330df874e0b0231473ee515c91e94b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-backticks-state-quoting",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "c8a5ae514d2de50be1ef1a120118466c16f9e665d377685597e657b394c9431e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-backticks-nested",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "888cb7d8530a68f5f5b93416a7f4a7f172e18d734764c976c60040bdc75bbec9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-backticks-status",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "00b5035ba8e1378bde993976bfb86d1e23a3842b3dbb5b409d18016fe397e379",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-substitution-comment",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "7b1228e24ad6f9f4054d614c764d1c42b1bbc49ca98a737ed3a72ed424b2d9d1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-substitution-hash-in-word",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "5a57c00b0a218f584f2614211d9b08466825ad375f0ba321ee2bf56f80874289",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-descriptor-copy-order",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "1fd77b55ed3775bb88b0850b2f7b0982a47f2d4bdf91fa80c520f59e7c62de1d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-descriptor-input-copy",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "dd2a4778b1e895f05f144e13b1aa6274a2a4325f5a31d4c5b53724fa6238848e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-loop-break-level",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "48050c44a07b2a03e7d53f07b92a9b7eb44791b5db17e31150041a1a1af2397e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-loop-continue-level",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "7aceb124f4f3135499ffb0a9960410230a137aa4a969e51e378664015f0daab5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-loop-count-c-whitespace",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "f445d659d083d6ac7cc6dd9d303e3e8cf455dabbd464f7be9238a83a69ab2df9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-increment-project-extension",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0c503b89e59edd138b91044a6a14c2155ecaedd518da4ba7df423cc67534cfa5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-heredoc-expansion",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ebb9bace34844d550458049f3ef0e0a99a22a9ca26f52b3911e5fe893be4dfd2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-heredoc-quoted",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "4de0ad11a2800654e16bf0e9861a2458e082c4b33f6bb8c503abdc83b7bda103",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-heredoc-multiple",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "be077ab5b70a62aff9bcd7f9964758ae7b6b3a1dfc269796633701482cb3fbb0",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-heredoc-header-tail",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "196f04c8cd552b865f0802f073562b104c707e6b2f743c332d8b897ccc26f1c5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-heredoc-tabs",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "f12b029ca6c3836666feb610065c8fad6f2952fca184919163f2e93692939346",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-heredoc-delimiter-continuation",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "cdd7cc7f87e52c51b98b1e102cf06d0eebce9e4d749aa39d060480fbf2f787d5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-heredoc-continued-body-tabs",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "fbd7eab0e92b287f735d8078e26a6b3ae11fd7885fa09be15ef4619742f51a56",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-heredoc-substitution-close",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "91a3523a66e511da572ac7dc345bf15f4f5ac8e3586047de74e944fe3115b624",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-format-escapes",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "2af0dd808beb0392ac67de6c39e1754ae63f8853f841d46fc9a0d4a31d1edf47",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-argument-escapes",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ec549c74540c6bf72caf7ee49bb17ab009011d8c9b43295fd1091c5d8f271cf6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-bytes-and-precision",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "b66ca17f1cee6ed1458caa2e1f3e285560cdc6c641c5e6f9ce76072ad6e274f8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-integer-fields",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "210042071ec78d38f19e87fb5cb1fdfd7a7ecb5d23a855ac2c3b65bb7b6518f7",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-stars",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "1a4dc4092d564373b58e8a68e582f9160486f4af8fae06d2926cf824e9b7d24f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-floats",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "4411488d97de264568ddb0077f22bdab977dc5b628281c743950d0e469bf1771",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-blank-number",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "c22e27e9c843e083d14ec8cf3208312f9e28e1b4a0e62a44439999d18b3e1cde",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-prefix-number",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ef14511c49a06c41af6a074e485eb36fc4cce58d28552e7f96cb5ca1a5ebd596",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-empty-quoted",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "7c8f5dca7543026bd798e7a08983bd6efc25a83a3937e64247feebc659978447",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-range",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "fef1536442dcf930896a1467531a9713781e657167c6c3d871e5a335695edfa6",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-b-padding-stop",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "3c7e4ef05b350b8d0d0b7f2cfe21bec23a48d77be8fa910d715b452a87ef06c6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-no-operands",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "14abf2ecba83de3a931197dc322688f4bc4bfead1e61c7488bab162ae9603ca9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-lone-negation",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "337ce15071d79cebd41af9cf0dd7b485caa713070db1ca3c2a84eb07206e524a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-two-negations",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "1abe3054541532cfa4c6a0c6064132fab3295366adbe7028bb950116b86c5f8b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-three-negations",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "abcb76c95aa7b4f8ddbbce9dac273ca62af786e1732a6249864a216284c9f77e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-four-negations",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "a8b1f1f7b0c29e89d41e962354ad26d79334713ba73ded1c4f6f817d1e3bf62f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-double-negated-unary",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "8912bd6e53b66103cf7ec91f7e1d9e4b010b2073515caf563e46ec81da1e0d93",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-double-negated-empty-group",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "567a705dccbfc428de7294c26d2969e9b7ef08fa2ef69a7688f85d4f10e31cf9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-triple-negated-string",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "edff1aebaa82b3e1c3af65e36cf2f5c68321e3638e30385199ec8c334d4ccccd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-top-level-negation-equality",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "9b32a5c45641d512554641d0bfb38255a7d65deef1680e85b07cb9feba4a0569",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-grouped-negation-equality",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "c29098f170b7982e2bae55ef5beba1bd60947cce147176915251baec86fc0b6f",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-compound-negation-equality",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ad01f05a58f93465bef1612cfe4a141a6b8527977bd535488346c1de78c2f8a5",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-top-level-parenthesis-equality",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "5204d9b6b5257d331c5d04e5b42b9fd01cb15d56ee377522dc8f2dcc15070917",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-compound-parenthesis-equality",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "61842ab2e54989a61655d7d7f498e0a5b3ecb98175d6224262c0b86fb7526da8",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-unary-looking-equality",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "5416d1000a479b67eee1366c7abcbfa99f0e1e5d7c256f4b02b4a2c98492fb02",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-unary-missing-argument",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "c5cbc3d473fd0be970a775f349930a028a40b363bcfb8cb9fb831e8a18b076db",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-unary-operator-argument",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "5d01d1988a676eaded78b8a86c6f93d87f534ff00251b7c795b095987fa847cf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-missing-rhs-and",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "3f7700e7ddc46d5e4013db2e1b59484bae189d4f6d7e7a6e5660499518c2a919",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-missing-rhs-or",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "62a0b1e70a4c0aedb346e9a26061a703c26026b46ecad21a44c1af356f6cab55",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-missing-rhs-in-group",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "03e3a1f4749a91b4cad1f83863cb08914452924dc2ac338bb71d2a3d01406974",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-grouped-and-as-string",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "d29da6c7a180d80d1be76fc927e52c41df7bc4f42400368262282e1dba78e1c6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-or-evaluates-error",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "a9e592380ad69775e37f9c742ab7d89802ef0014cd0250f1fe56443ad9d12110",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-and-evaluates-error",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "aa76b84f2627807db815856585d81a3dac93ce2545b57278f6500c300a021ad8",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-precedence",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "60b85288f49ca5f3ecf18b63c2c3be588a469188b045b3d123c21b197b3289eb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-decimal-leading-zero",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "3d6bde09799fe2dbdd9711ddc55e78fd2799b17773cdc66694ec7e3599a9c8b6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-decimal-leading-sign",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "9034462fcb17e634b5bd0b578ddd6d0127c1d592884a83ae861976c909e1172d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-hexadecimal-rejected",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "7de1a8faca6649aa637b2e93e048ef17b740d12e1df8cb5366fe50796fbf3f31",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-octal-prefix-rejected",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "c98fd63a8548a2d4d6ed66fb18493a8338058858b44b993c442204ed322aeaab",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-binary-prefix-rejected",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "784afdc9d96ff5b7d868e5fe76f5b7a666ad563f9bd6cb7e809594550dbdbdca",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-underscores-rejected",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ac80fd0465b0a36958ce0902701dd1ce3360c1483ab71a45356e78f4ce031ceb",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-vertical-tab-accepted",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "de321da39568ca322129125af405b8c7f29a9d7226198aa09efa1138df7c8223",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-form-feed-accepted",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0e5e5e862d5cab80653ebbae75822b005dc1812469605afa67eb1c10c71d0e53",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-nbsp-rejected",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "9d4f846e3f1d66e8ea8892f09225d7abe795f92094b4cc70435824c8350ae4bb",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-blank-rejected",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "6fe3bb55d725aae20c32ca459ab718f9671bcd102b6feef52bad2b00b49a431d",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-empty-rejected",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "159cf6ad8c42c0701902ff4a161b93794c17bf8e232bc38eea8518cb6f34868c",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-signed-minimum",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "dc12ec45e03bd6ae4156b0e705aef4a01e957f0ac57404e47e7ea7770f1085cc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-signed-maximum",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "5e38093480698e0107baf574d34cab445e5545d44df156b6b69d21cc198f282c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-overflow-rejected",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "b0f23a3d76ad5b17a524d60da914a85a1b4f96cc2cfa4d827453feec300aad7c",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-unicode-order",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "6c44fddaf3b61de880547eff1d3e4c2f9344a1b68a380812d008153915266c98",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-double-equals-extension",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "92601ed67681afe871d19ea55faaf9318df657ef1ee5497a9566d0493aa8a878",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-redirect-effects",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "df537a92a4225d05bd0e4004610d09c3ed3fc04958cfcffaf20d328bfeee686e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-arithmetic-prefix-failure",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "2318a7486ed4059491652b02ce3832f1ee648d6f56c19ef031e368eed5ecc547",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-loop-count-reject-prefix",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "8de71e6528f072c8002157fac53a935d33593bfbc2b71b22e24c38c5e9623d21",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-loop-count-reject-underscore",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "74f1c1094279d7c3caa437131e73f3390f1f940b1058f50d4596cbe3fc2633da",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-language-session",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0cac535357fffcf0fdf1b727d67516d6478d5e91210bd571645fb18f3e01c270",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-sh-language-session"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-sh-merged-child",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0cac72c51201363e2c135ef5aeaa668e064ce51e838aff0352a4df51be9c1247",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-sh-merged-child"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-sh-audit-case-basic",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "6f51035c5fd777032b4a16d785d480303c1b5cbdfa2a19da89ee7c68eb0dc8d1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-nested",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "9b00296e777a2e8a81f9c60f551d7912b398c012c13d614da414d2a23e05a03c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-parenthesized-pattern",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "01ca3745fa8f11f350ebb2e2cbbe244cec241cf3e7d406a7f480f7241927698d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-no-last-terminator",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "26600dfb79d89c0a548a621615a4621c3ebdf5f0a9fff4fdecf10da83f4ec563",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-subject-and-pattern-word",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "3965ba908635c0a32da31b5a6ac438a829ba8736083b5d85becc7e36b7b85fa3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-quoted-close-pattern",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "fdeb817f2ff46775b28b19fa63a236486dbe4bbbe8b66a6be1b774e67039136f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-quoted-esac-pattern",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "eb150f80aa7897b5c9dd78139baf0c9e1b07f04b671d7975449fc0a6d5b92447",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-command-subject",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "abc16d1c36b6a4aeb74588311732b820e54c87141afa7dc93b841b632622df0f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-subshell-body",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0da11979e5591d77f289d4c63f3990738eb65831e41cb2a9a1497eaa8888ff96",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-comments",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "fe8f3e6aa68ddefa814126e41ec9dc93ca46412ac7a2115153ee641dec066900",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-case-heredoc",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0646e525162dbfb94d1a1f762053703efca6d866b882fdd054d0203fbd6e4854",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-ordinary-case-argument-control",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "17a30ee4021b60bbccd2e9202d66387d70f41ac97e62d31f43b384f75a559f8c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-ordinary-comment-control",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "671662b486a9603261ef84bad86255b61286900032e03df82537d91a71946ea9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-continued-comment-boundary",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ebbac127218f31292b08de1c6844a53e6af40f5ea096e25ed20e0e6a21c6aebd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-continued-word-hash-control",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "ced72103b7a39d79b8a5122f5c2b7a1de2302b1c3274d4981f63ab787014ed70",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-audit-stdin-case-continuation",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "1ee5116dae33baa13bcfe5a0eb45ac2c32bfa5c15c16ac516cc8683c06911afe",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-state",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "22b9998fedd26a810547d83b14f19d479b6ef21fb980675353178c6334d3c075",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-sh-printf-state"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-sh-printf-state-oracle",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "7d785bdcc426e5a00fecd2e718f1aff6abc9ee4009e2bcd39c61256d202dbfd9",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-sh-printf-state-oracle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-sh-boundary-additional-descriptor",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "60778c41356680819e680eb0d5ff87048456d9de668897766739e316b9f5efad",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-boundary-descriptor-close",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "7031030eb47337f49a3c6483254901fc554390b48b112718c2d748829f0bc938",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-boundary-descriptor-direction",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "dbf5b8e31b02bdb4b7a4dc40461080f77070ffcc8cd30b11b36125e5d0e27481",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-boundary-test-identity",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "4bd8e91fb7a0656ef1298fafebd25f6eeacfeddc9ac8a1c8056edd3a09810b7e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-boundary-test-terminal",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "999439577cc41ef191fd08a0aa6948f5c192995f096d46155be80080be641ddc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-boundary-test-owner",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "fbd334e56c899750a17c94335458f2039b7ff53e08c0add990a661be9d9c2856",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-test-raw-link-paths",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "62897a0057ebe9389e733a103b742191cb3a76d231a4c7ddb50271ca051e8316",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-sh-printf-linux-nan-signs",
+      "source": "tests/cases/sh.json",
+      "definition_sha256": "0b01af806a1d05a57ed01bece465386442fadbd89151d76f04b938b94158561b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15415,7 +16530,7 @@
     {
       "case_id": "release-metadata-make-help",
       "source": "tests/cases/make.json",
-      "definition_sha256": "e40207c51ba7763754ef51956aac6b267192afd7c2b3c64bcd96e2230d73d1b1",
+      "definition_sha256": "e32919c9b450cd4d9a065f5dc051e3c04ff48de8777d63c4e64086492d32eaf2",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15425,7 +16540,7 @@
     {
       "case_id": "release-metadata-make-version",
       "source": "tests/cases/make.json",
-      "definition_sha256": "5e06d9aa9f208a6c44d2df7adb550c798045401fd4203fb637576d4dd1e22b35",
+      "definition_sha256": "e742beb6f9d6a6ea053729bc86c760e12ca98f2fc0c5cf57984f6c28ed9677d7",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -15496,6 +16611,688 @@
       "case_id": "coverage-make-file",
       "source": "tests/cases/make.json",
       "definition_sha256": "6f192ed440df826f2933d77bda313f55f6fc7a44e1356e746239d5fae683b1c8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-recursive-export",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "3c79076a7e8770adebd5a997be975fc79d07550d03f907327b698ff6306c65d3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-empty-shell-status",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "d65b9c367dfab932b61a710c0702b9a50393042e85ec0f14458209fd19074741",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-shell-assignment",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "bf04118412a53b30daef6629ec4ce64cf5665d42339af2bc919073d80f051111",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-secondary-variable",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "263bbbd5b1746dfb48c24f891fd2ce599cd27d6d7db2bcf1708866abaeee9277",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-secondary-automatic",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "749bcb982a95bfbdb3059f7d034d5b28fd414dd165e18b61730aca2ea60dfad3",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-cli-recursive",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "04418c5940e22c6de54f625476b09f21b7d137d89a8366a311145bc431aaca56",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-cli-conditional",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "dd4b5ffb36b15c15eff48343d4f0ef5a9f8e7b7593b9123b1cbb59dde5c3c088",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-cli-shell",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "7a8d4dff4234c10e1127900b6d5ebbbf5d64544e29158a9fb2d771ead2fd7b99",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-computed-name",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ac0c6fabac958df99c4abb7e36e450092cfb67612b4e3e5ff30a4408fc5d7b38",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-nul-output",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f40fc5a6ac413098b5dc56a37eafa342e7bf01255c955a7b193fb5e61df7cecd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-invocation-level",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "12ae286c3f99d0b552d7dc062562b1999cc3abe682b8b64484ece3432c31735a",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-makefile-flags-append",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "0637fecfe62d9c71e66a740154b45ad2c77bbe6c51fa0f7713ea544839643c13",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-makefile-flags-replace",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8ba52142a5e85d0388b19d7887bcd6cc16ccec44bd1542e967a006ee09fe39e8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-recipe-leading-plus",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1761fde64b3c76a473a94e1b3991e387f6f03b0e678ba73d7fd63d4e0434f740",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-recipe-leading-at",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "64e6a1e8181e1549451d8e70cabf0c79103687d5366d84aeaeb85c9356dc3372",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-recipe-separated-prefix",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8d4f297666696ab3376ea43dad176f6220ffad8618cc4d39fbcd3bc3a283b9b1",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-secondary-dependency-order",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "058171eb2419b22356b375d0b30bd129e9d02a296910304314d0e2eda12101d5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-export-automatic",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1d2a6e89bc279d124d420ea13a321ca3b7a9bfb57f7c8e9c7824b4d1513a0d19",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-recursive-language",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "14de62590cf370884546b643b6d1aca1a63c1f13e10bb49176d0fb9fc6006782",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-make-recursive-language"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-make-audit-computed-export",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "14e9a572ca7a84f90acb16b057d2e3941240699868a961742dd30f4e6fadf021",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-computed-cli-dollar",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "6fd92ceee9e124bcd41d0e556c5008bfb59c813b231dc55fddbf189ec42b131b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-cli-shell-level",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "800ddf353d90fd543b92b0ee26e53e1e231ef3349c17374349943b0f3768da06",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-self-immediate-dollar",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "19ca3ff657d028073ff1e6e5f5ac6c91f81a4dae731ca07b005898658f44d3ad",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-self-immediate-recursive-dollar",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f83e7e65a24fcc7304d4c436cf6a605c5f30ab8a45709b55c2c34378cafdc013",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-self-recursive-space-dollar",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "54da8547a33d275992b6d3daff65a91d4f53d71f7d5571239141d52b1243c679",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-long-jobs-value",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "14a3a28b8e812aeac8814e141990eb4af84a4362d5544f7a200992440e915ea6",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-short-jobs-value",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "28420461bc4330c8fd5328fcf7f6f500e6a7e0bce7e59dd377e8ab9d97bff16b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-fifo",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "0e57440a908bc923190e471c123d50ebe45d2fa6890674932c4cdf0491c0b600",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-make-fifo"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-make-gnu-jobserver",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "85bcd9b7a5a84d75e216b6dae11f13126c4b8e898449bd639f8631a4b74e31a8",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f31-make-gnu-jobserver"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f31-make-boundary-descriptor-jobserver",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8f006e071cebecbd3133b431cfa431621516d459b22a871c901e117447cfce4d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-boundary-windows-fifo",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "e0a160872c49f28a89aa1e4424e880102a5a89d9e47331e5c5aff2715546cd0b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-missing-target",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "80104321c9c201e62238847adfeb075cb7169cad021ad2ad2219202317938876",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-up-to-date",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "3d30c5b7fc292a6c3a20161407f51dc2088a332026d9107b13a31b83b5e16531",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-mixed-timestamps",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "32a52c05c37cb8f11c9844d8b55179832dcac3e660c939feaabf7ec4522156cb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-always-make-old",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "fc1dc835338f579a4ea303ae921159e9920aa01a6b5d8c7f623c6aa9a86e5bbd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-what-if-old",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "7faabd3241a5c5686b89d9488f77e80acfafe9c1ac391080b06dc7cf47fdf315",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-what-if-missing-no-rule",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "18c52581bb264c5b291f71e2d46ca119c11aaad80e79ebc22b5b4d0e1e42c8fb",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-what-if-target",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1d2af2fe7f635cb1668127027665eb6847c5daa4554e4793a6c63e7622e1debf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-phony-prerequisite-file-exists",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "10689c128e87e2a3a127c6fd01212ef024f1c019775cdad5f580fb13ff0d4e1c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-phony-target-file-exists",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "87dd2820e2591293cd5a28c9e7e50e425b6ab8cf1a7b034eba722e5db8019ac4",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-missing-dependency-no-recipe",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c74246bbd2338b0a237dcef50efcdeb54a63e8ee28f7e033c1df79a2c2868b07",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-missing-dependency-empty-recipe",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "0d5a64c52f0327551b655028e290e9075f1959c2232fa8b47c092063ac9e2837",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-missing-dependency-blank-tab",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "5c86e2dcb4989a77e9b76f3b695039abec6a92873d05cec4308d4a2be5167c7c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-missing-dependency-noop-recipe",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "31f166cbd80a2a89899ee5aa5ea2cad7fa9f0b22579043bc9981787b1be88136",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-multiple-recipes-snapshot",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c30663a4bd092ba30828150bc05353568cd139192d359bece4c0be35abfc8181",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-01-secondary-context",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "29bd3cf487f27477bd49e2bccbc2a053379ef48c98cc325a1edf1ac6e23b1daf",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-whatif-02-always-what-if-goal",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "def4c06b295cc5042fb6ae4a2387e75f4a0ea88e5568aca7c2da659bd75d1ff9",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-whatif-02-always-what-if-phony-dependency",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "0928253c72630257f033704df70356cfcb2a78c48c7a023046a23f2d0cfefaef",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-whatif-02-what-if-goal-phony-dependency",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "19b7a05a59098a4a967c340df2e74c5b9988a2c69f154a71ec250c9a3aa4eccd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-qmark-whatif-02-what-if-phony-goal-old-dependency",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "4cb88d3a98bbde8359f4021f89ef12d4f16329663190652bd5b5f83bd23a0535",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-custom-shell",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "65202ee8cbaed00cb155d4724194397acef7d1ffa7fd22f2ad79ef2ec3af3271",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-shell-flags",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "9e90d37d669336e08d585bb0f543a6bb5e59229db8eb4a71a9069dc2d3f84895",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-unsupported-error-function",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "b2b794b45e6882e0307d8f1d1623bcdab02daf1541bd09c6e516869e556900d9",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-unsupported-lazy-function",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "89791f453fecb19f1d4ee9afaa0519f681ba5a527e62ff255ea838fa38da2632",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-unsupported-substitution-reference",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "1d8cb9203599aae12d0bf428f11402e3bb2fd279641ff58dad6a933ffb0152aa",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-unsupported-oneshell",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "10264e180605e4b1b74d6bac19347881dadbf3ab9e3d61ad81fc29c53661dc7e",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-unsupported-order-only",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "dd636ad6197a1364be3a19f9d0497816979553eda0a7803618ecb9fdfec8b6b1",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-unsupported-archive",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "61ef82ad91c4a421e389b074504c45b53e294a69ea66d212601d3a3648e28c26",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-audit-boundary-unsupported-grouped-targets",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "aa0176f9d5d7c1b3c8558ffaa44e2c04c8e0a4730bb9ea23c8b39487349dd9da",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-final-empty-environment-shellflags",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "8dbafc58bc41f57db7122bc1c21fba95353fcf59b3d1ba82cd250cd2aad77700",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "Status 2 and absent recipe marker establish rejection before execution; the diagnostic names the unsupported inherited empty selector."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-final-inline-quoted-hash",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "3c75c5b48e6501338964054b23b09ee3cf5108e106c7542a45d45a38d5f23124",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-final-inline-nested-reference-semicolon",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "a4a846fdfa60bfa5605e30642220d16f77110c3f6d2be58d93c90223a5c2f1bc",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-final-prerequisite-shell-pipeline",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "ca67a0870629b5c8be744b7c107779bfb2930f9787f60c95546bf51901cd1948",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-final-prerequisite-shell-quoted-equal",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c016b32ba861a687fe49aa750dba2020ef0b976a913d73d33eb2c1a241846f74",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-final-target-shell-colon",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f138c22dffc033fab5d31eaacd7000ba422e0fe8ab68174da0bddd8b38c55f66",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-make-final-inline-expanded-equal",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "742e2ab352f2da4d7d13d5cf90abdfb8988dc413eb8ac1d52401439e0c1451cc",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21101,7 +22898,7 @@
     {
       "case_id": "release-metadata-split-help",
       "source": "tests/cases/split.json",
-      "definition_sha256": "323abc4b2cbed0d36e0bdc7cbc3b0a22bf0faba4cf021b9597b7eb0402e21ab2",
+      "definition_sha256": "6ca379385215672dbd1b2dde53f91139455a1d614b07930aaea66a455d50f267",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21111,7 +22908,7 @@
     {
       "case_id": "release-metadata-split-version",
       "source": "tests/cases/split.json",
-      "definition_sha256": "b96e40dfacc7ccd9cb58e42b8b70fe30b3ae8b4291be3123fe2af91c29253961",
+      "definition_sha256": "537994b30c2ef87e948eda78002591e6d7ac0f345457ae5300d806699bd55be8",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -21592,6 +23389,16 @@
       "case_id": "f17-split-missing-option-value",
       "source": "tests/cases/split.json",
       "definition_sha256": "5971a66b0f9c72922cbc5e5a3632fc6d6d38cac417741822b2eb449903de1ff2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "f31-split-shared-shell-filter",
+      "source": "tests/cases/split.json",
+      "definition_sha256": "5f17db1d129c2bd343ae8d6dd90275c3be0500ea73bacd9329b780420ab5f30c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -29258,6 +31065,365 @@
     "proof-sh-stdin-positional-no-terminator": {
       "kind": "exact"
     },
+    "f31-sh-assignment-right-associative": {
+      "kind": "exact"
+    },
+    "f31-sh-assignment-word-effects": {
+      "kind": "exact"
+    },
+    "f31-sh-temporary-prefix-effects": {
+      "kind": "exact"
+    },
+    "f31-sh-argv-before-prefix": {
+      "kind": "exact"
+    },
+    "f31-sh-assignment-compound": {
+      "kind": "exact"
+    },
+    "f31-sh-short-circuit-conditional": {
+      "kind": "exact"
+    },
+    "f31-sh-arithmetic-substitutions": {
+      "kind": "exact"
+    },
+    "f31-sh-backticks-state-quoting": {
+      "kind": "exact"
+    },
+    "f31-sh-backticks-nested": {
+      "kind": "exact"
+    },
+    "f31-sh-backticks-status": {
+      "kind": "exact"
+    },
+    "f31-sh-substitution-comment": {
+      "kind": "exact"
+    },
+    "f31-sh-substitution-hash-in-word": {
+      "kind": "exact"
+    },
+    "f31-sh-descriptor-copy-order": {
+      "kind": "exact"
+    },
+    "f31-sh-descriptor-input-copy": {
+      "kind": "exact"
+    },
+    "f31-sh-loop-break-level": {
+      "kind": "exact"
+    },
+    "f31-sh-loop-continue-level": {
+      "kind": "exact"
+    },
+    "f31-sh-loop-count-c-whitespace": {
+      "kind": "exact"
+    },
+    "f31-sh-increment-project-extension": {
+      "kind": "exact"
+    },
+    "f31-sh-heredoc-expansion": {
+      "kind": "exact"
+    },
+    "f31-sh-heredoc-quoted": {
+      "kind": "exact"
+    },
+    "f31-sh-heredoc-multiple": {
+      "kind": "exact"
+    },
+    "f31-sh-heredoc-header-tail": {
+      "kind": "exact"
+    },
+    "f31-sh-heredoc-tabs": {
+      "kind": "exact"
+    },
+    "f31-sh-heredoc-delimiter-continuation": {
+      "kind": "exact"
+    },
+    "f31-sh-heredoc-continued-body-tabs": {
+      "kind": "exact"
+    },
+    "f31-sh-heredoc-substitution-close": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-format-escapes": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-argument-escapes": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-bytes-and-precision": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-integer-fields": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-stars": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-floats": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-blank-number": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+    },
+    "f31-sh-printf-prefix-number": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+    },
+    "f31-sh-printf-empty-quoted": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-range": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+    },
+    "f31-sh-printf-b-padding-stop": {
+      "kind": "exact"
+    },
+    "f31-sh-test-no-operands": {
+      "kind": "exact"
+    },
+    "f31-sh-test-lone-negation": {
+      "kind": "exact"
+    },
+    "f31-sh-test-two-negations": {
+      "kind": "exact"
+    },
+    "f31-sh-test-three-negations": {
+      "kind": "exact"
+    },
+    "f31-sh-test-four-negations": {
+      "kind": "exact"
+    },
+    "f31-sh-test-double-negated-unary": {
+      "kind": "exact"
+    },
+    "f31-sh-test-double-negated-empty-group": {
+      "kind": "exact"
+    },
+    "f31-sh-test-triple-negated-string": {
+      "kind": "exact"
+    },
+    "f31-sh-test-top-level-negation-equality": {
+      "kind": "exact"
+    },
+    "f31-sh-test-grouped-negation-equality": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-compound-negation-equality": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-top-level-parenthesis-equality": {
+      "kind": "exact"
+    },
+    "f31-sh-test-compound-parenthesis-equality": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-unary-looking-equality": {
+      "kind": "exact"
+    },
+    "f31-sh-test-unary-missing-argument": {
+      "kind": "exact"
+    },
+    "f31-sh-test-unary-operator-argument": {
+      "kind": "exact"
+    },
+    "f31-sh-test-missing-rhs-and": {
+      "kind": "exact"
+    },
+    "f31-sh-test-missing-rhs-or": {
+      "kind": "exact"
+    },
+    "f31-sh-test-missing-rhs-in-group": {
+      "kind": "exact"
+    },
+    "f31-sh-test-grouped-and-as-string": {
+      "kind": "exact"
+    },
+    "f31-sh-test-or-evaluates-error": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-and-evaluates-error": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-precedence": {
+      "kind": "exact"
+    },
+    "f31-sh-test-decimal-leading-zero": {
+      "kind": "exact"
+    },
+    "f31-sh-test-decimal-leading-sign": {
+      "kind": "exact"
+    },
+    "f31-sh-test-hexadecimal-rejected": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-octal-prefix-rejected": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-binary-prefix-rejected": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-underscores-rejected": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-vertical-tab-accepted": {
+      "kind": "exact"
+    },
+    "f31-sh-test-form-feed-accepted": {
+      "kind": "exact"
+    },
+    "f31-sh-test-nbsp-rejected": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-blank-rejected": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-empty-rejected": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-signed-minimum": {
+      "kind": "exact"
+    },
+    "f31-sh-test-signed-maximum": {
+      "kind": "exact"
+    },
+    "f31-sh-test-overflow-rejected": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    "f31-sh-test-unicode-order": {
+      "kind": "exact"
+    },
+    "f31-sh-test-double-equals-extension": {
+      "kind": "exact"
+    },
+    "f31-sh-redirect-effects": {
+      "kind": "exact"
+    },
+    "f31-sh-arithmetic-prefix-failure": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+    },
+    "f31-sh-loop-count-reject-prefix": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+    },
+    "f31-sh-loop-count-reject-underscore": {
+      "kind": "diagnostic-fragment",
+      "reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+    },
+    "f31-sh-language-session": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-sh-language-session"
+      ]
+    },
+    "f31-sh-merged-child": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-sh-merged-child"
+      ]
+    },
+    "f31-sh-audit-case-basic": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-nested": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-parenthesized-pattern": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-no-last-terminator": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-subject-and-pattern-word": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-quoted-close-pattern": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-quoted-esac-pattern": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-command-subject": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-subshell-body": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-comments": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-case-heredoc": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-ordinary-case-argument-control": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-ordinary-comment-control": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-continued-comment-boundary": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-continued-word-hash-control": {
+      "kind": "exact"
+    },
+    "f31-sh-audit-stdin-case-continuation": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-state": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-sh-printf-state"
+      ]
+    },
+    "f31-sh-printf-state-oracle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-sh-printf-state-oracle"
+      ]
+    },
+    "f31-sh-boundary-additional-descriptor": {
+      "kind": "exact"
+    },
+    "f31-sh-boundary-descriptor-close": {
+      "kind": "exact"
+    },
+    "f31-sh-boundary-descriptor-direction": {
+      "kind": "exact"
+    },
+    "f31-sh-boundary-test-identity": {
+      "kind": "exact"
+    },
+    "f31-sh-boundary-test-terminal": {
+      "kind": "exact"
+    },
+    "f31-sh-boundary-test-owner": {
+      "kind": "exact"
+    },
+    "f31-sh-test-raw-link-paths": {
+      "kind": "exact"
+    },
+    "f31-sh-printf-linux-nan-signs": {
+      "kind": "exact"
+    },
     "phase3-tr-range": {
       "kind": "exact"
     },
@@ -32171,6 +34337,226 @@
     "coverage-make-file": {
       "kind": "exact"
     },
+    "f31-make-recursive-export": {
+      "kind": "exact"
+    },
+    "f31-make-empty-shell-status": {
+      "kind": "exact"
+    },
+    "f31-make-shell-assignment": {
+      "kind": "exact"
+    },
+    "f31-make-secondary-variable": {
+      "kind": "exact"
+    },
+    "f31-make-secondary-automatic": {
+      "kind": "exact"
+    },
+    "f31-make-cli-recursive": {
+      "kind": "exact"
+    },
+    "f31-make-cli-conditional": {
+      "kind": "exact"
+    },
+    "f31-make-cli-shell": {
+      "kind": "exact"
+    },
+    "f31-make-computed-name": {
+      "kind": "exact"
+    },
+    "f31-make-nul-output": {
+      "kind": "exact"
+    },
+    "f31-make-invocation-level": {
+      "kind": "exact"
+    },
+    "f31-make-makefile-flags-append": {
+      "kind": "exact"
+    },
+    "f31-make-makefile-flags-replace": {
+      "kind": "exact"
+    },
+    "f31-make-recipe-leading-plus": {
+      "kind": "exact"
+    },
+    "f31-make-recipe-leading-at": {
+      "kind": "exact"
+    },
+    "f31-make-recipe-separated-prefix": {
+      "kind": "exact"
+    },
+    "f31-make-secondary-dependency-order": {
+      "kind": "exact"
+    },
+    "f31-make-export-automatic": {
+      "kind": "exact"
+    },
+    "f31-make-recursive-language": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-make-recursive-language"
+      ]
+    },
+    "f31-make-audit-computed-export": {
+      "kind": "exact"
+    },
+    "f31-make-audit-computed-cli-dollar": {
+      "kind": "exact"
+    },
+    "f31-make-audit-cli-shell-level": {
+      "kind": "exact"
+    },
+    "f31-make-audit-self-immediate-dollar": {
+      "kind": "exact"
+    },
+    "f31-make-audit-self-immediate-recursive-dollar": {
+      "kind": "exact"
+    },
+    "f31-make-audit-self-recursive-space-dollar": {
+      "kind": "exact"
+    },
+    "f31-make-long-jobs-value": {
+      "kind": "exact"
+    },
+    "f31-make-short-jobs-value": {
+      "kind": "exact"
+    },
+    "f31-make-fifo": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-make-fifo"
+      ]
+    },
+    "f31-make-gnu-jobserver": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f31-make-gnu-jobserver"
+      ]
+    },
+    "f31-make-boundary-descriptor-jobserver": {
+      "kind": "exact"
+    },
+    "f31-make-boundary-windows-fifo": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-missing-target": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-up-to-date": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-mixed-timestamps": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-always-make-old": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-what-if-old": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-what-if-missing-no-rule": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-what-if-target": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-phony-prerequisite-file-exists": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-phony-target-file-exists": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-missing-dependency-no-recipe": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-missing-dependency-empty-recipe": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-missing-dependency-blank-tab": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-missing-dependency-noop-recipe": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-multiple-recipes-snapshot": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-01-secondary-context": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-whatif-02-always-what-if-goal": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-whatif-02-always-what-if-phony-dependency": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-whatif-02-what-if-goal-phony-dependency": {
+      "kind": "exact"
+    },
+    "f31-make-qmark-whatif-02-what-if-phony-goal-old-dependency": {
+      "kind": "exact"
+    },
+    "f31-make-audit-boundary-custom-shell": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-audit-boundary-shell-flags": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-audit-boundary-unsupported-error-function": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-audit-boundary-unsupported-lazy-function": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-audit-boundary-unsupported-substitution-reference": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-audit-boundary-unsupported-oneshell": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-audit-boundary-unsupported-order-only": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-audit-boundary-unsupported-archive": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-audit-boundary-unsupported-grouped-targets": {
+      "kind": "diagnostic-fragment",
+      "reason": "The explicit boundary diagnostic accompanies status 2, empty stdout and independently absent marker/side-effect files; recipe aggregate error text is a separate context."
+    },
+    "f31-make-final-empty-environment-shellflags": {
+      "kind": "diagnostic-fragment",
+      "reason": "Status 2 and absent recipe marker establish rejection before execution; the diagnostic names the unsupported inherited empty selector."
+    },
+    "f31-make-final-inline-quoted-hash": {
+      "kind": "exact"
+    },
+    "f31-make-final-inline-nested-reference-semicolon": {
+      "kind": "exact"
+    },
+    "f31-make-final-prerequisite-shell-pipeline": {
+      "kind": "exact"
+    },
+    "f31-make-final-prerequisite-shell-quoted-equal": {
+      "kind": "exact"
+    },
+    "f31-make-final-target-shell-colon": {
+      "kind": "exact"
+    },
+    "f31-make-final-inline-expanded-equal": {
+      "kind": "exact"
+    },
     "phase3-sort-basic": {
       "kind": "exact"
     },
@@ -34058,6 +36444,9 @@
       "kind": "exact"
     },
     "f17-split-missing-option-value": {
+      "kind": "exact"
+    },
+    "f31-split-shared-shell-filter": {
       "kind": "exact"
     },
     "phase4-touch-create": {

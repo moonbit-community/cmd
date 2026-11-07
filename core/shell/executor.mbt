@@ -12,7 +12,7 @@ fn normalize_status(status : Int32, context : Context) -> Int32 {
 }
 
 ///|
-fn clone_context(context : Context, capture? : StringBuilder) -> Context {
+fn clone_context(context : Context, capture? : CaptureBuffer) -> Context {
   {
     env: Map(context.env.to_array()),
     exported: Set(context.exported.to_array()),
@@ -30,6 +30,9 @@ fn clone_context(context : Context, capture? : StringBuilder) -> Context {
     input: context.input,
     output: context.output,
     error: context.error,
+    output_channel: context.output_channel,
+    error_channel: context.error_channel,
+    output_buffer_allocated: context.output_buffer_allocated,
     functions: Map(context.functions.to_array()),
     errexit: context.errexit,
     nounset: context.nounset,
@@ -45,23 +48,16 @@ fn clone_context(context : Context, capture? : StringBuilder) -> Context {
 ///|
 async fn write_output(
   context : Context,
-  value : String,
+  value : &@io.Data,
   error~ : Bool = false,
 ) -> Unit {
   if error {
-    match context.error {
-      Some(writer) => writer.write(value)
-      None => @stdio.stderr.write(value)
-    }
+    error_writer(context).write(value)
   } else {
-    match context.output {
-      Some(writer) => writer.write(value)
-      None =>
-        match context.capture {
-          Some(buffer) => buffer.write_string(value)
-          None => @stdio.stdout.write(value)
-        }
+    if !context.output_buffer_allocated && value.binary().length() > 0 {
+      context.output_buffer_allocated = true
     }
+    output_writer(context).write(value)
   }
 }
 
@@ -89,9 +85,30 @@ async fn run_external(prepared : Prepared, context : Context) -> Int32 {
         Some(input)
       }
     }
-    let stdout : &@async_process.ProcessOutput? = if context.output
-      is Some(writer) {
+    if context.output_channel == context.error_channel {
       let (reader, output) = @async_process.read_from_process()
+      let writer = output_writer(context)
+      group.spawn_bg(() => {
+        defer reader.close()
+        writer.write_reader(reader)
+      })
+      return normalize_status(
+        @child_process.run(
+          @child_process.child(prepared.argv[0], prepared.argv[1:].to_owned(), context={
+            cwd: context.cwd,
+            env: prepared.env,
+          }),
+          stdin?,
+          stdout=output,
+          stderr=output,
+        ),
+        context,
+      )
+    }
+    let stdout : &@async_process.ProcessOutput? = if context.output is Some(_) ||
+      context.capture is Some(_) {
+      let (reader, output) = @async_process.read_from_process()
+      let writer = output_writer(context)
       group.spawn_bg(() => {
         defer reader.close()
         writer.write_reader(reader)
@@ -111,38 +128,18 @@ async fn run_external(prepared : Prepared, context : Context) -> Int32 {
     } else {
       None
     }
-    if context.capture is Some(buffer) && context.output is None {
-      let (status, output) = @async_process.collect_stdout(
-        prepared.argv[0],
-        prepared.argv[1:],
-        extra_env=prepared.env,
-        inherit_env=false,
+    normalize_status(
+      @child_process.run(
+        @child_process.child(prepared.argv[0], prepared.argv[1:].to_owned(), context={
+          cwd: context.cwd,
+          env: prepared.env,
+        }),
         stdin?,
+        stdout?,
         stderr?,
-        cwd=context.cwd,
-        no_console_window=true,
-      )
-      buffer.write_string(output.text())
-      normalize_status(status, context)
-    } else {
-      let execution : @child_process.ExecutionContext = {
-        cwd: context.cwd,
-        env: prepared.env,
-      }
-      normalize_status(
-        @child_process.run(
-          @child_process.child(
-            prepared.argv[0],
-            prepared.argv[1:].to_owned(),
-            context=execution,
-          ),
-          stdin?,
-          stdout?,
-          stderr?,
-        ),
-        context,
-      )
-    }
+      ),
+      context,
+    )
   }
 }
 
@@ -289,6 +286,12 @@ async fn eval_statement(statement : Statement, context : Context) -> Int32 {
       }
       for ;; {
         let condition_status = run_jobs(condition, context, ignore_errexit=true)
+        if context.loop_control is Some(_) {
+          if context.take_loop_break() {
+            break
+          }
+          continue
+        }
         if context.exited ||
           context.return_status is Some(_) ||
           (condition_status == 0) == until {
@@ -325,13 +328,23 @@ async fn run_substitution(
   script : String,
   parent : Context,
 ) -> (Int32, String) raise ShellError {
-  let buffer = StringBuilder()
+  let buffer : CaptureBuffer = { bytes: [], }
   let nested = clone_context(parent, capture=buffer)
   nested.output = None
+  nested.output_channel = nested.output_channel.max(nested.error_channel) + 1
   let status = run_jobs(parse(script), nested) catch {
+    ShellError(message) => raise ShellError("command substitution: \{message}")
     err => raise ShellError("command substitution: \{err}")
   }
-  (if nested.exited { nested.exit_status } else { status }, buffer.to_string())
+  (if nested.exited { nested.exit_status } else { status }, buffer.text())
+}
+
+///|
+fn special_builtin(name : String) -> Bool {
+  [
+    ":", "export", "unset", "set", "shift", "return", "break", "continue", "exit",
+    ".",
+  ].contains(name)
 }
 
 ///|
@@ -346,10 +359,7 @@ async fn execute_prepared(prepared : Prepared, context : Context) -> Int32 {
     previous[name] = context.env.get(name)
     context.env[name] = value
   }
-  let special = [
-    ":", "export", "unset", "set", "shift", "return", "break", "continue", "exit",
-    ".",
-  ].contains(prepared.argv[0])
+  let special = special_builtin(prepared.argv[0])
   if !special {
     for name in prepared.assignments.keys() {
       context.exported.add(name)
@@ -400,7 +410,15 @@ async fn execute_prepared(prepared : Prepared, context : Context) -> Int32 {
 ///|
 async fn run_command(command : Command, context : Context) -> Int32 {
   context.last_signal = None
-  let prepared = prepare(command, context) catch {
+  let (argv, assignment_words) = prepare_words(command, context) catch {
+    ShellError(message) => {
+      context.exited = true
+      context.expansion_failed = true
+      context.exit_status = 2
+      return builtin_error(context, message)
+    }
+  }
+  let redirects = prepare_redirects(command.redirects, context) catch {
     ShellError(message) => {
       context.exited = true
       context.expansion_failed = true
@@ -411,8 +429,11 @@ async fn run_command(command : Command, context : Context) -> Int32 {
   let previous_input = context.input
   let previous_output = context.output
   let previous_error = context.error
+  let previous_output_channel = context.output_channel
+  let previous_error_channel = context.error_channel
   let files : Array[@fs.File] = []
   let memories : Array[@io.MemoryReader] = []
+  let mut redirected = false
   defer {
     for file in files {
       file.close()
@@ -423,39 +444,99 @@ async fn run_command(command : Command, context : Context) -> Int32 {
     context.input = previous_input
     context.output = previous_output
     context.error = previous_error
+    context.output_channel = previous_output_channel
+    context.error_channel = previous_error_channel
   }
   try {
-    if prepared.stdin is Some(path) {
-      let file = @fs.open(path, mode=ReadOnly)
-      files.push(file)
-      context.input = Some(file)
-    } else if prepared.stdin_data is Some(data) {
-      let reader = @io.MemoryReader(writer => writer.write(data))
-      memories.push(reader)
-      context.input = Some(reader)
+    for redirect in redirects {
+      match redirect {
+        ReadPath(path) => {
+          let file = @fs.open(path, mode=ReadOnly)
+          files.push(file)
+          context.input = Some(file)
+        }
+        HereBody(body, expand) => {
+          let data = if expand {
+            expand_startup_path(body, context, escape_quote=false)
+          } else {
+            body
+          }
+          let reader = @io.MemoryReader(writer => writer.write(data))
+          memories.push(reader)
+          context.input = Some(reader)
+        }
+        WritePath(path, append, error) => {
+          let file = @fs.open(
+            path,
+            mode=WriteOnly,
+            create_mode=if append { OpenOrCreate } else { CreateOrTruncate },
+            append~,
+          )
+          files.push(file)
+          let channel = context.output_channel.max(context.error_channel) + 1
+          if error {
+            context.error = Some(file)
+            context.error_channel = channel
+          } else {
+            context.output = Some(file)
+            context.output_channel = channel
+          }
+        }
+        CopyTarget(destination, value) => {
+          if value == "-" {
+            raise ShellError(
+              "closing descriptors requires a public child descriptor API",
+            )
+          }
+          let source = @string.parse_int(value) catch { _ => -1 }
+          if destination == 0 && source == 0 {
+            continue
+          }
+          if !(destination == 1 || destination == 2) ||
+            !(source == 1 || source == 2) {
+            raise ShellError(
+              "descriptor redirection supports stdout/stderr copies and stdin self-copies; other descriptors require a public child descriptor API",
+            )
+          }
+          let writer = if source == 1 {
+            output_writer(context)
+          } else {
+            error_writer(context)
+          }
+          let channel = if source == 1 {
+            context.output_channel
+          } else {
+            context.error_channel
+          }
+          if destination == 1 {
+            context.output = Some(writer)
+            context.output_channel = channel
+          } else {
+            context.error = Some(writer)
+            context.error_channel = channel
+          }
+        }
+      }
     }
-    if prepared.stdout is Some((path, append)) {
-      let file = @fs.open(
-        path,
-        mode=WriteOnly,
-        create_mode=if append { OpenOrCreate } else { CreateOrTruncate },
-        append~,
-      )
-      files.push(file)
-      context.output = Some(file)
-    }
-    if prepared.stderr is Some((path, append)) {
-      let file = @fs.open(
-        path,
-        mode=WriteOnly,
-        create_mode=if append { OpenOrCreate } else { CreateOrTruncate },
-        append~,
-      )
-      files.push(file)
-      context.error = Some(file)
+    redirected = true
+    let prepared = prepare_assignments(argv, assignment_words, context) catch {
+      ShellError(message) => {
+        context.exited = true
+        context.expansion_failed = true
+        context.exit_status = 2
+        return builtin_error(context, message)
+      }
     }
     execute_prepared(prepared, context)
   } catch {
+    ShellError(message) => {
+      if !redirected && special_builtin(argv.get(0).unwrap_or("")) {
+        context.exited = true
+        context.expansion_failed = true
+        context.exit_status = 2
+      }
+      builtin_error(context, message)
+    }
     @io.PipeClosed => {
       context.last_signal = match @async.platform {
         Windows => None
@@ -464,8 +545,17 @@ async fn run_command(command : Command, context : Context) -> Int32 {
       141
     }
     err => {
+      if !redirected && special_builtin(argv.get(0).unwrap_or("")) {
+        context.exited = true
+        context.expansion_failed = true
+        context.exit_status = 2
+      }
       write_output(context, "sh: \{err}\n", error=true)
-      1
+      if redirected {
+        1
+      } else {
+        2
+      }
     }
   }
 }
@@ -488,6 +578,7 @@ async fn run_pipeline(pipeline : Pipeline, context : Context) -> Int32 {
       }
       if index + 1 < pipeline.commands.length() {
         child.output = Some(pipes[index].1)
+        child.output_channel = child.output_channel.max(child.error_channel) + 1
       }
       tasks.push(
         group.spawn(() => {

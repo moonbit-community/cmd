@@ -194,6 +194,10 @@ async fn run_case(
       "/work",
     ),
   )
+  if fixture.command == "make" {
+    // Pin recipe and $(shell) interpretation as well as the make executable.
+    docker_args.push("SHELL=/oracle/bin/sh")
+  }
   let oracle_run = @harness.run_oracle_with_deadline(
     "docker",
     docker_args,
