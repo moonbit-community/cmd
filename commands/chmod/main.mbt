@@ -132,7 +132,7 @@ async fn chmod_numeric_path(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("chmod 0.2.4\n")
+    @stdio.stdout.write("chmod 0.2.5\n")
     return
   }
   let args = @env.args()[1:]
@@ -144,13 +144,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("chmod: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Symbolic assignments must cover u/g/o explicitly and apply only to regular files.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\n",
+      "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Symbolic assignments must cover u/g/o explicitly and apply only to regular files.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
@@ -182,7 +182,7 @@ async fn main {
                 @stdio.stderr.write(
                   "chmod: invalid mode '\{value}': \{message}\n",
                 )
-                @sys.exit(2)
+                @sys.exit(1)
                 return
               }
             },
@@ -192,14 +192,14 @@ async fn main {
     }
     None => {
       @stdio.stderr.write("chmod: missing mode\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   let operands = parsed.operands[1:]
   if operands.is_empty() {
     @stdio.stderr.write("chmod: missing operand\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   if !@platform.permission_mutation_supported() {

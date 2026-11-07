@@ -17,6 +17,8 @@ fn help_message() -> String {
     #|      --version            display version and exit
     #|Existing named outputs are refused; filters own their explicit file writes.
     #|Line-byte and unknown-size partition layouts require temporary write access.
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
   message
 }
 
@@ -82,13 +84,13 @@ async fn process(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("split 0.1.5\n")
+    @stdio.stdout.write("split 0.1.6\n")
     return
   }
   let parsed = parse_args(@env.args()[1:]) catch {
     @cli.CliError(message~, option~, ..) => {
       @stdio.stderr.write("split: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -97,7 +99,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("split 0.1.5\n")
+    @stdio.stdout.write("split 0.1.6\n")
     return
   }
   try {

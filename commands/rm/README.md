@@ -1,9 +1,12 @@
 # rm
 
+Development candidate: `cli/rm@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Remove files and directory trees for MoonX.
 
 ```sh
-moonx cli/rm@0.2.4 [OPTION]... FILE...
+moonx cli/rm@0.2.5 [OPTION]... FILE...
 ```
 
 ## Supported scope
@@ -26,6 +29,12 @@ remain unchanged. Ordinary directory operands may still end in a separator.
 | `--preserve-root / --no-preserve-root` | Enable / disable root protection. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Implicit terminal-sensitive write-protection prompts are unsupported.
@@ -34,8 +43,8 @@ remain unchanged. Ordinary directory operands may still end in a separator.
 ## Examples
 
 ```sh
-moonx cli/rm@0.2.4 temporary.txt
-moonx cli/rm@0.2.4 -i unwanted.txt
+moonx cli/rm@0.2.5 temporary.txt
+moonx cli/rm@0.2.5 -i unwanted.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

@@ -11,10 +11,26 @@ priv struct LnOptions {
 }
 
 ///|
-fn normalized_args(args : ArrayView[String]) -> Array[String] {
+fn normalized_args(
+  args : ArrayView[String],
+) -> Array[String] raise @cli.CliError {
   let result : Array[String] = []
   let mut options = true
+  let mut value_next = false
   for arg in args {
+    if value_next {
+      result.push(arg)
+      value_next = false
+      continue
+    }
+    if options &&
+      (arg == "--backup-control" || arg.has_prefix("--backup-control=")) {
+      raise @cli.CliError(
+        kind=UnknownOption,
+        option=arg,
+        message="unknown option",
+      )
+    }
     if options && arg == "--" {
       options = false
       result.push(arg)
@@ -24,6 +40,17 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
       result.push("--backup-control=" + arg[9:].to_owned())
     } else {
       result.push(arg)
+    }
+    if options {
+      value_next = ["--suffix", "--target-directory"].contains(arg)
+      if arg.has_prefix("-") && !arg.has_prefix("--") {
+        for offset in 1..<arg.length() {
+          if arg[offset] is ('S' | 't') {
+            value_next = offset + 1 == arg.length()
+            break
+          }
+        }
+      }
     }
   }
   result
@@ -106,7 +133,7 @@ async fn create_link(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("ln 0.2.4\n")
+    @stdio.stdout.write("ln 0.2.5\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
@@ -114,7 +141,7 @@ async fn main {
     @cli.flag("force", short='f'),
     @cli.flag("interactive", short='i'),
     @cli.flag("relative", short='r'),
-    @cli.flag("no-dereference-target", short='n'),
+    @cli.flag("no-dereference", short='n'),
     @cli.flag("no-target-directory", short='T'),
     @cli.option("target-directory", short='t'),
     @cli.flag("backup", short='b'),
@@ -125,13 +152,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("ln: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\n",
+      "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
     )
     return
   }
@@ -159,13 +186,13 @@ async fn main {
     interactive: parsed.last_occurrence(["force", "interactive"]) ==
     Some("interactive"),
     no_target_directory: parsed.contains("no-target-directory"),
-    no_dereference_target: parsed.contains("no-dereference-target"),
+    no_dereference_target: parsed.contains("no-dereference"),
     relative: parsed.contains("relative"),
     verbose: parsed.contains("verbose"),
     backup: @fsops.parse_backup_control(backup_text) catch {
       @fsops.FsOpError(message) => {
         @stdio.stderr.write("ln: \{message}\n")
-        @sys.exit(2)
+        @sys.exit(1)
         return
       }
     },

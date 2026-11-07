@@ -1,9 +1,12 @@
 # dirname
 
+Development candidate: `cli/dirname@0.2.4`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Extract parent paths for MoonX.
 
 ```sh
-moonx cli/dirname@0.2.3 [-z] NAME...
+moonx cli/dirname@0.2.4 [-z] NAME...
 ```
 
 ## Supported scope
@@ -17,6 +20,12 @@ Remove the final component of each path without accessing the filesystem. An emp
 | `-z, --zero` | End each result with NUL. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Paths are processed textually; symbolic links are not resolved.
@@ -24,8 +33,8 @@ Remove the final component of each path without accessing the filesystem. An emp
 ## Examples
 
 ```sh
-moonx cli/dirname@0.2.3 /tmp/report.txt
-moonx cli/dirname@0.2.3 first/file second/file
+moonx cli/dirname@0.2.4 /tmp/report.txt
+moonx cli/dirname@0.2.4 first/file second/file
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

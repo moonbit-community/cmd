@@ -608,8 +608,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/sort@0.2.6 metadata contract",
-      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\n-n compares decimal prefixes exactly; -g uses general floating-point order.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\n",
+      "source_version": "workspace cli/sort@0.2.7 metadata contract",
+      "expected_stdout_text": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\n-n compares decimal prefixes exactly; -g uses general floating-point order.\nNonzero percentage buffer sizes require an unavailable physical-memory query.\nOption values and operands after -- remain literal during alias normalization.\n",
       "expected_stderr_text": ""
     },
     {
@@ -627,8 +627,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/sort@0.2.6 metadata contract",
-      "expected_stdout_text": "sort 0.2.6\n",
+      "source_version": "workspace cli/sort@0.2.7 metadata contract",
+      "expected_stdout_text": "sort 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -3077,6 +3077,118 @@
       "expected_stderr_text": "",
       "stdin_text": "",
       "expected_stdout_text": ""
+    },
+    {
+      "id": "f17-sort-reject-check-quiet-bare",
+      "command": "sort",
+      "args": [
+        "--check-quiet",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: unknown option: '--check-quiet'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-sort-reject-check-quiet-value",
+      "command": "sort",
+      "args": [
+        "--check-quiet=always",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sort: unknown option: '--check-quiet=always'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-sort-output-value-internal-looking",
+      "command": "sort",
+      "args": [
+        "-o",
+        "--check-quiet"
+      ],
+      "stdin_text": "b\na\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "--check-quiet",
+          "content_text": "a\nb\n"
+        }
+      ]
     }
   ]
 }

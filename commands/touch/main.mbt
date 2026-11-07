@@ -2,7 +2,7 @@
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("touch 0.2.3\n")
+    @stdio.stdout.write("touch 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
@@ -18,13 +18,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("touch: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\n      --help      display this help and exit\n      --version   display version and exit\nExisting files are unsupported, including with -c. This command creates missing files only; it cannot update timestamps.\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\n",
+      "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\n      --help      display this help and exit\n      --version   display version and exit\nExisting files are unsupported, including with -c. This command creates missing files only; it cannot update timestamps.\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\nRejection aliases --access-time (-a), --modification-time (-m) and --stamp (-t)\nrequest unavailable timestamp-setting capabilities and fail before mutation.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }

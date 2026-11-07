@@ -359,7 +359,7 @@ async fn count_source(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("wc 0.2.5\n")
+    @stdio.stdout.write("wc 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
@@ -382,13 +382,13 @@ async fn main {
         return
       }
       @stdio.stderr.write("wc: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nCounting uses the fixed C byte profile; -m counts every byte.\n",
+      "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nCounting uses the fixed C byte profile; -m counts every byte.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }

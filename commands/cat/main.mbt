@@ -17,7 +17,12 @@ fn help_message() -> String {
     #|  -A, --show-all           Equivalent to -vET.
     #|  -e                       Equivalent to -vE.
     #|  -t                       Equivalent to -vT.
-    #|  -u, --unbuffered         Accepted for GNU compatibility.
+    #|  -u, --unbuffered         Accepted no-op (-u is GNU; long spelling is a project alias).
+    #|
+    #|Project aliases: --show-ends-nonprinting = -e; --show-tabs-nonprinting = -t.
+    #|--unbuffered is a project alias of the GNU -u no-op; -h is a project help alias.
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
   message
 }
 
@@ -195,7 +200,7 @@ async fn copy_plain(reader : &@io.Reader, buffer : FixedArray[Byte]) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cat 0.2.4\n")
+    @stdio.stdout.write("cat 0.2.5\n")
     return
   }
   let args = @env.args()[1:]
@@ -214,7 +219,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("cat: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

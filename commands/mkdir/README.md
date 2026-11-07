@@ -1,9 +1,12 @@
 # mkdir
 
+Development candidate: `cli/mkdir@0.2.6`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Create directories for MoonX.
 
 ```sh
-moonx cli/mkdir@0.2.5 [-p] [-m MODE] [-v] DIRECTORY...
+moonx cli/mkdir@0.2.6 [-p] [-m MODE] [-v] DIRECTORY...
 ```
 
 ## Supported scope
@@ -25,6 +28,12 @@ to the inherited directory group.
 | `-v, --verbose` | Show created directories. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Symbolic modes whose result depends on the current umask are rejected before creation.
@@ -33,8 +42,8 @@ to the inherited directory group.
 ## Examples
 
 ```sh
-moonx cli/mkdir@0.2.5 -p output/reports
-moonx cli/mkdir@0.2.5 -m 700 private-dir
+moonx cli/mkdir@0.2.6 -p output/reports
+moonx cli/mkdir@0.2.6 -m 700 private-dir
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

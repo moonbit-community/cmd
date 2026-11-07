@@ -113,8 +113,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/unexpand@0.1.4 metadata contract",
-      "expected_stdout_text": "Usage: unexpand [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nConvert spaces in each FILE to tabs, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n  -a, --all          convert all blanks, not just leading blanks\n      --first-only   convert only leading blank sequences\n  -t, --tabs=LIST    use ascending stops; /N absolute, +N relative (implies --all)\n",
+      "source_version": "workspace cli/unexpand@0.1.5 metadata contract",
+      "expected_stdout_text": "Usage: unexpand [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nConvert spaces in each FILE to tabs, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n  -a, --all          convert all blanks, not just leading blanks\n      --first-only   convert only leading blank sequences\n  -t, --tabs=LIST    use ascending stops; /N absolute, +N relative (implies --all)\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -132,8 +132,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/unexpand@0.1.4 metadata contract",
-      "expected_stdout_text": "unexpand 0.1.4\n",
+      "source_version": "workspace cli/unexpand@0.1.5 metadata contract",
+      "expected_stdout_text": "unexpand 0.1.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -719,6 +719,57 @@
       "comparison": "contract",
       "oracle": true,
       "coverage": []
+    },
+    {
+      "id": "f17-unexpand-unknown-option",
+      "command": "unexpand",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "unexpand: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-unexpand-missing-option-value",
+      "command": "unexpand",
+      "args": [
+        "--tabs"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "unexpand: option requires a value: 'tabs'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
     }
   ]
 }

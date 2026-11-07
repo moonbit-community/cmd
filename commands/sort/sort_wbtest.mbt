@@ -313,9 +313,11 @@ async test "sort temporary run paths rotate between explicitly selected parents"
     @fs.mkdir(parent)
   }
   let spool : Spool = { directories: parents, roots: [None, None], next: 0, }
-  defer (for child in spool.roots {
-    if child is Some(child) {
-      child.close()
+  defer @async.protect_from_cancel(() => {
+    for child in spool.roots {
+      if child is Some(child) {
+        child.close()
+      }
     }
   })
   let first = spool.path()

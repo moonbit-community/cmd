@@ -86,13 +86,13 @@ fn decode_escapes(text : String) -> (Bytes, Bool) {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("echo 0.2.3\n")
+    @stdio.stdout.write("echo 0.2.4\n")
     return
   }
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
     @stdio.stdout.write(
-      "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\nPOSIXLY_CORRECT enables escapes; only an initial -n permits option parsing.\nStandalone --help/--version retain the project metadata contract in that environment.\n",
     )
     return
   }
@@ -103,7 +103,9 @@ async fn main {
   let mut newline = true
   let mut escapes = false
   let mut index = 0
-  while index < args.length() {
+  let posix = @env.get_env_var("POSIXLY_CORRECT") is Some(_)
+  let allow_options = !posix || args.get(0) == Some("-n")
+  while allow_options && index < args.length() {
     let arg = args[index]
     if !arg.has_prefix("-") || arg == "-" || arg == "--" {
       break
@@ -127,7 +129,7 @@ async fn main {
     }
     index += 1
   }
-  if escapes {
+  if escapes || posix {
     let mut stopped = false
     for operand_index in index..<args.length() {
       if operand_index > index {

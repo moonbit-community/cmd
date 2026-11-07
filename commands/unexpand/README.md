@@ -1,9 +1,12 @@
 # unexpand
 
+Development candidate: `cli/unexpand@0.1.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Convert spaces to tabs for MoonX.
 
 ```sh
-moonx cli/unexpand@0.1.4 [OPTION]... [FILE]...
+moonx cli/unexpand@0.1.5 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -19,6 +22,12 @@ Read files or stdin and replace eligible blanks with tabs. Default tab width is 
 | `--first-only` | Convert leading blanks only, overriding -a and -t. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Uses byte columns, not locale-dependent Unicode display widths.
@@ -26,8 +35,8 @@ Read files or stdin and replace eligible blanks with tabs. Default tab width is 
 ## Examples
 
 ```sh
-moonx cli/unexpand@0.1.4 -t 4 notes.txt
-moonx cli/unexpand@0.1.4 -a notes.txt
+moonx cli/unexpand@0.1.5 -t 4 notes.txt
+moonx cli/unexpand@0.1.5 -a notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

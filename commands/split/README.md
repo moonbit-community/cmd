@@ -1,9 +1,12 @@
 # split
 
+Development candidate: `cli/split@0.1.6`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Split input into pieces for MoonX.
 
 ```sh
-moonx cli/split@0.1.5 [OPTION]... [FILE [PREFIX]]
+moonx cli/split@0.1.6 [OPTION]... [FILE [PREFIX]]
 ```
 
 ## Supported scope
@@ -26,6 +29,12 @@ Split files or stdin by records, bytes, bounded line bytes or N-way partitions. 
 | `--filter=COMMAND` | run pure shell source per piece with FILE set |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Existing named outputs are refused; failures retain completed pieces.
@@ -35,8 +44,8 @@ Split files or stdin by records, bytes, bounded line bytes or N-way partitions. 
 ## Examples
 
 ```sh
-moonx cli/split@0.1.5 -l 100 input.txt part-
-moonx cli/split@0.1.5 -b 64K -d input.bin chunk-
+moonx cli/split@0.1.6 -l 100 input.txt part-
+moonx cli/split@0.1.6 -b 64K -d input.bin chunk-
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

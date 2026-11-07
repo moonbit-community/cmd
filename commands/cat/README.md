@@ -1,9 +1,12 @@
 # cat
 
+Development candidate: `cli/cat@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Concatenate files and stdin for MoonX.
 
 ```sh
-moonx cli/cat@0.2.4 [OPTION]... [FILE]...
+moonx cli/cat@0.2.5 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -25,6 +28,19 @@ Copy inputs in order to stdout. With no file, or `-`, read stdin. Formatting con
 | `-u, --unbuffered` | Accepted without changing behavior. |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project aliases: --show-ends-nonprinting = -e; --show-tabs-nonprinting = -t.
+--unbuffered is a project alias of the GNU -u no-op; -h is a project help alias.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Visible-byte formatting uses byte rules, not Unicode character rendering.
@@ -32,8 +48,8 @@ Copy inputs in order to stdout. With no file, or `-`, read stdin. Formatting con
 ## Examples
 
 ```sh
-moonx cli/cat@0.2.4 first.txt second.txt
-moonx cli/cat@0.2.4 -n notes.txt
+moonx cli/cat@0.2.5 first.txt second.txt
+moonx cli/cat@0.2.5 -n notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

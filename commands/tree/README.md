@@ -1,5 +1,8 @@
 # tree
 
+Development candidate: `cli/tree@0.1.6`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Display directory trees for MoonX.
 
 ```sh
@@ -31,6 +34,14 @@ tree's link display, not full target-display or dereferencing compatibility.
 | `-s / -h / --si / --du` | Sizes / binary human sizes / decimal sizes / summed sizes. |
 | `-C / -n` | Force color / disable unforced color. |
 | `--help` / `--version` | Show help / package version. |
+
+## Extension and diagnostic contract
+
+Project aliases: --all = -a; --dirs-only = -d; --full-path = -f; --level = -L.
+--json = -J; --html = -H; --title = -T; --pattern = -P; --ignore = -I.
+--size = -s; --human-readable = -h; --color = -C; --no-color = -n.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
 
 ## Limitations
 

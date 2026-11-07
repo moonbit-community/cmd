@@ -17,7 +17,7 @@
         "help"
       ],
       "source_version": "workspace cli/tree@0.1.6 metadata contract",
-      "expected_stdout_text": "Usage: tree [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]\n      --help      display this help and exit\n      --version   display version and exit\n  -J emits JSON; -H BASE emits escaped HTML; -T TITLE selects its title.\n  -P includes files; -I excludes names/subtrees; --ignore-case changes matching.\n  --matchdirs includes matching directory contents; --prune removes empty branches.\n  --filelimit N limits entries before traversal; --noreport omits totals.\n  -s, -h, --si and --du use public size metadata; unsupported host metadata reports an error.\n  -C forces explicit type/extension colors; -n disables unforced color.\n  Symlinks are named leaves; -d selects real child directories, retaining explicit operands.\n  Symlink target text/sizes and mode-based colors require unavailable public metadata APIs.\n",
+      "expected_stdout_text": "Usage: tree [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]\n      --help      display this help and exit\n      --version   display version and exit\n  -J emits JSON; -H BASE emits escaped HTML; -T TITLE selects its title.\n  -P includes files; -I excludes names/subtrees; --ignore-case changes matching.\n  --matchdirs includes matching directory contents; --prune removes empty branches.\n  --filelimit N limits entries before traversal; --noreport omits totals.\n  -s, -h, --si and --du use public size metadata; unsupported host metadata reports an error.\n  -C forces explicit type/extension colors; -n disables unforced color.\n  Symlinks are named leaves; -d selects real child directories, retaining explicit operands.\n  Symlink target text/sizes and mode-based colors require unavailable public metadata APIs.\nProject aliases: --all = -a; --dirs-only = -d; --full-path = -f; --level = -L.\n--json = -J; --html = -H; --title = -T; --pattern = -P; --ignore = -I.\n--size = -s; --human-readable = -h; --color = -C; --no-color = -n.\n",
       "expected_stderr_text": "",
       "aliases": [
         "p0-tree-help"
@@ -8030,6 +8030,934 @@
           "unchanged": true
         }
       ]
+    },
+    {
+      "id": "f17-tree-alias-all",
+      "command": "tree",
+      "args": [
+        "--all",
+        "."
+      ],
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "sub/deep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep/inner",
+          "kind": "directory"
+        },
+        {
+          "path": "block",
+          "kind": "directory"
+        },
+        {
+          "path": "a.txt",
+          "content_text": "aaa"
+        },
+        {
+          "path": "b.log",
+          "content_text": "bb"
+        },
+        {
+          "path": ".hidden",
+          "content_text": ""
+        },
+        {
+          "path": "sub/z.TXT",
+          "content_text": "zzzz"
+        },
+        {
+          "path": "sub/deep/a.txt",
+          "content_text": ""
+        },
+        {
+          "path": "keep/no.log",
+          "content_text": ""
+        },
+        {
+          "path": "keep/inner/deep.log",
+          "content_text": ""
+        },
+        {
+          "path": "block/c.txt",
+          "content_text": ""
+        },
+        {
+          "path": "close]",
+          "content_text": ""
+        },
+        {
+          "path": "plain",
+          "content_text": ""
+        },
+        {
+          "path": "kilo",
+          "content_text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e0a7c2d2d202e68696464656e0a7c2d2d20612e7478740a7c2d2d20622e6c6f670a7c2d2d20626c6f636b0a7c202020602d2d20632e7478740a7c2d2d20636c6f73655d0a7c2d2d20656d7074790a7c2d2d206b6565700a7c2020207c2d2d20696e6e65720a7c2020207c202020602d2d20646565702e6c6f670a7c202020602d2d206e6f2e6c6f670a7c2d2d206b696c6f0a7c2d2d20706c61696e0a602d2d207375620a202020207c2d2d20646565700a202020207c202020602d2d20612e7478740a20202020602d2d207a2e5458540a0a37206469726563746f726965732c2031312066696c65730a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-more-0; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "all"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-dirs-only",
+      "command": "tree",
+      "args": [
+        "--dirs-only",
+        "."
+      ],
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "sub/deep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep/inner",
+          "kind": "directory"
+        },
+        {
+          "path": "block",
+          "kind": "directory"
+        },
+        {
+          "path": "a.txt",
+          "content_text": "aaa"
+        },
+        {
+          "path": "b.log",
+          "content_text": "bb"
+        },
+        {
+          "path": ".hidden",
+          "content_text": ""
+        },
+        {
+          "path": "sub/z.TXT",
+          "content_text": "zzzz"
+        },
+        {
+          "path": "sub/deep/a.txt",
+          "content_text": ""
+        },
+        {
+          "path": "keep/no.log",
+          "content_text": ""
+        },
+        {
+          "path": "keep/inner/deep.log",
+          "content_text": ""
+        },
+        {
+          "path": "block/c.txt",
+          "content_text": ""
+        },
+        {
+          "path": "close]",
+          "content_text": ""
+        },
+        {
+          "path": "plain",
+          "content_text": ""
+        },
+        {
+          "path": "kilo",
+          "content_text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e0a7c2d2d20626c6f636b0a7c2d2d20656d7074790a7c2d2d206b6565700a7c202020602d2d20696e6e65720a602d2d207375620a20202020602d2d20646565700a0a37206469726563746f726965730a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-more-1; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "dirs-only"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-full-path",
+      "command": "tree",
+      "args": [
+        "--full-path",
+        "."
+      ],
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "sub/deep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep/inner",
+          "kind": "directory"
+        },
+        {
+          "path": "block",
+          "kind": "directory"
+        },
+        {
+          "path": "a.txt",
+          "content_text": "aaa"
+        },
+        {
+          "path": "b.log",
+          "content_text": "bb"
+        },
+        {
+          "path": ".hidden",
+          "content_text": ""
+        },
+        {
+          "path": "sub/z.TXT",
+          "content_text": "zzzz"
+        },
+        {
+          "path": "sub/deep/a.txt",
+          "content_text": ""
+        },
+        {
+          "path": "keep/no.log",
+          "content_text": ""
+        },
+        {
+          "path": "keep/inner/deep.log",
+          "content_text": ""
+        },
+        {
+          "path": "block/c.txt",
+          "content_text": ""
+        },
+        {
+          "path": "close]",
+          "content_text": ""
+        },
+        {
+          "path": "plain",
+          "content_text": ""
+        },
+        {
+          "path": "kilo",
+          "content_text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e0a7c2d2d202e2f612e7478740a7c2d2d202e2f622e6c6f670a7c2d2d202e2f626c6f636b0a7c202020602d2d202e2f626c6f636b2f632e7478740a7c2d2d202e2f636c6f73655d0a7c2d2d202e2f656d7074790a7c2d2d202e2f6b6565700a7c2020207c2d2d202e2f6b6565702f696e6e65720a7c2020207c202020602d2d202e2f6b6565702f696e6e65722f646565702e6c6f670a7c202020602d2d202e2f6b6565702f6e6f2e6c6f670a7c2d2d202e2f6b696c6f0a7c2d2d202e2f706c61696e0a602d2d202e2f7375620a202020207c2d2d202e2f7375622f646565700a202020207c202020602d2d202e2f7375622f646565702f612e7478740a20202020602d2d202e2f7375622f7a2e5458540a0a37206469726563746f726965732c2031302066696c65730a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-full-path; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "full-path"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-level",
+      "command": "tree",
+      "args": [
+        "--level=1",
+        "--prune",
+        "-P",
+        "*.txt",
+        "."
+      ],
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "sub/deep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep/inner",
+          "kind": "directory"
+        },
+        {
+          "path": "block",
+          "kind": "directory"
+        },
+        {
+          "path": "a.txt",
+          "content_text": "aaa"
+        },
+        {
+          "path": "b.log",
+          "content_text": "bb"
+        },
+        {
+          "path": ".hidden",
+          "content_text": ""
+        },
+        {
+          "path": "sub/z.TXT",
+          "content_text": "zzzz"
+        },
+        {
+          "path": "sub/deep/a.txt",
+          "content_text": ""
+        },
+        {
+          "path": "keep/no.log",
+          "content_text": ""
+        },
+        {
+          "path": "keep/inner/deep.log",
+          "content_text": ""
+        },
+        {
+          "path": "block/c.txt",
+          "content_text": ""
+        },
+        {
+          "path": "close]",
+          "content_text": ""
+        },
+        {
+          "path": "plain",
+          "content_text": ""
+        },
+        {
+          "path": "kilo",
+          "content_text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e0a602d2d20612e7478740a0a31206469726563746f72792c20312066696c650a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-more-11; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "level"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-json",
+      "command": "tree",
+      "args": [
+        "--json",
+        "."
+      ],
+      "files": [
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "a&b",
+          "content_text": "abc"
+        },
+        {
+          "path": "sub/z.txt",
+          "content_text": "abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "5b0a20207b2274797065223a226469726563746f7279222c226e616d65223a222e222c22636f6e74656e7473223a5b0a202020207b2274797065223a2266696c65222c226e616d65223a22612662227d2c0a202020207b2274797065223a226469726563746f7279222c226e616d65223a22656d707479227d2c0a202020207b2274797065223a226469726563746f7279222c226e616d65223a22737562222c22636f6e74656e7473223a5b0a2020202020207b2274797065223a2266696c65222c226e616d65223a227a2e747874227d0a202020205d7d0a20205d7d0a2c0a20207b2274797065223a227265706f7274222c226469726563746f72696573223a332c2266696c6573223a327d0a5d0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-basic-2; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "json"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-html",
+      "command": "tree",
+      "args": [
+        "--html",
+        "https://example.invalid/root",
+        "."
+      ],
+      "files": [
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "a&b",
+          "content_text": "abc"
+        },
+        {
+          "path": "sub/z.txt",
+          "content_text": "abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "NO_COLOR": "",
+        "LS_COLORS": ""
+      },
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "oracle": false,
+      "comparison": "contract",
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-html-default; project spellings have no upstream-invocation parity claim.",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e36223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e363c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "normalizations": [],
+      "coverage": [
+        "html"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-title",
+      "command": "tree",
+      "args": [
+        "-H",
+        "https://example.invalid/?v=\"&",
+        "--title",
+        "<script>A&\"title</script>",
+        "."
+      ],
+      "files": [
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "a&b",
+          "content_text": "abc"
+        },
+        {
+          "path": "sub/z.txt",
+          "content_text": "abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "NO_COLOR": "",
+        "LS_COLORS": ""
+      },
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "oracle": false,
+      "comparison": "contract",
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-html-safe-title-base; project spellings have no upstream-invocation parity claim.",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e36223e0a203c7469746c653e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e363c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "normalizations": [],
+      "coverage": [
+        "title"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-pattern",
+      "command": "tree",
+      "args": [
+        "--pattern",
+        "*.txt",
+        "."
+      ],
+      "files": [
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "a&b",
+          "content_text": "abc"
+        },
+        {
+          "path": "sub/z.txt",
+          "content_text": "abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e0a7c2d2d20656d7074790a602d2d207375620a20202020602d2d207a2e7478740a0a33206469726563746f726965732c20312066696c650a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-basic-7; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "pattern"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-ignore",
+      "command": "tree",
+      "args": [
+        "--ignore",
+        "sub",
+        "."
+      ],
+      "files": [
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "a&b",
+          "content_text": "abc"
+        },
+        {
+          "path": "sub/z.txt",
+          "content_text": "abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e0a7c2d2d206126620a602d2d20656d7074790a0a32206469726563746f726965732c20312066696c650a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-basic-10; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "ignore"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-size",
+      "command": "tree",
+      "args": [
+        "--size",
+        "a.txt"
+      ],
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "sub/deep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep/inner",
+          "kind": "directory"
+        },
+        {
+          "path": "block",
+          "kind": "directory"
+        },
+        {
+          "path": "a.txt",
+          "content_text": "aaa"
+        },
+        {
+          "path": "b.log",
+          "content_text": "bb"
+        },
+        {
+          "path": ".hidden",
+          "content_text": ""
+        },
+        {
+          "path": "sub/z.TXT",
+          "content_text": "zzzz"
+        },
+        {
+          "path": "sub/deep/a.txt",
+          "content_text": ""
+        },
+        {
+          "path": "keep/no.log",
+          "content_text": ""
+        },
+        {
+          "path": "keep/inner/deep.log",
+          "content_text": ""
+        },
+        {
+          "path": "block/c.txt",
+          "content_text": ""
+        },
+        {
+          "path": "close]",
+          "content_text": ""
+        },
+        {
+          "path": "plain",
+          "content_text": ""
+        },
+        {
+          "path": "kilo",
+          "content_text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "5b20202020202020202020335d2020612e74787420205b6572726f72206f70656e696e67206469725d0a0a30206469726563746f726965732c20312066696c650a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-more-23; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "size"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-human-readable",
+      "command": "tree",
+      "args": [
+        "--human-readable",
+        "a.txt"
+      ],
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "sub/deep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep",
+          "kind": "directory"
+        },
+        {
+          "path": "keep/inner",
+          "kind": "directory"
+        },
+        {
+          "path": "block",
+          "kind": "directory"
+        },
+        {
+          "path": "a.txt",
+          "content_text": "aaa"
+        },
+        {
+          "path": "b.log",
+          "content_text": "bb"
+        },
+        {
+          "path": ".hidden",
+          "content_text": ""
+        },
+        {
+          "path": "sub/z.TXT",
+          "content_text": "zzzz"
+        },
+        {
+          "path": "sub/deep/a.txt",
+          "content_text": ""
+        },
+        {
+          "path": "keep/no.log",
+          "content_text": ""
+        },
+        {
+          "path": "keep/inner/deep.log",
+          "content_text": ""
+        },
+        {
+          "path": "block/c.txt",
+          "content_text": ""
+        },
+        {
+          "path": "close]",
+          "content_text": ""
+        },
+        {
+          "path": "plain",
+          "content_text": ""
+        },
+        {
+          "path": "kilo",
+          "content_text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "5b202020335d2020612e74787420205b6572726f72206f70656e696e67206469725d0a0a30206469726563746f726965732c20312066696c650a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-more-24; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "human-readable"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-color",
+      "command": "tree",
+      "args": [
+        "--color",
+        "."
+      ],
+      "files": [
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "a&b",
+          "content_text": "abc"
+        },
+        {
+          "path": "sub/z.txt",
+          "content_text": "abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "1b5b33346d2e1b5b306d0a7c2d2d201b5b33326d6126621b5b306d0a7c2d2d201b5b33346d656d7074791b5b306d0a602d2d201b5b33346d7375621b5b306d0a20202020602d2d201b5b33316d7a2e7478741b5b306d0a0a33206469726563746f726965732c20322066696c65730a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-basic-15; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "color"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-tree-alias-no-color",
+      "command": "tree",
+      "args": [
+        "--no-color",
+        "."
+      ],
+      "files": [
+        {
+          "path": "sub",
+          "kind": "directory"
+        },
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "a&b",
+          "content_text": "abc"
+        },
+        {
+          "path": "sub/z.txt",
+          "content_text": "abcdef"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "TERM": "xterm",
+        "TREE_COLORS": "di=34:fi=32:*.txt=31",
+        "LS_COLORS": "",
+        "NO_COLOR": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "2e0a7c2d2d206126620a7c2d2d20656d7074790a602d2d207375620a20202020602d2d207a2e7478740a0a33206469726563746f726965732c20322066696c65730a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-basic-14; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "no-color"
+      ],
+      "aliases": []
     }
   ]
 }

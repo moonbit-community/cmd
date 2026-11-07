@@ -73,14 +73,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "strings 0.1.4\n",
+      "expected_stdout_text": "strings 0.1.5\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/strings@0.1.4 metadata contract",
+      "source_version": "workspace cli/strings@0.1.5 metadata contract",
       "aliases": [
         "release-metadata-strings-version"
       ]
@@ -500,8 +500,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/strings@0.1.4 metadata contract",
-      "expected_stdout_text": "Usage: strings [OPTION]... [FILE]...\nPrint the sequences of printable characters in each FILE.\n  -a, --all             scan the whole file\n  -f, --print-file-name print the file name before each string\n  -n, --bytes=N         print sequences at least N bytes long\n  -o                    display offsets in octal\n  -t, --radix=RADIX     display offsets in d, o, or x radix\n  -e, --encoding=ENC    s: 7-bit bytes (default); S: 8-bit bytes\n                        wide encodings b/l/B/L are unsupported\n  -s, --output-separator=STR  separate accepted strings with STR\n      --help            display this help and exit\n      --version         display version and exit\n",
+      "source_version": "workspace cli/strings@0.1.5 metadata contract",
+      "expected_stdout_text": "Usage: strings [OPTION]... [FILE]...\nPrint the sequences of printable characters in each FILE.\n  -a, --all             scan the whole file\n  -f, --print-file-name print the file name before each string\n  -n, --bytes=N         print sequences at least N bytes long\n  -o                    display offsets in octal\n  -t, --radix=RADIX     display offsets in d, o, or x radix\n  -e, --encoding=ENC    s: 7-bit bytes (default); S: 8-bit bytes\n                        wide encodings b/l/B/L are unsupported\n  -s, --output-separator=STR  separate accepted strings with STR\n      --help            display this help and exit\n      --version         display version and exit\n\nProject alias: --octal selects -o; it is not a binutils long option.\n\nUnknown encoding selectors exit 1; recognized unsupported wide encodings explicitly exit 2.\n",
       "expected_stderr_text": ""
     },
     {
@@ -620,6 +620,40 @@
         "encoding",
         "output-separator"
       ]
+    },
+    {
+      "id": "f17-strings-invalid-encoding",
+      "command": "strings",
+      "args": [
+        "--encoding=z"
+      ],
+      "stdin_text": "printable",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "strings: invalid encoding\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation."
+    },
+    {
+      "id": "f17-strings-invalid-radix",
+      "command": "strings",
+      "args": [
+        "--radix=q"
+      ],
+      "stdin_text": "printable",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "strings: invalid radix\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation."
     }
   ]
 }

@@ -11,7 +11,7 @@ fn sextet(c : Char) -> Int32 raise CliError {
     '0'..<='9' => c.to_int() - 0x30 + 52
     '+' => 62
     '/' => 63
-    _ => raise CliError("base64: invalid input character: '\{c}'")
+    _ => raise CliError("base64: invalid input")
   }
 }
 
@@ -32,74 +32,95 @@ async fn encode_stream(
 fn decode_quad(
   quad : ArrayView[Byte],
   out : Array[Byte],
-) -> Bool raise CliError {
+) -> Unit raise CliError {
+  guard quad.length() >= 2 else { raise CliError("base64: invalid input") }
   let c0 = quad[0].to_int().unsafe_to_char()
   let c1 = quad[1].to_int().unsafe_to_char()
-  let c2 = quad[2].to_int().unsafe_to_char()
-  let c3 = quad[3].to_int().unsafe_to_char()
-  if c0 == '=' || c1 == '=' {
-    raise CliError("base64: invalid padding")
-  }
-  if c2 == '=' && c3 != '=' {
-    raise CliError("base64: invalid padding")
-  }
   let v0 = sextet(c0)
   let v1 = sextet(c1)
-  let v2 = if c2 == '=' { 0 } else { sextet(c2) }
-  let v3 = if c3 == '=' { 0 } else { sextet(c3) }
-  if c2 == '=' && (v1 & 0xF) != 0 {
-    raise CliError("base64: invalid input")
+  // Commit each determined byte before validating later symbols or padding.
+  out.push(((v0 << 2) | (v1 >> 4)).to_byte())
+  guard quad.length() >= 3 else { raise CliError("base64: invalid input") }
+  let c2 = quad[2].to_int().unsafe_to_char()
+  if c2 == '=' {
+    guard quad.length() == 4 && quad[3] == b'=' && (v1 & 15) == 0 else {
+      raise CliError("base64: invalid input")
+    }
+    return
   }
-  if c3 == '=' && (v2 & 0x3) != 0 {
-    raise CliError("base64: invalid input")
+  let v2 = sextet(c2)
+  out.push(((v1 << 4) | (v2 >> 2)).to_byte())
+  guard quad.length() == 4 else { raise CliError("base64: invalid input") }
+  let c3 = quad[3].to_int().unsafe_to_char()
+  if c3 == '=' {
+    guard (v2 & 3) == 0 else { raise CliError("base64: invalid input") }
+  } else {
+    out.push(((v2 << 6) | sextet(c3)).to_byte())
   }
-  let n = (v0 << 18) | (v1 << 12) | (v2 << 6) | v3
-  out.push(((n >> 16) & 0xFF).to_byte())
-  if c2 != '=' {
-    out.push(((n >> 8) & 0xFF).to_byte())
-  }
-  if c3 != '=' {
-    out.push((n & 0xFF).to_byte())
-  }
-  c2 == '=' || c3 == '='
 }
 
 ///|
-async fn decode_stream(reader : &@io.Reader, ignore_garbage : Bool) -> Unit {
+async fn decode_stream(
+  reader : &@io.Reader,
+  ignore_garbage : Bool,
+  writer~ : &@io.Writer = @stdio.stdout,
+) -> Unit {
   let quad : Array[Byte] = []
-  let mut finished = false
   while @stream.read_chunk(reader) is Some(chunk) {
     let out : Array[Byte] = []
-    for byte in chunk {
-      // GNU base64 always permits embedded newlines. Other whitespace is
-      // garbage and is accepted only when -i was explicitly requested.
-      if byte == b'\n' {
-        continue
+    try {
+      for byte in chunk {
+        // GNU base64 always permits embedded newlines. Other whitespace is
+        // garbage and is accepted only when -i was explicitly requested.
+        if byte == b'\n' {
+          continue
+        }
+        if ignore_garbage &&
+          !((byte >= b'A' && byte <= b'Z') ||
+          (byte >= b'a' && byte <= b'z') ||
+          (byte >= b'0' && byte <= b'9') ||
+          byte == b'+' ||
+          byte == b'/' ||
+          byte == b'=') {
+          continue
+        }
+        quad.push(byte)
+        if quad.length() == 4 {
+          decode_quad(quad, out)
+          quad.clear()
+        }
       }
-      if ignore_garbage &&
-        !((byte >= b'A' && byte <= b'Z') ||
-        (byte >= b'a' && byte <= b'z') ||
-        (byte >= b'0' && byte <= b'9') ||
-        byte == b'+' ||
-        byte == b'/' ||
-        byte == b'=') {
-        continue
-      }
-      if finished {
-        raise CliError("base64: invalid padding")
-      }
-      quad.push(byte)
-      if quad.length() == 4 {
-        finished = decode_quad(quad, out)
-        quad.clear()
+    } catch {
+      CliError(message) => {
+        if !out.is_empty() {
+          writer.write(Bytes::from_array(out))
+        }
+        raise CliError(message)
       }
     }
     if !out.is_empty() {
-      @stdio.stdout.write(Bytes::from_array(out))
+      writer.write(Bytes::from_array(out))
     }
   }
   if !quad.is_empty() {
-    raise CliError("base64: invalid input length")
+    // GNU 9.11 permits absent final padding, but not incomplete explicit padding.
+    if !quad.contains(b'=') && (quad.length() == 2 || quad.length() == 3) {
+      while quad.length() < 4 {
+        quad.push(b'=')
+      }
+    }
+    let out : Array[Byte] = []
+    decode_quad(quad, out) catch {
+      CliError(message) => {
+        if !out.is_empty() {
+          writer.write(Bytes::from_array(out))
+        }
+        raise CliError(message)
+      }
+    }
+    if !out.is_empty() {
+      writer.write(Bytes::from_array(out))
+    }
   }
 }
 
@@ -107,7 +128,7 @@ async fn decode_stream(reader : &@io.Reader, ignore_garbage : Bool) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("base64 0.2.5\n")
+    @stdio.stdout.write("base64 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
@@ -120,19 +141,19 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("base64: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nProject alias: -D selects -d/--decode; -D is not a GNU coreutils option.\nDecoding retains determined bytes before invalid input, checks canonical tail bits,\nand accepts missing final padding or concatenated padded groups (GNU 9.11).\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
   if parsed.operands.length() > 1 {
     @stdio.stderr.write("base64: extra operand: '\{parsed.operands[1]}'\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let decode_mode = parsed.contains("decode")
@@ -141,13 +162,13 @@ async fn main {
   let wrap = @string.parse_int(wrap_text) catch {
     _ => {
       @stdio.stderr.write("base64: invalid wrap size: '\{wrap_text}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if wrap < 0 {
     @stdio.stderr.write("base64: invalid wrap size: '\{wrap_text}'\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let inputs = parsed.operands

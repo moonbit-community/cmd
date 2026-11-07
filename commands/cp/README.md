@@ -1,9 +1,12 @@
 # cp
 
+Development candidate: `cli/cp@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Copy files and directories for MoonX.
 
 ```sh
-moonx cli/cp@0.2.4 [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
+moonx cli/cp@0.2.5 [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
 ```
 
 ## Supported scope
@@ -27,6 +30,19 @@ creation remains exclusive. Reusing an existing empty directory reports no copy.
 | `-v, --verbose` | Show copied paths. |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project alias: --dereference-command-line selects -H; GNU cp exposes only the short spelling.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+Option values and operands after -- remain literal during alias normalization.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Default mode-preserving copies, archive/preserve modes and existing-file replacement are unsupported.
@@ -36,8 +52,8 @@ creation remains exclusive. Reusing an existing empty directory reports no copy.
 ## Examples
 
 ```sh
-moonx cli/cp@0.2.4 --no-preserve=mode source.txt new.txt
-moonx cli/cp@0.2.4 --no-preserve=mode -R source-dir new-dir
+moonx cli/cp@0.2.5 --no-preserve=mode source.txt new.txt
+moonx cli/cp@0.2.5 --no-preserve=mode -R source-dir new-dir
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

@@ -366,26 +366,26 @@ async fn process_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("uniq 0.2.5\n")
+    @stdio.stdout.write("uniq 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = parse_args(args) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("uniq: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: uniq [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: uniq [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
   if parsed.operands.length() > 1 {
     @stdio.stderr.write("uniq: extra operand: '\{parsed.operands[1]}'\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let mode = output_mode(parsed) catch {
@@ -438,7 +438,7 @@ async fn main {
   } catch {
     CliError(message) => {
       @stdio.stderr.write(message + "\n")
-      @sys.exit(if mode is AllRepeated(_) { 1 } else { 2 })
+      @sys.exit(1)
       return
     }
   }

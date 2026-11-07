@@ -196,6 +196,8 @@ fn help_message() -> String {
     #|Existing output paths and locale-specific matching are unsupported.
     #|Windows output names ending in spaces or dots are rejected before input.
     #|Input is snapshotted with a disk index; temporary write access is required.
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
   message
 }
 
@@ -203,7 +205,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("csplit 0.2.4\n")
+    @stdio.stdout.write("csplit 0.2.5\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -220,7 +222,7 @@ async fn main {
   ]) catch {
     @cli.CliError(message~, option~, ..) => {
       @stdio.stderr.write("csplit: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -229,7 +231,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("csplit 0.2.4\n")
+    @stdio.stdout.write("csplit 0.2.5\n")
     return
   }
   let (controls, width, suffix) = try {
@@ -250,12 +252,12 @@ async fn main {
     }
     @bytere.PatternError(message) => {
       @stdio.stderr.write("csplit: \{message}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
     err => {
       @stdio.stderr.write("csplit: \{err}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

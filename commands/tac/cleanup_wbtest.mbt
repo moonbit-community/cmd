@@ -52,6 +52,9 @@ async test "cancelled spool operations still clean up once" {
         @async.sleep(10000)
       },
       () => {
+        // Exercise a genuinely cancellable cleanup callback as exposed by the
+        // published dependency, rather than only the workspace nocancel close.
+        @async.sleep(1)
         directory.close()
         events.push("cleanup")
       },

@@ -343,17 +343,38 @@ fn parse_arguments(
 ) -> @cli.ParsedArgs raise @cli.CliError {
   let normalized : Array[String] = []
   let mut options = true
+  let mut value_next = false
   for arg in args {
+    if value_next {
+      normalized.push(arg)
+      value_next = false
+      continue
+    }
     if arg == "--" {
       options = false
     }
     normalized.push(
       if options && arg == "--color" {
         "--color=always"
+      } else if options && arg == "--quote-name" {
+        "--quote"
       } else {
         arg
       },
     )
+    if options {
+      value_next = ["--width", "--tabsize", "--quoting-style", "--time"].contains(
+        arg,
+      )
+      if arg.has_prefix("-") && !arg.has_prefix("--") {
+        for offset in 1..<arg.length() {
+          if arg[offset] is ('w' | 'T') {
+            value_next = offset + 1 == arg.length()
+            break
+          }
+        }
+      }
+    }
   }
   @cli.parse(normalized[:], [
     @cli.flag("all", short='a'),
@@ -499,7 +520,7 @@ fn ls_options(parsed : @cli.ParsedArgs) -> LsOptions raise @cli.CliError {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("ls 0.2.4\n")
+    @stdio.stdout.write("ls 0.2.5\n")
     return
   }
   let parsed = parse_arguments(@env.args()[1:]) catch {
@@ -511,7 +532,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -C lists down columns; -x across rows; -m uses commas; -1 uses lines.\n  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs.\n  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes.\n      --quoting-style=STYLE selects GNU C-locale quoting.\n      --show-control-chars displays remaining control bytes.\n      --color=always,never controls explicit type/extension colors.\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
+      "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -C lists down columns; -x across rows; -m uses commas; -1 uses lines.\n  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs.\n  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes.\n      --quoting-style=STYLE selects GNU C-locale quoting.\n      --show-control-chars displays remaining control bytes.\n      --color=always,never controls explicit type/extension colors.\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\nProject aliases: --one = -1; --columns = -C; --across = -x; --commas = -m.\n--sort-time = -t; --access-time = -u; --change-time = -c; --sort-size = -S.\n-P/--no-dereference is a project no-follow extension.\n-Q/--quote-name select C quotes; --quote is the accepted abbreviated spelling.\nOption values and operands after -- remain literal during alias normalization.\n",
     )
     return
   }

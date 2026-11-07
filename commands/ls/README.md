@@ -1,9 +1,12 @@
 # ls
 
+Development candidate: `cli/ls@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 List files and directories for MoonX.
 
 ```sh
-moonx cli/ls@0.2.4 [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]
+moonx cli/ls@0.2.5 [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]
 ```
 
 ## Supported scope
@@ -27,6 +30,21 @@ List names with hidden-entry selection, recursion, sorting, quoting, columns and
 | `--color[=WHEN]` | Explicit always or never color; bare flag means always. |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project aliases: --one = -1; --columns = -C; --across = -x; --commas = -m.
+--sort-time = -t; --access-time = -u; --change-time = -c; --sort-size = -S.
+-P/--no-dereference is a project no-follow extension.
+-Q/--quote-name select C quotes; --quote is the accepted abbreviated spelling.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
+## Argument and exit-status contract
+
+Option values and operands after -- remain literal during alias normalization.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Long listings, ownership, permissions, inode/link counts and block counts are unsupported.
@@ -36,8 +54,8 @@ List names with hidden-entry selection, recursion, sorting, quoting, columns and
 ## Examples
 
 ```sh
-moonx cli/ls@0.2.4 -A
-moonx cli/ls@0.2.4 -R -1 src
+moonx cli/ls@0.2.5 -A
+moonx cli/ls@0.2.5 -R -1 src
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

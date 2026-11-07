@@ -1006,8 +1006,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/mv@0.2.6 metadata contract",
-      "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\n",
+      "source_version": "workspace cli/mv@0.2.7 metadata contract",
+      "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-166"
@@ -1030,8 +1030,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/mv@0.2.6 metadata contract",
-      "expected_stdout_text": "mv 0.2.6\n",
+      "source_version": "workspace cli/mv@0.2.7 metadata contract",
+      "expected_stdout_text": "mv 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -1292,6 +1292,363 @@
       "expected_stderr_text": "",
       "stdin_text": "",
       "expected_stdout_text": ""
+    },
+    {
+      "id": "f17-mv-unknown-option",
+      "command": "mv",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-mv-missing-option-value",
+      "command": "mv",
+      "args": [
+        "--suffix"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: option requires a value: 'suffix'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
+    },
+    {
+      "id": "f17-mv-reject-update-mode-bare",
+      "command": "mv",
+      "args": [
+        "--update-mode",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: unknown option: '--update-mode'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-mv-reject-update-mode-value",
+      "command": "mv",
+      "args": [
+        "--update-mode=always",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: unknown option: '--update-mode=always'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-mv-reject-backup-control-bare",
+      "command": "mv",
+      "args": [
+        "--backup-control",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: unknown option: '--backup-control'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-mv-reject-backup-control-value",
+      "command": "mv",
+      "args": [
+        "--backup-control=always",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "mv: unknown option: '--backup-control=always'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-mv-suffix-value-short",
+      "command": "mv",
+      "args": [
+        "-b",
+        "-S",
+        "--backup-control",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "target",
+          "content_text": "new"
+        },
+        {
+          "path": "target--backup-control",
+          "content_text": "old"
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-mv-suffix-value-long",
+      "command": "mv",
+      "args": [
+        "-b",
+        "--suffix",
+        "--backup-control",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "target",
+          "content_text": "old"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "target",
+          "content_text": "new"
+        },
+        {
+          "path": "target--backup-control",
+          "content_text": "old"
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-mv-literal-internal-looking-operand",
+      "command": "mv",
+      "args": [
+        "--",
+        "--backup-control",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "--backup-control",
+          "content_text": "payload"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "--backup-control",
+          "exists": false
+        },
+        {
+          "path": "target",
+          "content_text": "payload"
+        }
+      ]
     }
   ]
 }

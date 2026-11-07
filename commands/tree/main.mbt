@@ -576,7 +576,8 @@ fn usage() -> String {
   "  -s, -h, --si and --du use public size metadata; unsupported host metadata reports an error.\n" +
   "  -C forces explicit type/extension colors; -n disables unforced color.\n" +
   "  Symlinks are named leaves; -d selects real child directories, retaining explicit operands.\n" +
-  "  Symlink target text/sizes and mode-based colors require unavailable public metadata APIs.\n"
+  "  Symlink target text/sizes and mode-based colors require unavailable public metadata APIs.\n" +
+  "Project aliases: --all = -a; --dirs-only = -d; --full-path = -f; --level = -L.\n--json = -J; --html = -H; --title = -T; --pattern = -P; --ignore = -I.\n--size = -s; --human-readable = -h; --color = -C; --no-color = -n.\n"
 }
 
 ///|

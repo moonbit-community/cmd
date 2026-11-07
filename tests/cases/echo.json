@@ -51,9 +51,9 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "echo 0.2.3\n",
+      "expected_stdout_text": "echo 0.2.4\n",
       "expected_stderr_text": "",
-      "source_version": "workspace cli/echo@0.2.3 metadata contract",
+      "source_version": "workspace cli/echo@0.2.4 metadata contract",
       "aliases": [
         "release-metadata-echo-version",
         "compat-catalog-line-243"
@@ -74,7 +74,7 @@
       "coverage": [
         "help"
       ],
-      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\nPOSIXLY_CORRECT enables escapes; only an initial -n permits option parsing.\nStandalone --help/--version retain the project metadata contract in that environment.\n",
       "expected_stderr_text": "",
       "aliases": [
         "release-metadata-echo-help",
@@ -205,6 +205,255 @@
         "precedence"
       ],
       "source_version": "Independent escape-disable activation after enabling escapes; literal backslash-n must survive."
+    },
+    {
+      "id": "f17-echo-posix-empty-0",
+      "command": "echo",
+      "args": [
+        "one\\ntwo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": ""
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "one\ntwo\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-set-0",
+      "command": "echo",
+      "args": [
+        "one\\ntwo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "one\ntwo\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-empty-1",
+      "command": "echo",
+      "args": [
+        "-e",
+        "one\\ntwo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": ""
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-e one\ntwo\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-set-1",
+      "command": "echo",
+      "args": [
+        "-e",
+        "one\\ntwo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-e one\ntwo\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-empty-2",
+      "command": "echo",
+      "args": [
+        "-n",
+        "-E",
+        "one\\ntwo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": ""
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "one\ntwo",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-set-2",
+      "command": "echo",
+      "args": [
+        "-n",
+        "-E",
+        "one\\ntwo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "one\ntwo",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-empty-3",
+      "command": "echo",
+      "args": [
+        "-ne",
+        "one\\ntwo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": ""
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-ne one\ntwo\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-set-3",
+      "command": "echo",
+      "args": [
+        "-ne",
+        "one\\ntwo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-ne one\ntwo\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-empty-4",
+      "command": "echo",
+      "args": [
+        "--",
+        "a\\cb",
+        "later"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": ""
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-- a",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-set-4",
+      "command": "echo",
+      "args": [
+        "--",
+        "a\\cb",
+        "later"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": "1"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-- a",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required."
+    },
+    {
+      "id": "f17-echo-posix-metadata-help",
+      "command": "echo",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": ""
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: echo [-n] [-e|-E] [STRING...]\n      --help      display this help and exit\n      --version   display version and exit\nPOSIXLY_CORRECT enables escapes; only an initial -n permits option parsing.\nStandalone --help/--version retain the project metadata contract in that environment.\n",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact.",
+      "oracle": false
+    },
+    {
+      "id": "f17-echo-posix-metadata-version",
+      "command": "echo",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "POSIXLY_CORRECT": ""
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "echo 0.2.4\n",
+      "expected_stderr_text": "",
+      "source_version": "workspace cli/echo@0.2.4 metadata contract",
+      "aliases": [],
+      "oracle": false
     }
   ]
 }

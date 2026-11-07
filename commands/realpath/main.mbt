@@ -185,7 +185,7 @@ async fn main {
     }
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("realpath: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -201,7 +201,7 @@ async fn main {
       "  -q, --quiet                 suppress operand errors\n" +
       "  -z, --zero                  terminate output with NUL\n" +
       "      --help                  display this help and exit\n" +
-      "      --version               display version and exit\n",
+      "      --version               display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }

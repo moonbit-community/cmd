@@ -41,6 +41,10 @@ fn help_message() -> String {
     #|  -s, --output-separator=STR  separate accepted strings with STR
     #|      --help            display this help and exit
     #|      --version         display version and exit
+    #|
+    #|Project alias: --octal selects -o; it is not a binutils long option.
+    #|
+    #|Unknown encoding selectors exit 1; recognized unsupported wide encodings explicitly exit 2.
   message
 }
 
@@ -141,7 +145,7 @@ async fn emit_stream(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("strings 0.1.4\n")
+    @stdio.stdout.write("strings 0.1.5\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -177,6 +181,13 @@ async fn main {
     @sys.exit(1)
     return
   }
+  if parsed
+    .values("encoding")
+    .any(value => !["s", "S", "b", "l", "B", "L"].contains(value)) {
+    @stdio.stderr.write("strings: invalid encoding\n")
+    @sys.exit(1)
+    return
+  }
   if parsed.values("encoding").any(value => value != "s" && value != "S") {
     @stdio.stderr.write(
       "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n",
@@ -196,7 +207,7 @@ async fn main {
       Some(value) => Some(value)
       None => {
         @stdio.stderr.write("strings: invalid radix\n")
-        @sys.exit(2)
+        @sys.exit(1)
         return
       }
     }

@@ -1,5 +1,7 @@
 ///|
-fn normalized_args(args : ArrayView[String]) -> Array[String] {
+fn normalized_args(
+  args : ArrayView[String],
+) -> Array[String] raise @cli.CliError {
   let result : Array[String] = []
   let mut options = true
   let mut value_next = false
@@ -11,6 +13,13 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
     }
     if options && arg == "--" {
       options = false
+    }
+    if options && (arg == "--check-quiet" || arg.has_prefix("--check-quiet=")) {
+      raise @cli.CliError(
+        kind=UnknownOption,
+        option=arg,
+        message="unknown option",
+      )
     }
     result.push(
       if options && arg == "--check=quiet" {

@@ -273,7 +273,7 @@ async fn head_reader(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("head 0.2.4\n")
+    @stdio.stdout.write("head 0.2.5\n")
     return
   }
   let args = legacy_count_args(@env.args()[1:])
@@ -287,13 +287,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("head: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
@@ -306,7 +306,7 @@ async fn main {
   } catch {
     CliError(message) => {
       @stdio.stderr.write(message + "\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

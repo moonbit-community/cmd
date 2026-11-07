@@ -1,9 +1,12 @@
 # sed
 
+Development candidate: `cli/sed@0.2.4`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Edit text streams for MoonX.
 
 ```sh
-moonx cli/sed@0.2.3 [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]
+moonx cli/sed@0.2.4 [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]
 ```
 
 ## Supported scope
@@ -20,6 +23,12 @@ Read files or stdin with BRE/ERE substitutions, line/pattern addresses, ranges, 
 | `-E, -r` | Use extended regular expressions. |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project alias: --extended selects -r/-E; the GNU long name is --regexp-extended.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
 ## Limitations
 
 - In-place editing and locale-aware matching are unsupported.
@@ -28,8 +37,8 @@ Read files or stdin with BRE/ERE substitutions, line/pattern addresses, ranges, 
 ## Examples
 
 ```sh
-moonx cli/sed@0.2.3 's/old/new/g' file.txt
-moonx cli/sed@0.2.3 -n '2,5p' file.txt
+moonx cli/sed@0.2.4 's/old/new/g' file.txt
+moonx cli/sed@0.2.4 -n '2,5p' file.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

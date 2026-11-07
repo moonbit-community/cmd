@@ -20,8 +20,7 @@ EOF. Only successful EOF adds final padding and the wrapped trailing newline.
 Read failure may leave completed output; write failure is not replayed. The
 final newline rules for zero wrapping remain command-specific.
 
-Base32 decoding still reads the complete input before decoding and retains its
-existing partial-decoded-prefix rules. An encoding memory improvement says
+Base32 decoding still reads the complete input before decoding. An encoding memory improvement says
 nothing about that path. Tests preserve RFC vectors, all byte values, arbitrary
 wrap columns, cross-read carry, open input and later read/write failures.
 
@@ -30,6 +29,32 @@ source encoding takes about 7% less time unwrapped and 10% less time wrapped
 against the original audit baseline. Separate 32 MiB resource probes reduce
 peak RSS from 219–272 MiB to about 20 MiB. Small inputs and fragmented transports
 have separate rows; these numbers are not command-wide guarantees.
+
+## Base32 and base64 decoding
+
+Base32 follows `convert -> read_input -> decode_to_writer -> decode_block`;
+Base64 follows `main -> decode_stream -> stream.read_chunk -> decode_quad`.
+Both byte decoders commit a byte after validating its contributing symbols,
+before examining later symbols or canonical tail bits. Thus an invalid tail can
+leave useful earlier bytes; validating an entire quantum before appending any
+output would lose required failure prefixes.
+
+At EOF, absent padding is completed only if the remaining quantum contains no
+explicit `=`. A complete padded group does not prohibit a following group.
+Incomplete explicit Base32 quanta fail before emitting any of their bytes;
+Base64 retains determined bytes from that incomplete quantum. Canonical tail
+masks and GNU 9.11 source contracts are recorded in
+[ADR-0008](../adr/0008-data.md#search-and-codecs).
+
+Base32 retains whole encoded input, then writes each decoded quantum; Base64
+retains a quantum across reads and at most one read's decoded output. Decode
+errors flush only the determined prefix. Normal writes and error-path writes
+are outside any catch that could replay them. The package tests inject partial
+writer failure and check its cause and exact write count; Base64 also crosses
+the public 65536-byte read limit with a shifted quantum. CLI vectors in
+[base32.json](../../tests/cases/base32.json) and
+[base64.json](../../tests/cases/base64.json) have independent expected bytes.
+These correctness changes make no new timing or memory-acceptance claim.
 
 ## DEFLATE encoding
 

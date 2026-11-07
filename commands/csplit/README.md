@@ -1,9 +1,12 @@
 # csplit
 
+Development candidate: `cli/csplit@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Split files at line or pattern boundaries for MoonX.
 
 ```sh
-moonx cli/csplit@0.2.4 [OPTION]... FILE PATTERN...
+moonx cli/csplit@0.2.5 [OPTION]... FILE PATTERN...
 ```
 
 ## Supported scope
@@ -24,6 +27,12 @@ Split a file or stdin (`-`) using line numbers, `/BRE/[OFFSET]`, `%BRE%[OFFSET]`
 | `-z, --elide-empty-files` | Omit empty output fragments. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Existing output paths are rejected. Windows names ending in spaces or dots are rejected.
@@ -32,8 +41,8 @@ Split a file or stdin (`-`) using line numbers, `/BRE/[OFFSET]`, `%BRE%[OFFSET]`
 ## Examples
 
 ```sh
-moonx cli/csplit@0.2.4 input.txt 10
-moonx cli/csplit@0.2.4 -f part- input.txt '/^SECTION/' '{*}'
+moonx cli/csplit@0.2.5 input.txt 10
+moonx cli/csplit@0.2.5 -f part- input.txt '/^SECTION/' '{*}'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

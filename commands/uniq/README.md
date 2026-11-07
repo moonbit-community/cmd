@@ -1,9 +1,12 @@
 # uniq
 
+Development candidate: `cli/uniq@0.2.6`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Filter adjacent duplicate records for MoonX.
 
 ```sh
-moonx cli/uniq@0.2.5 [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]
+moonx cli/uniq@0.2.6 [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]
 ```
 
 ## Supported scope
@@ -23,6 +26,12 @@ Read a file or stdin and compare adjacent records. Sort first for global dedupli
 | `-z, --zero-terminated` | Use NUL-delimited records. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Comparison and case folding use C-byte rules.
@@ -31,8 +40,8 @@ Read a file or stdin and compare adjacent records. Sort first for global dedupli
 ## Examples
 
 ```sh
-printf 'a\na\nb\n' | moonx cli/uniq@0.2.5 -c
-moonx cli/uniq@0.2.5 -d sorted.txt
+printf 'a\na\nb\n' | moonx cli/uniq@0.2.6 -c
+moonx cli/uniq@0.2.6 -d sorted.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)
