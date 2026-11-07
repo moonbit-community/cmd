@@ -48,8 +48,9 @@ Supports quoting, variables/exports, substitutions, pipelines, redirections, con
 
 ## Limitations
 
-File predicates pass paths unchanged to the host filesystem. Windows normalizes
-`component/..` before lookup; POSIX requires the component to exist as a directory.
+File predicates pass paths unchanged to the host filesystem. Ordinary Windows
+paths in this profile normalize `component/..` before lookup; POSIX requires the
+component to exist as a directory. Windows device paths have separate rules.
 The Windows profile has a separate native file observer and CLI regression.
 
 - This is a finite shell subset; background jobs and complete Bash/POSIX grammar

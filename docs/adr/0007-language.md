@@ -43,7 +43,8 @@ finite argument-count grammar, checked decimal integers and raw paths; only type
 OS errors become false predicates, while cancellation and other errors propagate.
 Forward raw paths to the host without a project-level lexical simplification.
 Windows retains its [documented path normalization](https://learn.microsoft.com/dotnet/standard/io/file-path-formats#path-normalization),
-including a missing component followed by `..`; POSIX component lookup instead
+for ordinary paths, including a missing component followed by `..`; device paths
+may bypass that normalization. POSIX component lookup instead
 fails. Keep a native Windows file observer and separate CLI expectation for this
 platform distinction, without claiming POSIX resolution on Windows.
 
