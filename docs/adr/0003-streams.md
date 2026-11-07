@@ -58,7 +58,7 @@ and existing domain boundaries, not a new generic command framework. Shell
 captures retain raw bytes; merged child stdout/stderr use a single pipe, and
 printf clears submitted output before awaiting the writer so cleanup cannot
 replay a failed write. See [ADR-0007](0007-language.md) for finite language scope.
-The candidate changes shared behavior and therefore requires core 0.9.2 plus
+The target-size repair changes shared behavior and therefore requires core 0.9.3 plus
 updated sh/make/split dependencies. Other command coordinates stay unchanged.
 No timing cost or performance acceptance is established by source changes or
 correctness receipts; changed artifacts remain subject to the protection registry.

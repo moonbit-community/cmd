@@ -2,12 +2,12 @@
 
 Run shell scripts and sessions for MoonX.
 
-Published package: `cli/sh@0.2.6`, using `cli/core@0.9.2`.
-Dated exact-coordinate acceptance is recorded in the
+Development candidate: `cli/sh@0.2.7`, using `cli/core@0.9.3`.
+Publication is pending. Earlier exact-coordinate acceptance is recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
-moonx cli/sh@0.2.6 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
+moonx cli/sh@0.2.7 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
 ```
 
 ## Supported scope
@@ -34,7 +34,9 @@ Supports quoting, variables/exports, substitutions, pipelines, redirections, con
   converted prefixes. Its fixed Linux Dash profile uses an 8192-byte buffer.
   Builtin test supports finite argument-count precedence, checked signed decimal
   integers, strings and available file/access/time predicates. `==` is a project
-  extension. File errors become false predicates without swallowing cancellation.
+  extension. Ordinary file lookup errors become false predicates without
+  swallowing cancellation. `test -s` follows the final target and queries its
+  size without opening it; unavailable target sizes produce status 2.
 
 ## Options
 
@@ -52,6 +54,11 @@ File predicates pass paths unchanged to the host filesystem. Ordinary Windows
 paths in this profile normalize `component/..` before lookup; POSIX requires the
 component to exist as a directory. Windows device paths have separate rules.
 The Windows profile has a separate native file observer and CLI regression.
+Size predicates first validate the original path before resolving links. These
+separate queries do not promise an atomic identity snapshot. The current macOS
+public API cannot measure directory sizes; both directories and links to them
+therefore produce an explicit size-capability error, including under `!`, `-a`
+and `-o`. Linux directory sizes remain supported.
 
 - This is a finite shell subset; background jobs and complete Bash/POSIX grammar
   are not claimed.
@@ -68,8 +75,8 @@ The Windows profile has a separate native file observer and CLI regression.
 ## Examples
 
 ```sh
-moonx cli/sh@0.2.6 -c 'echo hello'
-moonx cli/sh@0.2.6 script.sh
+moonx cli/sh@0.2.7 -c 'echo hello'
+moonx cli/sh@0.2.7 script.sh
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

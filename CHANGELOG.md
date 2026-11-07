@@ -41,6 +41,12 @@ Development and publication.
   sources pass 26/8 Wasm tests; all three isolated commands pass actual smoke
   checks against registry core 0.9.2. Sh has no package tests of its own.
   Full upstream parity and formal performance acceptance are not claimed.
+- A later independent audit found missing file-size cases: the shared `test -s`
+  measured final links themselves and hid unavailable target sizes as false.
+  Those earlier finite receipts remain valid for their selected cases, but do
+  not close issue #31. Prepare core 0.9.3, make 0.2.6, sh 0.2.7 and split 0.1.8
+  with target-following metadata and explicit ENOTSUP rejection. Follow-up
+  development and exact-version publication acceptance remain pending.
 
 ## 2026-11-07
 

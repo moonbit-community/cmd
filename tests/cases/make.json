@@ -215,7 +215,7 @@
         "help"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, recursive exports, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\n",
+      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, recursive exports, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-150"
@@ -239,7 +239,7 @@
         "version"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "make 0.2.5\n",
+      "expected_stdout_text": "make 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -3130,6 +3130,136 @@
       "oracle": true,
       "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-test-size-targets",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symbolic-link",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symbolic-link",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symbolic-link",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symbolic-link",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symbolic-link",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symbolic-link",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symbolic-link",
+          "target": "cycle-a"
+        },
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@test -s empty-link; printf '%s|' $$?; test -s full-chain; printf '%s|' $$?; test -s dangling; printf '%s' $$?\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1|0|1",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "expected_files": [
+        {
+          "path": "empty",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symlink",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symlink",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symlink",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symlink",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symlink",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symlink",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symlink",
+          "target": "cycle-a"
+        }
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ]
     }
   ]
 }

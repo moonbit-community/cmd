@@ -72,6 +72,15 @@ pub async fn execute_scenario(
         "f31-sh-language-session" =>
           shell_language_session_scenario(root, work, proof?)
         "f31-sh-merged-child" => shell_merged_child_scenario(root, work, proof?)
+        "f31-sh-test-size-platform" =>
+          shell_size_platform_scenario(
+            root,
+            work,
+            report_dir + "/" + fixture.id + ".observations.json",
+            proof?,
+          )
+        "f31-sh-test-size-posix" =>
+          shell_size_posix_scenario(root, work, proof?)
         "f31-sh-printf-state" => printf_state_scenario(root, work, proof?)
         "f31-sh-printf-state-oracle" => {
           guard oracle_image is Some(image) else {

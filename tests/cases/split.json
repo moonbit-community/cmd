@@ -142,7 +142,7 @@
         "help"
       ],
       "source_version": "workspace cli/split@0.1.6 metadata contract",
-      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nFilters support shared shell arithmetic assignment, backticks and expanded here-documents.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nFilters support shared shell arithmetic assignment, backticks and expanded here-documents.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
       "expected_stderr_text": ""
     },
     {
@@ -161,7 +161,7 @@
         "version"
       ],
       "source_version": "workspace cli/split@0.1.6 metadata contract",
-      "expected_stdout_text": "split 0.1.7\n",
+      "expected_stdout_text": "split 0.1.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -2627,6 +2627,143 @@
           "kind": "file",
           "content_text": "1|ok|b\nok-2\n"
         }
+      ]
+    },
+    {
+      "id": "f31-split-test-size-targets",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; if test -s empty-link; then exit 8; fi; if test -s dangling; then exit 9; fi; test -s full-chain || exit 10; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symbolic-link",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symbolic-link",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symbolic-link",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symbolic-link",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symbolic-link",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symbolic-link",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symbolic-link",
+          "target": "cycle-a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "expected_files": [
+        {
+          "path": "empty",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symlink",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symlink",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symlink",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symlink",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symlink",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symlink",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symlink",
+          "target": "cycle-a"
+        },
+        {
+          "path": "piece-aa",
+          "kind": "file",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "kind": "file",
+          "content_text": "b\n"
+        }
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
       ]
     }
   ]

@@ -2,17 +2,21 @@
 
 Run a Make language subset for MoonX.
 
-Published package: `cli/make@0.2.5`, using `cli/core@0.9.2`.
-Dated exact-coordinate acceptance is recorded in the
+Development candidate: `cli/make@0.2.6`, using `cli/core@0.9.3`.
+Publication is pending. Earlier exact-coordinate acceptance is recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
-moonx cli/make@0.2.5 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
+moonx cli/make@0.2.6 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
 ```
 
 ## Supported scope
 
 Build targets with dependencies, variables, includes, conditionals, patterns, automatic variables, exports and parallel recipe chains.
+
+Recipe `test -s` uses the final target's metadata, including through symlinks,
+without opening it. Missing/cyclic targets are false; unavailable sizes such as
+macOS directories are explicit shell errors rather than fabricated zero.
 
 Computed assignment/export names expand once. `=`, `:=`, `::=`, `:::=`, `?=`,
 `+=` and `!=` retain their supported flavors and trailing value whitespace.
@@ -77,8 +81,8 @@ Windows semaphore authentication reject explicitly.
 ## Examples
 
 ```sh
-moonx cli/make@0.2.5 -n
-moonx cli/make@0.2.5 -f build.mk -j 2 all
+moonx cli/make@0.2.6 -n
+moonx cli/make@0.2.6 -f build.mk -j 2 all
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

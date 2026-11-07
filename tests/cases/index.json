@@ -34212,6 +34212,155 @@
         "windows"
       ],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-test-size-targets",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-size-targets",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-size-raw-components",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-size-raw-components",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-size-macos-directory",
+      "command": "sh",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-size-macos-directory",
+      "aliases": [],
+      "platforms": [
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-test-size-macos-link",
+      "command": "sh",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-size-macos-link",
+      "aliases": [],
+      "platforms": [
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-test-size-macos-expression-recovery",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-size-macos-expression-recovery",
+      "aliases": [],
+      "platforms": [
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-test-size-linux-directories",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-size-linux-directories",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-make-test-size-targets",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "f31-make-test-size-targets",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-split-test-size-targets",
+      "command": "split",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/split.json",
+      "case_id": "f31-split-test-size-targets",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:f31-sh-test-size-platform",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-size-platform",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:f31-sh-test-size-platform",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-sh-test-size-platform",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f31-sh-test-size-posix",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sh.json",
+      "case_id": "f31-sh-test-size-posix",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:f31-sh-test-size-posix",
+      "command": "sh",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f31-sh-test-size-posix",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux",
+        "macos"
+      ],
+      "oracle_profile": ""
     }
   ]
 }

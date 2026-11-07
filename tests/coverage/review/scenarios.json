@@ -5295,6 +5295,103 @@
           ]
         }
       ]
+    },
+    {
+      "case_id": "f31-sh-test-size-platform",
+      "assertions": [
+        {
+          "id": "sh/size-absolute-links",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "1|0",
+            "stderr": "",
+            "targets_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "symlink-target"
+          ]
+        },
+        {
+          "id": "sh/size-platform-directory",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status_matches_native_metadata": true,
+            "stdout_empty": true,
+            "diagnostic_matches_capability": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "native-target-size",
+            "type"
+          ]
+        },
+        {
+          "id": "sh/size-platform-directory-link",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status_matches_native_metadata": true,
+            "stdout_empty": true,
+            "diagnostic_matches_capability": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "native-target-size",
+            "type"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f31-sh-test-size-posix",
+      "assertions": [
+        {
+          "id": "sh/size-unreadable",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "preserved_content": "payload"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "access",
+            "file-bytes"
+          ]
+        },
+        {
+          "id": "sh/size-fifo",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "",
+            "stderr": "",
+            "still_fifo": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "type",
+            "deadline"
+          ]
+        }
+      ]
     }
   ]
 }

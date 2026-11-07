@@ -2,6 +2,15 @@
 
 Shared runtime packages used by the independently published command modules.
 
+## 0.9.3 development candidate
+
+Shell `test -s` follows final symlinks and queries target metadata without opening
+the file. It preserves raw component lookup before canonicalization, returns
+false for missing/cyclic targets, and reports status 2 when the public API cannot
+provide a target size. The current macOS directory-size ENOTSUP is such a
+boundary. The same behavior applies to make recipes and split filters.
+Publication and exact-coordinate acceptance remain pending.
+
 ## 0.9.2 changes
 
 The shared shell used by sh, make recipes and split filters implements arithmetic
@@ -13,6 +22,9 @@ remain observable. See [ADR-0007](../docs/adr/0007-language.md) for the explicit
 descriptor, terminal and grammar boundaries. Version 0.9.2 is published;
 dated exact-coordinate acceptance is recorded in the
 [changelog](../CHANGELOG.md#2026-11-08).
+Later independent audit found that this version's `test -s` measured a final
+symlink itself and silently treated unavailable sizes as false. Those cases were
+absent from its successful finite acceptance; the 0.9.3 candidate repairs them.
 
 ## 0.9.1 changes
 
