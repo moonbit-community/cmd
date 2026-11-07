@@ -118,21 +118,21 @@ viewer opening, performance traces and the HTML watch server (`--no-serve`
 is required). Jobs remain single-threaded. File reads retain whole inputs;
 canonicalization is lexical, symlink identity/containment is not guaranteed,
 terminal detection is unavailable and local time defaults to UTC. Unlock
-conditions are recorded in ADR-0003. Seven pinned Typst 0.15.1 Linux evaluation
-comparisons pass. All 80 coordinates pass local MoonX and
+conditions are recorded in ADR-0003. In the 2026-11-05 acceptance, seven pinned
+Typst 0.15.1 Linux evaluation comparisons passed. All 80 coordinates passed local MoonX and
 [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41957907959),
-including watch shutdown and cleanup. The previous 79 coordinates and their
-frozen expectations remain unchanged; timeout remains local-only among 81 modules.
+including watch shutdown and cleanup. At that release, the previous 79 coordinates
+and their frozen expectations remained unchanged, with timeout local-only among 81 modules.
 The inherited relative-link watcher fixture is Unix-only because the public
 filesystem API cannot create that fixture on Windows. Ordinary file-watch
 recompilation has a registered CLI assertion on all three platforms.
 
-The 2026-11-01 release publishes core 0.9.1 and 26 changed command versions,
+The 2026-11-01 release published core 0.9.1 and 26 changed command versions,
 including direct implementation changes and gzip/jq shared-runtime consumers.
-These commands select core 0.9.1; the other 53 published coordinates retain
-their dependencies. Exact versions are in
-[latest.json](../tests/release/latest.json), with independent
-expectations in latest-cases.json. All 27 uploads/builds and all 79 coordinates
+Those commands selected core 0.9.1; the other 53 published coordinates retained
+their dependencies. The source and scope of those historical coordinates are
+recorded in the [2026-11-01 release record](../CHANGELOG.md#2026-11-01).
+All 27 uploads/builds and all 79 coordinates
 passed local MoonX and [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751),
 including pinned Linux comparison. Counts and scope are summarized in
 [CHANGELOG.md](../CHANGELOG.md#2026-11-01); full performance acceptance remains open.
@@ -147,7 +147,7 @@ their explicit fallbacks. The preceding 2026-11-01 macOS Wasm resource failures
 and subsequent repair evidence retain their dated scope in
 [performance guide](performance/README.md); buffer release is not an immediate RSS guarantee.
 
-Published audit repairs include core 0.9.1, cp 0.2.4, find 0.2.5,
+The 2026-11-01 audit repairs included core 0.9.1, cp 0.2.4, find 0.2.5,
 mv 0.2.6, rm 0.2.4, sort 0.2.6, tail 0.2.4 and xargs 0.2.4. Xargs dispatches
 complete batches before EOF and replenishes individual parallel slots; later
 input errors can follow completed child effects. Ordinary child exits 126/127
@@ -168,12 +168,11 @@ newly accepted coordinates.
 
 The 2026-10-30 release published `cli/core@0.9.0` and 43 command packages:
 42 updates and the first `cli/rg@0.1.0` release. Another 36 command coordinates
-remain unchanged, giving 79 published commands; `timeout` remains local-only.
+remained unchanged, giving 79 published commands; `timeout` was local-only.
 All 44 uploads and registry builds were verified. Local exact-version MoonX
 acceptance passed 2,180 checks with 19 skips and zero failures across all 79
-coordinates. [latest.json](../tests/release/latest.json) and its
-independent expected cases select the exact published inventory. The
-[release summary](../CHANGELOG.md#2026-10-30) records source CI and three-platform
+coordinates. The dated
+[release summary](../CHANGELOG.md#2026-10-30) records that inventory's source CI and three-platform
 published acceptance.
 
 The current development test policy requires source-bound independent local
