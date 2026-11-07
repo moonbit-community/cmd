@@ -69,7 +69,10 @@ async test "syntax errors preserve diagnostics and clear pending input" {
   let session = Session::new(env={})
   assert_eq(session.feed("if true; then\n"), NeedMoreInput)
   try session.finish() catch {
-    ShellError(message) => assert_eq(message, "unexpected end of input")
+    ShellError(message) =>
+      assert_eq(
+        message, "unexpected end of input: incomplete: unexpected empty command list",
+      )
     other => raise other
   } noraise {
     _ => fail("unfinished input must fail at EOF")

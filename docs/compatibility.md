@@ -77,7 +77,7 @@ this profile does not relabel those omissions as implemented.
 
 ## Current delivery and historical acceptance
 
-The 2026-11-08 release publishes core 0.9.2, make 0.2.5, sh 0.2.6 and split 0.1.7
+The first 2026-11-08 release published core 0.9.2, make 0.2.5, sh 0.2.6 and split 0.1.7
 from `e739345` after three-platform development checks and independent audit.
 The remaining 77 command coordinates are retained. All 80 exact MoonX coordinates
 pass [published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42397826082):
@@ -93,12 +93,20 @@ full POSIX/GNU parity and formal performance acceptance are not established.
 Later independent audit reproduced a missing `test -s` case in this release:
 a dangling link incorrectly returned true because the link's own size was used.
 Unavailable directory sizes also became false. These legacy errors prevent
-closing issue #31. Follow-up development candidates core 0.9.3, make 0.2.6,
+closing issue #31. The follow-up published versions core 0.9.3, make 0.2.6,
 sh 0.2.7 and split 0.1.8 validate raw paths, resolve final targets and read
 metadata without opening files. Actual ENOTSUP becomes status 2; the macOS
 directory boundary is explicit while Linux directory sizes remain supported.
-New release expectations and execution evidence remain separate from the
-earlier independently frozen snapshots.
+The size repair's [exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42407243329)
+passes all 80 coordinates: Linux 2,799/0/28, macOS 2,790/0/31 and Windows
+2,588/0/233. Local macOS also passes 2,790/0/31. All four uploads, registry
+builds and package checksums were verified after actual-main development CI
+at `5545ad7`. The 2,656 frozen definitions retain all previous IDs, change six
+metadata outputs and add ten size cases; Linux includes all six immutable-oracle
+scenarios. New evidence remains separate from the earlier finite receipts.
+A subsequent review found missing make default export/unexport behavior from
+the original #31 scope. That issue remains open while this project work is
+implemented and independently accepted; it is not an upstream API blocker.
 
 Published tree 0.1.6 lists symbolic links as named leaves without
 following targets, including dangling and cyclic links. Text/HTML omit target
@@ -799,7 +807,7 @@ in [CHANGELOG.md](../CHANGELOG.md#2026-11-08); full shell compatibility is not c
 | `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain |
 | `ls` | subset verified | Existing traversal/sort/link profile plus C quoting, columns/across/commas, width/tab stops and explicit type/suffix/link colors | `-P` is a project extension; enabled raw-mode/capability/link-count predicates and automatic color reject. Long/ownership/inode/block formats remain outside scope |
-| `make` | candidate subset 0.2.6 | Dependency-ready `-j`, shared prerequisites, failure propagation, variable flavors/computed names, recursive exports and Wasm submakes, `.SECONDEXPANSION`, `.SHELLSTATUS`, existing POSIX FIFO jobserver tokens; shell `test -s` follows target metadata | Unavailable target sizes reject; new FIFO creation, descriptor-pipe import and Windows semaphores need public APIs; no full GNU function/rule/database claim; without inherited FIFO recursive children use `-j1`; [language boundaries](adr/0007-language.md) |
+| `make` | candidate subset 0.2.7 | Dependency-ready `-j`, shared prerequisites, variable flavors/computed names, named/default export and unexport, `.EXPORT_ALL_VARIABLES`, recursive Wasm submakes, recipe expansion/environment phases, GNU shell argv and `.SHELLSTATUS`, `.SECONDEXPANSION`, existing POSIX FIFO tokens | Invalid UTF-8 before a capture's first NUL rejects; unavailable target sizes reject; new FIFO creation, descriptor-pipe import and Windows semaphores need public APIs; no full GNU function/rule/database claim; without inherited FIFO recursive children use `-j1`; [language boundaries](adr/0007-language.md) |
 | `mkdir` | subset verified | `-p`, numeric and umask-independent symbolic `-m`, requested leaf mode and existing no-ops | Truly umask-dependent results, unknown parent raw mode/owner adjustments and unavailable Windows setters reject |
 | `mktemp` | subset verified | Final X-run/default/inferred/explicit suffix rules, tmpdir precedence, quiet errors and exclusive secure-random files/directories | No unsafe `-u`; POSIX mode relationships and Windows supported effects have separate scenarios |
 | `mv` | subset verified | Files/dirs, -f/-n/-i, -T/-v, selected backup/suffix/update, same-entry/hard-link no-op failures and refusal status 1 | Equal-time interactive/update targets reject without public identity; no-clobber remains a successful skip; metadata-preserving EXDEV fallback remains unavailable |
@@ -813,7 +821,7 @@ in [CHANGELOG.md](../CHANGELOG.md#2026-11-08); full shell compatibility is not c
 | `rev` | subset verified | Published 0.1.4 reverses one ASCII/NUL record at a time into buffered output under the fixed Linux C profile, with invalid-record rejection, prefix retention and later-file continuation | Storage follows the longest record; non-ASCII records fail before output and multibyte locale semantics remain outside the profile |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
 | `seq` | subset verified | Published 0.2.3 adds single-conversion `-f`, frozen-ABI rounding and endpoint recovery; default +/- step, -w/-s and streaming output remain | Default path retains 4096-character/exponent/scale limits; formatted path uses the selected Extended80 range, not the host ABI; formal performance remains open |
-| `sh` | candidate subset 0.2.7 | Persistent Session, arithmetic assignments/conditional expressions, backticks, expanded here-documents, stdout/stderr aliases, loop levels, binary64 printf and finite test grammar, contextual case/function substitution parsing; `test -s` follows target metadata | Unavailable target sizes reject; increment and test `==` are project extensions; descriptor import/closure/direction, identity/owner/mode metadata and terminal operations reject; no full POSIX/Bash or locale claim; [language boundaries](adr/0007-language.md) |
+| `sh` | candidate subset 0.2.8 | Persistent Session, arithmetic assignments/conditional expressions, backticks, expanded here-documents, stdout/stderr aliases, loop levels, finite printf/test, contextual syntax rejection and EOF continuation; output-transfer failures propagate; `test -s` follows target metadata | Unavailable target sizes reject; increment and test `==` are project extensions; descriptor import/closure/direction, identity/owner/mode metadata and terminal operations reject; no full POSIX/Bash or locale claim; [language boundaries](adr/0007-language.md) |
 | `sha256sum` | subset verified | File/stdin digest, tags, escaped/tagged manifests and quiet/status/strict/warn/ignore-missing verification | Windows text transformation remains outside the selected C byte profile |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
 | `sort` | subset verified | Published 0.2.3 retains stable/merge/output and exact seeded GNU random order and adds buffer-size, temporary-directory and batch-size controls | Percentage budgets require public physical-memory capacity; existing merge-output identity/error effects reject explicitly, and non-C locale and formal RSS/performance remain open |

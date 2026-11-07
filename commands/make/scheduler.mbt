@@ -83,14 +83,9 @@ async fn execute_target(
     !target_exists ||
     !newer_dependencies.is_empty()
   if rebuild {
-    for recipe in rule.recipes {
-      let status = run_recipe(
-        recipe,
-        rule,
-        database,
-        settings,
-        newer_dependencies~,
-      )
+    let prepared = prepare_recipes(rule, database, settings, newer_dependencies)
+    for recipe in prepared.commands {
+      let status = run_recipe(recipe, prepared, database, settings)
       if status != 0 {
         raise MakeError(
           "recipe for '\{node.target}' failed with status \{status}",
@@ -120,6 +115,7 @@ async fn build_targets(
     },
   )
   let failures = Ref(0)
+  let aborting = Ref(false)
   @async.with_task_group() <| group => {
     let tasks : Map[String, @async.Task[Bool]] = Map([])
     for node in order {
@@ -133,10 +129,14 @@ async fn build_targets(
           }
         }
         let action : async () -> Bool = () => {
-          if failures.val > 0 && !settings.keep_going {
+          if aborting.val || (failures.val > 0 && !settings.keep_going) {
             return false
           }
           execute(node, database, settings) catch {
+            ExpansionFailure(_) as error => {
+              aborting.val = true
+              raise error
+            }
             err => {
               failures.val += 1
               let message = match err {

@@ -18804,7 +18804,7 @@
         "help"
       ],
       "source_version": "workspace cli/sh@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports arithmetic assignment, backticks, expanded here-documents, stdout/stderr copies, loop control and printf/test builtins.\nTerminal job control, descriptor import/closure and complete POSIX/Bash grammar remain unavailable.\n",
+      "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports arithmetic assignment, backticks, expanded here-documents, stdout/stderr copies, loop control and printf/test builtins.\nTerminal job control, descriptor import/closure and complete POSIX/Bash grammar remain unavailable.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
       "expected_stderr_text": ""
     },
     {
@@ -18823,7 +18823,7 @@
         "version"
       ],
       "source_version": "workspace cli/sh@0.2.5 metadata contract",
-      "expected_stdout_text": "sh 0.2.6\n",
+      "expected_stdout_text": "sh 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -21118,6 +21118,394 @@
       "comparison": "contract",
       "oracle": false,
       "source_version": "Windows host path normalization profile; independent File.Exists/ReadAllText observer in core/shell/test_wbtest.mbt must pass in Windows package CI"
+    },
+    {
+      "id": "f31-sh-test-size-targets",
+      "command": "sh",
+      "args": [
+        "-c",
+        "for path in empty full empty-link full-link empty-chain full-chain dangling cycle cycle-a; do test -s \"$path\"; printf '%s|' $?; done; for path in empty-link dangling cycle cycle-a; do test -L \"$path\"; printf '%s|' $?; done"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symbolic-link",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symbolic-link",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symbolic-link",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symbolic-link",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symbolic-link",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symbolic-link",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symbolic-link",
+          "target": "cycle-a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "1|0|1|0|1|0|1|1|1|0|0|0|0|",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "expected_files": [
+        {
+          "path": "empty",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symlink",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symlink",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symlink",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symlink",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symlink",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symlink",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symlink",
+          "target": "cycle-a"
+        }
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-raw-components",
+      "command": "sh",
+      "args": [
+        "-c",
+        "for path in alias/../marker missing/../real/marker marker/../real/marker real/marker/ file-link/ file-link//; do test -s \"$path\"; printf '%s|' $?; done"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "real/nested",
+          "kind": "directory"
+        },
+        {
+          "path": "real/marker",
+          "content_text": "payload"
+        },
+        {
+          "path": "marker",
+          "content_text": ""
+        },
+        {
+          "path": "alias",
+          "kind": "symbolic-link",
+          "target": "real/nested"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "real/marker"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0|1|1|1|1|1|",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_files": [
+        {
+          "path": "real/marker",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "marker",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "alias",
+          "kind": "symlink",
+          "target": "real/nested"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "real/marker"
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-macos-directory",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -s directory"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "macos"
+      ],
+      "expected_rejection": "test: '-s' target size is unavailable through the public filesystem API: 'directory'",
+      "observe": [
+        "type",
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-macos-link",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -s link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: test: '-s' target size is unavailable through the public filesystem API: 'link'\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "macos"
+      ],
+      "expected_rejection": "test: '-s' target size is unavailable through the public filesystem API: 'link'",
+      "observe": [
+        "type",
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-macos-expression-recovery",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf before; test -s directory; printf '|%s' $?; test ! -s directory; printf '|%s' $?; test x -o -s directory; printf '|%s' $?; test '' -a -s directory; result=$?; printf '|%s|after' \"$result\"; exit \"$result\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "before|2|2|2|2|after",
+      "expected_stderr_text": "sh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\nsh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\nsh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\nsh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "macos"
+      ],
+      "observe": [
+        "type",
+        "symlink-target"
+      ],
+      "expected_files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "directory"
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-linux-directories",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -s directory; printf '%s|' $?; test -s link; printf '%s|' $?; test -s directory/; printf '%s|' $?; test -s link/; printf '%s' $?"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0|0|0|0",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "linux"
+      ],
+      "observe": [
+        "type",
+        "symlink-target"
+      ],
+      "expected_files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "directory"
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-platform",
+      "command": "sh",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 60000
+    },
+    {
+      "id": "f31-sh-test-size-posix",
+      "command": "sh",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
     },
     {
       "id": "phase3-tr-range",
@@ -34410,7 +34798,7 @@
         "help"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, recursive exports, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\n",
+      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, recursive exports, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-150"
@@ -34434,7 +34822,7 @@
         "version"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "make 0.2.5\n",
+      "expected_stdout_text": "make 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -37055,6 +37443,136 @@
       "oracle": true,
       "source_version": "Independent fixed GNU Make 4.4.1 and Dash 0.5.12 observations; custom interpreter flags explicitly reject before recipe effects",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-make-test-size-targets",
+      "command": "make",
+      "args": [
+        "all"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symbolic-link",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symbolic-link",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symbolic-link",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symbolic-link",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symbolic-link",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symbolic-link",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symbolic-link",
+          "target": "cycle-a"
+        },
+        {
+          "path": "Makefile",
+          "content_text": "all:\n\t@test -s empty-link; printf '%s|' $$?; test -s full-chain; printf '%s|' $$?; test -s dangling; printf '%s' $$?\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1|0|1",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "expected_files": [
+        {
+          "path": "empty",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symlink",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symlink",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symlink",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symlink",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symlink",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symlink",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symlink",
+          "target": "cycle-a"
+        }
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ]
     },
     {
       "id": "phase3-sort-basic",
@@ -73016,7 +73534,7 @@
         "help"
       ],
       "source_version": "workspace cli/split@0.1.6 metadata contract",
-      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nFilters support shared shell arithmetic assignment, backticks and expanded here-documents.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nFilters support shared shell arithmetic assignment, backticks and expanded here-documents.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
       "expected_stderr_text": ""
     },
     {
@@ -73035,7 +73553,7 @@
         "version"
       ],
       "source_version": "workspace cli/split@0.1.6 metadata contract",
-      "expected_stdout_text": "split 0.1.7\n",
+      "expected_stdout_text": "split 0.1.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -75501,6 +76019,143 @@
           "kind": "file",
           "content_text": "1|ok|b\nok-2\n"
         }
+      ]
+    },
+    {
+      "id": "f31-split-test-size-targets",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; if test -s empty-link; then exit 8; fi; if test -s dangling; then exit 9; fi; test -s full-chain || exit 10; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symbolic-link",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symbolic-link",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symbolic-link",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symbolic-link",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symbolic-link",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symbolic-link",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symbolic-link",
+          "target": "cycle-a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "expected_files": [
+        {
+          "path": "empty",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symlink",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symlink",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symlink",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symlink",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symlink",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symlink",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symlink",
+          "target": "cycle-a"
+        },
+        {
+          "path": "piece-aa",
+          "kind": "file",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "kind": "file",
+          "content_text": "b\n"
+        }
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
       ]
     },
     {

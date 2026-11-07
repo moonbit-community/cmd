@@ -32,6 +32,11 @@ fn reject_unsupported_function(reference : String) -> Unit raise MakeError {
 }
 
 ///|
+fn default_shell_profile(literal : String) -> Bool {
+  literal == "/bin/sh"
+}
+
+///|
 fn validate_special_assignment(
   name : String,
   operator : String,
@@ -41,7 +46,7 @@ fn validate_special_assignment(
     let literal = value.trim().to_owned()
     let accepted = operator is ("=" | ":=" | "::=" | "?=") &&
       (if name == "SHELL" {
-        literal == "sh" || literal == "/bin/sh"
+        literal == "sh" || default_shell_profile(literal)
       } else {
         literal == "-c"
       })
@@ -73,7 +78,7 @@ fn validate_rule_words(
     if [
         ".ONESHELL", ".POSIX", ".DEFAULT", ".SUFFIXES", ".IGNORE", ".SILENT", ".NOTPARALLEL",
         ".DELETE_ON_ERROR", ".PRECIOUS", ".SECONDARY", ".INTERMEDIATE", ".NOTINTERMEDIATE",
-        ".LOW_RESOLUTION_TIME", ".EXPORT_ALL_VARIABLES", ".WAIT",
+        ".LOW_RESOLUTION_TIME", ".WAIT",
       ].contains(target) {
       raise MakeError(
         "special target '\{target}' is outside the supported make profile",

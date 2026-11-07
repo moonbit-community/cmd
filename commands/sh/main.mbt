@@ -34,12 +34,12 @@ async fn drive_input(session : @shell.Session, interactive : Bool) -> Int32 {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("sh 0.2.7\n")
+    @stdio.stdout.write("sh 0.2.8\n")
     return
   }
   if metadata_args.length() == 1 && metadata_args[0] == "--help" {
     @stdio.stdout.write(
-      "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports arithmetic assignment, backticks, expanded here-documents, stdout/stderr copies, loop control and printf/test builtins.\nTerminal job control, descriptor import/closure and complete POSIX/Bash grammar remain unavailable.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
+      "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports arithmetic assignment, backticks, expanded here-documents, stdout/stderr copies, loop control and printf/test builtins.\nTerminal job control, descriptor import/closure and complete POSIX/Bash grammar remain unavailable.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nMalformed shell command lists reject before execution; complete EOF continuations execute.\n",
     )
     return
   }
@@ -117,10 +117,11 @@ async fn main {
       Some(source) =>
         match session.feed(source) {
           @shell.Completed(status) | @shell.Exit(status) => status
-          @shell.NeedMoreInput => {
-            ignore(session.finish())
-            2
-          }
+          @shell.NeedMoreInput =>
+            match session.finish() {
+              @shell.Completed(status) | @shell.Exit(status) => status
+              @shell.NeedMoreInput => 2
+            }
         }
       None => {
         ignore(stdin_script)

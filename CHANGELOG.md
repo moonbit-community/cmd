@@ -44,9 +44,32 @@ Development and publication.
 - A later independent audit found missing file-size cases: the shared `test -s`
   measured final links themselves and hid unavailable target sizes as false.
   Those earlier finite receipts remain valid for their selected cases, but do
-  not close issue #31. Prepare core 0.9.3, make 0.2.6, sh 0.2.7 and split 0.1.8
-  with target-following metadata and explicit ENOTSUP rejection. Follow-up
-  development and exact-version publication acceptance remain pending.
+  not close issue #31. Publish core 0.9.3, make 0.2.6, sh 0.2.7 and split 0.1.8
+  from `5545ad7` with target-following metadata, raw POSIX trailing-slash checks
+  and explicit ENOTSUP rejection. Independent source/receipt audit and
+  [actual-main development CI](https://github.com/moonbit-community/cmd/actions/runs/42405602598)
+  pass, including 1,968 Wasm product tests and 205 Native test-tool tests on each
+  platform. Verify all four uploads, registry builds, package checksums and
+  actual isolated make/sh/split consumers of the uploaded core.
+- The size repair's [exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42407243329)
+  passes all 80 coordinates: local macOS 2,790/0/31, Linux 2,799/0/28,
+  macOS 2,790/0/31 and Windows 2,588/0/233 (pass/fail/platform exclusions).
+  Linux includes the fixed oracle and all six Linux-only oracle scenarios.
+  Freeze 2,656 definitions: all previous 2,646 IDs remain, with six metadata
+  output updates and ten added size cases. Their real link/type/size observations
+  include Linux directory sizes, macOS capability errors and Windows directory
+  symlink target identity. This is finite correctness acceptance, not full
+  upstream parity or formal performance acceptance.
+- A separate review of the original issue #31 scope found omitted make default
+  export/unexport behavior and related variable/environment semantics. Keep
+  #31 open while implementing and independently accepting that follow-up; the
+  successful size-repair release does not establish those missing behaviors.
+- Develop core 0.9.4, make 0.2.7, sh 0.2.8 and split 0.1.9 with named/default
+  export policy, GNU recipe expansion/environment phases, shell error status
+  capture and reserved-word/compound-list validation. Add actual CLI output,
+  status, recovery and file-effect assertions, including make's argument
+  construction for literal newlines. Publication and final acceptance remain
+  pending; the independently frozen size-repair coordinates stay unchanged.
 
 ## 2026-11-07
 

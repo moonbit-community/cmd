@@ -10,6 +10,19 @@ Implement the shell and make in pure MoonBit. Opaque Session exposes async
 feed/finish with NeedMoreInput, Completed and Exit results; run is an adapter
 and capture returns output/status. Keep incomplete syntax distinct from invalid
 syntax and loop control separate from exit status or signal origin.
+Reserved words are contextual at command and pipeline-stage starts. Required
+compound lists and logical right operands reject before execution; ordinary
+arguments, quoted words, top-level emptiness and empty case arms remain valid.
+EOF reparses a pending continued line and executes it if complete; incomplete
+quotes, here-documents and compounds still reject with the parse cause retained
+after the EOF diagnostic prefix. All Session adapters use that
+actual finish status. Child launch OS errors are classified at the launch call,
+outside stdout/stderr pumps; unexpected pump and other nonlanguage failures
+propagate with their identity and stop subsequent commands. The explicit
+closed-pipe path retains status 141. Substitution adds context only to
+ShellError. Source-read errors in an external child's input pump propagate;
+failure to write its owned stdin pipe stops feeding and leaves the child's exit
+status authoritative, since the child may intentionally close stdin early.
 
 Pipe-based sh sessions preserve cwd, variables, exports, functions and status.
 PS1/PS2 use stderr; ENV, multiline input, syntax recovery, EOF and exit retain
@@ -63,11 +76,39 @@ platform distinction, without claiming POSIX resolution on Windows.
 Make -j schedules dependency-ready targets and shared prerequisites once.
 Computed names, assignment flavors, exports, MAKELEVEL and MAKEFLAGS retain their
 separate phases. Shell-valued export recursion can use the original environment;
-ordinary recursive variables fail. Recipe expansion/environment construction is
-serialized while execution remains concurrent. `$(shell ...)` and `!=` preserve
+ordinary recursive variables fail. Preserve explicit export/unexport independently
+from the default export policy and initial environment/command-line origin.
+Default export requires an ASCII identifier and excludes unmodified builtin
+defaults. Named directives create empty simple variables before later `?=`;
+assignment modifier chains retain their final export/unexport decision without
+reinterpreting ordinary variable-name lists. `.EXPORT_ALL_VARIABLES` applies only
+after reading makefiles, including when a bare unexport appeared later.
+
+Expand a target's complete recipe list before executing its first command.
+Construct its environment lazily once and reuse it for that target. Empty
+recipes, pure colon no-ops and unexecuted dry-run recipes do not trigger export
+side effects. Expanded command echo precedes environment construction. Variable
+recursion during recipe/environment expansion is fatal even with `-k`; actual
+recipe exit failures retain keep-going behavior. These phases are serialized
+while target execution remains concurrent. `$(shell ...)` and `!=` preserve
 distinct trailing-newline rules and actual .SHELLSTATUS. Secondary expansion
 resolves automatic-variable prerequisites before planning, retaining observed GNU
 4.4.1 recipe-bearing declaration order and `$<`/`$^`/`$+` semantics.
+
+Construct make shell-function argv before its exported environment. The default
+Unix GNU fast path preserves literal LF as argument bytes; represent those argv
+values with shell quoting for the pure interpreter. The shell path removes raw
+LF through GNU's escape/reparse rule, preserving original backslash-LF pairs.
+Use the make variables SHELL, .SHELLFLAGS and IFS, not only exported environment,
+to choose the path. No-command results preserve the last status without export
+side effects. Shell-language exceptions become shell status 2 for both captures
+and recipes; make expansion errors, cancellation and I/O failures retain their
+own propagation. A recipe's `-` flag applies after obtaining its shell status.
+Capture stdout bytes until the first NUL, then decode that prefix as UTF-8;
+invalid bytes after NUL do not affect the value or actual shell status, while
+invalid bytes before it reject explicitly. Keep the private adapter and finite
+CLI regressions together; it does not establish every external GNU utility's
+behavior or arbitrary interpreter selection.
 
 Recipe `$?` snapshots distinct changed prerequisites once per target, including
 phony/missing dependencies, -B and -W virtual times. Secondary expansion sees
@@ -108,7 +149,7 @@ public FIFO creation API. These operations reject and reopen only with the
 relevant public API and actual platform regressions.
 
 Complete POSIX/Bash grammar, background jobs, GNU make builtin rule/function
-databases, archive/order-only/target-specific semantics and export-all remain
+databases, archive/order-only/target-specific semantics and override/private assignments remain
 outside this finite profile. Grammar gaps are project work, not automatically
 runtime blockers.
 

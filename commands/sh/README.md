@@ -2,15 +2,24 @@
 
 Run shell scripts and sessions for MoonX.
 
-Development candidate: `cli/sh@0.2.7`, using `cli/core@0.9.3`.
+Development candidate: `cli/sh@0.2.8`, using `cli/core@0.9.4`.
 Publication is pending. Earlier exact-coordinate acceptance is recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
-moonx cli/sh@0.2.7 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
+moonx cli/sh@0.2.8 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]
 ```
 
 ## Supported scope
+
+Unmatched reserved words, missing logical operands and empty required compound
+lists report syntax errors before that command list executes. Quoted words and
+arguments remain ordinary text; empty case arms and an empty script are valid.
+At EOF, a complete continued command executes; unfinished quotes or compound
+syntax still reject with their specific parse error. Unexpected child stdout/stderr transfer errors propagate
+without replaying writes or executing subsequent commands; closed pipes retain
+the existing status 141 contract. Launch failures identify
+the command and use status 127 for missing commands or 126 for other OS errors.
 
 This version accepts option parsing after `-s`, including `--`,
 before assigning stdin-script positional parameters. Dedicated exact cases
@@ -77,8 +86,8 @@ permissively returns a regular symlink target.
 ## Examples
 
 ```sh
-moonx cli/sh@0.2.7 -c 'echo hello'
-moonx cli/sh@0.2.7 script.sh
+moonx cli/sh@0.2.8 -c 'echo hello'
+moonx cli/sh@0.2.8 script.sh
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

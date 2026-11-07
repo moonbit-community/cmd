@@ -439,7 +439,7 @@
         "help"
       ],
       "source_version": "workspace cli/sh@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports arithmetic assignment, backticks, expanded here-documents, stdout/stderr copies, loop control and printf/test builtins.\nTerminal job control, descriptor import/closure and complete POSIX/Bash grammar remain unavailable.\nShell test -s follows target metadata; unavailable target sizes are rejected.\n",
+      "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports arithmetic assignment, backticks, expanded here-documents, stdout/stderr copies, loop control and printf/test builtins.\nTerminal job control, descriptor import/closure and complete POSIX/Bash grammar remain unavailable.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nMalformed shell command lists reject before execution; complete EOF continuations execute.\n",
       "expected_stderr_text": ""
     },
     {
@@ -458,7 +458,7 @@
         "version"
       ],
       "source_version": "workspace cli/sh@0.2.5 metadata contract",
-      "expected_stdout_text": "sh 0.2.7\n",
+      "expected_stdout_text": "sh 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -3141,6 +3141,813 @@
         "linux",
         "macos"
       ]
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-then",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; then"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-else",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; else"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-elif",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; elif"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-fi",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-do",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; do"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-done",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; done"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-in",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; in"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-esac",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; esac"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-pipe-reserved",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker | then"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-assignment-before-word",
+      "command": "sh",
+      "args": [
+        "-c",
+        "A=value then"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 127,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-redirect-before-word",
+      "command": "sh",
+      "args": [
+        "-c",
+        "> marker then"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 127,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": ""
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-export-audit-if-and-close",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if true && then printf wrong; fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-while-or-close",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; while true || do break; done"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-group-and-close",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; (true &&)"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-if-empty-body",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if true; then fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-if-empty-condition",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if ; then printf wrong; fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-for-empty-body",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; for x in a; do done"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-if-empty-else",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if false; then :; else fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-function-empty",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; foo() { }"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-subshell-empty",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; ()"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-group-empty",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; { }"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-while-empty-condition",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; while ; do :; done"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-empty-case-arms",
+      "command": "sh",
+      "args": [
+        "-c",
+        "case x in x) ;; esac; case x in esac; for x in; do :; done; printf ok"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "ok",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-eof-command-empty-continuation",
+      "command": "sh",
+      "args": [
+        "-c",
+        "\\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-eof-command-complete-continuation",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf kept\\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "kept",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-eof-stdin-complete-continuation",
+      "command": "sh",
+      "args": [
+        "-s"
+      ],
+      "stdin_text": "printf kept\\\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "kept",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-eof-command-incomplete-if",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if true; then \\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    {
+      "id": "f31-sh-eof-command-incomplete-quote",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; printf 'unclosed\\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "quote",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "An unfinished quoted command fails with status 2 before any command-list effects. The quote category is required in both diagnostics; shell prefixes, line numbers and wording differ."
+    },
+    {
+      "id": "f31-sh-eof-valid-logical-compounds",
+      "command": "sh",
+      "args": [
+        "-c",
+        "(true && true); if true && true; then :; fi; printf '%s' \"$(case x in x) ;; esac)\"; printf ok"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "ok",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
     }
   ]
 }

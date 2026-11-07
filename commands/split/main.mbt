@@ -21,6 +21,7 @@ fn help_message() -> String {
     #|
     #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
     #|Shell test -s follows target metadata; unavailable target sizes are rejected.
+    #|Malformed shell command lists reject before execution; complete EOF continuations execute.
   message
 }
 
@@ -86,7 +87,7 @@ async fn process(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("split 0.1.8\n")
+    @stdio.stdout.write("split 0.1.9\n")
     return
   }
   let parsed = parse_args(@env.args()[1:]) catch {
@@ -101,7 +102,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("split 0.1.8\n")
+    @stdio.stdout.write("split 0.1.9\n")
     return
   }
   try {

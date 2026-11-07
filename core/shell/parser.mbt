@@ -54,6 +54,11 @@ fn Parser::take_reserved(
 
 ///|
 fn Parser::parse_command(self : Parser) -> Command raise ParseIssue {
+  match self.peek_word() {
+    Some("then" | "else" | "elif" | "fi" | "do" | "done" | "in" | "esac") as word =>
+      raise InvalidSyntax("unexpected reserved word '\{word.unwrap()}'")
+    _ => ()
+  }
   let words : Array[Word] = []
   let redirects : Array[Redirect] = []
   let mut keep = true
@@ -121,11 +126,23 @@ fn Parser::parse_until(
   self.skip_sequences()
   while self.pos < self.tokens.length() {
     match self.peek() {
-      Some(RParen) | Some(RBrace) | Some(CaseEnd) => break
+      Some(RParen) | Some(RBrace) | Some(CaseEnd) => {
+        if connector is (OnSuccess | OnFailure) {
+          raise InvalidSyntax("unexpected closing token after logical operator")
+        }
+        break
+      }
       _ => ()
     }
     match self.peek_word() {
-      Some(word) if stop.contains(word) => break
+      Some(word) if stop.contains(word) => {
+        if connector is (OnSuccess | OnFailure) {
+          raise InvalidSyntax(
+            "unexpected reserved word '\{word}' after logical operator",
+          )
+        }
+        break
+      }
       _ => ()
     }
     jobs.push({ connector, statement: self.parse_statement(), })
@@ -158,14 +175,26 @@ fn Parser::parse_until(
 }
 
 ///|
+fn Parser::parse_required(
+  self : Parser,
+  stop : Array[String],
+) -> Array[Job] raise ParseIssue {
+  let jobs = self.parse_until(stop)
+  if jobs.is_empty() {
+    raise self.expected("unexpected empty command list")
+  }
+  jobs
+}
+
+///|
 fn Parser::parse_if(self : Parser) -> Statement raise ParseIssue {
   self.take_reserved("if")
-  let condition = self.parse_until(["then"])
+  let condition = self.parse_required(["then"])
   self.take_reserved("then")
-  let then_body = self.parse_until(["else", "fi"])
+  let then_body = self.parse_required(["else", "fi"])
   let else_body = if self.peek_word() == Some("else") {
     self.pos += 1
-    self.parse_until(["fi"])
+    self.parse_required(["fi"])
   } else {
     []
   }
@@ -228,7 +257,7 @@ fn Parser::parse_for(self : Parser) -> Statement raise ParseIssue {
   }
   self.skip_sequences()
   self.take_reserved("do")
-  let body = self.parse_until(["done"])
+  let body = self.parse_required(["done"])
   self.take_reserved("done")
   ForStatement(name, words, body)
 }
@@ -239,9 +268,9 @@ fn Parser::parse_loop(
   until : Bool,
 ) -> Statement raise ParseIssue {
   self.take_reserved(if until { "until" } else { "while" })
-  let condition = self.parse_until(["do"])
+  let condition = self.parse_required(["do"])
   self.take_reserved("do")
-  let body = self.parse_until(["done"])
+  let body = self.parse_required(["done"])
   self.take_reserved("done")
   LoopStatement(condition, body, until)
 }
@@ -254,6 +283,8 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ParseIssue {
     Some("for") => self.parse_for()
     Some("while") => self.parse_loop(false)
     Some("until") => self.parse_loop(true)
+    Some("then" | "else" | "elif" | "fi" | "do" | "done" | "in" | "esac") as word =>
+      raise InvalidSyntax("unexpected reserved word '\{word.unwrap()}'")
     Some(name) if self.pos + 2 < self.tokens.length() &&
       self.tokens[self.pos + 1] == LParen &&
       self.tokens[self.pos + 2] == RParen => {
@@ -263,7 +294,7 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ParseIssue {
         raise self.expected("expected function body")
       }
       self.pos += 1
-      let body = self.parse_until([])
+      let body = self.parse_required([])
       if self.peek() != Some(RBrace) {
         raise IncompleteSyntax("unterminated function body")
       }
@@ -274,7 +305,7 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ParseIssue {
       match self.peek() {
         Some(LParen) => {
           self.pos += 1
-          let body = self.parse_until([])
+          let body = self.parse_required([])
           if self.peek() != Some(RParen) {
             raise IncompleteSyntax("unterminated subshell")
           }
@@ -283,7 +314,7 @@ fn Parser::parse_statement(self : Parser) -> Statement raise ParseIssue {
         }
         Some(LBrace) => {
           self.pos += 1
-          let body = self.parse_until([])
+          let body = self.parse_required([])
           if self.peek() != Some(RBrace) {
             raise IncompleteSyntax("unterminated group")
           }

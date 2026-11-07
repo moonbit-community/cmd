@@ -208,20 +208,22 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-11-08 release: core is 0.9.2.
-  Published make 0.2.5, sh 0.2.6 and split 0.1.7; retained the other 77 coordinates,
+- Current registry baseline after the 2026-11-08 size repair: core is 0.9.3.
+  Published make 0.2.6, sh 0.2.7 and split 0.1.8; retained the other 77 coordinates,
   giving 80 published commands among 81 local modules. Core dependencies are
-  3 commands on 0.9.2, 25 on 0.9.1, 24 on 0.9.0 and 23 on 0.8.2;
+  3 commands on 0.9.3, 25 on 0.9.1, 24 on 0.9.0 and 23 on 0.8.2;
   echo/false/sleep/true/typst do not depend on core.
   timeout remains unpublished and local-only. Exact coordinates and independent
   expectations are in tests/release/latest.json and latest-cases.json.
-  Source commit e739345 passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42396312258).
+  Source commit 5545ad7 passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42405602598).
   All four uploads, registry builds and package checksums were verified.
   Local exact-version MoonX and
-  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42397826082)
+  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42407243329)
   passed all 80 coordinates with zero failures, including pinned Linux comparison.
   Counts and exclusions are in CHANGELOG.md under 2026-11-08. This does not
   establish full upstream parity or formal performance acceptance.
+  The independently audited 2,656 frozen definitions cover the size repair.
+  Issue #31 remains open for the separately identified make export omissions.
   Current latest/candidate snapshots remain independent. Retired published and
   historical archives are preserved in Git at 234f960, rather than duplicated
   in the active checkout. Prior acceptance results retain their dated scope

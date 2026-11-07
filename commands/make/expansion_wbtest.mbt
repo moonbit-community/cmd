@@ -51,7 +51,14 @@ async test "exported shell recursion falls back only to the original environment
     }
     let state = Expansion::new(original~)
     assert_eq(
-      lookup_variable("HI", variables, {}, 0, exported=Set(["HI"]), state~),
+      lookup_variable(
+        "HI",
+        variables,
+        {},
+        0,
+        exported=ExportPolicy::new(["HI"]),
+        state~,
+      ),
       expected,
     )
     assert_eq(state.active.length(), 0)
@@ -88,7 +95,7 @@ async test "empty shell expansion preserves status and shell assignment retains 
     cwd: ".",
     variables,
     command_line_variables: Map([]),
-    exported: Set([]),
+    exported: ExportPolicy::new([]),
     rules: Map([]),
     default_target: None,
     secondary_expansion: false,

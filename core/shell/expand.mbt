@@ -158,10 +158,7 @@ fn trim_substitution(value : String) -> String {
 }
 
 ///|
-async fn expand_default(
-  raw : String,
-  context : Context,
-) -> String raise ShellError {
+async fn expand_default(raw : String, context : Context) -> String {
   let tokens = lex(raw, fragment=true)
   let values : Array[String] = []
   for token in tokens {
@@ -184,7 +181,7 @@ async fn expand_startup_path(
   value : String,
   context : Context,
   escape_quote~ : Bool = true,
-) -> String raise ShellError {
+) -> String {
   let chars = value.iter().collect()
   let parts : Array[WordPart] = []
   let literal = StringBuilder()
@@ -237,7 +234,7 @@ async fn expand_word(
   split~ : Bool = true,
   pathname~ : Bool = true,
   preserve_pattern~ : Bool = false,
-) -> Array[String] raise ShellError {
+) -> Array[String] {
   let fields : Array[String] = []
   let current = StringBuilder()
   let started = Ref(false)
@@ -421,7 +418,7 @@ async fn expand_word(
 }
 
 ///|
-async fn expand_path(word : Word, context : Context) -> String raise ShellError {
+async fn expand_path(word : Word, context : Context) -> String {
   match expand_word(word, context) {
     [path] => resolve_path(context, path)
     [] => raise ShellError("redirection path expands to no fields")
@@ -466,7 +463,7 @@ fn retain_assignment_expansion_effects(
 async fn prepare_words(
   command : Command,
   context : Context,
-) -> (Array[String], Array[Word]) raise ShellError {
+) -> (Array[String], Array[Word]) {
   context.substitution_status = None
   let argv : Array[String] = []
   let assignment_words : Array[Word] = []
@@ -490,7 +487,7 @@ async fn prepare_words(
 async fn prepare_redirects(
   redirects : Array[Redirect],
   context : Context,
-) -> Array[ExpandedRedirect] raise ShellError {
+) -> Array[ExpandedRedirect] {
   let result : Array[ExpandedRedirect] = []
   for redirect in redirects {
     result.push(
@@ -515,7 +512,7 @@ async fn prepare_assignments(
   argv : Array[String],
   assignment_words : Array[Word],
   context : Context,
-) -> Prepared raise ShellError {
+) -> Prepared {
   let assignments : Map[String, String] = Map([])
   let assignment_context = clone_context(context)
   for word in assignment_words {

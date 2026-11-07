@@ -38,10 +38,11 @@ async fn Outputs::open(self : Outputs) -> Piece {
       let status = try {
         match session.feed(source) {
           Completed(status) | Exit(status) => status
-          NeedMoreInput => {
-            ignore(session.finish())
-            2
-          }
+          NeedMoreInput =>
+            match session.finish() {
+              Completed(status) | Exit(status) => status
+              NeedMoreInput => 2
+            }
         }
       } catch {
         @shell.ShellError(message) => {
