@@ -5,10 +5,14 @@ Updated: 2026-11-07
 
 ## Extensions and diagnostics
 
-Issue #22 governs the finite existing option surface. The current candidate
-versions are in [candidate.json](../tests/release/candidate.json); published
-versions and expectations remain frozen in latest.json and latest-cases.json.
-Candidate definitions and manual reviews are not execution or publication evidence.
+Issue #22 governs the finite existing option surface. The 2026-11-07 release
+published 46 changed command coordinates while retaining core 0.9.1 and the
+other 34 command coordinates. Exact versions and independently frozen
+expectations are in [latest.json](../tests/release/latest.json) and
+[latest-cases.json](../tests/release/latest-cases.json).
+[Three-platform exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42379717812)
+passed all 80 coordinates, including fixed Linux upstream comparison.
+Candidate definitions and manual reviews remain separate from execution evidence.
 
 | Command/profile | Public spelling and deliberate distinction |
 | --- | --- |
@@ -73,13 +77,14 @@ this profile does not relabel those omissions as implemented.
 
 ## Current delivery and historical acceptance
 
-The tree 0.1.6 development candidate lists symbolic links as named leaves without
+Published tree 0.1.6 lists symbolic links as named leaves without
 following targets, including dangling and cyclic links. Text/HTML omit target
 text; JSON identifies links explicitly. Links count as files, and `-d` excludes
 discovered links while retaining explicit operands. Selected-link sizes and
 `ln=target` coloring reject explicitly. These are
 documented extensions of the former all-links rejection, not full upstream
-link-display parity. Published tree 0.1.5 and its frozen expectations are unchanged.
+link-display parity. Earlier tree 0.1.5 evidence retains its dated scope in
+CHANGELOG.md and Git; it is not rewritten as acceptance of the new behavior.
 
 Workspace development uses `moonbitlang/async@0.22.7` across modules and
 standalone test tools. CI follows the official `latest` toolchain and core and
@@ -92,9 +97,11 @@ latest Moonrun is `0.1.20261104 (940aa18)`.
 This dependency upgrade does not enable new command
 features or lift existing filesystem/process boundaries. In particular,
 `Directory::open` and `Directory::remove` in async 0.22.7 do not support Wasm.
-Published coordinates and their frozen expectations remain independent in
-`tests/release/latest.json` and `latest-cases.json`; no package is published by
-this development change.
+The 2026-11-06 dependency update alone created no releases. The 46 command
+versions published on 2026-11-07 use the current dependency declarations;
+the other 34 coordinates retain their previously published builds.
+Published coordinates and frozen expectations remain independent inputs in
+`tests/release/latest.json` and `latest-cases.json`.
 
 `cli/typst@0.1.0` is published. Its migrated CLI,
 document environment and watcher use a pure MoonBit platform adapter; the
