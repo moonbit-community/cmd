@@ -11,6 +11,12 @@ The corpus distinguishes no password from an empty password and records
 no-network errors for empty URL usernames and invalid attached booleans.
 Configuration, netrc, non-Basic schemes and general URL grammar remain outside
 this finite profile. Its oracle arguments explicitly disable config and netrc.
+The 130 complete oracle request lines are independently extracted from the
+original raw records, including URL userinfo in absolute proxy targets; their
+extraction digest is `ae2b7631e7591f30dfc660ab3210aff0e60042323afa461d9a5b3fa3f64763f6`.
+The observer verifies an absolute target against that exact line, preserving
+the original canonical method/Host/Authorization/body expectations. It retains
+raw input before parsing and rejects any recorded observer error.
 
 `wget-cookies.json` retains 58 finite cookie expectations observed independently
 with GNU Wget 1.25.0 from source archive SHA256
