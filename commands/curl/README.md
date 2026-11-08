@@ -73,8 +73,18 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
   domains become host-only before prefix checks; file imports retain curl's
   localhost exception. Stored domain spellings retain their ASCII case;
   matching, replacement, secure overlay checks and PSL admission fold ASCII case.
-  IDNA/NFKC normalization of URL and Domain inputs and complete jar grammar and
+  Cookie Domain normalization and complete jar grammar and
   serialization remain unfinished. Published coordinates retain their recorded profile.
+- The unpublished workspace converts Unicode URL hosts with the pinned
+  [Unicode 15 IDNA profile](../../tests/fixtures/idna/README.md) for UTF-8 environment spellings.
+  `LC_ALL`, then `LC_CTYPE`, then `LANG` selects the input encoding. This checks
+  the UTF-8 suffix, not whether the host has installed that locale. Differential
+  acceptance covers the pinned image's installed `C` and `C.UTF-8` profiles;
+  unavailable named locales can differ from fixed Curl's `setlocale` behavior. C/POSIX
+  rejects non-ASCII hosts; other legacy encodings are not supported. Percent
+  escapes are decoded before conversion. Canonical hosts govern DNS, TLS SNI,
+  Host, credential origins, cookies and NO_PROXY comparisons; exclusion tokens
+  themselves are not IDNA-converted. Full IRI and configuration behavior remain open.
 - Content-encoded responses remain encoded. A redirect cannot rewind consumed stdin uploads.
 - Partial stdout remains after failure; files remain unless --remove-on-error is selected. -O -J does not overwrite an existing selected name.
 

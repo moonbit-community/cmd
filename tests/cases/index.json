@@ -45725,6 +45725,54 @@
         "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:network-idna",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-idna",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-idna",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-idna",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-idna-oracle",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-idna-oracle",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:network-idna-oracle",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-idna-oracle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

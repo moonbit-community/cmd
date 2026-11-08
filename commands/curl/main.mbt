@@ -117,7 +117,12 @@ fn proxy_for(options : Options, url : String) -> String? {
         None => @env.get_env_var("no_proxy")
       }
   }
-  if @netops.proxy_bypassed(url, no_proxy) {
+  if @netops.proxy_bypassed(
+      url,
+      no_proxy,
+      profile=@netops.CurlProfile,
+      utf8_hosts=utf8_hosts(),
+    ) {
     return None
   }
   if options.proxy_url is Some(value) {
@@ -483,6 +488,7 @@ async fn transfer_one(
         transfer_output.for_attempt(),
         @netops.transfer_options(
           profile=@netops.CurlProfile,
+          utf8_hosts=utf8_hosts(),
           request_method=request_method(options),
           headers~,
           body~,

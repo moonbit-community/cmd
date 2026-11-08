@@ -20,14 +20,17 @@ pub async fn transfer(
   validate_headers(options.headers)
   let started = @async.now()
   let requested_url = url
-  let mut parsed = parse_absolute_url(url).for_transfer(options.profile)
+  let mut parsed = parse_absolute_url(url).for_transfer(
+    options.profile,
+    utf8_hosts=options.utf8_hosts,
+  )
   let credential_origin = parsed.origin_key()
   let challenged_origins : Map[String, Bool] = Map([])
   let mut request_method = options.request_method
   let mut body = options.body
   let mut headers = options.headers.copy()
   let cookie_data = options.cookie_data
-  let seen : Map[String, Bool] = Map([])
+  let seen : Map[(String, String?, String), Bool] = Map([])
   let mut redirect_count = 0
   for ;; {
     let origin = parsed.origin_key()
@@ -35,9 +38,12 @@ pub async fn transfer(
       origin == credential_origin
     let send_basic = options.basic_preemptive ||
       challenged_origins.contains(origin)
-    let key = parsed.to_url()
+    let key = (origin, parsed.user_info, parsed.request_target())
     if seen.contains(key) {
-      raise transfer_error(RedirectFailure, "redirect loop detected at \{key}")
+      raise transfer_error(
+        RedirectFailure,
+        "redirect loop detected at \{parsed.to_url()}",
+      )
     }
     seen[key] = true
     let length = body_length(body)
@@ -163,6 +169,7 @@ pub async fn transfer(
       let next = resolve_location(parsed, location).for_transfer(
         options.profile,
         redirect=true,
+        utf8_hosts=options.utf8_hosts,
       ) catch {
         TransferError(message~, ..) => {
           client.close()

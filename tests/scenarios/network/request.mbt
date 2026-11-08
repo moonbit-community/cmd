@@ -1,6 +1,7 @@
 ///|
 priv struct TransferFileObservation {
   mut work : String?
+  mut evidence_name : String?
   snapshots : Array[Array[(String, Bool, Bytes)]]
 }
 
@@ -9,7 +10,9 @@ async fn TransferFileObservation::capture(
   self : TransferFileObservation,
 ) -> Unit {
   guard self.work is Some(work) else { return }
-  let names = @fs.readdir(work).filter(name => name != "oracle")
+  let names = @fs.readdir(work).filter(name => {
+    name != "oracle" && self.evidence_name != Some(name)
+  })
   names.sort()
   let snapshot : Array[(String, Bool, Bytes)] = []
   for name in names {
@@ -30,6 +33,7 @@ async fn network_request(
   args : Array[String],
   stdin~ : Bytes = b"",
   oracle_image? : String,
+  oracle_args? : Array[String],
   oracle_failures? : Array[String],
   transfer_requests? : Array[@harness.TransferFixtureRequest],
   request_wires? : Array[Bytes],
@@ -50,15 +54,58 @@ async fn network_request(
 ) -> @harness.RunResult {
   if transfer_files is Some(observation) {
     observation.work = Some(work)
+    observation.evidence_name = None
     observation.snapshots.clear()
   }
-  defer (if transfer_files is Some(observation) { observation.work = None })
+  defer (if transfer_files is Some(observation) {
+    observation.work = None
+    observation.evidence_name = None
+  })
   if transfer_requests is Some(requests) {
     requests.clear()
   }
   if request_wires is Some(wires) {
     wires.clear()
   }
+  let name = "call-\{@fs.readdir(work).length()}"
+  let prefix = work + "/" + name
+  if transfer_files is Some(observation) {
+    observation.evidence_name = Some(name + ".intent.json")
+  }
+  if expected_files is Some(files) {
+    assert_false(
+      files.any(file => file.0 == name + ".intent.json"),
+      msg="product fixture collides with invocation evidence",
+    )
+  }
+  let invoked_at = @async.now()
+  let returned = Ref(false)
+  let returned_at = Ref(invoked_at)
+  @fs.write_file(
+    prefix + ".intent.json",
+    (
+      {
+        "command": Json(command),
+        "args": Json(args),
+        "cwd": Json(work),
+        "phase": "before-invoke",
+        "started_ms": @json.to_json(invoked_at),
+      } : Json).stringify(indent=2),
+  )
+  defer @async.protect_from_cancel(() => {
+    // Without a returned execution there is no child status or cleanup verdict.
+    @fs.write_file(
+      prefix + ".invocation-end.json",
+      (
+        {
+          "returned": Json(returned.val),
+          "elapsed_ms": @json.to_json(
+            (if returned.val { returned_at.val } else { @async.now() }) -
+            invoked_at,
+          ),
+        } : Json).stringify(indent=2),
+    )
+  })
   let execution = (executor.invoke)({
     command,
     args,
@@ -66,10 +113,12 @@ async fn network_request(
     cwd: work,
     environment,
   })
+  returned_at.val = @async.now()
+  returned.val = true
   let result = execution.run.output
-  // Capture product effects before adding evidence files to this directory.
+  // Exclude only the invocation intent owned by this call from product effects.
   let output_names = if expected_files is Some(_) {
-    let names = @fs.readdir(work)
+    let names = @fs.readdir(work).filter(file => file != name + ".intent.json")
     let names = if oracle_image is Some(_) {
       names.filter(name => name != "oracle")
     } else {
@@ -80,7 +129,6 @@ async fn network_request(
   } else {
     None
   }
-  let prefix = work + "/call-\{@fs.readdir(work).length()}"
   @fs.write_file(prefix + ".stdout.bin", result.stdout)
   @fs.write_file(prefix + ".stderr.bin", result.stderr)
   @fs.write_file(prefix + ".status.txt", result.status.to_string())
@@ -153,7 +201,9 @@ async fn network_request(
     if !@fs.exists(oracle_work) {
       @fs.mkdir(oracle_work)
     }
-    let oracle_args = args.map(arg => arg.replace_all(old=work, new=oracle_work))
+    let oracle_args = oracle_args
+      .unwrap_or(args)
+      .map(arg => arg.replace_all(old=work, new=oracle_work))
     if transfer_requests is Some(requests) {
       requests.clear()
     }
@@ -162,6 +212,7 @@ async fn network_request(
     }
     if transfer_files is Some(observation) {
       observation.work = Some(oracle_work)
+      observation.evidence_name = None
       observation.snapshots.clear()
     }
     let oracle_environment : Array[String] = []
@@ -216,6 +267,8 @@ async fn network_request(
     @fs.write_file(
       prefix + ".oracle.execution.json",
       @harness.canonical_json({
+        "command": Json(command),
+        "args": Json(oracle_args),
         "timed_out": Json(run.timed_out),
         "cleanup_error": @json.to_json(run.cleanup_error),
       }),

@@ -75,7 +75,7 @@ async fn HttpWire::start_request(
   text.write_string(
     request_method.wire_name() + " " + parsed.request_target() + " HTTP/1.1\r\n",
   )
-  text.write_string("Host: " + parsed.endpoint + "\r\n")
+  text.write_string("Host: " + parsed.request_host(options.profile) + "\r\n")
   if !persistent.contains("User-Agent") && !headers.contains("User-Agent") {
     text.write_string("User-Agent: moonbit-http-client/1.1\r\n")
   }

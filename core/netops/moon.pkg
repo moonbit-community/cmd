@@ -12,6 +12,8 @@ import {
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/string",
   "moonbitlang/x/time",
+  "moonbit-community/normalization",
+  "moonbit-community/punycode",
 }
 
 import {

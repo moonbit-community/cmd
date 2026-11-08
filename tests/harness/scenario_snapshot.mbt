@@ -37,7 +37,9 @@ pub async fn scenario_contract_snapshot(cases : Array[Case]) -> Json {
   let files = [
     "tests/moon.mod", "tests/run.mbtx", "tests/tools/validate.mbtx", "tests/coverage/review/scenarios.json",
     "tests/tools/public_suffix.mbtx", "tests/fixtures/psl/public_suffix_list.dat",
-    "tests/fixtures/psl/test_psl.txt",
+    "tests/fixtures/psl/test_psl.txt", "tests/tools/idna.mbtx", "tests/fixtures/idna/IdnaMappingTable.txt",
+    "tests/fixtures/idna/Idna2008.txt", "tests/fixtures/idna/UnicodeData.txt", "tests/fixtures/idna/DerivedJoiningType.txt",
+    "tests/fixtures/idna/NormalizationTest.txt", "tests/fixtures/idna/LICENSE.txt",
   ]
   for directory in ["tests/harness", "tests/scenarios", "tests/coverage"] {
     scenario_source_files(directory, files)

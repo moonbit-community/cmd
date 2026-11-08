@@ -400,6 +400,7 @@ async fn network_transfer_scenario(
     let requests : Array[@harness.TransferFixtureRequest] = []
     let transfer_files : TransferFileObservation = {
       work: None,
+      evidence_name: None,
       snapshots: [],
     }
     group.spawn_bg(no_wait=true, () => {

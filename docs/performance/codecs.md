@@ -108,6 +108,40 @@ The complete [historical trials](https://github.com/moonbit-community/cmd/blob/c
 retain failed windows and superseded intermediate acceptances. None of these
 rejections means the current ready-span decoder is unadopted.
 
+## International URL-host conversion
+
+Added 2026-11-09; correctness work, without performance qualification.
+`transfer -> ParsedUrl::for_transfer -> transfer_host -> idna_host` in
+[url_wire.mbt](../../core/netops/url_wire.mbt) and
+[idna.mbt](../../core/netops/idna.mbt) decodes host escapes, applies the selected
+input profile, and then converts Unicode hosts. ASCII input takes the command's
+bypass path. Unicode properties use binary searches over immutable sorted
+Unicode 15 ranges, followed by the released NFC and Punycode primitives.
+
+The mapping pass bounds emitted codepoints below 255 before NFC; encoded labels
+are at most 63 bytes and the complete name is at most 253 bytes, or 254 with a
+trailing root dot. Input scanning remains linear even when ignored characters
+produce no mapped output. Intermediate normalized labels and validation arrays
+are bounded by the admitted mapped host. The immutable generated tables add
+artifact/startup cost; that cost has not been measured or accepted here.
+
+Nontransitional failure retries the entire original host transitionally. It
+does not concatenate labels converted under different modes. Fixed-profile
+admission retains the pinned category override, ContextJ and bidi behavior and
+ACE round-trip checks in [idna_validation.mbt](../../core/netops/idna_validation.mbt).
+The canonical host remains a structured field: mapped slash, at-sign, colon
+or brackets cannot become new URL syntax, credentials or a loopback exception.
+
+Using the released generic IDNA converter directly was rejected because its
+Unicode version and domain-wide bidi/fallback rules differ from the fixed
+oracle. Reconsider that choice only when the public converter can select this
+profile or an explicit compatibility decision advances the oracle. The full
+independent data and regeneration command are in the
+[fixture guide](../../tests/fixtures/idna/README.md); NFC corpus tests, private
+converter controls and the [raw command scenario](../../tests/scenarios/network/idna.mbt)
+establish different layers of correctness. [ADR-0005](../adr/0005-transfer.md#international-url-hosts)
+owns input, proxy and cookie boundaries.
+
 ## Verification routes
 
 `base32-byte-encoding`, `base64-byte-encoding` and `inflate-ready-spans` in

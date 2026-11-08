@@ -196,6 +196,7 @@ pub(all) enum CustomCookieMode {
 ///|
 pub(all) struct TransferOptions {
   profile : TransferProfile
+  utf8_hosts : Bool
   request_method : HttpMethod
   headers : Array[HttpHeader]
   body : RequestBody
@@ -225,6 +226,7 @@ pub(all) struct TransferOptions {
 /// past the retained prefix before appending new bytes. File output must append.
 pub fn transfer_options(
   profile~ : TransferProfile = StrictProfile,
+  utf8_hosts~ : Bool = true,
   request_method~ : HttpMethod = Get,
   headers~ : Array[HttpHeader] = [],
   body~ : RequestBody = EmptyBody,
@@ -250,6 +252,7 @@ pub fn transfer_options(
 ) -> TransferOptions {
   {
     profile,
+    utf8_hosts,
     request_method,
     headers,
     body,

@@ -28,6 +28,7 @@ pub fn supports(id : String) -> Bool {
   [
     "network-auth-cookie", "network-auth-cookie-oracle", "network-transfer-boundaries",
     "network-transfer-boundaries-oracle", "network-cookie-suffix", "network-cookie-suffix-oracle",
+    "network-idna", "network-idna-oracle",
   ].contains(id)
 }
 
@@ -50,6 +51,8 @@ pub async fn run(
       network_cookie_suffix_scenario(executor, work, failures, oracle_image?)
       guard failures.is_empty() else { fail(failures.join("\n")) }
     }
+    "network-idna" | "network-idna-oracle" =>
+      network_idna_scenario(executor, work, oracle_image?)
     _ => fail("unknown shared network scenario: " + id)
   }
 }
@@ -71,6 +74,9 @@ pub fn observations(id : String) -> Array[String] {
     ])
   } else {
     result.append(["request-count", "request-authorization", "cookie-effects"])
+    if id.has_prefix("network-idna") {
+      result.push("request-target")
+    }
     if !(@async.platform is Windows) {
       result.push("mode")
     }

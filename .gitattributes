@@ -13,3 +13,6 @@ tests/release/*.json text eol=lf
 tests/fixtures/psl/public_suffix_list.dat -text
 tests/fixtures/psl/test_psl.txt -text
 core/netops/cookie_suffix_data.mbt text eol=lf
+tests/fixtures/idna/*.txt -text
+core/netops/idna_data.mbt text eol=lf
+core/netops/UNICODE-LICENSE.txt -text

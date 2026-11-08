@@ -6,9 +6,10 @@ Updated: 2026-11-09
 
 ## Decision
 
-Use public async Client connection, TLS and proxy setup, then its released
-passthrough API for pure MoonBit HTTP/1 serialization and framing. HttpWire
-owns request payloads, timeouts and write errors. The public default is
+Use released public TCP/TLS readers and writers with a private connection owner
+for direct and proxy setup. Preserve the parsed canonical host without passing
+it through a second URL parser. HttpWire owns pure MoonBit HTTP/1 serialization,
+framing, request payloads, timeouts and write errors. The public default is
 StrictProfile; curl and wget explicitly select their distinct policies.
 Do not delegate to host tools or add responsibility-free forwarding layers.
 
@@ -50,7 +51,7 @@ headers and premature fixed/chunked EOF.
 
 Cookie domain/path/Secure/expiry, update order and malformed/overflow Max-Age
 policies remain profile-specific. Exact wire tests own the detailed cases;
-this does not establish browser policy, URL IDNA or full jar serialization.
+this does not establish browser policy or full jar serialization.
 
 The unpublished Curl profile checks case-sensitive `__Secure-` and `__Host-`
 prefixes before mutating storage, including Netscape imports. Header cookie
@@ -79,9 +80,9 @@ Headers and row ordering in jar files are not byte-parity claims.
 The workspace embeds the complete ICANN and PRIVATE PSL snapshot at
 `94ec5df7273926560d91e77c002000ba1a53fec4`, with original input, license and
 checksums in `tests/fixtures/psl`. The pure MoonBit generator retains Unicode
-rules and adds Punycode aliases. This does not normalize incoming URL or
-Domain spellings with IDNA/NFKC; that distinct Unicode input behavior remains
-unfinished under #34. Complete data coverage is not complete Unicode admission.
+rules and adds Punycode aliases. Cookie Domain normalization remains separate
+unfinished #34 work; URL conversion is described below. Complete suffix data
+coverage is not complete Unicode admission.
 Private sorted tables implement libpsl 0.21.2's cookie policy, including
 wildcard bases, exceptions and the longest suffix of the request host. Curl
 converts accepted exact suffix responses to host-only before prefix validation;
@@ -167,11 +168,66 @@ full absolute ordering of every generated header and jar field.
 Wget's explicit Cookie cross-origin coverage now uses an actual --header
 redirect, independently of its unchanged --no-cookies case.
 
-Header removal/semicolon syntax and header files, URL IDNA, complete cookie-jar
+Header removal/semicolon syntax and header files, complete cookie-jar
 serialization, configuration loading and stdin authentication replay remain
 project work under issue #34. Extend the owning parser and protocol fixtures
 before lifting these limits; no upstream list API is required. This batch does
 not establish full curl/Wget parity or performance qualification.
+
+## International URL hosts
+
+The unpublished converter pins Unicode 15.0.0 mapping, derived IDNA categories,
+canonical combining classes, general categories, bidi and joining properties
+to the complete original inputs in `tests/fixtures/idna`. The pure MoonBit
+generator verifies every input hash and full mapping coverage. The published
+normalization and Punycode primitives remain implementation dependencies;
+the complete original 19,074-record Unicode NFC corpus supplies independent
+expectations. The adapter preserves libidn2 2.3.7's U+19DA override, per-label
+bidi rules, known-CONTEXTO-rule policy, ContextJ checks, ACE round-trip and
+length limits, and retries the entire original host transitionally after a
+nontransitional failure. It must not mix output from the two attempts.
+
+Curl selects UTF-8 input by the environment value's suffix, through LC_ALL,
+LC_CTYPE and LANG precedence; C/POSIX rejects non-ASCII hosts. This does not
+query installed host locales or reproduce `setlocale` failure. The pinned
+oracle's differential acceptance covers its installed C and C.UTF-8 profiles;
+unavailable names such as en_US.UTF-8 are a separate known boundary. Lifting it
+requires a released public host-locale capability and real child-process
+controls for installed and unavailable profiles on each platform.
+Wget's fixed build defaults to ASCII input and enables
+UTF-8 through `--local-encoding`. Its failed conversion retains the decoded
+host. Percent decoding precedes conversion; already-ASCII hosts keep the
+command's bypass behavior. Invalid UTF-8 and other legacy encodings have an
+explicit rejection boundary. Full Wget IRI retry behavior remains open.
+
+Canonical host fields are never reparsed as URL syntax. Mapping may introduce
+slash, at-sign, colon or space characters, so relative redirects retain the
+structured host, userinfo and port. Loop identity uses separate origin,
+userinfo and request-target fields. DNS, SNI, Host, credential scope, cookie
+selection and NO_PROXY comparisons share this canonical host; NO_PROXY tokens
+themselves are not normalized. Original bracket syntax is tracked separately.
+Only an original IP literal loses brackets for Curl cookie identity; fullwidth
+brackets mapped by IDNA retain their host spelling and cannot obtain the HTTP
+loopback exception for Secure cookies. Independent real proxy observations
+exposed and constrain this distinction. The current proxy implementation always
+uses CONNECT; fixed Curl's mapped-bracket ordinary forward-proxy path can fail
+before sending a request, so its successful cookie comparison explicitly uses
+the equivalent tunnel route. That difference does not establish full proxy parity.
+Wget formats mapped colons in the outgoing Host field with brackets and omits
+the scheme's default port, while retaining the canonical host/port internally.
+Its fixed forward-proxy URL escapes host `@` as `%40`; raw assertions verify
+that absolute target separately from Host and the workspace's origin-form target.
+
+The private connection owner uses released TCP/TLS APIs. CONNECT headers are
+read one byte at a time to retain any tunnel prefetch in the underlying public
+reader, and nested TLS owns both layers for cancellation and failure cleanup.
+Independent conversion probes and real command wire/transport observations
+are separate requirements. The `network-idna` scenario records actual Host,
+request target, Authorization and Cookie fields, preserving raw CONNECT and
+HTTP requests. Source-derived definitions alone are not execution evidence.
+Changing data, input profiles or transport ownership requires fresh immutable
+oracle and cleanup controls. This scope does not resolve Cookie Domain
+normalization, configuration loading, all proxy dialects or published acceptance.
 
 ## Output ownership
 

@@ -62,7 +62,7 @@ fn ParsedUrl::cookie_host(
   } else {
     self.host.to_lower()
   }
-  if profile == CurlProfile && host.has_prefix("[") && host.has_suffix("]") {
+  if profile == CurlProfile && self.ip_literal {
     cookie_ascii_lower(host[1:host.length() - 1].to_owned())
   } else {
     host

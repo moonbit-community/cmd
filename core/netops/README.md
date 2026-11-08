@@ -33,14 +33,16 @@ chunk-size line or inside its payload CRLF remains an error. `StrictProfile`
 and `CurlProfile` require complete chunk framing. These explicit command
 policies reproduce the fixed curl 8.22.0/Wget 1.25.0 observations.
 
-The private HTTP/1 wire adapter enters the released client's public passthrough
-mode immediately after connection setup, retaining its TCP, TLS, proxy CONNECT
-and trust configuration. Project code serializes requests and incrementally
+The private connection owner uses released public TCP/TLS readers and writers,
+retaining structured canonical hosts for DNS, SNI and proxy CONNECT without
+reparsing mapped delimiters. Project code serializes requests and incrementally
 parses response headers and fixed, chunked or close-delimited bodies. Chunk
 payload is delivered before checking its following CRLF, so a malformed or
-missing terminator cannot erase already delivered bytes. Proxy CONNECT setup
-still uses the upstream client's header parser; exact proxy-handshake error
-classification is separate project work. No private API or host fallback is used.
+missing terminator cannot erase already delivered bytes. CONNECT uses the same
+parser with a one-byte read bound so prefetched tunnel bytes stay in the
+underlying reader. The connection owner closes nested TLS and TCP layers after
+failure or cancellation. Full proxy dialects remain separate project work.
+No private product API or host fallback is used.
 Before writing request bytes, the adapter validates the final persistent and
 per-request fields, including generated Cookie fields. Invalid names and CR/LF
 in values are rejected; literal cookie data cannot inject another header.
@@ -165,8 +167,11 @@ Secure. The strict profile retains longer-path-first ordering. Netscape files pr
 state. Curl and Wget command profiles use the complete pinned ICANN/PRIVATE
 public-suffix database; Curl also enforces its reserved cookie prefixes and
 secure-overlay rules. Curl retains domain spelling in saved files and uses
-ASCII case-insensitive matching, replacement and admission views. IDNA/NFKC
-and remaining jar/configuration dialects remain project work. Response events preserve final Set-Cookie
+ASCII case-insensitive matching, replacement and admission views. URL hosts
+use the pinned Unicode 15 IDNA profile selected by `utf8_hosts`; Cookie Domain
+normalization and remaining jar/configuration dialects remain project work.
+Mapped brackets retain their host identity and do not acquire Curl's HTTP
+loopback exception for Secure cookies. Response events preserve final Set-Cookie
 field-name capitalization, values, attribute order and repeated-field order,
 with HTTP optional whitespace normalized. Informational response fields do
 not leak into those observations or cookie storage.

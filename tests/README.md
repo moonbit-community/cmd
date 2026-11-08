@@ -43,6 +43,34 @@ fresh data/metadata and immutable-image receipts. Old revision 1 receipts do not
 satisfy the new recipe. `network-cookie-suffix-oracle` retains real client file
 reads and a rule absent from the old builtin data, alongside wire/jar effects.
 
+`check` also verifies the complete fixed Unicode 15 inputs and generated IDNA
+tables through `tools/idna.mbtx`. The original normalization corpus supplies
+19,074 independent NFC records. `network-idna` records real Host, request-target,
+credential and Cookie effects, including mapped-bracket Secure-cookie rejection.
+Its fixed Curl comparison explicitly selects `--proxytunnel` to match the
+workspace's existing HTTP proxy route; both argument vectors remain in raw
+execution records. Ordinary forward-proxy rewriting and full IRI behavior
+retain the limits in [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts).
+Generated tables and finite assertion descriptors do not count as executed tests.
+
+The expanded `network-auth-cookie` suite has a 60-second total scenario budget;
+each candidate invocation retains its 15-second bound. A previous Linux run
+completed successive calls up to the old 30-second deadline and lost only the
+last observation. That failed receipt remains a failure. Network calls now
+persist intent before invocation and a cancellation-protected returned/not-returned
+record, so an outer deadline does not erase which call was attempted. A call
+that never returns supplies no fabricated child status or cleanup verdict.
+File-effect observations exclude exactly that call's intent record, including
+snapshots taken before response bytes arrive. Other files with similar names
+remain observable product effects; a Native regression retains one as a control.
+
+Development jobs have a 30-minute total bound. The final Linux run for 4930ae2
+completed all functional checks and interface generation, then hit the former
+20-minute job limit during final formatting before complete evidence upload.
+That cancelled run is not acceptance. The new finite total leaves room for
+the expanded pinned-data/oracle suite and report preservation; individual
+scenario, invocation and package-test bounds remain unchanged.
+
 ## Ownership
 
 | Path | Source of truth |
