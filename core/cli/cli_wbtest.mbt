@@ -39,9 +39,11 @@ test "parse rejects missing, unknown, and duplicate options" {
 
 ///|
 test "idle timeout accepts fractional seconds" {
+  assert_eq(parse_idle_timeout("0.00001"), 1)
   assert_eq(parse_idle_timeout("0.001"), 1)
   assert_eq(parse_idle_timeout("1.5"), 1500)
   assert_eq(parse_idle_timeout("30"), 30000)
+  assert_eq(parse_idle_timeout("2147483.647"), 2147483647)
 }
 
 ///|
@@ -57,5 +59,8 @@ test "idle timeout rejects non-positive and invalid values" {
   assert_rejected("0")
   assert_rejected("-1")
   assert_rejected("not-a-number")
+  assert_rejected("nan")
+  assert_rejected("inf")
+  assert_rejected("2147483.648")
   assert_rejected("1e100")
 }

@@ -271,7 +271,7 @@ fn require_color_metadata(
 }
 
 ///|
-async fn entry_color(entry : LsEntry, palette : Palette) -> Bytes? {
+async fn entry_color(entry : Entry, palette : Palette) -> Bytes? {
   let mut kind = entry.kind
   let mut orphan = false
   if kind == Some(SymLink) &&

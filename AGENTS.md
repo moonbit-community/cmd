@@ -28,6 +28,12 @@ You can browse and install extra skills here:
   architecture and required development CI govern this stage; retain benchmark
   failures and baselines without claiming performance acceptance. See ADR-0003.
 
+- Prefer short names within the owning package: `Options`, `Entry`, `exit_code`.
+  Name files and tests for their responsibility or observable behavior, not an
+  implementation phase, historical audit number or retired backend. Keep common
+  parser cases with that parser; command tests cover argument mapping, error
+  translation and effects. Preserve command-specific exit codes and diagnostics.
+
 - Repository documentation, issue titles/bodies, PR descriptions and new
   explanatory comments must be written in English. Historical document
   translations preserve recorded versions, results and limitations; language

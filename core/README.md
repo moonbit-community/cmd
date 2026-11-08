@@ -6,11 +6,19 @@ Shared runtime packages used by the independently published command modules.
 
 The workspace uses the CLI compatibility boundary in
 [ADR-0003](../docs/adr/0003-streams.md#package-ownership). The command catalog
-has moved to `tests/harness/contracts`. Unused platform, fsops and shell source
+has moved to `tests/harness/catalog`. Unused platform, fsops and shell source
 APIs have been removed; implementation-only helpers are private, and gzip
 consumers use `decode_reader`. These are intentional source API breaks for a
 future release, not changes to the immutable 0.9.5 coordinate. Publication and
 exact-coordinate acceptance remain separate steps.
+
+The second review folds `fsops/mode.parse_octal_mode` into
+`fsops.parse_octal_mode` and removes the `stream.count_byte` forwarding API;
+call `bytesearch.count_byte` directly. Unused CLI error variants are removed.
+The immutable published interfaces remain unchanged.
+Chmod and mkdir will need the future core coordinate in their module
+dependencies when preparing a release; workspace checks do not validate those
+unpublished interfaces against the current registry versions.
 
 ## 0.9.5 changes
 

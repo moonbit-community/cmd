@@ -35,7 +35,7 @@ async test "xargs dispatches complete batches while the producer keeps input ope
     defer input.close()
     let seen : Array[String] = []
     assert_eq(
-      run_xargs_stream(test_batches(input), 1, args => {
+      run_stream(test_batches(input), 1, args => {
         seen.push(args[0])
         acknowledged.put(args[0])
         Exited(0)
@@ -55,7 +55,7 @@ async test "xargs refills free slots without waiting for a slow earlier child" {
     let mut active = 0
     let mut maximum = 0
     assert_eq(
-      run_xargs_stream(test_batches(input), 2, args => {
+      run_stream(test_batches(input), 2, args => {
         active += 1
         maximum = maximum.max(active)
         defer {
@@ -90,7 +90,7 @@ async test "xargs fatal child status interrupts an open producer and preserves l
       })
       defer input.close()
       assert_eq(
-        run_xargs_stream(test_batches(input), 2, _ => {
+        run_stream(test_batches(input), 2, _ => {
           match status {
             126 => FailedToLaunch(CommandNotInvokable)
             127 => FailedToLaunch(CommandNotFound)
@@ -159,9 +159,9 @@ async test "xargs preserves ordinary child exits 126 and 127 without stopping ba
     defer input.close()
     let seen : Array[String] = []
     assert_eq(
-      run_xargs_stream(test_batches(input), 1, args => {
+      run_stream(test_batches(input), 1, args => {
         seen.push(args[0])
-        run_xargs_child(
+        run_child(
           "fixture",
           args,
           @process.ExecutionContext::current(),
@@ -184,13 +184,13 @@ async test "xargs reports launch failure through the scheduler and awaits active
     let mut completed = false
     let messages : Array[String] = []
     assert_eq(
-      run_xargs_stream(test_batches(input), 2, args => {
+      run_stream(test_batches(input), 2, args => {
         if args[0] == "slow" {
           release.get()
           completed = true
           Exited(0)
         } else {
-          let outcome = run_xargs_child(
+          let outcome = run_child(
             "fixture",
             args,
             @process.ExecutionContext::current(),

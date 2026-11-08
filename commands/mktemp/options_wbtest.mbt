@@ -1,5 +1,5 @@
 ///|
-test "mktemp infers only the final X run and validates explicit suffixes" {
+test "infers only the final X run and validates explicit suffixes" {
   let parsed = parse_template("prefixXXXX.tailXXX.end", None)
   assert_eq(
     (parsed.prefix, parsed.width, parsed.suffix),
@@ -27,7 +27,7 @@ test "mktemp infers only the final X run and validates explicit suffixes" {
 }
 
 ///|
-test "mktemp optional long tmpdir does not consume an operand or option value" {
+test "optional long tmpdir does not consume an operand or option value" {
   assert_eq(mktemp_args(["--tmpdir", "name.XXX", "--", "--tmpdir"]), [
     "--tmpdir=", "name.XXX", "--", "--tmpdir",
   ])

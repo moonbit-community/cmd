@@ -54,8 +54,8 @@ fn published_coordinates(
       command.name != "timeout" else {
       fail("invalid or duplicate published coordinate: " + command.name)
     }
-    guard @contracts.find_contract(command.name) is Some(contract) &&
-      @contracts.releasable(contract) else {
+    guard @catalog.find(command.name) is Some(contract) &&
+      @catalog.releasable(contract) else {
       fail("command is outside the published inventory: " + command.name)
     }
     guard command.version.split(".").count() >= 3 &&
@@ -93,7 +93,7 @@ async fn prime_published_commands(
     timeout,
   ) => @harness.run_with_deadline(program, args, timeout),
 ) -> Unit {
-  for contract in @contracts.command_catalog() {
+  for contract in @catalog.commands() {
     let name = contract.name
     if !@harness.command_available(name) ||
       (!selected.is_empty() && !selected.contains(name)) {

@@ -15,9 +15,7 @@ test "FIFO fixtures require an explicit platform and cannot discard payloads" {
   })
   let manifest : Manifest = {
     schema: 2,
-    commands: @contracts.command_catalog().map(command => {
-      name: command.name,
-    }),
+    commands: @catalog.commands().map(command => { name: command.name, }),
     cases: [fixture],
   }
   assert_eq(validate_manifest(manifest), [])
@@ -56,9 +54,7 @@ test "workspace manifest accepts explicit link kinds without accepting invalid f
   })
   let manifest : Manifest = {
     schema: 2,
-    commands: @contracts.command_catalog().map(command => {
-      name: command.name,
-    }),
+    commands: @catalog.commands().map(command => { name: command.name, }),
     cases: [],
   }
   for kind in ["symlink", "symbolic-link", "junction", "hardlink"] {
@@ -115,9 +111,7 @@ test "manifest validation rejects empty case corpus and metadata that silently l
   })
   let manifest : Manifest = {
     schema: 2,
-    commands: @contracts.command_catalog().map(command => {
-      name: command.name,
-    }),
+    commands: @catalog.commands().map(command => { name: command.name, }),
     cases: [fixture],
   }
   assert_eq(validate_manifest(manifest), [])

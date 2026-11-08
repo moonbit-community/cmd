@@ -1,5 +1,5 @@
 ///|
-test "mkdir symbolic evaluation follows directory X copied classes and operations" {
+test "symbolic evaluation follows directory X copied classes and operations" {
   for
     (mode, mask, expected) in [
       ("u=rwx,go=rx", 0o077, 0o755),
@@ -27,7 +27,7 @@ test "mkdir symbolic evaluation follows directory X copied classes and operation
 }
 
 ///|
-test "mkdir rejects only symbolic results that require an unknown umask" {
+test "rejects only symbolic results that require an unknown umask" {
   assert_eq(symbolic_mode("+w"), 0o777)
   assert_eq(symbolic_mode("+t"), 0o1755)
   assert_eq(symbolic_mode("a=rwx,+t"), 0o1777)
@@ -51,7 +51,7 @@ test "mkdir rejects only symbolic results that require an unknown umask" {
 }
 
 ///|
-test "mkdir creation capability preserves Linux and Darwin sticky staging" {
+test "creation capability preserves Linux and Darwin sticky staging" {
   for mask in [0o000, 0o022, 0o077] {
     assert_eq(
       adjust_mode(compile_mode("+t"), mask, creation_retains_sticky=true),

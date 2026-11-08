@@ -1,5 +1,5 @@
 ///|
-async test "tee classifies real public pipe errors separately from regular file errors" {
+async test "classifies real public pipe errors separately from regular file errors" {
   let (read, write) = @pipe.pipe()
   defer write.close()
   read.close()
@@ -38,7 +38,7 @@ async test "tee classifies real public pipe errors separately from regular file 
 }
 
 ///|
-async test "tee error modes preserve later sinks after a closed output pipe" {
+async test "error modes preserve later sinks after a closed output pipe" {
   let root = @fs.tmpdir(prefix="mooncmd-tee-modes")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   for

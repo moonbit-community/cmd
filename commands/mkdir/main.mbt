@@ -31,7 +31,7 @@ async fn main {
   }
   let permission = match parsed.last_value("mode") {
     Some(value) =>
-      @mode.parse_octal_mode(value) catch {
+      @fsops.parse_octal_mode(value) catch {
         _ => {
           symbolic = true
           symbolic_mode(value, creation_retains_sticky~) catch {

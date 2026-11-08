@@ -38,7 +38,7 @@ async test "column and comma layouts use strict per column width and GNU tab sto
     pad: false,
   })
   let options = ls_options(parse_arguments(["-C", "-w20", "-T0"]))
-  let render = async fn(options : LsOptions) {
+  let render = async fn(options : Options) {
     let out = @buffer.Buffer()
     write_layout(names, options, None, Ref(false), bytes => {
       out.write_bytes(bytes[:])
@@ -135,7 +135,7 @@ async test "color suffix precedence preserves bytes and exact case exceptions" {
   )
   assert_eq(warning, "")
   let palette = parsed.unwrap()
-  let entry = name => LsEntry::{
+  let entry = name => Entry::{
     name,
     path: name,
     kind: Some(Regular),
@@ -185,7 +185,7 @@ async test "type and target color uses public file kind without executable guess
   let palette = parse_colors(
     "fi=F:ln=target:or=O:*.txt=T:ex=0:su=0:sg=0:ca=0:mh=0:tw=0:ow=0:st=0",
   ).0.unwrap()
-  let entry = name => LsEntry::{
+  let entry = name => Entry::{
     name,
     path: root + "/" + name,
     kind: Some(SymLink),

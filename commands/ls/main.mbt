@@ -16,7 +16,7 @@ priv enum LinkMode {
 }
 
 ///|
-priv struct LsOptions {
+priv struct Options {
   all : Bool
   almost_all : Bool
   directory : Bool
@@ -35,7 +35,7 @@ priv struct LsOptions {
 }
 
 ///|
-priv struct LsEntry {
+priv struct Entry {
   name : String
   path : String
   kind : @fs.FileKind?
@@ -124,9 +124,9 @@ async fn indicator(path : String, kind : @fs.FileKind) -> String {
 async fn read_entry(
   name : String,
   path : String,
-  options : LsOptions,
+  options : Options,
   command_line : Bool,
-) -> LsEntry {
+) -> Entry {
   let kind = displayed_kind(path, options.links, command_line)
   let follow = kind != SymLink
   let timestamp = if options.sort == SortByTime {
@@ -151,11 +151,7 @@ async fn read_entry(
 }
 
 ///|
-fn compare_entries(
-  left : LsEntry,
-  right : LsEntry,
-  options : LsOptions,
-) -> Int32 {
+fn compare_entries(left : Entry, right : Entry, options : Options) -> Int32 {
   let primary = match options.sort {
     SortByName => c_locale_compare(left.name, right.name)
     SortByTime =>
@@ -189,9 +185,9 @@ fn compare_entries(
 ///|
 async fn sorted_entries(
   path : String,
-  options : LsOptions,
+  options : Options,
   status : Ref[Int32],
-) -> Array[LsEntry] {
+) -> Array[Entry] {
   let names = @fs.readdir(
     path,
     include_hidden=true,
@@ -202,7 +198,7 @@ async fn sorted_entries(
     names.push(".")
     names.push("..")
   }
-  let entries : Array[LsEntry] = []
+  let entries : Array[Entry] = []
   for name in names {
     if name.has_prefix(".") && !options.all && !options.almost_all {
       continue
@@ -237,8 +233,8 @@ async fn sorted_entries(
 
 ///|
 async fn print_entries(
-  entries : Array[LsEntry],
-  options : LsOptions,
+  entries : Array[Entry],
+  options : Options,
   palette : Palette?,
   used : Ref[Bool],
 ) -> Unit {
@@ -288,7 +284,7 @@ async fn print_entries(
 ///|
 async fn print_directory(
   path : String,
-  options : LsOptions,
+  options : Options,
   show_header : Bool,
   printed_section : Ref[Bool],
   status : Ref[Int32],
@@ -409,7 +405,7 @@ fn parse_arguments(
 }
 
 ///|
-fn ls_options(parsed : @cli.ParsedArgs) -> LsOptions raise @cli.CliError {
+fn ls_options(parsed : @cli.ParsedArgs) -> Options raise @cli.CliError {
   let layout = match
     parsed.last_occurrence(["one", "columns", "across", "commas"]) {
     Some("columns") => Columns
@@ -579,8 +575,8 @@ async fn main {
   let operands = parsed.operands
   let paths = if operands.is_empty() { ["."] } else { operands }
   let status = Ref(0)
-  let directories : Array[LsEntry] = []
-  let files : Array[LsEntry] = []
+  let directories : Array[Entry] = []
+  let files : Array[Entry] = []
   for path in paths {
     let entry = read_entry(path, path, options, true) catch {
       err => {

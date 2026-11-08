@@ -79,7 +79,7 @@ fn timeout_for(
 }
 
 ///|
-fn timeout_message(phase : String, timeout : Int32) -> TransferError {
+fn timeout_error(phase : String, timeout : Int32) -> TransferError {
   transfer_error(
     TimeoutFailure,
     "operation timed out after \{timeout} milliseconds during \{phase}",

@@ -152,3 +152,28 @@ pub fn parse(
   }
   { occurrences, operands, order, }
 }
+
+///|
+/// Parse a positive timeout expressed in seconds and return milliseconds.
+/// The result is bounded by the integer range accepted by async timers.
+pub fn parse_idle_timeout(value : String) -> Int32 raise CliError {
+  let seconds = @string.parse_double(value) catch {
+    _ =>
+      raise CliError(
+        kind=InvalidValue,
+        option="idle-timeout",
+        message="timeout must be a positive number of seconds",
+      )
+  }
+  if seconds.is_nan() ||
+    seconds.is_inf() ||
+    seconds <= 0.0 ||
+    seconds > 2147483.647 {
+    raise CliError(
+      kind=InvalidValue,
+      option="idle-timeout",
+      message="timeout must be between 0 and 2147483.647 seconds",
+    )
+  }
+  (seconds * 1000.0).ceil().to_int()
+}

@@ -31,14 +31,14 @@ test "xargs tokenization and replacement keep argument boundaries" {
 
 ///|
 test "xargs maps child outcomes to findutils status classes" {
-  assert_eq(xargs_child_status(0), 0)
-  assert_eq(xargs_child_status(1), 123)
-  assert_eq(xargs_child_status(126), 123)
-  assert_eq(xargs_child_status(255), 124)
-  assert_eq(xargs_child_status(-9), 125)
+  assert_eq(child_status(0), 0)
+  assert_eq(child_status(1), 123)
+  assert_eq(child_status(126), 123)
+  assert_eq(child_status(255), 124)
+  assert_eq(child_status(-9), 125)
   for status in 1..<=254 {
-    assert_eq(aggregate_xargs_status(0, Exited(status)), 123)
+    assert_eq(combine_status(0, Exited(status)), 123)
   }
-  assert_eq(aggregate_xargs_status(0, FailedToLaunch(CommandNotInvokable)), 126)
-  assert_eq(aggregate_xargs_status(0, FailedToLaunch(CommandNotFound)), 127)
+  assert_eq(combine_status(0, FailedToLaunch(CommandNotInvokable)), 126)
+  assert_eq(combine_status(0, FailedToLaunch(CommandNotFound)), 127)
 }

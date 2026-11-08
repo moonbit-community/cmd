@@ -245,16 +245,13 @@ async fn main {
       destination
     }
     let copied = copy_one(source, target, options) catch {
-      @fsops.FsOpError(message) => {
+      err => {
+        let message = match err {
+          @fsops.FsOpError(message) => message
+          _ => err.to_string()
+        }
         @stdio.stderr.write(
           "cp: cannot copy '\{source}' to '\{target}': \{message}\n",
-        )
-        failed = true
-        false
-      }
-      err => {
-        @stdio.stderr.write(
-          "cp: cannot copy '\{source}' to '\{target}': \{err}\n",
         )
         failed = true
         false

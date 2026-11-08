@@ -23,7 +23,7 @@ fn LogDestination::close(self : LogDestination) -> Unit {
 }
 
 ///|
-async fn open_log(options : WgetOptions) -> LogDestination {
+async fn open_log(options : Options) -> LogDestination {
   if options.quiet {
     return LogDisabled
   }
@@ -149,7 +149,7 @@ fn proxy_for(url : String, disabled : Bool) -> String? {
 }
 
 ///|
-fn wget_exit_kind(kind : @netops.TransferErrorKind) -> Int32 {
+fn exit_code(kind : @netops.TransferErrorKind) -> Int32 {
   match kind {
     @netops.HttpStatusFailure => 8
     @netops.TlsFailure => 5
@@ -169,8 +169,8 @@ fn wget_exit_kind(kind : @netops.TransferErrorKind) -> Int32 {
 }
 
 ///|
-fn wget_can_retry(
-  options : WgetOptions,
+fn can_retry(
+  options : Options,
   kind : @netops.TransferErrorKind,
   status : Int32?,
   message : String,
@@ -192,7 +192,7 @@ fn wget_can_retry(
 
 ///|
 async fn output_for(
-  options : WgetOptions,
+  options : Options,
   url : String,
   selected_name? : String,
   defer_resume~ : Bool = false,
@@ -279,7 +279,7 @@ fn DownloadProgress::observe(
 }
 
 ///|
-async fn wget_observer(
+async fn observe_transfer(
   log : LogDestination,
   interactive : Bool,
   label : String,
@@ -296,7 +296,7 @@ async fn wget_observer(
       }
     }
     @netops.Progress(received~, content_length~) if interactive =>
-      log.write(wget_progress_text(label, received, content_length))
+      log.write(progress_text(label, received, content_length))
     @netops.Completed(received~, ..) => {
       if interactive {
         log.write("\n")
@@ -308,7 +308,7 @@ async fn wget_observer(
 }
 
 ///|
-fn wget_progress_text(
+fn progress_text(
   label : String,
   received : Int64,
   content_length : Int64?,
@@ -327,7 +327,7 @@ fn wget_progress_text(
 
 ///|
 async fn download_one(
-  options : WgetOptions,
+  options : Options,
   log : LogDestination,
   url : String,
   jar : @netops.CookieJar?,
@@ -431,11 +431,11 @@ async fn download_one(
       }
       @netops.transfer(url, progress.output, request_options, observer=event => {
         progress.observe(event)
-        wget_observer(log, interactive, label, event)
+        observe_transfer(log, interactive, label, event)
       })
     } catch {
       @netops.TransferError(kind~, message~, status~, ..) => {
-        let retryable = wget_can_retry(options, kind, status, message)
+        let retryable = can_retry(options, kind, status, message)
         if retryable &&
           !(options.body is @netops.StdinBody) &&
           (options.tries == 0 || attempt < options.tries) {
@@ -446,7 +446,7 @@ async fn download_one(
           continue
         }
         log.write("wget: \{message}\n")
-        return wget_exit_kind(kind)
+        return exit_code(kind)
       }
       err => {
         log.write("wget: \{err}\n")
@@ -459,7 +459,7 @@ async fn download_one(
 }
 
 ///|
-async fn run(options : WgetOptions) -> Int32 {
+async fn run(options : Options) -> Int32 {
   if options.help {
     @stdio.stdout.write(usage())
     return 0
@@ -525,7 +525,7 @@ async fn run(options : WgetOptions) -> Int32 {
   let mut result = 0
   for url in urls {
     let status = download_one(options, log, url, jar)
-    if status != 0 {
+    if status != 0 && (result == 0 || status < result) {
       result = status
     }
   }
@@ -544,8 +544,8 @@ async fn main {
     @stdio.stdout.write("wget 0.2.5\n")
     return
   }
-  let options = parse_wget_options(@env.args()[1:]) catch {
-    WgetUsageError(message) => {
+  let options = parse_options(@env.args()[1:]) catch {
+    UsageError(message) => {
       @stdio.stderr.write("wget: \{message}\n")
       @sys.exit(2)
       return

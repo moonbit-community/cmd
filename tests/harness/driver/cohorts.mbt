@@ -1,6 +1,6 @@
 ///|
 fn metadata_cases() -> Array[@harness.Case] raise {
-  @contracts.command_catalog().map(contract => {
+  @catalog.commands().map(contract => {
     @json.from_json({
       "id": "metadata:" + contract.name,
       "command": contract.name,

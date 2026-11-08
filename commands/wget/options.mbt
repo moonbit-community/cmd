@@ -1,5 +1,5 @@
 ///|
-struct WgetOptions {
+struct Options {
   urls : Array[String]
   input_files : Array[String]
   mut help : Bool
@@ -34,8 +34,8 @@ struct WgetOptions {
 }
 
 ///|
-suberror WgetUsageError {
-  WgetUsageError(String)
+suberror UsageError {
+  UsageError(String)
 }
 
 ///|
@@ -89,11 +89,12 @@ fn usage() -> String {
     #|HTTP 416 succeeds without opening transfer output; -O is initialized first.
     #|Unsolicited 304 exits 8. Continued GET with --content-disposition selects
     #|the filename with HEAD before choosing that file's resume offset.
+    #|Multiple URL failures retain the lowest nonzero transfer exit code.
   text + "\n"
 }
 
 ///|
-fn default_options() -> WgetOptions {
+fn default_options() -> Options {
   {
     urls: [],
     input_files: [],
@@ -130,30 +131,27 @@ fn default_options() -> WgetOptions {
 }
 
 ///|
-fn parse_nonnegative(
-  value : String,
-  option : String,
-) -> Int32 raise WgetUsageError {
+fn parse_nonnegative(value : String, option : String) -> Int32 raise UsageError {
   let result = @string.parse_int(value) catch {
-    _ => raise WgetUsageError("\{option}: invalid number '\{value}'")
+    _ => raise UsageError("\{option}: invalid number '\{value}'")
   }
   if result < 0 {
-    raise WgetUsageError("\{option}: invalid number '\{value}'")
+    raise UsageError("\{option}: invalid number '\{value}'")
   }
   result
 }
 
 ///|
-fn parse_seconds(value : String, option : String) -> Int32 raise WgetUsageError {
+fn parse_seconds(value : String, option : String) -> Int32 raise UsageError {
   @cli.parse_idle_timeout(value) catch {
-    _ => raise WgetUsageError("\{option}: invalid time period '\{value}'")
+    _ => raise UsageError("\{option}: invalid time period '\{value}'")
   }
 }
 
 ///|
-fn parse_header(value : String) -> @netops.HttpHeader raise WgetUsageError {
+fn parse_header(value : String) -> @netops.HttpHeader raise UsageError {
   guard value.find(":") is Some(index) && index > 0 else {
-    raise WgetUsageError("--header: invalid header '\{value}'")
+    raise UsageError("--header: invalid header '\{value}'")
   }
   @netops.http_header(
     value[:index].to_owned().trim().to_owned(),
@@ -162,7 +160,7 @@ fn parse_header(value : String) -> @netops.HttpHeader raise WgetUsageError {
 }
 
 ///|
-fn parse_statuses(value : String) -> Array[Int32] raise WgetUsageError {
+fn parse_statuses(value : String) -> Array[Int32] raise UsageError {
   let statuses : Array[Int32] = []
   for item in value.split(",") {
     let status = parse_nonnegative(
@@ -170,7 +168,7 @@ fn parse_statuses(value : String) -> Array[Int32] raise WgetUsageError {
       "--retry-on-http-error",
     )
     if status < 100 || status > 599 {
-      raise WgetUsageError("--retry-on-http-error: invalid HTTP status")
+      raise UsageError("--retry-on-http-error: invalid HTTP status")
     }
     statuses.push(status)
   }
@@ -178,9 +176,7 @@ fn parse_statuses(value : String) -> Array[Int32] raise WgetUsageError {
 }
 
 ///|
-fn parse_wget_options(
-  args : ArrayView[String],
-) -> WgetOptions raise WgetUsageError {
+fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
   let parsed = @cli.parse(args, [
     @cli.flag("quiet", short='q'),
     @cli.option("output-document", short='O'),
@@ -217,7 +213,7 @@ fn parse_wget_options(
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) =>
-      raise WgetUsageError("\{message}: '\{option}'")
+      raise UsageError("\{message}: '\{option}'")
   }
   let options = default_options()
   options.urls.append(parsed.operands)
@@ -273,7 +269,7 @@ fn parse_wget_options(
   }
   if parsed.last_value("method") is Some(value) {
     options.request_method = @netops.parse_http_method(value) catch {
-      _ => raise WgetUsageError("--method: unsupported HTTP method '\{value}'")
+      _ => raise UsageError("--method: unsupported HTTP method '\{value}'")
     }
     options.method_explicit = true
   }

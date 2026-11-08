@@ -35,6 +35,8 @@ pub fn overwrite_decision(UpdateMode, FileTimestamp, FileTimestamp?) -> Overwrit
 
 pub fn parse_backup_control(String) -> BackupControl raise FsOpError
 
+pub fn parse_octal_mode(String) -> Int32 raise
+
 pub fn parse_update_mode(String) -> UpdateMode raise FsOpError
 
 pub async fn preflight_copy_path(String, String, Bool, LinkTraversal, preserve_permissions? : Bool) -> Unit

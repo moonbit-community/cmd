@@ -51,7 +51,7 @@ fn proof_definitions_errors(
   manifest : Json,
   index : @catalog.Registry,
   cases : Array[@harness.Case],
-  catalog : Array[@contracts.CommandContract],
+  catalog : Array[@catalog.CommandContract],
   scenario_catalog~ : Json = Json::null(),
 ) -> Array[String] {
   let errors : Array[String] = []

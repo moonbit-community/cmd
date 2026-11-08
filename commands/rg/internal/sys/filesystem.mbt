@@ -3,7 +3,7 @@
 
 ///|
 pub async fn File::open(path : String) -> File {
-  { inner: @fs.open(path, mode=ReadOnly) catch { e => raise io_error(e) }, }
+  { inner: @fs.open(path, mode=ReadOnly) catch { e => raise from_error(e) }, }
 }
 
 ///|
@@ -14,7 +14,7 @@ pub async fn File::read(
   len : Int32,
 ) -> Int32 {
   self.inner.read(buf, offset=start, max_len=len) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
@@ -32,55 +32,55 @@ pub fn File::is_regular(self : File) -> Bool {
 ///|
 pub async fn read_file(path : String) -> Bytes {
   @fs.read_file(path).binary() catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
 ///|
 pub async fn write_file(path : String, data : Bytes) -> Unit {
   @fs.write_file(path, data) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
 ///|
 pub async fn create_dir_all(path : String) -> Unit {
   @fs.mkdir(path, recursive=true, allow_exist=true) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
 ///|
 pub async fn remove_dir_all(path : String) -> Unit {
   @fs.rmdir(path, recursive=true) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
 ///|
 pub async fn remove_file(path : String) -> Unit {
   @fs.remove(path) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
 ///|
 pub async fn symlink(target : String, link : String) -> Unit {
   @fs.symlink(target~, link) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
 ///|
 pub async fn path_exists(path : String) -> Bool {
   @fs.exists(path) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
 ///|
 pub async fn canonicalize(path : String) -> String {
-  let resolved = @fs.realpath(path) catch { e => raise io_error(e) }
+  let resolved = @fs.realpath(path) catch { e => raise from_error(e) }
   normalize_path(resolved)
 }
 
@@ -88,9 +88,9 @@ pub async fn canonicalize(path : String) -> String {
 pub async fn file_len(path : String) -> Int64 {
   // The path size API reports the link entry on some hosts. Resolve through
   // the public realpath API before asking for a followed regular file's size.
-  let resolved = @fs.realpath(path) catch { e => raise io_error(e) }
+  let resolved = @fs.realpath(path) catch { e => raise from_error(e) }
   @fs.file_size(resolved) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
@@ -107,9 +107,9 @@ fn file_type(kind : @fs.FileKind) -> FileType {
 ///|
 async fn stat(path : String, follow : Bool) -> Metadata {
   let entry = @fswalk.Entry::read(path, follow_symlink=follow) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
-  let len = entry.regular_size(ResolvedPath) catch { e => raise io_error(e) }
+  let len = entry.regular_size(ResolvedPath) catch { e => raise from_error(e) }
   { file_type: file_type(entry.kind), len: len.unwrap_or(-1L), }
 }
 
@@ -134,7 +134,7 @@ pub async fn read_dir(path : String) -> Array[DirEntry] {
     }
     entries
   } catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
@@ -147,15 +147,15 @@ pub async fn DirEntry::file_type(self : DirEntry, path : String) -> FileType {
     Dir
   } else {
     file_type(@fs.kind(path, follow_symlink=false)) catch {
-      e => raise io_error(e)
+      e => raise from_error(e)
     }
   }
 }
 
 ///|
 pub async fn file_times(path : String) -> FileTimes {
-  let (msec, mnsec) = @fs.mtime(path) catch { e => raise io_error(e) }
-  let (asec, ansec) = @fs.atime(path) catch { e => raise io_error(e) }
+  let (msec, mnsec) = @fs.mtime(path) catch { e => raise from_error(e) }
+  let (asec, ansec) = @fs.atime(path) catch { e => raise from_error(e) }
   {
     modified: Some(msec * 1000000000L + mnsec.to_int64()),
     accessed: Some(asec * 1000000000L + ansec.to_int64()),

@@ -10,6 +10,11 @@ moonx cli/wget@0.2.5 [OPTION]... [URL]...
 
 Download URLs or URL lists with resume, conditional requests, headers/bodies, retries, redirects, Basic authentication and cookies.
 
+Unreleased workspace correction: multiple URL failures retain the lowest
+nonzero transfer exit code, regardless of operand order. A later success keeps
+that failure status and still writes its response body. The published 0.2.5
+coordinate is unchanged; see [ADR-0005](../../docs/adr/0005-transfer.md).
+
 ## Options
 
 | Option | Description |

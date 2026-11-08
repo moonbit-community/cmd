@@ -175,7 +175,7 @@ async fn open_client(
         Some(client) => client.close()
         None => ()
       }
-      raise timeout_message("connection setup", timeout)
+      raise timeout_error("connection setup", timeout)
     }
   }
 }
@@ -211,7 +211,7 @@ async fn stream_file_body(
     let chunk = match result {
       Some(Some(chunk)) => chunk
       Some(None) => break
-      None => raise timeout_message("request body input", timeout)
+      None => raise timeout_error("request body input", timeout)
     }
     client.write_payload(chunk, options, started)
   }
@@ -239,7 +239,7 @@ async fn stream_stdin_body(
     let chunk = match result {
       Some(Some(chunk)) => chunk
       Some(None) => break
-      None => raise timeout_message("request body input", timeout)
+      None => raise timeout_error("request body input", timeout)
     }
     client.write_payload(chunk, options, started)
   }
@@ -304,7 +304,7 @@ async fn send_request(
     Some(response) => response
     None =>
       raise with_failure_context(
-        timeout_message("response headers", timeout),
+        timeout_error("response headers", timeout),
         failure_context(ResponseHeaders),
       )
   }

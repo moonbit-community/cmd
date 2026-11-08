@@ -36,7 +36,7 @@ fn GrepInput::skip_nonmatching(
   if !matcher.may_match_block(complete, ignore_case) {
     self.consume_records(
       self.position + complete.length(),
-      @stream.count_byte(complete, self.delimiter[0]).to_int64(),
+      @bytesearch.count_byte(complete, self.delimiter[0]).to_int64(),
     )
   }
 }
@@ -102,7 +102,7 @@ fn GrepInput::count_literal(
   let remaining = self.bytes[self.position:]
   guard remaining.rev_find(self.delimiter) is Some(last) else { return 0UL }
   let complete = remaining[:last + 1]
-  let records = @stream.count_byte(complete, self.delimiter[0])
+  let records = @bytesearch.count_byte(complete, self.delimiter[0])
   let mut matched = 0
   if literal.is_empty() {
     matched = records
@@ -129,7 +129,7 @@ fn GrepInput::count_literals(
   let remaining = self.bytes[self.position:]
   guard remaining.rev_find(self.delimiter) is Some(last) else { return 0UL }
   let complete = remaining[:last + 1]
-  let records = @stream.count_byte(complete, self.delimiter[0])
+  let records = @bytesearch.count_byte(complete, self.delimiter[0])
   let mut matched = 0
   let mut position = 0
   while position < complete.length() {

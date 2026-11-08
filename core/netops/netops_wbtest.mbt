@@ -1,4 +1,23 @@
 ///|
+test "HTTP method names are case insensitive" {
+  for
+    (name, expected) in [
+      ("GET", Get),
+      ("HEAD", Head),
+      ("POST", Post),
+      ("PUT", Put),
+      ("DELETE", Delete),
+      ("CONNECT", Connect),
+      ("OPTIONS", Options),
+      ("TRACE", Trace),
+      ("PATCH", Patch),
+    ] {
+    assert_eq(parse_http_method(name), expected)
+    assert_eq(parse_http_method(name.to_lower()), expected)
+  }
+}
+
+///|
 async fn serve_test_requests(
   group : @async.TaskGroup[Unit],
 ) -> (@http.Server, Int32) {

@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
+- Refine the unpublished simplification: consolidate small packages and test
+  ownership, use direct names, remove redundant error branches and checks, and
+  fix Wget's multi-URL exit precedence. Retain independent CLI regressions,
+  imported corpora and frozen published expectations. Performance work remains
+  deferred; this change does not publish or select new package versions.
 - Prepare an unpublished repository simplification candidate: move validation
   metadata out of core, reduce implementation-only APIs and unreachable rg/Typst
   adapter states, merge identical tests, and remove redundant buffering work.

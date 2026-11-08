@@ -1,5 +1,5 @@
 ///|
-async test "sort stable keys retain sequence order through external runs" {
+async test "stable keys retain sequence order through external runs" {
   let root = @fs.tmpdir(prefix="sort-stable-")
   defer @fs.rmdir(root, recursive=true)
   let input = root + "/input"
@@ -19,7 +19,7 @@ async test "sort stable keys retain sequence order through external runs" {
 }
 
 ///|
-async test "sort merge preserves operand ties and assumes ordered inputs" {
+async test "merge preserves operand ties and assumes ordered inputs" {
   let root = @fs.tmpdir(prefix="sort-merge-")
   defer @fs.rmdir(root, recursive=true)
   let a = root + "/a"
@@ -68,7 +68,7 @@ async test "sort merge preserves operand ties and assumes ordered inputs" {
 }
 
 ///|
-async test "sort seeded random keys survive external runs and unique selection" {
+async test "seeded random keys survive external runs and unique selection" {
   let root = @fs.tmpdir(prefix="sort-random-runs-")
   defer @fs.rmdir(root, recursive=true)
   let input = root + "/input"
@@ -95,7 +95,7 @@ async test "sort seeded random keys survive external runs and unique selection" 
 }
 
 ///|
-test "sort option conflicts and effective random inheritance follow GNU" {
+test "option conflicts and effective random inheritance follow GNU" {
   let random = default_modifiers(parse_args(["-RV"]))
   assert_true(random.mode == Random)
   assert_true(parse_key("2,2n", random).modifiers.mode == Numeric)
@@ -139,7 +139,7 @@ test "sort option conflicts and effective random inheritance follow GNU" {
 }
 
 ///|
-async test "sort output aliases consume input before truncation and preserve failures" {
+async test "output aliases consume input before truncation and preserve failures" {
   let root = @fs.tmpdir(prefix="sort-output-")
   defer @fs.rmdir(root, recursive=true)
   let input = root + "/input"

@@ -1,6 +1,6 @@
 ///|
-test "wget Basic authentication and session persistence are explicit" {
-  let options = parse_wget_options([
+test "Basic authentication and session persistence are explicit" {
+  let options = parse_options([
     "--user=first", "--http-user=final", "--password=p:a:ss", "--load-cookies=in.txt",
     "--save-cookies=out.txt", "--keep-session-cookies", "http://localhost/",
   ])
@@ -13,8 +13,8 @@ test "wget Basic authentication and session persistence are explicit" {
 }
 
 ///|
-test "wget phase2 options map upstream HTTP controls" {
-  let options = parse_wget_options([
+test "HTTP options map upstream HTTP controls" {
+  let options = parse_options([
     "-q", "-O-", "-i", "urls.txt", "--header=X-Marker: value", "--method=PATCH",
     "--body-data=payload", "--retry-on-http-error=429,503", "--tries=3", "--max-redirect=4",
     "--connect-timeout=1.5", "--read-timeout=.25", "https://example.test/x",
@@ -35,7 +35,7 @@ test "wget phase2 options map upstream HTTP controls" {
 }
 
 ///|
-test "wget phase2 options reject invalid methods, statuses, and timeouts" {
+test "HTTP options reject invalid methods, statuses, and timeouts" {
   for
     args in [
       ["--method=CUSTOM", "https://example.test"],
@@ -43,8 +43,8 @@ test "wget phase2 options reject invalid methods, statuses, and timeouts" {
       ["--read-timeout=0", "https://example.test"],
       ["--max-redirect=-1", "https://example.test"],
     ] {
-    try parse_wget_options(args) catch {
-      WgetUsageError(_) => ()
+    try parse_options(args) catch {
+      UsageError(_) => ()
     } noraise {
       _ => fail("expected wget usage error")
     }
@@ -52,50 +52,33 @@ test "wget phase2 options reject invalid methods, statuses, and timeouts" {
 }
 
 ///|
-test "wget accepts documented methods and preserves repeated option order" {
-  for
-    (name, expected_method) in [
-      ("GET", @netops.Get),
-      ("HEAD", @netops.Head),
-      ("POST", @netops.Post),
-      ("PUT", @netops.Put),
-      ("DELETE", @netops.Delete),
-      ("CONNECT", @netops.Connect),
-      ("OPTIONS", @netops.Options),
-      ("TRACE", @netops.Trace),
-      ("PATCH", @netops.Patch),
-    ] {
-    let options = parse_wget_options([
-      "-i",
-      "one",
-      "--input-file=two",
-      "--method=" + name,
-      "https://example.test",
-    ])
-    assert_eq(options.request_method, expected_method)
-    assert_true(options.method_explicit)
-    assert_eq(options.input_files, ["one", "two"])
-  }
-  let logs = parse_wget_options([
+test "repeated inputs and option precedence" {
+  let options = parse_options([
+    "-i", "one", "--input-file=two", "--method=post", "https://example.test",
+  ])
+  assert_eq(options.request_method, @netops.Post)
+  assert_true(options.method_explicit)
+  assert_eq(options.input_files, ["one", "two"])
+  let logs = parse_options([
     "-o", "first", "-a", "second", "https://example.test",
   ])
   assert_eq(logs.log_file, Some("second"))
   assert_true(logs.append_log)
-  let unlimited = parse_wget_options(["--tries=0", "https://example.test"])
+  let unlimited = parse_options(["--tries=0", "https://example.test"])
   assert_eq(unlimited.tries, 0)
-  let body_without_method = parse_wget_options([
+  let body_without_method = parse_options([
     "--body-data=value", "https://example.test",
   ])
   assert_true(body_without_method.request_method is @netops.Get)
   assert_false(body_without_method.method_explicit)
-  let conflicting_body = parse_wget_options([
+  let conflicting_body = parse_options([
     "--method=POST", "--body-data=value", "--body-file=file", "https://example.test",
   ])
   assert_true(conflicting_body.body_options_conflict)
 }
 
 ///|
-test "wget timeout options reject invalid and out-of-range timers" {
+test "timeout options reject invalid and out-of-range timers" {
   for
     args in [
       ["-T", "0", "https://example.test"],
@@ -105,8 +88,8 @@ test "wget timeout options reject invalid and out-of-range timers" {
       ["--idle-timeout=2147483.648", "https://example.test"],
       ["--waitretry=0", "https://example.test"],
     ] {
-    try parse_wget_options(args) catch {
-      WgetUsageError(_) => ()
+    try parse_options(args) catch {
+      UsageError(_) => ()
     } noraise {
       _ => fail("expected wget timer usage error")
     }
@@ -114,10 +97,10 @@ test "wget timeout options reject invalid and out-of-range timers" {
 }
 
 ///|
-test "wget retries transient connections but gates connection refusal" {
+test "retries transient connections but gates connection refusal" {
   let options = default_options()
   assert_true(
-    wget_can_retry(
+    can_retry(
       options,
       @netops.ConnectionFailure,
       None,
@@ -125,29 +108,16 @@ test "wget retries transient connections but gates connection refusal" {
     ),
   )
   assert_false(
-    wget_can_retry(
-      options,
-      @netops.ConnectionFailure,
-      None,
-      "connection refused",
-    ),
+    can_retry(options, @netops.ConnectionFailure, None, "connection refused"),
   )
   options.retry_connection_refused = true
   assert_true(
-    wget_can_retry(
-      options,
-      @netops.ConnectionFailure,
-      None,
-      "connection refused",
-    ),
+    can_retry(options, @netops.ConnectionFailure, None, "connection refused"),
   )
 }
 
 ///|
-test "wget terminal progress formatting is a single dynamic line" {
-  assert_eq(
-    wget_progress_text("file", 5L, Some(10L)),
-    "\rfile 50% [5/10]\u{1b}[K",
-  )
-  assert_eq(wget_progress_text("file", 5L, None), "\rfile 5 bytes\u{1b}[K")
+test "terminal progress formatting is a single dynamic line" {
+  assert_eq(progress_text("file", 5L, Some(10L)), "\rfile 50% [5/10]\u{1b}[K")
+  assert_eq(progress_text("file", 5L, None), "\rfile 5 bytes\u{1b}[K")
 }
