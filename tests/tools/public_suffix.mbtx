@@ -129,10 +129,25 @@ async fn main {
     timeout_ms=30000,
   )
   formatted.check()
+  // The formatter uses the host's line endings; generated source is always LF.
+  let generated = formatted.stdout().replace_all(old="\r\n", new="\n")
+  if generated != formatted.stdout() {
+    println("Canonicalized formatter CRLF output to LF")
+  }
   if args == ["update"] {
-    @fs.write_file(target, formatted.stdout())
+    @fs.write_file(target, generated)
   } else {
-    assert_eq(@fs.read_file(target).text(), formatted.stdout(), msg=target)
+    let stored = @fs.read_file(target).binary()
+    let expected = @utf8.encode(generated)
+    guard stored == expected else {
+      fail(
+        target +
+        " differs from the generated source: stored SHA-256 " +
+        @crypto.bytes_to_hex_string(@crypto.sha256(stored)) +
+        ", generated SHA-256 " +
+        @crypto.bytes_to_hex_string(@crypto.sha256(expected)),
+      )
+    }
   }
   if args[0] == "oracle" {
     let image = args[1]
@@ -238,7 +253,7 @@ async fn main {
         ),
         "generated_sha256": Json(
           @crypto.bytes_to_hex_string(
-            @crypto.sha256(@utf8.encode(formatted.stdout())),
+            @crypto.sha256(@utf8.encode(generated)),
           ),
         ),
         "passed": Json(true),
