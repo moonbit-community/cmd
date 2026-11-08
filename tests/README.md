@@ -79,6 +79,13 @@ streams/status, complete product file inventory and unchanged inputs are
 retained. The Linux counterpart repeats the corpus against the pinned oracle;
 configuration/netrc exclusions are explicit in its recorded argv.
 
+Development jobs have a 30-minute total bound. The final Linux run for 4930ae2
+completed all functional checks and interface generation, then hit the former
+20-minute job limit during final formatting before complete evidence upload.
+That cancelled run is not acceptance. The new finite total leaves room for
+the expanded pinned-data/oracle suite and report preservation; individual
+scenario, invocation and package-test bounds remain unchanged.
+
 ## Ownership
 
 | Path | Source of truth |

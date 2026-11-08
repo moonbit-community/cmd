@@ -19,15 +19,15 @@ fn wget_cookie_observations(
   for position, index in indices {
     let request = requests[position]
     let path = "/step/" + index.to_string()
-    assert_true(
-      request.0 == "GET " + path + " HTTP/1.1" ||
-      request.0 == "GET http://" + hosts[index] + path + " HTTP/1.1",
-      msg=request.0,
-    )
     let host = hosts[index]
       .strip_suffix(":80")
       .unwrap_or(hosts[index][:])
       .to_owned()
+    assert_true(
+      request.0 == "GET " + path + " HTTP/1.1" ||
+      request.0 == "GET http://" + host + path + " HTTP/1.1",
+      msg=request.0,
+    )
     assert_eq(host_field(request.2, "host"), host)
     assert_eq(host_field(request.2, "authorization"), "")
     cookies.push(request.1)
