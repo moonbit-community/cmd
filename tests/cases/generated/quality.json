@@ -1333,7 +1333,7 @@
     {
       "case_id": "release-metadata-ln-help",
       "source": "tests/cases/ln.json",
-      "definition_sha256": "57e9fd28bfe7f43cb89f38db2576d84bf9cd134f830c78d153090946021a86fc",
+      "definition_sha256": "58158a5dcf8d7ac5e64efdf19253afa40fcab41d67713a0f8cabebfffa462bf1",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

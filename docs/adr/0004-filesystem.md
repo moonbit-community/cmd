@@ -96,6 +96,20 @@ parser or a host implementation of the command. Alias tests observe the volume
 before asserting either shared or distinct-name behavior. No timing acceptance
 is claimed for the additional metadata lookups.
 
+Ln preserves the original creation error after successful backup restoration.
+When restoration also fails, it reports both errors with the destination and
+backup paths. The diagnostic describes the attempted recovery without claiming
+that either path necessarily retains its old contents. Private injected-runtime
+tests in [ln/recovery_wbtest.mbt](../../commands/ln/recovery_wbtest.mbt) perform
+real backups and assert successful restoration, recovery failures both before
+and after mutation, and exact diagnostics. Rollback stays cancellable because
+cancellation may follow a committed creation; an acknowledged-commit test checks
+that the new entry and backup survive. POSIX checks a real symlink; Windows uses
+an injected file commit to test cancellation ownership and makes no link-support
+claim. This is an unpublished diagnostic repair, not a stronger filesystem
+transaction guarantee. Reconsider cancellation rollback only with a public API
+that establishes commit state and handle-relative identity.
+
 Windows Wasm source symlink/junction moves and destination-link backups reject
 before prompting or mutation. No-clobber/update-none skips remain; regular
 sources replacing destination links without backup have separate positive
