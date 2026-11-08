@@ -64,6 +64,14 @@ File-effect observations exclude exactly that call's intent record, including
 snapshots taken before response bytes arrive. Other files with similar names
 remain observable product effects; a Native regression retains one as a control.
 
+`network-wget-cookies` executes 58 fixed-oracle cookie dialect controls, including
+nondefault ports, jar flags/comments, quoted attributes, chain spelling and
+sticky deletion. Each retains raw requests and checks a second-process jar
+reload; its Linux oracle counterpart runs the same inputs independently.
+The static corpus is in `fixtures/network/wget-cookies.json` and participates
+in the assertion-source snapshot. Full numeric/date grammar remains outside
+this finite profile.
+
 Development jobs have a 30-minute total bound. The final Linux run for 4930ae2
 completed all functional checks and interface generation, then hit the former
 20-minute job limit during final formatting before complete evidence upload.

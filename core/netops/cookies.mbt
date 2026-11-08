@@ -4,6 +4,7 @@ struct StoredCookie {
   value : String
   domain : String
   host_only : Bool
+  port : Int32?
   path : String
   secure : Bool
   http_only : Bool
@@ -45,7 +46,7 @@ fn cookie_stored_domain(value : String, profile : TransferProfile) -> String {
   } else {
     value
   }
-  if profile == CurlProfile {
+  if profile != StrictProfile {
     domain
   } else {
     domain.to_lower()
@@ -119,12 +120,13 @@ fn cookie_same_key(
   profile : TransferProfile,
 ) -> Bool {
   left.name == right.name &&
-  (if profile == CurlProfile {
+  (if profile != StrictProfile {
     cookie_ascii_lower(left.domain) == cookie_ascii_lower(right.domain)
   } else {
     left.domain == right.domain
   }) &&
   left.path == right.path &&
+  (profile != WgetProfile || left.port == right.port) &&
   (profile != CurlProfile || left.host_only == right.host_only)
 }
 
@@ -291,6 +293,20 @@ fn CookieJar::replace(
   now : Int64,
   profile~ : TransferProfile = StrictProfile,
 ) -> Unit {
+  // Wget's case-insensitive domain table retains its first key spelling until
+  // the last cookie in that domain chain is explicitly removed.
+  let cookie = if profile == WgetProfile {
+    let mut spelling = cookie.domain
+    for old in self.entries {
+      if cookie_ascii_lower(old.domain) == cookie_ascii_lower(cookie.domain) {
+        spelling = old.domain
+        break
+      }
+    }
+    { ..cookie, domain: spelling, }
+  } else {
+    cookie
+  }
   let mut index : Int32? = None
   for position, old in self.entries {
     if cookie_same_key(old, cookie, profile) {
@@ -302,6 +318,11 @@ fn CookieJar::replace(
     self.entries = self.entries.filter(old => {
       !cookie_same_key(old, cookie, profile)
     })
+  } else if profile == WgetProfile {
+    self.entries = [
+      cookie,
+      ..self.entries.filter(old => !cookie_same_key(old, cookie, profile)),
+    ]
   } else {
     match index {
       Some(index) => self.entries[index] = cookie
@@ -424,9 +445,17 @@ fn CookieJar::receive(
       value: cookie.value,
       domain,
       host_only,
+      port: if profile == WgetProfile && host_only {
+        match url.port {
+          Some(port) if port != 80 && port != 443 => Some(port)
+          _ => None
+        }
+      } else {
+        None
+      },
       path,
       secure: cookie.secure,
-      http_only: cookie.http_only,
+      http_only: profile != WgetProfile && cookie.http_only,
       // Wget marks a rejected domain for deletion, then validates Path before
       // removing the matching key, even when the response has no expiry.
       expires: if discard {
@@ -502,23 +531,39 @@ fn CookieJar::header_for(
   now : Int64,
   profile~ : TransferProfile = StrictProfile,
 ) -> String? {
-  self.entries = self.entries.filter(cookie => {
-    match cookie.expires {
-      Some(expiry) => expiry > now
-      None => true
-    }
-  })
+  if profile != WgetProfile {
+    self.entries = self.entries.filter(cookie => {
+      match cookie.expires {
+        Some(expiry) => expiry > now
+        None => true
+      }
+    })
+  }
   let host = url.cookie_host(profile)
   let secure_context = cookie_secure_context(url, profile)
-  let selected = self.entries.filter(cookie => {
+  if profile == WgetProfile && !wget_cookie_host_allowed(host) {
+    return None
+  }
+  let mut selected = self.entries.filter(cookie => {
+    !(cookie.expires is Some(expiry) && expiry <= now) &&
+    (
+      cookie.port is None ||
+      cookie.port ==
+      Some(url.port.unwrap_or(if url.scheme == "https" { 443 } else { 80 }))
+    ) &&
     (if cookie.host_only {
-      if profile == CurlProfile {
+      if profile != StrictProfile {
         cookie_ascii_lower(host) == cookie_ascii_lower(cookie.domain)
       } else {
         host == cookie.domain
       }
     } else {
-      cookie_domain_matches(host, cookie.domain)
+      cookie_domain_matches(host, cookie.domain) &&
+      (
+        profile != WgetProfile ||
+        cookie_ascii_lower(host) == cookie_ascii_lower(cookie.domain) ||
+        cookie.domain.contains(".")
+      )
     }) &&
     (if profile == WgetProfile {
       url.path.has_prefix(cookie.path)
@@ -527,6 +572,36 @@ fn CookieJar::header_for(
     }) &&
     (!cookie.secure || secure_context)
   })
+  if profile == WgetProfile {
+    // The pinned Wget walks more-specific domain chains first, newest cookie
+    // first within each chain. Its duplicate pass retains the last equal pair
+    // before sorting by domain/path quality. Persistence retains chain order.
+    for index = 1; index < selected.length(); index = index + 1 {
+      let cookie = selected[index]
+      let mut position = index
+      while position > 0 &&
+            @utf8.encode(cookie.domain).length() >
+            @utf8.encode(selected[position - 1].domain).length() {
+        selected[position] = selected[position - 1]
+        position -= 1
+      }
+      selected[position] = cookie
+    }
+    let unique : Array[StoredCookie] = []
+    for index, cookie in selected {
+      let mut duplicate = false
+      for later in selected[index + 1:] {
+        if cookie.name == later.name && cookie.value == later.value {
+          duplicate = true
+          break
+        }
+      }
+      if !duplicate {
+        unique.push(cookie)
+      }
+    }
+    selected = unique
+  }
   // Strict retains creation order among equal-length paths. The command profiles
   // preserve their pinned domain/path/name ordering without changing stored order.
   for index = 1; index < selected.length(); index = index + 1 {
@@ -554,14 +629,30 @@ pub fn CookieJar::load_netscape(
 ) -> Unit {
   let now = @fsops.current_timestamp().seconds
   for line in text.split("\n") {
-    let line = line.trim_end(chars="\r").to_owned()
-    let http_only = line.has_prefix("#HttpOnly_")
+    let line = if profile == WgetProfile {
+      let line = line.trim_start(chars=" \t\r\n\u{000b}\u{000c}")
+      if line.has_suffix("\r") {
+        line[:line.length() - 1].to_owned()
+      } else {
+        line.to_owned()
+      }
+    } else {
+      line.trim_end(chars="\r").to_owned()
+    }
+    let http_only = profile != WgetProfile && line.has_prefix("#HttpOnly_")
     let line = if http_only { line[10:].to_owned() } else { line }
     if line == "" || line.has_prefix("#") {
       continue
     }
-    let fields = line.split("\t").map(field => field.to_owned()).collect()
+    let mut fields = line.split("\t").map(field => field.to_owned()).collect()
+    if profile == WgetProfile && fields.length() > 7 {
+      let value = fields[6:].to_owned().join("\t")
+      fields = [..fields[:6], value]
+    }
     if fields.length() != 7 {
+      continue
+    }
+    if profile == WgetProfile && fields[:6].iter().any(field => field == "") {
       continue
     }
     // Curl interprets these spellings as an omitted path and shifts columns.
@@ -571,10 +662,18 @@ pub fn CookieJar::load_netscape(
       continue
     }
     let expires = @string.parse_int64(fields[4]) catch { _ => continue }
-    let domain = cookie_stored_domain(fields[0], profile)
+    if profile == WgetProfile && expires != 0L && expires < now {
+      continue
+    }
+    let (domain, port) = if profile == WgetProfile {
+      wget_cookie_domain_port(fields[0])
+    } else {
+      (fields[0], None)
+    }
+    let domain = cookie_stored_domain(domain, profile)
     if domain == "" ||
       fields[5] == "" ||
-      (profile != CurlProfile && !fields[2].has_prefix("/")) {
+      (profile == StrictProfile && !fields[2].has_prefix("/")) {
       continue
     }
     if profile == CurlProfile && !curl_suffix_admission(None, domain) {
@@ -584,13 +683,24 @@ pub fn CookieJar::load_netscape(
       name: fields[5],
       value: fields[6],
       domain,
-      host_only: fields[1].to_upper() != "TRUE",
+      host_only: (if profile == WgetProfile {
+        fields[1]
+      } else {
+        fields[1].to_upper()
+      }) !=
+      "TRUE",
+      port,
       path: if profile == CurlProfile {
         curl_cookie_path(fields[2])
       } else {
         fields[2]
       },
-      secure: fields[3].to_upper() == "TRUE",
+      secure: (if profile == WgetProfile {
+        fields[3]
+      } else {
+        fields[3].to_upper()
+      }) ==
+      "TRUE",
       http_only,
       expires: if expires == 0L {
         None
@@ -627,6 +737,9 @@ fn CookieJar::netscape(
       out.write_string(".")
     }
     out.write_string(cookie.domain)
+    if cookie.port is Some(port) {
+      out.write_string(":" + port.to_string())
+    }
     out.write_string(if cookie.host_only { "\tFALSE\t" } else { "\tTRUE\t" })
     out.write_string(cookie.path)
     out.write_string(if cookie.secure { "\tTRUE\t" } else { "\tFALSE\t" })

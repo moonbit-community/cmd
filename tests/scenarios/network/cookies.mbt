@@ -11,7 +11,7 @@ priv struct CookieSecurityCase {
 }
 
 ///|
-fn cookie_rows(text : String) -> Array[String] {
+fn cookie_rows(text : String, sorted~ : Bool = true) -> Array[String] {
   let rows = text
     .split("\n")
     .filter_map(line => {
@@ -23,7 +23,9 @@ fn cookie_rows(text : String) -> Array[String] {
       }
     })
     .to_array()
-  rows.sort_by((left, right) => left.lexical_compare(right))
+  if sorted {
+    rows.sort_by((left, right) => left.lexical_compare(right))
+  }
   rows
 }
 

@@ -434,6 +434,7 @@ test "curl insecure overlay checks overlap expiry and secure contexts" {
       value: "secure",
       domain: old_domain,
       host_only: false,
+      port: None,
       path: "/one/two",
       secure: true,
       http_only: false,

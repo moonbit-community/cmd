@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Repair Wget cookie port isolation, persistent jar interpretation, domain-chain
+  spelling, quoted attribute extraction and sticky deletion. Verify real request
+  fields and saved/reloaded state against finite fixed-oracle expectations;
+  complete numeric/date grammar and the remaining #34 work stay open.
+
 - Add a pinned Unicode 15 URL-host converter for workspace curl and wget,
   retaining command-specific input encoding and whole-host fallback. Preserve
   structured host identity across redirects, credentials, cookies and public

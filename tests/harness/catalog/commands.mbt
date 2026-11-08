@@ -409,6 +409,10 @@ pub fn commands() -> Array[CommandContract] {
     // Positive decimal overflow below 32 digits expires the matching stored cookie.
     // Complete pinned ICANN/PRIVATE suffix rules constrain response cookies.
     // Exact suffix scope and imported-file admission retain Wget's dialect.
+    // Host-only nondefault ports participate in cookie identity and jar reload.
+    // Lookup excludes single-label parent chains and hosts above 32 labels.
+    // Jar TRUE flags are case-sensitive; HttpOnly comments are ignored. Quoted
+    // parameters, assigned Secure and sticky deletion retain Wget's extractor.
     // Rejected domains discard the matching key only after request-path validation.
     // Cookie paths use raw prefixes; missing Path retains the directory's trailing slash.
     // Explicit UTF-8 input selects pinned URL IDNA; failed conversion retains

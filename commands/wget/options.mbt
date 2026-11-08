@@ -98,6 +98,9 @@ fn usage() -> String {
     #|Rejected domains discard a matching stored cookie after request-path validation.
     #|Cookie request paths use raw prefix matching; missing Path uses the URL directory.
     #|Imported cookie files retain Wget's separate admission policy.
+    #|Host-only cookies isolate nondefault ports and preserve them in saved jars.
+    #|Cookie parameters accept quoted values; Secure ignores its value, HttpOnly is ignored.
+    #|Jar lookup skips single-label parent domains and hosts with more than 32 labels.
     #|UTF-8 URL hosts use pinned Unicode 15 IDNA with whole-host transitional fallback.
     #|Host brackets mapped colons and omits the scheme's default port.
     #|Failed conversion retains the raw host; other input encodings are unsupported.

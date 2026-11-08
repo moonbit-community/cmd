@@ -1,5 +1,8 @@
 ///|
 fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
+  if profile == WgetProfile {
+    return wget_wire_cookie(value)
+  }
   let parts = value.split(";").to_array()
   guard parts[0].find("=") is Some(equal) else { return None }
   let name = if profile == CurlProfile {
@@ -33,11 +36,6 @@ fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
         } else {
           part[:equal].to_owned()
         }
-        if profile == WgetProfile &&
-          value == "" &&
-          (attribute.to_lower() == "domain" || attribute.to_lower() == "path") {
-          return None
-        }
         match attribute.to_lower() {
           "path" => path = Some(value)
           "expires" =>
@@ -51,9 +49,6 @@ fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
           "max-age" => {
             if profile == CurlProfile && value == "" {
               continue
-            }
-            if profile == WgetProfile && @utf8.encode(value).length() >= 32 {
-              return None
             }
             let parsed = Some(@string.parse_int64(value)) catch { _ => None }
             match parsed {
@@ -73,10 +68,6 @@ fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
                       0L
                     },
                   )
-                } else if profile == WgetProfile && positive_overflow {
-                  // The pinned Wget numeric conversion expires these values;
-                  // nonnumeric or overlong attributes discard only this cookie.
-                  max_age = Some(0L)
                 } else {
                   // Ignoring the invalid cookie preserves an earlier value;
                   // it must not become a new session cookie.
