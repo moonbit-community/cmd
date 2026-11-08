@@ -666,7 +666,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Actual-H replaces repeated X-Marker and default User-Agent values, captured on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts.",
+      "current_activation": "Raw request fields retain repeated X-Marker values and the interleaved custom User-Agent in argument order on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts.",
       "current_case_ids": [
         "network-auth-cookie",
         "repair-final-curl-cookie-header"
@@ -686,7 +686,7 @@
         }
       ],
       "current_remaining_facets": [],
-      "narrow_exact_scope_reminder": "Actual-H replaces repeated X-Marker and default User-Agent values, captured on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts.",
+      "narrow_exact_scope_reminder": "Raw request fields retain repeated X-Marker values and the interleaved custom User-Agent in argument order on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts.",
       "review_action": "The stated finite facet now has required assertions. A fresh applicable execution must qualify every binding; skipped platforms and wider unstated semantics are not covered by this definition review."
     },
     {
@@ -844,7 +844,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Repeated header replacement is captured on one request, including default User-Agent override. PATCH/body reflection and cookie interaction remain exact; cross-host explicit Cookie removal is bound to two requests.",
+      "current_activation": "Raw request fields capture same-name replacement and default User-Agent override. PATCH/body reflection and cookie interaction remain exact; a real --header Cookie redirect retains the explicit value across hosts in two requests.",
       "current_case_ids": [
         "repair-final-wget-cookie-header",
         "p1-wget-method-and-repeated-header"
@@ -859,12 +859,12 @@
         {
           "case_id": "network-auth-cookie",
           "assertions": [
-            "auth/12"
+            "auth/15"
           ]
         }
       ],
       "current_remaining_facets": [],
-      "narrow_exact_scope_reminder": "Repeated header replacement is captured on one request, including default User-Agent override. PATCH/body reflection and cookie interaction remain exact; cross-host explicit Cookie removal is bound to two requests.",
+      "narrow_exact_scope_reminder": "Raw request fields capture same-name replacement and default User-Agent override. PATCH/body reflection and cookie interaction remain exact; a real --header Cookie redirect retains the explicit value across hosts in two requests.",
       "review_action": "The stated finite facet now has required assertions. A fresh applicable execution must qualify every binding; skipped platforms and wider unstated semantics are not covered by this definition review."
     },
     {

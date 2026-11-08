@@ -1628,7 +1628,7 @@
         "repair-final-wget-cookie-header",
         "p1-wget-method-and-repeated-header"
       ],
-      "activation": "Repeated header replacement is captured on one request, including default User-Agent override. PATCH/body reflection and cookie interaction remain exact; cross-host explicit Cookie removal is bound to two requests.",
+      "activation": "Raw request fields capture same-name replacement and default User-Agent override. PATCH/body reflection and cookie interaction remain exact; a real --header Cookie redirect retains the explicit value across hosts in two requests.",
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "scenario_bindings": [
@@ -1641,7 +1641,7 @@
         {
           "case_id": "network-auth-cookie",
           "assertions": [
-            "auth/12"
+            "auth/15"
           ]
         }
       ]
@@ -1872,7 +1872,7 @@
           ]
         }
       ],
-      "activation": "Actual-H replaces repeated X-Marker and default User-Agent values, captured on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts."
+      "activation": "Raw request fields retain repeated X-Marker values and the interleaved custom User-Agent in argument order on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts."
     },
     {
       "command": "curl",

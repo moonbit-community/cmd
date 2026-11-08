@@ -8,14 +8,9 @@ async fn network_options_scenario(
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
     let observed : Array[Json] = []
-    let headers : Array[Json] = []
     group.spawn_bg(no_wait=true, () => {
       server.run_forever() <| ((request, body, connection) => {
         let payload = body.read_all().text()
-        headers.push({
-          "marker": request.headers.get("X-Marker").unwrap_or(""),
-          "agent": request.headers.get("User-Agent").unwrap_or(""),
-        })
         observed.push({
           "path": request.path,
           "method": @harness.oracle_request_name(request),
@@ -96,27 +91,34 @@ async fn network_options_scenario(
         proof.observe_equal("curl/" + label, "curl", actual, expected)
       }
     }
+    let header_server = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
+    group.add_defer(() => header_server.close())
+    let headers : Array[Json] = []
+    group.spawn_bg(no_wait=true, () => {
+      header_server.run_forever((connection, _) => {
+        let fields : Array[Json] = []
+        while connection.read_until("\r\n") is Some(line) && line != "" {
+          let lower = line.to_lower()
+          if lower.has_prefix("x-marker:") || lower.has_prefix("user-agent:") {
+            fields.push(Json(line))
+          }
+        }
+        headers.push(Json(fields))
+        connection.write("HTTP/1.1 200 OK\r\nContent-Length: 5\r\n\r\nhello")
+      })
+    })
+    let header_url = "http://127.0.0.1:\{header_server.addr.port()}/inspect"
     for command in ["curl", "wget"] {
-      observed.clear()
       headers.clear()
       let args = if command == "curl" {
         [
-          "-sS",
-          "-H",
-          "X-Marker: first",
-          "-H",
-          "X-Marker: second",
-          "-H",
-          "User-Agent: coverage",
-          base + "/inspect",
+          "-sS", "-H", "X-Marker: first", "-H", "User-Agent: coverage", "-H", "X-Marker: second",
+          header_url,
         ]
       } else {
         [
-          "-qO-",
-          "--header=X-Marker: first",
-          "--header=X-Marker: second",
-          "--header=User-Agent: coverage",
-          base + "/inspect",
+          "-qO-", "--header=X-Marker: first", "--header=X-Marker: second", "--header=User-Agent: coverage",
+          header_url,
         ]
       }
       let result = scenario_run(work, root, command, args, cwd=work, extra_env={
@@ -128,13 +130,19 @@ async fn network_options_scenario(
         "stdout": @harness.scenario_text(result.stdout),
         "stderr": @harness.scenario_text(result.stderr),
         "headers": Json(headers),
-        "requests": observed.length(),
+        "requests": headers.length(),
       }
       let expected : Json = {
         "status": 0,
         "stdout": "hello",
         "stderr": "",
-        "headers": [{ "marker": "second", "agent": "coverage" }],
+        "headers": [
+          if command == "curl" {
+            ["X-Marker: first", "User-Agent: coverage", "X-Marker: second"]
+          } else {
+            ["User-Agent: coverage", "X-Marker: second"]
+          },
+        ],
         "requests": 1,
       }
       assert_eq(actual, expected)

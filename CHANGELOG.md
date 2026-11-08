@@ -12,10 +12,19 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-09
+
+Development only.
+
+- Repair unpublished curl repeated request fields, ordered response fields and
+  Basic challenge-list recognition. Replace lossy header observations and the
+  misbound Wget Cookie redirect claim with real wire coverage. Retain successful
+  network launch, wire and oracle receipts in CI artifacts; #34 remains open
+  for its remaining protocol, cookie, configuration and jq work.
+
 ## 2026-11-08
 
 Development and publication.
-
 - Repair the unpublished mkdir candidate's standalone build against its declared
   published core dependency after package consolidation. Preserve numeric mode
   grammar and mark find/test examples as unpublished candidates. Publication

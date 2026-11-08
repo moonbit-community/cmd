@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "coverage_manifest_sha256": "a7d83f900be8e7ad5790a134f599a45b8a409c2856bdac51f22e1fd7db10fd94",
-  "independent_review_sha256": "376a552e4887a4ca89eb31829abf9297f787f8944d9d06739bcf474117a10268",
+  "coverage_manifest_sha256": "5e88bc71f74fa79c7a349c8e9372a87d5f3a12bd4a79eae512283de302688b89",
+  "independent_review_sha256": "632717c75722e0c8dc4a310767c80e848fe7aada8bd16cf53711048a49db7391",
   "reviewed_definitions": 895,
   "remaining_catalog_labels": 0,
   "new_fixture_or_observer_catalog_labels": 0,
@@ -803,7 +803,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Actual-H replaces repeated X-Marker and default User-Agent values, captured on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts.",
+      "current_activation": "Raw request fields retain repeated X-Marker values and the interleaved custom User-Agent in argument order on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts.",
       "current_case_ids": [
         "repair-final-curl-cookie-header"
       ],
@@ -825,7 +825,7 @@
         "other spellings, boundaries, interactions and error ordering",
         "resource and lifecycle effects not asserted by these cases"
       ],
-      "narrow_exact_scope_reminder": "Actual-H replaces repeated X-Marker and default User-Agent values, captured on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts.",
+      "narrow_exact_scope_reminder": "Raw request fields retain repeated X-Marker values and the interleaved custom User-Agent in argument order on exactly one request. Explicit Cookie combination and cross-host removal remain separately required with exact response bytes and request counts.",
       "review_action": "The stated finite facet now has required assertions. A fresh applicable execution must qualify every binding; skipped platforms and wider unstated semantics are not covered by this definition review."
     },
     {
@@ -1009,7 +1009,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Repeated header replacement is captured on one request, including default User-Agent override. PATCH/body reflection and cookie interaction remain exact; cross-host explicit Cookie removal is bound to two requests.",
+      "current_activation": "Raw request fields capture same-name replacement and default User-Agent override. PATCH/body reflection and cookie interaction remain exact; a real --header Cookie redirect retains the explicit value across hosts in two requests.",
       "current_case_ids": [
         "repair-final-wget-cookie-header",
         "p1-wget-method-and-repeated-header"
@@ -1024,7 +1024,7 @@
         {
           "case_id": "network-auth-cookie",
           "assertions": [
-            "auth/12"
+            "auth/15"
           ]
         }
       ],
@@ -1032,7 +1032,7 @@
         "other spellings, boundaries, interactions and error ordering",
         "resource and lifecycle effects not asserted by these cases"
       ],
-      "narrow_exact_scope_reminder": "Repeated header replacement is captured on one request, including default User-Agent override. PATCH/body reflection and cookie interaction remain exact; cross-host explicit Cookie removal is bound to two requests.",
+      "narrow_exact_scope_reminder": "Raw request fields capture same-name replacement and default User-Agent override. PATCH/body reflection and cookie interaction remain exact; a real --header Cookie redirect retains the explicit value across hosts in two requests.",
       "review_action": "The stated finite facet now has required assertions. A fresh applicable execution must qualify every binding; skipped platforms and wider unstated semantics are not covered by this definition review."
     },
     {

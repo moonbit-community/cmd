@@ -10,6 +10,12 @@ moonx cli/curl@0.2.5 [options...] <url>
 
 Send requests, upload files, follow redirects, manage cookies, retry failures and write responses to stdout or files.
 
+Unreleased workspace correction: repeated custom request fields retain their
+argument order, including an interleaved User-Agent. Final response fields keep
+their order, casing and repetition after optional-whitespace normalization.
+Interim fields are excluded. Request Content-Length must be singular; framing
+and generated-header validation still apply. The published coordinate is unchanged.
+
 ## Options
 
 | Option | Description |
@@ -23,7 +29,7 @@ Send requests, upload files, follow redirects, manage cookies, retry failures an
 | `-L, --location` | follow redirects |
 | `--max-redirs <num>` | maximum redirects (default 50) |
 | `-I, --head` | show response headers only |
-| `-H, --header <header>` | pass a custom header to the server |
+| `-H, --header <header>` | send custom fields in order, retaining repeats |
 | `-u, --user <user:password>` | HTTP Basic authentication |
 | `-b, --cookie <data\|file>` | send cookies or load a Netscape jar |
 | `-c, --cookie-jar <file>` | write a Netscape cookie jar |
@@ -53,6 +59,7 @@ Send requests, upload files, follow redirects, manage cookies, retry failures an
 ## Limitations
 
 - Only HTTP/HTTPS and GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE and PATCH are supported.
+- Header removal, semicolon empty-field syntax and header files are not yet supported; Host and Transfer-Encoding remain transport-managed.
 - Content-encoded responses remain encoded. A redirect cannot rewind consumed stdin uploads.
 - Partial stdout remains after failure; files remain unless --remove-on-error is selected. -O -J does not overwrite an existing selected name.
 

@@ -9,6 +9,9 @@ pub async fn execute_scenario(
   proof_receipts? : Array[Json],
 ) -> @harness.CaseReport {
   let start = @async.now()
+  // Network comparisons need the candidate and oracle wire/stream receipts
+  // after success as well as failure; a suite-level pass is not that evidence.
+  let retain_success = retain_success || @network.supports(fixture.id)
   let report_id = "scenario:" + fixture.id
   let device_boundary = fixture.id == "diff-directory-devices-boundary"
   let tee_boundary = fixture.id == "tee-default-pipe-boundary"

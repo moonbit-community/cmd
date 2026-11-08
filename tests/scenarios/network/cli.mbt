@@ -17,6 +17,7 @@ async fn network_cli_scenario(
   oracle_image? : String,
 ) -> Unit {
   let oracle_failures : Array[String] = []
+  network_header_fields_scenario(executor, work, oracle_failures, oracle_image?)
   @async.with_task_group <| group => {
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
@@ -217,6 +218,12 @@ async fn network_cli_scenario(
         ],
         "auth=Basic dXNlcjpwYXNz\ncookie=\n",
         1,
+      ),
+      (
+        "wget",
+        ["-qO-", "--header=Cookie: sid=header", base + "/cross"],
+        "auth=\ncookie=sid=header\n",
+        2,
       ),
     ]
     for index, (command, args, expected, request_count) in cases {

@@ -41,11 +41,12 @@ pub async fn transfer(
     }
     seen[key] = true
     let length = body_length(body)
-    let prepared_headers = request_header_maps(
+    let prepared_headers = request_headers(
       parsed,
       headers,
       length,
       options.resume_from,
+      options.profile,
     )
     let persistent = prepared_headers.persistent
     let per_request = prepared_headers.per_request
@@ -53,8 +54,10 @@ pub async fn transfer(
       send_basic &&
       options.basic_credentials is Some(credentials) &&
       !prepared_headers.authorization_supplied {
-      per_request["Authorization"] = "Basic " +
-        @base64.encode(@utf8.encode(credentials))
+      per_request.set(
+        "Authorization",
+        "Basic " + @base64.encode(@utf8.encode(credentials)),
+      )
     }
     let stored = match options.cookie_jar {
       Some(jar) =>
@@ -68,10 +71,8 @@ pub async fn transfer(
     if per_request.contains("Cookie") &&
       stored is Some(value) &&
       options.custom_cookie_mode is SeparateFields {
-      // The transport serializes persistent headers before request headers. These are two
-      // independent maps, so the jar and explicit field retain their wire
-      // identity and order without merging values.
-      persistent["Cookie"] = value
+      // Jar cookies precede explicit fields without merging their values.
+      persistent.set("Cookie", value)
     }
     if !per_request.contains("Cookie") {
       let literal = if parsed.origin_key() == credential_origin {
@@ -86,7 +87,7 @@ pub async fn transfer(
         (None, None) => None
       }
       if value is Some(value) {
-        per_request["Cookie"] = value
+        per_request.set("Cookie", value)
       }
     }
     let client = open_client(parsed, options, started) catch {
@@ -116,7 +117,7 @@ pub async fn transfer(
       )
     }
     let total = response_content_length(response)
-    let visible_headers = response_headers(response, client.cookie_fields)
+    let visible_headers = client.response_fields
     emit(
       observer,
       ResponseStarted(
@@ -128,8 +129,10 @@ pub async fn transfer(
       ),
     )
     let basic_challenge = response.code == 401 &&
-      response.headers.get("WWW-Authenticate") is Some(challenge) &&
-      uses_basic_authentication(challenge)
+      visible_headers.any(header => {
+        header.name.to_lower() == "www-authenticate" &&
+        has_basic_challenge(header.value)
+      })
     if basic_challenge &&
       !send_basic &&
       credentials_allowed &&
@@ -228,8 +231,10 @@ pub async fn transfer(
       client.close()
       raise transfer_error(
         if basic_challenge &&
-          per_request.get("Authorization") is Some(authorization) &&
-          uses_basic_authentication(authorization) {
+          per_request.fields.any(header => {
+            header.name.to_lower() == "authorization" &&
+            uses_basic_authentication(header.value)
+          }) {
           AuthenticationFailure
         } else {
           HttpStatusFailure

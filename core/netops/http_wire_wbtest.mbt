@@ -192,7 +192,15 @@ async test "wire unknown length uploads stream independent chunks and a final te
       let started = @async.now()
       let wire = open_client(parsed, options, started)
       defer wire.close()
-      wire.start_request(parsed, Post, {}, {}, StdinBody, options, started)
+      wire.start_request(
+        parsed,
+        Post,
+        { fields: [], },
+        { fields: [], },
+        StdinBody,
+        options,
+        started,
+      )
       wire.write_payload(b"one", options, started)
       wire.write_payload(b"", options, started)
       wire.write_payload(b"two", options, started)

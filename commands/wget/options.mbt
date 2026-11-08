@@ -58,7 +58,7 @@ fn usage() -> String {
     #|                                 partial bytes survive retries and failures
     #|      --max-redirect=NUMBER       maximum redirects (default 20)
     #|      --content-disposition       honor Content-Disposition filenames
-    #|      --header=STRING             insert STRING among request headers
+    #|      --header=STRING             set a request header; last same-name value wins
     #|      --user=USER                 HTTP Basic user name
     #|      --password=PASSWORD         HTTP Basic password
     #|      --auth-no-challenge         send Basic credentials on every request, including redirects
@@ -91,6 +91,7 @@ fn usage() -> String {
     #|the filename with HEAD before choosing that file's resume offset.
     #|Multiple URL failures retain the lowest nonzero transfer exit code.
     #|Rejected Basic credentials exit 6; other HTTP errors exit 8.
+    #|Basic challenges are recognized across repeated fields and quoted comma lists.
   text + "\n"
 }
 

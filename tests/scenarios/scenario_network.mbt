@@ -29,7 +29,7 @@ fn workspace_network_executor(
         program,
         args,
         infrastructure_error: None,
-        retain_identity: false,
+        retain_identity: true,
       }
     },
   }
