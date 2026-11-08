@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Repair workspace curl cookie-prefix validation, normalized jar paths, Secure
+  origin/overlay rules and host-only replacement identity. Preserve Wget's
+  distinct security behavior; PSL-dependent scope and complete jar dialects
+  remain open under #34. Published coordinates are unchanged.
+
 - Repair unpublished curl repeated request fields, ordered response fields and
   Basic challenge-list recognition. Replace lossy header observations and the
   misbound Wget Cookie redirect claim with real wire coverage. Retain successful

@@ -42,8 +42,8 @@ pub fn BasicCredentialScope::to_repr(Self) -> @debug.Repr
 pub struct CookieJar {
   mut entries : Array[StoredCookie]
 }
-pub async fn CookieJar::load(Self, String) -> Unit
-pub fn CookieJar::load_netscape(Self, String) -> Unit
+pub async fn CookieJar::load(Self, String, profile? : TransferProfile) -> Unit
+pub fn CookieJar::load_netscape(Self, String, profile? : TransferProfile) -> Unit
 pub fn CookieJar::new() -> Self
 pub async fn CookieJar::save(Self, String, include_session? : Bool) -> Unit
 

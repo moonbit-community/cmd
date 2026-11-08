@@ -18,6 +18,12 @@ async fn network_cli_scenario(
 ) -> Unit {
   let oracle_failures : Array[String] = []
   network_header_fields_scenario(executor, work, oracle_failures, oracle_image?)
+  network_cookie_security_scenario(
+    executor,
+    work,
+    oracle_failures,
+    oracle_image?,
+  )
   @async.with_task_group <| group => {
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())

@@ -592,9 +592,9 @@ async fn run(options : Options) -> Int32 {
         continue
       }
       if source == "-" {
-        jar.load_netscape(@stdio.stdin.read_all().text())
+        jar.load_netscape(@stdio.stdin.read_all().text(), profile=CurlProfile)
       } else {
-        jar.load(source) catch {
+        jar.load(source, profile=CurlProfile) catch {
           _ => () // curl treats missing cookie input files as an empty jar.
         }
       }

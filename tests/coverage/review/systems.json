@@ -1843,11 +1843,19 @@
             "auth/2",
             "auth/3",
             "auth/4",
-            "auth/5"
+            "auth/5",
+            "cookie-security/secure-missing-flag",
+            "cookie-security/secure-loopback",
+            "cookie-security/host-exact-ip-domain",
+            "cookie-security/host-default-nested",
+            "cookie-security/insecure-origin-rejects-secure",
+            "cookie-security/insecure-overlay-component-prefix",
+            "cookie-security/insecure-overlay-deletion",
+            "cookie-security/secure-loopback-allows-replacement"
           ]
         }
       ],
-      "activation": "Explicit and repeated-b cookies have exact reflected values; enabling the cookie engine retains a server cookie through a same-host redirect while explicit cookies are stripped across hosts. Four exact response and request-count receipts qualify these finite facets only."
+      "activation": "Explicit and repeated-b cookies retain exact reflected values and origin boundaries. Finite security cases observe exact redirect cookies, all logical saved rows and request counts for invalid/valid prefixes, exact IP Domain scope, nested default paths, nonsecure-origin rejection, protected insecure replacement/deletion and the loopback exception. PSL-dependent domain conversion and full cookie grammar remain outside this scope."
     },
     {
       "command": "curl",
@@ -1888,11 +1896,18 @@
           "assertions": [
             "cookie/curl/saved",
             "cookie/curl/loaded",
-            "cookie/curl/missing-parent"
+            "cookie/curl/missing-parent",
+            "cookie-security/jar-path-double-slash",
+            "cookie-security/jar-path-quoted",
+            "cookie-security/jar-path-relative",
+            "cookie-security/jar-reject-invalid-prefixes",
+            "cookie-security/jar-stdin",
+            "cookie-security/jar-scope-identity",
+            "cookie-security/host-deletion-preserves-domain"
           ]
         }
       ],
-      "activation": "The actual jar contains the independently defined sid/fixture record, loading it sends the exact reflected cookie, and a missing parent creates no jar. Mode policy and complete jar formatting remain separate."
+      "activation": "Actual save/load and missing-parent effects remain required. New jar imports validate prefixes after path normalization, including stdin; host-only/domain identities coexist and host-only deletion preserves the domain record. Exact redirect output, request counts, unchanged input jars and complete logical output rows qualify these finite inputs. Full jar grammar, file headers/order and mode policy remain separate."
     },
     {
       "command": "wget",
@@ -3079,7 +3094,7 @@
         "idle-timeout"
       ],
       "kind": "unresolved-current-registration-facets",
-      "reason": "Current header claim is only Cookie-specific; arbitrary repeated header semantics remain differential-only. Other listed options have legacy checks or differential rows but no independent activated current contract in this review.",
+      "reason": "Current header coverage includes repeated-field replacement, User-Agent override and explicit Cookie redirects; remaining header grammar and combinations are unresolved. Other listed options have legacy checks or differential rows but no independent activated current contract in this review.",
       "case_ids": [
         "phase2-wget-request-body",
         "phase2-wget-input-file",

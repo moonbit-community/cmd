@@ -24,6 +24,11 @@ Final response fields retain their order, casing and repetition after
 optional-whitespace normalization. Same-name request headers still use the last
 value; explicit Cookie headers continue across origins.
 
+Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
+sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
+rules do not apply to Wget. Port-scoped jars, complete path dialects and jar
+serialization remain unfinished under issue #34.
+
 ## Options
 
 | Option | Description |

@@ -16,6 +16,12 @@ their order, casing and repetition after optional-whitespace normalization.
 Interim fields are excluded. Request Content-Length must be singular; framing
 and generated-header validation still apply. The published coordinate is unchanged.
 
+The workspace also validates `__Secure-` and `__Host-` cookies before storage
+or jar import, after curl path normalization. Secure cookies require HTTPS or
+the exact localhost, 127.0.0.1 or ::1 exception; other HTTP origins cannot
+replace or delete an overlapping live Secure cookie. Host-only and domain
+cookies keep separate replacement identities. Explicit Cookie text is unchanged.
+
 ## Options
 
 | Option | Description |
@@ -60,6 +66,9 @@ and generated-header validation still apply. The published coordinate is unchang
 
 - Only HTTP/HTTPS and GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE and PATCH are supported.
 - Header removal, semicolon empty-field syntax and header files are not yet supported; Host and Transfer-Encoding remain transport-managed.
+- PSL/IDNA remain unsupported. In particular, `__Host-` with `Domain=localhost`
+  or an exact public suffix still lacks curl's PSL host-only conversion; full
+  prefix/domain parity and complete jar grammar/serialization are not claimed.
 - Content-encoded responses remain encoded. A redirect cannot rewind consumed stdin uploads.
 - Partial stdout remains after failure; files remain unless --remove-on-error is selected. -O -J does not overwrite an existing selected name.
 

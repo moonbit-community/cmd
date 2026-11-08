@@ -311,6 +311,10 @@ pub fn commands() -> Array[CommandContract] {
     // Set-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.
     // Positive decimal overflow keeps the replacement under a 400-day lifetime cap.
     // Cookie ordering uses descending path/domain/name byte length, then creation.
+    // Candidate prefix checks use normalized paths and final host-only scope.
+    // Secure contexts are HTTPS or exact localhost/127.0.0.1/::1. Insecure
+    // overlays cannot replace live Secure cookies; identity includes host-only.
+    // PSL-dependent host-only conversion and complete jar grammar remain open.
     // Custom request fields retain repetition and argument order. Response
     // observers retain all final fields in wire order, separately from storage.
     // Multiple request Content-Length fields reject before request bytes.
@@ -398,6 +402,8 @@ pub fn commands() -> Array[CommandContract] {
     // Set-Cookie without '=' and nonnumeric Max-Age replacements preserve old cookies.
     // Positive decimal overflow below 32 digits expires the matching stored cookie.
     // Cookie ordering uses descending domain/path byte length, then name/value bytes.
+    // Prefixes remain ordinary names; Secure sends require HTTPS. Curl's
+    // loopback exception and admission/overlay checks do not apply to Wget.
     // Same-name request fields keep the last value. Response observers retain
     // all final fields in wire order. Basic challenge lists preserve quoted commas.
     // Multiple URL failures retain the lowest nonzero transfer exit code.
