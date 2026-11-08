@@ -77,27 +77,25 @@ this profile does not relabel those omissions as implemented.
 
 ## Current delivery and historical acceptance
 
-Development candidate core 0.9.5 with make 0.2.8, sh 0.2.9 and split 0.1.10
+The current 2026-11-08 release publishes core 0.9.5 with make 0.2.8, sh 0.2.9
+and split 0.1.10 from `273ea9f`, retaining the other 77 command coordinates. It
 extends the POSIX trailing-slash directory check to all shell file predicates
 and both timestamp-comparison operands. A later independent audit found that
 0.9.4 guarded only size tests, leaving macOS 15 file-link lookups exposed.
 Actual sh, make-recipe and split-filter regressions cover single/double slashes,
 link chains, invalid parent components, valid directory links and unsuffixed
-controls. Publication and three-platform acceptance remain pending, and issue
-#31 remains open. Earlier successful acceptance retains its finite scope.
-
-The current 2026-11-08 language/export release publishes core 0.9.4, make 0.2.7,
-sh 0.2.8 and split 0.1.9 from `aa6b769`, retaining the other 77 command coordinates.
-[Actual-main development checks](https://github.com/moonbit-community/cmd/actions/runs/42415858402)
+controls.
+[Actual-main development checks](https://github.com/moonbit-community/cmd/actions/runs/42425407212)
 and independent source/receipt audit pass. All 80 exact MoonX coordinates pass
-[published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42417285800),
+[published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418),
 including fixed Linux comparison and all six required oracle scenarios.
 The [changelog](../CHANGELOG.md#2026-11-08) records platform counts and exclusions.
-The independently frozen 2,802 definitions retain all previous 2,656 IDs, update
-six help/version outputs and add 146 F31 cases; candidate expectations remain
+The independently frozen 2,850 definitions retain all previous 2,802 IDs, update
+six help/version outputs and add 48 F31 cases; candidate expectations remain
 independent. Registry builds, upload checksums and actual isolated consumers of
-the uploaded core were verified. Make's failed transport, confirmed version
-absence and successful retry remain separate receipts.
+the uploaded core were verified. All four uploads succeeded once. The new POSIX
+cases pass on Linux/macOS and are explicitly excluded on Windows; the existing
+Windows path regression passes.
 
 The completed named profile includes default/named export and unexport,
 `.EXPORT_ALL_VARIABLES`, recipe expansion/environment phases, shell capture
@@ -112,10 +110,10 @@ product acceptance follows the Wasm delivery policy.
 See [ADR-0007](adr/0007-language.md) for grammar, descriptor and terminal limits;
 full POSIX/GNU parity and formal performance acceptance are not established.
 
-Earlier core 0.9.2 and 0.9.3 releases retain their dated finite evidence. Independent
-reviews subsequently found size and export omissions; the successful earlier
-receipts did not establish those missing behaviors. Their exact coordinates,
-counts and limitations remain in the [earlier record](https://github.com/moonbit-community/cmd/blob/aa6b769031fb0f5d90298ddbc5f7fb2fad044d38/CHANGELOG.md#2026-11-08).
+Earlier core 0.9.2, 0.9.3 and 0.9.4 releases retain their dated finite evidence.
+Independent reviews subsequently found size, export and raw-path omissions;
+the successful earlier receipts did not establish those missing behaviors. Their exact coordinates,
+counts, limitations and transport failures remain in the [earlier record](https://github.com/moonbit-community/cmd/blob/273ea9ff3e0f045189cb3f3f5837d63c297b6c8c/CHANGELOG.md#2026-11-08).
 The current repair closes those implementation gaps without rewriting historical
 expectations or relabeling project grammar omissions as upstream API blockers.
 
@@ -768,11 +766,13 @@ claiming success; `local-only` is absent from MoonX by design.
 
 ## Per-command support
 
-Published `split@0.1.9` uses the expanded pure MoonBit
-shell filter language from `core@0.9.4`, including arithmetic assignments,
+Published `split@0.1.10` uses the expanded pure MoonBit
+shell filter language from `core@0.9.5`, including arithmetic assignments,
 backticks and expanded here-documents. Actual filter regressions retain `$FILE`,
 stdin and child-status contracts. Its target-size repair follows final links,
 does not open unreadable files or FIFOs, and rejects unavailable target sizes.
+Every POSIX file predicate and both timestamp operands require paths ending in
+a slash to name directories, including valid directory links.
 Complete EOF continuations execute with their actual final status. Exact-version
 MoonX acceptance passed on all three platforms; the finite results and earlier
 versions are recorded in [CHANGELOG.md](../CHANGELOG.md#2026-11-08).

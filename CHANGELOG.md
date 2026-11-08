@@ -16,53 +16,39 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
-- Prepare core 0.9.5, make 0.2.8, sh 0.2.9 and split 0.1.10 after independent
-  audit found a macOS 15 raw-path gap beyond size predicates. Apply the POSIX
-  trailing-slash directory requirement to all file predicates and both timestamp
-  operands, with actual sh/recipe/filter regressions. Publication and required
-  three-platform acceptance remain pending; issue #31 remains open.
 - Extend the finite shell/make language profile with arithmetic side effects,
   backticks, expanded here-documents, standard-stream aliases, loop levels,
   printf/test, variable/export recursion, secondary expansion and SHELLSTATUS.
-  Preserve persistent state, ordered effects and failure prefixes. Existing
-  POSIX FIFO jobservers retain exact token ownership/return; descriptor pipes,
-  Windows semaphores and server creation remain explicit API boundaries.
-- First publish core 0.9.2, make 0.2.5, sh 0.2.6 and split 0.1.7 from `e739345`
-  after [development CI](https://github.com/moonbit-community/cmd/actions/runs/42396312258)
-  and independent audit. Its [exact acceptance](https://github.com/moonbit-community/cmd/actions/runs/42397826082)
-  covers 80 coordinates and 2,646 frozen definitions. Preserve the dated counts,
-  exclusions and limitations in the [earlier release record](https://github.com/moonbit-community/cmd/blob/aa6b769031fb0f5d90298ddbc5f7fb2fad044d38/CHANGELOG.md#2026-11-08).
-  Later audits found size and export omissions; these finite results did not
-  establish completion of issue #31.
-- Publish the size repair as core 0.9.3, make 0.2.6, sh 0.2.7 and split 0.1.8
-  from `5545ad7`, with target-following metadata, raw path checks and explicit
-  unavailable-size errors. [Actual-main CI](https://github.com/moonbit-community/cmd/actions/runs/42405602598)
-  and [exact acceptance](https://github.com/moonbit-community/cmd/actions/runs/42407243329)
-  pass; its 2,656 definitions preserve the previous IDs and add ten size cases.
-  Linux directory sizes, macOS capability errors and Windows link targets have
-  real observations. The separately identified export omissions remained open
-  until the following repair; earlier evidence keeps its original scope.
-- Publish core 0.9.4, make 0.2.7, sh 0.2.8 and split 0.1.9 from `aa6b769` after
-  [actual-main development CI](https://github.com/moonbit-community/cmd/actions/runs/42415858402)
-  and independent source/receipt audit. Implement named/default export policy,
-  recipe expansion/environment phases, actual shell error status and NUL capture,
-  GNU argument construction, contextual syntax rejection and complete EOF
-  continuation. Preserve unexpected child-output failures without replay.
-  Verify all four uploads, registry builds and package checksums; retain make's
-  failed transport, confirmed registry absence and successful retry separately.
-  Keep the other 77 coordinates: 80 published commands among 81 local modules,
-  with timeout local-only.
-- [Exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42417285800)
-  passes all 80 coordinates: local macOS 2,936/0/31, Linux 2,945/0/28,
-  macOS 2,936/0/31 and Windows 2,734/0/233 (pass/fail/platform exclusions).
-  Linux includes the fixed oracle and all six required oracle scenarios.
-  Freeze 2,802 definitions: all 2,656 previous IDs remain, with six metadata
-  output updates and 146 added F31 cases. Each development platform passes
-  1,993 Wasm product tests and 205 Native test-tool tests. Isolated make/split
-  sources pass 44/8 Wasm tests; all three consumers exercise the uploaded core,
-  including export/EOF behavior. Sh has no package tests of its own. This is
-  finite correctness acceptance, not full GNU/POSIX parity or formal performance
-  acceptance.
+  Preserve named/default export policy, recipe expansion/environment phases,
+  contextual syntax rejection, complete EOF continuation and unexpected
+  child-output failures without replay. Existing POSIX FIFO jobservers retain
+  exact token ownership/return; descriptor pipes, Windows semaphores and server
+  creation remain explicit API boundaries.
+- Publish core 0.9.5, make 0.2.8, sh 0.2.9 and split 0.1.10 from `273ea9f`
+  after [actual-main development CI](https://github.com/moonbit-community/cmd/actions/runs/42425407212)
+  and independent audit. Apply the POSIX trailing-slash directory requirement
+  to every file predicate and both timestamp operands, including the macOS 15
+  file-link gap found after the size repair. Verify all four successful uploads,
+  registry builds and package checksums. Retain the other 77 coordinates:
+  80 published commands among 81 local modules, with timeout local-only.
+- [Exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418)
+  passes all 80 coordinates: local macOS 2,984/0/31, Linux 2,993/0/28,
+  macOS 2,984/0/31 and Windows 2,734/0/281 (pass/fail/platform exclusions).
+  Independently audit all receipts, the fixed Linux oracle and all six required
+  oracle scenarios. Freeze 2,850 definitions, including 380 F31 cases: retain
+  all 2,802 previous IDs with six metadata output updates and 48 additions.
+  The new POSIX cases pass on Linux/macOS and have explicit Windows exclusions;
+  the existing Windows path regression passes. Each development platform passes
+  1,994 Wasm product tests and 205 Native test-tool tests. Isolated make/split
+  sources pass 44/8 Wasm tests; all three consumers exercise the uploaded core.
+  Sh has no package tests of its own.
+- Earlier core 0.9.2, 0.9.3 and 0.9.4 releases retain their dated coordinates,
+  counts, exclusions and upload failures in the
+  [preceding release record](https://github.com/moonbit-community/cmd/blob/273ea9ff3e0f045189cb3f3f5837d63c297b6c8c/CHANGELOG.md#2026-11-08).
+  Later independent audits found size, export and raw-path omissions; earlier
+  successful finite acceptance did not establish those missing behaviors.
+  Current receipts establish finite correctness, not full GNU/POSIX parity or
+  formal performance acceptance.
 
 ## 2026-11-07
 

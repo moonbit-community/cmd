@@ -208,24 +208,24 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-11-08 export repair: core is 0.9.4.
-  Published make 0.2.7, sh 0.2.8 and split 0.1.9; retained the other 77 coordinates,
+- Current registry baseline after the 2026-11-08 raw-path repair: core is 0.9.5.
+  Published make 0.2.8, sh 0.2.9 and split 0.1.10; retained the other 77 coordinates,
   giving 80 published commands among 81 local modules. Core dependencies are
-  3 commands on 0.9.4, 25 on 0.9.1, 24 on 0.9.0 and 23 on 0.8.2;
+  3 commands on 0.9.5, 25 on 0.9.1, 24 on 0.9.0 and 23 on 0.8.2;
   echo/false/sleep/true/typst do not depend on core.
   timeout remains unpublished and local-only. Exact coordinates and independent
   expectations are in tests/release/latest.json and latest-cases.json.
-  Source commit aa6b769 passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42415858402).
+  Source commit 273ea9f passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42425407212).
   All four uploads, registry builds and package checksums were verified.
   Local exact-version MoonX and
-  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42417285800)
+  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418)
   passed all 80 coordinates with zero failures, including pinned Linux comparison.
   Counts and exclusions are in CHANGELOG.md under 2026-11-08. This does not
   establish full upstream parity or formal performance acceptance.
-  The independently audited 2,802 frozen definitions include 332 F31 cases and
-  retain all 2,656 previous IDs, with six metadata output updates and 146 additions.
-  The failed make transport, registry-absence check and successful retry remain
-  distinct receipts. General GNU/POSIX grammar limits remain in ADR-0007.
+  The independently audited 2,850 frozen definitions include 380 F31 cases and
+  retain all 2,802 previous IDs, with six metadata output updates and 48 additions.
+  All four uploads succeeded once; earlier release failures retain their dated
+  scope. General GNU/POSIX grammar limits remain in ADR-0007.
   Current latest/candidate snapshots remain independent. Retired published and
   historical archives are preserved in Git at 234f960, rather than duplicated
   in the active checkout. Prior acceptance results retain their dated scope

@@ -1,7 +1,7 @@
 # split
 
-Development candidate: `cli/split@0.1.10`, using `cli/core@0.9.5`.
-Publication and exact-coordinate acceptance remain pending. Earlier release evidence is recorded in the
+Published: `cli/split@0.1.10`, using `cli/core@0.9.5`.
+Three-platform exact-coordinate acceptance and earlier release evidence are recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 Split input into pieces for MoonX.
