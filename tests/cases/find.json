@@ -7878,43 +7878,21 @@
     {
       "id": "f29-find-size-unreadable",
       "command": "find",
-      "args": [
-        "file",
-        "-size",
-        "7c"
-      ],
+      "args": [],
+      "files": [],
+      "environment": {},
       "stdin_text": "",
-      "files": [
-        {
-          "path": "file",
-          "kind": "file",
-          "content_text": "payload",
-          "mode": 0,
-          "readable": false
-        }
-      ],
-      "environment": {
-        "LC_ALL": "C",
-        "LANG": "C",
-        "TZ": "UTC"
-      },
       "expected_status": 0,
-      "expected_stdout_text": "file\n",
+      "expected_stdout_text": "",
       "expected_stderr_text": "",
-      "expected_files": [
-        {
-          "path": "file",
-          "kind": "file",
-          "mode": 0
-        }
-      ],
       "normalizations": [],
-      "comparison": "contract",
-      "oracle": true,
-      "source_version": "Issue 29 independently specified filesystem effects; actual execution and fixed Linux oracle receipts remain separate.",
+      "comparison": "scenario",
       "host_platforms": [
         "posix"
-      ]
+      ],
+      "oracle": false,
+      "timeout_ms": 60000,
+      "source_version": "Issue 29 real mode-000 empty/full files: require actual EACCES, execute Wasm predicates, preserve original metadata before observer chmod, then verify retained content. Sealed Linux GNU counterpart is separate."
     },
     {
       "id": "f29-find-xtype-file-link-positive",
@@ -11046,6 +11024,25 @@
       "source_version": "Issue 29 independently audited cumulative failure and actual deletion effects; immutable GNU comparison is separately executed.",
       "expected_stderr_contains": "Directory not empty",
       "diagnostic_reason": "GNU names the deleting action while the candidate names the failed entry; the actual nonempty-directory reason, final status, retained sentinel and deletion of the later root are independently required."
+    },
+    {
+      "id": "f29-find-size-unreadable-oracle",
+      "command": "find",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "oracle-scenario",
+      "host_platforms": [
+        "linux"
+      ],
+      "oracle": false,
+      "timeout_ms": 60000,
+      "source_version": "Issue 29 immutable GNU and Wasm size predicates on actual unreadable empty/full files, same user; original metadata and restored exact content are independently checked."
     }
   ]
 }

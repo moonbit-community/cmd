@@ -263,6 +263,40 @@ async fn filesystem_error_scenario(
   @fs.write_file(work + "/locked/file", "retained")
   @fs.write_file(work + "/victim", "retained")
   @fs.symlink(work + "/denied-link", target="locked/file")
+  // readlink/follow can update a new link's atime on relatime mounts, including
+  // during the observer's own snapshot. Pin its access time after mtime/ctime
+  // before the baseline; keep the full preservation comparison below.
+  let pin = @harness.run(
+    "/usr/bin/touch",
+    ["-h", "-a", "-t", "209901010000.00", work + "/denied-link"],
+    extra_env={ "TZ": "UTC" },
+  )
+  let pinned = @fs.atime(work + "/denied-link", follow_symlink=false)
+  filesystem_record(observation_path, observations, {
+    "phase": "link-access-precondition",
+    "status": pin.status,
+    "stdout": @harness.scenario_text(pin.stdout),
+    "stderr": @harness.scenario_text(pin.stderr),
+    "nofollow_atime": pinned,
+    "requested_unix_seconds": "4070908800",
+  })
+  assert_eq(pin.status, 0)
+  assert_eq(pin.stdout, b"")
+  assert_eq(pin.stderr, b"")
+  assert_eq(pinned, (4070908800L, 0))
+  let warm = @harness.snapshot(work, observe=["symlink-target"], content=false)
+  assert_true(
+    warm.any(entry => {
+      entry.path == "denied-link" &&
+      entry.metadata.get("symlink-target") == Some("locked/file")
+    }),
+  )
+  assert_eq(@fs.kind(work + "/denied-link"), Regular)
+  assert_eq(
+    @fs.atime(work + "/denied-link", follow_symlink=false),
+    pinned,
+    msg="fixture requires stable link access time after observer readlink and follow",
+  )
   let before = @harness.snapshot(
     work,
     observe=["mode", "identity", "atime", "mtime", "ctime", "symlink-target"],
@@ -481,7 +515,7 @@ async fn filesystem_error_scenario(
         { "path": entry.path, "kind": entry.kind, "metadata": entry.metadata } :
         Json)
     }),
-    "observer_changes": "locked mode restored to 0700; its mode/ctime are excluded from predicate preservation",
+    "observer_changes": "locked mode restored to 0700 changes mode/ctime; observer readdir may change directory atime. Its kind/identity/mtime and every child/link field remain checked.",
   })
   assert_true(
     @harness.snapshots_equal(
@@ -489,6 +523,15 @@ async fn filesystem_error_scenario(
       after.filter(entry => entry.path != "locked"),
     ),
   )
+  guard before.filter(entry => entry.path == "locked") is [locked_before] &&
+    after.filter(entry => entry.path == "locked") is [locked_after] else {
+    fail("original locked directory observation missing")
+  }
+  assert_eq(locked_before.kind, "directory")
+  assert_eq(locked_after.kind, locked_before.kind)
+  for key in ["identity", "mtime"] {
+    assert_eq(locked_after.metadata[key], locked_before.metadata[key])
+  }
   assert_eq(@fs.read_file(work + "/victim").text(), "retained")
   assert_eq(@fs.read_file(work + "/locked/file").text(), "retained")
   if proof is Some(proof) {

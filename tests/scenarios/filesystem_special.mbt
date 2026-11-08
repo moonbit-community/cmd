@@ -67,7 +67,20 @@ async fn filesystem_predicate_control(
     assert_eq(oracle.cleanup_error, None)
     assert_eq(oracle.output.status, status)
     assert_eq(oracle.output.stdout, @utf8.encode(stdout))
-    assert_eq(oracle.output.stderr, @utf8.encode(stderr))
+    // GNU uses the actual argv[0] path in each diagnostic. Only the expected
+    // program prefix differs; preserve and compare every other byte.
+    let oracle_stderr = stderr
+      .split("\n")
+      .map(line => {
+        if line.has_prefix(command + ": ") {
+          "/oracle/bin/" + line.to_owned()
+        } else {
+          line.to_owned()
+        }
+      })
+      .collect()
+      .join("\n")
+    assert_eq(oracle.output.stderr, @utf8.encode(oracle_stderr))
   }
 }
 

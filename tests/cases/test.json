@@ -26781,42 +26781,21 @@
     {
       "id": "f29-test-size-unreadable",
       "command": "test",
-      "args": [
-        "-s",
-        "file"
-      ],
+      "args": [],
+      "files": [],
+      "environment": {},
       "stdin_text": "",
-      "files": [
-        {
-          "path": "file",
-          "kind": "file",
-          "content_text": "payload",
-          "mode": 0,
-          "readable": false
-        }
-      ],
-      "environment": {
-        "LC_ALL": "C",
-        "LANG": "C",
-        "TZ": "UTC"
-      },
       "expected_status": 0,
       "expected_stdout_text": "",
       "expected_stderr_text": "",
-      "expected_files": [
-        {
-          "path": "file",
-          "kind": "file",
-          "mode": 0
-        }
-      ],
       "normalizations": [],
-      "comparison": "contract",
-      "oracle": true,
-      "source_version": "Issue 29 independently specified filesystem effects; actual execution and fixed Linux oracle receipts remain separate.",
+      "comparison": "scenario",
       "host_platforms": [
         "posix"
-      ]
+      ],
+      "oracle": false,
+      "timeout_ms": 60000,
+      "source_version": "Issue 29 real mode-000 empty/full files: require actual EACCES, execute Wasm predicates, preserve original metadata before observer chmod, then verify retained content. Sealed Linux GNU counterpart is separate."
     },
     {
       "id": "f29-special-kinds",
@@ -32325,6 +32304,25 @@
       "timeout_ms": 180000,
       "oracle": false,
       "source_version": "Actual same-second distinct nanosecond file mtimes; eight candidate and immutable GNU comparisons plus metadata preservation."
+    },
+    {
+      "id": "f29-test-size-unreadable-oracle",
+      "command": "test",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "oracle-scenario",
+      "host_platforms": [
+        "linux"
+      ],
+      "oracle": false,
+      "timeout_ms": 60000,
+      "source_version": "Issue 29 immutable GNU and Wasm size predicates on actual unreadable empty/full files, same user; original metadata and restored exact content are independently checked."
     }
   ]
 }

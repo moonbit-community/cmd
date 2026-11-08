@@ -145,6 +145,26 @@ pub async fn execute_scenario(
             oracle_image=image,
           )
         }
+        "f29-find-size-unreadable" | "f29-test-size-unreadable" =>
+          filesystem_unreadable_scenario(
+            root,
+            work,
+            report_dir + "/" + fixture.id + ".observations.json",
+            fixture.command,
+            proof?,
+          )
+        "f29-find-size-unreadable-oracle" | "f29-test-size-unreadable-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("unreadable size oracle requires a sealed oracle")
+          }
+          filesystem_unreadable_scenario(
+            root,
+            work,
+            report_dir + "/" + fixture.id + ".observations.json",
+            fixture.command,
+            oracle_image=image,
+          )
+        }
         "f29-special-kinds" =>
           filesystem_special_scenario(
             root,

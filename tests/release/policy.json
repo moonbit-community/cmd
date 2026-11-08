@@ -1319,7 +1319,8 @@
         "f29-find-linux-directory-size",
         "f29-find-macos-directory-size-unavailable",
         "f29-find-delete-preserves-enumeration-error",
-        "f29-find-delete-failure-continues"
+        "f29-find-delete-failure-continues",
+        "f29-find-size-unreadable-oracle"
       ]
     },
     {
@@ -3257,7 +3258,8 @@
         "f29-test-followed-time-1",
         "f29-test-followed-time-2",
         "f29-test-followed-time-3",
-        "f29-subsecond-order-oracle"
+        "f29-subsecond-order-oracle",
+        "f29-test-size-unreadable-oracle"
       ]
     },
     {

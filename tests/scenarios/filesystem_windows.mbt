@@ -61,6 +61,21 @@ async fn filesystem_windows_id(
 }
 
 ///|
+fn filesystem_native_unix_time(value : (Int64, Int32)) -> (Int64, Int32) {
+  // async 0.22.7 Native returns Windows FILETIME seconds since 1601. The
+  // pinned Wasm host already returns Unix time; this is an observer-only fix.
+  let (seconds, nanos) = value
+  (
+    if @async.platform is Windows {
+      seconds - 11644473600L
+    } else {
+      seconds
+    },
+    nanos,
+  )
+}
+
+///|
 async fn filesystem_windows_set_time(
   path : String,
   accessed : Int64,
@@ -69,6 +84,7 @@ async fn filesystem_windows_set_time(
   observations : Array[Json],
   births? : Array[Int64],
 ) -> Unit {
+  let clock_before = @env.now().reinterpret_as_int64()
   let raw = filesystem_windows_observer(
     observation_path,
     observations,
@@ -91,16 +107,32 @@ async fn filesystem_windows_set_time(
   let actual_a = @fs.atime(path)
   let actual_m = @fs.mtime(path)
   let actual_c = @fs.ctime(path)
+  let unix_a = filesystem_native_unix_time(actual_a)
+  let unix_m = filesystem_native_unix_time(actual_m)
+  let unix_c = filesystem_native_unix_time(actual_c)
+  let clock_after = @env.now().reinterpret_as_int64()
   filesystem_record(observation_path, observations, {
     "phase": "timestamp-native-precondition",
     "path": path,
     "atime": actual_a,
     "mtime": actual_m,
     "ctime": actual_c,
+    "native_epoch": "1601-01-01 UTC; seconds and nanoseconds",
+    "unix_atime": unix_a,
+    "unix_mtime": unix_m,
+    "unix_ctime": unix_c,
+    "clock_before_ms": clock_before.to_string(),
+    "clock_after_ms": clock_after.to_string(),
     "ctime_source": "released public fs.ctime reads status ChangeTime; CreationTime is not substituted",
   })
-  assert_eq(actual_a, (accessed, 0))
-  assert_eq(actual_m, (modified, 0))
+  assert_eq(unix_a, (accessed, 0))
+  assert_eq(unix_m, (modified, 0))
+  assert_true(unix_c.1 >= 0 && unix_c.1 < 1000000000)
+  assert_true(
+    clock_after >= clock_before &&
+    unix_c.0 >= clock_before / 1000L &&
+    unix_c.0 <= clock_after / 1000L,
+  )
   if births is Some(values) {
     guard @json.parse(raw) is { "creation_ticks": String(ticks), .. } else {
       fail("Windows creation-time control observation missing")
@@ -312,6 +344,7 @@ async fn filesystem_windows_scenario(
       ("new", 946684800L, 1577836800L),
       ("equal", 1577836800L, 1577836800L),
       ("access-future", 4070908800L, 1577836800L),
+      ("future", 4070908800L, 4070908800L),
     ] {
     @fs.write_file(times + "/" + name, name)
     filesystem_windows_set_time(
@@ -375,11 +408,115 @@ async fn filesystem_windows_scenario(
     assert_eq(observed_kind, kind)
     assert_eq(@fs.realpath(observed_target), @fs.realpath(times + "/" + target))
   }
+  let fresh_start = @env.now().reinterpret_as_int64()
+  @fs.write_file(times + "/fresh", "fresh")
+  let fresh_raw = @fs.ctime(times + "/fresh")
+  let fresh_ctime = filesystem_native_unix_time(fresh_raw)
+  let fresh_end = @env.now().reinterpret_as_int64()
+  filesystem_record(observation_path, observations, {
+    "phase": "windows-age-precondition",
+    "raw_ctime": fresh_raw,
+    "native_epoch": "1601-01-01 UTC; seconds and nanoseconds",
+    "unix_ctime": fresh_ctime,
+    "clock_before_ms": fresh_start.to_string(),
+    "clock_after_ms": fresh_end.to_string(),
+  })
+  assert_true(
+    fresh_ctime.0 >= fresh_start / 1000L && fresh_ctime.0 <= fresh_end / 1000L,
+  )
+  assert_true(fresh_ctime.1 >= 0 && fresh_ctime.1 < 1000000000)
+  assert_true(
+    fresh_start / 1000L > 1577836800L && fresh_end / 1000L < 4070908800L,
+  )
   let time_before = @harness.snapshot(
     times,
     observe=["atime", "mtime", "ctime", "symlink-target"],
     content=false,
   )
+  @async.sleep(1100)
+  let mut age_checks = 0
+  for
+    (predicate, token, selected) in [
+      ("-cmin", "-1", true),
+      ("-cmin", "+1", false),
+      ("-ctime", "0", true),
+      ("-ctime", "+0", false),
+    ] {
+    filesystem_predicate_control(
+      root,
+      times,
+      observation_path,
+      observations,
+      "find",
+      ["fresh", predicate, token],
+      0,
+      if selected {
+        "fresh\n"
+      } else {
+        ""
+      },
+    )
+    age_checks += 1
+  }
+  let age_end = @env.now().reinterpret_as_int64()
+  filesystem_record(observation_path, observations, {
+    "phase": "windows-age-clock-after",
+    "clock_ms": age_end.to_string(),
+    "elapsed_ms": (age_end - fresh_start).to_string(),
+  })
+  guard age_end >= fresh_end &&
+    age_end / 1000L > fresh_ctime.0 &&
+    age_end / 1000L - fresh_ctime.0 < 50L else {
+    fail("Windows age fixture exhausted its minute-window margin")
+  }
+  for predicate in ["-amin", "-atime", "-mmin", "-mtime"] {
+    for
+      (name, token, selected) in [
+        ("old", "+1", true),
+        ("old", "-1", false),
+        ("future", "+1", false),
+        ("future", "-1", true),
+      ] {
+      filesystem_predicate_control(
+        root,
+        times,
+        observation_path,
+        observations,
+        "find",
+        [name, predicate, token],
+        0,
+        if selected {
+          name + "\n"
+        } else {
+          ""
+        },
+      )
+      age_checks += 1
+    }
+  }
+  for
+    (name, token, selected) in [
+      ("old", "+1", false),
+      ("old", "-1", false),
+      ("future", "+1", true),
+      ("future", "-1", false),
+    ] {
+    filesystem_predicate_control(
+      root,
+      times,
+      observation_path,
+      observations,
+      "find",
+      [name, "-used", token],
+      0,
+      if selected {
+        name + "\n"
+      } else {
+        ""
+      },
+    )
+    age_checks += 1
+  }
   let mut comparisons = 0
   for
     (args, status) in [
@@ -465,6 +602,7 @@ async fn filesystem_windows_scenario(
   )
   filesystem_record(observation_path, observations, {
     "phase": "time-preserved",
+    "native_epoch": "1601-01-01 UTC; seconds and nanoseconds",
     "before": time_before.map(entry => {
       (
         { "path": entry.path, "kind": entry.kind, "metadata": entry.metadata } :
@@ -477,7 +615,7 @@ async fn filesystem_windows_scenario(
     }),
   })
   assert_true(@harness.snapshots_equal(time_before, time_after))
-  for name in ["old", "new", "equal", "access-future"] {
+  for name in ["old", "new", "equal", "access-future", "future", "fresh"] {
     assert_eq(@fs.read_file(times + "/" + name).text(), name)
   }
   assert_eq(
@@ -485,6 +623,22 @@ async fn filesystem_windows_scenario(
     "directory retained",
   )
   if proof is Some(proof) {
+    proof.observe_equal(
+      "find/windows-age-controls",
+      "find",
+      {
+        "comparisons": age_checks,
+        "unix_epoch_validated": true,
+        "clock_margin_valid": true,
+        "metadata_preserved": true,
+      },
+      {
+        "comparisons": 24,
+        "unix_epoch_validated": true,
+        "clock_margin_valid": true,
+        "metadata_preserved": true,
+      },
+    )
     proof.observe_equal(
       "test/windows-metadata",
       "test",

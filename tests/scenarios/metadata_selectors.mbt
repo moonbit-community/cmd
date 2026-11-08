@@ -126,15 +126,27 @@ async fn metadata_selector_matrix(
         assert_eq(result.stderr, b"")
       }
     }
-    let accessed = @fs.atime(work + "/" + name)
-    let modified = @fs.mtime(work + "/" + name)
-    let changed = @fs.ctime(work + "/" + name)
+    let raw_accessed = @fs.atime(work + "/" + name)
+    let raw_modified = @fs.mtime(work + "/" + name)
+    let raw_changed = @fs.ctime(work + "/" + name)
+    let accessed = filesystem_native_unix_time(raw_accessed)
+    let modified = filesystem_native_unix_time(raw_modified)
+    let changed = filesystem_native_unix_time(raw_changed)
     observations.push({
       "phase": "selector-precondition",
       "path": name,
       "atime": accessed,
       "mtime": modified,
       "ctime": changed,
+      "raw_native_atime": raw_accessed,
+      "raw_native_mtime": raw_modified,
+      "raw_native_ctime": raw_changed,
+      "native_epoch": if @async.platform is Windows {
+        "1601-01-01 UTC"
+      } else {
+        "1970-01-01 UTC"
+      },
+      "normalized_epoch": "1970-01-01 UTC",
       "expected_atime": (access_seconds, 0),
       "expected_mtime": (modified_seconds, 0),
     })

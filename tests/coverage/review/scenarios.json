@@ -6149,6 +6149,25 @@
             "file-type",
             "symlink-target"
           ]
+        },
+        {
+          "id": "find/windows-age-controls",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 24,
+            "unix_epoch_validated": true,
+            "clock_margin_valid": true,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-timestamps"
+          ]
         }
       ]
     },
@@ -6254,6 +6273,58 @@
             "stdout",
             "stderr",
             "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-find-size-unreadable",
+      "assertions": [
+        {
+          "id": "find/unreadable-size",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 4,
+            "open_denied": true,
+            "original_metadata_preserved": true,
+            "content_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-test-size-unreadable",
+      "assertions": [
+        {
+          "id": "test/unreadable-size",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 2,
+            "open_denied": true,
+            "original_metadata_preserved": true,
+            "content_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity",
             "file-timestamps"
           ]
         }

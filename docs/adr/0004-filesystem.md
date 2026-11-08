@@ -123,8 +123,18 @@ attributes/ACLs without calling them POSIX permission bits. Missing required
 host setup or observation fails infrastructure; host utilities never implement
 the product predicates.
 
+The async 0.22.7 Native Windows observer returns FILETIME seconds since 1601;
+its records retain that raw pair and subtract 11,644,473,600 seconds only in the
+test observer. The pinned Wasm host already converts to Unix time in
+[`windows_timestamp`](https://github.com/moonbitlang/moon/blob/940aa18df6db921386e87e16fa94b84fa267864b/crates/moonrun/src/filesystem/job/stat.rs#L246).
+Do not apply the correction to product code. Fixed .NET UTC setup/readback and
+the actual current clock validate the conversion, while 24 Windows Wasm age
+controls distinguish old, future and fresh timestamps; relative comparisons
+alone cannot detect a shared epoch error. A changed Native API epoch must fail
+the fixed preconditions until the observer is reviewed.
+
 The stateful contracts in `tests/scenarios/filesystem_{predicates,special,time,
-precision,windows}.mbt` retain original modes, identities, timestamps and effects.
+precision,windows,unreadable}.mbt` retain original modes, identities, timestamps and effects.
 Sparse fixtures above 2 GiB retain allocation and sentinel receipts outside the
 large payloads. POSIX socket, character and block nodes have actual positive and
 mutually exclusive negative controls; the socket is an inode left after its
@@ -132,6 +142,17 @@ owned setup process has stopped, not a live-listener claim. These node fixtures
 do not apply to Windows. Windows executes ordinary-file negatives and its own
 file-link, directory-link and junction controls. The Linux immutable oracle is
 an additional execution gate; generated definitions do not establish acceptance.
+Unreadable size fixtures require real mode 000 and failed read-open, exercise
+empty/full positive and negative controls, and compare original metadata before
+observer-only permission restoration and exact retained-content checks. Protected
+restoration also runs on failure so owned fixtures cannot block artifact upload.
+The error-order fixture pins the denied link's atime in 2099 and verifies it
+after observer readlink/follow before taking the baseline. This stabilizes
+relatime observations; it does not claim that link access preserves atime on
+every mount. Exact GNU diagnostic expectations retain the invoked
+`/oracle/bin/find:` prefix without stripping actual error output. The first
+[PR validation failure](https://github.com/moonbit-community/cmd/actions/runs/42437838515)
+is retained and is not acceptance evidence.
 
 Standalone test applies its one-through-four-argument rules before recursive
 parsing. Its missing-operand time comparisons intentionally differ from the

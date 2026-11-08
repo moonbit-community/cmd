@@ -42817,7 +42817,7 @@
       "platforms": [
         "posix"
       ],
-      "oracle_profile": "pinned-oracle-v1"
+      "oracle_profile": ""
     },
     {
       "behavior_id": "case:f29-find-size-unreadable",
@@ -42830,7 +42830,7 @@
       "platforms": [
         "posix"
       ],
-      "oracle_profile": "pinned-oracle-v1"
+      "oracle_profile": ""
     },
     {
       "behavior_id": "case:f29-find-xtype-file-link-positive",
@@ -45247,6 +45247,84 @@
       "aliases": [],
       "platforms": [
         "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:f29-find-size-unreadable",
+      "command": "find",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f29-find-size-unreadable",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f29-find-size-unreadable-oracle",
+      "command": "find",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/find.json",
+      "case_id": "f29-find-size-unreadable-oracle",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:f29-find-size-unreadable-oracle",
+      "command": "find",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f29-find-size-unreadable-oracle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:f29-test-size-unreadable",
+      "command": "test",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f29-test-size-unreadable",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:f29-test-size-unreadable-oracle",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "f29-test-size-unreadable-oracle",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:f29-test-size-unreadable-oracle",
+      "command": "test",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::f29-test-size-unreadable-oracle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     }

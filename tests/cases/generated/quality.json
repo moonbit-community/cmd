@@ -2,9 +2,9 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 3544,
+    "exact-local": 3542,
     "finite-diagnostic": 181,
-    "typed-scenario": 58,
+    "typed-scenario": 62,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -17727,12 +17727,16 @@
     {
       "case_id": "f29-find-size-unreadable",
       "source": "tests/cases/find.json",
-      "definition_sha256": "c3362c8d15e912db73688c99db41d8b92e160e34cdb9366e3385868d8547c279",
-      "classification": "exact-local",
+      "definition_sha256": "d10a6727bef2da9c8714b1bc47d08346871e59e33a5830c43c69083d69758ca0",
+      "classification": "typed-scenario",
       "descriptor": {
-        "kind": "exact"
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f29-find-size-unreadable"
+        ]
       },
-      "required_work": ""
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "f29-find-xtype-file-link-positive",
@@ -18458,6 +18462,20 @@
         "reason": "GNU names the deleting action while the candidate names the failed entry; the actual nonempty-directory reason, final status, retained sentinel and deletion of the later root are independently required."
       },
       "required_work": ""
+    },
+    {
+      "case_id": "f29-find-size-unreadable-oracle",
+      "source": "tests/cases/find.json",
+      "definition_sha256": "2e485a5823929ccc1ea1d8b85e4c563a2bef105566f1a8991fe7c1a2f2e41c71",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f29-find-size-unreadable-oracle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "fold-width-newline",
@@ -26637,12 +26655,16 @@
     {
       "case_id": "f29-test-size-unreadable",
       "source": "tests/cases/test.json",
-      "definition_sha256": "ae2bb032114eedb1f30366aa674a6b2a0335b66d69f30fb802bf9051957c8e65",
-      "classification": "exact-local",
+      "definition_sha256": "ece9b8fd0ebcab5ec2c980f1f4d840a3e0a1435510c747fd28fe749ec4016e96",
+      "classification": "typed-scenario",
       "descriptor": {
-        "kind": "exact"
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f29-test-size-unreadable"
+        ]
       },
-      "required_work": ""
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "f29-special-kinds",
@@ -27764,6 +27786,20 @@
         "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
         "required_observers": [
           "scenario:f29-subsecond-order-oracle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "f29-test-size-unreadable-oracle",
+      "source": "tests/cases/test.json",
+      "definition_sha256": "e4c4f05dee9d5624df9bbf410667bd0a6afb9bbad4e4a2075af378f44b306508",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:f29-test-size-unreadable-oracle"
         ]
       },
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
@@ -43931,7 +43967,11 @@
       ]
     },
     "f29-find-size-unreadable": {
-      "kind": "exact"
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f29-find-size-unreadable"
+      ]
     },
     "f29-find-xtype-file-link-positive": {
       "kind": "exact"
@@ -44167,6 +44207,13 @@
     "f29-find-delete-failure-continues": {
       "kind": "diagnostic-fragment",
       "reason": "GNU names the deleting action while the candidate names the failed entry; the actual nonempty-directory reason, final status, retained sentinel and deletion of the later root are independently required."
+    },
+    "f29-find-size-unreadable-oracle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f29-find-size-unreadable-oracle"
+      ]
     },
     "fold-width-newline": {
       "kind": "exact"
@@ -46681,7 +46728,11 @@
       "kind": "exact"
     },
     "f29-test-size-unreadable": {
-      "kind": "exact"
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f29-test-size-unreadable"
+      ]
     },
     "f29-special-kinds": {
       "kind": "scenario",
@@ -47035,6 +47086,13 @@
       "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
       "required_observers": [
         "scenario:f29-subsecond-order-oracle"
+      ]
+    },
+    "f29-test-size-unreadable-oracle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:f29-test-size-unreadable-oracle"
       ]
     },
     "release-metadata-tree-help": {
