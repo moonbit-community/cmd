@@ -152,6 +152,7 @@ fn proxy_for(url : String, disabled : Bool) -> String? {
 fn exit_code(kind : @netops.TransferErrorKind) -> Int32 {
   match kind {
     @netops.HttpStatusFailure => 8
+    @netops.AuthenticationFailure => 6
     @netops.TlsFailure => 5
     @netops.InputFailure | @netops.RewindFailure | @netops.OutputFailure => 3
     @netops.UnsupportedProtocol

@@ -59,6 +59,21 @@ the last failure, so network error 4 followed by HTTP error 8 incorrectly exited
 body, with the pinned Linux oracle route registered in the case index. This is
 an unpublished workspace correction; the frozen 0.2.5 coordinate is unchanged.
 
+The transfer error retains authentication failure only when a 401 Basic
+challenge rejects an outgoing Basic Authorization field. Wget maps that state
+to 6; other HTTP errors remain 8. This distinguishes actual transmitted
+credentials from configured credentials that were never sent. Curl preserves
+its ordinary HTTP response behavior and maps both HTTP failure kinds to 22
+under `--fail`. Authentication rejection does not become a default retryable
+network failure; explicit HTTP retry selection still applies.
+`wget-auth-rejected` and the four authentication/HTTP/network operand-order
+cases cover statuses and later successful output. Wget's private wire test
+checks both challenge-based and preemptive credentials, exact Authorization
+bytes, request counts, challenge-free 401 controls and unopened file contents.
+The existing successful Basic case and Curl rejection cases remain controls.
+This does not add non-Basic authentication or general challenge-list parsing;
+reconsider those limits with protocol fixtures under issue #34.
+
 ## Output ownership
 
 Curl opens ordinary files on first payload or successful empty completion.

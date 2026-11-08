@@ -12,7 +12,10 @@ Download URLs or URL lists with resume, conditional requests, headers/bodies, re
 
 Unreleased workspace correction: multiple URL failures retain the lowest
 nonzero transfer exit code, regardless of operand order. A later success keeps
-that failure status and still writes its response body. The published 0.2.5
+that failure status and still writes its response body. A Basic challenge after
+Basic credentials were sent returns 6; other HTTP errors return 8. Network
+failure 4 takes precedence over authentication failure 6, which takes precedence
+over HTTP failure 8. The published 0.2.5
 coordinate is unchanged; see [ADR-0005](../../docs/adr/0005-transfer.md).
 
 ## Options

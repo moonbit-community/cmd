@@ -890,7 +890,9 @@ Full shell compatibility is not claimed. See
 
 The unpublished 2026-11-08 Wget workspace correction retains the lowest nonzero
 transfer exit code across URL operands, including when a later URL succeeds.
-Both failure orders are registered in `tests/cases/wget.json`; the published
+Rejected transmitted Basic credentials return 6, between network failure 4 and
+ordinary HTTP failure 8 in that precedence. Authentication, HTTP and network
+failure orders are registered in `tests/cases/wget.json`; the published
 0.2.5 coordinate remains unchanged. See [ADR-0005](adr/0005-transfer.md).
 
 ## Common capability boundaries

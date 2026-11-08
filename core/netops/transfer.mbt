@@ -127,12 +127,13 @@ pub async fn transfer(
         content_length=total,
       ),
     )
-    if response.code == 401 &&
+    let basic_challenge = response.code == 401 &&
+      response.headers.get("WWW-Authenticate") is Some(challenge) &&
+      uses_basic_authentication(challenge)
+    if basic_challenge &&
       !send_basic &&
       credentials_allowed &&
-      options.basic_credentials is Some(_) &&
-      response.headers.get("WWW-Authenticate") is Some(challenge) &&
-      challenge.to_lower().trim_start().has_prefix("basic") {
+      options.basic_credentials is Some(_) {
       if body is StdinBody {
         client.close()
         raise transfer_error(
@@ -226,7 +227,13 @@ pub async fn transfer(
       options.http_error_statuses.contains(response.code) {
       client.close()
       raise transfer_error(
-        HttpStatusFailure,
+        if basic_challenge &&
+          per_request.get("Authorization") is Some(authorization) &&
+          uses_basic_authentication(authorization) {
+          AuthenticationFailure
+        } else {
+          HttpStatusFailure
+        },
         "server returned HTTP status \{response.code} \{response.reason}",
         status=response.code,
       )

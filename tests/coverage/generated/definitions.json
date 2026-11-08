@@ -12962,8 +12962,15 @@
       "feature": false,
       "kind": "contract",
       "reviewed": true,
-      "case_ids": [],
-      "activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints; HTTP-specific credentials require a first-request Basic value, while preemptive cross-host redirect strips it with two requests.",
+      "case_ids": [
+        "repair-final-wget-basic",
+        "wget-auth-rejected",
+        "wget-exit-auth-before-http",
+        "wget-exit-http-before-auth",
+        "wget-exit-auth-before-network",
+        "wget-exit-network-before-auth"
+      ],
+      "activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints. With --auth-no-challenge, HTTP-specific credentials appear on the first request and generic credentials remain present after a cross-host redirect with two requests. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls.",
       "scenario_bindings": [
         {
           "case_id": "network-auth-cookie",
@@ -12992,8 +12999,15 @@
       "feature": false,
       "kind": "contract",
       "reviewed": true,
-      "case_ids": [],
-      "activation": "Password assertions cover generic challenge and HTTP-specific preemptive spellings, exact reflected credentials, first-request counts and stripped credentials after cross-host redirect. This remains a finite Basic-auth profile.",
+      "case_ids": [
+        "repair-final-wget-basic",
+        "wget-auth-rejected",
+        "wget-exit-auth-before-http",
+        "wget-exit-http-before-auth",
+        "wget-exit-auth-before-network",
+        "wget-exit-network-before-auth"
+      ],
+      "activation": "Password assertions cover generic challenge and HTTP-specific spellings with --auth-no-challenge, exact reflected credentials, first-request counts and retained preemptive credentials after cross-host redirect. This remains a finite Basic-auth profile. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls.",
       "scenario_bindings": [
         {
           "case_id": "network-auth-cookie",

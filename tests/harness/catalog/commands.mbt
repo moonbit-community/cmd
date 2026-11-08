@@ -412,7 +412,7 @@ pub fn commands() -> Array[CommandContract] {
         "auth-no-challenge", "load-cookies", "save-cookies", "keep-session-cookies",
         "no-cookies",
       ],
-      exit_codes=[0, 1, 2, 3, 4, 5, 7, 8],
+      exit_codes=[0, 1, 2, 3, 4, 5, 6, 7, 8],
     ),
     // Explicit paths or '-' are required when stdin kind cannot be detected.
     // Compression is deferred; preprocessing remains user-selected authority.
