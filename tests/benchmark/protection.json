@@ -403,7 +403,7 @@
     },
     {
       "sources": [
-        "core/contracts",
+        "tests/harness/contracts",
         "core/cli"
       ],
       "retain": "Catalog ownership separated from parsing, with unchanged option precedence and metadata contracts"

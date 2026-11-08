@@ -11,8 +11,6 @@ pub async fn capture(String, name? : String, args? : Array[String], env? : Map[S
 
 pub async fn read_line(&@io.Reader) -> String?
 
-pub async fn run(String, name? : String, args? : Array[String], env? : Map[String, String], cwd? : String) -> Int32
-
 // Errors
 pub(all) suberror ShellError {
   ShellError(String)

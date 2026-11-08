@@ -2,6 +2,16 @@
 
 Shared runtime packages used by the independently published command modules.
 
+## Unreleased internal simplification
+
+The workspace uses the CLI compatibility boundary in
+[ADR-0003](../docs/adr/0003-streams.md#package-ownership). The command catalog
+has moved to `tests/harness/contracts`. Unused platform, fsops and shell source
+APIs have been removed; implementation-only helpers are private, and gzip
+consumers use `decode_reader`. These are intentional source API breaks for a
+future release, not changes to the immutable 0.9.5 coordinate. Publication and
+exact-coordinate acceptance remain separate steps.
+
 ## 0.9.5 changes
 
 Apply the POSIX trailing-slash directory requirement to every shell file
@@ -99,7 +109,6 @@ matching, formatting, ordering and resource policies.
 
 | Package/API | Contract | Current consumers |
 | --- | --- | --- |
-| `contracts` | Capability types and command catalog, separate from argument parsing. | Workspace validation runner. |
 | `fswalk` | Directory-handle ownership and explicit kind/size observations; no implicit pruning, sorting or extra metadata queries. | rg, find, tree and grep. |
 | `checksum/cli`, `gzipops/cli` | Command record formats, options, diagnostics and execution. Parent packages own algorithms and streams. | The five checksum commands and gzip/gunzip/zcat. |
 | `bytesearch` | Allocation-free byte scans/counts and reusable literal filters over explicit ranges; callers keep pattern storage unchanged while a finder uses it. | rg search/regex/line buffers, wc line counting; `stream.count_byte` retains its immutable-view entrypoint. |
@@ -111,7 +120,8 @@ matching, formatting, ordering and resource policies.
 
 `BlockWriter.write_slice` borrows a fixed-array span until the call returns;
 callers must not mutate it during that interval. Small writes are copied into
-private storage, large writes bypass it after draining. `flush` does not close
+private storage, large writes bypass it after draining. Synchronous admission
+checks spans and writer state once before its internal slow path. `flush` does not close
 the destination. These APIs do not make line length or process RSS bounded.
 
 Keep fused wc counts, rg/grep prefilters, cut ranges, rev reversal, tac reverse
@@ -290,12 +300,11 @@ This module is published as `cli/core` and is an implementation dependency for
 `cli/<command>` modules. The portable filesystem layer exposes file-kind and
 regular-file-size reads, atime/mtime/ctime timestamps, access checks, and
 symbolic-link creation on Native/Wasm. It also centralizes nanosecond comparison,
-age buckets, update/backup decisions, and preflighted copy traversal. Permission
+update/backup decisions, and preflighted copy traversal. Permission
 reads, arbitrary timestamp setters, hard links, readlink, special-file creation,
 remain unavailable in both the historical async 0.22.4 baseline and the current
-async 0.22.5 dependency. POSIX EXDEV classification uses the
-actual host platform; it does not provide metadata-preserving cross-device
-copying. Existing-file copy overwrite is rejected, and new-file copying must
+async 0.22.5 dependency. Cross-device metadata-preserving copying remains
+unavailable. Existing-file copy overwrite is rejected, and new-file copying must
 explicitly select `--no-preserve=mode`.
 
 Async 0.22.5 repairs Native Windows rename of symlinks/junctions. Wasm uses the

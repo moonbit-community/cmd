@@ -17,7 +17,7 @@ pub(all) suberror CliError {
 }
 
 ///|
-pub(all) struct OptionSpec {
+pub struct OptionSpec {
   name : String
   short : Char?
   takes_value : Bool

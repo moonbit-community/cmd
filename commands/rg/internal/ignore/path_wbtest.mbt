@@ -191,10 +191,8 @@ test "match/methods" {
   let m : Match[Int32] = Ignore(1)
   assert_true(m.is_ignore())
   assert_true(m.invert().is_whitelist())
-  debug_inspect(m.inner(), content="Some(1)")
   debug_inspect(m.map(x => x + 1), content="Ignore(2)")
   let n : Match[Int32] = None
   debug_inspect(n.or(m), content="Ignore(1)")
   debug_inspect(m.or(Whitelist(5)), content="Ignore(1)")
-  assert_true(n.inner() is None)
 }

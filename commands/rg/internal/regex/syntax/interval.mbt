@@ -329,7 +329,7 @@ fn utf8_len(c : Int32) -> Int32 {
 
 ///|
 /// Encodes a scalar value as UTF-8 into the buffer.
-pub fn encode_utf8(buf : Buffer, c : Int32) -> Unit {
+fn encode_utf8(buf : Buffer, c : Int32) -> Unit {
   if c < 0x80 {
     buf.write_byte(c.to_byte())
   } else if c < 0x800 {

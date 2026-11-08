@@ -14,8 +14,6 @@ pub fn memchr3(Byte, Byte, Byte, FixedArray[Byte], Int32, Int32) -> Int32
 
 pub fn memrchr(Byte, FixedArray[Byte], Int32, Int32) -> Int32
 
-pub let teddy_max_literals : Int32
-
 // Errors
 
 // Types and methods

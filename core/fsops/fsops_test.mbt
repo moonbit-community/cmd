@@ -42,17 +42,6 @@ test "timestamp comparison keeps nanosecond ordering" {
 }
 
 ///|
-test "timestamp age buckets account for subsecond boundaries" {
-  let now : @fsops.FileTimestamp = { seconds: 120L, nanoseconds: 0, }
-  let previous : @fsops.FileTimestamp = { seconds: 60L, nanoseconds: 1, }
-  assert_eq(@fsops.timestamp_age_bucket(now, previous, 60L), 0L)
-  assert_eq(
-    @fsops.timestamp_age_bucket(now, { seconds: 0L, nanoseconds: 0, }, 60L),
-    2L,
-  )
-}
-
-///|
 test "update modes and backup controls are explicit" {
   let source : @fsops.FileTimestamp = { seconds: 2L, nanoseconds: 1, }
   let target : @fsops.FileTimestamp = { seconds: 2L, nanoseconds: 0, }
@@ -76,7 +65,13 @@ async test "recursive copy rejects a destination inside its source" {
   @fs.mkdir(@fsops.join(source, "child"), recursive=true)
   @fs.write_file(@fsops.join(source, "file"), b"content")
   try
-    @fsops.copy_path(source, @fsops.join(source, "child/copy"), true, true)
+    @fsops.copy_path_with_links(
+      source,
+      @fsops.join(source, "child/copy"),
+      true,
+      true,
+      NeverFollowLinks,
+    )
   catch {
     _ => assert_false(@fs.exists(@fsops.join(source, "child/copy")))
   } noraise {
@@ -137,7 +132,15 @@ async test "copy supports explicit no-preserve mode only for new files" {
   }
   let bytes = buffer.unsafe_reinterpret_as_bytes()
   @fs.write_file(source, bytes)
-  try @fsops.copy_path(source, destination, false, true) catch {
+  try
+    @fsops.copy_path_with_links(
+      source,
+      destination,
+      false,
+      true,
+      NeverFollowLinks,
+    )
+  catch {
     _ => assert_false(@fs.exists(destination))
   } noraise {
     _ => fail("default copy cannot preserve source mode")
@@ -255,109 +258,14 @@ async test "output modes preserve create truncate and append semantics" {
 }
 
 ///|
-async test "metadata and atomic commit expose completed files only" {
-  let root = @fs.tmpdir(prefix="mooncmd-fsops-commit")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
-  let temporary = @fsops.join(root, "download.part")
-  let destination = @fsops.join(root, "download")
-  @fs.write_file(temporary, b"payload")
-  guard @fsops.metadata_if_exists(temporary) is Some(metadata) else {
-    fail("temporary file metadata is missing")
-  }
-  assert_eq(metadata.kind, @fs.FileKind::Regular)
-  assert_eq(metadata.size, Some(7L))
-  @fsops.commit_temporary_file(temporary, destination)
-  assert_false(@fs.exists(temporary))
-  assert_eq(@fs.read_file(destination).binary(), b"payload")
-  @fsops.cleanup_file_if_exists(destination)
-  @fsops.cleanup_file_if_exists(destination)
-  assert_false(@fs.exists(destination))
-}
-
-///|
-async test "cancelled atomic commit removes temporary file and preserves target" {
-  @async.with_timeout(5000, () => {
-    let root = @fs.tmpdir(prefix="mooncmd-fsops-commit-cancel-")
-    defer @fs.rmdir(root, recursive=true)
-    let temporary = @fsops.join(root, "download.part")
-    let destination = @fsops.join(root, "download")
-    @fs.write_file(temporary, b"new")
-    @fs.write_file(destination, b"original")
-    @async.with_task_group(group => {
-      let ready : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
-      let release : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
-      let task = group.spawn(() => {
-        @async.protect_from_cancel(() => {
-          ready.put(())
-          ignore(release.get())
-        })
-        @fsops.commit_temporary_file(temporary, destination)
-      })
-      ignore(ready.get())
-      task.cancel()
-      release.put(())
-      let cancelled = try {
-        task.wait()
-        false
-      } catch {
-        @async.WaitedTaskAlreadyCancelled => true
-        error => raise error
-      }
-      assert_true(cancelled)
-    })
-    assert_false(@fs.exists(temporary))
-    assert_eq(@fs.read_file(destination).binary(), b"original")
-  })
-}
-
-///|
-async test "failed atomic commit removes temporary file and preserves target" {
-  let root = @fs.tmpdir(prefix="mooncmd-fsops-commit-failure")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
-  let temporary = @fsops.join(root, "download.part")
-  let destination = @fsops.join(root, "download")
-  @fs.write_file(temporary, b"new")
-  @fs.write_file(destination, b"original")
-  try
-    @fsops.commit_temporary_file(temporary, destination, replace=false)
-  catch {
-    _ => {
-      assert_false(@fs.exists(temporary))
-      assert_eq(@fs.read_file(destination).binary(), b"original")
-    }
-  } noraise {
-    _ => fail("non-replacing commit must reject an existing destination")
-  }
-}
-
-///|
-async test "metadata lookup distinguishes missing paths and symbolic links" {
-  let root = @fs.tmpdir(prefix="mooncmd-fsops-metadata")
-  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
-  assert_eq(@fsops.metadata_if_exists(@fsops.join(root, "missing")), None)
-  if !@platform.symbolic_link_creation_supported() {
-    return
-  }
-  let target = @fsops.join(root, "target")
-  let link = @fsops.join(root, "link")
-  @fs.write_file(target, b"payload")
-  @fs.symlink(link, target~)
-  guard @fsops.metadata_if_exists(link) is Some(link_metadata) else {
-    fail("symbolic-link metadata is missing")
-  }
-  assert_eq(link_metadata.kind, @fs.FileKind::SymLink)
-  guard @fsops.metadata_if_exists(link, follow_symlink=true)
-    is Some(target_metadata) else {
-    fail("followed target metadata is missing")
-  }
-  assert_eq(target_metadata.kind, @fs.FileKind::Regular)
-  assert_eq(target_metadata.size, Some(7L))
-}
-
-///|
-async test "temporary cleanup refuses directories" {
+async test "temporary cleanup is idempotent and refuses directories" {
   let root = @fs.tmpdir(prefix="mooncmd-fsops-cleanup")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let file = @fsops.join(root, "file")
+  @fs.write_file(file, b"temporary")
+  @fsops.cleanup_file_if_exists(file)
+  @fsops.cleanup_file_if_exists(file)
+  assert_false(@fs.exists(file))
   let directory = @fsops.join(root, "directory")
   @fs.mkdir(directory)
   try @fsops.cleanup_file_if_exists(directory) catch {

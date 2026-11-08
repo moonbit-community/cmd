@@ -40,8 +40,6 @@ pub fn is_same_file(String, String) -> Bool raise IoError
 
 pub fn join(String, String) -> String
 
-pub fn knows_local_time_zone() -> Bool
-
 pub fn local_offset(Int64) -> Int32
 
 pub fn lstat_kind(String) -> FileKind raise IoError
@@ -79,8 +77,6 @@ pub fn stat_kind(String) -> FileKind raise IoError
 pub fn stderr_is_terminal() -> Bool
 
 pub fn supports_binary_stdout() -> Bool
-
-pub fn supports_ranged_reads() -> Bool
 
 pub fn write_file(String, Bytes) -> Unit raise IoError
 

@@ -4,12 +4,11 @@
 ///|
 fn EventKind::name(self : EventKind) -> String {
   match self {
-    Create(Any) => "create"
-    Modify(Data(Any)) => "modify"
-    Modify(Name(From)) => "rename from"
-    Modify(Name(To)) => "rename to"
-    Remove(File) => "remove"
-    _ => "?"
+    Created => "create"
+    Modified => "modify"
+    RenamedFrom => "rename from"
+    RenamedTo => "rename to"
+    Removed => "remove"
   }
 }
 
@@ -27,14 +26,12 @@ async fn drain(rx : Receiver, dir : String) -> String {
       events.push("error")
       continue
     }
-    let paths = event.paths.map(path => {
-      if path.has_prefix(dir + "/") {
-        path[dir.length() + 1:].to_owned()
-      } else {
-        path
-      }
-    })
-    let event = "\{event.kind.name()} \{paths.join(" ")}"
+    let path = if event.path.has_prefix(dir + "/") {
+      event.path[dir.length() + 1:].to_owned()
+    } else {
+      event.path
+    }
+    let event = "\{event.kind.name()} \{path}"
     if !events.contains(event) {
       events.push(event)
     }

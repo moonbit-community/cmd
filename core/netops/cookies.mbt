@@ -371,7 +371,7 @@ pub fn CookieJar::load_netscape(self : CookieJar, text : String) -> Unit {
 }
 
 ///|
-pub fn CookieJar::netscape(
+fn CookieJar::netscape(
   self : CookieJar,
   include_session~ : Bool = true,
 ) -> String {

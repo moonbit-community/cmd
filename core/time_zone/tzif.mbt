@@ -50,7 +50,7 @@ fn header(data : Bytes, at : Int32, width : Int32) -> Header raise {
 
 ///|
 /// Decode TZif v1/v2/v3/v4 with bounds checks before every indexed read.
-pub fn decode(data : Bytes) -> Zone raise {
+fn decode(data : Bytes) -> Zone raise {
   let first = header(data, 0, 4)
   let version = data[4]
   let block = if version == 0 {

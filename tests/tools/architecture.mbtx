@@ -442,10 +442,11 @@ async fn main {
         !packages.contains(dep) {
         failures.push(name + " imports missing workspace package " + dep)
       }
-      if item.path.has_prefix("core/") &&
+      if (name.has_prefix("cli/") && dep.has_prefix("mooxCLI/cmd-tests")) ||
         (
-          dep.has_prefix("mooxCLI/cmd-tests") ||
-          (dep.has_prefix("cli/") && !dep.has_prefix("cli/core/"))
+          item.path.has_prefix("core/") &&
+          dep.has_prefix("cli/") &&
+          !dep.has_prefix("cli/core/")
         ) {
         failures.push(name + " imports a command or test tool: " + dep)
       }
@@ -455,11 +456,7 @@ async fn main {
           "cli/core/gzipops", "cli/core/numfmt", "cli/core/time_zone", "cli/core/quoting",
           "cli/core/tabstops", "cli/core/fsops/mode",
         ].contains(name) &&
-        (
-          dep == "cli/core/cli" ||
-          dep == "cli/core/contracts" ||
-          dep.has_suffix("/cli")
-        ) {
+        (dep == "cli/core/cli" || dep.has_suffix("/cli")) {
         failures.push(name + " imports a command adapter: " + dep)
       }
     }

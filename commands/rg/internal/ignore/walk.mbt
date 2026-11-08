@@ -115,12 +115,6 @@ fn DirEntry::new_raw(dent : RawEntry, err : IgnoreError?) -> DirEntry {
 }
 
 ///|
-priv enum Sorter {
-  ByName((String, String) -> Int32)
-  ByPath((String, String) -> Int32)
-}
-
-///|
 priv enum CwdState {
   Unset
   Known(String)
@@ -182,11 +176,9 @@ pub struct WalkBuilder {
   priv paths : Array[String]
   priv ig_builder : IgnoreBuilder
   priv mut max_depth : Int32?
-  priv mut min_depth : Int32?
   priv mut max_filesize : UInt64?
   priv mut follow_links : Bool
-  priv mut sorter : Sorter?
-  priv mut filter : ((DirEntry) -> Bool)?
+  priv mut sorter : ((String, String) -> Int32)?
   /// The directory that gitignores should be interpreted relative to.
   priv mut global_gitignores_relative_to : CwdState
 }
@@ -212,11 +204,9 @@ fn WalkBuilder::empty() -> WalkBuilder {
     paths: [],
     ig_builder: IgnoreBuilder::new(),
     max_depth: None,
-    min_depth: None,
     max_filesize: None,
     follow_links: false,
     sorter: None,
-    filter: None,
     global_gitignores_relative_to: Unset,
   }
 }
@@ -240,7 +230,6 @@ fn WalkBuilder::from_iter(paths : ArrayView[String]) -> WalkBuilder {
 pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
   let follow_links = self.follow_links
   let max_depth = self.max_depth
-  let min_depth = self.min_depth
   let sorter = self.sorter
   let its : Array[(String, WalkEventIter?)] = []
   for p in self.paths {
@@ -250,13 +239,11 @@ pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
       } else {
         let cmp : ((RawEntry, RawEntry) -> Int32)? = match sorter {
           None => None
-          Some(ByName(cmp)) => Some((a, b) => cmp(a.file_name(), b.file_name()))
-          Some(ByPath(cmp)) => Some((a, b) => cmp(a.path, b.path))
+          Some(cmp) => Some((a, b) => cmp(a.file_name(), b.file_name()))
         }
         let opts : WalkDirOptions = {
           follow_links: follow_links || is_file(p),
           max_depth: max_depth.unwrap_or(2147483647),
-          min_depth: min_depth.unwrap_or(0),
           sorter: cmp,
         }
         (p, Some(WalkEventIter::new(WalkDirIter::new(p, opts))))
@@ -275,7 +262,6 @@ pub async fn WalkBuilder::build(self : WalkBuilder) -> Walk {
     ig: ig_root,
     max_depth: self.max_depth,
     max_filesize: self.max_filesize,
-    filter: self.filter,
   }
 }
 
@@ -299,9 +285,6 @@ pub fn WalkBuilder::max_depth(
   depth : Int32?,
 ) -> WalkBuilder {
   self.max_depth = depth
-  if (self.min_depth, self.max_depth) is (Some(min), Some(max)) && max < min {
-    self.max_depth = self.min_depth
-  }
   self
 }
 
@@ -507,13 +490,12 @@ pub fn WalkBuilder::ignore_case_insensitive(
 /// names from entries from the same directory using only the name of the
 /// entry. Use `compare_utf8` for Rust's `OsStr` (byte-wise) ordering.
 ///
-/// This method will override any previous sorter set by this method or
-/// by `sort_by_file_path`.
+/// This method replaces the previous name comparator.
 pub fn WalkBuilder::sort_by_file_name(
   self : WalkBuilder,
   cmp : (String, String) -> Int32,
 ) -> WalkBuilder {
-  self.sorter = Some(ByName(cmp))
+  self.sorter = Some(cmp)
   self
 }
 
@@ -587,7 +569,6 @@ pub struct Walk {
   priv mut ig : Ignore
   priv max_depth : Int32?
   priv max_filesize : UInt64?
-  priv filter : ((DirEntry) -> Bool)?
 }
 
 ///|
@@ -597,7 +578,7 @@ async fn Walk::skip_entry(self : Walk, ent : DirEntry) -> Bool {
   }
   // We ensure that trivial skipping is done before any other potentially
   // expensive operations (stat, filesystem other) are done.
-  if should_skip_entry(self.ig, ent) {
+  if self.ig.matched_dir_entry(ent).is_ignore() {
     return true
   }
   if self.max_filesize is Some(max_filesize) && !ent.is_dir() {
@@ -606,11 +587,6 @@ async fn Walk::skip_entry(self : Walk, ent : DirEntry) -> Bool {
       ent.path(),
       (Ok(ent.metadata()) catch { e => Err(e) }).to_option(),
     )
-  }
-  if self.filter is Some(filter) {
-    if !filter(ent) {
-      return true
-    }
   }
   false
 }
@@ -796,44 +772,4 @@ async fn skip_filesize(
     }
     None => false
   }
-}
-
-///|
-fn should_skip_entry(ig : Ignore, dent : DirEntry) -> Bool {
-  let m = ig.matched_dir_entry(dent)
-  if m.is_ignore() {
-    true
-  } else {
-    false
-  }
-}
-
-///|
-pub fn WalkBuilder::min_depth(
-  self : WalkBuilder,
-  depth : Int32?,
-) -> WalkBuilder {
-  self.min_depth = depth
-  if (self.max_depth, self.min_depth) is (Some(max), Some(min)) && min > max {
-    self.min_depth = self.max_depth
-  }
-  self
-}
-
-///|
-pub fn WalkBuilder::sort_by_file_path(
-  self : WalkBuilder,
-  cmp : (String, String) -> Int32,
-) -> WalkBuilder {
-  self.sorter = Some(ByPath(cmp))
-  self
-}
-
-///|
-pub fn WalkBuilder::filter_entry(
-  self : WalkBuilder,
-  filter : (DirEntry) -> Bool,
-) -> WalkBuilder {
-  self.filter = Some(filter)
-  self
 }

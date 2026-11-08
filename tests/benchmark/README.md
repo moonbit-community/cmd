@@ -1,18 +1,19 @@
 # Direct-Wasm benchmark workloads
 
-## Current declared scope (2026-11-05)
+## Current declared scope (2026-11-08)
 
 `real.json` is the single active timing inventory. Its 171 data-driven rows
-cover 56 commands. `real-coverage.json` accounts for all 81 command packages,
+cover 56 commands. `real-coverage.json` accounts for all 82 command packages,
 including explicit correctness-only dispositions for make and sh. Those
 two commands have independent local contract witnesses; they have no
-real-source timing claim. Another 23 packages have individual `not-timed`
+real-source timing claim. Another 24 packages have individual `not-timed`
 reasons, including short utilities, unsupported ordinary operations, missing
 fair upstream equivalents and unbounded-output lifecycle requirements. A reason
 cannot relabel a reviewed timing command to discard its rows. These are
 inventory counts, not execution results.
 
-Typst's first migration is explicitly untimed. Its synthetic geometry fixtures
+Serve remains untimed pending a genuine HTTP serving workload and lifecycle
+measurement. Typst's first migration is explicitly untimed. Its synthetic geometry fixtures
 validate export behavior; they are not genuine-source timing inputs. Register
 complete document/font sources before proposing a performance acceptance run.
 
@@ -79,7 +80,8 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- corpus \
 The preparer verifies actual byte counts and SHA-256 before admitting each
 complete source. Missing or changed files fail; it never substitutes a
 generated approximation. Download/extraction uses the host curl, tar and unzip
-setup tools outside timing. Upstream archive containers have a separate bounded
+setup tools outside timing. Curl follows the environment's proxy configuration;
+admission still requires the pinned size and SHA-256. Upstream archive containers have a separate bounded
 setup allowance; they are not measured payload files.
 
 Input collections map genuine files to declared fixture paths. Distinct copies
@@ -201,7 +203,7 @@ exact local contracts or private mechanism regressions are bound in
 to be genuine-source throughput witnesses. This inventory does not prove
 complete command functionality or an application-frequency distribution.
 
-`protect.mbtx` compares all 81 command artifacts, requires real timing
+`protect.mbtx` compares all 82 command artifacts, requires real timing
 coverage for every changed command, and invokes this same inventory. Unchanged
 artifacts with correctness-only or not-timed dispositions gain no timing claim.
 Neither disposition can qualify a changed artifact's performance.

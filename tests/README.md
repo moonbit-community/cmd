@@ -44,6 +44,7 @@ full development or publication acceptance.
 | `harness/` | Generic fixtures, launchers, deadlines, assertions and reports |
 | `harness/driver/` | Selection, scheduling and execution orchestration |
 | `harness/catalog/` | Typed validation of the case index and release policy |
+| `harness/contracts/` | Command capability catalog consumed only by Native validation tools |
 | `cases/*.json` | Current CLI cases; `manifest.json` lists files, `index.json` binds stable identities |
 | `cases/generated/` | Derived assertion-quality inventory |
 | `scenarios/` | Stateful, multi-command and permission assertions with private regressions |

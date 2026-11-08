@@ -1,4 +1,16 @@
 ///|
+const MaxResponseHeaderBytes = 1048576L
+
+///|
+const MaxHttpLineBytes = 65536
+
+///|
+const MaxHttpFieldCount = 1024
+
+///|
+const MaxInterimResponses = 128
+
+///|
 priv enum WireBody {
   Finished
   Fixed(Int64)
@@ -69,7 +81,7 @@ async fn HttpWire::line(self : HttpWire, header~ : Bool = false) -> String {
     self.position += 1
     if header {
       self.header_bytes += 1L
-      guard self.header_bytes <= 1048576L else {
+      guard self.header_bytes <= MaxResponseHeaderBytes else {
         raise transfer_error(
           ReceiveFailure,
           "HTTP response headers exceed 1048576 bytes",
@@ -87,7 +99,7 @@ async fn HttpWire::line(self : HttpWire, header~ : Bool = false) -> String {
     }
     bytes.push(byte)
     // Bound untrusted protocol metadata independently of streamed body size.
-    guard bytes.length() <= 65536 else {
+    guard bytes.length() <= MaxHttpLineBytes else {
       raise transfer_error(ReceiveFailure, "HTTP line exceeds 65536 bytes")
     }
   }
@@ -160,7 +172,7 @@ async fn HttpWire::response(
   profile~ : TransferProfile = StrictProfile,
 ) -> @http.Response {
   for interim = 0; ; interim = interim + 1 {
-    guard interim <= 128 else {
+    guard interim <= MaxInterimResponses else {
       raise transfer_error(ReceiveFailure, "too many informational responses")
     }
     let status = self.line(header=true)
@@ -186,7 +198,7 @@ async fn HttpWire::response(
       if line == "" {
         break
       }
-      guard fields < 1024 else {
+      guard fields < MaxHttpFieldCount else {
         raise transfer_error(
           ReceiveFailure,
           "HTTP response headers exceed limits",
@@ -320,7 +332,7 @@ async fn HttpWire::read_some(
             self.body = Finished
             return None
           }
-          guard fields < 1024 else {
+          guard fields < MaxHttpFieldCount else {
             raise transfer_error(ReceiveFailure, "too many HTTP trailer fields")
           }
           let (name, _) = wire_field(line)

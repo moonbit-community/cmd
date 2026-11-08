@@ -3,7 +3,10 @@ async fn skip_bytes(reader : &@io.Reader, count : Int64) -> Unit {
   let buffer : FixedArray[Byte] = FixedArray::make(65536, 0)
   let mut remaining = count
   while remaining > 0L {
-    let count = reader.read(buffer, max_len=remaining.min(65536L).to_int())
+    let count = reader.read(
+      buffer,
+      max_len=remaining.min(buffer.length().to_int64()).to_int(),
+    )
     if count == 0 {
       raise CliError(4, "xxd: Sorry, cannot seek.")
     }
@@ -68,7 +71,9 @@ async fn Output::seek(self : Output, position : Int64) -> Unit {
   }
   let zeros = Bytes::make(65536, b'\x00')
   while self.position < position {
-    let count = (position - self.position).min(65536L).to_int()
+    let count = (position - self.position)
+      .min(zeros.length().to_int64())
+      .to_int()
     self.write(zeros[:count].to_owned())
   }
 }

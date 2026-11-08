@@ -1,6 +1,6 @@
 ///|
 /// The default buffer capacity (64 KB).
-pub const DEFAULT_BUFFER_CAPACITY : Int32 = 65536
+const DEFAULT_BUFFER_CAPACITY : Int32 = 65536
 
 ///|
 priv enum BufferAllocation {

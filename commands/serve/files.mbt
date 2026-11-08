@@ -1,9 +1,9 @@
 ///|
 fn hex(byte : Byte) -> Int32 {
   match byte {
-    b'0'..<=b'9' => byte.to_int() - 48
-    b'a'..<=b'f' => byte.to_int() - 87
-    b'A'..<=b'F' => byte.to_int() - 55
+    b'0'..<=b'9' => byte.to_int() - b'0'.to_int()
+    b'a'..<=b'f' => byte.to_int() - b'a'.to_int() + 10
+    b'A'..<=b'F' => byte.to_int() - b'A'.to_int() + 10
     _ => -1
   }
 }
@@ -16,10 +16,11 @@ fn request_path(target : String) -> String? {
   let mut i = 0
   while i < raw.length() {
     if raw[i] == b'%' {
-      guard i + 2 < raw.length() && hex(raw[i + 1]) >= 0 && hex(raw[i + 2]) >= 0 else {
-        return None
-      }
-      bytes.push((hex(raw[i + 1]) * 16 + hex(raw[i + 2])).to_byte())
+      guard i + 2 < raw.length() else { return None }
+      let high = hex(raw[i + 1])
+      let low = hex(raw[i + 2])
+      guard high >= 0 && low >= 0 else { return None }
+      bytes.push((high * 16 + low).to_byte())
       i += 3
     } else {
       bytes.push(raw[i])
@@ -168,14 +169,15 @@ async fn serve_file(
     return
   }
   let buffer : FixedArray[Byte] = FixedArray::make(65536, 0)
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
   let mut remaining = size
   while remaining > 0 {
     let n = file.read(
       buffer,
-      max_len=if remaining < 65536L { remaining.to_int() } else { 65536 },
+      max_len=remaining.min(buffer.length().to_int64()).to_int(),
     )
     guard n > 0 else { fail("file shortened during response") }
-    connection.write(Bytes::from_array(buffer[:n]))
+    connection.write(bytes[:n])
     remaining -= n.to_int64()
   }
 }

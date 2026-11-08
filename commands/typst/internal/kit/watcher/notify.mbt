@@ -27,7 +27,7 @@
 //   The bridge keeps that protocol, because something above the entry may
 //   be what was replaced (`rm -r figures; mkdir figures; ..`, the file of a
 //   link), and then only a new watcher sees the new file: a removal is
-//   reported as `Remove(File)` and a rename away as `Modify(Name(From))`.
+//   reported as `Removed` and a rename away as `RenamedFrom`.
 //   What the bridge adds is that a path stays reported between `unwatch`
 //   and the `commit` that follows: events that arrive while the
 //   compilation runs are not lost, as they are with notify until the path
@@ -49,175 +49,13 @@
 //   once the path is watched again.
 
 ///|
-/// An event describing open or close operations on files
-/// (`notify_types::event::AccessMode`).
-// Only matched, never reported by `@fs.Watcher`.
-#warnings("-unused_constructor")
-priv enum AccessMode {
-  /// The catch-all case, to be used when the specific kind of event is
-  /// unknown.
-  Any
-  /// The file was executed, or the folder opened.
-  Execute
-  /// The file was opened for reading.
-  Read
-  /// The file was opened for writing.
-  Write
-  /// An event which specific kind is known but cannot be represented
-  /// otherwise.
-  Other
-}
-
-///|
-/// An event describing non-mutating access operations on files
-/// (`notify_types::event::AccessKind`).
-#warnings("-unused_constructor")
-priv enum AccessKind {
-  /// The catch-all case, to be used when the specific kind of event is
-  /// unknown.
-  Any
-  /// An event emitted when the file is read.
-  Read
-  /// An event emitted when the file, or a handle to the file, is opened.
-  Open(AccessMode)
-  /// An event emitted when the file, or a handle to the file, is closed.
-  Close(AccessMode)
-  /// An event which specific kind is known but cannot be represented
-  /// otherwise.
-  Other
-}
-
-///|
-/// An event describing creation operations on files
-/// (`notify_types::event::CreateKind`).
-#warnings("-unused_constructor")
-priv enum CreateKind {
-  /// The catch-all case, to be used when the specific kind of event is
-  /// unknown.
-  Any
-  /// An event which results in the creation of a file.
-  File
-  /// An event which results in the creation of a folder.
-  Folder
-  /// An event which specific kind is known but cannot be represented
-  /// otherwise.
-  Other
-}
-
-///|
-/// An event emitted when the data content of a file is changed
-/// (`notify_types::event::DataChange`).
-#warnings("-unused_constructor")
-priv enum DataChange {
-  /// The catch-all case, to be used when the specific kind of event is
-  /// unknown.
-  Any
-  /// An event emitted when the size of the data is changed.
-  Size
-  /// An event emitted when the content of the data is changed.
-  Content
-  /// An event which specific kind is known but cannot be represented
-  /// otherwise.
-  Other
-}
-
-///|
-/// An event emitted when the metadata of a file or folder is changed
-/// (`notify_types::event::MetadataKind`).
-#warnings("-unused_constructor")
-priv enum MetadataKind {
-  /// The catch-all case, to be used when the specific kind of event is
-  /// unknown.
-  Any
-  /// An event emitted when the access time of the file or folder is changed.
-  AccessTime
-  /// An event emitted when the write or modify time of the file or folder is
-  /// changed.
-  WriteTime
-  /// An event emitted when the permissions of the file or folder are
-  /// changed.
-  Permissions
-  /// An event emitted when the ownership of the file or folder is changed.
-  Ownership
-  /// An event emitted when an extended attribute of the file or folder is
-  /// changed.
-  Extended
-  /// An event which specific kind is known but cannot be represented
-  /// otherwise.
-  Other
-}
-
-///|
-/// An event emitted when the name of a file or folder is changed
-/// (`notify_types::event::RenameMode`).
-#warnings("-unused_constructor")
-priv enum RenameMode {
-  /// The catch-all case, to be used when the specific kind of event is
-  /// unknown.
-  Any
-  /// An event emitted on the file or folder resulting from a rename.
-  To
-  /// An event emitted on the file or folder that was renamed.
-  From
-  /// A single event emitted with both the `From` and `To` paths.
-  Both
-  /// An event which specific kind is known but cannot be represented
-  /// otherwise.
-  Other
-}
-
-///|
-/// An event describing mutation of content, name, or metadata
-/// (`notify_types::event::ModifyKind`).
-#warnings("-unused_constructor-unused_field")
-priv enum ModifyKind {
-  /// The catch-all case, to be used when the specific kind of event is
-  /// unknown.
-  Any
-  /// An event emitted when the data content of a file is changed.
-  Data(DataChange)
-  /// An event emitted when the metadata of a file or folder is changed.
-  Metadata(MetadataKind)
-  /// An event emitted when the name of a file or folder is changed.
-  Name(RenameMode)
-  /// An event which specific kind is known but cannot be represented
-  /// otherwise.
-  Other
-}
-
-///|
-/// An event describing removal operations on files
-/// (`notify_types::event::RemoveKind`).
-#warnings("-unused_constructor")
-priv enum RemoveKind {
-  /// The catch-all case, to be used when the specific kind of event is
-  /// unknown.
-  Any
-  /// An event emitted when a file is removed.
-  File
-  /// An event emitted when a folder is removed.
-  Folder
-  /// An event which specific kind is known but cannot be represented
-  /// otherwise.
-  Other
-}
-
-///|
-/// Top-level event kind (`notify_types::event::EventKind`).
-#warnings("-unused_constructor-unused_field")
+// Only events emitted by the released filesystem watcher are represented.
 priv enum EventKind {
-  /// The catch-all event kind, for unsupported/unknown events.
-  Any
-  /// An event describing non-mutating access operations on files.
-  Access(AccessKind)
-  /// An event describing creation operations on files.
-  Create(CreateKind)
-  /// An event describing mutation of content, name, or metadata.
-  Modify(ModifyKind)
-  /// An event describing removal operations on files.
-  Remove(RemoveKind)
-  /// An event not fitting in any of the above four categories.
-  Other
+  Created
+  Modified
+  Removed
+  RenamedFrom
+  RenamedTo
 }
 
 ///|
@@ -226,8 +64,8 @@ priv enum EventKind {
 priv struct Event {
   /// Kind or type of the event.
   kind : EventKind
-  /// Paths the event is about, if known.
-  paths : Array[String]
+  /// The watched path; renames are delivered as separate old/new events.
+  path : String
 }
 
 ///|
@@ -580,7 +418,7 @@ async fn RecommendedWatcher::send(
   guard watcher.names.get(entry) is Some(paths) else { return }
   for path in paths {
     if self.reports(path) {
-      self.tx.put(Ok({ kind, paths: [path], }))
+      self.tx.put(Ok({ kind, path, }))
     }
   }
 }
@@ -607,7 +445,7 @@ async fn RecommendedWatcher::forward(
           for paths in watcher.names.values() {
             for path in paths {
               if self.reports(path) {
-                self.tx.put(Ok({ kind: Remove(File), paths: [path], }))
+                self.tx.put(Ok({ kind: Removed, path, }))
               }
             }
           }
@@ -617,12 +455,12 @@ async fn RecommendedWatcher::forward(
     }
     for event in events {
       match event {
-        Modify(entry) => self.send(watcher, entry, Modify(Data(Any)))
-        Create(entry) => self.send(watcher, entry, Create(Any))
-        Remove(entry) => self.send(watcher, entry, Remove(File))
+        Modify(entry) => self.send(watcher, entry, Modified)
+        Create(entry) => self.send(watcher, entry, Created)
+        Remove(entry) => self.send(watcher, entry, Removed)
         Rename(old~, new~) => {
-          self.send(watcher, old, Modify(Name(From)))
-          self.send(watcher, new, Modify(Name(To)))
+          self.send(watcher, old, RenamedFrom)
+          self.send(watcher, new, RenamedTo)
         }
       }
     }

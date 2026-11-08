@@ -40,9 +40,7 @@ async fn watching(
   group : @watcher.Tasks,
 ) -> Unit {
   // Create a file system watcher.
-  let watcher = @watcher.Watcher::new(Some(output), group) catch {
-    @kit.StrError(msg) => raise bail(msg)
-  }
+  let watcher = @watcher.Watcher::new(Some(output), group)
 
   // Create the world that serves sources, files, and fonts.
   // Additionally, if any files do not exist, wait until they do.

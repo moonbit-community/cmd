@@ -1,4 +1,8 @@
 ///|
+// Curl's file-output commit boundary; independent of transport read sizes.
+const CurlOutputBlockBytes = 4096
+
+///|
 priv struct TransferSink {
   output : TransferOutput
   response : @http.Response
@@ -100,7 +104,7 @@ async fn TransferSink::write_now(self : TransferSink, chunk : Bytes) -> Unit {
 ///|
 async fn TransferSink::flush(self : TransferSink) -> Unit {
   if !self.pending.is_empty() {
-    let bytes = Bytes::from_array(self.pending.copy())
+    let bytes = Bytes::from_array(self.pending)
     // A failed write may have effects; never replay that uncertain tail.
     self.pending.clear()
     self.write_now(bytes)
@@ -115,12 +119,14 @@ async fn TransferSink::write(self : TransferSink, chunk : Bytes) -> Unit {
   }
   let mut position = 0
   while position < chunk.length() {
-    let length = (4096 - self.pending.length()).min(chunk.length() - position)
+    let length = (CurlOutputBlockBytes - self.pending.length()).min(
+      chunk.length() - position,
+    )
     for byte in chunk[position:position + length] {
       self.pending.push(byte)
     }
     position += length
-    if self.pending.length() == 4096 {
+    if self.pending.length() == CurlOutputBlockBytes {
       self.flush()
     }
   }

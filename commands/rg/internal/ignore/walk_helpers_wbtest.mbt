@@ -45,14 +45,6 @@ fn GitignoreBuilder::add_str(
 }
 
 ///|
-fn DirEntry::file_name(self : DirEntry) -> String {
-  match self.dent {
-    Stdin => "<stdin>"
-    Raw(x) => x.file_name()
-  }
-}
-
-///|
 fn WalkBuilder::standard_filters(self : WalkBuilder, yes : Bool) -> WalkBuilder {
   self
   .hidden(yes)

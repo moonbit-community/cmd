@@ -7,7 +7,6 @@ import {
 }
 
 // Values
-pub const DEFAULT_BUFFER_CAPACITY : Int32 = 65536
 
 // Errors
 #derive(@debug.Debug)

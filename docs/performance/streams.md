@@ -24,6 +24,19 @@ write completes, then updates its own numbering, uniqueness or selection state.
 Draining consumes pending bytes before writing, so cleanup cannot replay a
 partially accepted write. Commands still choose when output must become visible.
 
+Public span admission validates the range and active/failed state before any
+buffer mutation. Its async continuation enters the slow path without an
+intervening suspension, so that private path uses the established checks.
+Actual awaited writes still set active/failed state and retain cancellation
+cleanup; this does not treat changing I/O state as a static precondition.
+
+Od and hexdump retain separate input loops and synchronously feed views of their
+read buffers into command-owned row state. The rendered string owns its output
+before the next awaited write or refill. Xxd and transfer output copy directly
+into owned `Bytes` when ownership is needed, without an intermediate array copy.
+Read bounds follow the allocated buffer's length. These source changes do not
+by themselves establish a measured speedup or reduced peak RSS.
+
 | Consumer | Work kept synchronous | Boundary that remains command-owned |
 | --- | --- | --- |
 | [nl](../../commands/nl/numbering.mbt) | Cached record admission and coalesced number/record output | Sections, blank groups, number advancement and empty-input allocation |

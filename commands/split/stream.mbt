@@ -37,7 +37,7 @@ async fn copy_count(
   let buffer = FixedArray::make(65536, b'\x00')
   let mut remaining = count
   while remaining > 0 {
-    let limit = if remaining < 65536L { remaining.to_int() } else { 65536 }
+    let limit = remaining.min(buffer.length().to_int64()).to_int()
     let read = reader.read(buffer, max_len=limit)
     if read == 0 {
       break

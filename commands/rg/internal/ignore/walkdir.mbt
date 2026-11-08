@@ -181,7 +181,6 @@ fn IgnoreError::from_walkdir(err : WdError) -> IgnoreError {
 priv struct WalkDirOptions {
   follow_links : Bool
   max_depth : Int32
-  min_depth : Int32
   sorter : ((RawEntry, RawEntry) -> Int32)?
 }
 
@@ -413,7 +412,7 @@ async fn WalkDirIter::check_loop(
 
 ///|
 fn WalkDirIter::skippable(self : WalkDirIter) -> Bool {
-  self.depth < self.opts.min_depth || self.depth > self.opts.max_depth
+  self.depth > self.opts.max_depth
 }
 
 ///|

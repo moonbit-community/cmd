@@ -108,8 +108,8 @@ async fn download(url : String, target : String, log : String) -> Unit {
   let status = @process.run(
     "curl",
     [
-      "--noproxy", "*", "--fail", "--location", "--max-time", "180", "--max-filesize",
-      "67108864", "--output", target, url,
+      "--fail", "--location", "--max-time", "180", "--max-filesize", "67108864",
+      "--output", target, url,
     ],
     stderr=errors,
   )

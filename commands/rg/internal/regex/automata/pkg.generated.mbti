@@ -10,8 +10,6 @@ import {
 // Values
 pub const DFA_FAILED : Int32 = -2
 
-pub const DFA_NO_MATCH : Int32 = -1
-
 pub const NO_SPAN : Int64 = -1
 
 pub fn compile_nfa(@syntax.Hir, config? : NFAConfig) -> NFA raise BuildError

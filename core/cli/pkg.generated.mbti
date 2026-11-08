@@ -38,7 +38,7 @@ pub fn ErrorKind::equal(Self, Self) -> Bool
 pub fn ErrorKind::not_equal(Self, Self) -> Bool
 pub fn ErrorKind::to_repr(Self) -> @debug.Repr
 
-pub(all) struct OptionSpec {
+pub struct OptionSpec {
   name : String
   short : Char?
   takes_value : Bool

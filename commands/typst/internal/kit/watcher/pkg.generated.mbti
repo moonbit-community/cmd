@@ -15,7 +15,7 @@ pub async fn run(async (@async.TaskGroup[Unit]) -> Unit) -> Unit
 pub struct Watcher {
   // private fields
 }
-pub fn Watcher::new(String?, @async.TaskGroup[Unit]) -> Self raise @kit.StrError
+pub fn Watcher::new(String?, @async.TaskGroup[Unit]) -> Self
 pub async fn Watcher::update(Self, Array[String]) -> Unit raise @kit.StrError
 pub async fn Watcher::wait(Self) -> Unit raise @kit.StrError
 

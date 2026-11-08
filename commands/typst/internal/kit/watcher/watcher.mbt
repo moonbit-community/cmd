@@ -45,14 +45,8 @@ const POLL_INTERVAL : Int32 = 300
 ///
 /// The watcher's event sources are tasks of `group`, the group of the
 /// [`run`] it is created in (not upstream: notify has a thread of its own).
-// Upstream returns a `StrResult` (typst-kit/src/watcher.rs:51): creating
-// notify's watcher can fail ("failed to setup file watching ({err})").
-// Nothing is acquired here before the first `update`.
-#warnings("-unused_error_type")
-pub fn Watcher::new(
-  output : String?,
-  group : Tasks,
-) -> Watcher raise @kit.StrError {
+// Construction only records state; resource acquisition happens in `update`.
+pub fn Watcher::new(output : String?, group : Tasks) -> Watcher {
   // Set up file watching.
   //
   // (Upstream sets the poll interval of `notify::PollWatcher` here, which
@@ -168,9 +162,6 @@ pub async fn Watcher::wait(self : Watcher) -> Unit raise @kit.StrError {
         Ok(event) => event
         Err(err) => raise @kit.StrError("failed to watch dependencies (\{err})")
       }
-      if !is_relevant_event_kind(event.kind) {
-        continue
-      }
 
       // Workaround for notify-rs' implicit unwatch on remove/rename
       // (triggered by some editors when saving files) with the
@@ -179,19 +170,17 @@ pub async fn Watcher::wait(self : Watcher) -> Unit raise @kit.StrError {
       // watched again later on.
       //
       // (`notify.mbt` reports every removal this way: see there.)
-      if event.kind is (Remove(File) | Modify(Name(From))) {
-        for path in event.paths {
-          // Remove affected path from the watched map to restart
-          // watching on it later again.
-          self.watcher.unwatch(path)
-          self.watched.remove(path)
+      match event.kind {
+        Removed | RenamedFrom => {
+          self.watcher.unwatch(event.path)
+          self.watched.remove(event.path)
         }
+        Created | Modified | RenamedTo => ()
       }
 
       // Don't recompile because the output file changed.
       // FIXME: This doesn't work properly for multifile image export.
-      if self.output is Some(output) &&
-        event.paths.iter().all(path => is_same_file(path, output)) {
+      if self.output is Some(output) && is_same_file(event.path, output) {
         continue
       }
       relevant = true
@@ -212,25 +201,5 @@ pub async fn Watcher::wait(self : Watcher) -> Unit raise @kit.StrError {
 fn is_same_file(path1 : String, path2 : String) -> Bool {
   @platform.is_same_file(path1, path2) catch {
     _ => false
-  }
-}
-
-///|
-/// Whether a kind of watch event is relevant for compilation.
-fn is_relevant_event_kind(kind : EventKind) -> Bool {
-  match kind {
-    Any => true
-    Access(_) => false
-    Create(_) => true
-    Modify(kind) =>
-      match kind {
-        Any => true
-        Data(_) => true
-        Metadata(_) => false
-        Name(_) => true
-        Other => false
-      }
-    Remove(_) => true
-    Other => false
   }
 }

@@ -131,7 +131,7 @@ fn dump_line(data : ArrayView[Byte], opts : Options, offset : Int64) -> Bytes {
     line[display + position] = display_byte(byte, opts.ebcdic)
   }
   line[display + data.length()] = b'\n'
-  Bytes::from_array(line[:display + data.length() + 1].to_owned())
+  Bytes::from_array(line[:display + data.length() + 1])
 }
 
 ///|
@@ -234,8 +234,8 @@ async fn dump_stream(
   let buffer : FixedArray[Byte] = FixedArray::make(65536, 0)
   while opts.limit != Some(consumed) {
     let maximum = match opts.limit {
-      Some(limit) => (limit - consumed).min(65536L).to_int()
-      None => 65536
+      Some(limit) => (limit - consumed).min(buffer.length().to_int64()).to_int()
+      None => buffer.length()
     }
     let count = match positioned_file {
       Some(file) =>

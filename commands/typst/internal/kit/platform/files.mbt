@@ -80,13 +80,6 @@ pub struct RangedFile {
 }
 
 ///|
-/// Whether ranged reads are cheap (otherwise, a `RangedFile` holds the
-/// whole file).
-pub fn supports_ranged_reads() -> Bool {
-  false
-}
-
-///|
 /// Opens a file for ranged reads.
 pub fn RangedFile::open(path : String) -> RangedFile raise IoError {
   { data: Some(read_file(path)), }
@@ -235,12 +228,6 @@ pub fn stderr_is_terminal() -> Bool {
 /// UTC).
 pub fn local_offset(_timestamp : Int64) -> Int32 {
   0
-}
-
-///|
-/// Whether the local time zone is known (otherwise, UTC is assumed).
-pub fn knows_local_time_zone() -> Bool {
-  false
 }
 
 ///|

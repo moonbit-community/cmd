@@ -1,4 +1,13 @@
 ///|
+const MaxNumberCharacters = 4096
+
+///|
+const MaxDecimalExponent = 4096
+
+///|
+const MaxDecimalScale = 4096
+
+///|
 priv suberror SeqError {
   SeqError(String)
 }
@@ -32,7 +41,7 @@ fn Decimal::normalize(self : Decimal) -> Decimal {
 
 ///|
 fn parse_decimal(text : String) -> Decimal raise SeqError {
-  if text == "" || text.contains("_") || text.length() > 4096 {
+  if text == "" || text.contains("_") || text.length() > MaxNumberCharacters {
     raise SeqError("invalid number: '\{text}'")
   }
   let chars : Array[Char] = text.iter().collect()
@@ -67,7 +76,7 @@ fn parse_decimal(text : String) -> Decimal raise SeqError {
       _ => raise SeqError("invalid exponent: '\{text}'")
     }
   }
-  if exponent > 4096 || exponent < -4096 {
+  if exponent > MaxDecimalExponent || exponent < -MaxDecimalExponent {
     raise SeqError("exponent out of supported range: '\{text}'")
   }
   let digits = StringBuilder()
@@ -95,7 +104,7 @@ fn parse_decimal(text : String) -> Decimal raise SeqError {
     coefficient = -coefficient
   }
   let scale = fractional_digits - exponent
-  if scale > 4096 || scale < -4096 {
+  if scale > MaxDecimalScale || scale < -MaxDecimalScale {
     raise SeqError("number precision exceeds the supported limit: '\{text}'")
   }
   if scale < 0 {

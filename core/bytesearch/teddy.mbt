@@ -21,7 +21,7 @@ pub struct Teddy {
 
 ///|
 /// The maximum number of literals Teddy is used for.
-pub let teddy_max_literals : Int32 = 64
+let teddy_max_literals : Int32 = 64
 
 ///|
 /// Builds a Teddy searcher for `lits` (in priority order). Returns `None` if

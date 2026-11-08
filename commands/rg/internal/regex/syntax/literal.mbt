@@ -8,7 +8,7 @@ pub(all) struct Lit {
 }
 
 ///|
-pub fn Lit::exact(bytes : Bytes) -> Lit {
+fn Lit::exact(bytes : Bytes) -> Lit {
   { bytes, exact: true, }
 }
 
@@ -50,22 +50,22 @@ pub(all) struct Seq {
 }
 
 ///|
-pub fn Seq::empty() -> Seq {
+fn Seq::empty() -> Seq {
   { lits: Some([]), }
 }
 
 ///|
-pub fn Seq::infinite() -> Seq {
+fn Seq::infinite() -> Seq {
   { lits: None, }
 }
 
 ///|
-pub fn Seq::singleton(lit : Lit) -> Seq {
+fn Seq::singleton(lit : Lit) -> Seq {
   { lits: Some([lit]), }
 }
 
 ///|
-pub fn Seq::copy(self : Seq) -> Seq {
+fn Seq::copy(self : Seq) -> Seq {
   { lits: self.lits.map(l => l.copy()), }
 }
 
@@ -75,7 +75,7 @@ pub fn Seq::literals(self : Seq) -> Array[Lit]? {
 }
 
 ///|
-pub fn Seq::push(self : Seq, lit : Lit) -> Unit {
+fn Seq::push(self : Seq, lit : Lit) -> Unit {
   guard self.lits is Some(lits) else { return }
   if lits.last() is Some(m) && m == lit {
     return
@@ -84,7 +84,7 @@ pub fn Seq::push(self : Seq, lit : Lit) -> Unit {
 }
 
 ///|
-pub fn Seq::make_inexact(self : Seq) -> Unit {
+fn Seq::make_inexact(self : Seq) -> Unit {
   guard self.lits is Some(lits) else { return }
   for i in 0..<lits.length() {
     lits[i] = { ..lits[i], exact: false, }
@@ -92,22 +92,22 @@ pub fn Seq::make_inexact(self : Seq) -> Unit {
 }
 
 ///|
-pub fn Seq::make_infinite(self : Seq) -> Unit {
+fn Seq::make_infinite(self : Seq) -> Unit {
   self.lits = None
 }
 
 ///|
-pub fn Seq::is_finite(self : Seq) -> Bool {
+fn Seq::is_finite(self : Seq) -> Bool {
   self.lits is Some(_)
 }
 
 ///|
-pub fn Seq::len(self : Seq) -> Int32? {
+fn Seq::len(self : Seq) -> Int32? {
   self.lits.map(l => l.length())
 }
 
 ///|
-pub fn Seq::is_empty(self : Seq) -> Bool {
+fn Seq::is_empty(self : Seq) -> Bool {
   self.len() == Some(0)
 }
 
@@ -120,7 +120,7 @@ pub fn Seq::is_exact(self : Seq) -> Bool {
 }
 
 ///|
-pub fn Seq::is_inexact(self : Seq) -> Bool {
+fn Seq::is_inexact(self : Seq) -> Bool {
   match self.lits {
     None => true
     Some(lits) => lits.iter().all(x => !x.exact)
@@ -128,7 +128,7 @@ pub fn Seq::is_inexact(self : Seq) -> Bool {
 }
 
 ///|
-pub fn Seq::min_literal_len(self : Seq) -> Int32? {
+fn Seq::min_literal_len(self : Seq) -> Int32? {
   guard self.lits is Some(lits) && lits.length() > 0 else { return None }
   let mut m = lits[0].len()
   for l in lits {
@@ -140,7 +140,7 @@ pub fn Seq::min_literal_len(self : Seq) -> Int32? {
 }
 
 ///|
-pub fn Seq::max_union_len(self : Seq, other : Seq) -> Int32? {
+fn Seq::max_union_len(self : Seq, other : Seq) -> Int32? {
   match (self.len(), other.len()) {
     (Some(a), Some(b)) => Some(a + b)
     _ => None
@@ -148,7 +148,7 @@ pub fn Seq::max_union_len(self : Seq, other : Seq) -> Int32? {
 }
 
 ///|
-pub fn Seq::max_cross_len(self : Seq, other : Seq) -> Int32? {
+fn Seq::max_cross_len(self : Seq, other : Seq) -> Int32? {
   match (self.len(), other.len()) {
     (Some(a), Some(b)) => {
       let r = a.to_int64() * b.to_int64()
@@ -159,7 +159,7 @@ pub fn Seq::max_cross_len(self : Seq, other : Seq) -> Int32? {
 }
 
 ///|
-pub fn Seq::dedup(self : Seq) -> Unit {
+fn Seq::dedup(self : Seq) -> Unit {
   guard self.lits is Some(lits) else { return }
   let out : Array[Lit] = []
   for lit in lits {
@@ -175,7 +175,7 @@ pub fn Seq::dedup(self : Seq) -> Unit {
 }
 
 ///|
-pub fn Seq::keep_first_bytes(self : Seq, len : Int32) -> Unit {
+fn Seq::keep_first_bytes(self : Seq, len : Int32) -> Unit {
   guard self.lits is Some(lits) else { return }
   for i in 0..<lits.length() {
     lits[i] = lits[i].keep_first(len)
@@ -224,7 +224,7 @@ fn Seq::cross_preamble(self : Seq, other : Seq) -> (Array[Lit], Array[Lit])? {
 ///|
 /// Modifies this sequence to be the cross product of it with `other`, in
 /// the forward direction. `other` is drained.
-pub fn Seq::cross_forward(self : Seq, other : Seq) -> Unit {
+fn Seq::cross_forward(self : Seq, other : Seq) -> Unit {
   guard self.cross_preamble(other) is Some((lits1, lits2)) else { return }
   let out = []
   for selflit in lits1 {
@@ -270,7 +270,7 @@ fn Seq::cross_reverse(self : Seq, other : Seq) -> Unit {
 
 ///|
 /// Unions `other` into this sequence. `other` is drained.
-pub fn Seq::union(self : Seq, other : Seq) -> Unit {
+fn Seq::union(self : Seq, other : Seq) -> Unit {
   match other.lits {
     None => self.make_infinite()
     Some(lits2) => {

@@ -236,7 +236,7 @@ pub fn[T] Match::is_whitelist(self : Match[T]) -> Bool {
 ///|
 /// Inverts the match so that `Ignore` becomes `Whitelist` and
 /// `Whitelist` becomes `Ignore`. A non-match remains the same.
-pub fn[T] Match::invert(self : Match[T]) -> Match[T] {
+fn[T] Match::invert(self : Match[T]) -> Match[T] {
   match self {
     None => None
     Ignore(t) => Whitelist(t)
@@ -245,19 +245,10 @@ pub fn[T] Match::invert(self : Match[T]) -> Match[T] {
 }
 
 ///|
-/// Return the value inside this match if it exists.
-pub fn[T] Match::inner(self : Match[T]) -> T? {
-  match self {
-    None => Option::None
-    Ignore(t) | Whitelist(t) => Some(t)
-  }
-}
-
-///|
 /// Apply the given function to the value inside this match.
 ///
 /// If the match has no value, then return the match unchanged.
-pub fn[T, U] Match::map(self : Match[T], f : (T) -> U) -> Match[U] {
+fn[T, U] Match::map(self : Match[T], f : (T) -> U) -> Match[U] {
   match self {
     None => None
     Ignore(t) => Ignore(f(t))
@@ -267,7 +258,7 @@ pub fn[T, U] Match::map(self : Match[T], f : (T) -> U) -> Match[U] {
 
 ///|
 /// Return the match if it is not none. Otherwise, return other.
-pub fn[T] Match::or(self : Match[T], other : Match[T]) -> Match[T] {
+fn[T] Match::or(self : Match[T], other : Match[T]) -> Match[T] {
   if self.is_none() {
     other
   } else {

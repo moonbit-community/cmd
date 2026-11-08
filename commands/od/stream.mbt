@@ -45,7 +45,7 @@ fn DumpState::row(self : DumpState) -> String {
 }
 
 ///|
-fn DumpState::feed(self : DumpState, chunk : Bytes) -> String {
+fn DumpState::feed(self : DumpState, chunk : BytesView) -> String {
   let out = StringBuilder()
   for byte in chunk {
     if self.skip > 0L {
@@ -70,16 +70,18 @@ fn DumpState::feed(self : DumpState, chunk : Bytes) -> String {
 ///|
 async fn DumpState::read(self : DumpState, reader : &@io.Reader) -> Unit {
   let buffer : FixedArray[Byte] = FixedArray::make(65536, 0)
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  let capacity = buffer.length().to_int64()
   while self.skip > 0L || self.remaining != Some(0L) {
     let maximum = match self.remaining {
-      Some(n) => self.skip.min(65536L) + n.min(65536L)
-      None => 65536L
+      Some(n) => self.skip.min(capacity) + n.min(capacity)
+      None => capacity
     }
-    let count = reader.read(buffer, max_len=maximum.min(65536L).to_int())
+    let count = reader.read(buffer, max_len=maximum.min(capacity).to_int())
     if count == 0 {
       break
     }
-    @stdio.stdout.write(self.feed(Bytes::from_array(buffer[:count].to_owned())))
+    @stdio.stdout.write(self.feed(bytes[:count]))
   }
 }
 

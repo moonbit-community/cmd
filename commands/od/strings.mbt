@@ -75,11 +75,12 @@ fn StringDump::feed(self : StringDump, data : BytesView) -> String {
 async fn StringDump::read(self : StringDump, reader : &@io.Reader) -> Unit {
   let buffer = FixedArray::make(65536, b'\x00')
   let data = buffer.unsafe_reinterpret_as_bytes()
+  let capacity = buffer.length().to_int64()
   while !self.done() {
     let request = match self.remaining {
       Some(left) =>
-        (self.skip.min(65536L) + left.min(65536L)).min(65536L).to_int()
-      None => 65536
+        (self.skip.min(capacity) + left.min(capacity)).min(capacity).to_int()
+      None => buffer.length()
     }
     let count = reader.read(buffer, max_len=request)
     if count == 0 {

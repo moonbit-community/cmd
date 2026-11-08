@@ -17,7 +17,6 @@ pub(all) enum Algorithm {
   Sha256
   Sha512
 }
-pub fn Algorithm::hex_length(Self) -> Int32
 pub fn Algorithm::label(Self) -> String
 
 pub(all) enum Digest {

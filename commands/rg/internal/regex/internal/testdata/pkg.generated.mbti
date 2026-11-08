@@ -8,10 +8,6 @@ pub fn compile_expectation(TestCase, parsed~ : Bool) -> String?
 
 pub fn exclusion(TestCase, meta? : Bool) -> String?
 
-pub fn execution_groups(ArrayView[TestCase]) -> Array[CorpusGroup] raise
-
-pub async fn load() -> Array[TestCase]
-
 pub async fn load_execution_groups() -> Array[CorpusGroup]
 
 // Errors

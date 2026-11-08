@@ -291,7 +291,7 @@ test "gitignore/ignot2" {
 }
 
 ///|
-test "gitignore/ignot3" {
+test "gitignore/ignot3 / gitignore/ignot5" {
   let gi = gi_from_str(ROOT, "/src/*.rs")
   assert_true(!gi.matched("src/grep/src/main.rs", false).is_ignore())
 }
@@ -300,12 +300,6 @@ test "gitignore/ignot3" {
 test "gitignore/ignot4" {
   let gi = gi_from_str(ROOT, "/*.c")
   assert_true(!gi.matched("mozilla-sha1/sha1.c", false).is_ignore())
-}
-
-///|
-test "gitignore/ignot5" {
-  let gi = gi_from_str(ROOT, "/src/*.rs")
-  assert_true(!gi.matched("src/grep/src/main.rs", false).is_ignore())
 }
 
 ///|
