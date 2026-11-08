@@ -17,6 +17,7 @@ priv struct AuthenticationCase {
   args : Array[String]
   urls : Array[String]
   routes : Array[AuthenticationRoute]
+  oracle_request_lines : Array[String]
   expected : Json
 }
 
@@ -24,6 +25,7 @@ priv struct AuthenticationCase {
 fn authentication_request(
   request : (String, String, String),
   body : Bytes,
+  oracle_request_line : String?,
 ) -> (String, Array[String], String) raise {
   let start = request.0.split(" ").to_array()
   assert_eq(start.length(), 3)
@@ -34,7 +36,9 @@ fn authentication_request(
   let path = if target.has_prefix("http://") {
     let tail = target[7:]
     let split = tail.find("/").unwrap()
-    assert_eq(tail[:split].to_owned(), host)
+    // Wget's proxy URI can retain URL userinfo. Bind the complete line to
+    // the original oracle wire instead of accepting an arbitrary authority.
+    assert_eq(Some(request.0), oracle_request_line)
     tail[split:].to_owned()
   } else {
     assert_true(target.has_prefix("/"))
@@ -62,6 +66,27 @@ fn authentication_request(
 }
 
 ///|
+fn authentication_observation(
+  request : (String, String, String),
+  body : Bytes,
+  oracle_request_line : String?,
+  wires : Array[(String, Bytes)],
+  errors : Array[String],
+) -> (String, Array[String], String) raise {
+  wires.push((request.2, body))
+  let result = Ok(authentication_request(request, body, oracle_request_line)) catch {
+    error => Err(error)
+  }
+  match result {
+    Ok(observation) => observation
+    Err(error) => {
+      errors.push(error.to_string())
+      raise error
+    }
+  }
+}
+
+///|
 async fn network_wget_authentication_scenario(
   executor : Executor,
   work : String,
@@ -84,6 +109,7 @@ async fn network_wget_authentication_scenario(
     guard fixture.expected is { "requests": Array(expected_requests), .. } else {
       fail("frozen authentication observations required")
     }
+    assert_eq(fixture.oracle_request_lines.length(), expected_requests.length())
     let directory = work + "/wget-authentication-" + fixture.label
     @fs.mkdir(directory)
     @fs.write_file(directory + "/sentinel", b"unchanged\n")
@@ -102,6 +128,7 @@ async fn network_wget_authentication_scenario(
       let candidate : Array[String] = []
       let candidate_wires : Array[(String, Bytes)] = []
       let candidate_tunnels : Array[String] = []
+      let observer_errors : Array[String] = []
       defer @async.protect_from_cancel(() => {
         let trace : Json = {
           "candidate": @json.to_json(candidate_wires),
@@ -110,6 +137,7 @@ async fn network_wget_authentication_scenario(
           "oracle_connect": Json(tunnels),
           "candidate_requests": Json(candidate),
           "oracle_requests": Json(requests),
+          "observer_errors": Json(observer_errors),
         }
         @fs.write_file(
           directory + "/requests.wire.json",
@@ -135,8 +163,13 @@ async fn network_wget_authentication_scenario(
           } else {
             b""
           }
-          let (path, auth, observed) = authentication_request(request, body)
-          wires.push((request.2, body))
+          let (path, auth, observed) = authentication_observation(
+            request,
+            body,
+            fixture.oracle_request_lines.get(wires.length()),
+            wires,
+            observer_errors,
+          )
           requests.push(observed)
           guard fixture.routes.iter().find_first(route => route.path == path)
             is Some(route) else {
@@ -221,6 +254,7 @@ async fn network_wget_authentication_scenario(
           "ALL_PROXY": "",
         },
       )
+      assert_true(observer_errors.is_empty(), msg=observer_errors.join("\n"))
       let observed : Json = {
         "status": Json(result.status),
         "stdout": Json(@harness.scenario_text(result.stdout)),
