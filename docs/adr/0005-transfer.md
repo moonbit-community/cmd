@@ -87,7 +87,11 @@ wildcard bases, exceptions and the longest suffix of the request host. Curl
 converts accepted exact suffix responses to host-only before prefix validation;
 imports reject public suffixes with the localhost exception. Wget retains
 domain scope for exact suffixes and does not apply response admission to jars.
-Storage spelling and admission views remain distinct for leading/trailing dots.
+Storage spelling and admission views remain distinct for leading/trailing dots
+and ASCII case. Curl keeps received/imported domain spelling while domain
+selection, replacement and insecure overlay protection compare ASCII case
+insensitively. Linux raw jar observations exposed the earlier lowercase rewrite;
+case-preservation and mixed-case replacement/overlay regressions retain it.
 Strict IP spelling is checked before using the released public address parser.
 
 `network-cookie-suffix` independently observes real proxy requests, unchanged

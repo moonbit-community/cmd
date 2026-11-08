@@ -71,7 +71,9 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
 - The workspace uses the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
   for response and imported cookies. Accepted exact public-suffix response
   domains become host-only before prefix checks; file imports retain curl's
-  localhost exception. IDNA/NFKC normalization of URL and Domain inputs and complete jar grammar and
+  localhost exception. Stored domain spellings retain their ASCII case;
+  matching, replacement, secure overlay checks and PSL admission fold ASCII case.
+  IDNA/NFKC normalization of URL and Domain inputs and complete jar grammar and
   serialization remain unfinished. Published coordinates retain their recorded profile.
 - Content-encoded responses remain encoded. A redirect cannot rewind consumed stdin uploads.
 - Partial stdout remains after failure; files remain unless --remove-on-error is selected. -O -J does not overwrite an existing selected name.

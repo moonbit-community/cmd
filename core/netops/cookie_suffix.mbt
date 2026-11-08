@@ -119,12 +119,15 @@ fn cookie_ip_literal(domain : String) -> Bool {
 
 ///|
 fn curl_suffix_name(domain : String) -> String {
-  // The PSL check removes exactly one trailing dot without rewriting storage.
-  if domain.has_suffix(".") {
-    domain[:domain.length() - 1].to_owned()
-  } else {
-    domain
-  }
+  // The PSL view folds ASCII case and removes one trailing dot; storage keeps
+  // the received spelling, including its case and dots.
+  cookie_ascii_lower(
+    if domain.has_suffix(".") {
+      domain[:domain.length() - 1].to_owned()
+    } else {
+      domain
+    },
+  )
 }
 
 ///|

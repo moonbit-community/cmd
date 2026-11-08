@@ -318,6 +318,7 @@ pub fn commands() -> Array[CommandContract] {
     // Complete pinned ICANN/PRIVATE suffix rules constrain response and imported
     // cookies; accepted exact suffix responses become host-only. URL IDNA and
     // complete jar grammar remain open.
+    // Saved domains retain case; matching, identity and overlays fold ASCII case.
     // Custom request fields retain repetition and argument order. Response
     // observers retain all final fields in wire order, separately from storage.
     // Multiple request Content-Length fields reject before request bytes.

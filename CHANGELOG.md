@@ -22,7 +22,8 @@ Development only.
   Published coordinates are unchanged.
 
 - Add complete pinned ICANN/PRIVATE cookie suffix admission and Curl's exact
-  suffix host-only conversion. Retain Wget's imported-file policy, independent
+  suffix host-only conversion and original domain case in saved jars. Retain
+  case-insensitive identity/overlay checks, Wget's imported-file policy, independent
   raw input and full-list oracle checks; advance oracle PSL data in profile
   revision 2. URL IDNA and the remaining #34 dialects stay open.
 

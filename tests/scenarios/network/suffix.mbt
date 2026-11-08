@@ -70,7 +70,7 @@ async fn network_cookie_suffix_scenario(
         ""
       },
       curl_rows: if accepted {
-        ["." + domain.to_lower() + "\tTRUE\t/\tFALSE\t0\tsid\tv"]
+        ["." + domain + "\tTRUE\t/\tFALSE\t0\tsid\tv"]
       } else {
         []
       },
@@ -170,6 +170,52 @@ async fn network_cookie_suffix_scenario(
     wget_cookie: "",
     curl_rows: [".city.kawasaki.jp\tTRUE\t/\tFALSE\t0\tsid\tv"],
   })
+  for
+    (label, host, field, input, cookie, row) in [
+      (
+        "case-jar",
+        "a.example.com",
+        None,
+        ".EXAMPLE.COM\tTRUE\t/\tFALSE\t0\tsid\tv\n",
+        "sid=v",
+        ".EXAMPLE.COM\tTRUE\t/\tFALSE\t0\tsid\tv",
+      ),
+      (
+        "case-replacement",
+        "a.example.com",
+        Some("sid=new; Domain=eXample.com; Path=/"),
+        ".EXAMPLE.COM\tTRUE\t/\tFALSE\t0\tsid\told\n",
+        "sid=new",
+        ".eXample.com\tTRUE\t/\tFALSE\t0\tsid\tnew",
+      ),
+      (
+        "case-overlay",
+        "a.example.com",
+        Some("sid=plain; Domain=example.com; Path=/"),
+        ".EXAMPLE.COM\tTRUE\t/\tTRUE\t0\tsid\tsecure\n",
+        "",
+        ".EXAMPLE.COM\tTRUE\t/\tTRUE\t0\tsid\tsecure",
+      ),
+      (
+        "case-host",
+        "A.Example.com",
+        Some("sid=v; Path=/"),
+        "",
+        "sid=v",
+        "A.Example.com\tFALSE\t/\tFALSE\t0\tsid\tv",
+      ),
+    ] {
+    cases.push({
+      label,
+      host,
+      target: "a.example.com",
+      field,
+      input,
+      curl_cookie: cookie,
+      wget_cookie: "",
+      curl_rows: [row],
+    })
+  }
   @async.with_task_group(group => {
     let server = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
@@ -210,7 +256,8 @@ async fn network_cookie_suffix_scenario(
     for fixture in cases {
       let commands = if [
           "jar-leading-dots", "jar-invalid-ip", "reload-exact", "reload-exception",
-        ].contains(fixture.label) {
+        ].contains(fixture.label) ||
+        fixture.label.has_prefix("case-") {
         ["curl"]
       } else {
         ["curl", "wget"]

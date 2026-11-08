@@ -99,7 +99,7 @@ fn usage() -> String {
     #|Stored __Secure-/__Host- cookies require Secure and the effective prefix scope.
     #|Secure cookie contexts are HTTPS or exact localhost/127.0.0.1/::1.
     #|Insecure origins cannot overlay live Secure cookies.
-    #|Cookie domains use the complete pinned ICANN/PRIVATE suffix list; IDNA remains unsupported.
+    #|Cookie domains preserve ASCII case and use the pinned ICANN/PRIVATE suffix list; IDNA remains unsupported.
     #|An empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.
     #|An initial empty failure leaves ordinary unopened output untouched.
     #|An accepted retry resets an opened regular file before the next request.

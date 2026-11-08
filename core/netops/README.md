@@ -162,8 +162,11 @@ The legacy `fetch` and `fetch_with_options` entry points were removed in core
 final Set-Cookie fields. Stores survive redirects and separate transfers;
 request selection enforces host/domain and path boundaries, expiration and
 Secure. The strict profile retains longer-path-first ordering. Netscape files preserve HttpOnly and session
-state. A public-suffix database, IDNA and browser cookie-prefix rules remain
-project work, not async API blockers. Response events preserve final Set-Cookie
+state. Curl and Wget command profiles use the complete pinned ICANN/PRIVATE
+public-suffix database; Curl also enforces its reserved cookie prefixes and
+secure-overlay rules. Curl retains domain spelling in saved files and uses
+ASCII case-insensitive matching, replacement and admission views. IDNA/NFKC
+and remaining jar/configuration dialects remain project work. Response events preserve final Set-Cookie
 field-name capitalization, values, attribute order and repeated-field order,
 with HTTP optional whitespace normalized. Informational response fields do
 not leak into those observations or cookie storage.

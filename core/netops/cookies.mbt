@@ -22,13 +22,32 @@ pub fn CookieJar::new() -> CookieJar {
 }
 
 ///|
+fn cookie_ascii_lower(value : String) -> String {
+  let output = StringBuilder()
+  for character in value {
+    output.write_char(
+      if character >= 'A' && character <= 'Z' {
+        (character.to_int() + 32).to_char().unwrap()
+      } else {
+        character
+      },
+    )
+  }
+  output.to_string()
+}
+
+///|
 fn ParsedUrl::cookie_host(
   self : ParsedUrl,
   profile : TransferProfile,
 ) -> String {
-  let host = self.host.to_lower()
+  let host = if profile == CurlProfile {
+    self.host
+  } else {
+    self.host.to_lower()
+  }
   if profile == CurlProfile && host.has_prefix("[") && host.has_suffix("]") {
-    host[1:host.length() - 1].to_owned()
+    cookie_ascii_lower(host[1:host.length() - 1].to_owned())
   } else {
     host
   }
@@ -39,7 +58,9 @@ fn cookie_secure_context(url : ParsedUrl, profile : TransferProfile) -> Bool {
   url.scheme == "https" ||
   (
     profile == CurlProfile &&
-    ["localhost", "127.0.0.1", "::1"].contains(url.cookie_host(profile))
+    ["localhost", "127.0.0.1", "::1"].contains(
+      cookie_ascii_lower(url.cookie_host(profile)),
+    )
   )
 }
 
@@ -82,7 +103,11 @@ fn cookie_same_key(
   profile : TransferProfile,
 ) -> Bool {
   left.name == right.name &&
-  left.domain == right.domain &&
+  (if profile == CurlProfile {
+    cookie_ascii_lower(left.domain) == cookie_ascii_lower(right.domain)
+  } else {
+    left.domain == right.domain
+  }) &&
   left.path == right.path &&
   (profile != CurlProfile || left.host_only == right.host_only)
 }
@@ -99,9 +124,11 @@ fn CookieJar::blocks_insecure_cookie(
       (old.expires is Some(expiry) && expiry <= now) {
       return false
     }
-    let overlapping = old.domain == cookie.domain ||
-      old.domain.has_suffix("." + cookie.domain) ||
-      cookie.domain.has_suffix("." + old.domain)
+    let old_domain = cookie_ascii_lower(old.domain)
+    let new_domain = cookie_ascii_lower(cookie.domain)
+    let overlapping = old_domain == new_domain ||
+      old_domain.has_suffix("." + new_domain) ||
+      new_domain.has_suffix("." + old_domain)
     let prefix = match old.path[1:].find("/") {
       Some(index) => old.path[:index + 1]
       None => old.path[:]
@@ -113,6 +140,8 @@ fn CookieJar::blocks_insecure_cookie(
 
 ///|
 fn cookie_domain_matches(host : String, domain : String) -> Bool {
+  let host = cookie_ascii_lower(host)
+  let domain = cookie_ascii_lower(domain)
   if host == domain {
     return true
   }
@@ -286,15 +315,15 @@ fn CookieJar::receive(
     }
     let (domain, host_only) = match cookie.domain {
       Some(domain) if domain != "" => {
-        let domain = (if profile == CurlProfile {
+        let domain = if profile == CurlProfile {
           if domain.has_prefix(".") {
             domain[1:].to_owned()
           } else {
             domain
           }
         } else {
-          domain.trim_start(chars=".").to_owned()
-        }).to_lower()
+          domain.trim_start(chars=".").to_owned().to_lower()
+        }
         if domain == "" || !cookie_domain_matches(host, domain) {
           continue
         }
@@ -318,7 +347,7 @@ fn CookieJar::receive(
     let host_only = host_only ||
       (
         profile == CurlProfile &&
-        host == domain &&
+        cookie_ascii_lower(host) == cookie_ascii_lower(domain) &&
         !cookie_ip_literal(domain) &&
         cookie_public_suffix(curl_suffix_name(domain))
       )
@@ -441,7 +470,11 @@ fn CookieJar::header_for(
   let secure_context = cookie_secure_context(url, profile)
   let selected = self.entries.filter(cookie => {
     (if cookie.host_only {
-      host == cookie.domain
+      if profile == CurlProfile {
+        cookie_ascii_lower(host) == cookie_ascii_lower(cookie.domain)
+      } else {
+        host == cookie.domain
+      }
     } else {
       cookie_domain_matches(host, cookie.domain)
     }) &&
@@ -492,15 +525,15 @@ pub fn CookieJar::load_netscape(
       continue
     }
     let expires = @string.parse_int64(fields[4]) catch { _ => continue }
-    let domain = (if profile == CurlProfile {
+    let domain = if profile == CurlProfile {
       if fields[0].has_prefix(".") {
         fields[0][1:].to_owned()
       } else {
         fields[0]
       }
     } else {
-      fields[0].trim_start(chars=".").to_owned()
-    }).to_lower()
+      fields[0].trim_start(chars=".").to_owned().to_lower()
+    }
     if domain == "" ||
       fields[5] == "" ||
       (profile != CurlProfile && !fields[2].has_prefix("/")) {
