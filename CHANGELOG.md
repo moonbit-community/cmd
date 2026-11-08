@@ -16,6 +16,10 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Repair Wget Expires date grammar, short-year mapping, UTC normalization and
+  invalid-date ordering with an independent C-locale parser and frozen real
+  process controls. Retain Domain/configuration and publication boundaries.
+
 - Repair Wget numeric Cookie expiry parsing, explicit deletion versus retained
   stale entries, permanent zero timestamps and saved integer rounding. Retain
   independent fixed-oracle expectations and separate clock-sensitive controls;

@@ -40,27 +40,31 @@ async fn network_wget_cookies_scenario(
   executor : Executor,
   work : String,
   oracle_image? : String,
-  numeric~ : Bool = false,
+  corpus~ : String = "wget-cookies",
 ) -> Unit {
-  let identity = if numeric { "wget-cookie-expiry" } else { "wget-cookie" }
-  let corpus = if numeric {
-    "wget-cookie-expiry.json"
-  } else {
-    "wget-cookies.json"
+  let (identity, count) = match corpus {
+    "wget-cookies" => ("wget-cookie", 58)
+    "wget-cookie-expiry" => ("wget-cookie-expiry", 194)
+    "wget-cookie-dates" => ("wget-cookie-date", 87)
+    _ => fail("unknown Wget cookie corpus: " + corpus)
   }
   let source = @json.parse(
     @fs.read_file(
-      @harness.repository_root() + "/tests/fixtures/network/" + corpus,
+      @harness.repository_root() + "/tests/fixtures/network/" + corpus + ".json",
     ).text(),
   )
   guard source is { "schema": 1, "cases": Array(definitions), .. } else {
     fail("Wget cookie corpus required")
   }
-  assert_eq(definitions.length(), if numeric { 194 } else { 58 })
+  assert_eq(definitions.length(), count)
   let failures : Array[String] = []
   for definition in definitions {
     let fixture : WgetCookieCase = @json.from_json(definition)
     let keep_session = !(definition is { "keep_session": false, .. })
+    let zone = match definition {
+      { "zone": String(zone), .. } => zone
+      _ => "UTC"
+    }
     assert_eq(fixture.hosts.length(), fixture.fields.length())
     guard fixture.expected is Object(expected) else {
       fail("expected observations required")
@@ -193,6 +197,7 @@ async fn network_wget_cookies_scenario(
           ],
           environment={
             "LC_ALL": "C",
+            "TZ": zone,
             "NO_PROXY": "",
             "no_proxy": "",
             "http_proxy": proxy,

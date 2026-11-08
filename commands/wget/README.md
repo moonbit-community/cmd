@@ -42,8 +42,8 @@ netrc, configuration loading, password prompts or arbitrary stdin replay.
 
 Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
 sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
-rules do not apply to Wget. Complete date and remaining malformed jar
-grammar remain unfinished under issue #34.
+rules do not apply to Wget. Cookie dates follow the finite C-locale profile
+below; remaining malformed jar grammar stays open under issue #34.
 The workspace applies the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
 to response cookies, including wildcard and exception rules. Exact public-suffix
 domains keep Wget's domain scope; imported files retain Wget's separate policy.
@@ -126,8 +126,19 @@ permanent zero timestamp remains live and can be saved without the session flag.
 Imported zero timestamps become session cookies. Saved expiry integers use
 binary64 rounding, matching the fixed Wget profile. Non-finite/out-of-range
 conversion follows the observed Linux/amd64 oracle explicitly; it is not a
-portable C guarantee. Full date parsing and Cookie Domain normalization remain
-separate work.
+portable C guarantee.
+
+Expires uses Wget's four ordered C-locale date formats (RFC 1123, RFC 850,
+asctime and Netscape) with English weekday/month names. Two-digit years use
+the 69 pivot; four-digit year fields accept one to four literal digits.
+Days 1..31 and seconds 0..61 normalize through UTC calendar arithmetic, even
+for a nonexistent day within that range. Weekday/date agreement is not checked.
+A missing timezone, uppercase `GMT` prefix or signed digit prefix is accepted;
+timezone offsets are ignored. Other suffixes reject the date, leaving previous
+expiry operations intact. The timestamp -1 is rejected; zero parses as a valid
+past date and requests deletion. This follows the fixed Linux/glibc oracle, including
+ASCII spacing and field-width behavior; it does not claim every libc dialect.
+Cookie Domain normalization remains separate work.
 
 - Recursive mirroring, FTP, non-Basic authentication, HSTS and timestamp restoration are unsupported.
 - Content-encoded bodies remain encoded. Consumed stdin request bodies cannot be replayed.

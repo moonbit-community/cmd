@@ -167,10 +167,33 @@ requests, saved rows and row order. Current-second and relative-future cases
 are excluded from those static expectations: fixed-clock package tests and
 separate measured-clock real-process probes cover them. A crossed-second
 observation remains inconclusive; large integer timestamps are compared exactly,
-never normalized through a lossy Double difference. Full date parsing, remaining
-malformed jar/field behavior and Cookie Domain normalization remain issue #34
-work. Broader numeric spellings require independent fixed-oracle controls before
+never normalized through a lossy Double difference. Remaining malformed
+jar/field behavior and Cookie Domain normalization remain issue #34 work.
+Broader numeric spellings require independent fixed-oracle controls before
 extending the finite acceptance claim. No host implementation is needed.
+
+Wget Expires has its own parser rather than Curl's token-oriented cookie-date
+algorithm. It tries RFC 1123, RFC 850, asctime and Netscape layouts in that order,
+with C-locale English names and ASCII whitespace. The selected Wget/glibc 2.39
+profile accepts abbreviated or full names, one-to-four-digit literal years and
+one-to-two-digit short years with the 69 pivot. Field widths, punctuation and
+format order remain observable for adjacent fields. UTC arithmetic normalizes
+days 1..31 and seconds 0..61; it ignores weekday agreement. The trailing check
+accepts no suffix, an uppercase GMT prefix or a sign followed by a digit, then
+ignores the remainder and any stated offset. A computed timestamp of -1 is
+invalid; zero parses successfully and requests deletion as a past date. This
+differs from a permanent zero produced by numeric Max-Age arithmetic. Invalid nonempty dates add
+no expiry operation, and earlier explicit deletion remains sticky. The existing
+fewer-than-128-byte Expires limit remains at the field boundary.
+
+`tests/fixtures/network/wget-cookie-dates.json` retains 58 frozen baseline
+observations and 29 separately observed boundary controls, including quoted
+whitespace, field adjacency, normalized dates, epoch -1 ordering, session saving
+and a non-UTC process environment. Both processes receive the recorded TZ and
+retain raw requests, exact logical rows and row order. This finite profile
+targets the immutable Linux/glibc executable; it does not establish every libc
+date dialect, whole-jar byte parity or publication acceptance. Extend its claim
+only with independent source review and actual fixed-oracle observations.
 
 Wget retains the lowest nonzero transfer exit code across URL operands, matching
 the [GNU exit-status rule](https://www.gnu.org/software/wget/manual/wget.html#Exit-Status).

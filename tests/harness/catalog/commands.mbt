@@ -407,6 +407,8 @@ pub fn commands() -> Array[CommandContract] {
     // Redirect space/TAB uses %20/%09. Existing percent-encoded bytes remain.
     // Set-Cookie without '=' or a valid numeric prefix preserves old cookies.
     // Wget accepts decimal/hex floating prefixes; exactly -1 rejects Max-Age.
+    // Expires keeps four ordered C-locale formats, UTC normalization and the 69 pivot.
+    // GMT/signed-digit suffixes are accepted without applying timezone offsets.
     // Floating zero deletes, while nonzero stale replacements retain domain chains.
     // Overflow follows the fixed Linux/amd64 profile; saved digits round via binary64.
     // Complete pinned ICANN/PRIVATE suffix rules constrain response cookies.

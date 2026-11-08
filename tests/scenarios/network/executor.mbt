@@ -30,7 +30,7 @@ pub fn supports(id : String) -> Bool {
     "network-transfer-boundaries-oracle", "network-cookie-suffix", "network-cookie-suffix-oracle",
     "network-idna", "network-idna-oracle", "network-wget-cookies", "network-wget-cookies-oracle",
     "network-wget-authentication", "network-wget-authentication-oracle", "network-wget-cookie-expiry",
-    "network-wget-cookie-expiry-oracle",
+    "network-wget-cookie-expiry-oracle", "network-wget-cookie-dates", "network-wget-cookie-dates-oracle",
   ].contains(id)
 }
 
@@ -58,7 +58,19 @@ pub async fn run(
     "network-wget-cookies" | "network-wget-cookies-oracle" =>
       network_wget_cookies_scenario(executor, work, oracle_image?)
     "network-wget-cookie-expiry" | "network-wget-cookie-expiry-oracle" =>
-      network_wget_cookies_scenario(executor, work, oracle_image?, numeric=true)
+      network_wget_cookies_scenario(
+        executor,
+        work,
+        oracle_image?,
+        corpus="wget-cookie-expiry",
+      )
+    "network-wget-cookie-dates" | "network-wget-cookie-dates-oracle" =>
+      network_wget_cookies_scenario(
+        executor,
+        work,
+        oracle_image?,
+        corpus="wget-cookie-dates",
+      )
     "network-wget-authentication" | "network-wget-authentication-oracle" =>
       network_wget_authentication_scenario(executor, work, oracle_image?)
     _ => fail("unknown shared network scenario: " + id)
