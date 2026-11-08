@@ -225,9 +225,10 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "repair-fs-ln-no-dereference"
+        "repair-fs-ln-no-dereference",
+        "f17-ln-alias-no-dereference"
       ],
-      "activation": "-sfn replaces a destination symlink itself with target source and requires directory/source absent; it therefore distinguishes replacing the link from writing inside its referent."
+      "activation": "-sfn and the actual public --no-dereference spelling replace a destination symlink itself with target source and require directory/source absent; they distinguish replacing the link from writing inside its referent. no-dereference-target is only a stable catalog semantic identifier, not a supported long option."
     },
     {
       "command": "realpath",
@@ -635,9 +636,12 @@
       "disposition": "reviewed-definition",
       "case_ids": [
         "o12-more-1",
-        "o12-more-20"
+        "o12-more-20",
+        "tree-links-dirs-only",
+        "tree-links-explicit-dirs",
+        "tree-links-explicit-dirs-json"
       ],
-      "activation": "-d removes regular files from text and JSON trees while retaining nested directories and adjusted report counts."
+      "activation": "-d removes regular files from text and JSON trees while retaining nested directories and adjusted report counts. The name-only link profile excludes discovered links, retaining explicit link operands with zero directory counts (POSIX CLI link fixtures)."
     },
     {
       "command": "tree",
@@ -668,9 +672,11 @@
       "case_ids": [
         "o12-basic-2",
         "o12-basic-3",
-        "o12-more-29"
+        "o12-more-29",
+        "tree-links-json",
+        "tree-links-root-json"
       ],
-      "activation": "-J emits exact structured entry hierarchy and counts, including a size-bearing file. -JC remains JSON without ANSI rather than turning into colored text."
+      "activation": "-J emits exact structured entry hierarchy and counts, including a size-bearing file. -JC remains JSON without ANSI rather than turning into colored text. Exact POSIX link cases identify link leaves and preserve report counts without target fields or traversal."
     },
     {
       "command": "tree",
@@ -679,9 +685,10 @@
       "disposition": "reviewed-definition",
       "case_ids": [
         "o12-html-safe-title-base",
-        "o12-html-safe-name"
+        "o12-html-safe-name",
+        "tree-links-html"
       ],
-      "activation": "-H emits complete expected HTML with escaped display names and escaped href attributes, including quotes, ampersands and angle brackets. This is generated presentation, not network retrieval."
+      "activation": "-H emits complete expected HTML with escaped display names and escaped href attributes, including quotes, ampersands and angle brackets. This is generated presentation, not network retrieval. A dangling-link CLI operand emits the full expected HTML with LINK classification and no invented target text (POSIX fixture)."
     },
     {
       "command": "tree",
@@ -1438,9 +1445,25 @@
         "compat-shell-line-59",
         "compat-shell-line-68",
         "compat-shell-line-95",
-        "p0-sh-public-error"
+        "p0-sh-public-error",
+        "f31-sh-raw-file-test-file-slash",
+        "f31-sh-raw-file-test-file-double-slash",
+        "f31-sh-raw-file-test-file-link-slash",
+        "f31-sh-raw-file-test-file-link-double-slash",
+        "f31-sh-raw-file-test-file-chain-slash",
+        "f31-sh-raw-file-test-file-chain-double-slash",
+        "f31-sh-raw-file-test-dangling-slash",
+        "f31-sh-raw-file-test-file-parent",
+        "f31-sh-raw-file-test-file-link-parent",
+        "f31-sh-raw-file-test-directory-slash",
+        "f31-sh-raw-file-test-directory-double-slash",
+        "f31-sh-raw-file-test-directory-link-slash",
+        "f31-sh-raw-file-test-directory-link-double-slash",
+        "f31-sh-raw-file-test-directory-chain-slash",
+        "f31-sh-raw-file-test-directory-chain-double-slash",
+        "f31-sh-raw-file-test-unsuffixed-links"
       ],
-      "activation": "The retained-c fixtures bind their exact finite shell-language outputs and statuses; unsupported array syntax now requires the complete rejection diagnostic before any command effects.",
+      "activation": "The retained-c fixtures bind their exact finite shell-language outputs and statuses; unsupported array syntax now requires the complete rejection diagnostic before any command effects. Sixteen additional POSIX raw-path definitions execute actual file predicates through -c command source: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2497,7 +2520,8 @@
       "claim": "parents",
       "case_ids": [
         "coverage-rmdir-parents-verbose",
-        "coverage-rmdir-parent-nonempty"
+        "coverage-rmdir-parent-nonempty",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
       "kind": "supported-option",
       "activation": "-p removes each disposable empty ancestor in child-first order, retains a nonempty ancestor and its sibling sentinel with explicit suppression, and never removes the fixture root.",
@@ -2507,10 +2531,11 @@
       "command": "rmdir",
       "claim": "verbose",
       "case_ids": [
-        "coverage-rmdir-parents-verbose"
+        "coverage-rmdir-parents-verbose",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
       "kind": "supported-option",
-      "activation": "-v reports the exact three removed directory paths in child-first order and the top directory must actually be absent.",
+      "activation": "-v reports each removal attempt before it occurs. The successful nested case requires all three directory paths absent; the ignored-failure case requires only the first attempt and retains the nonempty child and ancestors, proving parent traversal stops.",
       "disposition": "reviewed-definition"
     },
     {
@@ -2518,10 +2543,13 @@
       "claim": "ignore-fail-on-non-empty",
       "case_ids": [
         "phase4-rmdir-ignore-nonempty",
-        "coverage-rmdir-parent-nonempty"
+        "coverage-rmdir-parent-nonempty",
+        "f17-rmdir-ignore-short",
+        "f17-rmdir-ignore-long",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
       "kind": "supported-option",
-      "activation": "Explicit suppression returns 0 with empty streams for a nonempty operand or parent, retaining the child bytes while still removing the empty descendant.",
+      "activation": "Both project -I and public --ignore-fail-on-non-empty return0 for an actual nonempty directory while retaining child bytes. Suppression stops parent traversal. These finite bindings require exact streams/status and filesystem effects. Separate f17 regular-file, missing-path and POSIX symlink controls require status1, empty stdout, an operand-specific diagnostic and preserved files; their host-dependent diagnostic substrings do not qualify as exact diagnostic coverage. Definitions are not execution evidence.",
       "disposition": "reviewed-definition"
     },
     {

@@ -3760,6 +3760,626 @@
             "stderr",
             "effective-access-preconditions"
           ]
+        },
+        {
+          "id": "find/selectors-neweraa",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "",
+              "",
+              "",
+              "selector-b\n",
+              "",
+              "",
+              "selector-b\n",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "selector-c\n",
+              "selector-d\n",
+              "",
+              "",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newerac",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "",
+              "",
+              "",
+              "selector-b\n",
+              "selector-b\n",
+              "selector-b\n",
+              "selector-b\n",
+              "selector-c\n",
+              "selector-c\n",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "",
+              "",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-neweram",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "selector-b\n",
+              "selector-b\n",
+              "",
+              "",
+              "selector-c\n",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "",
+              "selector-d\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newerca",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "selector-a\n",
+              "",
+              "",
+              "selector-a\n",
+              "selector-b\n",
+              "",
+              "",
+              "selector-b\n",
+              "selector-c\n",
+              "",
+              "",
+              "selector-c\n",
+              "selector-d\n",
+              "",
+              "",
+              "selector-d\n"
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newercc",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "",
+              "",
+              "",
+              "selector-b\n",
+              "",
+              "",
+              "",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "",
+              "selector-d\n",
+              "selector-d\n",
+              "selector-d\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newercm",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "selector-a\n",
+              "selector-a\n",
+              "",
+              "",
+              "selector-b\n",
+              "selector-b\n",
+              "",
+              "",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "",
+              "selector-d\n",
+              "selector-d\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newerma",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "selector-a\n",
+              "selector-a\n",
+              "",
+              "selector-a\n",
+              "selector-b\n",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "selector-d\n",
+              "",
+              "",
+              "selector-d\n"
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newermc",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "selector-a\n",
+              "selector-a\n",
+              "selector-a\n",
+              "selector-a\n",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "selector-d\n",
+              "selector-d\n",
+              "selector-d\n",
+              "selector-d\n"
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newermm",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "selector-a\n",
+              "selector-a\n",
+              "selector-a\n",
+              "",
+              "",
+              "selector-b\n",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "selector-d\n",
+              "selector-d\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-preserved",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "metadata_unchanged": true,
+            "entry_count": 4,
+            "content_preserved": true
+          },
+          "observations": [
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity",
+            "file-timestamps"
+          ]
         }
       ]
     },
@@ -4857,6 +5477,855 @@
             "changed-input",
             "recompiled-output",
             "child-exit"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f31-sh-language-session",
+      "assertions": [
+        {
+          "id": "sh/language-backtick-state",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "5|ready\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/language-heredoc-state",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "5|body|6\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/language-prefix-before-failure",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "before",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/language-arithmetic-recovery",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "sh: arithmetic division by zero\nP> ",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/language-preserved-status",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "2|5\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/language-pipeline-scope",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "parent\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/language-test-recovery",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "recovered:2\n",
+          "observations": [
+            "stream-bytes"
+          ]
+        },
+        {
+          "id": "sh/language-eof",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "sh/language-case-continuation",
+          "command": "sh",
+          "relation": "equal",
+          "expected": "<case-ok>",
+          "observations": [
+            "stream-bytes"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f31-sh-merged-child",
+      "assertions": [
+        {
+          "id": "sh/merged-output",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 7,
+            "stdout": "out-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\n",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "sh/merged-input",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 7,
+            "stdout": "out-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\nout-one\nerr-one\nout-two\nerr-two\n",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr"
+          ]
+        },
+        {
+          "id": "sh/redirect-child-environment",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "|2",
+            "stderr": "",
+            "file": "2\n"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-bytes"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f31-make-recursive-language",
+      "assertions": [
+        {
+          "id": "make/recursive-language",
+          "command": "make",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "1|2|<$MARK>|<two words>\n",
+            "stderr": "",
+            "marker": "done"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-bytes"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f31-make-fifo",
+      "assertions": [
+        {
+          "id": "make/fifo-direct",
+          "command": "make",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "done": [
+              true,
+              true,
+              true
+            ],
+            "token": 81,
+            "extra_token": false,
+            "fifo_retained": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-bytes",
+            "fifo-token"
+          ]
+        },
+        {
+          "id": "make/fifo-recursive",
+          "command": "make",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "done": [
+              true,
+              true,
+              true,
+              true
+            ],
+            "token": 81,
+            "extra_token": false,
+            "fifo_retained": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-bytes",
+            "fifo-token"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f31-sh-printf-state",
+      "assertions": [
+        {
+          "id": "sh/printf-state-cold",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y[diagnostic]0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-printf",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "x[diagnostic]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-echo",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "x\n[diagnostic]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-empty-string",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y[diagnostic]0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-zero-precision",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y[diagnostic]0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-stopped-empty",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y[diagnostic]0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-brace",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "x[diagnostic]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-subshell",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "x                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y[diagnostic]0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-substitution",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y[diagnostic]0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-redirected",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "[diagnostic]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               y0",
+            "stderr": "x"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-below",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "[diagnostic]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              y0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-above",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                y[diagnostic]0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        },
+        {
+          "id": "sh/printf-state-repeated",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               a0[diagnostic]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               b0",
+            "stderr": ""
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "diagnostic-order"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f31-sh-test-size-platform",
+      "assertions": [
+        {
+          "id": "sh/size-absolute-links",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "1|0",
+            "stderr": "",
+            "targets_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "symlink-target"
+          ]
+        },
+        {
+          "id": "sh/size-platform-directory",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status_matches_native_metadata": true,
+            "stdout_empty": true,
+            "diagnostic_matches_capability": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "native-target-size",
+            "type"
+          ]
+        },
+        {
+          "id": "sh/size-platform-directory-link",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status_matches_native_metadata": true,
+            "stdout_empty": true,
+            "diagnostic_matches_capability": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "native-target-size",
+            "type"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f31-sh-test-size-posix",
+      "assertions": [
+        {
+          "id": "sh/size-unreadable",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "",
+            "stderr": "",
+            "preserved_content": "payload"
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "access",
+            "file-bytes"
+          ]
+        },
+        {
+          "id": "sh/size-fifo",
+          "command": "sh",
+          "relation": "equal",
+          "expected": {
+            "status": 1,
+            "stdout": "",
+            "stderr": "",
+            "still_fifo": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "type",
+            "deadline"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-mkdir-umasks",
+      "assertions": [
+        {
+          "id": "mkdir/umask-effects",
+          "command": "mkdir",
+          "relation": "equal",
+          "expected": {
+            "checked": 12,
+            "masks": 6,
+            "explicit_and_default": true,
+            "existing_preserved": true,
+            "mixed_error_orders": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-sparse-size",
+      "assertions": [
+        {
+          "id": "find/sparse-size",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 20,
+            "sparse_files": 2,
+            "sentinels_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-special-kinds",
+      "assertions": [
+        {
+          "id": "test/special-kinds",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "kind_checks": 18,
+            "positive_kinds": 3,
+            "regular_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-windows-metadata",
+      "assertions": [
+        {
+          "id": "test/windows-metadata",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "time_comparisons": 18,
+            "identity_alias_equal": true,
+            "independent_identity_distinct": true,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-identity",
+            "file-timestamps",
+            "symlink-target"
+          ]
+        },
+        {
+          "id": "find/windows-selectors",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 144,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-identity",
+            "file-timestamps"
+          ]
+        },
+        {
+          "id": "test/windows-link-kinds",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "kind_checks": 14,
+            "file_link": true,
+            "directory_symlink": true,
+            "junction": true,
+            "targets_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "symlink-target"
+          ]
+        },
+        {
+          "id": "find/windows-age-controls",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 24,
+            "unix_epoch_validated": true,
+            "clock_margin_valid": true,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-time-references",
+      "assertions": [
+        {
+          "id": "find/time-reference-controls",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 122,
+            "nofollow_references": 2,
+            "clock_margin_valid": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-predicate-errors",
+      "assertions": [
+        {
+          "id": "find/error-order-effects",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 33,
+            "victim_preserved": true,
+            "denied_child_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-subsecond-order",
+      "assertions": [
+        {
+          "id": "test/subsecond-order",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 6,
+            "same_second": true,
+            "distinct_subseconds": true,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        },
+        {
+          "id": "find/subsecond-order",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 2,
+            "same_second": true,
+            "distinct_subseconds": true,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-directory-size",
+      "assertions": [
+        {
+          "id": "test/directory-size-capability",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "actual_wasm_calls": 3,
+            "native_capability_matched": true,
+            "directory_and_link_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-find-size-unreadable",
+      "assertions": [
+        {
+          "id": "find/unreadable-size",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 4,
+            "open_denied": true,
+            "original_metadata_preserved": true,
+            "content_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-test-size-unreadable",
+      "assertions": [
+        {
+          "id": "test/unreadable-size",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 2,
+            "open_denied": true,
+            "original_metadata_preserved": true,
+            "content_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity",
+            "file-timestamps"
           ]
         }
       ]

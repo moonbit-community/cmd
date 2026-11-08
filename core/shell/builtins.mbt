@@ -81,30 +81,37 @@ async fn read_builtin(args : Array[String], context : Context) -> Int32 {
 }
 
 ///|
-async fn test_expression(args : Array[String], context : Context) -> Bool {
+async fn test_term(args : Array[String], context : Context) -> Bool {
   match args {
     [] => false
     [value] => value != ""
-    ["!", .. rest] => !test_expression(rest.to_owned(), context)
-    ["(", .. inner, ")"] => test_expression(inner.to_owned(), context)
-    [operator, value] => {
-      let path = resolve_path(context, value)
+    [operator, value] =>
       match operator {
         "-n" => value != ""
         "-z" => value == ""
-        "-e" => @fs.exists(path)
-        "-f" => (@fs.kind(path) catch { _ => Unknown }) == Regular
-        "-d" => (@fs.kind(path) catch { _ => Unknown }) == Directory
-        "-L" | "-h" =>
-          (@fs.kind(path, follow_symlink=false) catch { _ => Unknown }) ==
-          SymLink
-        "-r" => @fs.can_read(path)
-        "-w" => @fs.can_write(path)
-        "-x" => @fs.can_execute(path)
-        "-s" => (@fs.file_size(path) catch { _ => 0L }) > 0L
+        "-e"
+        | "-f"
+        | "-d"
+        | "-b"
+        | "-c"
+        | "-p"
+        | "-S"
+        | "-L"
+        | "-h"
+        | "-r"
+        | "-w"
+        | "-x"
+        | "-s" => test_file(operator, value, context)
+        "-u" | "-g" | "-k" | "-O" | "-G" =>
+          raise ShellError(
+            "test: '\{operator}' requires a public permission/owner metadata API",
+          )
+        "-t" =>
+          raise ShellError(
+            "test: '-t' requires a public terminal detection API",
+          )
         _ => raise ShellError("test: unsupported unary operator '\{operator}'")
       }
-    }
     [left, operator, right] =>
       match operator {
         "=" | "==" => left == right
@@ -112,12 +119,8 @@ async fn test_expression(args : Array[String], context : Context) -> Bool {
         "<" => left < right
         ">" => left > right
         "-eq" | "-ne" | "-lt" | "-le" | "-gt" | "-ge" => {
-          let a = @string.parse_int64(left) catch {
-            _ => raise ShellError("test: integer expected")
-          }
-          let b = @string.parse_int64(right) catch {
-            _ => raise ShellError("test: integer expected")
-          }
+          let a = test_integer(left)
+          let b = test_integer(right)
           match operator {
             "-eq" => a == b
             "-ne" => a != b
@@ -127,9 +130,24 @@ async fn test_expression(args : Array[String], context : Context) -> Bool {
             _ => a >= b
           }
         }
+        "-nt" | "-ot" => {
+          let a = test_mtime(left, context)
+          let b = test_mtime(right, context)
+          match (a, b) {
+            (Some((a_sec, a_ns)), Some((b_sec, b_ns))) =>
+              if operator == "-nt" {
+                a_sec > b_sec || (a_sec == b_sec && a_ns > b_ns)
+              } else {
+                a_sec < b_sec || (a_sec == b_sec && a_ns < b_ns)
+              }
+            _ => false
+          }
+        }
+        "-ef" =>
+          raise ShellError("test: '-ef' requires a public file identity API")
         _ => raise ShellError("test: unsupported binary operator '\{operator}'")
       }
-    _ => raise ShellError("test: unsupported expression; use shell && or ||")
+    _ => raise ShellError("test: invalid expression")
   }
 }
 
@@ -163,6 +181,7 @@ async fn run_builtin(argv : Array[String], context : Context) -> Int32? {
         args
       }
       let result = test_expression(operands, context) catch {
+        ShellError(message) => return Some(builtin_error(context, message))
         err => return Some(builtin_error(context, "\{err}"))
       }
       Some(if result { 0 } else { 1 })
@@ -323,18 +342,33 @@ async fn run_builtin(argv : Array[String], context : Context) -> Int32? {
       Some(status)
     }
     "break" | "continue" => {
-      if !args.is_empty() && args != ["1"] {
+      let levels = match args.get(0) {
+        Some(value) => {
+          let parsed = test_integer(value) catch { _ => 0L }
+          if parsed <= 0L || parsed > 2147483647L {
+            0
+          } else {
+            parsed.to_int()
+          }
+        }
+        None => 1
+      }
+      if levels <= 0 {
+        context.exited = true
+        context.exit_status = 2
         return Some(
-          builtin_error(context, "\{name}: only one loop level is supported"),
+          builtin_error(context, "\{name}: positive loop count required"),
         )
       }
       if context.loop_depth == 0 {
-        return Some(builtin_error(context, "\{name}: outside a loop"))
+        return Some(0)
       }
       if name == "break" {
-        context.loop_control = Some(BreakLoop)
+        context.loop_control = Some(BreakLoop(levels.min(context.loop_depth)))
       } else {
-        context.loop_control = Some(ContinueLoop)
+        context.loop_control = Some(
+          ContinueLoop(levels.min(context.loop_depth)),
+        )
       }
       Some(0)
     }

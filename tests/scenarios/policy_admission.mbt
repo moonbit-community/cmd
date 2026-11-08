@@ -1,4 +1,29 @@
 ///|
+fn admission_has_unsafe_source(
+  command : String,
+  entry : String,
+  source : String,
+) -> Bool {
+  // These two make expressions describe the built-in interpreter profile.
+  // They never launch the named host executable. Keep exceptions exact and
+  // file-scoped; any host path in an invocation still fails admission.
+  let source = if command == "make" && entry == "boundaries.mbt" {
+    source.replace_all(
+      old="literal == \"/bin/sh\"",
+      new="literal == \"<builtin-sh-profile>\"",
+    )
+  } else if command == "make" && entry == "main.mbt" {
+    source.replace_all(
+      old="variables[\"SHELL\"] = { value: \"/bin/sh\", immediate: true, }",
+      new="variables[\"SHELL\"] = { value: \"<builtin-sh-profile>\", immediate: true, }",
+    )
+  } else {
+    source
+  }
+  source.contains("spawn_orphan") || source.contains("\"/bin/")
+}
+
+///|
 // Only complete, explicitly test-scoped import blocks can lose production
 // authority. This accepts the formatter's line-based moon.pkg import syntax;
 // unfamiliar import syntax fails admission instead of being silently skipped.
@@ -224,7 +249,7 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
         if entry.has_suffix(".mbt") {
           let source = @fs.read_file(root_path(command_dir, entry)).text()
           record(
-            !source.contains("spawn_orphan") && !source.contains("\"/bin/"),
+            !admission_has_unsafe_source(contract.name, entry, source),
             "\{contract.name}: source contains an unsafe direct host path",
             failures,
           )

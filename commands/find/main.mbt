@@ -24,14 +24,15 @@ priv enum FindExpr {
   Path(Regex)
   Kind(Char)
   Empty
-  Size(Comparison, Int64, Bool)
-  TimeAge(@fsops.TimestampKind, Comparison, Int32, Int64)
+  Size(Comparison, UInt64, UInt64)
+  TimeAge(@fsops.TimestampKind, FindTimeTest)
   Newer(@fsops.TimestampKind, @fsops.TimestampKind, String)
-  Used(Comparison, Int32)
+  Used(FindTimeTest)
   Readable
   Writable
   Executable
   XKind(Char)
+  Action(FindAction)
   Prune
   Not(FindExpr)
   And(FindExpr, FindExpr)
@@ -41,10 +42,12 @@ priv enum FindExpr {
 ///|
 priv struct FindParser {
   tokens : Array[String]
+  now : @fsops.FileTimestamp
   mut pos : Int32
   mut min_depth : Int32
   mut max_depth : Int32
   mut depth_first : Bool
+  mut explicit_depth : Bool
   mut action : FindAction?
 }
 
@@ -52,27 +55,27 @@ priv struct FindParser {
 priv struct FindEntry {
   path : String
   kind : @fs.FileKind
-  followed_kind : @fs.FileKind?
-  size : Int64?
-  atime : @fsops.FileTimestamp?
-  mtime : @fsops.FileTimestamp?
-  ctime : @fsops.FileTimestamp?
-  readable : Bool?
-  writable : Bool?
-  executable : Bool?
+  mut size : FindMetadata[Int64]
+  mut atime : FindMetadata[@fsops.FileTimestamp]
+  mut mtime : FindMetadata[@fsops.FileTimestamp]
+  mut ctime : FindMetadata[@fsops.FileTimestamp]
+  mut failed : Bool
   directory : DirectoryVisit?
 }
 
 ///|
 priv struct MetadataNeeds {
   size : Bool
+  regular_size : Bool
   atime : Bool
   mtime : Bool
   ctime : Bool
-  followed_kind : Bool
-  readable : Bool
-  writable : Bool
-  executable : Bool
+}
+
+///|
+priv struct FindEvaluation {
+  times : FindContext
+  batch : FindBatch?
 }
 
 ///|
@@ -84,7 +87,6 @@ priv struct ReferenceTime {
 
 ///|
 priv struct FindContext {
-  now : @fsops.FileTimestamp
   references : Array[ReferenceTime]
 }
 
@@ -177,38 +179,53 @@ fn parse_comparison(text : String) -> (Comparison, String) {
 }
 
 ///|
-fn parse_size(text : String) -> (Comparison, Int64, Bool) raise FindError {
+fn parse_size(text : String) -> (Comparison, UInt64, UInt64) raise FindError {
+  if text == "" {
+    raise FindError("invalid null argument to -size")
+  }
   let (comparison, raw) = parse_comparison(text)
-  guard raw != "" else { raise FindError("invalid size: '{text}'") }
   let chars : Array[Char] = raw.iter().collect()
-  let suffix = chars.last()
-  let (digits, multiplier, blocks) = match suffix {
-    Some('c') => (raw[:raw.length() - 1].to_owned(), 1L, false)
-    Some('k') | Some('K') => (raw[:raw.length() - 1].to_owned(), 1024L, false)
-    Some('M') => (raw[:raw.length() - 1].to_owned(), 1024L * 1024L, false)
-    Some('G') =>
-      (raw[:raw.length() - 1].to_owned(), 1024L * 1024L * 1024L, false)
-    _ => (raw, 1L, true)
+  let (end, unit) = match chars.last() {
+    Some('b') => (chars.length() - 1, 512UL)
+    Some('c') => (chars.length() - 1, 1UL)
+    Some('w') => (chars.length() - 1, 2UL)
+    Some('k' | 'K') => (chars.length() - 1, 1024UL)
+    Some('M') => (chars.length() - 1, 1048576UL)
+    Some('G') => (chars.length() - 1, 1073741824UL)
+    Some('0'..<='9') => (chars.length(), 512UL)
+    Some(suffix) => raise FindError("invalid -size type `\{suffix}'")
+    None => raise FindError("Invalid argument `\{text}' to -size")
   }
-  let value = @string.parse_int(digits) catch {
-    _ => raise FindError("invalid size: '{text}'")
+  let mut index = 0
+  while index < end &&
+        chars[index] is (' ' | '\t' | '\n' | '\r' | '\u000b' | '\u000c') {
+    index += 1
   }
-  if value < 0 {
-    raise FindError("invalid size: '{text}'")
+  if index < end && chars[index] == '+' {
+    index += 1
   }
-  (comparison, value.to_int64() * multiplier, blocks)
+  if index == end {
+    raise FindError("Invalid argument `\{text}' to -size")
+  }
+  let mut value = 0UL
+  while index < end {
+    guard chars[index] is ('0'..<='9') else {
+      raise FindError("Invalid argument `\{text}' to -size")
+    }
+    let digit = (chars[index].to_int() - 0x30).to_uint64()
+    if value > (0xffffffffffffffffUL - digit) / 10UL {
+      raise FindError("Invalid argument `\{text}' to -size")
+    }
+    value = value * 10UL + digit
+    index += 1
+  }
+  (comparison, value, unit)
 }
 
 ///|
-fn parse_mtime(text : String) -> (Comparison, Int32) raise FindError {
-  let (comparison, raw) = parse_comparison(text)
-  let value = @string.parse_int(raw) catch {
-    _ => raise FindError("invalid mtime: '{text}'")
-  }
-  if value < 0 {
-    raise FindError("invalid mtime: '{text}'")
-  }
-  (comparison, value)
+fn size_units(bytes : Int64, unit : UInt64) -> UInt64 {
+  let bytes = bytes.reinterpret_as_uint64()
+  bytes / unit + (if bytes % unit == 0UL { 0UL } else { 1UL })
 }
 
 ///|
@@ -261,40 +278,24 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
     }
     "-empty" => Empty
     "-size" => {
-      let (comparison, value, blocks) = parse_size(self.take())
-      Size(comparison, value, blocks)
+      let (comparison, value, unit) = parse_size(self.take())
+      Size(comparison, value, unit)
     }
-    "-mtime" => {
-      let (comparison, value) = parse_mtime(self.take())
-      TimeAge(ModificationTime, comparison, value, 86400L)
-    }
-    "-mmin" => {
-      let (comparison, value) = parse_mtime(self.take())
-      TimeAge(ModificationTime, comparison, value, 60L)
-    }
-    "-atime" => {
-      let (comparison, value) = parse_mtime(self.take())
-      TimeAge(AccessTime, comparison, value, 86400L)
-    }
-    "-amin" => {
-      let (comparison, value) = parse_mtime(self.take())
-      TimeAge(AccessTime, comparison, value, 60L)
-    }
-    "-ctime" => {
-      let (comparison, value) = parse_mtime(self.take())
-      TimeAge(StatusChangeTime, comparison, value, 86400L)
-    }
-    "-cmin" => {
-      let (comparison, value) = parse_mtime(self.take())
-      TimeAge(StatusChangeTime, comparison, value, 60L)
-    }
+    "-mtime" =>
+      TimeAge(ModificationTime, parse_time_test(self.take(), self.now, 86400L))
+    "-mmin" =>
+      TimeAge(ModificationTime, parse_time_test(self.take(), self.now, 60L))
+    "-atime" =>
+      TimeAge(AccessTime, parse_time_test(self.take(), self.now, 86400L))
+    "-amin" => TimeAge(AccessTime, parse_time_test(self.take(), self.now, 60L))
+    "-ctime" =>
+      TimeAge(StatusChangeTime, parse_time_test(self.take(), self.now, 86400L))
+    "-cmin" =>
+      TimeAge(StatusChangeTime, parse_time_test(self.take(), self.now, 60L))
     "-newer" => Newer(ModificationTime, ModificationTime, self.take())
     "-anewer" => Newer(AccessTime, ModificationTime, self.take())
     "-cnewer" => Newer(StatusChangeTime, ModificationTime, self.take())
-    "-used" => {
-      let (comparison, value) = parse_mtime(self.take())
-      Used(comparison, value)
-    }
+    "-used" => Used(parse_time_test(self.take(), self.now, 86400L, used=true))
     "-readable" => Readable
     "-writable" => Writable
     "-executable" => Executable
@@ -308,6 +309,7 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
     }
     "-depth" => {
       self.depth_first = true
+      self.explicit_depth = true
       Always(true)
     }
     "-prune" => Prune
@@ -321,11 +323,11 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
     }
     "-print" => {
       self.set_action(Print(false))
-      Always(true)
+      Action(Print(false))
     }
     "-print0" => {
       self.set_action(Print(true))
-      Always(true)
+      Action(Print(true))
     }
     "-exec" => {
       let command : Array[String] = []
@@ -346,12 +348,12 @@ fn FindParser::parse_primary(self : FindParser) -> FindExpr raise FindError {
         raise FindError("-exec: expected ';' or '+' terminator")
       }
       self.set_action(Exec(command, terminator == "+"))
-      Always(true)
+      Action(Exec(command, terminator == "+"))
     }
     "-delete" => {
       self.depth_first = true
       self.set_action(Delete)
-      Always(true)
+      Action(Delete)
     }
     "-true" => Always(true)
     "-false" => Always(false)
@@ -428,13 +430,10 @@ fn kind_matches(kind : @fs.FileKind, wanted : Char) -> Bool {
 fn no_metadata_needs() -> MetadataNeeds {
   {
     size: false,
+    regular_size: false,
     atime: false,
     mtime: false,
     ctime: false,
-    followed_kind: false,
-    readable: false,
-    writable: false,
-    executable: false,
   }
 }
 
@@ -442,13 +441,10 @@ fn no_metadata_needs() -> MetadataNeeds {
 fn merge_needs(left : MetadataNeeds, right : MetadataNeeds) -> MetadataNeeds {
   {
     size: left.size || right.size,
+    regular_size: left.regular_size || right.regular_size,
     atime: left.atime || right.atime,
     mtime: left.mtime || right.mtime,
     ctime: left.ctime || right.ctime,
-    followed_kind: left.followed_kind || right.followed_kind,
-    readable: left.readable || right.readable,
-    writable: left.writable || right.writable,
-    executable: left.executable || right.executable,
   }
 }
 
@@ -456,18 +452,15 @@ fn merge_needs(left : MetadataNeeds, right : MetadataNeeds) -> MetadataNeeds {
 fn FindExpr::metadata_needs(self : FindExpr) -> MetadataNeeds {
   let needs = no_metadata_needs()
   match self {
-    Empty | Size(_, _, _) => { ..needs, size: true, }
-    TimeAge(kind, _, _, _) | Newer(kind, _, _) =>
+    Empty => { ..needs, regular_size: true, }
+    Size(_, _, _) => { ..needs, size: true, }
+    TimeAge(kind, _) | Newer(kind, _, _) =>
       match kind {
         AccessTime => { ..needs, atime: true, }
         ModificationTime => { ..needs, mtime: true, }
         StatusChangeTime => { ..needs, ctime: true, }
       }
-    Used(_, _) => { ..needs, atime: true, ctime: true, }
-    Readable => { ..needs, readable: true, }
-    Writable => { ..needs, writable: true, }
-    Executable => { ..needs, executable: true, }
-    XKind(_) => { ..needs, followed_kind: true, }
+    Used(_) => { ..needs, atime: true, ctime: true, }
     Not(inner) => inner.metadata_needs()
     And(left, right) | Or(left, right) =>
       merge_needs(left.metadata_needs(), right.metadata_needs())
@@ -487,7 +480,11 @@ async fn load_reference_times(
         }) {
         return
       }
-      let timestamp = @fsops.read_file_timestamp(path, kind)
+      let timestamp = @fsops.read_file_timestamp(
+        find_lookup_path(path),
+        kind,
+        follow_symlink=false,
+      )
       references.push({ path, kind, timestamp, })
     }
     Not(inner) => load_reference_times(inner, references)
@@ -500,15 +497,11 @@ async fn load_reference_times(
 }
 
 ///|
-fn entry_timestamp(
+async fn entry_timestamp(
   entry : FindEntry,
   kind : @fsops.TimestampKind,
 ) -> @fsops.FileTimestamp? {
-  match kind {
-    AccessTime => entry.atime
-    ModificationTime => entry.mtime
-    StatusChangeTime => entry.ctime
-  }
+  entry.timestamp(kind)
 }
 
 ///|
@@ -526,20 +519,10 @@ fn reference_timestamp(
 }
 
 ///|
-fn compare_age(actual : Int64, comparison : Comparison, wanted : Int32) -> Bool {
-  let wanted = wanted.to_int64()
-  match comparison {
-    Exact => actual == wanted
-    Less => actual < wanted
-    Greater => actual > wanted
-  }
-}
-
-///|
 async fn FindExpr::evaluate(
   self : FindExpr,
   entry : FindEntry,
-  context : FindContext,
+  context : FindEvaluation,
 ) -> (Bool, Bool) {
   match self {
     Always(value) => (value, false)
@@ -549,21 +532,23 @@ async fn FindExpr::evaluate(
     Empty =>
       (
         match entry.directory {
-          Some(directory) => directory.names() is Some([])
-          None => entry.size == Some(0L)
+          Some(directory) =>
+            match directory.names(fresh=true) {
+              Some(names) => names.is_empty()
+              None => {
+                entry.failed = true
+                false
+              }
+            }
+          None => entry.kind == Regular && entry.byte_size() == Some(0L)
         },
         false,
       )
-    Size(comparison, value, blocks) => {
-      let actual_bytes = match entry.size {
-        Some(bytes) => bytes
-        None => -1L
+    Size(comparison, value, unit) => {
+      guard entry.byte_size() is Some(actual_bytes) else {
+        return (false, false)
       }
-      let actual = if blocks && actual_bytes >= 0L {
-        (actual_bytes + 511L) / 512L
-      } else {
-        actual_bytes
-      }
+      let actual = size_units(actual_bytes, unit)
       let matched = match comparison {
         Exact => actual == value
         Less => actual < value
@@ -571,33 +556,32 @@ async fn FindExpr::evaluate(
       }
       (matched, false)
     }
-    TimeAge(kind, comparison, value, bucket) => {
+    TimeAge(kind, query) => {
       guard entry_timestamp(entry, kind) is Some(timestamp) else {
         return (false, false)
       }
-      let age = @fsops.timestamp_age_bucket(context.now, timestamp, bucket)
-      (compare_age(age, comparison, value), false)
+      (query.matches(timestamp), false)
     }
     Newer(source_kind, reference_kind, reference) => {
       guard entry_timestamp(entry, source_kind) is Some(source) &&
-        reference_timestamp(context.references, reference, reference_kind)
+        reference_timestamp(context.times.references, reference, reference_kind)
         is Some(target) else {
         return (false, false)
       }
       (@fsops.compare_timestamps(source, target) > 0, false)
     }
-    Used(comparison, value) => {
-      guard entry.atime is Some(atime) && entry.ctime is Some(ctime) else {
+    Used(query) => {
+      guard entry.timestamp(AccessTime) is Some(atime) &&
+        entry.timestamp(StatusChangeTime) is Some(ctime) else {
         return (false, false)
       }
-      let age = @fsops.timestamp_age_bucket(atime, ctime, 86400L)
-      (compare_age(age, comparison, value), false)
+      (query.matches_used(atime, ctime), false)
     }
-    Readable => (entry.readable == Some(true), false)
-    Writable => (entry.writable == Some(true), false)
-    Executable => (entry.executable == Some(true), false)
-    XKind(wanted) =>
-      (kind_matches(entry.followed_kind.unwrap_or(entry.kind), wanted), false)
+    Readable => (find_access(entry.path, 'r'), false)
+    Writable => (find_access(entry.path, 'w'), false)
+    Executable => (find_access(entry.path, 'x'), false)
+    XKind(wanted) => (entry.followed_kind_matches(wanted), false)
+    Action(action) => (action.execute(entry, context), false)
     Prune => (true, true)
     Not(inner) => {
       let (matched, prune) = inner.evaluate(entry, context)
@@ -642,15 +626,16 @@ fn begins_expression(token : String) -> Bool {
 
 ///|
 async fn main {
+  let now = @fsops.current_timestamp()
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("find 0.2.5\n")
+    @stdio.stdout.write("find 0.2.6\n")
     return
   }
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
     @stdio.stdout.write(
-      "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\nPruned/depth-limited directories are read only when an evaluated predicate requires their names.\n-exec ... + runs completed batches during traversal with a 64 KiB UTF-8 argument budget.\n",
+      "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n-size rounds up in b/c/w/k/M/G units (default b); K is a project alias for k.\nTime arguments accept finite decimal, exponent and hexadecimal numbers within signed 64-bit seconds.\nDirectory names are read only for descent or an evaluated -empty; stat fields precede directory reads and child effects.\nActions execute at their expression position; -delete with -prune requires explicit -depth.\n-exec ... + runs completed batches during traversal with a 64 KiB UTF-8 argument budget.\nUnavailable size/timestamp metadata is an error, not a nonmatch.\n",
     )
     return
   }
@@ -674,10 +659,12 @@ async fn main {
   }
   let parser : FindParser = {
     tokens: expression_tokens,
+    now,
     pos: 0,
     min_depth: 0,
     max_depth: 0x7FFFFFFF,
     depth_first: false,
+    explicit_depth: false,
     action: None,
   }
   let expression = if expression_tokens.is_empty() {
@@ -704,7 +691,16 @@ async fn main {
       return
     }
   }
-  let context : FindContext = { now: @fsops.current_timestamp(), references, }
+  if parser.action is Some(Delete) &&
+    !parser.explicit_depth &&
+    expression.contains_prune() {
+    @stdio.stderr.write(
+      "find: -delete with -prune requires explicit -depth; depth-first traversal makes -prune ineffective\n",
+    )
+    @sys.exit(1)
+    return
+  }
+  let context : FindContext = { references, }
   let failed = walk_find(paths, parser, expression, context)
   if failed {
     @sys.exit(1)

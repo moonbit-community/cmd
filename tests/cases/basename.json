@@ -94,8 +94,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/basename@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/basename@0.2.4 metadata contract",
+      "expected_stdout_text": "Usage: basename [-a] [-s SUFFIX] [-z] NAME [SUFFIX]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-14"
@@ -118,8 +118,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/basename@0.2.3 metadata contract",
-      "expected_stdout_text": "basename 0.2.3\n",
+      "source_version": "workspace cli/basename@0.2.4 metadata contract",
+      "expected_stdout_text": "basename 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -184,6 +184,57 @@
         "zero"
       ],
       "source_version": "Current README NUL termination for a nonempty textual basename."
+    },
+    {
+      "id": "f17-basename-unknown-option",
+      "command": "basename",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "basename: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-basename-missing-option-value",
+      "command": "basename",
+      "args": [
+        "--suffix"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "basename: option requires a value: 'suffix'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
     }
   ]
 }

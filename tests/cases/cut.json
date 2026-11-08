@@ -95,10 +95,10 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
+      "source_version": "Issue #22: ordinary usage failure status corrected to the fixed command baseline; capability refusals remain separate.",
       "expected_stdout_text": "",
       "expected_stderr_contains": "decreasing",
       "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
@@ -156,10 +156,10 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
+      "source_version": "Issue #22: ordinary usage failure status corrected to the fixed command baseline; capability refusals remain separate.",
       "expected_stdout_text": "",
       "expected_stderr_contains": "single byte",
       "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
@@ -204,8 +204,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cut@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/cut@0.2.6 metadata contract",
+      "expected_stdout_text": "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -223,8 +223,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cut@0.2.5 metadata contract",
-      "expected_stdout_text": "cut 0.2.5\n",
+      "source_version": "workspace cli/cut@0.2.6 metadata contract",
+      "expected_stdout_text": "cut 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -511,6 +511,57 @@
         "bytes",
         "only-delimited"
       ]
+    },
+    {
+      "id": "f17-cut-unknown-option",
+      "command": "cut",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cut: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-cut-missing-option-value",
+      "command": "cut",
+      "args": [
+        "--fields"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cut: option requires a value: 'fields'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
     }
   ]
 }

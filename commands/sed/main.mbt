@@ -12,12 +12,12 @@ async fn run(args : ArrayView[String]) -> Int32 {
   ])
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p/d/q/=, s/RE/REPLACEMENT/[gNp], h/H/g/G/x, :/b/t/T, groups, n/N/P/D/a/i/c.\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nBRE/ERE supports pattern backreferences and word assertions.\nIn-place editing and locale-aware matching are not supported.\n",
+      "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nStream editor: p/d/q/=, s/RE/REPLACEMENT/[gNp], h/H/g/G/x, :/b/t/T, groups, n/N/P/D/a/i/c.\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nBRE/ERE supports pattern backreferences and word assertions.\nIn-place editing and locale-aware matching are not supported.\nProject alias: --extended selects -r/-E; the GNU long name is --regexp-extended.\n",
     )
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("sed 0.2.3\n")
+    @stdio.stdout.write("sed 0.2.4\n")
     return 0
   }
   let scripts : Array[String] = []

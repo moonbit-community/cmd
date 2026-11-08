@@ -1,7 +1,149 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-11-06
+Updated: 2026-11-08
+
+## Extensions and diagnostics
+
+Issue #22 governs the finite existing option surface. The 2026-11-07 release
+published 46 changed command coordinates while retaining core 0.9.1 and the
+other 34 command coordinates. Exact versions and independently frozen
+expectations are in [latest.json](../tests/release/latest.json) and
+[latest-cases.json](../tests/release/latest-cases.json).
+[Three-platform exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42379717812)
+passed all 80 coordinates, including fixed Linux upstream comparison.
+Candidate definitions and manual reviews remain separate from execution evidence.
+
+| Command/profile | Public spelling and deliberate distinction |
+| --- | --- |
+| cat | --show-ends-nonprinting/-e, --show-tabs-nonprinting/-t, --unbuffered/-u and -h/--help; these long combined/no-op aliases and -h are project spellings. |
+| comm, join | comm --suppress-1/2/3 and -h; join --field1/2, --separator, --after, --only, --empty, --output and -h are project aliases of existing short options. |
+| od, strings | od's named, octal-byte, character, decimal, int, long, octal, signed, hex, float, double and double-F long format aliases; strings --octal/-o are project spellings. |
+| ls | --one/columns/across/commas/sort-time/access-time/change-time/sort-size and -P/--no-dereference are project aliases/extensions. --quote-name is the GNU spelling; --quote remains its abbreviation. |
+| tree | --all/dirs-only/full-path/level/json/html/title/pattern/ignore/size/human-readable/color/no-color are project aliases, not tree 2.2.1 long-option parity. |
+| sed, cp | sed --extended aliases -r/-E; GNU spells it --regexp-extended. cp --dereference-command-line aliases -H, which is short-only in GNU cp. |
+| base64, rmdir | base64 -D aliases --decode; rmdir -I aliases --ignore-fail-on-non-empty. Neither short spelling is a GNU coreutils claim. |
+| jq | -l/--logs is the documented project JSONL profile, including malformed-line skipping, slurp and -e behavior; it is not upstream jq -l. |
+| hexdump, xxd | hexdump forward skip on stdin discards bytes without seeking. xxd --little/-littleendian and --ebcdic/-ebcdic, plus =VALUE long forms, are documented project syntax. xxd help uses the project stdout/status-0 metadata contract. |
+| touch, which | touch --access-time/modification-time/stamp are rejection aliases for unavailable timestamp setters. which -s/--silent follows the explicit project quiet-status profile. |
+| curl, wget | --idle-timeout is an independently tested project body-idle deadline; it is not an upstream option spelling. Total timeout and partial output remain distinct contracts. |
+
+Options documented as aliases are exercised with their actual argv spelling
+and independently specified bytes, status and applicable filesystem effects.
+Parser implementation keys (cp/mv update-mode and backup-control, ln
+backup-control and the former no-dereference-target, sort check-quiet, diff
+unified-lines/context-lines) are not public argv options. Public --update=MODE,
+--backup=CONTROL, ln --no-dereference, sort -C/--check=quiet and diff -U/-C
+remain available. Normalization preserves option values and literal operands
+after `--`; a value that looks like a private key is still data.
+Jq's `-f`/`--from-file` is a mode flag, not a value-consuming option: its first
+positional argument names the filter file, other options continue to parse,
+and repeated -f is idempotent. Leading-dash filter filenames require `--` or
+an explicit path prefix. Missing files and `--from-file=FILE` reject. The fixed
+jq 1.8.2 comparison includes both rejected and successful argument arrangements.
+
+Ordinary option/operand failures use status 1 for the repaired GNU coreutils
+commands and util-linux rev. Xxd usage errors use 1 while runtime errors retain
+their distinct input/output/seek statuses. Strings rejects unknown encodings with 1 and explicitly refuses
+recognized unsupported wide encodings with 2. This is not a repository-wide
+replacement of status 2: ls, sort, diff, grep, printenv and capability refusals
+retain their command-specific contracts. Controlled parser and codec diagnostic
+bytes are asserted exactly. Host-dependent rmdir failures assert the rejected
+operand, status, stdout and retained paths; they are not exact-message coverage.
+Where upstream punctuation/help trailers or host OS messages differ,
+the pinned comparison states its narrower diagnostic-category assertion while
+still comparing status, stdout and effects. No claim of universal GNU message
+or quoting parity is made.
+
+GNU 9.11 Base32/Base64 decode vectors now check canonical tail bits, missing
+padding, concatenated padded groups and the exact bytes committed before a
+later invalid symbol. Incomplete explicit padding differs between the two
+decoders: Base32's incomplete quantum emits nothing, whereas Base64 can emit
+determined bytes. A failed output write is never retried. Base32 still reads
+the whole encoded input; Base64 decodes incrementally.
+
+Rmdir attempts removal before classifying failure. Ignoring nonemptiness never
+treats a failed regular-file, missing-path or POSIX symlink removal as success,
+and parent removal stops at an ignored failure. On Windows an actual successful
+junction removal removes the junction and retains its referent; this is a
+platform contract, not POSIX symlink behavior. Verbose output records attempts
+before their effects. Echo honors POSIXLY_CORRECT's escape and initial -n rules,
+with the explicit standalone help/version metadata exception retained.
+
+The authoritative finite definitions are [tests/cases](../tests/cases), with
+reviewed facets in [tests/coverage/review](../tests/coverage/review). Additional
+locale, filesystem metadata, grammar and HTTP behavior remain separate issues;
+this profile does not relabel those omissions as implemented.
+
+## Current delivery and historical acceptance
+
+The current 2026-11-08 release publishes core 0.9.5 with make 0.2.8, sh 0.2.9
+and split 0.1.10 from `273ea9f`, retaining the other 77 command coordinates. It
+extends the POSIX trailing-slash directory check to all shell file predicates
+and both timestamp-comparison operands. A later independent audit found that
+0.9.4 guarded only size tests, leaving macOS 15 file-link lookups exposed.
+Actual sh, make-recipe and split-filter regressions cover single/double slashes,
+link chains, invalid parent components, valid directory links and unsuffixed
+controls.
+[Actual-main development checks](https://github.com/moonbit-community/cmd/actions/runs/42425407212)
+and independent source/receipt audit pass. All 80 exact MoonX coordinates pass
+[published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418),
+including fixed Linux comparison and all six required oracle scenarios.
+The [changelog](../CHANGELOG.md#2026-11-08) records platform counts and exclusions.
+The independently frozen 2,850 definitions retain all previous 2,802 IDs, update
+six help/version outputs and add 48 F31 cases; candidate expectations remain
+independent. Registry builds, upload checksums and actual isolated consumers of
+the uploaded core were verified. All four uploads succeeded once. The new POSIX
+cases pass on Linux/macOS and are explicitly excluded on Windows; the existing
+Windows path regression passes.
+
+The completed named profile includes default/named export and unexport,
+`.EXPORT_ALL_VARIABLES`, recipe expansion/environment phases, shell capture
+status, GNU argument construction, contextual syntax rejection and EOF execution.
+Unexpected child-output failures preserve their identity without replay or later
+commands. The shell's `test -s` validates raw paths, follows final targets and
+reads metadata without opening files; unavailable target sizes reject explicitly.
+Linux directory sizes and the macOS ENOTSUP boundary have actual observations.
+The FIFO fixture bridges host Wasm and container GNU through a real shared FIFO;
+it does not claim an OS parent-child relationship. Native tests cover test tools;
+product acceptance follows the Wasm delivery policy.
+See [ADR-0007](adr/0007-language.md) for grammar, descriptor and terminal limits;
+full POSIX/GNU parity and formal performance acceptance are not established.
+
+Earlier core 0.9.2, 0.9.3 and 0.9.4 releases retain their dated finite evidence.
+Independent reviews subsequently found size, export and raw-path omissions;
+the successful earlier receipts did not establish those missing behaviors. Their exact coordinates,
+counts, limitations and transport failures remain in the [earlier record](https://github.com/moonbit-community/cmd/blob/273ea9ff3e0f045189cb3f3f5837d63c297b6c8c/CHANGELOG.md#2026-11-08).
+The current repair closes those implementation gaps without rewriting historical
+expectations or relabeling project grammar omissions as upstream API blockers.
+
+Published tree 0.1.6 lists symbolic links as named leaves without
+following targets, including dangling and cyclic links. Text/HTML omit target
+text; JSON identifies links explicitly. Links count as files, and `-d` excludes
+discovered links while retaining explicit operands. Selected-link sizes and
+`ln=target` coloring reject explicitly. These are
+documented extensions of the former all-links rejection, not full upstream
+link-display parity. Earlier tree 0.1.5 evidence retains its dated scope in
+CHANGELOG.md and Git; it is not rewritten as acceptance of the new behavior.
+
+The issue #29 development candidate changes find 0.2.6, test 0.2.4 and mkdir
+0.2.7; published coordinates above remain unchanged pending acceptance. Find
+uses no-follow size metadata with UInt64 ceiling units, finite GNU time
+windows, no-follow reference timestamps, ordered actions and pre-descent stat
+snapshots. Standalone test applies argc precedence and follows target metadata
+without opening files. Both validate POSIX trailing separators and preserve
+ordinary lookup failures separately from unavailable metadata. Find `K` size
+units and unary test `-a` are named project extensions. Nonfinite/out-of-range
+time conversions, complete grammar and diagnostic-byte parity are outside this
+profile. Startup clock precision remains milliseconds.
+
+New POSIX mkdir ancestors failing public write/search checks return capability
+status 2 after possible partial creation; later operands still run. Passing
+these checks does not prove GNU raw parent-mode behavior under restrictive
+umasks, ACLs or elevated privileges. Numeric and symbolic Windows `-m` reject
+before creation, except all-existing `-p` no-ops. Metadata preconditions and
+actual observations are retained separately from generated definitions. See
+[ADR-0004](adr/0004-filesystem.md#metadata-predicates-and-parent-creation).
 
 Workspace development uses `moonbitlang/async@0.22.7` across modules and
 standalone test tools. CI follows the official `latest` toolchain and core and
@@ -14,9 +156,12 @@ latest Moonrun is `0.1.20261104 (940aa18)`.
 This dependency upgrade does not enable new command
 features or lift existing filesystem/process boundaries. In particular,
 `Directory::open` and `Directory::remove` in async 0.22.7 do not support Wasm.
-Published coordinates and their frozen expectations remain independent in
-`tests/release/latest.json` and `latest-cases.json`; no package is published by
-this development change.
+The 2026-11-06 dependency update alone created no releases. The 46 command
+versions published on 2026-11-07 used the dependency declarations from source
+`847e66a`; the other 34 coordinates retained their earlier builds at that release.
+The three command updates on 2026-11-08 are recorded above.
+Published coordinates and frozen expectations remain independent inputs in
+`tests/release/latest.json` and `latest-cases.json`.
 
 `cli/typst@0.1.0` is published. Its migrated CLI,
 document environment and watcher use a pure MoonBit platform adapter; the
@@ -33,16 +178,17 @@ viewer opening, performance traces and the HTML watch server (`--no-serve`
 is required). Jobs remain single-threaded. File reads retain whole inputs;
 canonicalization is lexical, symlink identity/containment is not guaranteed,
 terminal detection is unavailable and local time defaults to UTC. Unlock
-conditions are recorded in ADR-0003. Seven pinned Typst 0.15.1 Linux evaluation
-comparisons pass. All 80 coordinates pass local MoonX and
+conditions are recorded in ADR-0003. In the 2026-11-05 acceptance, seven pinned
+Typst 0.15.1 Linux evaluation comparisons passed. All 80 coordinates passed local MoonX and
 [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41957907959),
-including watch shutdown and cleanup. The previous 79 coordinates and their
-frozen expectations remain unchanged. The workspace now has 82 command modules;
-timeout and the new serve candidate remain unpublished.
-The inherited Typst relative-link watcher fixture is Unix-only because the public
+including watch shutdown and cleanup. At that release, the previous 79 coordinates
+and their frozen expectations remained unchanged, with timeout local-only among 81 modules.
+The inherited relative-link watcher fixture is Unix-only because the public
 filesystem API cannot create that fixture on Windows. Ordinary file-watch
 recompilation has a registered CLI assertion on all three platforms.
 
+The current workspace has 82 command modules, including the unpublished serve
+candidate and local-only timeout. Published coordinates remain unchanged.
 The local `cli/serve@0.1.0` candidate serves regular files and index.html over
 HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
 return 400; missing, unreadable, outside-root and nonregular targets return 404.
@@ -54,12 +200,12 @@ See the [command README](../commands/serve/README.md) and
 [ADR-0004](adr/0004-filesystem.md). No publication or performance acceptance is
 claimed for this candidate.
 
-The 2026-11-01 release publishes core 0.9.1 and 26 changed command versions,
+The 2026-11-01 release published core 0.9.1 and 26 changed command versions,
 including direct implementation changes and gzip/jq shared-runtime consumers.
-These commands select core 0.9.1; the other 53 published coordinates retain
-their dependencies. Exact versions are in
-[latest.json](../tests/release/latest.json), with independent
-expectations in latest-cases.json. All 27 uploads/builds and all 79 coordinates
+Those commands selected core 0.9.1; the other 53 published coordinates retained
+their dependencies. The source and scope of those historical coordinates are
+recorded in the [2026-11-01 release record](../CHANGELOG.md#2026-11-01).
+All 27 uploads/builds and all 79 coordinates
 passed local MoonX and [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41295557751),
 including pinned Linux comparison. Counts and scope are summarized in
 [CHANGELOG.md](../CHANGELOG.md#2026-11-01); full performance acceptance remains open.
@@ -74,7 +220,7 @@ their explicit fallbacks. The preceding 2026-11-01 macOS Wasm resource failures
 and subsequent repair evidence retain their dated scope in
 [performance guide](performance/README.md); buffer release is not an immediate RSS guarantee.
 
-Published audit repairs include core 0.9.1, cp 0.2.4, find 0.2.5,
+The 2026-11-01 audit repairs included core 0.9.1, cp 0.2.4, find 0.2.5,
 mv 0.2.6, rm 0.2.4, sort 0.2.6, tail 0.2.4 and xargs 0.2.4. Xargs dispatches
 complete batches before EOF and replenishes individual parallel slots; later
 input errors can follow completed child effects. Ordinary child exits 126/127
@@ -95,12 +241,11 @@ newly accepted coordinates.
 
 The 2026-10-30 release published `cli/core@0.9.0` and 43 command packages:
 42 updates and the first `cli/rg@0.1.0` release. Another 36 command coordinates
-remain unchanged, giving 79 published commands; `timeout` remains local-only.
+remained unchanged, giving 79 published commands; `timeout` was local-only.
 All 44 uploads and registry builds were verified. Local exact-version MoonX
 acceptance passed 2,180 checks with 19 skips and zero failures across all 79
-coordinates. [latest.json](../tests/release/latest.json) and its
-independent expected cases select the exact published inventory. The
-[release summary](../CHANGELOG.md#2026-10-30) records source CI and three-platform
+coordinates. The dated
+[release summary](../CHANGELOG.md#2026-10-30) records that inventory's source CI and three-platform
 published acceptance.
 
 The current development test policy requires source-bound independent local
@@ -305,7 +450,7 @@ backend actually returns them; no portable inode-size constant is assumed.
 | od, hexdump, cmp, strings | Frozen Linux numeric formats, strings/traditional od offsets, custom hexdump formats/color rules, cmp byte notation and strings separators. | Wide strings encodings remain rejected. Hexdump forward stdin discard is an explicit extension: util-linux 2.40 rejects seek on a pipe, while equivalent named-file display supplies the byte reference. |
 | xxd | Autoskip/style/group/case/EBCDIC, wide named-input seeks, forward stdin discard, reverse address adjustment and new named outputs with backpatching. | Existing output alias/mode/content preservation needs public file identity and descriptor operations; backward/end-relative stdin positioning needs a seekable public input. |
 | checksum commands | Cksum algorithm/length selection, modern tagged/base64/raw records and checking; consistent tags, escaping and manifest flags for the four sum commands. | The selected C byte profile does not claim Windows text translation. Public digest implementations and bounded incremental state remain shared. |
-| realpath, mktemp, mkdir, rm | Component-wise missing/strip/relative realpaths, GNU temporary templates/tmpdir/suffix/exclusive creation, umask-independent symbolic directory modes including GNU sticky-clause finalization, and explicit once/per-entry removal prompts. | Unresolved physical link targets need readlink. Umask-dependent modes, unknown parent raw mode and unsupported Windows setters reject. Automatic terminal-dependent rm prompting is separate from implemented explicit prompts. |
+| realpath, mktemp, mkdir, rm | Component-wise missing/strip/relative realpaths, GNU temporary templates/tmpdir/suffix/exclusive creation, umask-independent symbolic directory modes including GNU sticky-clause finalization, and explicit once/per-entry removal prompts. | Unresolved physical link targets need readlink. Umask-dependent symbolic modes and unsupported Windows setters reject. New parents failing public write/search checks report a partial-creation boundary; successful checks do not certify raw mode. Automatic terminal-dependent rm prompting remains separate. |
 | ls | C quoting/layout/tab width and explicit color with type/suffix/link-target selection, preserving raw color bytes. | Color auto detection rejects; enabled mode/capability/link-count predicates reject only relevant entries. Effective access is not GNU's raw execute-bit predicate. |
 | tree | Iterative filtered/pruned JSON/HTML/text traversal, safe escaping, C branches, explicit type/suffix color, selected sizes and postorder disk-usage totals. | Public directory size works on Linux and fails on the observed macOS backend; Windows uses the real API result. Readlink and raw-mode color predicates retain narrow boundaries. HTML page metadata/safety differences are deliberate contracts. |
 | env, xargs, tail, tee | Env split-string grammar/expansion/splicing; byte delimiters and separate xargs confirmation input; tail NUL records; tee's five explicit pipe-error policies with actual closed-pipe scenarios. | Windows Native empty child environments reject until released async fixes its environment block; enumeration and nonempty assignments work. Invalid-byte argv needs public byte transport. Unavailable confirmation channels reject before argument input. Default tee SIGPIPE termination needs a released restore/raise API; it reports status 2 rather than a fabricated signal result. |
@@ -653,6 +798,19 @@ claiming success; `local-only` is absent from MoonX by design.
 
 ## Per-command support
 
+Published `split@0.1.10` uses the expanded pure MoonBit
+shell filter language from `core@0.9.5`, including arithmetic assignments,
+backticks and expanded here-documents. Actual filter regressions retain `$FILE`,
+stdin and child-status contracts. Its target-size repair follows final links,
+does not open unreadable files or FIFOs, and rejects unavailable target sizes.
+Every POSIX file predicate and both timestamp operands require paths ending in
+a slash to name directories, including valid directory links.
+Complete EOF continuations execute with their actual final status. Exact-version
+MoonX acceptance passed on all three platforms; the finite results and earlier
+versions are recorded in [CHANGELOG.md](../CHANGELOG.md#2026-11-08).
+Full shell compatibility is not claimed. See
+[ADR-0007](adr/0007-language.md).
+
 | Command | Status | Measured profile | Observed boundary or open evidence |
 | --- | --- | --- | --- |
 | `fold` | subset verified | Byte/control-column folding, width, space breaks, files/stdin | C-locale profile; verify UTF-8 separately |
@@ -685,7 +843,7 @@ claiming success; `local-only` is absent from MoonX by design.
 | `echo` | subset verified | `-n`, `-e`, `-E`, byte escapes, literal `--` ambiguity | `POSIXLY_CORRECT` profile not claimed |
 | `env` | subset verified | Complete inherited environment, `-i/-u/-0/-C`, GNU split-string quoting/expansion/splicing and direct children | Windows Native rejects empty final child environments with status 125 until the released async block construction is fixed; empty enumeration, nonempty assignments, POSIX and Wasm remain supported. No host-shell interpretation |
 | `false` | subset verified | any args: no output, status 1; help/version return 0 | Metadata text is package-versioned |
-| `find` | restricted | names/paths/types, `-empty/-size`, metadata predicates, access checks, `-xtype`, depth/actions | File/process policy required; P8 time/reference/access combinations still need independent probes; ownership, inode, link-count, and full GNU expression grammar not claimed |
+| `find` | restricted | names/paths/types, rounded UInt64 size, finite time/reference/used predicates, access checks, `-xtype`, ordered actions and preserved stat snapshots | Candidate #29 validation is separate from publication. Unavailable metadata errors, finite signed-64-bit time bounds, millisecond startup clock and one-action/final-exec grammar remain explicit; no ownership, inode, link-count or full GNU claim |
 | `grep` | subset verified | Default BRE / `-G`, ERE / `-E`, byte-based `-F`, `-o` leftmost-longest, context-only separators, existing context/file/binary options; published 0.3.0 adds the shared matcher, grammar-preserving ASCII `-i`, streaming input/output and early `-q`/`-l` completion | [Workspace matcher limits](#published-matcher-and-sed-profiles), non-C locale classes/case folding and worst-case capture/reference resources remain open |
 | `rg` | published subset | Fixed rg.mbt 0.2.0 algorithms and Unicode data; asynchronous explicit-file/directory/stdin search, glob/ignore, output modes and user preprocessing | [rg profile](#rg-candidate); effective `-z` rejects; no-path search needs explicit input; public system API and inherited engine limits remain |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
@@ -694,8 +852,8 @@ claiming success; `local-only` is absent from MoonX by design.
 | `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain |
 | `ls` | subset verified | Existing traversal/sort/link profile plus C quoting, columns/across/commas, width/tab stops and explicit type/suffix/link colors | `-P` is a project extension; enabled raw-mode/capability/link-count predicates and automatic color reject. Long/ownership/inode/block formats remain outside scope |
-| `make` | subset verified | Real `-j` dependency scheduling, shared prerequisites once, failed-dependency propagation, `-k`, `$(shell ...)`, `.SHELLSTATUS`, cwd and exported recipe variables | No GNU jobserver/full Make grammar claim; shell-function export recursion and full GNU variable semantics remain project work |
-| `mkdir` | subset verified | `-p`, numeric and umask-independent symbolic `-m`, requested leaf mode and existing no-ops | Truly umask-dependent results, unknown parent raw mode/owner adjustments and unavailable Windows setters reject |
+| `make` | subset verified | Dependency-ready `-j`, shared prerequisites, variable flavors/computed names, named/default export and unexport, `.EXPORT_ALL_VARIABLES`, recursive Wasm submakes, recipe expansion/environment phases, GNU shell argv and `.SHELLSTATUS`, `.SECONDEXPANSION`, existing POSIX FIFO tokens | Invalid UTF-8 before a capture's first NUL rejects; unavailable target sizes reject; new FIFO creation, descriptor-pipe import and Windows semaphores need public APIs; no full GNU function/rule/database claim; without inherited FIFO recursive children use `-j1`; [language boundaries](adr/0007-language.md) |
+| `mkdir` | subset implementation | `-p`, numeric and umask-independent symbolic `-m`, requested leaf mode and existing no-ops | Missing write/search on a new POSIX parent reports status 2 with retained partial effects; raw owner/umask parity is not established even when access passes. Windows explicit modes preflight before creation |
 | `mktemp` | subset verified | Final X-run/default/inferred/explicit suffix rules, tmpdir precedence, quiet errors and exclusive secure-random files/directories | No unsafe `-u`; POSIX mode relationships and Windows supported effects have separate scenarios |
 | `mv` | subset verified | Files/dirs, -f/-n/-i, -T/-v, selected backup/suffix/update, same-entry/hard-link no-op failures and refusal status 1 | Equal-time interactive/update targets reject without public identity; no-clobber remains a successful skip; metadata-preserving EXDEV fallback remains unavailable |
 | `nl` | subset verified | `-b/-h/-f`, `-w`, `-s`, `-v`, `-i`, `-d`, `-p`, files/stdin | Locale-aware formatting not claimed |
@@ -708,15 +866,15 @@ claiming success; `local-only` is absent from MoonX by design.
 | `rev` | subset verified | Published 0.1.4 reverses one ASCII/NUL record at a time into buffered output under the fixed Linux C profile, with invalid-record rejection, prefix retention and later-file continuation | Storage follows the longest record; non-ASCII records fail before output and multibyte locale semantics remain outside the profile |
 | `rmdir` | subset verified | empty removal, `-p`, `-I`, `-v`, failure ordering | Full path diagnostics not claimed |
 | `seq` | subset verified | Published 0.2.3 adds single-conversion `-f`, frozen-ABI rounding and endpoint recovery; default +/- step, -w/-s and streaming output remain | Default path retains 4096-character/exponent/scale limits; formatted path uses the selected Extended80 range, not the host ABI; formal performance remains open |
-| `sh` | subset verified | Persistent `-i` line REPL and opaque Session; export/local variables, cwd, quoting/IFS/glob, arithmetic, substitution, read, bounded printf/test, functions and pipeline state isolation | No public isatty/raw/editing/recoverable SIGINT/job control/exec; remaining interpreter grammar restrictions are project work, listed in command README |
+| `sh` | subset verified | Persistent Session, arithmetic assignments/conditional expressions, backticks, expanded here-documents, stdout/stderr aliases, loop levels, finite printf/test, contextual syntax rejection and EOF continuation; unexpected child-output failures propagate; `test -s` follows target metadata | Unavailable target sizes reject; increment and test `==` are project extensions; descriptor import/closure/direction, identity/owner/mode metadata and terminal operations reject; no full POSIX/Bash or locale claim; [language boundaries](adr/0007-language.md) |
 | `sha256sum` | subset verified | File/stdin digest, tags, escaped/tagged manifests and quiet/status/strict/warn/ignore-missing verification | Windows text transformation remains outside the selected C byte profile |
 | `sleep` | subset verified | fractional values, `s/m/h/d`, multiple operands, help/version | Signal/cancellation parity not claimed |
 | `sort` | subset verified | Published 0.2.3 retains stable/merge/output and exact seeded GNU random order and adds buffer-size, temporary-directory and batch-size controls | Percentage budgets require public physical-memory capacity; existing merge-output identity/error effects reject explicitly, and non-C locale and formal RSS/performance remain open |
 | `tail` | subset verified | Existing line/byte/origin/follow profile plus NUL records, final terminators and ordered file headers | `-f` follows open descriptors; stdin/pipes stop at EOF; `-F` path-follow and rotation reopen remain outside scope |
 | `tac` | subset verified | Published 0.1.4 uses backward block reads for fixed separators and owned input spools, retaining before/regex/nullable/overlap selection | Regex retains O(input) memory with signed 32-bit matcher indices until a paged/seekable matcher exists; non-C locale remains open |
 | `tee` | subset verified | stdin to stdout/files, append, five explicit output-error/pipe policies and observed partial/later-sink effects | Default SIGPIPE termination needs a released restore/raise API and has an exact status-2 rejection scenario |
-| `test` | subset verified | string/integer, file kinds, access, regular-file size, `!`, `-a`, `-o`, and the exercised dangling-link path | `-N`/`-nt`/`-ot` and special-file positive fixtures need independent probes; complete unary/binary ambiguity not claimed |
-| `tree` | subset verified | C text/JSON/safe HTML, iterative filters/prune/filelimit, explicit colors, actual public sizes and postorder disk-usage reporting | Linux directory size is supported; observed macOS directory size rejects and Windows follows its API result. Selected symlinks/raw-mode colors need readlink/mode; HTML page differences are deliberate |
+| `test` | subset implementation | standalone argc precedence, strings, signed-64-bit decimal comparisons with ASCII edge whitespace, file kinds, public access, followed-target size, nanosecond time comparisons and boolean expressions | Candidate #29 validation is separate from publication. Missing target metadata is false; unavailable metadata errors. Unary `-a` is a project extension. Terminal/owner/mode/identity predicates and full GNU grammar remain outside scope |
+| `tree` | subset verified | C text/JSON/safe HTML, iterative filters/prune/filelimit, explicit colors, actual public sizes and postorder disk-usage reporting | Linux directory size is supported; observed macOS directory size rejects and Windows follows its API result. Link target display/raw-mode colors need readlink/mode. Selected-link size retains a project rejection profile despite the available no-follow size API; HTML differences are deliberate |
 | `timeout` | local-only | local duration and expiry returned 124 | No published process-group cancellation |
 | `touch` | subset verified | Create missing files; `-c` missing-file no-op | Existing-file timestamp updates and setters explicitly fail without content rewrites |
 | `tr` | subset verified | translate/delete/squeeze/`-c/-C` complement, `-t`, ranges, C-locale classes, octal/equivalence/repetition forms | Verified profile is byte-oriented; locale data beyond C is not claimed |

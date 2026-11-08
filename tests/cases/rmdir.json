@@ -89,8 +89,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/rmdir@0.2.3 metadata contract",
-      "expected_stdout_text": "Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/rmdir@0.2.4 metadata contract",
+      "expected_stdout_text": "Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\n  -p, --parents                  remove empty parents, stopping at the first failure\n  -v, --verbose                  report each removal attempt before it runs\n      --ignore-fail-on-non-empty  suppress only failures attributable to nonemptiness\n  -I is a project short alias of --ignore-fail-on-non-empty, not a GNU option.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-210"
@@ -113,8 +113,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/rmdir@0.2.3 metadata contract",
-      "expected_stdout_text": "rmdir 0.2.3\n",
+      "source_version": "workspace cli/rmdir@0.2.4 metadata contract",
+      "expected_stdout_text": "rmdir 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -130,7 +130,7 @@
           "kind": "directory"
         }
       ],
-      "expected_stdout_text": "rmdir: removed directory 'a/b/c'\nrmdir: removed directory 'a${PATH_SEPARATOR}b'\nrmdir: removed directory 'a'\n",
+      "expected_stdout_text": "rmdir: removing directory, 'a/b/c'\nrmdir: removing directory, 'a${PATH_SEPARATOR}b'\nrmdir: removing directory, 'a'\n",
       "expected_files": [
         {
           "path": "a",
@@ -183,6 +183,580 @@
       "expected_stderr_text": "",
       "stdin_text": "",
       "expected_stdout_text": ""
+    },
+    {
+      "id": "f17-rmdir-unknown-option",
+      "command": "rmdir",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rmdir: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-rmdir-ignore-short",
+      "command": "rmdir",
+      "args": [
+        "-I",
+        "empty",
+        "nonempty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "nonempty/kept",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "empty",
+          "exists": false
+        },
+        {
+          "path": "nonempty",
+          "kind": "directory"
+        },
+        {
+          "path": "nonempty/kept",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty"
+      ]
+    },
+    {
+      "id": "f17-rmdir-ignore-short-regular",
+      "command": "rmdir",
+      "args": [
+        "-I",
+        "file"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_stderr_contains": "failed to remove 'file'",
+      "diagnostic_reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target.",
+      "expected_files": [
+        {
+          "path": "file",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty"
+      ]
+    },
+    {
+      "id": "f17-rmdir-ignore-short-missing",
+      "command": "rmdir",
+      "args": [
+        "-I",
+        "missing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_stderr_contains": "failed to remove 'missing'",
+      "diagnostic_reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target.",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "sentinel",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty"
+      ]
+    },
+    {
+      "id": "f17-rmdir-ignore-short-symlink",
+      "command": "rmdir",
+      "args": [
+        "-I",
+        "link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "target/kept",
+          "content_text": "retained"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_stderr_contains": "failed to remove 'link'",
+      "diagnostic_reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target.",
+      "expected_files": [
+        {
+          "path": "target/kept",
+          "content_text": "retained",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty"
+      ],
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f17-rmdir-ignore-long",
+      "command": "rmdir",
+      "args": [
+        "--ignore-fail-on-non-empty",
+        "empty",
+        "nonempty"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "kind": "directory"
+        },
+        {
+          "path": "nonempty/kept",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "empty",
+          "exists": false
+        },
+        {
+          "path": "nonempty",
+          "kind": "directory"
+        },
+        {
+          "path": "nonempty/kept",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty"
+      ]
+    },
+    {
+      "id": "f17-rmdir-ignore-long-regular",
+      "command": "rmdir",
+      "args": [
+        "--ignore-fail-on-non-empty",
+        "file"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "failed to remove 'file'",
+      "diagnostic_reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target.",
+      "expected_files": [
+        {
+          "path": "file",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty"
+      ]
+    },
+    {
+      "id": "f17-rmdir-ignore-long-missing",
+      "command": "rmdir",
+      "args": [
+        "--ignore-fail-on-non-empty",
+        "missing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "failed to remove 'missing'",
+      "diagnostic_reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target.",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "sentinel",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty"
+      ]
+    },
+    {
+      "id": "f17-rmdir-ignore-long-symlink",
+      "command": "rmdir",
+      "args": [
+        "--ignore-fail-on-non-empty",
+        "link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "target/kept",
+          "content_text": "retained"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "failed to remove 'link'",
+      "diagnostic_reason": "The OS cause and wrapper formatting differ; both must identify the rejected operand, return1, emit no stdout and preserve the independently declared files and link target.",
+      "expected_files": [
+        {
+          "path": "target/kept",
+          "content_text": "retained",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "target",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty"
+      ],
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f17-rmdir-ignored-failure-stops-parents",
+      "command": "rmdir",
+      "args": [
+        "-pvI",
+        "a/b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a/b/keep",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "rmdir: removing directory, 'a/b'\n",
+      "expected_stderr_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "a/b/keep",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty",
+        "parents",
+        "verbose"
+      ]
+    },
+    {
+      "id": "f17-rmdir-windows-junction-default",
+      "command": "rmdir",
+      "args": [
+        "junction"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "target/kept",
+          "content_text": "retained"
+        },
+        {
+          "path": "junction",
+          "kind": "junction",
+          "target": "target"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "junction",
+          "exists": false
+        },
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "host_platforms": [
+        "windows"
+      ],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Windows RemoveDirectoryW documented junction semantics: remove the junction, retain its nonempty referent. This is a platform contract, not POSIX/GNU symlink behavior. https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw"
+    },
+    {
+      "id": "f17-rmdir-windows-junction-short",
+      "command": "rmdir",
+      "args": [
+        "-I",
+        "junction"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "target/kept",
+          "content_text": "retained"
+        },
+        {
+          "path": "junction",
+          "kind": "junction",
+          "target": "target"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "junction",
+          "exists": false
+        },
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "host_platforms": [
+        "windows"
+      ],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Windows RemoveDirectoryW documented junction semantics: remove the junction, retain its nonempty referent. This is a platform contract, not POSIX/GNU symlink behavior. https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw"
+    },
+    {
+      "id": "f17-rmdir-windows-junction-long",
+      "command": "rmdir",
+      "args": [
+        "--ignore-fail-on-non-empty",
+        "junction"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "target/kept",
+          "content_text": "retained"
+        },
+        {
+          "path": "junction",
+          "kind": "junction",
+          "target": "target"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "junction",
+          "exists": false
+        },
+        {
+          "path": "target",
+          "kind": "directory"
+        },
+        {
+          "path": "target/kept",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "host_platforms": [
+        "windows"
+      ],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Windows RemoveDirectoryW documented junction semantics: remove the junction, retain its nonempty referent. This is a platform contract, not POSIX/GNU symlink behavior. https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-removedirectoryw"
+    },
+    {
+      "id": "f17-rmdir-long-ignored-failure-stops-parents",
+      "command": "rmdir",
+      "args": [
+        "-pv",
+        "--ignore-fail-on-non-empty",
+        "a/b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a/b/keep",
+          "content_text": "retained"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "rmdir: removing directory, 'a/b'\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 rmdir.c: verbose precedes attempted removal; an ignored failure stops parent removal. Exact independently specified streams, status and retained child bytes.",
+      "expected_files": [
+        {
+          "path": "a/b/keep",
+          "content_text": "retained",
+          "unchanged": true
+        }
+      ],
+      "coverage": [
+        "ignore-fail-on-non-empty",
+        "parents",
+        "verbose"
+      ]
     }
   ]
 }

@@ -27,6 +27,11 @@ fn contract(
 }
 
 ///|
+// Options are stable semantic coverage identifiers, not an accepted-argv grammar.
+// For example update-mode/backup-control, no-dereference-target, check-quiet and
+// unified-lines/context-lines describe public option behavior through command
+// adapters, but their raw long spellings are private. Public/project aliases and
+// diagnostic contracts are recorded in docs/compatibility.md and CLI cases.
 pub fn command_catalog() -> Array[CommandContract] {
   [
     contract(
@@ -52,7 +57,8 @@ pub fn command_catalog() -> Array[CommandContract] {
         "ppi", "deps", "no-serve", "timings", "update", "completions",
       ],
     ),
-    // Encoding emits complete groups before EOF; decoding retains whole input.
+    // Encoding emits complete groups before EOF; decoding retains whole input,
+    // validates canonical tails and preserves determined failure-prefix bytes.
     contract("base32", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
     ]),
@@ -60,6 +66,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "algorithm", "length", "base64", "raw", "untagged", "tag", "binary", "text",
       "zero", "check", "ignore-missing", "quiet", "status", "strict", "warn",
     ]),
+    // Incremental canonical decoding accepts EOF padding and adjacent padded
+    // groups, committing determined bytes once even when later input fails.
     contract("base64", Core, FileOrStdin, ByteStream, [FileRead], [
       "decode", "ignore-garbage", "wrap",
     ]),
@@ -83,6 +91,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "1", "2", "after", "empty", "only", "output", "t", "check-order", "nocheck-order",
       "header", "help", "ignore-case", "zero-terminated",
     ]),
+    // logs/-l is the project's JSONL mode; it is not an upstream jq option.
+    // from-file/-f selects the first positional as a filter file; it is a flag.
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
       "color-output", "monochrome-output", "compact-output", "exit-status", "from-file",
       "indent", "join-output", "logs", "null-input", "raw-input", "sort-keys", "slurp",
@@ -133,6 +143,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("wc", Core, FileOrStdin, LineStream, [FileRead], [
       "bytes", "chars", "files0-from", "lines", "max-line-length", "total", "words",
     ]),
+    // Usage errors are 1; runtime input/output/seek statuses remain distinct.
+    // The little/ebcdic aliases and =VALUE syntax have explicit project contracts.
     contract(
       "xxd",
       Core,
@@ -159,13 +171,17 @@ pub fn command_catalog() -> Array[CommandContract] {
       exit_codes=[0, 1, 2],
     ),
     contract("dirname", Core, NoInput, LineStream, [], ["zero"]),
+    // POSIXLY_CORRECT enables escapes and admits option parsing only after
+    // initial -n; standalone metadata retains the project exception.
     contract("echo", Core, NoInput, ByteStream, [], [
       "enable-escapes", "disable-escapes", "help", "no-newline", "version",
     ]),
     contract("expand", Core, FileOrStdin, ByteStream, [FileRead], [
       "initial", "tabs",
     ]),
-    // Directory reads follow evaluated predicates/descent; exec batches flush during traversal.
+    // Stat snapshots precede names and child effects; actions obey expression
+    // order. Size uses upward-rounded uint64 units, with K as a project alias.
+    // Finite time windows and unavailable metadata retain explicit boundaries.
     contract(
       "find",
       Restricted,
@@ -189,6 +205,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "line-number", "line-regexp", "no-filename", "no-messages", "null-data", "only-matching",
       "quiet", "recursive", "regexp", "text", "with-filename", "word-regexp",
     ]),
+    // no-dereference/-P and named layout/time aliases are project extensions;
+    // quote names the GNU --quote-name behavior, also accepting --quote.
     contract("ls", Core, NoInput, LineStream, [FileRead], [
       "all", "almost-all", "classify", "directory", "recursive", "sort-time", "access-time",
       "change-time", "reverse", "sort-size", "dereference-command-line", "dereference",
@@ -207,6 +225,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       "binary", "check", "ignore-missing", "quiet", "status", "strict", "tag", "text",
       "warn", "zero",
     ]),
+    // Standalone arity precedes expression parsing. Size follows metadata
+    // without reading content; integers use signed-64-bit decimal with ASCII
+    // edge whitespace. Unary -a remains a project extension.
     contract("test", Core, NoInput, LineStream, [FileRead], [
       "expression-language", "file-kinds", "access-checks", "size", "timestamps",
     ]),
@@ -221,7 +242,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       "no-dereference-target", "target-directory", "backup", "backup-control", "suffix",
     ]),
     // Symbolic leaf permissions preserve platform creation semantics: sticky
-    // creation requires a final permission adjustment on Darwin.
+    // creation requires a final permission adjustment on Darwin. New parents
+    // lacking public write/search access report a partial-effect boundary;
+    // these checks do not establish raw-mode parity. Windows -m preflights.
     contract("mkdir", Extended, NoInput, LineStream, [FileWrite], [
       "mode", "parents", "verbose",
     ]),
@@ -240,6 +263,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       "dir", "force", "interactive", "preserve-root", "no-preserve-root", "recursive",
       "verbose",
     ]),
+    // Project -I aliases ignore-fail-on-non-empty. Only actual failed removals
+    // are classified; ignored failures stop parents and verbose records attempts.
     contract("rmdir", Extended, NoInput, LineStream, [FileWrite], [
       "ignore-fail-on-non-empty", "parents", "verbose",
     ]),
@@ -251,6 +276,8 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("tee", Extended, OptionalStdin, ByteStream, [FileWrite], [
       "append", "output-error",
     ]),
+    // Links are named leaves; -d filters children, retaining explicit operands.
+    // Link targets and sizes remain unavailable rather than inferred from referents.
     contract("tree", Core, NoInput, LineStream, [FileRead], [
       "all", "dirs-only", "full-path", "level", "noreport", "json", "html", "title",
       "pattern", "ignore", "matchdirs", "ignore-case", "prune", "filelimit", "size",
@@ -311,6 +338,12 @@ pub fn command_catalog() -> Array[CommandContract] {
       ],
       exit_codes=[0, 125, 126, 127],
     ),
+    // Named/default export policy and secondary prerequisites retain GNU order.
+    // Recipes expand before execution; each target constructs its environment once.
+    // Shell argv, NUL-truncated captures and errors retain actual shell status.
+    // Every file-test operand preserves the POSIX trailing-slash directory rule.
+    // Inherited POSIX FIFO tokens are separate from local -j scheduling;
+    // descriptor-pipe and Windows semaphore authentication reject explicitly.
     contract(
       "make",
       Restricted,
@@ -322,6 +355,13 @@ pub fn command_catalog() -> Array[CommandContract] {
         "what-if",
       ],
     ),
+    // Shared sessions implement arithmetic side effects, backticks, expanded
+    // heredocs, loop levels, printf/test and actual stdout/stderr aliases.
+    // File-size tests follow target metadata and reject unavailable sizes.
+    // All file predicates and timestamp operands enforce POSIX directory suffixes.
+    // Syntax rejects before command-list effects; complete EOF continuations run.
+    // External output-transfer failures retain their error identity.
+    // Descriptor import/closure and terminal job control remain boundaries.
     contract(
       "sh",
       Restricted,
@@ -473,6 +513,8 @@ pub fn command_catalog() -> Array[CommandContract] {
       ],
       exit_codes=[0, 1, 2],
     ),
+    // Filters share syntax, EOF continuation and output-failure session contracts.
+    // File tests retain raw POSIX lookup and trailing-slash directory requirements.
     contract(
       "split",
       Restricted,

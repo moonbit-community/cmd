@@ -95,6 +95,8 @@ fn help_message() -> String {
     #|  -a, --all          convert all blanks, not just leading blanks
     #|      --first-only   convert only leading blank sequences
     #|  -t, --tabs=LIST    use ascending stops; /N absolute, +N relative (implies --all)
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
   message
 }
 
@@ -111,7 +113,7 @@ async fn read_input(path : String) -> Bytes {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("unexpand 0.1.4\n")
+    @stdio.stdout.write("unexpand 0.1.5\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -122,7 +124,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("unexpand: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

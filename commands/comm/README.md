@@ -1,9 +1,12 @@
 # comm
 
+Development candidate: `cli/comm@0.2.6`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Compare sorted text files for MoonX.
 
 ```sh
-moonx cli/comm@0.2.5 [-123] [-z] FILE1 FILE2
+moonx cli/comm@0.2.6 [-123] [-z] FILE1 FILE2
 ```
 
 ## Supported scope
@@ -24,6 +27,19 @@ Print records unique to the first file, unique to the second, and common to both
 | `-z, --zero-terminated` | End records with NUL instead of newline. |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project aliases: --suppress-1 = -1; --suppress-2 = -2; --suppress-3 = -3.
+-h is a project alias of --help.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Locale-dependent collation is unsupported.
@@ -32,8 +48,8 @@ Print records unique to the first file, unique to the second, and common to both
 ## Examples
 
 ```sh
-moonx cli/comm@0.2.5 left.txt right.txt
-moonx cli/comm@0.2.5 -12 left.txt right.txt
+moonx cli/comm@0.2.6 left.txt right.txt
+moonx cli/comm@0.2.6 -12 left.txt right.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

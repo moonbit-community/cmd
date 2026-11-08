@@ -22,16 +22,16 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Known RFC4648 inputs decode to exact bytes, including the retained nonzero-tail-bit profile. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
+      "current_activation": "Known RFC4648 inputs decode to exact bytes, with canonical tail bits; nonzero tail bits reject after retaining the determined prefix. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
       "current_case_ids": [
         "base32-rfc4648-decode",
-        "base32-nonzero-tail-bits-accepted",
+        "base32-nonzero-tail-bits-rejected",
         "base32-uppercase-only",
         "base32-prefix-before-malformed-padding"
       ],
       "current_scenario_bindings": [],
       "current_remaining_facets": [],
-      "narrow_exact_scope_reminder": "Known RFC4648 inputs decode to exact bytes, including the retained nonzero-tail-bit profile. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
+      "narrow_exact_scope_reminder": "Known RFC4648 inputs decode to exact bytes, with canonical tail bits; nonzero tail bits reject after retaining the determined prefix. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
       "review_action": "The stated finite facet now has required assertions. A fresh applicable execution must qualify every binding; skipped platforms and wider unstated semantics are not covered by this definition review."
     },
     {

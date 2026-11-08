@@ -12,6 +12,89 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-08
+
+Development and publication.
+
+- Integrate the serve candidate with the subsequent diagnostics, shell/make and
+  filesystem work. Preserve both sets of command contracts and the independent
+  published snapshots; serve remains unpublished among 82 local modules.
+- Develop issue #29 candidates find 0.2.6, mkdir 0.2.7 and test 0.2.4:
+  repair metadata size/time predicates, standalone test argument precedence,
+  find action/error ordering and postorder snapshots, and honest mkdir parent
+  permission/Windows setter boundaries. Add real special-file, sparse-file,
+  time/reference, partial-effect and Windows metadata contracts. Three-platform
+  development, exact-version publication acceptance and final independent audit
+  remain pending; the published coordinates below are unchanged by preparation.
+- Extend the finite shell/make language profile with arithmetic side effects,
+  backticks, expanded here-documents, standard-stream aliases, loop levels,
+  printf/test, variable/export recursion, secondary expansion and SHELLSTATUS.
+  Preserve named/default export policy, recipe expansion/environment phases,
+  contextual syntax rejection, complete EOF continuation and unexpected
+  child-output failures without replay. Existing POSIX FIFO jobservers retain
+  exact token ownership/return; descriptor pipes, Windows semaphores and server
+  creation remain explicit API boundaries.
+- Publish core 0.9.5, make 0.2.8, sh 0.2.9 and split 0.1.10 from `273ea9f`
+  after [actual-main development CI](https://github.com/moonbit-community/cmd/actions/runs/42425407212)
+  and independent audit. Apply the POSIX trailing-slash directory requirement
+  to every file predicate and both timestamp operands, including the macOS 15
+  file-link gap found after the size repair. Verify all four successful uploads,
+  registry builds and package checksums. Retain the other 77 coordinates:
+  80 published commands among 81 local modules, with timeout local-only.
+- [Exact MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418)
+  passes all 80 coordinates: local macOS 2,984/0/31, Linux 2,993/0/28,
+  macOS 2,984/0/31 and Windows 2,734/0/281 (pass/fail/platform exclusions).
+  Independently audit all receipts, the fixed Linux oracle and all six required
+  oracle scenarios. Freeze 2,850 definitions, including 380 F31 cases: retain
+  all 2,802 previous IDs with six metadata output updates and 48 additions.
+  The new POSIX cases pass on Linux/macOS and have explicit Windows exclusions;
+  the existing Windows path regression passes. Each development platform passes
+  1,994 Wasm product tests and 205 Native test-tool tests. Isolated make/split
+  sources pass 44/8 Wasm tests; all three consumers exercise the uploaded core.
+  Sh has no package tests of its own.
+- Earlier core 0.9.2, 0.9.3 and 0.9.4 releases retain their dated coordinates,
+  counts, exclusions and upload failures in the
+  [preceding release record](https://github.com/moonbit-community/cmd/blob/273ea9ff3e0f045189cb3f3f5837d63c297b6c8c/CHANGELOG.md#2026-11-08).
+  Later independent audits found size, export and raw-path omissions; earlier
+  successful finite acceptance did not establish those missing behaviors.
+  Current receipts establish finite correctness, not full GNU/POSIX parity or
+  formal performance acceptance.
+
+## 2026-11-07
+
+Development and publication.
+
+- Repair the finite diagnostic and extension profile for issue #22: preserve
+  Base32/Base64 failure prefixes and canonical padding, apply rmdir's actual
+  removal/ignore policy, honor echo's POSIX environment, and preserve option
+  values and literal operands during alias normalization. Correct ordinary
+  usage statuses, name project aliases, reject private parser keys, and match
+  jq's file-mode flag semantics. Sort/tac protect owned temporary cleanup
+  against their existing published core interfaces, including cancellation.
+- Publish tree 0.1.6 with name-only, non-following link entries in text, JSON and
+  HTML. Dangling/cyclic links no longer abort a normal listing; `-d` selects real
+  child directories while retaining explicit operands. Selected-link sizes and
+  target-dependent colors retain explicit rejection contracts.
+- Publish 46 changed command coordinates from `847e66a` after
+  [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42377993139)
+  and independent source/receipt audit. Keep core 0.9.1 and the other 34 command
+  coordinates unchanged: 80 published commands among 81 local modules, with
+  timeout local-only. Verify every upload, registry build and package checksum;
+  retain the failed tail transport attempt before its verified successful retry.
+  Exact coordinates and 2,470 independently frozen definitions were recorded in
+  [latest.json](https://github.com/moonbit-community/cmd/blob/20772c0/tests/release/latest.json)
+  and [latest-cases.json](https://github.com/moonbit-community/cmd/blob/20772c0/tests/release/latest-cases.json).
+- Exact-version MoonX acceptance passes all 80 coordinates: local macOS has
+  2,609 passes, zero failures and 28 platform exclusions;
+  [published CI](https://github.com/moonbit-community/cmd/actions/runs/42379717812)
+  has Linux 2,618/0/23, macOS 2,609/0/28 and Windows 2,427/0/210
+  (pass/fail/platform exclusions). Linux includes the fixed upstream oracle,
+  all four Linux-only oracle scenarios and 126 F17 differential cases. Each
+  platform's development checks pass 1,899 Wasm and 204 Native test-tool tests;
+  isolated sort/tac packages pass 34/14 Wasm tests against core 0.9.1/0.9.0.
+  These receipts do not establish full upstream parity or formal performance
+  acceptance; older releases retain their dated evidence in Git.
+
 ## 2026-11-06
 
 Development; no publication.

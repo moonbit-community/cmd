@@ -8,9 +8,12 @@ async test "shell expansion keeps status newline rules and immediate assignment"
     cwd: ".",
     variables,
     command_line_variables: Map([]),
-    exported: Set([]),
+    exported: ExportPolicy::new([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(
     "X := $(shell printf first)\nX += $(shell printf second)\n", database, ".", 0,
@@ -37,9 +40,12 @@ async test "parallel scheduler deduplicates dependencies and propagates failures
     cwd: ".",
     variables: Map([]),
     command_line_variables: Map([]),
-    exported: Set([]),
+    exported: ExportPolicy::new([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(
     ".PHONY: all shared left right\nall: left right\nleft: shared\nright: shared\nshared:\n",
@@ -48,6 +54,8 @@ async test "parallel scheduler deduplicates dependencies and propagates failures
   let settings : Settings = {
     cwd: ".",
     jobs: 2,
+    jobserver: None,
+    expansion_lock: @async.Mutex(),
     silent: true,
     dry_run: false,
     always_make: false,
@@ -112,14 +120,51 @@ async test "parallel scheduler deduplicates dependencies and propagates failures
 }
 
 ///|
+async test "fatal expansion prevents queued targets even with keep going" {
+  let database = secondary_database()
+  parse_makefile("first:\nsecond:\nthird:\n", database, ".", 0)
+  let settings : Settings = {
+    cwd: ".",
+    jobs: 1,
+    jobserver: None,
+    expansion_lock: @async.Mutex(),
+    silent: true,
+    dry_run: false,
+    always_make: false,
+    keep_going: true,
+    what_if: Map([]),
+  }
+  let visited : Array[String] = []
+  try
+    build_targets(["first", "second", "third"], database, settings, execute=(
+      node,
+      _,
+      _,
+    ) => {
+      visited.push(node.target)
+      raise ExpansionFailure("fixture expansion failure")
+    })
+  catch {
+    ExpansionFailure(message) => assert_eq(message, "fixture expansion failure")
+    error => raise error
+  } noraise {
+    _ => fail("fatal expansion was reported as success")
+  }
+  assert_eq(visited, ["first"])
+}
+
+///|
 async test "make parser expands variables and merges rule dependencies" {
   let database : Database = {
     cwd: ".",
     variables: Map([]),
     command_line_variables: Map([]),
-    exported: Set([]),
+    exported: ExportPolicy::new([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(
     "NAME = output\n$(NAME): first\n$(NAME): second\n\tprintf $@:$<:$^\n", database,
@@ -139,9 +184,12 @@ async test "make parser marks phony targets declared before their rule" {
     cwd: ".",
     variables: Map([]),
     command_line_variables: Map([]),
-    exported: Set([]),
+    exported: ExportPolicy::new([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(".PHONY: clean\nclean:\n\techo clean\n", database, ".", 0)
   guard database.rules.get("clean") is Some(rule) else {
@@ -157,9 +205,12 @@ async test "make conditionals select one rule and pattern dependencies use stems
     cwd: ".",
     variables: Map([]),
     command_line_variables: Map([]),
-    exported: Set([]),
+    exported: ExportPolicy::new([]),
     rules: Map([]),
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: false,
   }
   parse_makefile(
     "MODE = yes\nifeq ($(MODE),yes)\nall: ready\n\techo yes\nelse\nall:\n\techo no\nendif\n%.o: %.c\n\techo $* $<\nfoo.o: %.o: %.c\n\techo $*\n",

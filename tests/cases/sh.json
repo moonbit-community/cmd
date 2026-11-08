@@ -439,7 +439,7 @@
         "help"
       ],
       "source_version": "workspace cli/sh@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports a bounded shell language; terminal job control is unavailable.\n",
+      "expected_stdout_text": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n  -c SOURCE   execute shell source\n  -s          read commands from standard input\n  -i          enable a persistent line-oriented interactive session\n  --help      display this help and exit\n  --version   display version and exit\nSupports arithmetic assignment, backticks, expanded here-documents, stdout/stderr copies, loop control and printf/test builtins.\nTerminal job control, descriptor import/closure and complete POSIX/Bash grammar remain unavailable.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nMalformed shell command lists reject before execution; complete EOF continuations execute.\nOn POSIX, every file-test operand ending in a slash must name a directory.\n",
       "expected_stderr_text": ""
     },
     {
@@ -458,7 +458,7 @@
         "version"
       ],
       "source_version": "workspace cli/sh@0.2.5 metadata contract",
-      "expected_stdout_text": "sh 0.2.5\n",
+      "expected_stdout_text": "sh 0.2.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -506,6 +506,5016 @@
         "positional-parameters"
       ],
       "source_version": "Independent stdin-script positional definition paired with the option-terminator case"
+    },
+    {
+      "id": "f31-sh-assignment-right-associative",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=2; printf '%s|%s|%s\\n' $((a=b=7)) \"$a\" \"$b\"; printf '%s|%s\\n' $((a+=b=3)) \"$a\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "7|7|7\n10|10\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-assignment-word-effects",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=1; b=$((a=5)); printf '%s|%s' \"$a\" \"$b\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "5|5",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-temporary-prefix-effects",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=1; a=2 b=$((a+=1)) true; printf '%s|%s' \"$a\" \"${b-unset}\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "1|unset",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-argv-before-prefix",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=1; b=$((a=5)) printf '%s|' \"$a\"; printf '%s' \"$a\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "1|5",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-assignment-compound",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=12; printf '%s|' $((a-=2)) $((a*=3)) $((a/=4)) $((a%=4)) $((a<<=3)) $((a>>=1)) $((a|=3)) $((a&=6)) $((a^=5)); printf '%s' \"$a\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "10|30|7|3|24|12|15|6|3|3",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-short-circuit-conditional",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=3; printf '%s|%s|%s|%s|%s\\n' $((0 && (a=9))) $((1 || (a=8))) $((1 ? a : 1/0)) $((0 ? (a=7) : a*2)) \"$a\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0|1|3|6|3\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-arithmetic-substitutions",
+      "command": "sh",
+      "args": [
+        "-c",
+        "b=3; printf '%s|%s|%s' $((a=$b+$(printf 4))) \"$a\" $((`printf 3`+2))"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "7|7|5",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-backticks-state-quoting",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=parent; printf '<%s>' `printf 'one two\\n\\n'` \"`a=child; printf '%s  \\n\\n' \"$a\"`\"; printf '|%s' \"$a\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<one><two><child  >|parent",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-backticks-nested",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%s' `printf '%s' \\`printf nested\\``"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "nested",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-backticks-status",
+      "command": "sh",
+      "args": [
+        "-c",
+        "value=`false`; printf '%s' $?"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "1",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-substitution-comment",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%s' \"$(printf ok # <<EOF\n)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "ok",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-substitution-hash-in-word",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%s' \"$(printf '%s' foo#bar)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "foo#bar",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-descriptor-copy-order",
+      "command": "sh",
+      "args": [
+        "-c",
+        "f() { printf out; printf err >&2; }; f 2>&1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "outerr",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-descriptor-input-copy",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf reverse 1<&2; printf copied 2<&1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "copied",
+      "expected_stderr_text": "reverse",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-loop-break-level",
+      "command": "sh",
+      "args": [
+        "-c",
+        "for a in 1 2; do for b in x y; do printf '%s%s' \"$a\" \"$b\"; break 2; done; done; printf done"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "1xdone",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-loop-continue-level",
+      "command": "sh",
+      "args": [
+        "-c",
+        "for a in 1 2; do for b in x y; do printf '%s%s' \"$a\" \"$b\"; continue 2; done; done; printf done"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "1x2xdone",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-loop-count-c-whitespace",
+      "command": "sh",
+      "args": [
+        "-c",
+        "for a in once; do break ' 1 '; done; for a in once; do continue '+01'; done; printf done"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "done",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-increment-project-extension",
+      "command": "sh",
+      "args": [
+        "-c",
+        "a=2; printf '%s|%s|%s|%s|%s|%s|%s|%s\\n' $((a++)) \"$a\" $((++a)) \"$a\" $((a--)) \"$a\" $((--a)) \"$a\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "2|3|4|4|4|3|2|2\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-heredoc-expansion",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { while IFS= read -r line; do printf '%s\\n' \"$line\"; done; }; value='a b'; copy <<EOF\n$value|$((2+3))|$(printf sub)|`printf old`\n\"quoted\" *.txt\nEOF\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "a b|5|sub|old\n\"quoted\" *.txt\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-heredoc-quoted",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { while IFS= read -r line; do printf '%s\\n' \"$line\"; done; }; copy <<'EOF'\n$value `printf wrong` $((1/0))\nEOF\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "$value `printf wrong` $((1/0))\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-heredoc-multiple",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { while IFS= read -r line; do printf '%s\\n' \"$line\"; done; }; copy <<FIRST <<SECOND\nfirst\nFIRST\nsecond\nSECOND\nprintf end"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "second\nend",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-heredoc-header-tail",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { while IFS= read -r line; do printf '%s\\n' \"$line\"; done; }; copy <<EOF; printf tail\nbody\nEOF\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "body\ntail",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-heredoc-tabs",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { while IFS= read -r line; do printf '%s\\n' \"$line\"; done; }; value=beta; copy <<-EOF\n\talpha\n\t\t$value\n\tEOF\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "alpha\nbeta\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-heredoc-delimiter-continuation",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { while IFS= read -r line; do printf '%s\\n' \"$line\"; done; }; value=changed; copy <<E\\\nOF\n$value\nEOF\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "changed\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-heredoc-continued-body-tabs",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { while IFS= read -r line; do printf '%s\\n' \"$line\"; done; }; copy <<-EOF\n\tone\\\n\t\ttwo\nEOF\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "one\t\ttwo\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-heredoc-substitution-close",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { while IFS= read -r line; do printf '%s\\n' \"$line\"; done; }; value=$(copy <<EOF\n)\nEOF\n); printf '<%s>' \"$value\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<)>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-printf-format-escapes",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '\\0102|\\377|\\cX'"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "08327cff7c5c6358"
+    },
+    {
+      "id": "f31-sh-printf-argument-escapes",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%bBAD' '\\0102\\377\\cwrong'"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "42ff"
+    },
+    {
+      "id": "f31-sh-printf-bytes-and-precision",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%c|%.1s|%5.2s' 'é' 'é' 'éa'"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "c37cc37c202020c3a9"
+    },
+    {
+      "id": "f31-sh-printf-integer-fields",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%+#08x|%+08d|%#.0o|%.0d|% 6.4d' 42 -12 0 0 7"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "30783030303032617c2d303030303031327c307c7c202030303037"
+    },
+    {
+      "id": "f31-sh-printf-stars",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%*.*s|%0*.*d' -5 2 abcd 6 3 7"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "61622020207c202020303037"
+    },
+    {
+      "id": "f31-sh-printf-floats",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%+.2f|%#.0f|%.2e|%.3g|%a|%A' 1.125 2 12.5 12345 3 0.5"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "2b312e31327c322e7c312e3235652b30317c312e3233652b30347c3078312e38702b317c305831502d31"
+    },
+    {
+      "id": "f31-sh-printf-blank-number",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf 'before%dafter' ' '"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "6265666f7265306166746572",
+      "expected_stderr_contains": "printf:",
+      "diagnostic_reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+    },
+    {
+      "id": "f31-sh-printf-prefix-number",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%d|%x|%.1f' 12oops 0x1Z 2.5tail"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "31327c317c322e35",
+      "expected_stderr_contains": "printf:",
+      "diagnostic_reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+    },
+    {
+      "id": "f31-sh-printf-empty-quoted",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%d|%d|%d|%d' '' \"'\" \"'é\" \"'AB\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "307c307c3139357c3635"
+    },
+    {
+      "id": "f31-sh-printf-range",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '%d|%u' 9223372036854775808 -18446744073709551616"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "393232333337323033363835343737353830377c3138343436373434303733373039353531363135",
+      "expected_stderr_contains": "printf:",
+      "diagnostic_reason": "Exact converted byte prefix and nonzero status accompany a printf diagnostic; executable path and platform wording differ."
+    },
+    {
+      "id": "f31-sh-printf-b-padding-stop",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '[%5.2b]after' 'a\\000b\\cwrong'"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stdout_hex": "5b2020206100"
+    },
+    {
+      "id": "f31-sh-test-no-operands",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-lone-negation",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "!"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-two-negations",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "!",
+        "!"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-three-negations",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "!",
+        "!",
+        "!"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-four-negations",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "!",
+        "!",
+        "!",
+        "!"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-double-negated-unary",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "!",
+        "!",
+        "-n",
+        "foo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-double-negated-empty-group",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "!",
+        "!",
+        "(",
+        ")"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-triple-negated-string",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "!",
+        "!",
+        "!",
+        "foo"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-top-level-negation-equality",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "!",
+        "=",
+        "!"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-grouped-negation-equality",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "(",
+        "!",
+        "=",
+        "!",
+        ")"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-compound-negation-equality",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "x",
+        "-a",
+        "!",
+        "=",
+        "!"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-top-level-parenthesis-equality",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "(",
+        "=",
+        "("
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-compound-parenthesis-equality",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "x",
+        "-a",
+        "(",
+        "=",
+        "("
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-unary-looking-equality",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "x",
+        "-a",
+        "-n",
+        "=",
+        "-n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-unary-missing-argument",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "x",
+        "-a",
+        "-n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-unary-operator-argument",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "x",
+        "-a",
+        "-n",
+        "="
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-missing-rhs-and",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "x",
+        "-a"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-missing-rhs-or",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "",
+        "-o"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-missing-rhs-in-group",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "(",
+        "x",
+        "-a",
+        ")"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-grouped-and-as-string",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "(",
+        "-a",
+        ")"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-or-evaluates-error",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "x",
+        "-o",
+        "bad",
+        "-eq",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-and-evaluates-error",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "",
+        "-a",
+        "bad",
+        "-eq",
+        "1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-precedence",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "x",
+        "-o",
+        "",
+        "-a",
+        ""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-decimal-leading-zero",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "010",
+        "-eq",
+        "10"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-decimal-leading-sign",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "+010",
+        "-eq",
+        "10"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-hexadecimal-rejected",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "0x10",
+        "-eq",
+        "16"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-octal-prefix-rejected",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "0o10",
+        "-eq",
+        "8"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-binary-prefix-rejected",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "0b10",
+        "-eq",
+        "2"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-underscores-rejected",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "1_0",
+        "-eq",
+        "10"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-vertical-tab-accepted",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "\u000b10\u000b",
+        "-eq",
+        "10"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-form-feed-accepted",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "\f10\f",
+        "-eq",
+        "10"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-nbsp-rejected",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        " 10 ",
+        "-eq",
+        "10"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-blank-rejected",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        " ",
+        "-eq",
+        "0"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-empty-rejected",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "",
+        "-eq",
+        "0"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-signed-minimum",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "-9223372036854775808",
+        "-eq",
+        "-9223372036854775808"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-signed-maximum",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "9223372036854775807",
+        "-eq",
+        "9223372036854775807"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-overflow-rejected",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "9223372036854775808",
+        "-eq",
+        "0"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "test:",
+      "diagnostic_reason": "Exact status 2 and empty output distinguish invalid expressions from false predicates; test diagnostic wording and shell path vary."
+    },
+    {
+      "id": "f31-sh-test-unicode-order",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test \"$@\"",
+        "sh",
+        "𐀀",
+        "<",
+        ""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-test-double-equals-extension",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test x == x; printf '%s' $?"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate"
+    },
+    {
+      "id": "f31-sh-redirect-effects",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf final > first > second; > empty; read value < second; printf '%s' \"$value\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "first",
+          "content_text": "old"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "final",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_files": [
+        {
+          "path": "first",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "second",
+          "kind": "file",
+          "content_text": "final"
+        },
+        {
+          "path": "empty",
+          "kind": "file",
+          "content_text": ""
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-arithmetic-prefix-failure",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf before; printf '%s' $((1/0)); printf wrong"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "before",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "division by zero",
+      "diagnostic_reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+    },
+    {
+      "id": "f31-sh-loop-count-reject-prefix",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf before; for a in once; do break 0x1; done; printf wrong"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "before",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "break:",
+      "diagnostic_reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+    },
+    {
+      "id": "f31-sh-loop-count-reject-underscore",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf before; for a in once; do continue 1_0; done; printf wrong"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "before",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 finite independent language contracts; execution receipts remain separate",
+      "expected_stderr_contains": "continue:",
+      "diagnostic_reason": "Exact earlier output and fatal status 2 are required; shell diagnostic branding is intentionally not normalized into an equality claim."
+    },
+    {
+      "id": "f31-sh-language-session",
+      "command": "sh",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 15000
+    },
+    {
+      "id": "f31-sh-merged-child",
+      "command": "sh",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 15000
+    },
+    {
+      "id": "f31-sh-audit-case-basic",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case x in x) printf ok;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-nested",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case x in x) case y in y) printf nested;; esac;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<nested>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-parenthesized-pattern",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case x in (x) printf ok;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-no-last-terminator",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case x in x) printf ok; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-subject-and-pattern-word",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case case in case) printf ok;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-quoted-close-pattern",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case ')' in ')') printf ok;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-quoted-esac-pattern",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case esac in 'esac') printf ok;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-command-subject",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case $(printf x) in x) printf ok;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-subshell-body",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case x in x) (printf ok);; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-comments",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(case x in # )\nx) printf ok # esac )\n;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-case-heredoc",
+      "command": "sh",
+      "args": [
+        "-c",
+        "copy() { IFS= read -r v; printf '%s' \"$v\"; }; printf '<%s>' \"$(case x in x) copy <<'EOF'\n) esac;; case (\nEOF\n;; esac)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<) esac;; case (>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-ordinary-case-argument-control",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(printf case; (printf group))\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<casegroup>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-ordinary-comment-control",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(# )\nprintf ok)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-continued-comment-boundary",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(\\\n# )\nprintf ok)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-continued-word-hash-control",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf '<%s>' \"$(printf '%s' word\\\n#hash)\""
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<word#hash>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-audit-stdin-case-continuation",
+      "command": "sh",
+      "args": [
+        "-s"
+      ],
+      "stdin_text": "value=$(case x in\nx)\nprintf ok;;\nesac)\nprintf '<%s>' \"$value\"\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "<ok>",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Finite fixed-source Dash 0.5.12 / GNU Make 4.4.1 audit counterexamples; execution receipts are separate"
+    },
+    {
+      "id": "f31-sh-printf-state",
+      "command": "sh",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 120000,
+      "oracle": false
+    },
+    {
+      "id": "f31-sh-printf-state-oracle",
+      "command": "sh",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "oracle-scenario",
+      "host_platforms": [
+        "linux"
+      ],
+      "timeout_ms": 120000,
+      "oracle": false
+    },
+    {
+      "id": "f31-sh-boundary-additional-descriptor",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf forbidden 3>marker"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: additional descriptors require a public child descriptor API\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_rejection": "additional descriptors require a public child descriptor API",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-boundary-descriptor-close",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf forbidden >&-"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: closing descriptors requires a public child descriptor API\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_rejection": "closing descriptors requires a public child descriptor API",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-boundary-descriptor-direction",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf forbidden 1<marker"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: changing a standard descriptor's access direction requires a public child descriptor API\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_rejection": "changing a standard descriptor's access direction requires a public child descriptor API",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-boundary-test-identity",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test marker -ef marker"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: test: '-ef' requires a public file identity API\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_rejection": "test: '-ef' requires a public file identity API",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-boundary-test-terminal",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -t 1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: test: '-t' requires a public terminal detection API\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_rejection": "test: '-t' requires a public terminal detection API",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-boundary-test-owner",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -O marker"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: test: '-O' requires a public permission/owner metadata API\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_rejection": "test: '-O' requires a public permission/owner metadata API",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-test-raw-link-paths",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -L dangling; printf '%s|' $?; test -e dangling; printf '%s|' $?; test -e cycle; printf '%s|' $?; test -s alias/../marker; printf '%s|' $?; test -d marker/child; printf '%s' $?"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "real/nested",
+          "kind": "directory",
+          "content_text": ""
+        },
+        {
+          "path": "real/marker",
+          "kind": "file",
+          "content_text": "present"
+        },
+        {
+          "path": "marker",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing",
+          "content_text": ""
+        },
+        {
+          "path": "cycle",
+          "kind": "symlink",
+          "target": "cycle",
+          "content_text": ""
+        },
+        {
+          "path": "alias",
+          "kind": "symlink",
+          "target": "real/nested",
+          "content_text": ""
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0|1|1|0|1",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-sh-printf-linux-nan-signs",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf \"$@\"",
+        "sh",
+        "%+a|% a|%A\n",
+        "nan",
+        "-nan",
+        "-nan"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "Fixed Linux C NaN sign/format expectations reused from the independent standalone printf profile; Dash differential execution remains separately required",
+      "expected_stdout_hex": "2b6e616e7c2d6e616e7c2d4e414e0a",
+      "expected_stderr_hex": "",
+      "oracle": true,
+      "coverage": []
+    },
+    {
+      "id": "f31-sh-test-windows-parent-path",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e missing/../known; printf '%s|' $?; test -f missing/../known; printf '%s|' $?; test -s missing/../known; printf '%s|' $?; test -d missing/../known; printf '%s|' $?; test missing/../known -nt known; printf '%s' $?"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "known",
+          "content_text": "data"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0|0|0|1|1",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        },
+        {
+          "path": "known",
+          "kind": "file",
+          "content_text": "data"
+        }
+      ],
+      "host_platforms": [
+        "windows"
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Windows host path normalization profile; independent File.Exists/ReadAllText observer in core/shell/test_wbtest.mbt must pass in Windows package CI"
+    },
+    {
+      "id": "f31-sh-test-size-targets",
+      "command": "sh",
+      "args": [
+        "-c",
+        "for path in empty full empty-link full-link empty-chain full-chain dangling cycle cycle-a; do test -s \"$path\"; printf '%s|' $?; done; for path in empty-link dangling cycle cycle-a; do test -L \"$path\"; printf '%s|' $?; done"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symbolic-link",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symbolic-link",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symbolic-link",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symbolic-link",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symbolic-link",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symbolic-link",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symbolic-link",
+          "target": "cycle-a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "1|0|1|0|1|0|1|1|1|0|0|0|0|",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "expected_files": [
+        {
+          "path": "empty",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symlink",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symlink",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symlink",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symlink",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symlink",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symlink",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symlink",
+          "target": "cycle-a"
+        }
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-raw-components",
+      "command": "sh",
+      "args": [
+        "-c",
+        "for path in alias/../marker missing/../real/marker marker/../real/marker real/marker/ file-link/ file-link//; do test -s \"$path\"; printf '%s|' $?; done"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "real/nested",
+          "kind": "directory"
+        },
+        {
+          "path": "real/marker",
+          "content_text": "payload"
+        },
+        {
+          "path": "marker",
+          "content_text": ""
+        },
+        {
+          "path": "alias",
+          "kind": "symbolic-link",
+          "target": "real/nested"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "real/marker"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0|1|1|1|1|1|",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "linux",
+        "macos"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_files": [
+        {
+          "path": "real/marker",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "marker",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "alias",
+          "kind": "symlink",
+          "target": "real/nested"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "real/marker"
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-macos-directory",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -s directory"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "macos"
+      ],
+      "expected_rejection": "test: '-s' target size is unavailable through the public filesystem API: 'directory'",
+      "observe": [
+        "type",
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-macos-link",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -s link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "sh: test: '-s' target size is unavailable through the public filesystem API: 'link'\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "macos"
+      ],
+      "expected_rejection": "test: '-s' target size is unavailable through the public filesystem API: 'link'",
+      "observe": [
+        "type",
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-macos-expression-recovery",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf before; test -s directory; printf '|%s' $?; test ! -s directory; printf '|%s' $?; test x -o -s directory; printf '|%s' $?; test '' -a -s directory; result=$?; printf '|%s|after' \"$result\"; exit \"$result\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "before|2|2|2|2|after",
+      "expected_stderr_text": "sh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\nsh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\nsh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\nsh: test: '-s' target size is unavailable through the public filesystem API: 'directory'\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "macos"
+      ],
+      "observe": [
+        "type",
+        "symlink-target"
+      ],
+      "expected_files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "directory"
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-linux-directories",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -s directory; printf '%s|' $?; test -s link; printf '%s|' $?; test -s directory/; printf '%s|' $?; test -s link/; printf '%s' $?"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "0|0|0|0",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "host_platforms": [
+        "linux"
+      ],
+      "observe": [
+        "type",
+        "symlink-target"
+      ],
+      "expected_files": [
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "directory"
+        }
+      ]
+    },
+    {
+      "id": "f31-sh-test-size-platform",
+      "command": "sh",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 60000
+    },
+    {
+      "id": "f31-sh-test-size-posix",
+      "command": "sh",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "host_platforms": [
+        "linux",
+        "macos"
+      ]
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-then",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; then"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-else",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; else"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-elif",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; elif"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-fi",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-do",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; do"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-done",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; done"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-in",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; in"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-reserved-esac",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf prefix; printf wrong > marker; esac"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-pipe-reserved",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker | then"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-assignment-before-word",
+      "command": "sh",
+      "args": [
+        "-c",
+        "A=value then"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 127,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-shell-capture-redirect-before-word",
+      "command": "sh",
+      "args": [
+        "-c",
+        "> marker then"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 127,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "content_text": ""
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed GNU Make 4.4.1 / Dash 0.5.12 observations, same-line shell error, raw capture and recovery contracts; separate product and pinned Linux execution required",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Require the syntax/runtime error category or failing operand with exact status, stdout and file effects. GNU and project source-location/wording differ; byte-identical stderr is not claimed."
+    },
+    {
+      "id": "f31-sh-export-audit-if-and-close",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if true && then printf wrong; fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-while-or-close",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; while true || do break; done"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-group-and-close",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; (true &&)"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-if-empty-body",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if true; then fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-if-empty-condition",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if ; then printf wrong; fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-for-empty-body",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; for x in a; do done"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-if-empty-else",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if false; then :; else fi"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-function-empty",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; foo() { }"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-subshell-empty",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; ()"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-group-empty",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; { }"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-while-empty-condition",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; while ; do :; done"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_contains": "unexpected",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-sh-export-audit-empty-case-arms",
+      "command": "sh",
+      "args": [
+        "-c",
+        "case x in x) ;; esac; case x in esac; for x in; do :; done; printf ok"
+      ],
+      "files": [],
+      "stdin_text": "",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "ok",
+      "expected_files": [],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent fixed GNU Make 4.4.1/Dash0.5.12 export and syntax observations; raw receipts separate from definitions",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-eof-command-empty-continuation",
+      "command": "sh",
+      "args": [
+        "-c",
+        "\\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-eof-command-complete-continuation",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf kept\\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "kept",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-eof-stdin-complete-continuation",
+      "command": "sh",
+      "args": [
+        "-s"
+      ],
+      "stdin_text": "printf kept\\\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "kept",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-eof-command-incomplete-if",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; if true; then \\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "end",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Exact shell status, captured stdout and file effects distinguish no command, failed lookup, invalid grammar and missing -c argument; platform diagnostic prefixes differ."
+    },
+    {
+      "id": "f31-sh-eof-command-incomplete-quote",
+      "command": "sh",
+      "args": [
+        "-c",
+        "printf wrong > marker; printf 'unclosed\\\n"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_contains": "quote",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "An unfinished quoted command fails with status 2 before any command-list effects. The quote category is required in both diagnostics; shell prefixes, line numbers and wording differ."
+    },
+    {
+      "id": "f31-sh-eof-valid-logical-compounds",
+      "command": "sh",
+      "args": [
+        "-c",
+        "(true && true); if true && true; then :; fi; printf '%s' \"$(case x in x) ;; esac)\"; printf ok"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "ok",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-sh-raw-file-test-file-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'file/'; printf '%s\\n' \"$?\"; test -f 'file/'; printf '%s\\n' \"$?\"; test -d 'file/'; printf '%s\\n' \"$?\"; test -b 'file/'; printf '%s\\n' \"$?\"; test -c 'file/'; printf '%s\\n' \"$?\"; test -p 'file/'; printf '%s\\n' \"$?\"; test -S 'file/'; printf '%s\\n' \"$?\"; test -L 'file/'; printf '%s\\n' \"$?\"; test -h 'file/'; printf '%s\\n' \"$?\"; test -r 'file/'; printf '%s\\n' \"$?\"; test -w 'file/'; printf '%s\\n' \"$?\"; test -x 'file/'; printf '%s\\n' \"$?\"; test -s 'file/'; printf '%s\\n' \"$?\"; test 'file/' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file/'; printf '%s\\n' \"$?\"; test 'file/' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file/'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-file-double-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'file//'; printf '%s\\n' \"$?\"; test -f 'file//'; printf '%s\\n' \"$?\"; test -d 'file//'; printf '%s\\n' \"$?\"; test -b 'file//'; printf '%s\\n' \"$?\"; test -c 'file//'; printf '%s\\n' \"$?\"; test -p 'file//'; printf '%s\\n' \"$?\"; test -S 'file//'; printf '%s\\n' \"$?\"; test -L 'file//'; printf '%s\\n' \"$?\"; test -h 'file//'; printf '%s\\n' \"$?\"; test -r 'file//'; printf '%s\\n' \"$?\"; test -w 'file//'; printf '%s\\n' \"$?\"; test -x 'file//'; printf '%s\\n' \"$?\"; test -s 'file//'; printf '%s\\n' \"$?\"; test 'file//' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file//'; printf '%s\\n' \"$?\"; test 'file//' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file//'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-file-link-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'file-link/'; printf '%s\\n' \"$?\"; test -f 'file-link/'; printf '%s\\n' \"$?\"; test -d 'file-link/'; printf '%s\\n' \"$?\"; test -b 'file-link/'; printf '%s\\n' \"$?\"; test -c 'file-link/'; printf '%s\\n' \"$?\"; test -p 'file-link/'; printf '%s\\n' \"$?\"; test -S 'file-link/'; printf '%s\\n' \"$?\"; test -L 'file-link/'; printf '%s\\n' \"$?\"; test -h 'file-link/'; printf '%s\\n' \"$?\"; test -r 'file-link/'; printf '%s\\n' \"$?\"; test -w 'file-link/'; printf '%s\\n' \"$?\"; test -x 'file-link/'; printf '%s\\n' \"$?\"; test -s 'file-link/'; printf '%s\\n' \"$?\"; test 'file-link/' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-link/'; printf '%s\\n' \"$?\"; test 'file-link/' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-link/'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-file-link-double-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'file-link//'; printf '%s\\n' \"$?\"; test -f 'file-link//'; printf '%s\\n' \"$?\"; test -d 'file-link//'; printf '%s\\n' \"$?\"; test -b 'file-link//'; printf '%s\\n' \"$?\"; test -c 'file-link//'; printf '%s\\n' \"$?\"; test -p 'file-link//'; printf '%s\\n' \"$?\"; test -S 'file-link//'; printf '%s\\n' \"$?\"; test -L 'file-link//'; printf '%s\\n' \"$?\"; test -h 'file-link//'; printf '%s\\n' \"$?\"; test -r 'file-link//'; printf '%s\\n' \"$?\"; test -w 'file-link//'; printf '%s\\n' \"$?\"; test -x 'file-link//'; printf '%s\\n' \"$?\"; test -s 'file-link//'; printf '%s\\n' \"$?\"; test 'file-link//' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-link//'; printf '%s\\n' \"$?\"; test 'file-link//' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-link//'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-file-chain-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'file-chain/'; printf '%s\\n' \"$?\"; test -f 'file-chain/'; printf '%s\\n' \"$?\"; test -d 'file-chain/'; printf '%s\\n' \"$?\"; test -b 'file-chain/'; printf '%s\\n' \"$?\"; test -c 'file-chain/'; printf '%s\\n' \"$?\"; test -p 'file-chain/'; printf '%s\\n' \"$?\"; test -S 'file-chain/'; printf '%s\\n' \"$?\"; test -L 'file-chain/'; printf '%s\\n' \"$?\"; test -h 'file-chain/'; printf '%s\\n' \"$?\"; test -r 'file-chain/'; printf '%s\\n' \"$?\"; test -w 'file-chain/'; printf '%s\\n' \"$?\"; test -x 'file-chain/'; printf '%s\\n' \"$?\"; test -s 'file-chain/'; printf '%s\\n' \"$?\"; test 'file-chain/' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-chain/'; printf '%s\\n' \"$?\"; test 'file-chain/' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-chain/'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-file-chain-double-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'file-chain//'; printf '%s\\n' \"$?\"; test -f 'file-chain//'; printf '%s\\n' \"$?\"; test -d 'file-chain//'; printf '%s\\n' \"$?\"; test -b 'file-chain//'; printf '%s\\n' \"$?\"; test -c 'file-chain//'; printf '%s\\n' \"$?\"; test -p 'file-chain//'; printf '%s\\n' \"$?\"; test -S 'file-chain//'; printf '%s\\n' \"$?\"; test -L 'file-chain//'; printf '%s\\n' \"$?\"; test -h 'file-chain//'; printf '%s\\n' \"$?\"; test -r 'file-chain//'; printf '%s\\n' \"$?\"; test -w 'file-chain//'; printf '%s\\n' \"$?\"; test -x 'file-chain//'; printf '%s\\n' \"$?\"; test -s 'file-chain//'; printf '%s\\n' \"$?\"; test 'file-chain//' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-chain//'; printf '%s\\n' \"$?\"; test 'file-chain//' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-chain//'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-dangling-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'dangling/'; printf '%s\\n' \"$?\"; test -f 'dangling/'; printf '%s\\n' \"$?\"; test -d 'dangling/'; printf '%s\\n' \"$?\"; test -b 'dangling/'; printf '%s\\n' \"$?\"; test -c 'dangling/'; printf '%s\\n' \"$?\"; test -p 'dangling/'; printf '%s\\n' \"$?\"; test -S 'dangling/'; printf '%s\\n' \"$?\"; test -L 'dangling/'; printf '%s\\n' \"$?\"; test -h 'dangling/'; printf '%s\\n' \"$?\"; test -r 'dangling/'; printf '%s\\n' \"$?\"; test -w 'dangling/'; printf '%s\\n' \"$?\"; test -x 'dangling/'; printf '%s\\n' \"$?\"; test -s 'dangling/'; printf '%s\\n' \"$?\"; test 'dangling/' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'dangling/'; printf '%s\\n' \"$?\"; test 'dangling/' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'dangling/'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-file-parent",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'file/../file'; printf '%s\\n' \"$?\"; test -f 'file/../file'; printf '%s\\n' \"$?\"; test -d 'file/../file'; printf '%s\\n' \"$?\"; test -b 'file/../file'; printf '%s\\n' \"$?\"; test -c 'file/../file'; printf '%s\\n' \"$?\"; test -p 'file/../file'; printf '%s\\n' \"$?\"; test -S 'file/../file'; printf '%s\\n' \"$?\"; test -L 'file/../file'; printf '%s\\n' \"$?\"; test -h 'file/../file'; printf '%s\\n' \"$?\"; test -r 'file/../file'; printf '%s\\n' \"$?\"; test -w 'file/../file'; printf '%s\\n' \"$?\"; test -x 'file/../file'; printf '%s\\n' \"$?\"; test -s 'file/../file'; printf '%s\\n' \"$?\"; test 'file/../file' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file/../file'; printf '%s\\n' \"$?\"; test 'file/../file' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file/../file'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-file-link-parent",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'file-link/../file'; printf '%s\\n' \"$?\"; test -f 'file-link/../file'; printf '%s\\n' \"$?\"; test -d 'file-link/../file'; printf '%s\\n' \"$?\"; test -b 'file-link/../file'; printf '%s\\n' \"$?\"; test -c 'file-link/../file'; printf '%s\\n' \"$?\"; test -p 'file-link/../file'; printf '%s\\n' \"$?\"; test -S 'file-link/../file'; printf '%s\\n' \"$?\"; test -L 'file-link/../file'; printf '%s\\n' \"$?\"; test -h 'file-link/../file'; printf '%s\\n' \"$?\"; test -r 'file-link/../file'; printf '%s\\n' \"$?\"; test -w 'file-link/../file'; printf '%s\\n' \"$?\"; test -x 'file-link/../file'; printf '%s\\n' \"$?\"; test -s 'file-link/../file'; printf '%s\\n' \"$?\"; test 'file-link/../file' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-link/../file'; printf '%s\\n' \"$?\"; test 'file-link/../file' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-link/../file'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-directory-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'directory/'; printf '%s\\n' \"$?\"; test -d 'directory/'; printf '%s\\n' \"$?\"; test -f 'directory/'; printf '%s\\n' \"$?\"; test -L 'directory/'; printf '%s\\n' \"$?\"; test -h 'directory/'; printf '%s\\n' \"$?\"; test 'directory/' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory/'; printf '%s\\n' \"$?\"; test 'directory/' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory/'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-directory-double-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'directory//'; printf '%s\\n' \"$?\"; test -d 'directory//'; printf '%s\\n' \"$?\"; test -f 'directory//'; printf '%s\\n' \"$?\"; test -L 'directory//'; printf '%s\\n' \"$?\"; test -h 'directory//'; printf '%s\\n' \"$?\"; test 'directory//' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory//'; printf '%s\\n' \"$?\"; test 'directory//' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory//'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-directory-link-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'directory-link/'; printf '%s\\n' \"$?\"; test -d 'directory-link/'; printf '%s\\n' \"$?\"; test -f 'directory-link/'; printf '%s\\n' \"$?\"; test -L 'directory-link/'; printf '%s\\n' \"$?\"; test -h 'directory-link/'; printf '%s\\n' \"$?\"; test 'directory-link/' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory-link/'; printf '%s\\n' \"$?\"; test 'directory-link/' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory-link/'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-directory-link-double-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'directory-link//'; printf '%s\\n' \"$?\"; test -d 'directory-link//'; printf '%s\\n' \"$?\"; test -f 'directory-link//'; printf '%s\\n' \"$?\"; test -L 'directory-link//'; printf '%s\\n' \"$?\"; test -h 'directory-link//'; printf '%s\\n' \"$?\"; test 'directory-link//' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory-link//'; printf '%s\\n' \"$?\"; test 'directory-link//' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory-link//'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-directory-chain-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'directory-chain/'; printf '%s\\n' \"$?\"; test -d 'directory-chain/'; printf '%s\\n' \"$?\"; test -f 'directory-chain/'; printf '%s\\n' \"$?\"; test -L 'directory-chain/'; printf '%s\\n' \"$?\"; test -h 'directory-chain/'; printf '%s\\n' \"$?\"; test 'directory-chain/' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory-chain/'; printf '%s\\n' \"$?\"; test 'directory-chain/' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory-chain/'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-directory-chain-double-slash",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -e 'directory-chain//'; printf '%s\\n' \"$?\"; test -d 'directory-chain//'; printf '%s\\n' \"$?\"; test -f 'directory-chain//'; printf '%s\\n' \"$?\"; test -L 'directory-chain//'; printf '%s\\n' \"$?\"; test -h 'directory-chain//'; printf '%s\\n' \"$?\"; test 'directory-chain//' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory-chain//'; printf '%s\\n' \"$?\"; test 'directory-chain//' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory-chain//'; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-sh-raw-file-test-unsuffixed-links",
+      "command": "sh",
+      "args": [
+        "-c",
+        "test -f file-link; printf '%s\\n' \"$?\"; test -L file-link; printf '%s\\n' \"$?\"; test -h file-chain; printf '%s\\n' \"$?\"; test -s file-chain; printf '%s\\n' \"$?\"; test -d directory-link; printf '%s\\n' \"$?\"; test -L directory-link; printf '%s\\n' \"$?\"; test -h directory-chain; printf '%s\\n' \"$?\"; test -L dangling; printf '%s\\n' \"$?\""
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n0\n0\n0\n0\n0\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
     }
   ]
 }

@@ -197,6 +197,7 @@ fn html_node_line(
   if options.html_colors {
     let class_name = match node.kind {
       Directory => "DIR"
+      SymLink => "LINK"
       Pipe => "FIFO"
       Socket => "SOCK"
       BlockDevice => "BLOCK"

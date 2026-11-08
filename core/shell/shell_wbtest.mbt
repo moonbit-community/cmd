@@ -32,7 +32,13 @@ async test "variables export independently and assignment values do not split" {
   )
   let jobs = parse("TEMP=$VALUE command $LOCAL")
   let prepared = match jobs[0].statement {
-    Pipeline(pipeline) => prepare(pipeline.commands[0], session.context)
+    Pipeline(pipeline) => {
+      let (argv, assignments) = prepare_words(
+        pipeline.commands[0],
+        session.context,
+      )
+      prepare_assignments(argv, assignments, session.context)
+    }
     _ => fail("expected pipeline")
   }
   assert_eq(prepared.argv, ["command", "one", "two"])

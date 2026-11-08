@@ -635,11 +635,25 @@
       "reviewed": true,
       "case_ids": [
         "base32-rfc4648-decode",
-        "base32-nonzero-tail-bits-accepted",
+        "base32-nonzero-tail-bits-rejected",
         "base32-uppercase-only",
-        "base32-prefix-before-malformed-padding"
+        "base32-prefix-before-malformed-padding",
+        "f17-base32-decode-0",
+        "f17-base32-decode-1",
+        "f17-base32-decode-2",
+        "f17-base32-decode-3",
+        "f17-base32-decode-4",
+        "f17-base32-decode-5",
+        "f17-base32-decode-6",
+        "f17-base32-decode-7",
+        "f17-base32-decode-8",
+        "f17-base32-decode-9",
+        "f17-base32-decode-10",
+        "f17-base32-decode-11",
+        "f17-base32-decode-12",
+        "f17-base32-decode-13"
       ],
-      "activation": "Known RFC4648 inputs decode to exact bytes, including the retained nonzero-tail-bit profile. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
+      "activation": "Known RFC4648 inputs decode to exact bytes, with canonical tail bits; nonzero tail bits reject after retaining the determined prefix. The fixed GNU9.11/gnulib vectors separately bind absent padding, incomplete explicit padding, concatenated groups and malformed later symbols. An incomplete explicit Base32 quantum emits no bytes from that quantum, while an earlier completed group remains. Lowercase input rejects. Exact stdout/stderr/status are independent expectations; definitions do not establish a runtime pass.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -1121,9 +1135,21 @@
       "case_ids": [
         "compat-text-line-642",
         "compat-text-line-633",
-        "compat-text-line-652"
+        "compat-text-line-652",
+        "f17-base64-decode-0",
+        "f17-base64-decode-1",
+        "f17-base64-decode-2",
+        "f17-base64-decode-3",
+        "f17-base64-decode-4",
+        "f17-base64-decode-5",
+        "f17-base64-decode-6",
+        "f17-base64-decode-7",
+        "f17-base64-decode-8",
+        "f17-base64-decode-9",
+        "f17-base64-decode-10",
+        "f17-base64-decode-11"
       ],
-      "activation": "Explicit-D decodes known aGk= to hi. Lowercase-d malformed padding and invalid input length require complete diagnostics, status and the original emitted-prefix bytes.",
+      "activation": "The project -D alias decodes known aGk= to hi. Fixed GNU9.11/gnulib vectors bind absent padding, concatenated padded groups, canonical tail bits and determined bytes before later invalid symbols, including incomplete explicit padding. Every failure asserts its independent exact prefix and invalid-input diagnostic/status1; successful concatenated YQ== groups yield aa. Definitions alone are not runtime or upstream execution evidence.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -2408,9 +2434,19 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [
-        "proof-jq-from-file-filter"
+        "proof-jq-from-file-filter",
+        "f17-jq-literal-filter-file-short",
+        "f17-jq-literal-filter-file-long",
+        "f17-jq-file-mode-leading-dash-short",
+        "f17-jq-file-mode-leading-dash-long",
+        "f17-jq-file-mode-intervening-option",
+        "f17-jq-file-mode-cluster",
+        "f17-jq-file-mode-repeated",
+        "f17-jq-file-mode-after-program",
+        "f17-jq-file-mode-missing",
+        "f17-jq-file-mode-attached-long"
       ],
-      "activation": "--from-file filter reads actual .a source from a fixture, applies it to stdin object a=2 and emits2 LF. This is filter loading, unlike jqlog -f input-file selection.",
+      "activation": "The original --from-file filter contract retains exact2 LF from stdin a=2. File mode is a flag: clustered/repeated/intervening/late options still select the first positional as the filter file; -- admits a leading-dash filename. Without --, --arg is parsed as an option and its missing value fails2. Missing program and attached long values fail2 without output or filesystem changes. All local streams are exact; the fixed jq1.8.2 comparison uses stated narrower diagnostics where help wording differs. This is filter loading, unlike jqlog -f input-file selection.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -5671,6 +5707,12 @@
           "assertions": [
             "find/amin"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -5697,6 +5739,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/atime"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5725,6 +5773,12 @@
           "assertions": [
             "find/cmin"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -5751,6 +5805,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/ctime"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5779,6 +5839,12 @@
           "assertions": [
             "find/mmin"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -5805,6 +5871,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/anewer"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5833,6 +5905,12 @@
           "assertions": [
             "find/cnewer"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -5857,7 +5935,7 @@
         "coverage-find-reject--newermB",
         "coverage-find-reject--newermt"
       ],
-      "activation": "All nine supported a/c/m source/reference combinations execute true/false comparisons with independently checked timestamp relations, including strict equality rejection for c/c. Birth and literal-time selectors reject explicitly without touching a sentinel; POSIX timestamp scenario plus portable rejection vectors.",
+      "activation": "Nine a/c/m selectors require 144 independent source/reference comparisons on POSIX and Windows, including ties, distinct a/m fields and reversed birth-versus-change order. Real metadata and preservation receipts survive cleanup. Windows observes actual ChangeTime, NTFS file IDs and ACLs separately; these are not POSIX mode claims. Fixed Linux comparison is independently executed.",
       "scenario_bindings": [
         {
           "case_id": "metadata-relations",
@@ -5870,7 +5948,23 @@
             "find/newercm",
             "find/newerma",
             "find/newermc",
-            "find/newermm"
+            "find/newermm",
+            "find/selectors-neweraa",
+            "find/selectors-newerac",
+            "find/selectors-neweram",
+            "find/selectors-newerca",
+            "find/selectors-newercc",
+            "find/selectors-newercm",
+            "find/selectors-newerma",
+            "find/selectors-newermc",
+            "find/selectors-newermm",
+            "find/selectors-preserved"
+          ]
+        },
+        {
+          "case_id": "f29-windows-metadata",
+          "assertions": [
+            "find/windows-selectors"
           ]
         }
       ],
@@ -5898,6 +5992,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/used"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -7972,8 +8072,21 @@
         "coverage-test-time--nt-new-missing",
         "coverage-test-time--ot-missing-new"
       ],
-      "activation": "Independently fixed old/new/equal mtimes exercise both -nt/-ot true, false, equality and documented one-missing-file relations, with exact statuses and empty streams; POSIX.",
-      "scenario_bindings": [],
+      "activation": "Fixed old/new/equal, missing either/both, followed-link and three -N relations are independently checked; Windows uses real UTC setters and observations. Actual same-second distinct subsecond mtimes distinguish full timestamps from truncation. Definitions do not establish execution.",
+      "scenario_bindings": [
+        {
+          "case_id": "f29-windows-metadata",
+          "assertions": [
+            "test/windows-metadata"
+          ]
+        },
+        {
+          "case_id": "f29-subsecond-order",
+          "assertions": [
+            "test/subsecond-order"
+          ]
+        }
+      ],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
       "remaining_facets": [
@@ -8571,9 +8684,10 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [
-        "repair-fs-ln-no-dereference"
+        "repair-fs-ln-no-dereference",
+        "f17-ln-alias-no-dereference"
       ],
-      "activation": "-sfn replaces a destination symlink itself with target source and requires directory/source absent; it therefore distinguishes replacing the link from writing inside its referent.",
+      "activation": "-sfn and the actual public --no-dereference spelling replace a destination symlink itself with target source and require directory/source absent; they distinguish replacing the link from writing inside its referent. no-dereference-target is only a stable catalog semantic identifier, not a supported long option.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -9433,9 +9547,12 @@
       "reviewed": true,
       "case_ids": [
         "phase4-rmdir-ignore-nonempty",
-        "coverage-rmdir-parent-nonempty"
+        "coverage-rmdir-parent-nonempty",
+        "f17-rmdir-ignore-short",
+        "f17-rmdir-ignore-long",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
-      "activation": "Explicit suppression returns 0 with empty streams for a nonempty operand or parent, retaining the child bytes while still removing the empty descendant.",
+      "activation": "Both project -I and public --ignore-fail-on-non-empty return0 for an actual nonempty directory while retaining child bytes. Suppression stops parent traversal. These finite bindings require exact streams/status and filesystem effects. Separate f17 regular-file, missing-path and POSIX symlink controls require status1, empty stdout, an operand-specific diagnostic and preserved files; their host-dependent diagnostic substrings do not qualify as exact diagnostic coverage. Definitions are not execution evidence.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -9456,7 +9573,8 @@
       "reviewed": true,
       "case_ids": [
         "coverage-rmdir-parents-verbose",
-        "coverage-rmdir-parent-nonempty"
+        "coverage-rmdir-parent-nonempty",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
       "activation": "-p removes each disposable empty ancestor in child-first order, retains a nonempty ancestor and its sibling sentinel with explicit suppression, and never removes the fixture root.",
       "scenario_bindings": [],
@@ -9478,9 +9596,10 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [
-        "coverage-rmdir-parents-verbose"
+        "coverage-rmdir-parents-verbose",
+        "f17-rmdir-ignored-failure-stops-parents"
       ],
-      "activation": "-v reports the exact three removed directory paths in child-first order and the top directory must actually be absent.",
+      "activation": "-v reports each removal attempt before it occurs. The successful nested case requires all three directory paths absent; the ignored-failure case requires only the first attempt and retains the nonempty child and ancestors, proving parent traversal stops.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -9896,9 +10015,12 @@
       "reviewed": true,
       "case_ids": [
         "o12-more-1",
-        "o12-more-20"
+        "o12-more-20",
+        "tree-links-dirs-only",
+        "tree-links-explicit-dirs",
+        "tree-links-explicit-dirs-json"
       ],
-      "activation": "-d removes regular files from text and JSON trees while retaining nested directories and adjusted report counts.",
+      "activation": "-d removes regular files from text and JSON trees while retaining nested directories and adjusted report counts. The name-only link profile excludes discovered links, retaining explicit link operands with zero directory counts (POSIX CLI link fixtures).",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -9989,9 +10111,11 @@
       "case_ids": [
         "o12-basic-2",
         "o12-basic-3",
-        "o12-more-29"
+        "o12-more-29",
+        "tree-links-json",
+        "tree-links-root-json"
       ],
-      "activation": "-J emits exact structured entry hierarchy and counts, including a size-bearing file. -JC remains JSON without ANSI rather than turning into colored text.",
+      "activation": "-J emits exact structured entry hierarchy and counts, including a size-bearing file. -JC remains JSON without ANSI rather than turning into colored text. Exact POSIX link cases identify link leaves and preserve report counts without target fields or traversal.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -10012,9 +10136,10 @@
       "reviewed": true,
       "case_ids": [
         "o12-html-safe-title-base",
-        "o12-html-safe-name"
+        "o12-html-safe-name",
+        "tree-links-html"
       ],
-      "activation": "-H emits complete expected HTML with escaped display names and escaped href attributes, including quotes, ampersands and angle brackets. This is generated presentation, not network retrieval.",
+      "activation": "-H emits complete expected HTML with escaped display names and escaped href attributes, including quotes, ampersands and angle brackets. This is generated presentation, not network retrieval. A dangling-link CLI operand emits the full expected HTML with LINK classification and no invented target text (POSIX fixture).",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -11908,9 +12033,25 @@
       "reviewed": true,
       "case_ids": [
         "coverage-make-silent",
-        "coverage-make-silent-control"
+        "coverage-make-silent-control",
+        "f31-make-raw-file-test-file-slash",
+        "f31-make-raw-file-test-file-double-slash",
+        "f31-make-raw-file-test-file-link-slash",
+        "f31-make-raw-file-test-file-link-double-slash",
+        "f31-make-raw-file-test-file-chain-slash",
+        "f31-make-raw-file-test-file-chain-double-slash",
+        "f31-make-raw-file-test-dangling-slash",
+        "f31-make-raw-file-test-file-parent",
+        "f31-make-raw-file-test-file-link-parent",
+        "f31-make-raw-file-test-directory-slash",
+        "f31-make-raw-file-test-directory-double-slash",
+        "f31-make-raw-file-test-directory-link-slash",
+        "f31-make-raw-file-test-directory-link-double-slash",
+        "f31-make-raw-file-test-directory-chain-slash",
+        "f31-make-raw-file-test-directory-chain-double-slash",
+        "f31-make-raw-file-test-unsuffixed-links"
       ],
-      "activation": "A non-@ recipe prints its command and hello normally; -s removes only the command echo while retaining exact recipe output.",
+      "activation": "A non-@ recipe prints its command and hello normally; -s removes only the command echo while retaining exact recipe output. Sixteen additional POSIX raw-path definitions execute actual file predicates through silent recipes: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -11989,9 +12130,25 @@
         "compat-shell-line-59",
         "compat-shell-line-68",
         "compat-shell-line-95",
-        "p0-sh-public-error"
+        "p0-sh-public-error",
+        "f31-sh-raw-file-test-file-slash",
+        "f31-sh-raw-file-test-file-double-slash",
+        "f31-sh-raw-file-test-file-link-slash",
+        "f31-sh-raw-file-test-file-link-double-slash",
+        "f31-sh-raw-file-test-file-chain-slash",
+        "f31-sh-raw-file-test-file-chain-double-slash",
+        "f31-sh-raw-file-test-dangling-slash",
+        "f31-sh-raw-file-test-file-parent",
+        "f31-sh-raw-file-test-file-link-parent",
+        "f31-sh-raw-file-test-directory-slash",
+        "f31-sh-raw-file-test-directory-double-slash",
+        "f31-sh-raw-file-test-directory-link-slash",
+        "f31-sh-raw-file-test-directory-link-double-slash",
+        "f31-sh-raw-file-test-directory-chain-slash",
+        "f31-sh-raw-file-test-directory-chain-double-slash",
+        "f31-sh-raw-file-test-unsuffixed-links"
       ],
-      "activation": "The retained-c fixtures bind their exact finite shell-language outputs and statuses; unsupported array syntax now requires the complete rejection diagnostic before any command effects.",
+      "activation": "The retained-c fixtures bind their exact finite shell-language outputs and statuses; unsupported array syntax now requires the complete rejection diagnostic before any command effects. Sixteen additional POSIX raw-path definitions execute actual file predicates through -c command source: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -17081,9 +17238,25 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [
-        "o5-filter-stdout-inherited"
+        "o5-filter-stdout-inherited",
+        "f31-split-raw-file-test-file-slash",
+        "f31-split-raw-file-test-file-double-slash",
+        "f31-split-raw-file-test-file-link-slash",
+        "f31-split-raw-file-test-file-link-double-slash",
+        "f31-split-raw-file-test-file-chain-slash",
+        "f31-split-raw-file-test-file-chain-double-slash",
+        "f31-split-raw-file-test-dangling-slash",
+        "f31-split-raw-file-test-file-parent",
+        "f31-split-raw-file-test-file-link-parent",
+        "f31-split-raw-file-test-directory-slash",
+        "f31-split-raw-file-test-directory-double-slash",
+        "f31-split-raw-file-test-directory-link-slash",
+        "f31-split-raw-file-test-directory-link-double-slash",
+        "f31-split-raw-file-test-directory-chain-slash",
+        "f31-split-raw-file-test-directory-chain-double-slash",
+        "f31-split-raw-file-test-unsuffixed-links"
       ],
-      "activation": "-b2 --filter runs the specified printf/cat filter on explicit abcde, requiring exactly paa:abpab:cdpac:e on inherited stdout. This proves chunk stdin and FILE naming are routed to the child; file absence and arbitrary child lifecycle are not inferred from expected_files:[].",
+      "activation": "-b2 --filter runs the specified printf/cat filter on explicit abcde, requiring exactly paa:abpab:cdpac:e on inherited stdout. This proves chunk stdin and FILE naming are routed to the child; file absence and arbitrary child lifecycle are not inferred from expected_files:[]. Sixteen additional POSIX raw-path definitions execute actual file predicates through two per-piece filters with required output files: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",

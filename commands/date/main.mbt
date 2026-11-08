@@ -198,17 +198,38 @@ fn format_date(
 ///|
 fn normalize_args(raw : ArrayView[String]) -> Array[String] {
   let args : Array[String] = []
+  let mut options = true
+  let mut value_next = false
   for arg in raw {
-    if arg == "--iso-8601" {
+    if value_next || !options {
+      args.push(arg)
+      value_next = false
+      continue
+    }
+    if arg == "--" {
+      options = false
+    }
+    if options && (arg == "--iso-8601" || arg == "--iso") {
       args.push("--iso=date")
-    } else if arg.has_prefix("--iso-8601=") {
+    } else if options && arg.has_prefix("--iso-8601=") {
       args.push("--iso=" + arg[11:].to_owned())
-    } else if arg == "-I" {
+    } else if options && arg == "-I" {
       args.push("--iso=date")
-    } else if arg.has_prefix("-I") && arg.length() > 2 {
+    } else if options && arg.has_prefix("-I") && arg.length() > 2 {
       args.push("--iso=" + arg[2:].to_owned())
     } else {
       args.push(arg)
+    }
+    if options {
+      value_next = arg == "--date"
+      if arg.has_prefix("-") && !arg.has_prefix("--") && !arg.has_prefix("-I") {
+        for offset in 1..<arg.length() {
+          if arg[offset] == 'd' {
+            value_next = offset + 1 == arg.length()
+            break
+          }
+        }
+      }
     }
   }
   args
@@ -235,7 +256,7 @@ fn iso_format(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("date 0.1.4\n")
+    @stdio.stdout.write("date 0.1.5\n")
     return
   }
   let parsed = @cli.parse(normalize_args(@env.args()[1:]), [
@@ -254,7 +275,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: date [OPTION]... [+FORMAT]\nPrint time in TZ or the host local timezone.\n  -u, --utc           use UTC\n  -d, --date=TEXT     ISO date/time or @SECONDS (up to 9 fractional digits)\n  -I[PRECISION], --iso-8601[=PRECISION]\n                      date, hours, minutes, seconds, or ns\n  -R, --rfc-email     RFC email timestamp\n      --help          display this help and exit\n      --version       display version and exit\nFormats: %Y %y %m %d %e %H %M %S %j %a %A %b %h %B %F %T %R %s %N %z %Z %%\nRelative date parsing and setting the clock are unsupported.\n",
+      "Usage: date [OPTION]... [+FORMAT]\nPrint time in TZ or the host local timezone.\n  -u, --utc           use UTC\n  -d, --date=TEXT     ISO date/time or @SECONDS (up to 9 fractional digits)\n  -I[PRECISION], --iso-8601[=PRECISION]\n                      date, hours, minutes, seconds, or ns\n  -R, --rfc-email     RFC email timestamp\n      --help          display this help and exit\n      --version       display version and exit\nFormats: %Y %y %m %d %e %H %M %S %j %a %A %b %h %B %F %T %R %s %N %z %Z %%\nRelative date parsing and setting the clock are unsupported.\nOption values and operands after -- remain literal during alias normalization.\n",
     )
     return
   }

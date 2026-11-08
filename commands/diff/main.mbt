@@ -517,9 +517,25 @@ async fn compare_path(
 async fn run(args : ArrayView[String]) -> Int32 {
   let normalized : Array[String] = []
   let mut options = true
+  let mut value_next = false
   for arg in args {
+    if value_next {
+      normalized.push(arg)
+      value_next = false
+      continue
+    }
     if arg == "--" {
       options = false
+    }
+    if options &&
+      ["--unified-lines", "--context-lines"].any(name => {
+        arg == name || arg.has_prefix(name + "=")
+      }) {
+      raise @cli.CliError(
+        kind=UnknownOption,
+        option=arg,
+        message="unknown option",
+      )
     }
     if options && arg.has_prefix("--unified=") {
       normalized.push("-U" + arg[10:].to_owned())
@@ -527,6 +543,17 @@ async fn run(args : ArrayView[String]) -> Int32 {
       normalized.push("-C" + arg[10:].to_owned())
     } else {
       normalized.push(arg)
+    }
+    if options {
+      value_next = arg == "--label"
+      if arg.has_prefix("-") && !arg.has_prefix("--") {
+        for offset in 1..<arg.length() {
+          if arg[offset] is ('U' | 'C') {
+            value_next = offset + 1 == arg.length()
+            break
+          }
+        }
+      }
     }
   }
   let parsed = @cli.parse(normalized, [
@@ -552,12 +579,12 @@ async fn run(args : ArrayView[String]) -> Int32 {
   ])
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: diff [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare files, directories or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\n-i ignores ASCII case; -w ignores whitespace; -b ignores changes in whitespace.\n-Z ignores trailing whitespace; -B ignores blank-only change groups.\n--strip-trailing-cr removes one CR before each LF on input, including displayed lines.\n-r recurses; -N treats missing files as empty; --unidirectional-new-file applies only to the left side.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nNon-C locale collation and link-target-text comparison remain unsupported.\n",
+      "Usage: diff [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n      --help      display this help and exit\n      --version   display version and exit\nCompare files, directories or one stdin operand. Normal, unified and context output.\n-q reports differences only; -s reports equality; -a treats binary input as text.\n-i ignores ASCII case; -w ignores whitespace; -b ignores changes in whitespace.\n-Z ignores trailing whitespace; -B ignores blank-only change groups.\n--strip-trailing-cr removes one CR before each LF on input, including displayed lines.\n-r recurses; -N treats missing files as empty; --unidirectional-new-file applies only to the left side.\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nNon-C locale collation and link-target-text comparison remain unsupported.\nOption values and operands after -- remain literal during alias normalization.\n",
     )
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("diff 0.2.4\n")
+    @stdio.stdout.write("diff 0.2.5\n")
     return 0
   }
   guard parsed.operands.length() == 2 else {

@@ -13,6 +13,7 @@ struct Variable {
 struct Rule {
   target : String
   dependencies : Array[String]
+  groups : Array[Prerequisites]
   recipes : Array[String]
   mut phony : Bool
   mut stem : String?
@@ -23,14 +24,19 @@ struct Database {
   cwd : String
   variables : Map[String, Variable]
   command_line_variables : Map[String, Bool]
-  exported : Set[String]
+  exported : ExportPolicy
   rules : Map[String, Rule]
   mut default_target : String?
+  mut secondary_expansion : Bool
+  mut invocation_level : Int32
+  mut serial_children : Bool
 }
 
 ///|
 struct Settings {
   jobs : Int32
+  jobserver : Jobserver?
+  expansion_lock : @async.Mutex
   cwd : String
   silent : Bool
   dry_run : Bool
@@ -50,6 +56,7 @@ async fn conditional_value(line : String, database : Database) -> Bool {
       0,
       cwd=database.cwd,
       exported=database.exported,
+      state=database.expansion(),
     )
     value != ""
   } else if line.has_prefix("ifndef ") {
@@ -61,6 +68,7 @@ async fn conditional_value(line : String, database : Database) -> Bool {
       0,
       cwd=database.cwd,
       exported=database.exported,
+      state=database.expansion(),
     )
     value == ""
   } else {
@@ -87,6 +95,7 @@ async fn conditional_value(line : String, database : Database) -> Bool {
           0,
           cwd=database.cwd,
           exported=database.exported,
+          state=database.expansion(),
         )
         let right = expand(
           parts[1],
@@ -95,6 +104,7 @@ async fn conditional_value(line : String, database : Database) -> Bool {
           0,
           cwd=database.cwd,
           exported=database.exported,
+          state=database.expansion(),
         )
         left == right
       } else {
@@ -173,15 +183,25 @@ async fn lookup_variable(
   automatic : Map[String, String],
   depth : Int32,
   cwd~ : String = @env.current_dir().unwrap_or("."),
-  exported~ : Set[String] = Set([]),
+  exported~ : ExportPolicy = ExportPolicy::new([]),
+  state~ : Expansion = Expansion::new(),
 ) -> String {
   if automatic.get(name) is Some(value) {
     return value
   }
   match variables.get(name) {
     Some({ value, immediate: true, }) => value
-    Some({ value, immediate: false, }) =>
-      expand(value, variables, automatic, depth + 1, cwd~, exported~)
+    Some({ value, immediate: false, }) => {
+      if state.active.contains(name) {
+        if state.environment_depth > 0 {
+          return state.original.get(name).unwrap_or("")
+        }
+        raise MakeError("recursive variable '\{name}' references itself")
+      }
+      state.active.add(name)
+      defer state.active.remove(name)
+      expand(value, variables, automatic, depth + 1, cwd~, exported~, state~)
+    }
     None => ""
   }
 }
@@ -193,7 +213,8 @@ async fn expand(
   automatic : Map[String, String],
   depth : Int32,
   cwd~ : String = @env.current_dir().unwrap_or("."),
-  exported~ : Set[String] = Set([]),
+  exported~ : ExportPolicy = ExportPolicy::new([]),
+  state~ : Expansion = Expansion::new(),
 ) -> String {
   if depth > 64 {
     raise MakeError("variable expansion exceeds the recursion limit")
@@ -235,8 +256,9 @@ async fn expand(
         if end >= chars.length() {
           raise MakeError("unterminated variable reference")
         }
-        let name = String::from_array(chars[index + 2:end]).trim().to_owned()
-        if name.has_prefix("shell ") || name.has_prefix("shell\t") {
+        let name = String::from_array(chars[index + 2:end])
+        reject_unsupported_function(name)
+        if make_function_name(name) == Some("shell") {
           let script = expand(
             name[6:].to_owned(),
             variables,
@@ -244,45 +266,19 @@ async fn expand(
             depth + 1,
             cwd~,
             exported~,
+            state~,
           )
-          let shell_environment : Map[String, String] = Map([])
-          for name in exported {
-            if variables.get(name) is Some(variable) {
-              if variable.value.contains("$(shell") ||
-                variable.value.contains("${shell") {
-                raise MakeError(
-                  "recursive shell-function exports are not supported",
-                )
-              }
-              shell_environment[name] = lookup_variable(
-                name,
-                variables,
-                automatic,
-                depth + 1,
-                cwd~,
-                exported~,
-              )
-            }
-          }
-          let (status, result) = @shell.capture(
-            script,
-            name="make",
-            cwd~,
-            env=shell_environment,
-          )
-          variables[".SHELLSTATUS"] = {
-            value: status.to_string(),
-            immediate: true,
-          }
-          // GNU make removes trailing newlines and folds each embedded newline
-          // into a space. Spaces within a line remain significant.
-          let chars = result.replace(old="\r\n", new="\n")
-          let mut length = chars.length()
-          while length > 0 && chars[length - 1] == '\n' {
-            length -= 1
-          }
           output.write_string(
-            chars[:length].to_owned().replace(old="\n", new=" "),
+            shell_result(
+              script,
+              variables,
+              automatic,
+              depth,
+              cwd,
+              exported,
+              state,
+              trim_newlines=true,
+            ),
           )
         } else {
           let variable = expand(
@@ -292,7 +288,13 @@ async fn expand(
             depth + 1,
             cwd~,
             exported~,
+            state~,
           )
+          if variable.contains(":") && variable.contains("=") {
+            raise MakeError(
+              "substitution references are outside the supported make profile",
+            )
+          }
           output.write_string(
             lookup_variable(
               variable,
@@ -301,22 +303,13 @@ async fn expand(
               depth,
               cwd~,
               exported~,
+              state~,
             ),
           )
         }
         index = end + 1
       }
       char => {
-        if index + 2 < chars.length() &&
-          chars[index + 1] is ('@' | '<') &&
-          chars[index + 2] is ('D' | 'F') {
-          let name = String::from_array(chars[index + 1:index + 3])
-          output.write_string(
-            lookup_variable(name, variables, automatic, depth, cwd~, exported~),
-          )
-          index += 3
-          continue
-        }
         output.write_string(
           lookup_variable(
             char.to_string(),
@@ -325,6 +318,7 @@ async fn expand(
             depth,
             cwd~,
             exported~,
+            state~,
           ),
         )
         index += 2
@@ -352,8 +346,10 @@ fn instantiate_pattern(rule : Rule, target : String) -> Rule? {
   guard pattern_match(rule.target, target) is Some(stem) else { return None }
   Some({
     target,
-    dependencies: rule.dependencies.map(dep => {
-      dep.replace_all(old="%", new=stem)
+    dependencies: rule.dependencies.map(dep => replace_stem(dep, stem)),
+    groups: rule.groups.map(group => {
+      ..group,
+      text: replace_stems(group.text, stem),
     }),
     recipes: rule.recipes.copy(),
     phony: rule.phony,
@@ -362,17 +358,50 @@ fn instantiate_pattern(rule : Rule, target : String) -> Rule? {
 }
 
 ///|
+fn trim_make_space_start(text : String) -> String {
+  let mut start = 0
+  while start < text.length() &&
+        text[start] is (' ' | '\t' | '\r' | '\n' | '\u000b' | '\u000c') {
+    start += 1
+  }
+  text[start:].to_owned()
+}
+
+///|
 fn parse_assignment(line : String) -> (String, String, String)? {
-  let operators = [":=", "?=", "+=", "="]
-  for operator in operators {
-    if line.split_once(operator) is Some((left, right)) {
-      let name = left.trim().to_owned()
-      if valid_variable_name(name) {
-        return Some((name, operator, right.trim().to_owned()))
-      }
+  guard split_rule_separator(line, '=') is Some((left, right)) else {
+    return None
+  }
+  let mut left = left
+  let mut operator = "="
+  for prefix in [":::", "::", ":", "!", "?", "+"] {
+    if left.has_suffix(prefix) {
+      left = left[:left.length() - prefix.length()].to_owned()
+      operator = prefix + "="
+      break
     }
   }
-  None
+  let mut start = 0
+  let mut end = left.length()
+  while start < end && left[start] is (' ' | '\t') {
+    start += 1
+  }
+  while end > start && left[end - 1] is (' ' | '\t') {
+    end -= 1
+  }
+  let name = left[start:end].to_owned()
+  // An assignment operator may contain colons; after removing it, any outer
+  // colon belongs to a rule. Its recipe must not become a computed LHS.
+  if split_rule_separator(name, ':') is Some(_) ||
+    split_rule_separator(name, ' ') is Some(_) ||
+    split_rule_separator(name, '\t') is Some(_) {
+    return None
+  }
+  if valid_variable_name(name) || name.contains("$(") || name.contains("${") {
+    Some((name, operator, trim_make_space_start(right)))
+  } else {
+    None
+  }
 }
 
 ///|
@@ -382,27 +411,86 @@ async fn assign_variable(
   operator : String,
   value : String,
 ) -> Unit {
+  let state = database.expansion()
+  let name = expand(
+    name,
+    database.variables,
+    {},
+    0,
+    cwd=database.cwd,
+    exported=database.exported,
+    state~,
+  )
+  assign_resolved_variable(database, name, operator, value)
+}
+
+///|
+async fn assign_resolved_variable(
+  database : Database,
+  name : String,
+  operator : String,
+  value : String,
+) -> Unit {
+  let state = database.expansion()
+  if !valid_variable_name(name) {
+    raise MakeError("invalid expanded variable name '\{name}'")
+  }
   if database.command_line_variables.contains(name) {
     return
   }
   let variables = database.variables
+  if operator == "?=" && variables.contains(name) {
+    return
+  }
+  validate_special_assignment(name, operator, value)
   match operator {
+    "!=" => {
+      let script = expand(
+        value,
+        variables,
+        {},
+        0,
+        cwd=database.cwd,
+        exported=database.exported,
+        state~,
+      )
+      variables[name] = {
+        value: shell_result(
+          script,
+          variables,
+          {},
+          0,
+          database.cwd,
+          database.exported,
+          state,
+          trim_newlines=false,
+        ),
+        immediate: false,
+      }
+    }
     "?=" =>
       if !variables.contains(name) {
         variables[name] = { value, immediate: false, }
       }
-    ":=" =>
+    ":=" | "::=" | ":::=" => {
+      let expanded = expand(
+        value,
+        variables,
+        {},
+        0,
+        cwd=database.cwd,
+        exported=database.exported,
+        state~,
+      )
       variables[name] = {
-        value: expand(
-          value,
-          variables,
-          {},
-          0,
-          cwd=database.cwd,
-          exported=database.exported,
-        ),
-        immediate: true,
+        value: if operator == ":::=" {
+          expanded.replace_all(old="$", new="$$")
+        } else {
+          expanded
+        },
+        immediate: operator != ":::=",
       }
+    }
     "+=" =>
       match variables.get(name) {
         Some(previous) => {
@@ -422,6 +510,7 @@ async fn assign_variable(
                 0,
                 cwd=database.cwd,
                 exported=database.exported,
+                state~,
               )
             } else {
               value
@@ -433,6 +522,7 @@ async fn assign_variable(
       }
     _ => variables[name] = { value, immediate: false, }
   }
+  database.exported.defaults.remove(name)
 }
 
 ///|
@@ -440,7 +530,11 @@ fn logical_lines(contents : String) -> Array[String] raise MakeError {
   let result : Array[String] = []
   let pending = StringBuilder()
   for raw_line in contents.split("\n") {
-    let line = raw_line.to_owned()
+    let line = if raw_line.has_suffix("\r") {
+      raw_line[:raw_line.length() - 1].to_owned()
+    } else {
+      raw_line.to_owned()
+    }
     if line.has_prefix("\t") {
       if !pending.is_empty() {
         raise MakeError("recipe encountered during a continued logical line")
@@ -474,6 +568,7 @@ async fn parse_makefile(
     raise MakeError("include nesting exceeds the recursion limit")
   }
   let mut current_rules : Array[Rule] = []
+  let mut current_groups : Array[Prerequisites] = []
   let active : Array[Bool] = [true]
   for line_number, source_line in logical_lines(contents) {
     let directive = remove_comment(source_line).trim().to_owned()
@@ -512,14 +607,15 @@ async fn parse_makefile(
         raise MakeError("recipe without a target at line \{line_number + 1}")
       }
       let recipe = source_line[1:].to_owned()
-      for rule in current_rules {
-        rule.recipes.push(recipe)
+      for index, rule in current_rules {
+        add_recipe(rule, current_groups[index], recipe)
       }
       continue
     }
     current_rules = []
-    let line = remove_comment(source_line).trim().to_owned()
-    if line == "" {
+    current_groups = []
+    let line = trim_make_space_start(remove_comment(source_line))
+    if line.trim().is_empty() {
       continue
     }
     if line.has_prefix("include ") ||
@@ -541,6 +637,7 @@ async fn parse_makefile(
         0,
         cwd=database.cwd,
         exported=database.exported,
+        state=database.expansion(),
       )
       for name in split_words(expanded) {
         let included = path_in(source_directory, name)
@@ -557,65 +654,108 @@ async fn parse_makefile(
       }
       continue
     }
-    if line.has_prefix("export ") || line.has_prefix("unexport ") {
-      let exporting = line.has_prefix("export ")
-      let contents = line[if exporting { 7 } else { 9 }:].trim().to_owned()
-      match parse_assignment(contents) {
-        Some((name, operator, value)) if exporting => {
-          assign_variable(database, name, operator, value)
-          database.exported.add(name)
+    if export_directive(line) is Some((exporting, contents)) {
+      if contents.is_empty() {
+        database.exported.all = exporting
+        continue
+      }
+      match export_assignment(contents, exporting) {
+        Some((name, operator, value, exporting)) => {
+          let name = expand(
+            name,
+            database.variables,
+            {},
+            0,
+            cwd=database.cwd,
+            exported=database.exported,
+            state=database.expansion(),
+          )
+          assign_resolved_variable(database, name, operator, value)
+          mark_export(database, name, exporting)
         }
         _ =>
-          for name in split_words(contents) {
-            if exporting {
-              database.exported.add(name)
-            } else {
-              database.exported.remove(name)
-            }
+          for
+            name in split_words(
+              expand(
+                contents,
+                database.variables,
+                {},
+                0,
+                cwd=database.cwd,
+                exported=database.exported,
+                state=database.expansion(),
+              ),
+            ) {
+            mark_export(database, name, exporting)
           }
       }
       continue
-    }
-    if line == "export" || line == "unexport" {
-      raise MakeError("bare export/unexport directives are not supported")
     }
     if parse_assignment(line) is Some((name, operator, value)) {
       assign_variable(database, name, operator, value)
       continue
     }
-    guard line.split_once(":") is Some((targets_text, deps_text)) else {
+    let (rule_line, inline_recipe) = split_inline_recipe(source_line)
+    let rule_line = remove_comment(rule_line).trim_start().to_owned()
+    guard split_rule_separator(rule_line, ':')
+      is Some((targets_text, deps_text)) else {
       raise MakeError(
         "expected a rule or assignment at line \{line_number + 1}",
       )
     }
-    let static_pattern = deps_text.split_once(":")
+    if deps_text.has_prefix(":") {
+      raise MakeError(
+        "double-colon rules are outside the supported make profile",
+      )
+    }
+    if parse_assignment(deps_text.trim_start().to_owned()) is Some(_) {
+      raise MakeError(
+        "target-specific variables are outside the supported make profile",
+      )
+    }
+    if targets_text.trim_end().has_suffix("&") {
+      raise MakeError("grouped targets are outside the supported make profile")
+    }
+    if split_rule_separator(deps_text, '|') is Some(_) {
+      raise MakeError(
+        "order-only prerequisites are outside the supported make profile",
+      )
+    }
+    let static_pattern = split_rule_separator(deps_text, ':')
     let prerequisite_text = match static_pattern {
       Some((pattern, prerequisites)) if pattern.trim().contains("%") =>
-        prerequisites.to_owned()
-      _ => deps_text.to_owned()
+        prerequisites
+      _ => deps_text
     }
     let targets = split_words(
       expand(
-        targets_text.to_owned(),
+        targets_text,
         database.variables,
         {},
         0,
         cwd=database.cwd,
         exported=database.exported,
+        state=database.expansion(),
       ),
     )
-    let dependencies = split_words(
-      expand(
-        prerequisite_text,
-        database.variables,
-        {},
-        0,
-        cwd=database.cwd,
-        exported=database.exported,
-      ),
+    validate_rule_words(targets, [])
+    let dependency_text = expand(
+      prerequisite_text,
+      database.variables,
+      {},
+      0,
+      cwd=database.cwd,
+      exported=database.exported,
+      state=database.expansion(),
     )
+    let dependencies = split_words(dependency_text)
+    validate_rule_words(targets, dependencies)
     if targets.is_empty() {
       raise MakeError("rule has no target at line \{line_number + 1}")
+    }
+    if targets == [".SECONDEXPANSION"] {
+      database.secondary_expansion = true
+      continue
     }
     if targets == [".PHONY"] {
       for target in dependencies {
@@ -625,6 +765,7 @@ async fn parse_makefile(
             database.rules[target] = {
               target,
               dependencies: [],
+              groups: [],
               recipes: [],
               phony: true,
               stem: None,
@@ -634,23 +775,33 @@ async fn parse_makefile(
       continue
     }
     for target in targets {
+      if target == ".EXPORT_ALL_VARIABLES" {
+        database.exported.target_all = true
+      }
       let (dependencies, stem) = match static_pattern {
         Some((pattern, _)) if pattern.trim().contains("%") => {
           let pattern = pattern.trim().to_owned()
           match pattern_match(pattern, target) {
             Some(stem) =>
-              (
-                dependencies.map(dep => dep.replace_all(old="%", new=stem)),
-                Some(stem),
-              )
+              (dependencies.map(dep => replace_stem(dep, stem)), Some(stem))
             None => (dependencies.copy(), None)
           }
         }
         _ => (dependencies.copy(), None)
       }
+      let group : Prerequisites = {
+        text: match stem {
+          Some(stem) => replace_stems(dependency_text, stem)
+          None => dependency_text
+        },
+        secondary: database.secondary_expansion && dependency_text.contains("$"),
+        has_recipe: false,
+        stem,
+      }
       let rule = match database.rules.get(target) {
         Some(existing) => {
           existing.dependencies.append(dependencies)
+          existing.groups.push(group)
           if stem is Some(value) {
             existing.stem = Some(value)
           }
@@ -660,6 +811,7 @@ async fn parse_makefile(
           let created : Rule = {
             target,
             dependencies: dependencies.copy(),
+            groups: [group],
             recipes: [],
             phony: false,
             stem,
@@ -672,6 +824,10 @@ async fn parse_makefile(
         database.default_target = Some(target)
       }
       current_rules.push(rule)
+      current_groups.push(group)
+      if inline_recipe is Some(recipe) {
+        add_recipe(rule, group, recipe)
+      }
     }
   }
   if active.length() != 1 {
@@ -697,88 +853,36 @@ async fn newer(left : String, right : String) -> Bool {
 }
 
 ///|
-async fn command_environment(database : Database) -> Map[String, String] {
+async fn command_environment(
+  database : Database,
+  automatic~ : Map[String, String] = Map([]),
+) -> Map[String, String] {
   let result : Map[String, String] = Map([])
-  for name in database.exported {
-    if database.variables.get(name) is Some(variable) {
-      result[name] = if variable.immediate {
-        variable.value
-      } else {
-        expand(
-          variable.value,
-          database.variables,
-          Map([]),
-          0,
-          cwd=database.cwd,
-          exported=database.exported,
-        )
-      }
+  let state = database.expansion()
+  if state.original.get("SHELL") is Some(shell) {
+    result["SHELL"] = shell
+  }
+  for name in database.exported.names(database.variables) {
+    if database.variables.contains(name) {
+      result[name] = lookup_variable(
+        name,
+        database.variables,
+        automatic,
+        0,
+        cwd=database.cwd,
+        exported=database.exported,
+        state~,
+      )
     }
+  }
+  result["MAKELEVEL"] = (database.invocation_level + 1).to_string()
+  if database.serial_children && result.get("MAKEFLAGS") is Some(flags) {
+    result["MAKEFLAGS"] = serial_child_flags(flags)
+  }
+  if result.get("MAKEFLAGS") is Some(flags) {
+    result["MAKEFLAGS"] = flags.replace_all(old="$", new="$$")
   }
   result
-}
-
-///|
-async fn run_recipe(
-  recipe : String,
-  rule : Rule,
-  database : Database,
-  settings : Settings,
-) -> Int32 {
-  let automatic : Map[String, String] = {
-    "@": rule.target,
-    "<": rule.dependencies.get(0).unwrap_or(""),
-    "^": rule.dependencies.join(" "),
-    "+": rule.dependencies.join(" "),
-    "*": rule.stem.unwrap_or(""),
-  }
-  automatic["@D"] = @path.Path(rule.target).dirname().to_string()
-  automatic["@F"] = @path.Path(rule.target).basename().to_owned()
-  let first = rule.dependencies.get(0).unwrap_or("")
-  automatic["<D"] = @path.Path(first).dirname().to_string()
-  automatic["<F"] = @path.Path(first).basename().to_owned()
-  let mut command = expand(
-    recipe,
-    database.variables,
-    automatic,
-    0,
-    cwd=settings.cwd,
-    exported=database.exported,
-  )
-  let mut local_silent = settings.silent
-  let mut ignore_error = false
-  let mut scanning = true
-  while scanning && command != "" {
-    match command[0] {
-      '@' => {
-        local_silent = true
-        command = command[1:].to_owned()
-      }
-      '-' => {
-        ignore_error = true
-        command = command[1:].to_owned()
-      }
-      '+' => command = command[1:].to_owned()
-      _ => scanning = false
-    }
-  }
-  if !local_silent || settings.dry_run {
-    @stdio.stdout.write(command + "\n")
-  }
-  if settings.dry_run || command.trim().is_empty() {
-    return 0
-  }
-  let status = @shell.run(
-    command,
-    name="make",
-    env=command_environment(database),
-    cwd=settings.cwd,
-  )
-  if status != 0 && !ignore_error {
-    status
-  } else {
-    0
-  }
 }
 
 ///|
@@ -805,6 +909,9 @@ async fn choose_makefile(cwd : String, requested : String?) -> String {
 
 ///|
 fn positive_job_count(value : String) -> Bool {
+  if value.is_empty() || value.iter().any(char => char < '0' || char > '9') {
+    return false
+  }
   let count = @string.parse_int(value) catch { _ => return false }
   count > 0
 }
@@ -818,10 +925,31 @@ async fn run(arguments : Array[String]) -> Unit {
   let mut always_make = false
   let mut keep_going = false
   let mut jobs = 1
+  let mut explicit_jobs = false
+  let original_environment = @process.default_environment()
+  let environment_variables : Map[String, Variable] = Map([])
+  for name, value in original_environment {
+    environment_variables[name] = { value, immediate: name != "MAKEFLAGS", }
+  }
+  let decoded_flags = lookup_variable(
+    "MAKEFLAGS",
+    environment_variables,
+    {},
+    0,
+    cwd~,
+    exported=ExportPolicy::new(environment_variables.keys().collect()),
+    state=Expansion::new(original=original_environment),
+  )
+  let inherited_flags = makeflag_words(decoded_flags)
+  let inherited_arguments = inherited_make_arguments(
+    inherited_flags,
+    include_assignments=false,
+  )
+  let arguments = inherited_arguments + arguments
   let touch_targets : Map[String, Bool] = Map([])
   let mut options = true
   let targets : Array[String] = []
-  let cli_assignments : Array[(String, String)] = []
+  let cli_assignments = inherited_make_assignments(inherited_flags)
   let mut index = 0
   while index < arguments.length() {
     let argument = arguments[index]
@@ -864,6 +992,7 @@ async fn run(arguments : Array[String]) -> Unit {
     } else if options && argument.has_prefix("-W") && argument.length() > 2 {
       touch_targets[argument[2:].to_owned()] = true
     } else if options && (argument == "-j" || argument == "--jobs") {
+      explicit_jobs = index >= inherited_arguments.length()
       jobs = 0
       if index + 1 < arguments.length() &&
         positive_job_count(arguments[index + 1]) {
@@ -871,26 +1000,28 @@ async fn run(arguments : Array[String]) -> Unit {
         jobs = @string.parse_int(arguments[index])
       }
     } else if options && argument.has_prefix("--jobs=") {
+      explicit_jobs = index >= inherited_arguments.length()
       let value = argument[7:].to_owned()
       if !positive_job_count(value) {
         raise MakeError("the '-j' option requires a positive integer")
       }
       jobs = @string.parse_int(value)
     } else if options && argument.has_prefix("-j") && argument.length() > 2 {
+      explicit_jobs = index >= inherited_arguments.length()
       if !positive_job_count(argument[2:].to_owned()) {
         raise MakeError("the '-j' option requires a positive integer")
       }
       jobs = @string.parse_int(argument[2:])
     } else if options && (argument == "-h" || argument == "--help") {
       @stdio.stdout.write(
-        "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\n",
+        "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\nOn POSIX, every file-test operand ending in a slash must name a directory.\n",
       )
       return
     } else if options && argument.has_prefix("-") && argument != "-" {
       raise MakeError("unsupported option '\{argument}'")
     } else {
       match parse_assignment(argument) {
-        Some((name, _, value)) => cli_assignments.push((name, value))
+        Some(assignment) => cli_assignments.push(assignment)
         None => targets.push(argument)
       }
     }
@@ -898,22 +1029,125 @@ async fn run(arguments : Array[String]) -> Unit {
   }
   let variables : Map[String, Variable] = Map([])
   for name, value in @process.default_environment() {
+    if name != "SHELL" && (value != "" || name == ".SHELLFLAGS") {
+      validate_special_assignment(name, "=", value)
+    }
     variables[name] = { value, immediate: true, }
+  }
+  // GNU ignores an inherited SHELL as an interpreter selector, while children
+  // still receive its original environment value unless SHELL is exported.
+  variables["SHELL"] = { value: "/bin/sh", immediate: true, }
+  if !variables.contains(".SHELLFLAGS") {
+    variables[".SHELLFLAGS"] = { value: "-c", immediate: true, }
+  }
+  variables["MAKEFLAGS"] = { value: decoded_flags, immediate: true, }
+  let invocation = @env.args().get(0).unwrap_or("make")
+  let own_path = path_in(@env.current_dir().unwrap_or("."), invocation)
+  let quoted_path = "'" + own_path.replace_all(old="'", new="'\\''") + "'"
+  variables["MAKE"] = {
+    value: if invocation.has_suffix(".wasm") {
+      "moonrun " + quoted_path + " --"
+    } else {
+      quoted_path
+    },
+    immediate: true,
+  }
+  variables["MAKELEVEL"] = {
+    value: makelevel(variables).to_string(),
+    immediate: true,
   }
   let command_line_variables : Map[String, Bool] = Map([])
-  for assignment in cli_assignments {
-    let (name, value) = assignment
-    variables[name] = { value, immediate: true, }
-    command_line_variables[name] = true
-  }
   let database : Database = {
     cwd,
     variables,
     command_line_variables,
-    exported: Set(variables.keys().collect()),
+    exported: ExportPolicy::new(original_environment.keys().collect()),
     rules: {},
     default_target: None,
+    secondary_expansion: false,
+    invocation_level: 0,
+    serial_children: true,
   }
+  for name in ["SHELL", ".SHELLFLAGS", "MAKE"] {
+    database.exported.defaults.add(name)
+  }
+  if original_environment.contains("SHELL") {
+    database.exported.remove("SHELL")
+  }
+  for (raw_name, operator, value) in cli_assignments {
+    let name = expand(
+      raw_name,
+      variables,
+      {},
+      0,
+      cwd~,
+      exported=database.exported,
+    )
+    if operator == "?=" && variables.contains(name) {
+      continue
+    }
+    command_line_variables.remove(name)
+    assign_resolved_variable(database, name, operator, value)
+    command_line_variables[name] = true
+    if name != "SHELL" && default_export_name(name) {
+      database.exported.add(name)
+    }
+  }
+  database.invocation_level = makelevel(variables)
+  let authentication = if explicit_jobs {
+    None
+  } else {
+    inherited_jobserver(inherited_flags)
+  }
+  database.serial_children = authentication is None
+  let propagated_flags : Array[String] = []
+  if silent {
+    propagated_flags.push("-s")
+  }
+  if dry_run {
+    propagated_flags.push("-n")
+  }
+  if always_make {
+    propagated_flags.push("-B")
+  }
+  if keep_going {
+    propagated_flags.push("-k")
+  }
+  match authentication {
+    Some(value) => {
+      propagated_flags.push("-j")
+      propagated_flags.push(escape_makeflag("--jobserver-auth=" + value))
+    }
+    // Without a public FIFO creation API this process cannot create a GNU
+    // jobserver. Recursive children keep one job per already occupied slot.
+    None =>
+      propagated_flags.push(
+        if jobs == 0 {
+          "-j"
+        } else {
+          "-j" + jobs.to_string()
+        },
+      )
+  }
+  if !command_line_variables.is_empty() {
+    propagated_flags.push("--")
+    let names = command_line_variables.keys().collect()
+    names.sort()
+    for name in names {
+      let variable = variables[name]
+      let assignment = if variable.immediate {
+        name + ":=" + variable.value
+      } else {
+        name + "=" + variable.value
+      }
+      propagated_flags.push(escape_makeflag(assignment))
+    }
+  }
+  variables["MAKEFLAGS"] = {
+    value: propagated_flags.join(" "),
+    immediate: true,
+  }
+  database.exported.add("MAKEFLAGS")
   let makefile = choose_makefile(cwd, requested_file)
   parse_makefile(
     @fs.read_file(makefile).text(),
@@ -921,6 +1155,7 @@ async fn run(arguments : Array[String]) -> Unit {
     @path.Path(makefile).dirname().to_string(),
     0,
   )
+  database.exported.finish_reading()
   let requested_targets = if targets.is_empty() {
     match database.default_target {
       Some(value) => [value]
@@ -929,15 +1164,45 @@ async fn run(arguments : Array[String]) -> Unit {
   } else {
     targets
   }
-  let settings : Settings = {
-    jobs,
-    cwd,
-    silent,
-    dry_run,
-    always_make,
-    keep_going,
-    what_if: touch_targets,
+  let final_flags = makeflag_words(
+    lookup_variable(
+      "MAKEFLAGS",
+      variables,
+      {},
+      0,
+      cwd~,
+      exported=database.exported,
+      state=database.expansion(),
+    ),
+  )
+  let final_authentication = if explicit_jobs {
+    None
+  } else {
+    match inherited_jobserver(final_flags) {
+      Some(value) => Some(value)
+      None => authentication
+    }
   }
+  database.serial_children = final_authentication is None
+  let jobserver = match final_authentication {
+    Some(value) => Some(Jobserver::open(value))
+    None => None
+  }
+  defer (if jobserver is Some(server) { server.close() })
+  let settings : Settings = apply_makefile_flags(
+    {
+      jobs,
+      jobserver,
+      expansion_lock: @async.Mutex(),
+      cwd,
+      silent,
+      dry_run,
+      always_make,
+      keep_going,
+      what_if: touch_targets,
+    },
+    inherited_make_arguments(final_flags, include_assignments=false),
+  )
   build_targets(requested_targets, database, settings)
 }
 
@@ -945,10 +1210,14 @@ async fn run(arguments : Array[String]) -> Unit {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("make 0.2.4\n")
+    @stdio.stdout.write("make 0.2.8\n")
     return
   }
   run(@env.args()[1:].to_owned()) catch {
+    ExpansionFailure(message) => {
+      @stdio.stderr.write("make: \{message}\n")
+      @sys.exit(2)
+    }
     MakeError(message) => {
       if message == "unexpected endif" {
         @stdio.stderr.write("Makefile:1: *** extraneous 'endif'.  Stop.\n")

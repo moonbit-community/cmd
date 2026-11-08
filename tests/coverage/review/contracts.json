@@ -2435,9 +2435,19 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "proof-jq-from-file-filter"
+        "proof-jq-from-file-filter",
+        "f17-jq-literal-filter-file-short",
+        "f17-jq-literal-filter-file-long",
+        "f17-jq-file-mode-leading-dash-short",
+        "f17-jq-file-mode-leading-dash-long",
+        "f17-jq-file-mode-intervening-option",
+        "f17-jq-file-mode-cluster",
+        "f17-jq-file-mode-repeated",
+        "f17-jq-file-mode-after-program",
+        "f17-jq-file-mode-missing",
+        "f17-jq-file-mode-attached-long"
       ],
-      "activation": "--from-file filter reads actual .a source from a fixture, applies it to stdin object a=2 and emits2 LF. This is filter loading, unlike jqlog -f input-file selection."
+      "activation": "The original --from-file filter contract retains exact2 LF from stdin a=2. File mode is a flag: clustered/repeated/intervening/late options still select the first positional as the filter file; -- admits a leading-dash filename. Without --, --arg is parsed as an option and its missing value fails2. Missing program and attached long values fail2 without output or filesystem changes. All local streams are exact; the fixed jq1.8.2 comparison uses stated narrower diagnostics where help wording differs. This is filter loading, unlike jqlog -f input-file selection."
     },
     {
       "command": "head",
@@ -2567,11 +2577,25 @@
       "claim": "decode",
       "case_ids": [
         "base32-rfc4648-decode",
-        "base32-nonzero-tail-bits-accepted",
+        "base32-nonzero-tail-bits-rejected",
         "base32-uppercase-only",
-        "base32-prefix-before-malformed-padding"
+        "base32-prefix-before-malformed-padding",
+        "f17-base32-decode-0",
+        "f17-base32-decode-1",
+        "f17-base32-decode-2",
+        "f17-base32-decode-3",
+        "f17-base32-decode-4",
+        "f17-base32-decode-5",
+        "f17-base32-decode-6",
+        "f17-base32-decode-7",
+        "f17-base32-decode-8",
+        "f17-base32-decode-9",
+        "f17-base32-decode-10",
+        "f17-base32-decode-11",
+        "f17-base32-decode-12",
+        "f17-base32-decode-13"
       ],
-      "activation": "Known RFC4648 inputs decode to exact bytes, including the retained nonzero-tail-bit profile. Lowercase input rejects with a complete diagnostic; malformed padding retains the independently specified decoded prefix before status1.",
+      "activation": "Known RFC4648 inputs decode to exact bytes, with canonical tail bits; nonzero tail bits reject after retaining the determined prefix. The fixed GNU9.11/gnulib vectors separately bind absent padding, incomplete explicit padding, concatenated groups and malformed later symbols. An incomplete explicit Base32 quantum emits no bytes from that quantum, while an earlier completed group remains. Lowercase input rejects. Exact stdout/stderr/status are independent expectations; definitions do not establish a runtime pass.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -2593,9 +2617,21 @@
       "case_ids": [
         "compat-text-line-642",
         "compat-text-line-633",
-        "compat-text-line-652"
+        "compat-text-line-652",
+        "f17-base64-decode-0",
+        "f17-base64-decode-1",
+        "f17-base64-decode-2",
+        "f17-base64-decode-3",
+        "f17-base64-decode-4",
+        "f17-base64-decode-5",
+        "f17-base64-decode-6",
+        "f17-base64-decode-7",
+        "f17-base64-decode-8",
+        "f17-base64-decode-9",
+        "f17-base64-decode-10",
+        "f17-base64-decode-11"
       ],
-      "activation": "Explicit-D decodes known aGk= to hi. Lowercase-d malformed padding and invalid input length require complete diagnostics, status and the original emitted-prefix bytes.",
+      "activation": "The project -D alias decodes known aGk= to hi. Fixed GNU9.11/gnulib vectors bind absent padding, concatenated padded groups, canonical tail bits and determined bytes before later invalid symbols, including incomplete explicit padding. Every failure asserts its independent exact prefix and invalid-input diagnostic/status1; successful concatenated YQ== groups yield aa. Definitions alone are not runtime or upstream execution evidence.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -3373,9 +3409,25 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "o5-filter-stdout-inherited"
+        "o5-filter-stdout-inherited",
+        "f31-split-raw-file-test-file-slash",
+        "f31-split-raw-file-test-file-double-slash",
+        "f31-split-raw-file-test-file-link-slash",
+        "f31-split-raw-file-test-file-link-double-slash",
+        "f31-split-raw-file-test-file-chain-slash",
+        "f31-split-raw-file-test-file-chain-double-slash",
+        "f31-split-raw-file-test-dangling-slash",
+        "f31-split-raw-file-test-file-parent",
+        "f31-split-raw-file-test-file-link-parent",
+        "f31-split-raw-file-test-directory-slash",
+        "f31-split-raw-file-test-directory-double-slash",
+        "f31-split-raw-file-test-directory-link-slash",
+        "f31-split-raw-file-test-directory-link-double-slash",
+        "f31-split-raw-file-test-directory-chain-slash",
+        "f31-split-raw-file-test-directory-chain-double-slash",
+        "f31-split-raw-file-test-unsuffixed-links"
       ],
-      "activation": "-b2 --filter runs the specified printf/cat filter on explicit abcde, requiring exactly paa:abpab:cdpac:e on inherited stdout. This proves chunk stdin and FILE naming are routed to the child; file absence and arbitrary child lifecycle are not inferred from expected_files:[]."
+      "activation": "-b2 --filter runs the specified printf/cat filter on explicit abcde, requiring exactly paa:abpab:cdpac:e on inherited stdout. This proves chunk stdin and FILE naming are routed to the child; file absence and arbitrary child lifecycle are not inferred from expected_files:[]. Sixteen additional POSIX raw-path definitions execute actual file predicates through two per-piece filters with required output files: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence."
     },
     {
       "command": "csplit",
@@ -5041,9 +5093,25 @@
       "claim": "silent",
       "case_ids": [
         "coverage-make-silent",
-        "coverage-make-silent-control"
+        "coverage-make-silent-control",
+        "f31-make-raw-file-test-file-slash",
+        "f31-make-raw-file-test-file-double-slash",
+        "f31-make-raw-file-test-file-link-slash",
+        "f31-make-raw-file-test-file-link-double-slash",
+        "f31-make-raw-file-test-file-chain-slash",
+        "f31-make-raw-file-test-file-chain-double-slash",
+        "f31-make-raw-file-test-dangling-slash",
+        "f31-make-raw-file-test-file-parent",
+        "f31-make-raw-file-test-file-link-parent",
+        "f31-make-raw-file-test-directory-slash",
+        "f31-make-raw-file-test-directory-double-slash",
+        "f31-make-raw-file-test-directory-link-slash",
+        "f31-make-raw-file-test-directory-link-double-slash",
+        "f31-make-raw-file-test-directory-chain-slash",
+        "f31-make-raw-file-test-directory-chain-double-slash",
+        "f31-make-raw-file-test-unsuffixed-links"
       ],
-      "activation": "A non-@ recipe prints its command and hello normally; -s removes only the command echo while retaining exact recipe output.",
+      "activation": "A non-@ recipe prints its command and hello normally; -s removes only the command echo while retaining exact recipe output. Sixteen additional POSIX raw-path definitions execute actual file predicates through silent recipes: 13 unary failures and both sides of -nt/-ot for invalid operands; directory/link-chain single/double-slash successes; whole-second time controls; and unsuffixed links. Exact output/status/stderr and retained content/link targets are required. Platform exclusions and definitions are not execution evidence.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -5067,6 +5135,12 @@
           "assertions": [
             "find/amin"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
@@ -5082,6 +5156,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/atime"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5099,6 +5179,12 @@
           "assertions": [
             "find/mmin"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
@@ -5114,6 +5200,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/cmin"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5131,6 +5223,12 @@
           "assertions": [
             "find/ctime"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
@@ -5146,6 +5244,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/anewer"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5163,6 +5267,12 @@
           "assertions": [
             "find/cnewer"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "activation": "The actual predicate executes a true/false pair over independently observed fixed old/future timestamps, fresh ctime under a bounded clock window, or independently verified effective-access permissions. Exact selected paths, both statuses and empty diagnostics are required. POSIX scope; precondition failure cannot skip or pass.",
@@ -5178,6 +5288,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/used"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5237,11 +5353,27 @@
             "find/newercm",
             "find/newerma",
             "find/newermc",
-            "find/newermm"
+            "find/newermm",
+            "find/selectors-neweraa",
+            "find/selectors-newerac",
+            "find/selectors-neweram",
+            "find/selectors-newerca",
+            "find/selectors-newercc",
+            "find/selectors-newercm",
+            "find/selectors-newerma",
+            "find/selectors-newermc",
+            "find/selectors-newermm",
+            "find/selectors-preserved"
+          ]
+        },
+        {
+          "case_id": "f29-windows-metadata",
+          "assertions": [
+            "find/windows-selectors"
           ]
         }
       ],
-      "activation": "All nine supported a/c/m source/reference combinations execute true/false comparisons with independently checked timestamp relations, including strict equality rejection for c/c. Birth and literal-time selectors reject explicitly without touching a sentinel; POSIX timestamp scenario plus portable rejection vectors.",
+      "activation": "Nine a/c/m selectors require 144 independent source/reference comparisons on POSIX and Windows, including ties, distinct a/m fields and reversed birth-versus-change order. Real metadata and preservation receipts survive cleanup. Windows observes actual ChangeTime, NTFS file IDs and ACLs separately; these are not POSIX mode claims. Fixed Linux comparison is independently executed.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },
@@ -5287,9 +5419,23 @@
         "coverage-test-time--nt-new-missing",
         "coverage-test-time--ot-missing-new"
       ],
-      "activation": "Independently fixed old/new/equal mtimes exercise both -nt/-ot true, false, equality and documented one-missing-file relations, with exact statuses and empty streams; POSIX.",
+      "activation": "Fixed old/new/equal, missing either/both, followed-link and three -N relations are independently checked; Windows uses real UTC setters and observations. Actual same-second distinct subsecond mtimes distinguish full timestamps from truncation. Definitions do not establish execution.",
       "kind": "supported-option",
-      "disposition": "reviewed-definition"
+      "disposition": "reviewed-definition",
+      "scenario_bindings": [
+        {
+          "case_id": "f29-windows-metadata",
+          "assertions": [
+            "test/windows-metadata"
+          ]
+        },
+        {
+          "case_id": "f29-subsecond-order",
+          "assertions": [
+            "test/subsecond-order"
+          ]
+        }
+      ]
     },
     {
       "command": "rg",

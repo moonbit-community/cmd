@@ -54,13 +54,14 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 1,
+      "expected_status": 0,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
+      "source_version": "Issue #22 corrects the current concatenated-padding expectation using GNU coreutils9.11; old published inputs stay frozen.",
       "stdin_text": "YQ==YQ==",
-      "expected_stdout_text": "",
-      "expected_stderr_text": "base64: invalid padding\n"
+      "expected_stdout_text": "aa",
+      "expected_stderr_text": "",
+      "oracle": true
     },
     {
       "id": "compat-text-line-641",
@@ -132,7 +133,8 @@
       "source_version": "workspace 0.2.0 retained compat assertions",
       "stdin_text": "!",
       "expected_stdout_text": "",
-      "expected_stderr_text": "base64: invalid input length\n"
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true
     },
     {
       "id": "compat-catalog-line-4",
@@ -158,10 +160,10 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
+      "source_version": "Issue #22: ordinary usage failure status corrected to the fixed command baseline; capability refusals remain separate.",
       "expected_stdout_text": "",
       "expected_stderr_contains": "invalid wrap size",
       "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact."
@@ -211,8 +213,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/base64@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "source_version": "workspace cli/base64@0.2.6 metadata contract",
+      "expected_stdout_text": "Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n      --help      display this help and exit\n      --version   display version and exit\nProject alias: -D selects -d/--decode; -D is not a GNU coreutils option.\nDecoding retains determined bytes before invalid input, checks canonical tail bits,\nand accepts missing final padding or concatenated padded groups (GNU 9.11).\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -230,9 +232,300 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/base64@0.2.5 metadata contract",
-      "expected_stdout_text": "base64 0.2.5\n",
+      "source_version": "workspace cli/base64@0.2.6 metadata contract",
+      "expected_stdout_text": "base64 0.2.6\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "f17-base64-unknown-option",
+      "command": "base64",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "base64: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-base64-missing-option-value",
+      "command": "base64",
+      "args": [
+        "--wrap"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "base64: option requires a value: 'wrap'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
+    },
+    {
+      "id": "f17-base64-decode-0",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "aQ",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "i",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-1",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "Zzw",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "g<",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-2",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MTIzNA==MTIzNA",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "12341234",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-3",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MTIzNA==\nMTIzNA",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "12341234",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-4",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "a",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-5",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "Zz=",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "g",
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-6",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "Z===",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-7",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "SB==",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "H",
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-8",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "SGVsbG9=",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "Hello",
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-9",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MTIzNA=",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "1234",
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-10",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "MTIzNA=\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "1234",
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
+    },
+    {
+      "id": "f17-base64-decode-11",
+      "command": "base64",
+      "args": [
+        "-d"
+      ],
+      "stdin_text": "Zm9v!!!!",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "foo",
+      "expected_stderr_text": "base64: invalid input\n",
+      "oracle": true,
+      "source_version": "GNU coreutils v9.11 tests/basenc/{base64,basenc}.pl and gnulib fb7312fa8d3df29f0ca0678f669b9a5b88a078ec: canonical tails, EOF padding and committed failure prefixes.",
+      "coverage": [
+        "decode"
+      ]
     }
   ]
 }

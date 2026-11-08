@@ -80,6 +80,9 @@ fn require_color_kind(
   kind : @fs.FileKind,
   colors : TreeColors,
 ) -> Unit raise TreeError {
+  if kind == SymLink && colors.codes.get("ln") == Some("target") {
+    raise TreeError("TREE_COLORS ln=target requires following symbolic links")
+  }
   let selectors = match kind {
     Regular => ["su", "sg", "ex"]
     Directory => ["tw", "ow", "st"]

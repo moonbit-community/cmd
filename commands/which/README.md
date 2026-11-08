@@ -1,9 +1,12 @@
 # which
 
+Development candidate: `cli/which@0.1.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Find executables for MoonX.
 
 ```sh
-moonx cli/which@0.1.4 [-as] NAME...
+moonx cli/which@0.1.5 [-as] NAME...
 ```
 
 ## Supported scope
@@ -18,6 +21,13 @@ Search PATH or inspect explicit paths without launching files. Windows lookup us
 | `-s, --silent` | Suppress output and missing-command diagnostics. |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+-s/--silent follows this project's explicit quiet-status profile; it does not
+claim the option surface of every GNU/BSD which implementation.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
 ## Limitations
 
 - Shell aliases and functions are not searched.
@@ -25,8 +35,8 @@ Search PATH or inspect explicit paths without launching files. Windows lookup us
 ## Examples
 
 ```sh
-moonx cli/which@0.1.4 moonx
-moonx cli/which@0.1.4 -a moonx
+moonx cli/which@0.1.5 moonx
+moonx cli/which@0.1.5 -a moonx
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

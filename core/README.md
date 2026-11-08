@@ -2,6 +2,62 @@
 
 Shared runtime packages used by the independently published command modules.
 
+## 0.9.5 changes
+
+Apply the POSIX trailing-slash directory requirement to every shell file
+predicate and both timestamp-comparison operands. Validate the original path
+before resolving valid directory links; their trailing slash selects the
+directory, so link predicates are false. Unsuffixed links retain their existing
+behavior. This also repairs make recipes and split filters on macOS 15, whose
+metadata API can otherwise return a regular target for a file link ending in
+a slash. Published from `273ea9f` after
+[actual-main development checks](https://github.com/moonbit-community/cmd/actions/runs/42425407212).
+The uploaded make/sh/split consumers passed
+[three-platform exact-coordinate acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418).
+The [changelog](../CHANGELOG.md#2026-11-08) records the finite results and platform exclusions.
+
+## 0.9.4 changes
+
+Reject unmatched shell reserved words, incomplete logical expressions and empty
+required compound lists before executing their command list. Quoted command
+names, ordinary arguments and empty case arms retain their distinct grammar.
+At EOF, execute a complete command ending in a continued line while rejecting
+unfinished grammar and retaining the specific parse error in the EOF diagnostic.
+Unexpected external child output/diagnostic transfer errors
+propagate without replay or running later commands; closed pipes retain status
+141 and launch errors retain 126/127 statuses.
+Published from `aa6b769` after three-platform development checks. The uploaded
+make/sh/split consumers then passed exact-version MoonX acceptance. The
+[changelog](../CHANGELOG.md#2026-11-08) records the finite
+results and the earlier 0.9.3 release remains described below.
+
+## 0.9.3 changes
+
+Shell `test -s` follows final symlinks and queries target metadata without opening
+the file. It preserves raw component lookup before canonicalization, returns
+false for missing/cyclic targets, and reports status 2 when the public API cannot
+provide a target size. The current macOS directory-size ENOTSUP is such a
+boundary. The same behavior applies to make recipes and split filters.
+Version 0.9.3 is published. Exact-coordinate acceptance of its make/sh/split
+consumers passed on all three platforms; see the
+[changelog](../CHANGELOG.md#2026-11-08). This does not close the separately
+identified make export work in issue #31.
+
+## 0.9.2 changes
+
+The shared shell used by sh, make recipes and split filters implements arithmetic
+assignment/increment/conditional expressions, backticks, expanded here-documents,
+stdout/stderr descriptor aliases, loop levels and the finite printf/test profile.
+Stateful substitution parsing preserves case/function grammar and interactive
+continuation. Ordered redirection effects and committed failure-prefix output
+remain observable. See [ADR-0007](../docs/adr/0007-language.md) for the explicit
+descriptor, terminal and grammar boundaries. Version 0.9.2 is published;
+dated exact-coordinate acceptance is recorded in the
+[changelog](../CHANGELOG.md#2026-11-08).
+Later independent audit found that this version's `test -s` measured a final
+symlink itself and silently treated unavailable sizes as false. Those cases were
+absent from its successful finite acceptance; version 0.9.3 repairs them.
+
 ## 0.9.1 changes
 
 Version 0.9.1 adds `process.argument_bytes` and `arguments_bytes`

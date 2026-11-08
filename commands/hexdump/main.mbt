@@ -18,6 +18,9 @@ fn help_message() -> String {
     #|  -v, --no-squeezing      display duplicate blocks
     #|  -h, --help              display this help and exit
     #|  -V, --version           display version and exit
+    #|
+    #|Project extension: forward -s/--skip on stdin discards bytes without seeking.
+    #|The util-linux 2.40 pipe-input seek rejection is not claimed compatible.
   message
 }
 
@@ -25,7 +28,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("hexdump 0.1.3\n")
+    @stdio.stdout.write("hexdump 0.1.4\n")
     return
   }
   let args = normalized_args(@env.args()[1:])

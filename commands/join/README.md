@@ -1,9 +1,12 @@
 # join
 
+Development candidate: `cli/join@0.2.6`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Join sorted text files for MoonX.
 
 ```sh
-moonx cli/join@0.2.5 [options] FILE1 FILE2
+moonx cli/join@0.2.6 [options] FILE1 FILE2
 ```
 
 ## Supported scope
@@ -25,6 +28,19 @@ Join two files on matching fields; default keys are the first blank-separated fi
 | `-z, --zero-terminated` | Use NUL-delimited records. |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project aliases: --field1 = -1; --field2 = -2; --separator = -t.
+--after = -a; --only = -v; --empty = -e; --output = -o; -h = --help.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Inputs must be sorted on the selected keys using the C-byte profile; locale-aware collation is unsupported.
@@ -32,8 +48,8 @@ Join two files on matching fields; default keys are the first blank-separated fi
 ## Examples
 
 ```sh
-moonx cli/join@0.2.5 people.txt colors.txt
-moonx cli/join@0.2.5 -t, -1 2 -2 1 a.csv b.csv
+moonx cli/join@0.2.6 people.txt colors.txt
+moonx cli/join@0.2.6 -t, -1 2 -2 1 a.csv b.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

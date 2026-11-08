@@ -39,7 +39,8 @@ priv enum Token {
   RedirectAppend
   RedirectError
   RedirectErrorAppend
-  RedirectHereDoc
+  RedirectHereDoc(String, Bool)
+  RedirectCopy(Int32)
   LParen
   RParen
   LBrace
@@ -48,18 +49,25 @@ priv enum Token {
 }
 
 ///|
-priv struct Redirect {
-  target : Word
-  append : Bool
+priv enum Redirect {
+  InputFile(Word)
+  OutputFile(Word, Bool, Bool)
+  HereDocument(String, Bool)
+  CopyDescriptor(Int32, Word)
+}
+
+///|
+priv enum ExpandedRedirect {
+  ReadPath(String)
+  WritePath(String, Bool, Bool)
+  HereBody(String, Bool)
+  CopyTarget(Int32, String)
 }
 
 ///|
 priv struct Command {
   words : Array[Word]
-  stdin : Word?
-  stdin_data : String?
-  stdout : Redirect?
-  stderr : Redirect?
+  redirects : Array[Redirect]
 }
 
 ///|
@@ -108,10 +116,13 @@ priv struct Context {
   mut last_signal : Int32?
   mut exited : Bool
   mut exit_status : Int32
-  capture : StringBuilder?
+  capture : CaptureBuffer?
   mut input : &@io.Reader?
   mut output : &@io.Writer?
   mut error : &@io.Writer?
+  mut output_channel : Int32
+  mut error_channel : Int32
+  mut output_buffer_allocated : Bool
   functions : Map[String, Array[Job]]
   mut errexit : Bool
   mut nounset : Bool
@@ -125,15 +136,31 @@ priv struct Context {
 
 ///|
 priv enum LoopControl {
-  BreakLoop
-  ContinueLoop
+  BreakLoop(Int32)
+  ContinueLoop(Int32)
 }
 
 ///|
 fn Context::take_loop_break(self : Context) -> Bool {
-  let should_break = self.loop_control is Some(BreakLoop)
-  self.loop_control = None
-  should_break
+  match self.loop_control {
+    Some(BreakLoop(levels)) => {
+      self.loop_control = if levels > 1 {
+        Some(BreakLoop(levels - 1))
+      } else {
+        None
+      }
+      true
+    }
+    Some(ContinueLoop(levels)) => {
+      self.loop_control = if levels > 1 {
+        Some(ContinueLoop(levels - 1))
+      } else {
+        None
+      }
+      levels > 1
+    }
+    None => false
+  }
 }
 
 ///|
@@ -141,10 +168,6 @@ priv struct Prepared {
   argv : Array[String]
   env : Map[String, String]
   assignments : Map[String, String]
-  stdin : String?
-  stdin_data : String?
-  stdout : (String, Bool)?
-  stderr : (String, Bool)?
 }
 
 ///|

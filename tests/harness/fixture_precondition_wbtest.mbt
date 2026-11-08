@@ -48,3 +48,36 @@ async test "failed readability prerequisites remain fixture infrastructure failu
   assert_true(report.detail.contains("fixture precondition:"))
   assert_false(report.semantic_pass())
 }
+
+///|
+async test "implicit directory declarations preserve creation modes and reject mode overrides" {
+  let root = @fs.tmpdir(prefix="mooncmd-parent-declaration-")
+  defer @async.protect_from_cancel(() => @fs.rmdir(root, recursive=true))
+  let fixture : Case = @json.from_json({
+    "id": "parent-declaration",
+    "command": "find",
+    "args": [],
+    "files": [
+      { "path": "parent/child", "content_text": "retained" },
+      { "path": "parent", "kind": "directory" },
+    ],
+    "environment": {},
+    "expected_status": 0,
+    "normalizations": [],
+  })
+  prepare_fixture(root, fixture)
+  assert_true(@fs.kind(root + "/parent", follow_symlink=false) is Directory)
+  assert_eq(@fs.read_file(root + "/parent/child").text(), "retained")
+  let overridden = {
+    ..fixture,
+    files: [{ ..fixture.files[1], mode: Some(0o777), }],
+  }
+  let detail = try {
+    prepare_fixture(root, overridden)
+    "incorrectly accepted"
+  } catch {
+    error => error.to_string()
+  }
+  assert_true(detail.contains("cannot override its creation mode"))
+  assert_eq(@fs.read_file(root + "/parent/child").text(), "retained")
+}

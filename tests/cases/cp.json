@@ -344,8 +344,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/cp@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\nTree validation finishes before copying; existing empty directories report no copy.\n",
+      "source_version": "workspace cli/cp@0.2.5 metadata contract",
+      "expected_stdout_text": "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\nTree validation finishes before copying; existing empty directories report no copy.\nProject alias: --dereference-command-line selects -H; GNU cp exposes only the short spelling.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-56"
@@ -368,8 +368,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/cp@0.2.4 metadata contract",
-      "expected_stdout_text": "cp 0.2.4\n",
+      "source_version": "workspace cli/cp@0.2.5 metadata contract",
+      "expected_stdout_text": "cp 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -1257,6 +1257,405 @@
       "coverage": [
         "update",
         "update-mode"
+      ]
+    },
+    {
+      "id": "f17-cp-unknown-option",
+      "command": "cp",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-cp-missing-option-value",
+      "command": "cp",
+      "args": [
+        "--suffix"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: option requires a value: 'suffix'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
+    },
+    {
+      "id": "f17-cp-reject-update-mode-bare",
+      "command": "cp",
+      "args": [
+        "--update-mode",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: unknown option: '--update-mode'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-cp-reject-update-mode-value",
+      "command": "cp",
+      "args": [
+        "--update-mode=always",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: unknown option: '--update-mode=always'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-cp-reject-backup-control-bare",
+      "command": "cp",
+      "args": [
+        "--backup-control",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: unknown option: '--backup-control'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-cp-reject-backup-control-value",
+      "command": "cp",
+      "args": [
+        "--backup-control=always",
+        "source",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "source\n"
+        },
+        {
+          "path": "target",
+          "content_text": "target\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: unknown option: '--backup-control=always'\n",
+      "oracle": false,
+      "source_version": "Issue #22 explicit project contract; no upstream equivalence is claimed for this invocation.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "source\n",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "target\n",
+          "unchanged": true
+        },
+        {
+          "path": "target~",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "f17-cp-alias-dereference-command-line",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-R",
+        "--dereference-command-line",
+        "link",
+        "copy"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "tree/file",
+          "content_text": "payload"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "tree"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "tree/file",
+          "kind": "file",
+          "content_text": "payload",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "tree",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "kind": "directory"
+        },
+        {
+          "path": "copy/file",
+          "kind": "file",
+          "content_text": "payload",
+          "different_identity_as": "tree/file"
+        }
+      ],
+      "coverage": [
+        "dereference-command-line"
+      ],
+      "aliases": [],
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified quality-cp-recursive-command-line-link; project spellings have no upstream-invocation parity claim."
+    },
+    {
+      "id": "f17-cp-suffix-value-short",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "-S",
+        "--backup-control",
+        "source",
+        "copy"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "content_text": "new"
+        }
+      ]
+    },
+    {
+      "id": "f17-cp-suffix-value-long",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "--suffix",
+        "--backup-control",
+        "source",
+        "copy"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "source",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "copy",
+          "content_text": "new"
+        }
+      ]
+    },
+    {
+      "id": "f17-cp-literal-internal-looking-operand",
+      "command": "cp",
+      "args": [
+        "--no-preserve=mode",
+        "--",
+        "--backup-control",
+        "target"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "--backup-control",
+          "content_text": "payload"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "--backup-control",
+          "content_text": "payload",
+          "unchanged": true
+        },
+        {
+          "path": "target",
+          "content_text": "payload"
+        }
       ]
     }
   ]

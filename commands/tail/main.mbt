@@ -320,7 +320,7 @@ async fn follow_files(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tail 0.2.4\n")
+    @stdio.stdout.write("tail 0.2.5\n")
     return
   }
   let args = @env.args()[1:]
@@ -336,13 +336,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("tail: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\nStreamed last-N selection retains selected records, including an unfinished final record.\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\nStreamed last-N selection retains selected records, including an unfinished final record.\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
@@ -363,7 +363,7 @@ async fn main {
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -375,7 +375,7 @@ async fn main {
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

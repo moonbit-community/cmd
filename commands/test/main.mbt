@@ -66,49 +66,51 @@ async fn eval_unary(op : String, value : String) -> Bool {
   match op {
     "-n" => value != ""
     "-z" => value == ""
-    "-e" | "-a" => @fs.exists(value)
-    "-f" => (@fs.kind(value) catch { _ => Unknown }) == Regular
-    "-d" => (@fs.kind(value) catch { _ => Unknown }) == Directory
-    "-L" | "-h" =>
-      (@fs.kind(value, follow_symlink=false) catch { _ => Unknown }) == SymLink
-    "-p" => (@fs.kind(value) catch { _ => Unknown }) == Pipe
-    "-S" => (@fs.kind(value) catch { _ => Unknown }) == Socket
-    "-b" => (@fs.kind(value) catch { _ => Unknown }) == BlockDevice
-    "-c" => (@fs.kind(value) catch { _ => Unknown }) == CharDevice
-    "-s" =>
-      match @fsops.metadata_if_exists(value, follow_symlink=true) {
-        Some({ kind: Regular, size: Some(size), .. }) => size > 0L
-        _ => false
-      }
-    "-N" => {
-      let modified = @fsops.read_file_timestamp(value, ModificationTime) catch {
-        _ => return false
-      }
-      let accessed = @fsops.read_file_timestamp(value, AccessTime) catch {
-        _ => return false
-      }
-      @fsops.compare_timestamps(modified, accessed) > 0
-    }
-    "-r" => @fs.can_read(value)
-    "-w" => @fs.can_write(value)
-    "-x" => @fs.can_execute(value)
+    _ if is_unary(op) => test_file(op, value)
     _ => raise TestError("unknown unary operator: '\{op}'")
   }
 }
 
 ///|
 fn parse_integer(text : String) -> Int64 raise TestError {
-  @string.parse_int64(text) catch {
+  let mut start = 0
+  let mut end = text.length()
+  while start < end &&
+        text[start] is (' ' | '\t' | '\n' | '\r' | '\u000b' | '\u000c') {
+    start += 1
+  }
+  while end > start &&
+        text[end - 1] is (' ' | '\t' | '\n' | '\r' | '\u000b' | '\u000c') {
+    end -= 1
+  }
+  let mut digits = start
+  if digits < end && text[digits] is ('+' | '-') {
+    digits += 1
+  }
+  guard digits < end else {
+    raise TestError("integer expression expected: '\{text}'")
+  }
+  for i = digits; i < end; i = i + 1 {
+    guard text[i] is ('0'..<='9') else {
+      raise TestError("integer expression expected: '\{text}'")
+    }
+  }
+  @string.parse_int64(text[start:end], base=10) catch {
     _ => raise TestError("integer expression expected: '\{text}'")
   }
 }
 
 ///|
 async fn optional_mtime(path : String) -> @fsops.FileTimestamp? {
-  try @fsops.read_file_timestamp(path, ModificationTime) catch {
-    _ => None
-  } noraise {
-    timestamp => Some(timestamp)
+  if path == "" {
+    return None
+  }
+  try {
+    guard test_lookup_path(path) is Some(path) else { return None }
+    Some(@fsops.read_file_timestamp(path, ModificationTime))
+  } catch {
+    @os_error.OSError(_) => None
+    error => raise error
   }
 }
 
@@ -145,20 +147,28 @@ async fn eval_binary(left : String, op : String, right : String) -> Bool {
 async fn Parser::parse_primary(self : Parser) -> Bool {
   let token = self.take()
   if token == "(" {
-    let value = self.parse_or()
+    let mut count = 1
+    while self.pos + count < self.args.length() &&
+          self.args[self.pos + count] != ")" {
+      if count == 4 {
+        count = self.args.length() - self.pos
+        break
+      }
+      count += 1
+    }
+    let value = self.evaluate_count(count)
     if self.take() != ")" {
       raise TestError("expected ')'")
     }
     return value
   }
-  if is_unary(token) {
-    return eval_unary(token, self.take())
-  }
   match self.peek() {
-    Some(op) if is_binary(op) => {
+    Some(op) if self.pos + 1 < self.args.length() && is_binary(op) => {
       ignore(self.take())
       eval_binary(token, op, self.take())
     }
+    _ if token.length() == 2 && token.has_prefix("-") =>
+      eval_unary(token, self.take())
     _ => token != ""
   }
 }
@@ -199,13 +209,13 @@ async fn Parser::parse_or(self : Parser) -> Bool {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("test 0.2.3\n")
+    @stdio.stdout.write("test 0.2.4\n")
     return
   }
   let args = @env.args()[1:].to_owned()
   if args == ["--help"] {
     @stdio.stdout.write(
-      "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\n",
+      "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n-s reads followed target metadata without opening the file; unavailable metadata exits 2.\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
     )
     return
   }
@@ -214,7 +224,7 @@ async fn main {
     return
   }
   let parser : Parser = { args, pos: 0, }
-  let result = parser.parse_or() catch {
+  let result = parser.evaluate_count(args.length()) catch {
     TestError(message) => {
       @stdio.stderr.write("test: \{message}\n")
       @sys.exit(2)

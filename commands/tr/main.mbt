@@ -443,7 +443,7 @@ async fn transform_stream(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tr 0.2.4\n")
+    @stdio.stdout.write("tr 0.2.5\n")
     return
   }
   let args = @env.args()[1:]
@@ -457,13 +457,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("tr: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: tr [-dscCt] SET1 [SET2]\n      --help      display this help and exit\n      --version   display version and exit\n",
+      "Usage: tr [-dscCt] SET1 [SET2]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
@@ -474,12 +474,12 @@ async fn main {
   let sets = parsed.operands
   if sets.is_empty() {
     @stdio.stderr.write("tr: missing operand\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   if sets.length() > 2 {
     @stdio.stderr.write("tr: extra operand '\{sets[2]}'\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   try {
@@ -577,7 +577,7 @@ async fn main {
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
     err => {

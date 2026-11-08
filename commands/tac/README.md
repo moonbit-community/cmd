@@ -1,9 +1,12 @@
 # tac
 
+Development candidate: `cli/tac@0.1.7`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Reverse record order for MoonX.
 
 ```sh
-moonx cli/tac@0.1.6 [OPTION]... [FILE]...
+moonx cli/tac@0.1.7 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -19,7 +22,18 @@ Reverse records from each file or stdin, preserving separator bytes and missing 
 | `-r, --regex` | Interpret the separator using GNU Emacs byte regex syntax. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
+
+Spool cleanup is protected from cancellation by the command, including when
+the published core dependency exposes directory close as cancellable. A primary
+operation failure retains its diagnostic; an otherwise successful operation
+reports cleanup failure.
 
 The local development candidate batches fixed-separator ranges within each 64 KiB block, including multi-byte separators. With no partial separator match, it skips bytes that cannot start a reverse match. Input spooling and cross-block record semantics are unchanged; memory remains bounded by the block and separator sizes.
 
@@ -31,8 +45,8 @@ The local development candidate batches fixed-separator ranges within each 64 Ki
 ## Examples
 
 ```sh
-printf 'one\ntwo\n' | moonx cli/tac@0.1.6
-moonx cli/tac@0.1.6 -s '--' records.txt
+printf 'one\ntwo\n' | moonx cli/tac@0.1.7
+moonx cli/tac@0.1.7 -s '--' records.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

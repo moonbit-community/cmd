@@ -1,9 +1,12 @@
 # mv
 
+Development candidate: `cli/mv@0.2.7`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Move files and directories for MoonX.
 
 ```sh
-moonx cli/mv@0.2.6 [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
+moonx cli/mv@0.2.7 [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
 ```
 
 ## Supported scope
@@ -24,6 +27,13 @@ Rename or move into directories, with overwrite selection, update modes and back
 | `-v, --verbose` | Show moves. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+Option values and operands after -- remain literal during alias normalization.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - If a move fails after making a backup and restoring that backup also fails,
@@ -38,9 +48,9 @@ Rename or move into directories, with overwrite selection, update modes and back
 ## Examples
 
 ```sh
-moonx cli/mv@0.2.6 old.txt new.txt
-moonx cli/mv@0.2.6 -n report.txt archive/
-moonx cli/mv@0.2.6 --backup=simple report.txt archive/
+moonx cli/mv@0.2.7 old.txt new.txt
+moonx cli/mv@0.2.7 -n report.txt archive/
+moonx cli/mv@0.2.7 --backup=simple report.txt archive/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

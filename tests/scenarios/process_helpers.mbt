@@ -73,6 +73,7 @@ fn shell_quote(value : String) -> String {
 ///|
 pub async fn run_test_helper(args : ArrayView[String]) -> Unit {
   match args {
+    ["jobserver-bridge", work] => jobserver_bridge(work)
     ["environment", name] =>
       @stdio.stdout.write(@env.get_env_var(name).unwrap_or("") + "\n")
     ["wait-ready"] => {
@@ -83,6 +84,15 @@ pub async fn run_test_helper(args : ArrayView[String]) -> Unit {
       @stdio.stdout.write("partial stdout\n")
       @stdio.stderr.write("partial stderr\n")
       @async.sleep(60000)
+    }
+    ["alternating-streams"] => {
+      for _ in 0..<64 {
+        @stdio.stdout.write("out-one\n")
+        @stdio.stderr.write("err-one\n")
+        @stdio.stdout.write("out-two\n")
+        @stdio.stderr.write("err-two\n")
+      }
+      @sys.exit(7)
     }
     ["status-124"] => @sys.exit(124)
     ["read-line"] =>

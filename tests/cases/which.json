@@ -35,14 +35,14 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "which 0.1.4\n",
+      "expected_stdout_text": "which 0.1.5\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/which@0.1.4 metadata contract",
+      "source_version": "workspace cli/which@0.1.5 metadata contract",
       "aliases": [
         "release-metadata-which-version"
       ]
@@ -466,8 +466,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/which@0.1.4 metadata contract",
-      "expected_stdout_text": "Usage: which [-as] NAME...\nFind executable regular files in PATH. Windows uses PATHEXT.\n  -a, --all     print all matches\n  -s, --silent  return status without output\n      --help    display this help and exit\n      --version display version and exit\n",
+      "source_version": "workspace cli/which@0.1.5 metadata contract",
+      "expected_stdout_text": "Usage: which [-as] NAME...\nFind executable regular files in PATH. Windows uses PATHEXT.\n  -a, --all     print all matches\n  -s, --silent  return status without output\n      --help    display this help and exit\n      --version display version and exit\n-s/--silent follows this project's explicit quiet-status profile; it does not\nclaim the option surface of every GNU/BSD which implementation.\n",
       "expected_stderr_text": ""
     }
   ]

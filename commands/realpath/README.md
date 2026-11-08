@@ -1,9 +1,12 @@
 # realpath
 
+Development candidate: `cli/realpath@0.1.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Canonicalize paths for MoonX.
 
 ```sh
-moonx cli/realpath@0.1.4 [OPTION]... NAME...
+moonx cli/realpath@0.1.5 [OPTION]... NAME...
 ```
 
 ## Supported scope
@@ -24,6 +27,12 @@ Resolve paths physically or lexically, with existing/missing component modes and
 | `-z, --zero` | terminate output with NUL |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Physical resolution fails when a symbolic link cannot be expanded; -ms processes that spelling lexically.
@@ -31,8 +40,8 @@ Resolve paths physically or lexically, with existing/missing component modes and
 ## Examples
 
 ```sh
-moonx cli/realpath@0.1.4 -e input.txt
-moonx cli/realpath@0.1.4 -ms path/../new.txt
+moonx cli/realpath@0.1.5 -e input.txt
+moonx cli/realpath@0.1.5 -ms path/../new.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

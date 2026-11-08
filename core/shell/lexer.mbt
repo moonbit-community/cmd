@@ -47,6 +47,35 @@ fn push_word(
 }
 
 ///|
+fn parse_backtick_input(
+  chars : Array[Char],
+  start : Int32,
+  quoted : Bool,
+) -> (WordPart, Int32) raise ParseIssue {
+  let source = StringBuilder()
+  let mut cursor = start + 1
+  while cursor < chars.length() {
+    let char = chars[cursor]
+    if char == '`' {
+      return (CommandSubstitution(source.to_string(), quoted), cursor + 1)
+    }
+    if char == '\\' && cursor + 1 < chars.length() {
+      let next = chars[cursor + 1]
+      if next is ('$' | '`' | '\\' | '\n') || (quoted && next == '"') {
+        if next != '\n' {
+          source.write_char(next)
+        }
+        cursor += 2
+        continue
+      }
+    }
+    source.write_char(char)
+    cursor += 1
+  }
+  raise IncompleteSyntax("unterminated backtick command substitution")
+}
+
+///|
 fn parse_dollar_input(
   chars : Array[Char],
   start : Int32,
@@ -67,20 +96,93 @@ fn parse_dollar_input(
       let mut depth = 1
       let mut end = start + 2
       let mut quote : Char? = None
+      let mut word_start = true
+      let heredocs : Array[PendingHereDoc] = []
+      let document_tokens : Array[Token] = []
       while end < chars.length() {
         if quote is Some(q) {
-          if chars[end] == q {
+          if q == '"' &&
+            chars[end] == '$' &&
+            chars.get(end + 1) is Some('(' | '{') {
+            let (_, next) = parse_dollar_input(chars, end, true)
+            end = next
+            continue
+          } else if q == '"' && chars[end] == '`' {
+            let (_, next) = parse_backtick_input(chars, end, true)
+            end = next
+            continue
+          } else if chars[end] == q {
             quote = None
           } else if chars[end] == '\\' && q == '"' {
             end += 1
           }
+        } else if chars[end] == '$' && chars.get(end + 1) is Some('(' | '{') {
+          let (_, next) = parse_dollar_input(chars, end, false)
+          end = next
+          word_start = false
+          continue
+        } else if !arithmetic && chars[end] == '#' && word_start {
+          while end < chars.length() && chars[end] != '\n' {
+            end += 1
+          }
+          continue
+        } else if !arithmetic &&
+          chars[end] == '<' &&
+          chars.get(end + 1) == Some('<') {
+          let strip_tabs = chars.get(end + 2) == Some('-')
+          let (delimiter, expand, next) = heredoc_delimiter(
+            chars,
+            end + (if strip_tabs { 3 } else { 2 }),
+          )
+          heredocs.push({
+            delimiter,
+            expand,
+            strip_tabs,
+            token_index: document_tokens.length(),
+          })
+          document_tokens.push(RedirectHereDoc("", expand))
+          end = next
+          word_start = false
+          continue
+        } else if chars[end] == '\n' && !heredocs.is_empty() {
+          end = consume_heredocs(chars, end + 1, heredocs, document_tokens)
+          word_start = true
+          continue
+        } else if chars[end] == '`' {
+          let (_, next) = parse_backtick_input(chars, end, false)
+          end = next
+          word_start = false
+          continue
         } else if chars[end] == '\\' {
-          end += 1
+          let continuation = chars.get(end + 1) == Some('\n')
+          end += 2
+          if !continuation {
+            word_start = false
+          }
+          continue
         } else if chars[end] == '\'' || chars[end] == '"' {
           quote = Some(chars[end])
+          word_start = false
         } else if chars[end] == '(' {
           depth += 1
         } else if chars[end] == ')' {
+          if !arithmetic {
+            let source = String::from_array(chars[start + 2:end + 1])
+            if command_substitution_closes(source) {
+              return (
+                Some(
+                  CommandSubstitution(
+                    String::from_array(chars[start + 2:end]),
+                    quoted,
+                  ),
+                ),
+                end + 1,
+              )
+            }
+            end += 1
+            word_start = true
+            continue
+          }
           depth -= 1
           if depth == 0 {
             if arithmetic {
@@ -107,6 +209,10 @@ fn parse_dollar_input(
               end + 1,
             )
           }
+        }
+        if quote is None {
+          word_start = is_shell_space(chars[end]) ||
+            chars[end] is ('\n' | ';' | '&' | '|' | '<' | '>' | '(' | ')')
         }
         end += 1
       }
@@ -189,12 +295,28 @@ fn parse_dollar_input(
 }
 
 ///|
+fn io_number(chars : Array[Char], start : Int32) -> (Int32, Int32)? {
+  let mut end = start
+  while end < chars.length() && chars[end] is ('0'..<='9') {
+    end += 1
+  }
+  if end == start || !(chars.get(end) is Some('<' | '>')) {
+    return None
+  }
+  let descriptor = @string.parse_int(String::from_array(chars[start:end])) catch {
+    _ => -1
+  }
+  Some((descriptor, end))
+}
+
+///|
 fn lex_input(
   script : String,
   fragment~ : Bool = false,
 ) -> Array[Token] raise ParseIssue {
   let chars : Array[Char] = script.iter().collect()
   let tokens : Array[Token] = []
+  let heredocs : Array[PendingHereDoc] = []
   let parts : Array[WordPart] = []
   let literal = StringBuilder()
   let mut started = false
@@ -225,7 +347,7 @@ fn lex_input(
           let next = chars[i + 1]
           if next == '\n' {
             i += 2
-          } else if next == '$' || next == '"' || next == '\\' {
+          } else if next == '$' || next == '"' || next == '\\' || next == '`' {
             literal.write_char(next)
             i += 2
           } else {
@@ -242,7 +364,10 @@ fn lex_input(
           }
           i = next
         } else if char == '`' {
-          raise InvalidSyntax("backtick command substitution is not supported")
+          flush_literal(parts, literal, quoted=true)
+          let (part, next) = parse_backtick_input(chars, i, true)
+          parts.push(part)
+          i = next
         } else {
           literal.write_char(char)
           i += 1
@@ -274,6 +399,9 @@ fn lex_input(
               tokens.push(Sequence)
             }
             i += 1
+            if char == '\n' && !heredocs.is_empty() {
+              i = consume_heredocs(chars, i, heredocs, tokens)
+            }
           }
         } else if char == '#' && !started {
           while i < chars.length() && chars[i] != '\n' {
@@ -307,7 +435,11 @@ fn lex_input(
           started = true
           i = next
         } else if char == '`' {
-          raise InvalidSyntax("backtick command substitution is not supported")
+          flush_literal(parts, literal)
+          let (part, next) = parse_backtick_input(chars, i, false)
+          parts.push(part)
+          started = true
+          i = next
         } else if char == '&' {
           push_word(tokens, parts, literal, started, preserve_empty)
           started = false
@@ -330,87 +462,55 @@ fn lex_input(
             i += 1
           }
         } else if !started &&
-          char == '2' &&
-          i + 1 < chars.length() &&
-          chars[i + 1] == '>' {
-          if i + 2 < chars.length() && chars[i + 2] == '>' {
-            tokens.push(RedirectErrorAppend)
-            i += 3
+          io_number(chars, i) is Some((descriptor, operator_at)) {
+          if descriptor < 0 || descriptor > 2 {
+            raise InvalidSyntax(
+              "additional descriptors require a public child descriptor API",
+            )
+          }
+          let input = chars[operator_at] == '<'
+          if chars.get(operator_at + 1) == Some('&') {
+            tokens.push(RedirectCopy(descriptor))
+            i = operator_at + 2
+          } else if (input && descriptor == 0) || (!input && descriptor == 1) {
+            i = operator_at
+          } else if !input && descriptor == 2 {
+            if chars.get(operator_at + 1) == Some('>') {
+              tokens.push(RedirectErrorAppend)
+              i = operator_at + 2
+            } else {
+              tokens.push(RedirectError)
+              i = operator_at + 1
+            }
           } else {
-            tokens.push(RedirectError)
-            i += 2
+            raise InvalidSyntax(
+              "changing a standard descriptor's access direction requires a public child descriptor API",
+            )
           }
         } else if char == '>' || char == '<' {
           push_word(tokens, parts, literal, started, preserve_empty)
           started = false
           preserve_empty = false
+          if chars.get(i + 1) == Some('&') {
+            tokens.push(RedirectCopy(if char == '<' { 0 } else { 1 }))
+            i += 2
+            continue
+          }
           if char == '<' {
             if i + 1 < chars.length() && chars[i + 1] == '<' {
-              let mut delimiter_start = i + 2
-              while delimiter_start < chars.length() &&
-                    is_shell_space(chars[delimiter_start]) {
-                delimiter_start += 1
-              }
-              let mut delimiter_end = delimiter_start
-              while delimiter_end < chars.length() &&
-                    chars[delimiter_end] != '\n' &&
-                    !is_shell_space(chars[delimiter_end]) {
-                delimiter_end += 1
-              }
-              if delimiter_end == delimiter_start {
-                raise InvalidSyntax("here-document requires a delimiter")
-              }
-              let delimiter = String::from_array(
-                chars[delimiter_start:delimiter_end],
+              let strip_tabs = chars.get(i + 2) == Some('-')
+              let (delimiter, expand, next) = heredoc_delimiter(
+                chars,
+                i + (if strip_tabs { 3 } else { 2 }),
               )
-              let mut line_start = delimiter_end
-              while line_start < chars.length() && chars[line_start] != '\n' {
-                line_start += 1
-              }
-              if line_start >= chars.length() {
-                raise IncompleteSyntax("here-document must start on a new line")
-              }
-              line_start += 1
-              let mut cursor = line_start
-              let body = StringBuilder()
-              let mut found = false
-              while cursor <= chars.length() {
-                let mut line_end = cursor
-                while line_end < chars.length() && chars[line_end] != '\n' {
-                  line_end += 1
-                }
-                let line = String::from_array(chars[cursor:line_end])
-                if line == delimiter {
-                  found = true
-                  cursor = if line_end < chars.length() {
-                    line_end + 1
-                  } else {
-                    line_end
-                  }
-                  break
-                }
-                body.write_string(line)
-                if line_end < chars.length() {
-                  body.write_char('\n')
-                }
-                if line_end >= chars.length() {
-                  cursor = line_end
-                  break
-                }
-                cursor = line_end + 1
-              }
-              if !found {
-                raise IncompleteSyntax("unterminated here-document")
-              }
-              tokens.push(RedirectHereDoc)
-              tokens.push(
-                WordToken({
-                  parts: [Text(body.to_string())],
-                  preserve_empty: true,
-                }),
-              )
-              tokens.push(Sequence)
-              i = cursor
+              heredocs.push({
+                delimiter,
+                expand,
+                strip_tabs,
+                token_index: tokens.length(),
+              })
+              tokens.push(RedirectHereDoc("", expand))
+              i = next
               continue
             }
             tokens.push(RedirectIn)
@@ -455,6 +555,9 @@ fn lex_input(
   }
   if quote is Some(_) {
     raise IncompleteSyntax("unterminated quote")
+  }
+  if !heredocs.is_empty() {
+    raise IncompleteSyntax("unterminated here-document")
   }
   push_word(tokens, parts, literal, started, preserve_empty)
   while tokens.last() == Some(Sequence) {

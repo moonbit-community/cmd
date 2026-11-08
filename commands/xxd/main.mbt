@@ -19,6 +19,14 @@ fn help_message() -> String {
     #|  -n, --name=NAME      C include symbol
     #|      --help           display this help and exit
     #|      --version        display version and exit
+    #|
+    #|Project aliases: --little/-littleendian select -e; --ebcdic/-ebcdic select -E.
+    #|Project long-option syntax also accepts =VALUE for --cols, --group, --len,
+    #|--name, --offset and --seek; these forms are not Vim xxd argument equivalence.
+    #|-h/--help use the project metadata contract: stdout and status 0.
+    #|
+    #|Usage errors exit 1; runtime errors retain their command-specific statuses.
+    #|Option values and operands after -- remain literal.
   message
 }
 
@@ -105,13 +113,13 @@ fn parse_args(args : ArrayView[String]) -> @cli.ParsedArgs raise @cli.CliError {
 async fn main {
   let args = @env.args()[1:]
   if args is ["--version"] {
-    @stdio.stdout.write("xxd 0.2.4\n")
+    @stdio.stdout.write("xxd 0.2.5\n")
     return
   }
   let parsed = parse_args(args) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("xxd: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -121,7 +129,7 @@ async fn main {
   }
   if parsed.operands.length() > 2 {
     @stdio.stderr.write("xxd: extra operand: '\{parsed.operands[2]}'\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   execute(parsed, options(parsed)) catch {

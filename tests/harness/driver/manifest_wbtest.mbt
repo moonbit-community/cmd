@@ -1,4 +1,46 @@
 ///|
+test "FIFO fixtures require an explicit platform and cannot discard payloads" {
+  let fixture : @harness.Case = @json.from_json({
+    "id": "fifo",
+    "command": "test",
+    "args": ["-p", "pipe"],
+    "files": [{ "path": "pipe", "kind": "pipe" }],
+    "environment": {},
+    "expected_status": 0,
+    "expected_stdout_text": "",
+    "expected_stderr_text": "",
+    "normalizations": [],
+    "comparison": "contract",
+    "host_platforms": ["posix"],
+  })
+  let manifest : Manifest = {
+    schema: 2,
+    commands: @contracts.command_catalog().map(command => {
+      name: command.name,
+    }),
+    cases: [fixture],
+  }
+  assert_eq(validate_manifest(manifest), [])
+  assert_true(
+    validate_manifest({
+      ..manifest,
+      cases: [{ ..fixture, host_platforms: None, }],
+    }).any(error => error.contains("explicit POSIX platforms")),
+  )
+  assert_true(
+    validate_manifest({
+      ..manifest,
+      cases: [
+        {
+          ..fixture,
+          files: [{ ..fixture.files[0], content_text: Some("payload"), }],
+        },
+      ],
+    }).any(error => error.contains("no target, content or mode")),
+  )
+}
+
+///|
 test "workspace manifest accepts explicit link kinds without accepting invalid fixtures" {
   let fixture : @harness.Case = @json.from_json({
     "id": "explicit-link",

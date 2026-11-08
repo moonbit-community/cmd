@@ -112,6 +112,22 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
             failures.push("\{fixture.id}: symlink target must be relative")
           }
         }
+        Some("pipe") => {
+          if file.target is Some(_) ||
+            file.content_text is Some(_) ||
+            file.content_hex is Some(_) ||
+            file.mode is Some(_) {
+            failures.push(
+              "\{fixture.id}: FIFO fixture accepts no target, content or mode override",
+            )
+          }
+          let platforms = fixture.host_platforms.unwrap_or([])
+          if platforms.is_empty() || platforms.contains("windows") {
+            failures.push(
+              "\{fixture.id}: FIFO fixture requires explicit POSIX platforms",
+            )
+          }
+        }
         Some(kind) =>
           failures.push("\{fixture.id}: unsupported fixture kind '\{kind}'")
       }

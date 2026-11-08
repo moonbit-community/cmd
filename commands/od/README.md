@@ -1,9 +1,12 @@
 # od
 
+Development candidate: `cli/od@0.1.4`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Display numeric and character data for MoonX.
 
 ```sh
-moonx cli/od@0.1.3 [OPTION]... [FILE]...
+moonx cli/od@0.1.4 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -27,6 +30,14 @@ Concatenate files or stdin and display integer, floating or character values. De
 | `--traditional` | accept old offset and label operands |
 | `--help` / `--version` | Show help / package version. |
 
+## Extension and diagnostic contract
+
+Project format aliases: --named = -a; --octal-byte = -b; --character = -c.
+--decimal = -d; --int = -i; --long = -l; --octal = -o; --signed = -s.
+--hex = -x; --float = -f; --double = -e; --double-F = -F.
+
+See [the finite option and diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics) for the scope and upstream distinction.
+
 ## Limitations
 
 - Characters use C-byte rules. Floating formats follow the GNU Linux amd64 profile on every host.
@@ -35,8 +46,8 @@ Concatenate files or stdin and display integer, floating or character values. De
 ## Examples
 
 ```sh
-moonx cli/od@0.1.3 -Ax -tx1 data.bin
-moonx cli/od@0.1.3 -j4 -N8 --endian=big -tx2 data.bin
+moonx cli/od@0.1.4 -Ax -tx1 data.bin
+moonx cli/od@0.1.4 -j4 -N8 --endian=big -tx2 data.bin
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

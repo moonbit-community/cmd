@@ -141,8 +141,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/split@0.1.5 metadata contract",
-      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nLine-byte and unknown-size partition layouts require temporary write access.\n",
+      "source_version": "workspace cli/split@0.1.6 metadata contract",
+      "expected_stdout_text": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)\n  -b, --bytes=SIZE          put SIZE bytes in each piece\n  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece\n  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N\n  -a, --suffix-length=N     fixed suffix width; zero selects automatic width\n  -d, --numeric-suffixes[=FROM]  numeric suffixes\n  -x, --hex-suffixes[=FROM]      hexadecimal suffixes\n      --additional-suffix=SUFFIX  append SUFFIX to generated names\n  -e, --elide-empty-files   omit empty outputs\n      --filter=COMMAND     run pure shell source per piece with FILE set\n      --help               display this help and exit\n      --version            display version and exit\nExisting named outputs are refused; filters own their explicit file writes.\nFilters support shared shell arithmetic assignment, backticks and expanded here-documents.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nMalformed shell command lists reject before execution; complete EOF continuations execute.\nOn POSIX, every file-test operand ending in a slash must name a directory.\n",
       "expected_stderr_text": ""
     },
     {
@@ -160,8 +160,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/split@0.1.5 metadata contract",
-      "expected_stdout_text": "split 0.1.5\n",
+      "source_version": "workspace cli/split@0.1.6 metadata contract",
+      "expected_stdout_text": "split 0.1.10\n",
       "expected_stderr_text": ""
     },
     {
@@ -2545,6 +2545,2041 @@
         "bytes",
         "hex-suffixes"
       ]
+    },
+    {
+      "id": "f17-split-unknown-option",
+      "command": "split",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-split-missing-option-value",
+      "command": "split",
+      "args": [
+        "--bytes"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "split: option requires a value: 'bytes'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
+    },
+    {
+      "id": "f31-split-shared-shell-filter",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=copy() { IFS= read -r extra; printf '%s\\n' \"$extra\"; }; n=0; : $((n+=1)); tag=`printf ok`; IFS= read -r line; printf '%s|%s|%s\\n' \"$n\" \"$tag\" \"$line\" > \"$FILE\"; copy <<EOF >> \"$FILE\"\n${tag}-$((n+1))\nEOF\n",
+        "-",
+        "p"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "paa",
+          "kind": "file",
+          "content_text": "1|ok|a\nok-2\n"
+        },
+        {
+          "path": "pab",
+          "kind": "file",
+          "content_text": "1|ok|b\nok-2\n"
+        }
+      ]
+    },
+    {
+      "id": "f31-split-test-size-targets",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; if test -s empty-link; then exit 8; fi; if test -s dangling; then exit 9; fi; test -s full-chain || exit 10; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "empty",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symbolic-link",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symbolic-link",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symbolic-link",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symbolic-link",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symbolic-link",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symbolic-link",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symbolic-link",
+          "target": "cycle-a"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "F31 target-size follow-up: independent explicit expectations; fixed Linux Dash/GNU comparison remains separately required",
+      "expected_files": [
+        {
+          "path": "empty",
+          "kind": "file",
+          "content_text": ""
+        },
+        {
+          "path": "full",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "empty-link",
+          "kind": "symlink",
+          "target": "empty"
+        },
+        {
+          "path": "full-link",
+          "kind": "symlink",
+          "target": "full"
+        },
+        {
+          "path": "empty-chain",
+          "kind": "symlink",
+          "target": "empty-link"
+        },
+        {
+          "path": "full-chain",
+          "kind": "symlink",
+          "target": "full-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "missing"
+        },
+        {
+          "path": "cycle",
+          "kind": "symlink",
+          "target": "cycle"
+        },
+        {
+          "path": "cycle-a",
+          "kind": "symlink",
+          "target": "cycle-b"
+        },
+        {
+          "path": "cycle-b",
+          "kind": "symlink",
+          "target": "cycle-a"
+        },
+        {
+          "path": "piece-aa",
+          "kind": "file",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "kind": "file",
+          "content_text": "b\n"
+        }
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ]
+    },
+    {
+      "id": "f31-split-export-audit-filter-reserved",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=printf wrong > marker; then",
+        "-",
+        "piece-"
+      ],
+      "files": [],
+      "stdin_text": "a\nb\n",
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "marker",
+          "exists": false
+        },
+        {
+          "path": "piece-aa",
+          "exists": false
+        },
+        {
+          "path": "piece-ab",
+          "exists": false
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independent required filter syntax/error effects; pinned Linux coreutils execution remains a separate required witness",
+      "expected_stderr_contains": "then",
+      "expected_stderr_ends_with_newline": true,
+      "diagnostic_reason": "Assert the syntax, runtime or explicit profile category with exact status, stdout and file effects; upstream diagnostic locations and wording differ."
+    },
+    {
+      "id": "f31-split-eof-filter-continuation",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line; printf '%s\\n' \"$line\" > \"$FILE\"\\\n",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_files": [
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Independently reviewed GNU Make 4.4.1 / Dash 0.5.12 empty argv, selector order and EOF continuation contracts. Actual sealed Linux comparison and product receipts are separate required gates.",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "f31-split-raw-file-test-file-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'file/'; printf '%s\\n' \"$?\"; test -f 'file/'; printf '%s\\n' \"$?\"; test -d 'file/'; printf '%s\\n' \"$?\"; test -b 'file/'; printf '%s\\n' \"$?\"; test -c 'file/'; printf '%s\\n' \"$?\"; test -p 'file/'; printf '%s\\n' \"$?\"; test -S 'file/'; printf '%s\\n' \"$?\"; test -L 'file/'; printf '%s\\n' \"$?\"; test -h 'file/'; printf '%s\\n' \"$?\"; test -r 'file/'; printf '%s\\n' \"$?\"; test -w 'file/'; printf '%s\\n' \"$?\"; test -x 'file/'; printf '%s\\n' \"$?\"; test -s 'file/'; printf '%s\\n' \"$?\"; test 'file/' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file/'; printf '%s\\n' \"$?\"; test 'file/' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file/'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-file-double-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'file//'; printf '%s\\n' \"$?\"; test -f 'file//'; printf '%s\\n' \"$?\"; test -d 'file//'; printf '%s\\n' \"$?\"; test -b 'file//'; printf '%s\\n' \"$?\"; test -c 'file//'; printf '%s\\n' \"$?\"; test -p 'file//'; printf '%s\\n' \"$?\"; test -S 'file//'; printf '%s\\n' \"$?\"; test -L 'file//'; printf '%s\\n' \"$?\"; test -h 'file//'; printf '%s\\n' \"$?\"; test -r 'file//'; printf '%s\\n' \"$?\"; test -w 'file//'; printf '%s\\n' \"$?\"; test -x 'file//'; printf '%s\\n' \"$?\"; test -s 'file//'; printf '%s\\n' \"$?\"; test 'file//' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file//'; printf '%s\\n' \"$?\"; test 'file//' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file//'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-file-link-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'file-link/'; printf '%s\\n' \"$?\"; test -f 'file-link/'; printf '%s\\n' \"$?\"; test -d 'file-link/'; printf '%s\\n' \"$?\"; test -b 'file-link/'; printf '%s\\n' \"$?\"; test -c 'file-link/'; printf '%s\\n' \"$?\"; test -p 'file-link/'; printf '%s\\n' \"$?\"; test -S 'file-link/'; printf '%s\\n' \"$?\"; test -L 'file-link/'; printf '%s\\n' \"$?\"; test -h 'file-link/'; printf '%s\\n' \"$?\"; test -r 'file-link/'; printf '%s\\n' \"$?\"; test -w 'file-link/'; printf '%s\\n' \"$?\"; test -x 'file-link/'; printf '%s\\n' \"$?\"; test -s 'file-link/'; printf '%s\\n' \"$?\"; test 'file-link/' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-link/'; printf '%s\\n' \"$?\"; test 'file-link/' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-link/'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-file-link-double-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'file-link//'; printf '%s\\n' \"$?\"; test -f 'file-link//'; printf '%s\\n' \"$?\"; test -d 'file-link//'; printf '%s\\n' \"$?\"; test -b 'file-link//'; printf '%s\\n' \"$?\"; test -c 'file-link//'; printf '%s\\n' \"$?\"; test -p 'file-link//'; printf '%s\\n' \"$?\"; test -S 'file-link//'; printf '%s\\n' \"$?\"; test -L 'file-link//'; printf '%s\\n' \"$?\"; test -h 'file-link//'; printf '%s\\n' \"$?\"; test -r 'file-link//'; printf '%s\\n' \"$?\"; test -w 'file-link//'; printf '%s\\n' \"$?\"; test -x 'file-link//'; printf '%s\\n' \"$?\"; test -s 'file-link//'; printf '%s\\n' \"$?\"; test 'file-link//' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-link//'; printf '%s\\n' \"$?\"; test 'file-link//' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-link//'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-file-chain-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'file-chain/'; printf '%s\\n' \"$?\"; test -f 'file-chain/'; printf '%s\\n' \"$?\"; test -d 'file-chain/'; printf '%s\\n' \"$?\"; test -b 'file-chain/'; printf '%s\\n' \"$?\"; test -c 'file-chain/'; printf '%s\\n' \"$?\"; test -p 'file-chain/'; printf '%s\\n' \"$?\"; test -S 'file-chain/'; printf '%s\\n' \"$?\"; test -L 'file-chain/'; printf '%s\\n' \"$?\"; test -h 'file-chain/'; printf '%s\\n' \"$?\"; test -r 'file-chain/'; printf '%s\\n' \"$?\"; test -w 'file-chain/'; printf '%s\\n' \"$?\"; test -x 'file-chain/'; printf '%s\\n' \"$?\"; test -s 'file-chain/'; printf '%s\\n' \"$?\"; test 'file-chain/' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-chain/'; printf '%s\\n' \"$?\"; test 'file-chain/' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-chain/'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-file-chain-double-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'file-chain//'; printf '%s\\n' \"$?\"; test -f 'file-chain//'; printf '%s\\n' \"$?\"; test -d 'file-chain//'; printf '%s\\n' \"$?\"; test -b 'file-chain//'; printf '%s\\n' \"$?\"; test -c 'file-chain//'; printf '%s\\n' \"$?\"; test -p 'file-chain//'; printf '%s\\n' \"$?\"; test -S 'file-chain//'; printf '%s\\n' \"$?\"; test -L 'file-chain//'; printf '%s\\n' \"$?\"; test -h 'file-chain//'; printf '%s\\n' \"$?\"; test -r 'file-chain//'; printf '%s\\n' \"$?\"; test -w 'file-chain//'; printf '%s\\n' \"$?\"; test -x 'file-chain//'; printf '%s\\n' \"$?\"; test -s 'file-chain//'; printf '%s\\n' \"$?\"; test 'file-chain//' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-chain//'; printf '%s\\n' \"$?\"; test 'file-chain//' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-chain//'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-dangling-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'dangling/'; printf '%s\\n' \"$?\"; test -f 'dangling/'; printf '%s\\n' \"$?\"; test -d 'dangling/'; printf '%s\\n' \"$?\"; test -b 'dangling/'; printf '%s\\n' \"$?\"; test -c 'dangling/'; printf '%s\\n' \"$?\"; test -p 'dangling/'; printf '%s\\n' \"$?\"; test -S 'dangling/'; printf '%s\\n' \"$?\"; test -L 'dangling/'; printf '%s\\n' \"$?\"; test -h 'dangling/'; printf '%s\\n' \"$?\"; test -r 'dangling/'; printf '%s\\n' \"$?\"; test -w 'dangling/'; printf '%s\\n' \"$?\"; test -x 'dangling/'; printf '%s\\n' \"$?\"; test -s 'dangling/'; printf '%s\\n' \"$?\"; test 'dangling/' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'dangling/'; printf '%s\\n' \"$?\"; test 'dangling/' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'dangling/'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-file-parent",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'file/../file'; printf '%s\\n' \"$?\"; test -f 'file/../file'; printf '%s\\n' \"$?\"; test -d 'file/../file'; printf '%s\\n' \"$?\"; test -b 'file/../file'; printf '%s\\n' \"$?\"; test -c 'file/../file'; printf '%s\\n' \"$?\"; test -p 'file/../file'; printf '%s\\n' \"$?\"; test -S 'file/../file'; printf '%s\\n' \"$?\"; test -L 'file/../file'; printf '%s\\n' \"$?\"; test -h 'file/../file'; printf '%s\\n' \"$?\"; test -r 'file/../file'; printf '%s\\n' \"$?\"; test -w 'file/../file'; printf '%s\\n' \"$?\"; test -x 'file/../file'; printf '%s\\n' \"$?\"; test -s 'file/../file'; printf '%s\\n' \"$?\"; test 'file/../file' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file/../file'; printf '%s\\n' \"$?\"; test 'file/../file' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file/../file'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-file-link-parent",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'file-link/../file'; printf '%s\\n' \"$?\"; test -f 'file-link/../file'; printf '%s\\n' \"$?\"; test -d 'file-link/../file'; printf '%s\\n' \"$?\"; test -b 'file-link/../file'; printf '%s\\n' \"$?\"; test -c 'file-link/../file'; printf '%s\\n' \"$?\"; test -p 'file-link/../file'; printf '%s\\n' \"$?\"; test -S 'file-link/../file'; printf '%s\\n' \"$?\"; test -L 'file-link/../file'; printf '%s\\n' \"$?\"; test -h 'file-link/../file'; printf '%s\\n' \"$?\"; test -r 'file-link/../file'; printf '%s\\n' \"$?\"; test -w 'file-link/../file'; printf '%s\\n' \"$?\"; test -x 'file-link/../file'; printf '%s\\n' \"$?\"; test -s 'file-link/../file'; printf '%s\\n' \"$?\"; test 'file-link/../file' -nt directory; printf '%s\\n' \"$?\"; test directory -nt 'file-link/../file'; printf '%s\\n' \"$?\"; test 'file-link/../file' -ot directory; printf '%s\\n' \"$?\"; test directory -ot 'file-link/../file'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-directory-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'directory/'; printf '%s\\n' \"$?\"; test -d 'directory/'; printf '%s\\n' \"$?\"; test -f 'directory/'; printf '%s\\n' \"$?\"; test -L 'directory/'; printf '%s\\n' \"$?\"; test -h 'directory/'; printf '%s\\n' \"$?\"; test 'directory/' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory/'; printf '%s\\n' \"$?\"; test 'directory/' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory/'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-directory-double-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'directory//'; printf '%s\\n' \"$?\"; test -d 'directory//'; printf '%s\\n' \"$?\"; test -f 'directory//'; printf '%s\\n' \"$?\"; test -L 'directory//'; printf '%s\\n' \"$?\"; test -h 'directory//'; printf '%s\\n' \"$?\"; test 'directory//' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory//'; printf '%s\\n' \"$?\"; test 'directory//' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory//'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-directory-link-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'directory-link/'; printf '%s\\n' \"$?\"; test -d 'directory-link/'; printf '%s\\n' \"$?\"; test -f 'directory-link/'; printf '%s\\n' \"$?\"; test -L 'directory-link/'; printf '%s\\n' \"$?\"; test -h 'directory-link/'; printf '%s\\n' \"$?\"; test 'directory-link/' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory-link/'; printf '%s\\n' \"$?\"; test 'directory-link/' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory-link/'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-directory-link-double-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'directory-link//'; printf '%s\\n' \"$?\"; test -d 'directory-link//'; printf '%s\\n' \"$?\"; test -f 'directory-link//'; printf '%s\\n' \"$?\"; test -L 'directory-link//'; printf '%s\\n' \"$?\"; test -h 'directory-link//'; printf '%s\\n' \"$?\"; test 'directory-link//' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory-link//'; printf '%s\\n' \"$?\"; test 'directory-link//' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory-link//'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-directory-chain-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'directory-chain/'; printf '%s\\n' \"$?\"; test -d 'directory-chain/'; printf '%s\\n' \"$?\"; test -f 'directory-chain/'; printf '%s\\n' \"$?\"; test -L 'directory-chain/'; printf '%s\\n' \"$?\"; test -h 'directory-chain/'; printf '%s\\n' \"$?\"; test 'directory-chain/' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory-chain/'; printf '%s\\n' \"$?\"; test 'directory-chain/' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory-chain/'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-directory-chain-double-slash",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -e 'directory-chain//'; printf '%s\\n' \"$?\"; test -d 'directory-chain//'; printf '%s\\n' \"$?\"; test -f 'directory-chain//'; printf '%s\\n' \"$?\"; test -L 'directory-chain//'; printf '%s\\n' \"$?\"; test -h 'directory-chain//'; printf '%s\\n' \"$?\"; test 'directory-chain//' -nt file; printf '%s\\n' \"$?\"; test file -nt 'directory-chain//'; printf '%s\\n' \"$?\"; test 'directory-chain//' -ot file; printf '%s\\n' \"$?\"; test file -ot 'directory-chain//'; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n1\n1\n1\n0\n1\n1\n0\n0\n0\n1\n1\n1\n0\n1\n1\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "f31-split-raw-file-test-unsuffixed-links",
+      "command": "split",
+      "args": [
+        "-l",
+        "1",
+        "--filter=IFS= read -r line || exit 7; test -f file-link; printf '%s\\n' \"$?\"; test -L file-link; printf '%s\\n' \"$?\"; test -h file-chain; printf '%s\\n' \"$?\"; test -s file-chain; printf '%s\\n' \"$?\"; test -d directory-link; printf '%s\\n' \"$?\"; test -L directory-link; printf '%s\\n' \"$?\"; test -h directory-chain; printf '%s\\n' \"$?\"; test -L dangling; printf '%s\\n' \"$?\"; printf '%s\\n' \"$line\" > \"$FILE\"",
+        "-",
+        "piece-"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "payload",
+          "mtime": "200001010000.00"
+        },
+        {
+          "path": "directory",
+          "kind": "directory",
+          "mtime": "203001010000.00"
+        },
+        {
+          "path": "file-link",
+          "kind": "symbolic-link",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symbolic-link",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symbolic-link",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symbolic-link",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symbolic-link",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "content",
+        "type",
+        "symlink-target"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "file",
+          "kind": "file",
+          "content_text": "payload"
+        },
+        {
+          "path": "directory",
+          "kind": "directory"
+        },
+        {
+          "path": "file-link",
+          "kind": "symlink",
+          "target": "file"
+        },
+        {
+          "path": "file-chain",
+          "kind": "symlink",
+          "target": "file-link"
+        },
+        {
+          "path": "directory-link",
+          "kind": "symlink",
+          "target": "directory"
+        },
+        {
+          "path": "directory-chain",
+          "kind": "symlink",
+          "target": "directory-link"
+        },
+        {
+          "path": "dangling",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "piece-aa",
+          "content_text": "a\n"
+        },
+        {
+          "path": "piece-ab",
+          "content_text": "b\n"
+        }
+      ],
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
     }
   ]
 }

@@ -1,9 +1,12 @@
 # date
 
+Development candidate: `cli/date@0.1.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Display dates and times for MoonX.
 
 ```sh
-moonx cli/date@0.1.4 [OPTION]... [+FORMAT]
+moonx cli/date@0.1.5 [OPTION]... [+FORMAT]
 ```
 
 ## Supported scope
@@ -20,6 +23,12 @@ Print the current time or an ISO date/time or @SECONDS value using TZ, the host 
 | `-R, --rfc-email` | Print an RFC email timestamp. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Option values and operands after -- remain literal during alias normalization.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Relative date expressions and setting the system clock are unsupported.
@@ -28,8 +37,8 @@ Print the current time or an ISO date/time or @SECONDS value using TZ, the host 
 ## Examples
 
 ```sh
-moonx cli/date@0.1.4 -u +%FT%TZ
-moonx cli/date@0.1.4 -u -d @0 +%F
+moonx cli/date@0.1.5 -u +%FT%TZ
+moonx cli/date@0.1.5 -u -d @0 +%F
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

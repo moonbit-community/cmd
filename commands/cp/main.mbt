@@ -10,10 +10,28 @@ priv struct CpOptions {
 }
 
 ///|
-fn normalized_args(args : ArrayView[String]) -> Array[String] {
+fn normalized_args(
+  args : ArrayView[String],
+) -> Array[String] raise @cli.CliError {
   let result : Array[String] = []
   let mut options = true
+  let mut value_next = false
   for arg in args {
+    if value_next {
+      result.push(arg)
+      value_next = false
+      continue
+    }
+    if options &&
+      ["--update-mode", "--backup-control"].any(name => {
+        arg == name || arg.has_prefix(name + "=")
+      }) {
+      raise @cli.CliError(
+        kind=UnknownOption,
+        option=arg,
+        message="unknown option",
+      )
+    }
     if options && arg == "--" {
       options = false
       result.push(arg)
@@ -29,6 +47,17 @@ fn normalized_args(args : ArrayView[String]) -> Array[String] {
       result.push("--preserve")
     } else {
       result.push(arg)
+    }
+    if options {
+      value_next = ["--suffix", "--no-preserve"].contains(arg)
+      if arg.has_prefix("-") && !arg.has_prefix("--") {
+        for offset in 1..<arg.length() {
+          if arg[offset] == 'S' {
+            value_next = offset + 1 == arg.length()
+            break
+          }
+        }
+      }
     }
   }
   result
@@ -87,7 +116,7 @@ async fn copy_one(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cp 0.2.4\n")
+    @stdio.stdout.write("cp 0.2.5\n")
     return
   }
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), [
@@ -113,13 +142,13 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("cp: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\nTree validation finishes before copying; existing empty directories report no copy.\n",
+      "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\nTree validation finishes before copying; existing empty directories report no copy.\nProject alias: --dereference-command-line selects -H; GNU cp exposes only the short spelling.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
     )
     return
   }
@@ -132,7 +161,7 @@ async fn main {
   }
   if parsed.last_value("no-preserve") is Some(value) && value != "mode" {
     @stdio.stderr.write("cp: only --no-preserve=mode is currently supported\n")
-    @sys.exit(2)
+    @sys.exit(1)
     return
   }
   let operands = parsed.operands
@@ -149,7 +178,7 @@ async fn main {
   let update = @fsops.parse_update_mode(update_text) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("cp: \{message}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -161,7 +190,7 @@ async fn main {
   ignore(@fsops.parse_backup_control(backup_text)) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("cp: \{message}\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }

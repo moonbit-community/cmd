@@ -252,8 +252,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/fmt@0.1.4 metadata contract",
-      "expected_stdout_text": "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\n-c, --crown-margin allows a different first-line indent.\n-t, --tagged-paragraph preserves a hanging indent.\n-p, --prefix=PREFIX reformats only matching prefixed lines.\nC-locale byte columns; split takes precedence over crown, then tagged.\n",
+      "source_version": "workspace cli/fmt@0.1.5 metadata contract",
+      "expected_stdout_text": "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\n-c, --crown-margin allows a different first-line indent.\n-t, --tagged-paragraph preserves a hanging indent.\n-p, --prefix=PREFIX reformats only matching prefixed lines.\nC-locale byte columns; split takes precedence over crown, then tagged.\nOption values and operands after -- remain literal during alias normalization.\n",
       "expected_stderr_text": ""
     },
     {
@@ -271,8 +271,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/fmt@0.1.4 metadata contract",
-      "expected_stdout_text": "fmt 0.1.4\n",
+      "source_version": "workspace cli/fmt@0.1.5 metadata contract",
+      "expected_stdout_text": "fmt 0.1.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -877,6 +877,46 @@
       "environment": {
         "LC_ALL": "C"
       }
+    },
+    {
+      "id": "f17-fmt-numeric-prefix-short",
+      "command": "fmt",
+      "args": [
+        "-p",
+        "-2",
+        "-w8",
+        "-g8"
+      ],
+      "stdin_text": "-2 one two three\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-2 one\n-2 two\n-2 three\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
+    },
+    {
+      "id": "f17-fmt-numeric-prefix-long",
+      "command": "fmt",
+      "args": [
+        "--prefix",
+        "-2",
+        "-w8",
+        "-g8"
+      ],
+      "stdin_text": "-2 one two three\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-2 one\n-2 two\n-2 three\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     }
   ]
 }

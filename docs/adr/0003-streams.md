@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-06
+Updated: 2026-11-08
 
 ## Decision
 
@@ -35,7 +35,67 @@ preserving the destination; the blocked-writer test in
 cancellation. Reconsider shielding output only with a bounded completion
 contract and equivalent cancellation regressions.
 
+The `tac` command shields its spool cleanup callback through public
+`async.protect_from_cancel`. The published core 0.9.0 interface declares directory
+close cancellable, unlike the current workspace annotation. Requiring a
+`nocancel` callback would therefore compile in the workspace but fail an
+isolated packaged check. The command's protection preserves real temporary-file
+cleanup after cancellation without forcing a core release; its cancellation
+test includes a cancellable suspension before removal. Publication dry runs
+must validate the extracted module against its published dependencies.
+Sort likewise protects owned spool removal against the published core 0.9.1
+interface. Its regression observes real disk runs before cancelling a blocked
+writer, then requires owned directories absent and unowned files preserved.
+Only cleanup is shielded; output backpressure remains cancellable.
+
 ## Package ownership
+
+Find's expression optimizer, action evaluator, stat cache and time windows stay
+private to `commands/find`; standalone test's argc and file-predicate rules stay
+private to `commands/test`. Their dialects and missing-file time relations are
+not interchangeable with the shared shell. The issue #29 repair uses existing
+published core interfaces and adds no shared runtime mechanism or core API.
+Keep the original postorder stat snapshot while refreshing directory listings;
+do not trade observable error/action ordering for generic traversal reuse.
+Reconsider sharing only with two real consumers of the same contract. The
+[execution guide](../performance/execution.md) owns call paths and costs;
+[ADR-0004](0004-filesystem.md) owns public-API boundaries. No new performance
+acceptance is inferred from the correctness repair.
+
+The shared shell owns interpretation for sh, make recipes and split filters.
+Keep printf parsing, test expressions, here-document scanning and stream aliases
+private to that package. Make-specific expansion, prerequisite planning and
+jobserver token ownership remain in the make command. These are actual consumers
+and existing domain boundaries, not a new generic command framework. Shell
+captures retain raw bytes; merged child stdout/stderr use a single pipe, and
+printf clears submitted output before awaiting the writer so cleanup cannot
+replay a failed write. See [ADR-0007](0007-language.md) for finite language scope.
+The target-size repair introduced shared behavior in core 0.9.3. The subsequent
+all-predicate raw-path repair requires core 0.9.5 and updated sh/make/split
+dependencies. Other command coordinates stay unchanged.
+No timing cost or performance acceptance is established by source changes or
+correctness receipts; changed artifacts remain subject to the protection registry.
+
+Argument normalization belongs to each command. Consume option values and
+respect `--` before expanding aliases; values and filenames that resemble an
+implementation key must remain data. Reject private keys as raw options rather
+than accidentally exposing adapter internals. The shared catalog's option
+strings are semantic coverage identifiers, not a complete accepted-argv grammar.
+The existing identifiers remain stable; exact public spellings, project aliases
+and diagnostic limits are recorded in the
+[support profile](../compatibility.md#extensions-and-diagnostics), command help
+and READMEs. This clarification changes no core runtime/API and does not require
+a core release. Reconsider the metadata representation only if a real consumer
+needs a separately validated spelling grammar; do not derive acceptance from
+catalog membership.
+
+Ordinary usage errors retain command-specific upstream status contracts.
+Capability refusals are distinct, as are committed bytes/effects before an
+error. Local exact diagnostic assertions may use a documented narrower
+upstream category comparison for host messages or help trailers; neither
+generic text nor a nonzero status alone establishes correctness. The f17 cases
+exercise the actual aliases, empty/invalid input, literal operands and option
+values. Generated index/coverage records are definitions, not execution receipts.
 
 | Package | Responsibility |
 | --- | --- |
@@ -186,7 +246,7 @@ measurements remain separate evidence categories.
 | Share dump-reader loops (C01) | Keep owner-local loops: opening, zero limits, over-skip, rendering and finalization differ. A narrower allocation change needs short-read, EOF, budget and failed-write evidence. |
 | Reduce core visibility (C02) | `teddy_max_literals`, `Algorithm::hex_length` and `gzipops/cli.help` remain public after a restored trial. Make an intentional API decision before changing them. |
 | Remove published platform helpers (C02) | Local non-use of `is_cross_device_error`, `native_separator` and `accepts_separator` does not establish external non-use; choose a compatibility policy first. |
-| Make `Session::finish` synchronous (C02) | Still a proposal: its public function type and sh/make/split artifacts change. Require a deliberate API revision and affected-command measurements. |
+| Make `Session::finish` synchronous (C02) | Retain async: EOF now reparses pending source and may execute async `run_jobs`. The earlier synchronous trial predates this behavior and is no longer applicable. Reconsider only if command execution is deliberately moved to another async API while preserving EOF and adapter contracts. |
 
 ## Verification and reconsideration
 

@@ -237,13 +237,15 @@ async fn reverse_spooled(
 ///|
 // The operation owns its file handles and closes them before directory cleanup.
 // A cleanup-only failure is observable; a primary failure keeps its diagnostic.
+// Published core 0.9.0 exposes close as cancellable. Protect cleanup here
+// instead of requiring the workspace-only nocancel annotation from callers.
 async fn with_spool_cleanup(
   operation : async () -> Unit,
-  cleanup : async () -> Unit nocancel,
+  cleanup : async () -> Unit,
 ) -> Unit {
   {
-    errdefer (cleanup() catch { _ => () })
+    errdefer (@async.protect_from_cancel(cleanup) catch { _ => () })
     operation()
   }
-  cleanup()
+  @async.protect_from_cancel(cleanup)
 }

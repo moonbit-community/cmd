@@ -16,7 +16,13 @@ fn help_message() -> String {
     #|      --help               display this help and exit
     #|      --version            display version and exit
     #|Existing named outputs are refused; filters own their explicit file writes.
+    #|Filters support shared shell arithmetic assignment, backticks and expanded here-documents.
     #|Line-byte and unknown-size partition layouts require temporary write access.
+    #|
+    #|Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+    #|Shell test -s follows target metadata; unavailable target sizes are rejected.
+    #|Malformed shell command lists reject before execution; complete EOF continuations execute.
+    #|On POSIX, every file-test operand ending in a slash must name a directory.
   message
 }
 
@@ -82,13 +88,13 @@ async fn process(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("split 0.1.5\n")
+    @stdio.stdout.write("split 0.1.10\n")
     return
   }
   let parsed = parse_args(@env.args()[1:]) catch {
     @cli.CliError(message~, option~, ..) => {
       @stdio.stderr.write("split: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -97,7 +103,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("split 0.1.5\n")
+    @stdio.stdout.write("split 0.1.10\n")
     return
   }
   try {

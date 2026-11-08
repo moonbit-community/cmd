@@ -5,12 +5,19 @@
 [walk_find](../../commands/find/walk.mbt) traverses an explicit stack and derives
 metadata requirements from the expression. Each directory visit starts `Unread`;
 `names()` transitions to `Read(names)` or `Failed` only when descent or an
-evaluated emptiness predicate needs enumeration. The result is reused within
-that visit. Short-circuited predicates, pruned directories and depth limits do
-not trigger an unnecessary directory read.
+evaluated emptiness predicate needs enumeration. Descent can reuse that listing;
+each evaluated `-empty` refreshes it, including after a deletion or an earlier
+enumeration error. Short-circuited predicates, pruned directories and depth
+limits do not trigger an unnecessary directory read.
 
-A postorder visit creates fresh observation state after child effects, so
-emptiness does not reuse the earlier pre-descent listing. Sorted children and
+A postorder visit creates fresh directory-listing state after child effects,
+but retains the entry's pre-descent stat fields. [FindEntry](../../commands/find/metadata.mbt)
+loads the expression's required size/a/m/c fields before directory reads,
+actions or children. A failed metadata load stays a typed cached error until
+its predicate is evaluated; a skipped predicate does not emit a diagnostic.
+This prevents child deletion from changing the parent's `-newer` decision.
+Access and followed-kind checks remain real operations at evaluation time.
+Sorted children and
 pending paths still occupy memory proportional to traversal state; this is not
 constant-memory traversal. Shared [fswalk](../../core/fswalk/) owns directory
 handle lifetime and requested metadata, while each command owns ordering and
@@ -21,6 +28,23 @@ during traversal instead of retaining all paths until EOF. Its UTF-8 argv-byte
 accounting is shared with xargs through [core/process](../../core/process/).
 The shared mechanism counts bytes; it does not own either command's grammar,
 termination rules or exit aggregation.
+
+[Expression optimization](../../commands/find/optimize.mbt) promotes cheap
+name/path/constants only within the left operator chain. Right compound groups
+and action barriers preserve error and effect ordering. [Actions](../../commands/find/actions.mbt)
+execute inline; a failed single `-exec` is false, while failed grouped batches
+affect the command's final status. The finite one-action/final-exec grammar
+remains unchanged. Reintroducing deferred actions, flattening every group or
+refreshing postorder stat fields would violate the registered filesystem cases.
+
+Size rounding uses division/remainder with UInt64 thresholds, so unit scaling
+cannot overflow a signed byte count. [Time windows](../../commands/find/time.mbt)
+retain file nanoseconds and the fixed GNU binary64 conversion/window rules,
+with explicit finite signed-64-bit bounds. Standalone test uses its own argc
+precedence and followed-target metadata; neither predicate implementation opens
+files to obtain size. These correctness changes do not establish a timing gain
+or an accepted timing cost. The registered `real-find-*` and `real-test-*`
+workloads retain their independent performance scope.
 
 ## Xargs: one producer and bounded child slots
 
@@ -51,6 +75,69 @@ direct-child guarantees, not descendant-tree or exec semantics.
 Storage depends on the unfinished item, current/pending batch and active child
 arguments. A byte budget does not prove a process RSS bound. Keep process limits
 and cancellation semantics in [ADR-0006](../adr/0006-process.md).
+
+## Shell interpretation and make scheduling
+
+[Session.feed](../../core/shell/session.mbt) retains incomplete input, then
+[lexer](../../core/shell/lexer.mbt) and [parser](../../core/shell/parser.mbt)
+construct executable jobs. Arithmetic/word expansion precedes ordered
+redirection opens; [executor](../../core/shell/executor.mbt) applies temporary
+assignments and runs builtins or actual child processes. Substitutions copy
+context and capture bytes; external stdout/stderr aliases use one process pipe
+through [streams](../../core/shell/streams.mbt). Textual captures decode only
+after collection, so storage grows with captured output rather than pipe size.
+EOF reparses a pending continued line; complete jobs execute once while unfinished
+grammar rejects. Reserved words and required compound lists are checked before
+the command list runs. External launch errors are classified at the launch call;
+unexpected stdout/stderr pump failures keep their error type across task groups
+and command substitution and stop later commands. The explicit closed-pipe path
+retains its status 141 contract.
+
+Substitution closing candidates are parsed with the same contextual grammar
+as scripts, including case patterns and incomplete function headers. This
+reparses prefixes and allocates token/AST storage; it is a correctness decision,
+not a throughput optimization. An incremental parser may replace it only while
+preserving nested substitution, case, quote, comment and here-document cases.
+[Printf](../../core/shell/printf.mbt) retains at most an 8192-byte output buffer
+between conversions; individual formatted fields can be larger and width/precision
+is bounded at 1,000,000. Buffer allocation state is separate from occupancy to
+preserve warning order at exact boundaries. Empty conversions do not warm it.
+
+Make resolves [secondary prerequisites](../../commands/make/prerequisites.mbt)
+before [planning the dependency graph](../../commands/make/scheduler.mbt).
+The graph retains target/dependency tasks and schedules each shared target once.
+The [recipe adapter](../../commands/make/recipes.mbt) expands every recipe for a
+target before executing its first command. Its environment is evaluated lazily
+once per target; empty/colon/dry-run lines avoid export side effects. These phases
+hold a mutex; child execution does not. `$?` uses a single pre-recipe snapshot,
+including virtual -W timestamps. Fatal variable expansion prevents queued targets
+from starting even under `-k`; ordinary recipe failures retain keep-going policy.
+
+[Export policy](../../commands/make/exports.mbt) separates explicit decisions,
+initial environment/command-line origin and default export. Shell-valued recursive
+exports use the original environment; names are snapshotted before evaluation
+because `.SHELLSTATUS` can mutate the variable map. Make's private
+[argument construction](../../commands/make/shell_source.mbt) evaluates selectors
+before constructing an environment and preserves GNU's direct-argv versus shell
+handling of LF and continuation. It retains O(source plus argv bytes), and quoted
+argv is interpreted by the pure MoonBit shell. No-command calls skip the
+environment entirely. [Capture](../../commands/make/shell_capture.mbt) retains
+stdout bytes, truncates at the first NUL and decodes only that prefix; its storage
+still grows with total captured output. Actual shell-language errors retain their
+status and prior output, while nonlanguage transfer errors propagate.
+The [FIFO jobserver](../../commands/make/jobserver.mbt) has one implicit slot and
+borrows exact bytes for additional work. A mutex admits one reader at a time;
+racing implicit-slot acquisition prevents waiting forever for a token after a
+local task completes. Both completed acquisitions are accounted for before
+execution. Token cleanup is protected from cancellation and never retries a
+possibly submitted failed return.
+
+These changes have correctness receipts rather than performance acceptance.
+The common [case registry](../../tests/cases/index.json) binds shell sessions,
+merged streams, printf boundaries, recursive make and real FIFO observations.
+The Linux GNU-server bridge proves protocol interoperability through shared FIFO
+authentication, not an operating-system parent relationship. Definitions and
+ready/ack timing observations do not establish throughput or constant-memory use.
 
 ## Copy and filesystem operations
 

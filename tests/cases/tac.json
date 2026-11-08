@@ -29,8 +29,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/tac@0.1.6 metadata contract",
-      "expected_stdout_text": "Usage: tac [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nWrite each FILE to standard output, last line first.\nWith no FILE, or when FILE is -, read standard input.\n\n  -b, --before             Attach the separator before records.\n  -s, --separator=STRING   Use STRING instead of newline.\n  -r, --regex              Use an Emacs-style byte regular expression.\n\nNonseekable input and regex mode require temporary-directory write access.\nA cleanup failure is reported unless an earlier operation already failed.\nRegex mode retains the complete input for arbitrary-span byte matching.\n",
+      "source_version": "workspace cli/tac@0.1.7 metadata contract",
+      "expected_stdout_text": "Usage: tac [OPTION]... [FILE]...\n      --help      display this help and exit\n      --version   display version and exit\n\nWrite each FILE to standard output, last line first.\nWith no FILE, or when FILE is -, read standard input.\n\n  -b, --before             Attach the separator before records.\n  -s, --separator=STRING   Use STRING instead of newline.\n  -r, --regex              Use an Emacs-style byte regular expression.\n\nNonseekable input and regex mode require temporary-directory write access.\nA cleanup failure is reported unless an earlier operation already failed.\nRegex mode retains the complete input for arbitrary-span byte matching.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -48,8 +48,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/tac@0.1.6 metadata contract",
-      "expected_stdout_text": "tac 0.1.6\n",
+      "source_version": "workspace cli/tac@0.1.7 metadata contract",
+      "expected_stdout_text": "tac 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -1250,6 +1250,57 @@
       "expected_stderr_text": "tac: Unmatched ) or \\)\n",
       "environment": {},
       "normalizations": []
+    },
+    {
+      "id": "f17-tac-unknown-option",
+      "command": "tac",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tac: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-tac-missing-option-value",
+      "command": "tac",
+      "args": [
+        "--separator"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tac: option requires a value: 'separator'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Both implementations identify an option error; local text, empty stdout and status are exact, while upstream help trailers differ."
     }
   ]
 }

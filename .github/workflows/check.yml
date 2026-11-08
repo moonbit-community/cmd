@@ -72,9 +72,9 @@ jobs:
           key: ${{ steps.cache-key.outputs.prefix }}-${{ github.sha }}
           restore-keys: |
             ${{ steps.cache-key.outputs.prefix }}-
-      - name: Linux listener observer
+      - name: Linux listener and socket fixture tools
         if: runner.os == 'Linux'
-        run: command -v lsof || (sudo apt-get update && sudo apt-get install --yes lsof)
+        run: (command -v lsof && test -x /usr/bin/nc) || (sudo apt-get update && sudo apt-get install --yes lsof netcat-openbsd)
       - name: Dependencies
         run: moon update
       - name: Check products and test tools
@@ -117,6 +117,7 @@ jobs:
           moon run tests/run.mbtx -- format --check
           git diff --exit-code
       - name: Preserve results and failure diagnostics
+        id: upload_results
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
@@ -124,15 +125,17 @@ jobs:
           path: test-reports
           retention-days: 7
           if-no-files-found: warn
-      - name: Preserve interrupted-run logs
-        if: cancelled()
+      - name: Preserve logs when interrupted or full upload fails
+        if: ${{ always() && (cancelled() || steps.upload_results.outcome == 'failure') }}
         uses: actions/upload-artifact@v4
         with:
-          name: cmd-test-reports-${{ matrix.os }}
+          name: cmd-test-diagnostics-${{ matrix.os }}
           path: |
             test-reports/*.log
             test-reports/*.json
             test-reports/oracle-*.txt
+            test-reports/functional/*.json
+            test-reports/functional/*.jsonl
           retention-days: 7
           if-no-files-found: warn
       - name: Save dependency and compilation state

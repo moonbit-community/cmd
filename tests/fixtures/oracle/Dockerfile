@@ -336,7 +336,10 @@ COPY --from=build-tree /oracle/ /oracle/
 COPY --from=build-ripgrep /oracle/ /oracle/
 COPY --from=build-typst /oracle/ /oracle/
 
-RUN ln -s /oracle/bin/dash /oracle/bin/sh
+# GNU make's default shell must be the same checksum-pinned Dash as the direct
+# sh oracle. Keep fixture argv and MAKEFLAGS unchanged by shell selection.
+RUN ln -s /oracle/bin/dash /oracle/bin/sh \
+  && ln -sf /oracle/bin/dash /bin/sh
 
 COPY --chmod=0755 entrypoint.sh versions.sh /usr/local/bin/
 

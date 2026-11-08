@@ -1643,8 +1643,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/ls@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -C lists down columns; -x across rows; -m uses commas; -1 uses lines.\n  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs.\n  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes.\n      --quoting-style=STYLE selects GNU C-locale quoting.\n      --show-control-chars displays remaining control bytes.\n      --color=always,never controls explicit type/extension colors.\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\n",
+      "source_version": "workspace cli/ls@0.2.5 metadata contract",
+      "expected_stdout_text": "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -C lists down columns; -x across rows; -m uses commas; -1 uses lines.\n  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs.\n  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes.\n      --quoting-style=STYLE selects GNU C-locale quoting.\n      --show-control-chars displays remaining control bytes.\n      --color=always,never controls explicit type/extension colors.\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n  -H follows command-line links; -L follows all links; -P follows none (extension).\n  -u, -c and --time select and imply time sorting unless -S or -t selects a sort.\n  -S requires regular files; metadata-rich long listing is not supported.\nProject aliases: --one = -1; --columns = -C; --across = -x; --commas = -m.\n--sort-time = -t; --access-time = -u; --change-time = -c; --sort-size = -S.\n-P/--no-dereference is a project no-follow extension.\n-Q/--quote-name select C quotes; --quote is the accepted abbreviated spelling.\nOption values and operands after -- remain literal during alias normalization.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-142"
@@ -1667,8 +1667,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/ls@0.2.4 metadata contract",
-      "expected_stdout_text": "ls 0.2.4\n",
+      "source_version": "workspace cli/ls@0.2.5 metadata contract",
+      "expected_stdout_text": "ls 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -7567,6 +7567,858 @@
       "expected_stderr_text": "",
       "stdin_text": "",
       "expected_stdout_text": ""
+    },
+    {
+      "id": "f17-ls-alias-one",
+      "command": "ls",
+      "args": [
+        "-C",
+        "--one",
+        "--color=never",
+        "--quoting-style=literal",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "23686173680a24646f6c6c61720a2d646173680a3b73656d690a6120620a6261636b5c736c6173680a62656c6c076e616d650a636f6d6d612c6e616d650a63720d6e616d650a646f75626c652271756f74650a6573631b6e616d650a676c6f622a5b785d3f0a6c696e650a6e616d650a706c61696e0a73696e676c652771756f74650a746162096e616d650ac3a90ae4b8ad0a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o11-quote-literal; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "one"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-ls-alias-columns",
+      "command": "ls",
+      "args": [
+        "--columns",
+        "-w20",
+        "-T0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "61202020206464646420202067670a6262202020656565656520206868680a6363632020660a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o11-columns-width20-spaces; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "columns"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-ls-alias-across",
+      "command": "ls",
+      "args": [
+        "--across",
+        "-w20",
+        "-T0",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612020202020626220202020206363630a64646464202065656565652020660a6767202020206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o11-horizontal-width20-spaces; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "across"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-ls-alias-commas",
+      "command": "ls",
+      "args": [
+        "--commas",
+        "-w20",
+        "--",
+        "layout"
+      ],
+      "files": [
+        {
+          "path": "layout",
+          "kind": "directory"
+        },
+        {
+          "path": "layout/a",
+          "content_text": ""
+        },
+        {
+          "path": "layout/bb",
+          "content_text": ""
+        },
+        {
+          "path": "layout/ccc",
+          "content_text": ""
+        },
+        {
+          "path": "layout/dddd",
+          "content_text": ""
+        },
+        {
+          "path": "layout/eeeee",
+          "content_text": ""
+        },
+        {
+          "path": "layout/f",
+          "content_text": ""
+        },
+        {
+          "path": "layout/gg",
+          "content_text": ""
+        },
+        {
+          "path": "layout/hhh",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_hex": "612c2062622c206363632c20646464642c0a65656565652c20662c2067672c206868680a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o11-commas-width20; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "commas"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-ls-alias-sort-time",
+      "command": "ls",
+      "args": [
+        "-S",
+        "-u",
+        "--sort-time",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "z\na\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified ls-links-times-18; project spellings have no upstream-invocation parity claim.",
+      "aliases": [],
+      "coverage": [
+        "sort-time"
+      ]
+    },
+    {
+      "id": "f17-ls-alias-sort-size",
+      "command": "ls",
+      "args": [
+        "--sort-size",
+        "-u",
+        "dir"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\nz\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified ls-links-times-17; project spellings have no upstream-invocation parity claim.",
+      "aliases": [],
+      "coverage": [
+        "sort-size"
+      ]
+    },
+    {
+      "id": "f17-ls-alias-physical",
+      "command": "ls",
+      "args": [
+        "--no-dereference",
+        "-dF",
+        "link"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/child",
+          "content_text": "payload"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "link@\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "host_platforms": [
+        "posix"
+      ],
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified proof-ls-preserve-directory-symlink-operand; project spellings have no upstream-invocation parity claim.",
+      "coverage": [
+        "no-dereference"
+      ],
+      "aliases": [],
+      "oracle": false
+    },
+    {
+      "id": "f17-ls-alias-physical-short-order",
+      "command": "ls",
+      "args": [
+        "-L",
+        "-H",
+        "-P",
+        "-F",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "link@\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "no-dereference"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified ls-links-times-6; project spellings have no upstream-invocation parity claim."
+    },
+    {
+      "id": "f17-ls-alias-physical-long-order",
+      "command": "ls",
+      "args": [
+        "--no-dereference",
+        "-L",
+        "-H",
+        "-dF",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "dir",
+          "kind": "directory"
+        },
+        {
+          "path": "other",
+          "kind": "directory"
+        },
+        {
+          "path": "dir/a",
+          "content_text": "aaa",
+          "atime": "202001010000.00"
+        },
+        {
+          "path": "dir/z",
+          "content_text": "z",
+          "atime": "202101010000.00"
+        },
+        {
+          "path": "other/x",
+          "content_text": "x"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "dir"
+        },
+        {
+          "path": "broken",
+          "kind": "symlink",
+          "target": "absent"
+        },
+        {
+          "path": "other/missing",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "link/\n",
+      "delay_ms": 5,
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stderr_text": "",
+      "aliases": [],
+      "coverage": [
+        "no-dereference"
+      ],
+      "oracle": false,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified ls-links-times-7; project spellings have no upstream-invocation parity claim."
+    },
+    {
+      "id": "f17-ls-alias-quote-name",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quote-name",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "222368617368220a2224646f6c6c6172220a222d64617368220a223b73656d69220a22612062220a226261636b5c5c736c617368220a2262656c6c5c616e616d65220a22636f6d6d612c6e616d65220a2263725c726e616d65220a22646f75626c655c2271756f7465220a226573635c3033336e616d65220a22676c6f622a5b785d3f220a226c696e655c6e6e616d65220a22706c61696e220a2273696e676c652771756f7465220a227461625c746e616d65220a225c3330335c323531220a225c3334345c3237305c323535220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o11-quote-c; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "quote"
+      ],
+      "aliases": []
+    },
+    {
+      "id": "f17-ls-alias-quote-abbreviation",
+      "command": "ls",
+      "args": [
+        "-1",
+        "--color=never",
+        "--quote",
+        "--",
+        "names"
+      ],
+      "files": [
+        {
+          "path": "names",
+          "kind": "directory"
+        },
+        {
+          "path": "names/plain",
+          "content_text": ""
+        },
+        {
+          "path": "names/a b",
+          "content_text": ""
+        },
+        {
+          "path": "names/tab\tname",
+          "content_text": ""
+        },
+        {
+          "path": "names/line\nname",
+          "content_text": ""
+        },
+        {
+          "path": "names/cr\rname",
+          "content_text": ""
+        },
+        {
+          "path": "names/bell\u0007name",
+          "content_text": ""
+        },
+        {
+          "path": "names/esc\u001bname",
+          "content_text": ""
+        },
+        {
+          "path": "names/single'quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/double\"quote",
+          "content_text": ""
+        },
+        {
+          "path": "names/back\\slash",
+          "content_text": ""
+        },
+        {
+          "path": "names/$dollar",
+          "content_text": ""
+        },
+        {
+          "path": "names/;semi",
+          "content_text": ""
+        },
+        {
+          "path": "names/glob*[x]?",
+          "content_text": ""
+        },
+        {
+          "path": "names/é",
+          "content_text": ""
+        },
+        {
+          "path": "names/中",
+          "content_text": ""
+        },
+        {
+          "path": "names/#hash",
+          "content_text": ""
+        },
+        {
+          "path": "names/-dash",
+          "content_text": ""
+        },
+        {
+          "path": "names/comma,name",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "LANG": "C",
+        "TZ": "UTC",
+        "QUOTING_STYLE": "literal",
+        "COLUMNS": "80",
+        "TABSIZE": "8",
+        "LS_COLORS": ""
+      },
+      "stdin_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_hex": "222368617368220a2224646f6c6c6172220a222d64617368220a223b73656d69220a22612062220a226261636b5c5c736c617368220a2262656c6c5c616e616d65220a22636f6d6d612c6e616d65220a2263725c726e616d65220a22646f75626c655c2271756f7465220a226573635c3033336e616d65220a22676c6f622a5b785d3f220a226c696e655c6e6e616d65220a22706c61696e220a2273696e676c652771756f7465220a227461625c746e616d65220a225c3330335c323531220a225c3334345c3237305c323535220a",
+      "expected_stderr_hex": "",
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o11-quote-c; project spellings have no upstream-invocation parity claim.",
+      "normalizations": [],
+      "coverage": [
+        "quote"
+      ],
+      "aliases": []
     }
   ]
 }

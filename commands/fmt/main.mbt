@@ -2,7 +2,13 @@
 async fn run(args : ArrayView[String]) -> Int32 {
   let normalized : Array[String] = []
   let mut options = true
+  let mut value_next = false
   for arg in args {
+    if value_next {
+      normalized.push(arg)
+      value_next = false
+      continue
+    }
     if arg == "--" {
       options = false
     }
@@ -13,6 +19,17 @@ async fn run(args : ArrayView[String]) -> Int32 {
       normalized.push("--width=" + arg[1:].to_owned())
     } else {
       normalized.push(arg)
+    }
+    if options {
+      value_next = ["--width", "--goal", "--prefix"].contains(arg)
+      if arg.has_prefix("-") && !arg.has_prefix("--") {
+        for offset in 1..<arg.length() {
+          if arg[offset] is ('w' | 'g' | 'p') {
+            value_next = offset + 1 == arg.length()
+            break
+          }
+        }
+      }
     }
   }
   let parsed = @cli.parse(normalized, [
@@ -28,12 +45,12 @@ async fn run(args : ArrayView[String]) -> Int32 {
   ])
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\n-c, --crown-margin allows a different first-line indent.\n-t, --tagged-paragraph preserves a hanging indent.\n-p, --prefix=PREFIX reformats only matching prefixed lines.\nC-locale byte columns; split takes precedence over crown, then tagged.\n",
+      "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\nReformat paragraphs, preserving indentation; default width 75.\n-s splits lines without joining; -u uses uniform spacing.\n-c, --crown-margin allows a different first-line indent.\n-t, --tagged-paragraph preserves a hanging indent.\n-p, --prefix=PREFIX reformats only matching prefixed lines.\nC-locale byte columns; split takes precedence over crown, then tagged.\nOption values and operands after -- remain literal during alias normalization.\n",
     )
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("fmt 0.1.4\n")
+    @stdio.stdout.write("fmt 0.1.5\n")
     return 0
   }
   let requested_width = parsed.last_value("width")

@@ -208,19 +208,26 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-11-05 release: core remains 0.9.1.
-  Published the first cli/typst@0.1.0 release and retained the other 79 coordinates,
-  giving 80 published commands among 81 local modules. Core dependencies remain
-  26 commands on 0.9.1, 26 on 0.9.0 and 23 on 0.8.2;
+- Current registry baseline after the 2026-11-08 raw-path repair: core is 0.9.5.
+  Published make 0.2.8, sh 0.2.9 and split 0.1.10; retained the other 77 coordinates,
+  giving 80 published commands. The current workspace contains 82 local modules,
+  including the unpublished serve candidate and local-only timeout.
+  Published-command core dependencies are
+  3 commands on 0.9.5, 25 on 0.9.1, 24 on 0.9.0 and 23 on 0.8.2;
   echo/false/sleep/true/typst do not depend on core.
-  timeout remains unpublished and local-only. Exact coordinates and independent
+  serve does not depend on core. Exact published coordinates and independent
   expectations are in tests/release/latest.json and latest-cases.json.
-  Source commit c3f5973 passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/41952232874).
-  The single upload and registry build were verified. Local exact-version MoonX and
-  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/41957907959)
+  Source commit 273ea9f passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42425407212).
+  All four uploads, registry builds and package checksums were verified.
+  Local exact-version MoonX and
+  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418)
   passed all 80 coordinates with zero failures, including pinned Linux comparison.
-  Counts and exclusions are in CHANGELOG.md under 2026-11-05. This does not
+  Counts and exclusions are in CHANGELOG.md under 2026-11-08. This does not
   establish full upstream parity or formal performance acceptance.
+  The independently audited 2,850 frozen definitions include 380 F31 cases and
+  retain all 2,802 previous IDs, with six metadata output updates and 48 additions.
+  All four uploads succeeded once; earlier release failures retain their dated
+  scope. General GNU/POSIX grammar limits remain in ADR-0007.
   Current latest/candidate snapshots remain independent. Retired published and
   historical archives are preserved in Git at 234f960, rather than duplicated
   in the active checkout. Prior acceptance results retain their dated scope

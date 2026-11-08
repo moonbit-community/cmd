@@ -1,9 +1,12 @@
 # tr
 
+Development candidate: `cli/tr@0.2.5`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Translate and delete bytes for MoonX.
 
 ```sh
-moonx cli/tr@0.2.4 [-dscCt] SET1 [SET2]
+moonx cli/tr@0.2.5 [-dscCt] SET1 [SET2]
 ```
 
 ## Supported scope
@@ -20,6 +23,12 @@ Read stdin and translate, squeeze or delete selected bytes. Sets support escapes
 | `-t, --truncate-set1` | Truncate SET1 to SET2's length. |
 | `--help` / `--version` | Show help / package version. |
 
+## Argument and exit-status contract
+
+Ordinary option/operand errors exit 1; documented capability refusals retain their own status.
+
+See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
+
 ## Limitations
 
 - Uses raw bytes and C-locale classes; multibyte locale transformations are unsupported.
@@ -27,8 +36,8 @@ Read stdin and translate, squeeze or delete selected bytes. Sets support escapes
 ## Examples
 
 ```sh
-printf 'hello' | moonx cli/tr@0.2.4 'a-z' 'A-Z'
-printf 'a  b' | moonx cli/tr@0.2.4 -s ' '
+printf 'hello' | moonx cli/tr@0.2.5 'a-z' 'A-Z'
+printf 'a  b' | moonx cli/tr@0.2.5 -s ' '
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

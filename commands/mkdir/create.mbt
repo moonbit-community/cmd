@@ -1,4 +1,9 @@
 ///|
+priv suberror ParentPermissionUnavailable {
+  ParentPermissionUnavailable(String)
+}
+
+///|
 async fn directory_exists(path : String) -> Bool {
   try @fs.kind(path) catch {
     @os_error.OSError(_) as error if error.is_ENOENT() => false
@@ -30,6 +35,13 @@ async fn create_parents(path : String, verbose : Bool) -> Unit {
     @fs.mkdir(directory, permission=0o777)
     if verbose {
       @stdio.stdout.write("mkdir: created directory '\{directory}'\n")
+    }
+    // Public access checks can detect an unusable new ancestor. They cannot
+    // recover its raw mode or the process umask, including under ACLs or
+    // elevated privileges, so do not guess a chmod mask to add owner bits.
+    if @platform.permission_mutation_supported() &&
+      (!@fs.can_write(directory) || !@fs.can_execute(directory)) {
+      raise ParentPermissionUnavailable(directory)
     }
   }
 }

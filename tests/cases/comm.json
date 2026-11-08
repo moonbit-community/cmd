@@ -217,10 +217,10 @@
       ],
       "files": [],
       "environment": {},
-      "expected_status": 2,
+      "expected_status": 1,
       "normalizations": [],
       "comparison": "contract",
-      "source_version": "workspace 0.2.0 retained compat assertions",
+      "source_version": "Issue #22: ordinary usage failure status corrected to the fixed command baseline; capability refusals remain separate.",
       "expected_stdout_text": "",
       "expected_stderr_contains": "both inputs",
       "diagnostic_reason": "Retains the existing diagnostic contract; command branding and OS error details may vary, while status and empty stdout are exact.",
@@ -270,8 +270,8 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/comm@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: comm [-123] [-z] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n  -1  Suppress column 1 (lines unique to FILE1).\n  -2  Suppress column 2 (lines unique to FILE2).\n  -3  Suppress column 3 (lines in both files).\n      --output-delimiter=STR  Separate columns with STR (empty means NUL).\n      --total  Print counts for all three columns and a total label.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z, --zero-terminated  End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n",
+      "source_version": "workspace cli/comm@0.2.6 metadata contract",
+      "expected_stdout_text": "Usage: comm [-123] [-z] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n  -1  Suppress column 1 (lines unique to FILE1).\n  -2  Suppress column 2 (lines unique to FILE2).\n  -3  Suppress column 3 (lines in both files).\n      --output-delimiter=STR  Separate columns with STR (empty means NUL).\n      --total  Print counts for all three columns and a total label.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z, --zero-terminated  End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n\nProject aliases: --suppress-1 = -1; --suppress-2 = -2; --suppress-3 = -3.\n-h is a project alias of --help.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-48"
@@ -294,8 +294,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/comm@0.2.5 metadata contract",
-      "expected_stdout_text": "comm 0.2.5\n",
+      "source_version": "workspace cli/comm@0.2.6 metadata contract",
+      "expected_stdout_text": "comm 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -651,6 +651,181 @@
       "oracle": true,
       "coverage": [
         "total"
+      ]
+    },
+    {
+      "id": "f17-comm-unknown-option",
+      "command": "comm",
+      "args": [
+        "--issue22-unknown",
+        "sentinel"
+      ],
+      "stdin_text": "unconsumed input\n",
+      "files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "comm: unknown option: 'issue22-unknown'\n",
+      "oracle": true,
+      "source_version": "Issue #22 independently specified fixed-upstream contract; a fresh pinned Linux oracle run is required.",
+      "expected_files": [
+        {
+          "path": "sentinel",
+          "content_text": "retained\n",
+          "unchanged": true
+        }
+      ],
+      "expected_stderr_contains": "option",
+      "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "f17-comm-help-short",
+      "command": "comm",
+      "args": [
+        "-h"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ],
+      "source_version": "Issue #22 project metadata alias: exact help bytes, stdout, status0 and empty stderr.",
+      "expected_stdout_text": "Usage: comm [-123] [-z] FILE1 FILE2\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n  -1  Suppress column 1 (lines unique to FILE1).\n  -2  Suppress column 2 (lines unique to FILE2).\n  -3  Suppress column 3 (lines in both files).\n      --output-delimiter=STR  Separate columns with STR (empty means NUL).\n      --total  Print counts for all three columns and a total label.\n      --check-order  Diagnose unsorted input.\n      --nocheck-order  Do not diagnose unsorted input.\n  -z, --zero-terminated  End records with NUL instead of newline.\n\nUse '-' as a file name to read stdin.\n\nProject aliases: --suppress-1 = -1; --suppress-2 = -2; --suppress-3 = -3.\n-h is a project alias of --help.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+      "expected_stderr_text": "",
+      "aliases": [],
+      "expected_stdout_contains": "Usage:",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact.",
+      "oracle": false
+    },
+    {
+      "id": "f17-comm-suppress-1",
+      "command": "comm",
+      "args": [
+        "--suppress-1",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "right",
+          "content_text": "b\nc\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\tb\nc\n",
+      "expected_stderr_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n",
+          "unchanged": true
+        },
+        {
+          "path": "right",
+          "content_text": "b\nc\n",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "f17-comm-suppress-2",
+      "command": "comm",
+      "args": [
+        "--suppress-2",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "right",
+          "content_text": "b\nc\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\n\tb\n",
+      "expected_stderr_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n",
+          "unchanged": true
+        },
+        {
+          "path": "right",
+          "content_text": "b\nc\n",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "f17-comm-suppress-3",
+      "command": "comm",
+      "args": [
+        "--suppress-3",
+        "left",
+        "right"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n"
+        },
+        {
+          "path": "right",
+          "content_text": "b\nc\n"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "a\n\tc\n",
+      "expected_stderr_text": "",
+      "oracle": false,
+      "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations.",
+      "expected_files": [
+        {
+          "path": "left",
+          "content_text": "a\nb\n",
+          "unchanged": true
+        },
+        {
+          "path": "right",
+          "content_text": "b\nc\n",
+          "unchanged": true
+        }
       ]
     }
   ]

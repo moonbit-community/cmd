@@ -357,7 +357,7 @@ async fn main {
   ]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("rm: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @sys.exit(1)
       return
     }
   }
@@ -375,12 +375,12 @@ async fn main {
       "      --preserve-root     protect filesystem roots (default)\n" +
       "      --no-preserve-root  disable root protection\n" +
       "      --help              display this help and exit\n" +
-      "      --version           display version and exit\n",
+      "      --version           display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("rm 0.2.4\n")
+    @stdio.stdout.write("rm 0.2.5\n")
     return
   }
   let mut preserve_root = true
