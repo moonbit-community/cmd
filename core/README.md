@@ -20,6 +20,15 @@ Chmod and mkdir will need the future core coordinate in their module
 dependencies when preparing a release; workspace checks do not validate those
 unpublished interfaces against the current registry versions.
 
+The unpublished transfer profile adds fixed Unicode 15 URL-host conversion
+through released normalization/Punycode packages. `transfer_options` and
+`proxy_bypassed` accept the command's UTF-8 input profile, while the private
+connection owner preserves structured hosts across public TCP/TLS calls.
+Curl and Wget also require the future core coordinate before a release;
+workspace builds do not establish standalone published-consumer acceptance.
+See [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts) for input,
+cookie and proxy boundaries.
+
 ## 0.9.5 changes
 
 Apply the POSIX trailing-slash directory requirement to every shell file

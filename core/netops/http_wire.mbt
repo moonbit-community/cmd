@@ -23,7 +23,8 @@ priv enum WireBody {
 
 ///|
 priv struct HttpWire {
-  client : @http.Client
+  client : Connection
+  read_limit : Int32
   mut pending : Bytes
   mut position : Int32
   mut body : WireBody
@@ -35,12 +36,10 @@ priv struct HttpWire {
 }
 
 ///|
-async fn HttpWire::new(client : @http.Client) -> HttpWire {
-  // Transition before any HTTP request: the connection already includes TLS
-  // and any proxy tunnel, while no response bytes can have been discarded.
-  client.enter_passthrough_mode()
+fn HttpWire::new(client : Connection, read_limit~ : Int32 = 65536) -> HttpWire {
   {
     client,
+    read_limit,
     pending: b"",
     position: 0,
     body: Finished,
@@ -62,7 +61,7 @@ async fn HttpWire::fill(self : HttpWire) -> Bool {
   if self.position < self.pending.length() {
     return true
   }
-  match self.client.read_some(max_len=65536) {
+  match self.client.read_some(max_len=self.read_limit) {
     Some(bytes) => {
       self.pending = bytes
       self.position = 0

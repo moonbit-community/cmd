@@ -22,6 +22,7 @@ struct Options {
   mut body_options_conflict : Bool
   mut no_check_certificate : Bool
   mut no_proxy : Bool
+  mut utf8_hosts : Bool
   mut connect_timeout_ms : Int32
   mut read_timeout_ms : Int32
   mut user : String?
@@ -72,6 +73,7 @@ fn usage() -> String {
     #|      --body-file=FILE            send FILE with an explicit --method
     #|      --no-check-certificate      disable TLS certificate verification
     #|      --no-proxy                  do not use proxy environment variables
+    #|      --local-encoding=ENCODING   URL host input: UTF-8 or ASCII (default ASCII)
     #|  -T, --timeout=SECONDS           set connect and read timeouts
     #|      --connect-timeout=SECONDS   set connection timeout
     #|      --read-timeout=SECONDS      set response inactivity timeout
@@ -95,7 +97,9 @@ fn usage() -> String {
     #|Response cookie domains use the complete pinned ICANN/PRIVATE suffix list.
     #|Rejected domains discard a matching stored cookie after request-path validation.
     #|Cookie request paths use raw prefix matching; missing Path uses the URL directory.
-    #|Imported cookie files retain Wget's separate admission policy; IDNA is unsupported.
+    #|Imported cookie files retain Wget's separate admission policy.
+    #|UTF-8 URL hosts use pinned Unicode 15 IDNA with whole-host transitional fallback.
+    #|Failed conversion retains the raw host; other input encodings are unsupported.
   text + "\n"
 }
 
@@ -124,6 +128,7 @@ fn default_options() -> Options {
     body_options_conflict: false,
     no_check_certificate: false,
     no_proxy: false,
+    utf8_hosts: false,
     connect_timeout_ms: 900_000,
     read_timeout_ms: 900_000,
     user: None,
@@ -212,6 +217,7 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
     @cli.option("body-file"),
     @cli.flag("no-check-certificate"),
     @cli.flag("no-proxy"),
+    @cli.option("local-encoding"),
     @cli.option("timeout", short='T'),
     @cli.option("connect-timeout"),
     @cli.option("read-timeout"),
@@ -233,6 +239,16 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
   options.content_disposition = parsed.contains("content-disposition")
   options.no_check_certificate = parsed.contains("no-check-certificate")
   options.no_proxy = parsed.contains("no-proxy")
+  if parsed.last_value("local-encoding") is Some(value) {
+    options.utf8_hosts = match value.to_lower().replace_all(old="-", new="") {
+      "utf8" => true
+      "ascii" | "usascii" | "ansi_x3.41968" => false
+      _ =>
+        raise UsageError(
+          "--local-encoding: unsupported encoding '" + value + "'",
+        )
+    }
+  }
   options.user = match parsed.last_occurrence(["user", "http-user"]) {
     Some(name) => parsed.last_value(name)
     None => None

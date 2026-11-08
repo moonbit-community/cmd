@@ -1,4 +1,28 @@
 ///|
+test "URL host input encoding is explicit and rejects unsupported encodings" {
+  assert_false(parse_options(["http://bücher.example/"]).utf8_hosts)
+  for encoding in ["UTF-8", "utf8"] {
+    assert_true(
+      parse_options(["--local-encoding=" + encoding, "http://bücher.example/"]).utf8_hosts,
+    )
+  }
+  for encoding in ["ASCII", "US-ASCII", "ANSI_X3.4-1968"] {
+    assert_false(
+      parse_options(["--local-encoding=" + encoding, "http://bücher.example/"]).utf8_hosts,
+    )
+  }
+  for encoding in ["", "ISO-8859-1", "UTF-16"] {
+    try
+      parse_options(["--local-encoding=" + encoding, "http://bücher.example/"])
+    catch {
+      UsageError(_) => ()
+    } noraise {
+      _ => fail("unsupported URL encoding accepted")
+    }
+  }
+}
+
+///|
 test "Basic authentication and session persistence are explicit" {
   let options = parse_options([
     "--user=first", "--http-user=final", "--password=p:a:ss", "--load-cookies=in.txt",

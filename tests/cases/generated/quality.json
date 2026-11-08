@@ -4,7 +4,7 @@
   "counts": {
     "exact-local": 3565,
     "finite-diagnostic": 183,
-    "typed-scenario": 66,
+    "typed-scenario": 68,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -14196,7 +14196,7 @@
     {
       "case_id": "release-metadata-curl-help",
       "source": "tests/cases/curl.json",
-      "definition_sha256": "d829a11d333d95f9da7ec4e2c500bb56fb2a2e8191e407c13d33265f5a872d4f",
+      "definition_sha256": "9e5932e6fc82b2be152ade3d9018e8866dd54a1b6cbc1424fcb8b18cf46d8918",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -14323,6 +14323,34 @@
         "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
         "required_observers": [
           "scenario:network-cookie-suffix-oracle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-idna",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "0ca1f2c7c71024d226018f66686b180511145b99190b70002d48bf419af3e393",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-idna"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-idna-oracle",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "11b47c936aa15578e2126f27442769c587d71a57d8207341bf685f0c1ab3a2f8",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-idna-oracle"
         ]
       },
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
@@ -29880,7 +29908,7 @@
     {
       "case_id": "release-metadata-wget-help",
       "source": "tests/cases/wget.json",
-      "definition_sha256": "efc232575e9259332fdab7a6e50f038772bf65464dfd8c76aae1bbc22ff43dfb",
+      "definition_sha256": "0c62af043e14b1fbc6e778a68e4d301517f97578caef26f2b371fdc6fb4a7e6d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -43248,6 +43276,20 @@
       "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
       "required_observers": [
         "scenario:network-cookie-suffix-oracle"
+      ]
+    },
+    "network-idna": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-idna"
+      ]
+    },
+    "network-idna-oracle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-idna-oracle"
       ]
     },
     "p2-date-epoch-format": {

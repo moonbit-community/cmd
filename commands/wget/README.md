@@ -33,11 +33,22 @@ to response cookies, including wildcard and exception rules. Exact public-suffix
 domains keep Wget's domain scope; imported files retain Wget's separate policy.
 Published coordinates retain their recorded profile.
 
+The unpublished `--local-encoding=UTF-8` option enables the pinned
+[Unicode 15 IDNA profile](../../tests/fixtures/idna/README.md) for URL hosts,
+including whole-host transitional retry. Like the fixed oracle build, default
+raw non-ASCII input retains its spelling; percent-encoded UTF-8 hosts are
+decoded and converted. Failed IDNA conversion retains the decoded host.
+ASCII/US-ASCII/ANSI_X3.4-1968 explicitly select the default input profile.
+Other legacy encodings, invalid UTF-8 bytes, the complete IRI retry dialect and
+Cookie Domain normalization remain unsupported. Canonical hosts are retained
+as structured fields across connection setup, redirects and cookie selection.
+
 ## Options
 
 | Option | Description |
 | --- | --- |
 | `-q, --quiet` | quiet (no output) |
+| `--local-encoding=ENC` | Select UTF-8 or ASCII URL-host input in the unpublished workspace. |
 | `-O, --output-document=FILE` | write documents to FILE |
 | `-o, --output-file=FILE` | log messages to FILE |
 | `-a, --append-output=FILE` | append messages to FILE |
@@ -82,7 +93,7 @@ need separate work.
 
 - Recursive mirroring, FTP, non-Basic authentication, HSTS and timestamp restoration are unsupported.
 - Content-encoded bodies remain encoded. Consumed stdin request bodies cannot be replayed.
-- Resume retains prior bytes without proving the server's earlier prefix is unchanged. IDNA/NFKC normalization of URL and Domain inputs is unsupported.
+- Resume retains prior bytes without proving the server's earlier prefix is unchanged. Cookie Domain normalization and complete legacy input encodings remain unsupported.
 
 ## Examples
 

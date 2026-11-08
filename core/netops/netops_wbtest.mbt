@@ -246,7 +246,7 @@ test "URL parser normalizes origins and remote names without exposing its type" 
   assert_eq(first.origin_key(), second.origin_key())
   assert_eq(first.request_target(), "/a%20b?q=1")
   assert_eq(remote_name(first.to_url()), "a b")
-  assert_eq(url_host(first.to_url()), "Example.COM")
+  assert_eq(parse_absolute_url(first.to_url()).socket_host(), "Example.COM")
   assert_true(proxy_bypassed(first.to_url(), Some("example.com")))
   assert_true(proxy_bypassed(first.to_url(), Some(".example.com:443")))
   assert_false(proxy_bypassed(first.to_url(), Some("ample.com")))

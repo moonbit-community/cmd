@@ -2,7 +2,7 @@
   "schema": 1,
   "profile": "finite independently reviewed current contract definitions; execution must be joined separately",
   "full_semantic_exhaustiveness": false,
-  "catalog_claims": 882,
+  "catalog_claims": 883,
   "commands": [
     "serve",
     "typst",
@@ -13275,6 +13275,36 @@
           "assertions": [
             "auth/12",
             "cookie/wget/loaded"
+          ]
+        }
+      ],
+      "unqualified_bindings": [],
+      "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
+      "remaining_facets": [
+        "other spellings, boundaries, interactions and error ordering",
+        "resource and lifecycle effects not asserted by these cases"
+      ],
+      "execution_requirements": [
+        "fresh same-run applicable-platform results",
+        "every required exact or typed-scenario binding must pass"
+      ]
+    },
+    {
+      "claim_id": "wget:local-encoding",
+      "command": "wget",
+      "feature": false,
+      "kind": "contract",
+      "reviewed": true,
+      "case_ids": [],
+      "activation": "Explicit --local-encoding=UTF-8 selects the fixed Unicode 15 canonical Host for raw and percent-encoded Unicode inputs and a whole-host transitional retry. Actual requests retain target, Authorization and loaded Cookie identity across a Unicode-to-ACE redirect. This finite definition does not establish arbitrary legacy encodings or the complete Wget IRI retry dialect.",
+      "scenario_bindings": [
+        {
+          "case_id": "network-idna",
+          "assertions": [
+            "idna/wget-unicode",
+            "idna/wget-percent",
+            "idna/wget-whole-host-retry",
+            "idna/wget-same-origin-alias"
           ]
         }
       ],

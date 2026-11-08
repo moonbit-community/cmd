@@ -16,6 +16,12 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Add a pinned Unicode 15 URL-host converter for workspace curl and wget,
+  retaining command-specific input encoding and whole-host fallback. Preserve
+  structured host identity across redirects, credentials, cookies and public
+  TCP/TLS connections. Full Cookie Domain, IRI and configuration dialects remain
+  open under #34; published coordinates are unchanged.
+
 - Repair workspace curl cookie-prefix validation, normalized jar paths, Secure
   origin/overlay rules and host-only replacement identity. Preserve Wget's
   distinct security behavior; complete jar dialects remain open under #34.

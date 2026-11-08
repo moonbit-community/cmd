@@ -110,6 +110,7 @@ async fn main {
         moon(root, ["check", "--deny-warn", path])
       }
       moon(root, ["run", "tests/tools/public_suffix.mbtx", "--", "check"])
+      moon(root, ["run", "tests/tools/idna.mbtx", "--", "check"])
     }
     "test" => {
       guard rest is [selection] &&

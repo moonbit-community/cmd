@@ -5,6 +5,8 @@ priv struct ParsedUrl {
   endpoint : String
   user_info : String?
   host : String
+  host_normalized : Bool
+  ip_literal : Bool
   port : Int32?
   path : String
   query : String?
@@ -153,7 +155,18 @@ fn parse_absolute_url(value : String) -> ParsedUrl raise TransferError {
   let (host, port) = parse_host_port(endpoint)
   let (path, query) = split_query(path_and_query)
   let path = if path == "" { "/" } else { path }
-  { scheme, authority, endpoint, user_info, host, port, path, query, }
+  {
+    scheme,
+    authority,
+    endpoint,
+    user_info,
+    host,
+    port,
+    path,
+    query,
+    host_normalized: false,
+    ip_literal: host.has_prefix("["),
+  }
 }
 
 ///|
@@ -260,11 +273,7 @@ fn resolve_location(
     (remove_dot_segments(merged), reference_query)
   }
   let (path, query) = resolved
-  let query_suffix = match query {
-    Some(value) => "?" + value
-    None => ""
-  }
-  parse_absolute_url(base.scheme + "://" + base.authority + path + query_suffix)
+  { ..base, path, query, }
 }
 
 ///|
@@ -324,19 +333,16 @@ pub fn remote_name(url : String) -> String raise TransferError {
 }
 
 ///|
-fn url_host(url : String) -> String raise TransferError {
-  let host = parse_absolute_url(url).host
-  if host.has_prefix("[") && host.has_suffix("]") {
-    host[1:host.length() - 1].to_owned()
-  } else {
-    host
-  }
-}
-
-///|
-pub fn proxy_bypassed(url : String, no_proxy : String?) -> Bool {
+pub fn proxy_bypassed(
+  url : String,
+  no_proxy : String?,
+  profile~ : TransferProfile = StrictProfile,
+  utf8_hosts~ : Bool = true,
+) -> Bool {
   guard no_proxy is Some(list) else { return false }
-  let host = try url_host(url) catch {
+  let host = try
+    parse_absolute_url(url).for_transfer(profile, utf8_hosts~).socket_host()
+  catch {
     _ => return false
   } noraise {
     value => value.to_lower()

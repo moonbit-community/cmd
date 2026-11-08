@@ -204,7 +204,7 @@ async fn open_client(
   options : TransferOptions,
   started : Int64,
 ) -> HttpWire {
-  let mut created : @http.Client? = None
+  let mut created : Connection? = None
   let timeout = timeout_for(
     options,
     started,
@@ -215,26 +215,20 @@ async fn open_client(
     let proxy = match options.proxy_url {
       None => None
       Some(proxy_url) => {
-        let proxy = parse_absolute_url(proxy_url) catch {
+        let proxy = parse_absolute_url(proxy_url).for_transfer(
+          options.profile,
+          utf8_hosts=options.utf8_hosts,
+        ) catch {
           TransferError(message~, ..) =>
             raise transfer_error(ProxyFailure, message)
         }
-        Some(
-          @http.Client(
-            proxy.origin(),
-            trust=if options.verify_tls {
-              @tls.SystemRoot
-            } else {
-              @tls.NoVerification
-            },
-          ),
-        )
+        Some(proxy)
       }
     }
-    let client = @http.Client(
-      parsed.origin(),
-      proxy?,
-      trust=if options.verify_tls {
+    let client = connect_endpoint(
+      parsed,
+      proxy,
+      if options.verify_tls {
         @tls.SystemRoot
       } else {
         @tls.NoVerification
@@ -244,8 +238,7 @@ async fn open_client(
     HttpWire::new(client)
   }) catch {
     @tls.TlsError(message) => raise transfer_error(TlsFailure, message)
-    @http.ProxyError(_) =>
-      raise transfer_error(ProxyFailure, "proxy connection failed")
+    TransferError(..) as error => raise error
     err =>
       raise transfer_error(
         ConnectionFailure,

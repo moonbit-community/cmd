@@ -122,7 +122,7 @@ async fn timestamp_header(path : String) -> @netops.HttpHeader? {
 }
 
 ///|
-fn proxy_for(url : String, disabled : Bool) -> String? {
+fn proxy_for(url : String, disabled : Bool, utf8_hosts : Bool) -> String? {
   if disabled {
     return None
   }
@@ -130,7 +130,12 @@ fn proxy_for(url : String, disabled : Bool) -> String? {
     Some(value) => Some(value)
     None => @env.get_env_var("no_proxy")
   }
-  if @netops.proxy_bypassed(url, no_proxy) {
+  if @netops.proxy_bypassed(
+      url,
+      no_proxy,
+      profile=@netops.WgetProfile,
+      utf8_hosts~,
+    ) {
     return None
   }
   let scheme_name = if url.to_lower().has_prefix("https://") {
@@ -373,10 +378,11 @@ async fn download_one(
   for ;; {
     attempt += 1
     log.write("--  \{url}\n")
-    let proxy_url = proxy_for(url, options.no_proxy)
+    let proxy_url = proxy_for(url, options.no_proxy, options.utf8_hosts)
     try {
       let mut request_options = @netops.transfer_options(
         profile=@netops.WgetProfile,
+        utf8_hosts=options.utf8_hosts,
         request_method=options.request_method,
         headers~,
         body=options.body,

@@ -316,8 +316,10 @@ pub fn commands() -> Array[CommandContract] {
     // Secure contexts are HTTPS or exact localhost/127.0.0.1/::1. Insecure
     // overlays cannot replace live Secure cookies; identity includes host-only.
     // Complete pinned ICANN/PRIVATE suffix rules constrain response and imported
-    // cookies; accepted exact suffix responses become host-only. URL IDNA and
-    // complete jar grammar remain open.
+    // cookies; accepted exact suffix responses become host-only.
+    // UTF-8 locales select pinned Unicode 15 URL IDNA and whole-host fallback.
+    // Canonical hosts govern transport, credential origins, cookies and NO_PROXY.
+    // Cookie Domain normalization and complete jar grammar remain open.
     // Saved domains retain case; matching, identity and overlays fold ASCII case.
     // Custom request fields retain repetition and argument order. Response
     // observers retain all final fields in wire order, separately from storage.
@@ -409,6 +411,8 @@ pub fn commands() -> Array[CommandContract] {
     // Exact suffix scope and imported-file admission retain Wget's dialect.
     // Rejected domains discard the matching key only after request-path validation.
     // Cookie paths use raw prefixes; missing Path retains the directory's trailing slash.
+    // Explicit UTF-8 input selects pinned URL IDNA; failed conversion retains
+    // the raw decoded host. Legacy encodings and full IRI retry remain open.
     // Cookie ordering uses descending domain/path byte length, then name/value bytes.
     // Prefixes remain ordinary names; Secure sends require HTTPS. Curl's
     // loopback exception and admission/overlay checks do not apply to Wget.
@@ -428,7 +432,7 @@ pub fn commands() -> Array[CommandContract] {
         "read-timeout", "retry-connrefused", "retry-on-http-error", "timeout", "timestamping",
         "tries", "waitretry", "idle-timeout", "user", "password", "http-user", "http-password",
         "auth-no-challenge", "load-cookies", "save-cookies", "keep-session-cookies",
-        "no-cookies",
+        "no-cookies", "local-encoding",
       ],
       exit_codes=[0, 1, 2, 3, 4, 5, 6, 7, 8],
     ),

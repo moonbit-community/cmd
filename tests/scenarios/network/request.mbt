@@ -30,6 +30,7 @@ async fn network_request(
   args : Array[String],
   stdin~ : Bytes = b"",
   oracle_image? : String,
+  oracle_args? : Array[String],
   oracle_failures? : Array[String],
   transfer_requests? : Array[@harness.TransferFixtureRequest],
   request_wires? : Array[Bytes],
@@ -153,7 +154,9 @@ async fn network_request(
     if !@fs.exists(oracle_work) {
       @fs.mkdir(oracle_work)
     }
-    let oracle_args = args.map(arg => arg.replace_all(old=work, new=oracle_work))
+    let oracle_args = oracle_args
+      .unwrap_or(args)
+      .map(arg => arg.replace_all(old=work, new=oracle_work))
     if transfer_requests is Some(requests) {
       requests.clear()
     }
@@ -216,6 +219,8 @@ async fn network_request(
     @fs.write_file(
       prefix + ".oracle.execution.json",
       @harness.canonical_json({
+        "command": Json(command),
+        "args": Json(oracle_args),
         "timed_out": Json(run.timed_out),
         "cleanup_error": @json.to_json(run.cleanup_error),
       }),

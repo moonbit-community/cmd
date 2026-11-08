@@ -43,6 +43,16 @@ fresh data/metadata and immutable-image receipts. Old revision 1 receipts do not
 satisfy the new recipe. `network-cookie-suffix-oracle` retains real client file
 reads and a rule absent from the old builtin data, alongside wire/jar effects.
 
+`check` also verifies the complete fixed Unicode 15 inputs and generated IDNA
+tables through `tools/idna.mbtx`. The original normalization corpus supplies
+19,074 independent NFC records. `network-idna` records real Host, request-target,
+credential and Cookie effects, including mapped-bracket Secure-cookie rejection.
+Its fixed Curl comparison explicitly selects `--proxytunnel` to match the
+workspace's existing HTTP proxy route; both argument vectors remain in raw
+execution records. Ordinary forward-proxy rewriting and full IRI behavior
+retain the limits in [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts).
+Generated tables and finite assertion descriptors do not count as executed tests.
+
 ## Ownership
 
 | Path | Source of truth |
