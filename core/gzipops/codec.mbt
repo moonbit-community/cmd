@@ -47,18 +47,6 @@ async fn gzip_header(bits : Bits, first : Byte, second : Byte) -> Unit {
 }
 
 ///|
-/// Decode gzip bytes through the streaming codec. The caller retains `data`.
-pub async fn decode(
-  data : Bytes,
-  output : &@io.Writer,
-  test_only : Bool,
-) -> Bool {
-  let input = @io.MemoryReader(writer => writer.write(data))
-  defer input.close()
-  decode_reader(input, output, test_only)
-}
-
-///|
 /// Decode concatenated gzip members with bounded input, history and output
 /// buffers. Returns true for trailing garbage. A late format/read error keeps
 /// the decoded prefix already written; `test_only` validates without output.

@@ -17,7 +17,7 @@ pub fn Algorithm::label(self : Algorithm) -> String {
 }
 
 ///|
-pub fn Algorithm::hex_length(self : Algorithm) -> Int32 {
+fn Algorithm::hex_length(self : Algorithm) -> Int32 {
   match self {
     Md5 => 32
     Sha1 => 40

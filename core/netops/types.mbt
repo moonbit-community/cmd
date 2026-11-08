@@ -303,7 +303,7 @@ pub(all) struct TransferResult {
 }
 
 ///|
-pub fn TransferResult::header(self : TransferResult, name : String) -> String? {
+fn TransferResult::header(self : TransferResult, name : String) -> String? {
   let normalized = name.to_lower()
   for header in self.headers {
     if header.name.to_lower() == normalized {

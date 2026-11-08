@@ -70,7 +70,6 @@ test "compound lists require commands and logical operators require right operan
 
 ///|
 async test "EOF executes complete continued commands but rejects incomplete grammar" {
-  assert_eq(run("\\\n"), 0)
   for
     (source, expected) in [
       ("\\\n", ""),

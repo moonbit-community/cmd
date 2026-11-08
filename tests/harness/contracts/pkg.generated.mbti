@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "cli/core/contracts"
+package "mooxCLI/cmd-tests/harness/contracts"
 
 import {
   "moonbitlang/core/debug",

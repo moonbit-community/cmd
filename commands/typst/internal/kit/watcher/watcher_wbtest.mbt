@@ -52,7 +52,7 @@ fn registered(watcher : Watcher) -> String {
 ///|
 /// Sends an event to a watcher's channel, as its event sources do.
 async fn inject(watcher : Watcher, kind : EventKind, path : String) -> Unit {
-  watcher.watcher.tx.put(Ok({ kind, paths: [path], }))
+  watcher.watcher.tx.put(Ok({ kind, path, }))
 }
 
 ///|
@@ -303,7 +303,7 @@ async test "wait: batches events" {
 
     // One event: `wait` returns once nothing followed for `BATCH_TIMEOUT`.
     let start = @async.now()
-    inject(watcher, Modify(Data(Any)), "a")
+    inject(watcher, Modified, "a")
     watcher.wait()
     let elapsed = @async.now() - start
     inspect(elapsed >= 90L && elapsed < 2000L, content="true")
@@ -312,7 +312,7 @@ async test "wait: batches events" {
     // `STARVE_TIMEOUT`.
     group.spawn_bg(no_wait=true, () => {
       for _ in 0..<60 {
-        inject(watcher, Modify(Data(Any)), "a")
+        inject(watcher, Modified, "a")
         @async.sleep(50)
       }
     })
@@ -333,16 +333,11 @@ async test "wait: which events are relevant" {
     write(out, "%PDF")
     let watcher = Watcher::new(Some(out), group)
 
-    // Access and metadata changes are not.
-    inject(watcher, Access(Open(Any)), "a")
-    inject(watcher, Modify(Metadata(WriteTime)), "a")
-    inject(watcher, Other, "a")
+    // Events of the output file alone do not trigger compilation.
+    inject(watcher, Modified, out)
     inspect(returns_within(watcher, 400), content="false")
-
-    // Neither are events of the output file alone.
-    inject(watcher, Modify(Data(Any)), out)
-    inspect(returns_within(watcher, 400), content="false")
-    watcher.watcher.tx.put(Ok({ kind: Modify(Name(Both)), paths: [out, "a"], }))
+    inject(watcher, RenamedFrom, out)
+    inject(watcher, RenamedTo, "a")
     inspect(returns_within(watcher, 2000), content="true")
 
     // A removal or a rename away forgets the path, so that the next
@@ -352,7 +347,7 @@ async test "wait: which events are relevant" {
     write(a, "a")
     write(b, "b")
     watcher.update([a, b])
-    inject(watcher, Remove(File), a)
+    inject(watcher, Removed, a)
     inspect(returns_within(watcher, 2000), content="true")
     inspect(
       keys(watcher.watched),
@@ -366,7 +361,7 @@ async test "wait: which events are relevant" {
       keys(watcher.watcher.retired),
       content="_build/kit_watcher_test/relevant/a.typ",
     )
-    inject(watcher, Modify(Name(From)), b)
+    inject(watcher, RenamedFrom, b)
     inspect(returns_within(watcher, 2000), content="true")
     inspect(keys(watcher.watched), content="")
     watcher.update([a, b])
@@ -375,9 +370,8 @@ async test "wait: which events are relevant" {
       content="_build/kit_watcher_test/relevant/a.typ _build/kit_watcher_test/relevant/b.typ",
     )
     inspect(keys(watcher.watcher.retired), content="")
-    // Other removals do not.
-    inject(watcher, Remove(Any), a)
-    inject(watcher, Modify(Name(To)), b)
+    // The destination of a rename does not forget an existing watch.
+    inject(watcher, RenamedTo, b)
     inspect(returns_within(watcher, 2000), content="true")
     inspect(
       keys(watcher.watched),
@@ -415,51 +409,6 @@ async test "update: a path that cannot be watched" {
       _ => fail("expected an error")
     }
   })
-}
-
-///|
-test "is_relevant_event_kind" {
-  let kinds : Array[(String, EventKind)] = [
-    ("any", Any),
-    ("access", Access(Any)),
-    ("access read", Access(Read)),
-    ("access close", Access(Close(Write))),
-    ("create", Create(Any)),
-    ("create file", Create(File)),
-    ("create folder", Create(Folder)),
-    ("modify", Modify(Any)),
-    ("modify data", Modify(Data(Any))),
-    ("modify size", Modify(Data(Size))),
-    ("modify content", Modify(Data(Content))),
-    ("modify metadata", Modify(Metadata(Any))),
-    ("modify permissions", Modify(Metadata(Permissions))),
-    ("modify name", Modify(Name(Any))),
-    ("modify name from", Modify(Name(From))),
-    ("modify name to", Modify(Name(To))),
-    ("modify name both", Modify(Name(Both))),
-    ("modify other", Modify(Other)),
-    ("remove", Remove(Any)),
-    ("remove file", Remove(File)),
-    ("remove folder", Remove(Folder)),
-    ("other", Other),
-  ]
-  let relevant = []
-  let irrelevant = []
-  for entry in kinds {
-    if is_relevant_event_kind(entry.1) {
-      relevant.push(entry.0)
-    } else {
-      irrelevant.push(entry.0)
-    }
-  }
-  inspect(
-    relevant.join(", "),
-    content="any, create, create file, create folder, modify, modify data, modify size, modify content, modify name, modify name from, modify name to, modify name both, remove, remove file, remove folder",
-  )
-  inspect(
-    irrelevant.join(", "),
-    content="access, access read, access close, modify metadata, modify permissions, modify other, other",
-  )
 }
 
 ///|

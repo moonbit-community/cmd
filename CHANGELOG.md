@@ -16,6 +16,12 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
+- Prepare an unpublished repository simplification candidate: move validation
+  metadata out of core, reduce implementation-only APIs and unreachable rg/Typst
+  adapter states, merge identical tests, and remove redundant buffering work.
+  Preserve CLI contracts, imported corpora and frozen published expectations.
+  [ADR-0003](docs/adr/0003-streams.md#repository-simplification-dispositions)
+  records ownership and the remaining performance qualification requirement.
 - Integrate the serve candidate with the subsequent diagnostics, shell/make and
   filesystem work. Preserve both sets of command contracts and the independent
   published snapshots; serve remains unpublished among 82 local modules. Isolate

@@ -27,7 +27,7 @@ fn DState::key(self : DState) -> String {
 
 ///|
 /// Special results returned by DFA searches.
-pub const DFA_NO_MATCH : Int32 = -1
+const DFA_NO_MATCH : Int32 = -1
 
 ///|
 pub const DFA_FAILED : Int32 = -2

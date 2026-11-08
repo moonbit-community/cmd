@@ -401,7 +401,7 @@ and frozen published expectations remain unchanged.
 Authorization belongs to the caller/host. Catalog capabilities and the
 restricted label describe requirements, not command-local policy.
 Split is Restricted because `--filter` can launch external children. The
-[catalog](../core/contracts/catalog.mbt) owns classifications;
+[catalog](../tests/harness/contracts/catalog.mbt) owns classifications;
 [ADR-0002](adr/0002-policy.md) explains the authorization boundary.
 
 ## Published R resource changes

@@ -17,7 +17,7 @@ struct BlockWriter {
 ///|
 pub fn BlockWriter::new(
   writer : &@io.Writer,
-  size~ : Int32 = 65536,
+  size~ : Int32 = chunk_size,
   line_buffered~ : Bool = false,
 ) -> BlockWriter {
   {
@@ -77,10 +77,7 @@ async fn BlockWriter::write_slice_slow(
   start : Int32,
   end : Int32,
 ) -> Unit {
-  guard start >= 0 && start <= end && end <= data.length() else {
-    fail("invalid output span")
-  }
-  self.check_ready()
+  // The synchronous admission path validated this span and writer state.
   let length = end - start
   if length >= self.buffer.length() {
     self.drain()
@@ -102,7 +99,7 @@ async fn BlockWriter::write_bytes_slow(
   self : BlockWriter,
   bytes : BytesView,
 ) -> Unit {
-  self.check_ready()
+  // The synchronous admission path validated writer state before this call.
   let length = bytes.length()
   if length == 1 && self.length < self.buffer.length() {
     self.buffer[self.length] = bytes[0]

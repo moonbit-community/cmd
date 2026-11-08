@@ -2,8 +2,6 @@
 package "cli/core/gzipops/cli"
 
 // Values
-pub fn help(String) -> String
-
 pub async fn run(String, ArrayView[String], String) -> Int32
 
 // Errors

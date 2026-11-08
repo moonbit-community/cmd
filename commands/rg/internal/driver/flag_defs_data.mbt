@@ -3,7 +3,7 @@
 
 ///|
 /// All flags, in the same order as ripgrep's `FLAGS`.
-pub let flag_defs : Array[FlagDef] = [
+let flag_defs : Array[FlagDef] = [
   {
     is_switch: false,
     name_short: Some('e'),

@@ -23,15 +23,6 @@ pub(all) enum LinkTraversal {
 }
 
 ///|
-#derive(Eq, Debug)
-pub(all) struct FileMetadata {
-  kind : @fs.FileKind
-  size : Int64?
-  mtime_seconds : Int64
-  mtime_nanoseconds : Int32
-}
-
-///|
 pub fn basename(value : String) -> String {
   @path.Path(@platform.normalize_input_separators(value)).basename().to_owned()
 }
@@ -154,27 +145,6 @@ pub async fn kind_if_exists(path : String) -> @fs.FileKind? {
 }
 
 ///|
-pub async fn metadata_if_exists(
-  path : String,
-  follow_symlink~ : Bool = false,
-) -> FileMetadata? {
-  let path = @platform.normalize_input_separators(path)
-  let kind = @fs.kind(path, follow_symlink~) catch {
-    @os_error.OSError(_) as err if err.is_ENOENT() => return None
-    err => raise err
-  }
-  let size = if kind == Regular {
-    let file = @fs.open(path, mode=ReadOnly)
-    defer file.close()
-    Some(file.size())
-  } else {
-    None
-  }
-  let (mtime_seconds, mtime_nanoseconds) = @fs.mtime(path, follow_symlink~)
-  Some({ kind, size, mtime_seconds, mtime_nanoseconds, })
-}
-
-///|
 pub async fn open_output(
   path : String,
   output_mode : OutputMode,
@@ -235,22 +205,6 @@ pub async fn cleanup_file_if_exists(path : String) -> Unit {
     Directory => raise FsOpError("temporary path is a directory: '\{path}'")
     _ => @fs.remove(path)
   }
-}
-
-///|
-/// Commit a fully-written temporary file with a single rename. If the commit
-/// fails, the temporary path is removed before the original error is raised.
-pub async fn commit_temporary_file(
-  temporary : String,
-  destination : String,
-  replace~ : Bool = true,
-) -> Unit {
-  errdefer @async.protect_from_cancel(() => {
-    cleanup_file_if_exists(temporary) catch {
-      _ => ()
-    }
-  })
-  @fs.rename(temporary, destination, replace~)
 }
 
 ///|
@@ -446,22 +400,6 @@ pub async fn ensure_not_nested_destination(
 }
 
 ///|
-pub async fn copy_path(
-  source : String,
-  destination : String,
-  recursive : Bool,
-  replace : Bool,
-) -> Bool {
-  copy_path_with_links(
-    source,
-    destination,
-    recursive,
-    replace,
-    NeverFollowLinks,
-  )
-}
-
-///|
 pub async fn copy_path_with_links(
   source : String,
   destination : String,
@@ -545,9 +483,3 @@ pub extend LinkTraversal with Eq::{not_equal, equal}
 
 ///|
 pub extend LinkTraversal with @debug.Debug::{to_repr}
-
-///|
-pub extend FileMetadata with Eq::{not_equal, equal}
-
-///|
-pub extend FileMetadata with @debug.Debug::{to_repr}

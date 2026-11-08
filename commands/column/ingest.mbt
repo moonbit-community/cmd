@@ -1,4 +1,7 @@
 ///|
+const SpoolBatchBytes = 65536
+
+///|
 priv struct SpoolBatch {
   data : @buffer.Buffer
   index : @buffer.Buffer
@@ -8,8 +11,8 @@ priv struct SpoolBatch {
 ///|
 fn SpoolBatch::new() -> SpoolBatch {
   {
-    data: @buffer.Buffer(size_hint=65536),
-    index: @buffer.Buffer(size_hint=65536),
+    data: @buffer.Buffer(size_hint=SpoolBatchBytes),
+    index: @buffer.Buffer(size_hint=SpoolBatchBytes),
     deferred: None,
   }
 }
@@ -29,7 +32,7 @@ fn Snapshot::stage_record(
   }
   pending.index.write_int64_le(self.size)
   pending.index.write_int64_le(bytes.length().to_int64())
-  if bytes.length() <= 65536 - pending.data.length() {
+  if bytes.length() <= SpoolBatchBytes - pending.data.length() {
     pending.data.write_bytes(bytes)
   } else {
     pending.deferred = Some(bytes)
@@ -42,8 +45,8 @@ fn Snapshot::stage_record(
     self.longest = self.longest.max(display_width(line))
   }
   pending.deferred is None &&
-  pending.data.length() < 65536 &&
-  pending.index.length() < 65536
+  pending.data.length() < SpoolBatchBytes &&
+  pending.index.length() < SpoolBatchBytes
 }
 
 ///|

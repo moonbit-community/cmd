@@ -17,6 +17,13 @@ You can browse and install extra skills here:
 
 ## Coding convention
 
+- Internal simplification preserves the `moonx cli/<cmd>` contract: arguments,
+  output/status, error and effect ordering, and performance. Internal source APIs
+  and package layouts may break without compatibility shims. Verify both product
+  and test-tool consumers; retain imported corpus records and independent frozen
+  published expectations. Name policy constants locally, validate stable inputs
+  at their owning boundary, and retain checks for dynamic I/O and cancellation.
+
 - Repository documentation, issue titles/bodies, PR descriptions and new
   explanatory comments must be written in English. Historical document
   translations preserve recorded versions, results and limitations; language

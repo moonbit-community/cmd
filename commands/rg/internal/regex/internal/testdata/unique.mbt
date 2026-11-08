@@ -30,9 +30,7 @@ fn corpus_execution_key(tc : TestCase) -> String {
 /// Retains every semantic field and both engines' name-derived exclusions.
 /// The first source record supplies the diagnostic name; all names remain
 /// available for failure diagnostics and represented-obligation accounting.
-pub fn execution_groups(
-  cases : ArrayView[TestCase],
-) -> Array[CorpusGroup] raise {
+fn execution_groups(cases : ArrayView[TestCase]) -> Array[CorpusGroup] raise {
   let indices : Map[String, Int32] = Map([])
   let names : Set[String] = Set([])
   let groups : Array[CorpusGroup] = []

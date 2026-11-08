@@ -193,38 +193,6 @@ async test "walk/max_depth_does_not_load_unreachable_ignore_files" {
 }
 
 ///|
-async test "walk/min_depth" {
-  let td = TempDir::new("walk-min_depth")
-  mkdirp(td.join("a/b/c"))
-  wfile(td.join("foo"), "")
-  wfile(td.join("a/foo"), "")
-  wfile(td.join("a/b/foo"), "")
-  wfile(td.join("a/b/c/foo"), "")
-  let builder = WalkBuilder::new(td.path())
-  assert_paths(td.path(), builder, [
-    "a", "a/b", "a/b/c", "foo", "a/foo", "a/b/foo", "a/b/c/foo",
-  ])
-  let builder = WalkBuilder::new(td.path())
-  assert_paths(td.path(), builder.min_depth(Some(0)), [
-    "a", "a/b", "a/b/c", "foo", "a/foo", "a/b/foo", "a/b/c/foo",
-  ])
-  assert_paths(td.path(), builder.min_depth(Some(1)), [
-    "a", "a/b", "a/b/c", "foo", "a/foo", "a/b/foo", "a/b/c/foo",
-  ])
-  assert_paths(td.path(), builder.min_depth(Some(2)), [
-    "a/b", "a/b/c", "a/b/c/foo", "a/b/foo", "a/foo",
-  ])
-  assert_paths(td.path(), builder.min_depth(Some(3)), [
-    "a/b/c", "a/b/c/foo", "a/b/foo",
-  ])
-  assert_paths(td.path(), builder.min_depth(Some(10)), [])
-  assert_paths(td.path(), builder.min_depth(Some(2)).max_depth(Some(1)), [
-    "a/b", "a/foo",
-  ])
-  td.close()
-}
-
-///|
 async test "walk/max_filesize" {
   let td = TempDir::new("walk-max_filesize")
   mkdirp(td.join("a/b"))
@@ -297,24 +265,6 @@ async test "walk/symlink_loop" {
 }
 
 ///|
-async test "walk/filter" {
-  let td = TempDir::new("walk-filter")
-  mkdirp(td.join("a/b/c"))
-  mkdirp(td.join("x/y"))
-  wfile(td.join("a/b/foo"), "")
-  wfile(td.join("x/y/foo"), "")
-  assert_paths(td.path(), WalkBuilder::new(td.path()), [
-    "x", "x/y", "x/y/foo", "a", "a/b", "a/b/foo", "a/b/c",
-  ])
-  assert_paths(
-    td.path(),
-    WalkBuilder::new(td.path()).filter_entry(entry => entry.file_name() != "a"),
-    ["x", "x/y", "x/y/foo"],
-  )
-  td.close()
-}
-
-///|
 async test "walk/empty" {
   let td = TempDir::new("walk-empty")
   assert_paths(td.path(), WalkBuilder::empty(), [])
@@ -362,8 +312,8 @@ async test "walk/sort_by_file_name" {
       #|["", "C", "Z", "a", "aa", "b", "b/y", "b/z", "b/z/x", "é"]
     ),
   )
-  // Sorting by path (reversed).
-  let builder = WalkBuilder::new(td.path()).sort_by_file_path((a, b) => {
+  // Reverse name order, as used by the command's reverse-sort option.
+  let builder = WalkBuilder::new(td.path()).sort_by_file_name((a, b) => {
     compare_utf8(b, a)
   })
   let got = []

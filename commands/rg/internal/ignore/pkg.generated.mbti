@@ -70,13 +70,9 @@ pub(all) enum Match[T] {
   Ignore(T)
   Whitelist(T)
 }
-pub fn[T] Match::inner(Self[T]) -> T?
-pub fn[T] Match::invert(Self[T]) -> Self[T]
 pub fn[T] Match::is_ignore(Self[T]) -> Bool
 pub fn[T] Match::is_none(Self[T]) -> Bool
 pub fn[T] Match::is_whitelist(Self[T]) -> Bool
-pub fn[T, U] Match::map(Self[T], (T) -> U) -> Self[U]
-pub fn[T] Match::or(Self[T], Self[T]) -> Self[T]
 
 #derive(@debug.Debug)
 pub struct Override {
@@ -141,7 +137,6 @@ pub fn WalkBuilder::add_custom_ignore_filename(Self, String) -> Self
 pub async fn WalkBuilder::add_ignore(Self, String) -> IgnoreError?
 pub async fn WalkBuilder::build(Self) -> Walk
 pub fn WalkBuilder::current_dir(Self, String) -> Self
-pub fn WalkBuilder::filter_entry(Self, (DirEntry) -> Bool) -> Self
 pub fn WalkBuilder::follow_links(Self, Bool) -> Self
 pub fn WalkBuilder::git_exclude(Self, Bool) -> Self
 pub fn WalkBuilder::git_global(Self, Bool) -> Self
@@ -151,13 +146,11 @@ pub fn WalkBuilder::ignore(Self, Bool) -> Self
 pub fn WalkBuilder::ignore_case_insensitive(Self, Bool) -> Self
 pub fn WalkBuilder::max_depth(Self, Int32?) -> Self
 pub fn WalkBuilder::max_filesize(Self, UInt64?) -> Self
-pub fn WalkBuilder::min_depth(Self, Int32?) -> Self
 pub fn WalkBuilder::new(String) -> Self
 pub fn WalkBuilder::overrides(Self, Override) -> Self
 pub fn WalkBuilder::parents(Self, Bool) -> Self
 pub fn WalkBuilder::require_git(Self, Bool) -> Self
 pub fn WalkBuilder::sort_by_file_name(Self, (String, String) -> Int32) -> Self
-pub fn WalkBuilder::sort_by_file_path(Self, (String, String) -> Int32) -> Self
 pub fn WalkBuilder::types(Self, Types) -> Self
 
 // Type aliases

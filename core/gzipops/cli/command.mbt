@@ -1,5 +1,5 @@
 ///|
-pub fn help(command : String) -> String {
+fn help(command : String) -> String {
   "Usage: \{command} [OPTION]... [FILE]...\n" +
   "Process gzip streams; no FILE or - reads stdin.\n" +
   "Input and output use bounded buffers.\n\n" +

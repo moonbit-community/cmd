@@ -34,7 +34,7 @@ async fn capture_shell(
       break
     }
   }
-  let text = @utf8.decode(Bytes::from_array(output.bytes[:length].to_owned())) catch {
+  let text = @utf8.decode(Bytes::from_array(output.bytes[:length])) catch {
     _ => raise MakeError("shell output before its first NUL is not valid UTF-8")
   }
   (status, text)

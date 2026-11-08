@@ -1,5 +1,4 @@
 import {
-  "moonbitlang/async",
   "moonbitlang/core/debug",
   "cli/core/platform",
   "moonbitlang/async/fs",
@@ -9,3 +8,7 @@ import {
 }
 
 supported_targets = "native+wasm"
+
+import {
+  "moonbitlang/async",
+} for "test"

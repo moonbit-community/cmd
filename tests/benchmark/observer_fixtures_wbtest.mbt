@@ -29,10 +29,8 @@ async fn gzip_roundtrip(
 ) -> Bool {
   let output = @fs.open(decoded, mode=WriteOnly, create_mode=CreateOrTruncate)
   defer output.close()
-  let trailing = @gzipops.decode(
-    @fs.read_file(compressed).binary(),
-    output,
-    false,
-  )
+  let input = @fs.open(compressed, mode=ReadOnly)
+  defer input.close()
+  let trailing = @gzipops.decode_reader(input, output, false)
   !trailing && files_equal(decoded, expected)
 }

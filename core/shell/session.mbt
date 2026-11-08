@@ -202,26 +202,6 @@ pub async fn read_line(input : &@io.Reader) -> String? {
 }
 
 ///|
-pub async fn run(
-  script : String,
-  name~ : String = "sh",
-  args~ : Array[String] = [],
-  env~ : Map[String, String] = @child_process.default_environment(),
-  cwd? : String,
-) -> Int32 {
-  let session = Session::new(name~, args~, env~, cwd?)
-  match session.feed(script) {
-    Exit(status) => status
-    Completed(status) => status
-    NeedMoreInput =>
-      match session.finish() {
-        Completed(status) | Exit(status) => status
-        NeedMoreInput => 2
-      }
-  }
-}
-
-///|
 /// Run shell source and capture stdout for callers such as make's $(shell).
 /// Stderr remains a separate stream and the shell exit status is returned.
 pub async fn capture(

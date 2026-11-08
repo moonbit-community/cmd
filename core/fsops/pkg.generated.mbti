@@ -13,11 +13,7 @@ pub fn basename(String) -> String
 
 pub async fn cleanup_file_if_exists(String) -> Unit
 
-pub async fn commit_temporary_file(String, String, replace? : Bool) -> Unit
-
 pub fn compare_timestamps(FileTimestamp, FileTimestamp) -> Int32
-
-pub async fn copy_path(String, String, Bool, Bool) -> Bool
 
 pub async fn copy_path_with_links(String, String, Bool, Bool, LinkTraversal, preserve_permissions? : Bool) -> Bool
 
@@ -30,8 +26,6 @@ pub async fn ensure_not_nested_destination(String, String) -> Unit
 pub fn join(String, String) -> String
 
 pub async fn kind_if_exists(String) -> @fs.FileKind?
-
-pub async fn metadata_if_exists(String, follow_symlink? : Bool) -> FileMetadata?
 
 pub async fn open_output(String, OutputMode, permission? : Int32) -> @fs.File
 
@@ -57,8 +51,6 @@ pub async fn restore_backup(String, String) -> Unit
 
 pub async fn select_backup_path(String, BackupControl, suffix? : String) -> String?
 
-pub fn timestamp_age_bucket(FileTimestamp, FileTimestamp, Int64) -> Int64 raise FsOpError
-
 // Errors
 pub(all) suberror FsOpError {
   FsOpError(String)
@@ -75,17 +67,6 @@ pub(all) enum BackupControl {
 pub fn BackupControl::equal(Self, Self) -> Bool
 pub fn BackupControl::not_equal(Self, Self) -> Bool
 pub fn BackupControl::to_repr(Self) -> @debug.Repr
-
-#derive(Eq, @debug.Debug)
-pub(all) struct FileMetadata {
-  kind : @fs.FileKind
-  size : Int64?
-  mtime_seconds : Int64
-  mtime_nanoseconds : Int32
-}
-pub fn FileMetadata::equal(Self, Self) -> Bool
-pub fn FileMetadata::not_equal(Self, Self) -> Bool
-pub fn FileMetadata::to_repr(Self) -> @debug.Repr
 
 #derive(Eq, @debug.Debug)
 pub(all) struct FileTimestamp {

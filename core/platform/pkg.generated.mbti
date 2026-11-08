@@ -2,22 +2,11 @@
 package "cli/core/platform"
 
 import {
-  "moonbitlang/async/os_error",
   "moonbitlang/core/debug",
 }
 
 // Values
-pub fn accepts_separator(Char) -> Bool
-
-pub fn current() -> Platform
-
-pub fn is_cross_device_error(@os_error.OSError) -> Bool
-
-pub fn is_terminal(StandardStream) -> Bool
-
 pub fn is_windows() -> Bool
-
-pub fn native_separator() -> Char
 
 pub fn normalize_input_separators(String) -> String
 
@@ -29,20 +18,9 @@ pub fn symbolic_link_creation_supported() -> Bool
 
 pub fn terminal_output_enabled(TerminalPolicy, StandardStream) -> Bool
 
-pub fn terminal_policy_allows(TerminalPolicy, Bool) -> Bool
-
 // Errors
 
 // Types and methods
-#derive(Eq, @debug.Debug)
-pub(all) enum Platform {
-  Windows
-  Posix
-}
-pub fn Platform::equal(Self, Self) -> Bool
-pub fn Platform::not_equal(Self, Self) -> Bool
-pub fn Platform::to_repr(Self) -> @debug.Repr
-
 #derive(Eq, @debug.Debug)
 pub(all) enum StandardStream {
   Stdin

@@ -6,8 +6,6 @@ import {
 }
 
 // Values
-pub fn decode(Bytes) -> Zone raise
-
 pub async fn load(utc? : Bool) -> Zone
 
 // Errors

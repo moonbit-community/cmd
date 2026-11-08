@@ -20,8 +20,6 @@ pub async fn transfer(String, TransferOutput, TransferOptions, observer? : async
 
 pub fn transfer_options(profile? : TransferProfile, request_method? : HttpMethod, headers? : Array[HttpHeader], body? : RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int32, idle_timeout_ms? : Int32, max_time_ms? : Int32, fail_on_http_error? : Bool, http_error_statuses? : Array[Int32], resume_from? : Int64, resume_skip_existing? : Bool, keep_output_on_not_modified? : Bool, cookie_jar? : CookieJar, cookie_data? : String, custom_cookie_mode? : CustomCookieMode, custom_cookie_cross_origin? : Bool, basic_credentials? : String, basic_preemptive? : Bool, basic_credential_scope? : BasicCredentialScope) -> TransferOptions
 
-pub fn url_host(String) -> String raise TransferError
-
 // Errors
 #derive(Eq, @debug.Debug)
 pub(all) suberror TransferError {
@@ -46,7 +44,6 @@ pub struct CookieJar {
 }
 pub async fn CookieJar::load(Self, String) -> Unit
 pub fn CookieJar::load_netscape(Self, String) -> Unit
-pub fn CookieJar::netscape(Self, include_session? : Bool) -> String
 pub fn CookieJar::new() -> Self
 pub async fn CookieJar::save(Self, String, include_session? : Bool) -> Unit
 
@@ -232,7 +229,6 @@ pub(all) struct TransferResult {
   redirects : Int32
 }
 pub fn TransferResult::content_disposition_filename(Self) -> String?
-pub fn TransferResult::header(Self, String) -> String?
 
 // Type aliases
 

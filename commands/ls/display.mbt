@@ -1,4 +1,7 @@
 ///|
+const DisplayBlockBytes = 65536
+
+///|
 #derive(Eq)
 priv enum Layout {
   Lines
@@ -515,7 +518,7 @@ async fn write_layout(
     for index = 0; index < names.length(); index = index + 1 {
       write_name(index, 0)
       out.write_byte(b'\n')
-      if out.length() >= 65536 {
+      if out.length() >= DisplayBlockBytes {
         flush()
       }
     }
@@ -535,7 +538,7 @@ async fn write_layout(
       }
       write_name(index, position)
       position += name.width
-      if out.length() >= 65536 {
+      if out.length() >= DisplayBlockBytes {
         flush()
       }
     }
@@ -549,7 +552,7 @@ async fn write_layout(
       }
       write_name(index, position)
       position += name.width
-      if out.length() >= 65536 {
+      if out.length() >= DisplayBlockBytes {
         flush()
       }
     }
@@ -585,12 +588,12 @@ async fn write_layout(
           )
           position += widths[col]
         }
-        if out.length() >= 65536 {
+        if out.length() >= DisplayBlockBytes {
           flush()
         }
       }
       out.write_byte(b'\n')
-      if out.length() >= 65536 {
+      if out.length() >= DisplayBlockBytes {
         flush()
       }
     }

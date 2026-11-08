@@ -1244,12 +1244,7 @@ test "required_ext/extract_req_ext1" {
 }
 
 ///|
-test "required_ext/extract_req_ext2" {
-  assert_eq(build("/foo/bar/*.rs").required_ext(), Some(".rs"))
-}
-
-///|
-test "required_ext/extract_req_ext3" {
+test "required_ext/extract_req_ext2 / required_ext/extract_req_ext3" {
   assert_eq(build("/foo/bar/*.rs").required_ext(), Some(".rs"))
 }
 

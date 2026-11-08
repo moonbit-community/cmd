@@ -48,7 +48,7 @@ baseline Wasm artifact. The baseline CLI root contains
 published expectations, source recovery state and failed reports. Use the
 default release Wasm build without an extra manual optimization pass.
 
-Prepare a fresh checked corpus using `prepare_real_corpora.mbtx` as described
+Prepare a fresh checked corpus using the `corpus` entry as described
 in [README.md](README.md). Complete source identities and license records are
 pinned by `tests/fixtures/benchmark/real-sources.json`; no source is repeated,
 padded or replaced by generated size-budget data. Semantic codec encoding,

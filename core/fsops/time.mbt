@@ -29,26 +29,6 @@ pub fn compare_timestamps(left : FileTimestamp, right : FileTimestamp) -> Int32 
 }
 
 ///|
-pub fn timestamp_age_bucket(
-  now : FileTimestamp,
-  timestamp : FileTimestamp,
-  bucket_seconds : Int64,
-) -> Int64 raise FsOpError {
-  if bucket_seconds <= 0L {
-    raise FsOpError("timestamp bucket must be positive")
-  }
-  let mut elapsed_seconds = now.seconds - timestamp.seconds
-  if now.nanoseconds < timestamp.nanoseconds {
-    elapsed_seconds -= 1L
-  }
-  if elapsed_seconds >= 0L {
-    elapsed_seconds / bucket_seconds
-  } else {
-    -((-elapsed_seconds + bucket_seconds - 1L) / bucket_seconds)
-  }
-}
-
-///|
 pub async fn read_file_timestamp(
   path : String,
   kind : TimestampKind,

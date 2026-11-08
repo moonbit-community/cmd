@@ -8,11 +8,7 @@ import {
 }
 
 // Values
-pub let flag_defs : Array[FlagDef]
-
 pub fn parse_config_bytes(Bytes) -> Array[String]
-
-pub let rg_version : String
 
 pub async fn run_main(Array[String]) -> Int32
 

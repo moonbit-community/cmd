@@ -28,9 +28,7 @@ injects cancellation immediately after rename. Buffered output flushes remain
 cancellable under downstream backpressure. The affected rollback and output
 functions acknowledge `cancellable_defer` locally;
 shielding those writes could make a cancelled command wait indefinitely for a
-reader. Keep all other warnings enabled. The atomic-commit cancellation test in
-[fsops](../../core/fsops/fsops_test.mbt) requires removal of the staged file while
-preserving the destination; the blocked-writer test in
+reader. Keep all other warnings enabled. The blocked-writer test in
 [paste](../../commands/paste/output_wbtest.mbt) covers serial and parallel flush
 cancellation. Reconsider shielding output only with a bounded completion
 contract and equivalent cancellation regressions.
@@ -99,7 +97,7 @@ values. Generated index/coverage records are definitions, not execution receipts
 
 | Package | Responsibility |
 | --- | --- |
-| cli / contracts | Argument parsing and diagnostics / capability records consumed by validation |
+| core/cli / tests/harness/contracts | Runtime argument parsing and diagnostics / validation-only capability records and command catalog |
 | platform / process | Honest capability queries / execution context and direct-child lifetime |
 | fsops / fsops/mode | Shared filesystem preflight and octal mode parsing; command-local ordered effects |
 | fswalk | Directory handles and requested observations; callers own sorting, pruning and links |
@@ -113,9 +111,27 @@ values. Generated index/coverage records are definitions, not execution receipts
 | jq_filter | Public-AST adaptation preserving lexical bindings and assignment paths |
 | quoting / tabstops | Byte quoting and parsed tab grids; callers retain their dialects |
 
-Public APIs and generated data are not dead code merely because current runtime
-consumers are absent. The [core migration table](../../core/README.md#090-api-changes)
-records versioned API changes; published coordinates remain independent.
+The compatibility boundary for internal restructuring is `moonx cli/<command>`:
+accepted arguments, output/status, error ordering, filesystem effects and
+performance. Internal packages, public source declarations and test helpers may
+change without forwarding shims. Published coordinates and their frozen
+expectations remain independent; the [core migration table](../../core/README.md#090-api-changes)
+still records the historical 0.9.0 contract. A later core release must declare
+its intentional source API breaks.
+
+Check both product and test-tool consumers before reducing visibility. Keep
+private-state tests with their implementation, and keep generated tables and
+imported corpus records even when they have no runtime consumer. The catalog
+now belongs to `tests/harness/contracts`: its consumers are Native validation
+tools, so it no longer expands the published runtime module.
+
+Validate stable arguments at their owning entry boundary. Inner loops use those
+established invariants; filesystem races, short reads, failed writes and
+cancellation remain runtime observations and still need checks. Name a constant
+for the policy it owns, or derive a read bound from the actual buffer. Equal
+numeric values do not justify coupling unrelated policies. Keep one-use logic
+inline unless the helper expresses a meaningful boundary or isolates a complex
+operation.
 
 ## Typst command adaptation
 
@@ -239,14 +255,32 @@ algorithms in [performance](../performance/README.md). Experimental packed-Huffm
 and CRC costs are not adopted costs. Noise, RSS observations and throughput
 measurements remain separate evidence categories.
 
-## Pending cleanup decisions
+## Repository simplification dispositions
+
+The 2026-11-08 source/API survey covered all 82 command modules, shared core and
+test infrastructure (992 source files at the baseline). Cross-package usage on
+both Wasm and Native, exact duplicate-test bodies and package dependencies guide
+manual review; a zero usage count alone is not proof that an API or corpus is
+unnecessary. Commands without a justified change retain their specialized code.
 
 | Proposal | Current disposition and next condition |
 | --- | --- |
-| Share dump-reader loops (C01) | Keep owner-local loops: opening, zero limits, over-skip, rendering and finalization differ. A narrower allocation change needs short-read, EOF, budget and failed-write evidence. |
-| Reduce core visibility (C02) | `teddy_max_literals`, `Algorithm::hex_length` and `gzipops/cli.help` remain public after a restored trial. Make an intentional API decision before changing them. |
-| Remove published platform helpers (C02) | Local non-use of `is_cross_device_error`, `native_separator` and `accepts_separator` does not establish external non-use; choose a compatibility policy first. |
+| Share dump-reader loops (C01) | Keep owner-local loops: opening, zero limits, over-skip, rendering and finalization differ. Od/hexdump synchronously consume borrowed input spans; xxd avoids an intermediate array copy. No generic reader framework. |
+| Reduce visibility (C02) | Make unused cross-package declarations private, including `teddy_max_literals`, `Algorithm::hex_length`, gzip help and rg implementation constants. `OptionSpec` construction goes through its existing constructors. |
+| Remove obsolete APIs (C02) | Under the CLI compatibility boundary, remove unused platform aliases, fsops metadata/atomic-commit/age-bucket wrappers, shell `run` and Typst capability probes. Gzip's bytes-only adapter becomes a private codec-test helper; tools use the real reader entrypoint. |
+| Reduce rg traversal | Remove minimum-depth, arbitrary callback-filter and full-path-sort configuration with no CLI consumer. Retain maximum depth, name ordering, ignore rules, link behavior and the original imported corpus records. |
+| Reduce Typst watch adaptation | Represent only creation, modification, removal and the two rename directions emitted by the filesystem adapter. Each event owns one watched path. Remove unreachable notify categories and constructor failure handling; retain actual watch acquisition errors, batching, output suppression and rewatching after removal. |
+| Consolidate tests | Merge four byte-identical rg test bodies, retaining their names in the surviving titles. Retire tests solely for removed APIs or events the adapter cannot produce; keep failure injection, lifetime, cleanup and independent CLI assertions. |
+| Output and transfer ownership | BlockWriter checks span/state at synchronous admission once; slow paths run directly from that result. Keep active/failed state around actual I/O. Transfer output keeps its 4096-byte commit boundary and consumes queued data before awaiting writes. |
 | Make `Session::finish` synchronous (C02) | Retain async: EOF now reparses pending source and may execute async `run_jobs`. The earlier synchronous trial predates this behavior and is no longer applicable. Reconsider only if command execution is deliberately moved to another async API while preserving EOF and adapter contracts. |
+
+These are development candidate changes, not publication or performance
+acceptance. The baseline source and all 82 optimized Wasm artifacts were frozen
+before edits. Changed artifacts without timing workloads remain blocked by the
+existing protection policy; static simplification and passing correctness do not
+waive that gate. Register genuine workloads and qualify complete old/new windows
+before adopting a performance claim. Existing wc/fmt calibration limitations
+retain their recorded scope in the benchmark guide.
 
 ## Verification and reconsideration
 

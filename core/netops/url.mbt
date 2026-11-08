@@ -324,7 +324,7 @@ pub fn remote_name(url : String) -> String raise TransferError {
 }
 
 ///|
-pub fn url_host(url : String) -> String raise TransferError {
+fn url_host(url : String) -> String raise TransferError {
   let host = parse_absolute_url(url).host
   if host.has_prefix("[") && host.has_suffix("]") {
     host[1:host.length() - 1].to_owned()

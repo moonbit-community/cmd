@@ -115,7 +115,7 @@ test "inner literals 17" {
 }
 
 ///|
-test "inner literals 18" {
+test "inner literals 18 / inner literals 154" {
   inspect(e("Z"), content="[E(Z)]")
 }
 
@@ -410,7 +410,7 @@ test "inner literals 76" {
 }
 
 ///|
-test "inner literals 77" {
+test "inner literals 77 / inner literals 88" {
   inspect(e("ab+"), content="[I(ab)]")
 }
 
@@ -462,11 +462,6 @@ test "inner literals 86" {
 ///|
 test "inner literals 87" {
   inspect(e("ab*c"), content="[I(ab), E(ac)]")
-}
-
-///|
-test "inner literals 88" {
-  inspect(e("ab+"), content="[I(ab)]")
 }
 
 ///|
@@ -799,11 +794,6 @@ test "inner literals 153" {
     e("a{8}{8}{8}{8}{8}{8}{8}{8}{8}{8}{8}{8}{8}{8}"),
     content="[I(\{repa})]",
   )
-}
-
-///|
-test "inner literals 154" {
-  inspect(e("Z"), content="[E(Z)]")
 }
 
 ///|

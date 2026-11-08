@@ -273,15 +273,6 @@ priv enum OutputFormat {
 }
 
 ///|
-/// Whether this format results in a `PagedDocument`.
-// Only `watch` asks (watch.rs:57), which not every target has
-// (`watch_unsupported.mbt`).
-#warnings("-unused_value")
-fn OutputFormat::is_paged(self : OutputFormat) -> Bool {
-  self is (Pdf | Png | Svg)
-}
-
-///|
 /// Which format to use for a generated dependency file.
 priv enum DepsFormat {
   Json

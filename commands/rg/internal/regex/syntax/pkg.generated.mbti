@@ -2,13 +2,10 @@
 package "cli/rg/internal/regex/syntax"
 
 import {
-  "moonbitlang/core/buffer",
   "moonbitlang/core/debug",
 }
 
 // Values
-pub fn encode_utf8(@buffer.Buffer, Int32) -> Unit
-
 pub fn escape(String) -> String
 
 pub fn is_meta_character(Char) -> Bool
@@ -305,7 +302,6 @@ pub(all) struct Lit {
   bytes : Bytes
   exact : Bool
 }
-pub fn Lit::exact(Bytes) -> Self
 
 #derive(Eq, @debug.Debug)
 pub(all) struct Literal {
@@ -435,27 +431,9 @@ pub(all) enum RepetitionRange {
 pub(all) struct Seq {
   mut lits : Array[Lit]?
 }
-pub fn Seq::copy(Self) -> Self
-pub fn Seq::cross_forward(Self, Self) -> Unit
-pub fn Seq::dedup(Self) -> Unit
-pub fn Seq::empty() -> Self
-pub fn Seq::infinite() -> Self
-pub fn Seq::is_empty(Self) -> Bool
 pub fn Seq::is_exact(Self) -> Bool
-pub fn Seq::is_finite(Self) -> Bool
-pub fn Seq::is_inexact(Self) -> Bool
-pub fn Seq::keep_first_bytes(Self, Int32) -> Unit
-pub fn Seq::len(Self) -> Int32?
 pub fn Seq::literals(Self) -> Array[Lit]?
-pub fn Seq::make_inexact(Self) -> Unit
-pub fn Seq::make_infinite(Self) -> Unit
-pub fn Seq::max_cross_len(Self, Self) -> Int32?
-pub fn Seq::max_union_len(Self, Self) -> Int32?
-pub fn Seq::min_literal_len(Self) -> Int32?
 pub fn Seq::optimize_for_prefix_by_preference(Self) -> Unit
-pub fn Seq::push(Self, Lit) -> Unit
-pub fn Seq::singleton(Lit) -> Self
-pub fn Seq::union(Self, Self) -> Unit
 
 #derive(Compare, Eq, @debug.Debug)
 pub(all) struct Span {
