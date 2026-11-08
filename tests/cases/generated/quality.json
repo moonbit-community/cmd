@@ -2,8 +2,8 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 3549,
-    "finite-diagnostic": 181,
+    "exact-local": 3556,
+    "finite-diagnostic": 183,
     "typed-scenario": 64,
     "typed-dynamic-output": 12
   },
@@ -9238,7 +9238,7 @@
     {
       "case_id": "compat-text-env-help",
       "source": "tests/cases/env.json",
-      "definition_sha256": "285960ff06042b6a8a12e606fbe6f97d0503ed803221854aaab7374fcf740ec2",
+      "definition_sha256": "8c6ef3fa5308bdadfe13a3d8152e90960624831d65f4207612d716d10bd596fb",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -9599,6 +9599,57 @@
       "case_id": "coverage-env-unset-reassign",
       "source": "tests/cases/env.json",
       "definition_sha256": "05bab88ffe786b09148c484f7724bf49c4348629d2e2f28e22b46fd840f88185",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "env-chdir-missing-parent",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "c895727bebbb756df824ecbbbfbcde2341de5a00444ce8dfaba053be060c0d81",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "OS error wording varies; require the command and original missing-parent path, exact failure status, and empty stdout so neither the child nor recipe can run."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "env-chdir-link-parent",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "be4cd61550ba31fed211a16f7d42e03e15499872b456a9222812e726b0f4c6ca",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "env-chdir-link-parent-attached",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "e227cdbfef5aff983276dc6b7e14553f41ddce206896b761b74ff96ff18c6f9b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "env-chdir-link-parent-long",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "4804bd3e3901a73f50e766148aa598a3405f9943f3fa3ecaead4927b025c8b2b",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "env-chdir-link-parent-equals",
+      "source": "tests/cases/env.json",
+      "definition_sha256": "71d17804416cd1c001d3128867254e02cbf95f60f4c2cbdb15c0da2074bd0c5f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -19899,7 +19950,7 @@
     {
       "case_id": "release-metadata-make-help",
       "source": "tests/cases/make.json",
-      "definition_sha256": "34c7a249615c014cfc33aa7d121a867eabe9d7284dee6f3da6546cc652ebb514",
+      "definition_sha256": "da13db317c29f07a2e0d691528ba59a5f93597685c91f99291fa48e5e96c22b9",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -22017,6 +22068,47 @@
       "case_id": "f31-make-raw-file-test-unsuffixed-links",
       "source": "tests/cases/make.json",
       "definition_sha256": "a1a5c3bda6c13215c6e3ca0e532b9d9b38bf720741a29bd50468ae7a59af6c3d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "make-file-missing-parent",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "f115501090df8e305ba961c6895d210577e02fa71a60bcbc6401da08871db1b8",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "make-file-link-parent",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "23955c57a185c3530b87db67c0f01beba2885fcf5beb25ee80d9ecc7001dbe4e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "make-directory-missing-parent",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "e1fb0d0a74682f02aef13650f4125edcad5f3338bdecf83f9acc05dbd03a32d4",
+      "classification": "finite-diagnostic",
+      "descriptor": {
+        "kind": "diagnostic-fragment",
+        "reason": "OS error wording varies; require the command and original missing-parent path, exact failure status, and empty stdout so neither the child nor recipe can run."
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "make-directory-link-parent",
+      "source": "tests/cases/make.json",
+      "definition_sha256": "c724f0af4262805df34e63e008006fe9216c61fb5de96e8e4025ae468cbf0b67",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -41573,6 +41665,22 @@
     "coverage-env-unset-reassign": {
       "kind": "exact"
     },
+    "env-chdir-missing-parent": {
+      "kind": "diagnostic-fragment",
+      "reason": "OS error wording varies; require the command and original missing-parent path, exact failure status, and empty stdout so neither the child nor recipe can run."
+    },
+    "env-chdir-link-parent": {
+      "kind": "exact"
+    },
+    "env-chdir-link-parent-attached": {
+      "kind": "exact"
+    },
+    "env-chdir-link-parent-long": {
+      "kind": "exact"
+    },
+    "env-chdir-link-parent-equals": {
+      "kind": "exact"
+    },
     "p1-fmt-width": {
       "kind": "exact"
     },
@@ -45428,6 +45536,19 @@
       "kind": "exact"
     },
     "f31-make-raw-file-test-unsuffixed-links": {
+      "kind": "exact"
+    },
+    "make-file-missing-parent": {
+      "kind": "exact"
+    },
+    "make-file-link-parent": {
+      "kind": "exact"
+    },
+    "make-directory-missing-parent": {
+      "kind": "diagnostic-fragment",
+      "reason": "OS error wording varies; require the command and original missing-parent path, exact failure status, and empty stdout so neither the child nor recipe can run."
+    },
+    "make-directory-link-parent": {
       "kind": "exact"
     },
     "phase3-sort-basic": {

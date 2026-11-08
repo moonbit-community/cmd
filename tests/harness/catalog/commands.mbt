@@ -327,6 +327,7 @@ pub fn commands() -> Array[CommandContract] {
       ],
       exit_codes=[0, 1, 2, 3, 5, 7, 18, 22, 23, 26, 28, 47, 52, 56, 60, 65],
     ),
+    // Chdir retains filesystem parent traversal in every option spelling.
     contract(
       "env",
       Restricted,
@@ -339,6 +340,7 @@ pub fn commands() -> Array[CommandContract] {
       exit_codes=[0, 125, 126, 127],
     ),
     // Named/default export policy and secondary prerequisites retain GNU order.
+    // File paths retain raw components; each -C resolves an existing directory.
     // Recipes expand before execution; each target constructs its environment once.
     // Shell argv, NUL-truncated captures and errors retain actual shell status.
     // Every file-test operand preserves the POSIX trailing-slash directory rule.

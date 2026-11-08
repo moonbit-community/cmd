@@ -45459,6 +45459,123 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:env-chdir-missing-parent",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "env-chdir-missing-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:env-chdir-link-parent",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "env-chdir-link-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:env-chdir-link-parent-attached",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "env-chdir-link-parent-attached",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:env-chdir-link-parent-long",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "env-chdir-link-parent-long",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:env-chdir-link-parent-equals",
+      "command": "env",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/env.json",
+      "case_id": "env-chdir-link-parent-equals",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:make-file-missing-parent",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "make-file-missing-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:make-file-link-parent",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "make-file-link-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:make-directory-missing-parent",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "make-directory-missing-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:make-directory-link-parent",
+      "command": "make",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/make.json",
+      "case_id": "make-directory-link-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

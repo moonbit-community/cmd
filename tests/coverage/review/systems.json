@@ -2576,10 +2576,14 @@
       "command": "env",
       "claim": "chdir",
       "case_ids": [
-        "coverage-env-chdir"
+        "coverage-env-chdir",
+        "env-chdir-link-parent",
+        "env-chdir-link-parent-attached",
+        "env-chdir-link-parent-long",
+        "env-chdir-link-parent-equals"
       ],
       "kind": "supported-option",
-      "activation": "The launched child reports its actual canonical cwd after -C sub; the expected absolute fixture subdirectory is specified before execution.",
+      "activation": "The child reports its complete canonical cwd. POSIX parent-path cases distinguish missing-component rejection (125 and no child output) from physical link-parent traversal in all four option spellings, including an absolute path. Windows link fixtures are excluded; definitions are not execution evidence.",
       "disposition": "reviewed-definition"
     },
     {

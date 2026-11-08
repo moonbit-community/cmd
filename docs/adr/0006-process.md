@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-01
+Updated: 2026-11-08
 
 ## Decision
 
@@ -28,6 +28,7 @@ implement a faithful kill command.
 | rg --pre | Backpressure child stdout while draining stderr concurrently. Normal EOF checks exit and finishes stderr; early close cancels owned tasks and reaps the direct child. Retained diagnostics may grow with child stderr. No process-tree guarantee. |
 | split --filter | Reuse the pure MoonBit Session and public pipes with per-piece FILE. Keep signal termination separate from explicit exit 141; pipeline status follows its last command. |
 | env -S | Parse its own quote/escape/comment grammar and expand variables from the original environment. Splice literal words into option processing; shell metacharacters stay child arguments. |
+| env -C/--chdir | Preserve filesystem path components before directory lookup and child launch. Do not use lexical Path.join/normalize: on POSIX missing/.. must fail and link/.. follows the link first; Windows retains native normalization. The four option spellings share this rule; the last requested directory is relative to the invocation cwd. |
 | xargs -0/-d | Last delimiter option wins; preserve raw-byte scanning. Invalid UTF-8 argv prefixes reject before launch until a public raw-byte argv API exists. |
 | xargs -p | Use an independent confirmation channel, never argument stdin. Hosts without a channel reject before input/launch; this includes the documented empty -r preflight. Windows CONIN$ availability and empty-input success have separate contracts. |
 | xargs -P | Reuse each completed child slot within the concurrency limit. Distinguish ordinary child exits 126/127 from actual launch failures; stop admission on fatal outcomes and await active children. Serialize diagnostics and prompts. See [execution algorithms](../performance/execution.md). |
@@ -53,6 +54,7 @@ into success. Process-group, exec and signal claims require their own released
 public APIs and actual Wasm-host tests for scope, errors, waits and pipe closure.
 
 Implementation: [process](../../core/process/process.mbt),
+[env directory contracts](../../tests/cases/env.json),
 [execution](../../tests/harness/execute.mbt),
 [process scenarios](../../tests/scenarios/scenario_process.mbt),
 [rg child ownership](../../commands/rg/internal/sys/process.mbt).

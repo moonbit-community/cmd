@@ -16,6 +16,10 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
+- Repair unpublished env/make parent-path handling: retain missing components
+  and symlink traversal, and resolve each make working-directory change before
+  later paths. Add cwd, recipe-selection and no-execution regressions. Published
+  coordinates and frozen expectations remain unchanged.
 - Refine the unpublished simplification: consolidate small packages and test
   ownership, use direct names, remove redundant error branches and checks, and
   fix Wget's multi-URL exit precedence. Retain independent CLI regressions,

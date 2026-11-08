@@ -837,11 +837,11 @@ async fn parse_makefile(
 
 ///|
 fn path_in(cwd : String, path : String) -> String {
-  let parsed = @path.Path(path)
-  if parsed.is_absolute() {
-    parsed.normalize().to_string()
+  if path == "" || @path.Path(path).is_absolute() {
+    path
   } else {
-    @path.Path(cwd).join(parsed).normalize().to_string()
+    // Path.join would erase missing components and symlink-parent traversal.
+    cwd + "/" + path
   }
 }
 
@@ -920,6 +920,7 @@ fn positive_job_count(value : String) -> Bool {
 async fn run(arguments : Array[String]) -> Unit {
   let mut requested_file : String? = None
   let mut cwd = @env.current_dir().unwrap_or(".")
+  let directories : Array[String] = []
   let mut silent = false
   let mut dry_run = false
   let mut always_make = false
@@ -968,7 +969,7 @@ async fn run(arguments : Array[String]) -> Unit {
         raise MakeError("-C requires a directory")
       }
       index += 1
-      cwd = path_in(cwd, arguments[index])
+      directories.push(arguments[index])
     } else if options && (argument == "-s" || argument == "--silent") {
       silent = true
     } else if options && (argument == "-n" || argument == "--just-print") {
@@ -1014,7 +1015,7 @@ async fn run(arguments : Array[String]) -> Unit {
       jobs = @string.parse_int(argument[2:])
     } else if options && (argument == "-h" || argument == "--help") {
       @stdio.stdout.write(
-        "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\nOn POSIX, every file-test operand ending in a slash must name a directory.\n",
+        "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\nOn POSIX, every file-test operand ending in a slash must name a directory.\nMakefile and dependency paths retain filesystem traversal; -C resolves each requested directory.\n",
       )
       return
     } else if options && argument.has_prefix("-") && argument != "-" {
@@ -1026,6 +1027,13 @@ async fn run(arguments : Array[String]) -> Unit {
       }
     }
     index += 1
+  }
+  for requested in directories {
+    let directory = path_in(cwd, requested)
+    if @fs.kind(directory) != Directory {
+      raise MakeError("not a directory: \{requested}")
+    }
+    cwd = @fs.realpath(directory)
   }
   let variables : Map[String, Variable] = Map([])
   for name, value in @process.default_environment() {

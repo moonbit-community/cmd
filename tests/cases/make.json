@@ -215,7 +215,7 @@
         "help"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\nOn POSIX, every file-test operand ending in a slash must name a directory.\n",
+      "expected_stdout_text": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n      --help      display this help and exit\n      --version   display version and exit\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\nOn POSIX, every file-test operand ending in a slash must name a directory.\nMakefile and dependency paths retain filesystem traversal; -C resolves each requested directory.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-150"
@@ -8779,6 +8779,290 @@
       "comparison": "contract",
       "oracle": true,
       "source_version": "Fixed Dash 0.5.12, GNU Make 4.4.1 and GNU split 9.11 observations: actual raw POSIX paths, every unary predicate on invalid directory operands, both timestamp operands, whole-second time controls and unsuffixed-link controls. Local receipts are separate; sealed Linux differential and macOS 15 execution remain required."
+    },
+    {
+      "id": "make-file-missing-parent",
+      "command": "make",
+      "args": [
+        "-f",
+        "missing/../Makefile"
+      ],
+      "cwd": "base",
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "base",
+          "kind": "directory"
+        },
+        {
+          "path": "base/real/child",
+          "kind": "directory"
+        },
+        {
+          "path": "base/link",
+          "kind": "symbolic-link",
+          "target": "real/child"
+        },
+        {
+          "path": "base/Makefile",
+          "content_text": "all:\n\t@printf 'BASE\\n'\n"
+        },
+        {
+          "path": "base/real/Makefile",
+          "content_text": "all:\n\t@printf 'REAL\\n'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_files": [
+        {
+          "path": "base/link",
+          "kind": "symlink",
+          "target": "real/child",
+          "unchanged": true
+        },
+        {
+          "path": "base/Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf 'BASE\\n'\n",
+          "unchanged": true
+        },
+        {
+          "path": "base/real/Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf 'REAL\\n'\n",
+          "unchanged": true
+        },
+        {
+          "path": "base/missing",
+          "exists": false
+        }
+      ],
+      "expected_stderr_text": "make: Makefile not found: missing/../Makefile\n"
+    },
+    {
+      "id": "make-file-link-parent",
+      "command": "make",
+      "args": [
+        "-f",
+        "link/../Makefile"
+      ],
+      "cwd": "base",
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "base",
+          "kind": "directory"
+        },
+        {
+          "path": "base/real/child",
+          "kind": "directory"
+        },
+        {
+          "path": "base/link",
+          "kind": "symbolic-link",
+          "target": "real/child"
+        },
+        {
+          "path": "base/Makefile",
+          "content_text": "all:\n\t@printf 'BASE\\n'\n"
+        },
+        {
+          "path": "base/real/Makefile",
+          "content_text": "all:\n\t@printf 'REAL\\n'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "REAL\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "base/link",
+          "kind": "symlink",
+          "target": "real/child",
+          "unchanged": true
+        },
+        {
+          "path": "base/Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf 'BASE\\n'\n",
+          "unchanged": true
+        },
+        {
+          "path": "base/real/Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf 'REAL\\n'\n",
+          "unchanged": true
+        },
+        {
+          "path": "base/missing",
+          "exists": false
+        }
+      ],
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "make-directory-missing-parent",
+      "command": "make",
+      "args": [
+        "-C",
+        "missing/.."
+      ],
+      "cwd": "base",
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "base",
+          "kind": "directory"
+        },
+        {
+          "path": "base/real/child",
+          "kind": "directory"
+        },
+        {
+          "path": "base/link",
+          "kind": "symbolic-link",
+          "target": "real/child"
+        },
+        {
+          "path": "base/Makefile",
+          "content_text": "all:\n\t@printf 'BASE\\n'\n"
+        },
+        {
+          "path": "base/real/Makefile",
+          "content_text": "all:\n\t@printf 'REAL\\n'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_files": [
+        {
+          "path": "base/link",
+          "kind": "symlink",
+          "target": "real/child",
+          "unchanged": true
+        },
+        {
+          "path": "base/Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf 'BASE\\n'\n",
+          "unchanged": true
+        },
+        {
+          "path": "base/real/Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf 'REAL\\n'\n",
+          "unchanged": true
+        },
+        {
+          "path": "base/missing",
+          "exists": false
+        }
+      ],
+      "expected_stderr_contains_all": [
+        "make:",
+        "missing/.."
+      ],
+      "diagnostic_reason": "OS error wording varies; require the command and original missing-parent path, exact failure status, and empty stdout so neither the child nor recipe can run."
+    },
+    {
+      "id": "make-directory-link-parent",
+      "command": "make",
+      "args": [
+        "-C",
+        "link/.."
+      ],
+      "cwd": "base",
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "base",
+          "kind": "directory"
+        },
+        {
+          "path": "base/real/child",
+          "kind": "directory"
+        },
+        {
+          "path": "base/link",
+          "kind": "symbolic-link",
+          "target": "real/child"
+        },
+        {
+          "path": "base/Makefile",
+          "content_text": "all:\n\t@printf 'BASE\\n'\n"
+        },
+        {
+          "path": "base/real/Makefile",
+          "content_text": "all:\n\t@printf 'REAL\\n'\n"
+        }
+      ],
+      "environment": {
+        "MAKEFLAGS": "--no-print-directory -rR",
+        "MAKELEVEL": "0"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "REAL\n",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "base/link",
+          "kind": "symlink",
+          "target": "real/child",
+          "unchanged": true
+        },
+        {
+          "path": "base/Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf 'BASE\\n'\n",
+          "unchanged": true
+        },
+        {
+          "path": "base/real/Makefile",
+          "kind": "file",
+          "content_text": "all:\n\t@printf 'REAL\\n'\n",
+          "unchanged": true
+        },
+        {
+          "path": "base/missing",
+          "exists": false
+        }
+      ],
+      "expected_stderr_text": ""
     }
   ]
 }
