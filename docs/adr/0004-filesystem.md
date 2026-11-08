@@ -120,6 +120,18 @@ Missing link privileges/observers fail the fixture. See
 
 ## Paths, modes and display
 
+Mkdir validates octal input at its mode boundary with the public integer parser,
+retaining ASCII octal digits, optional `0o`/`0O`, arbitrary leading zeroes and the
+`0..07777` range before falling back to symbolic parsing. It does not depend on
+the workspace-only relocation of `fsops/mode` into `fsops`: the declared
+published core 0.9.1 has only the old package export. Independent module checks
+must resolve the declared registry dependencies outside `moon.work`; a workspace
+check cannot establish standalone candidate buildability. This keeps the
+simplified core layout without restoring a compatibility package or requiring
+an unrelated core publication. Revisit the adapter when a deliberate release
+updates this command's dependency coordinate. Mode tests retain the numeric
+boundaries and symbolic interpretation, while filesystem scenarios own effects.
+
 | Area | Current choice and limitation |
 | --- | --- |
 | realpath | Public physical resolution; lexical -m/-s and relative-to/base rules. Windows physical modes expand existing 8.3 aliases; lexical modes preserve spelling. Unresolved link targets need readlink. |

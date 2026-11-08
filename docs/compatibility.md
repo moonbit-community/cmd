@@ -145,6 +145,13 @@ before creation, except all-existing `-p` no-ops. Metadata preconditions and
 actual observations are retained separately from generated definitions. See
 [ADR-0004](adr/0004-filesystem.md#metadata-predicates-and-parent-creation).
 
+The mkdir candidate validates octal modes through the public integer parser at
+its input boundary, retaining its declared published core 0.9.1 dependency.
+Independent module builds must resolve that coordinate outside `moon.work`;
+workspace overrides alone do not establish candidate buildability. Find, mkdir
+and test remain unpublished candidates until a separate release and exact-version
+acceptance; their examples do not change the frozen published manifest.
+
 Workspace development uses `moonbitlang/async@0.22.7` across modules and
 standalone test tools. CI follows the official `latest` toolchain and core and
 records the resolved versions. Async 0.22.7's shared core runtime requires the

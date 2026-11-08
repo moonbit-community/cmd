@@ -5,6 +5,21 @@ priv suberror ModeError {
 }
 
 ///|
+fn octal_mode(text : String) -> Int32 raise ModeError {
+  let digits = if text.has_prefix("0o") || text.has_prefix("0O") {
+    text[2:]
+  } else {
+    text[:]
+  }
+  guard !digits.is_empty() && digits.iter().all(char => char is ('0'..<='7')) else {
+    raise InvalidMode
+  }
+  let value = @string.parse_int(digits, base=8) catch { _ => raise InvalidMode }
+  guard value <= 0o7777 else { raise InvalidMode }
+  value
+}
+
+///|
 priv struct ModeChange {
   who : Int32
   op : Char

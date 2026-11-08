@@ -1,5 +1,8 @@
 # find
 
+Development candidate: `cli/find@0.2.6`. Publication is separate;
+[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+
 Search directory trees for MoonX.
 
 ```sh
