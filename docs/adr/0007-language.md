@@ -75,6 +75,14 @@ or uniformly reject directories: Linux exposes directory sizes, whereas the
 current macOS API rejects them. Keep this boundary until the released public
 API returns real sizes, with directory and directory-link regressions.
 Forward raw paths to the host without a project-level lexical simplification.
+Make applies this rule to explicit/default makefiles, includes, target and
+prerequisite metadata, and its recursive executable path. Each `-C` validates
+and physically resolves an existing directory before the next directory request,
+after option parsing has handled help and argument errors;
+this prevents recipe path joins from erasing a symlink-parent traversal. Keep
+logical shell `cd` and explicit lexical realpath modes separate. The POSIX
+parent-path regressions in `tests/cases/make.json` verify selected recipes and
+rejection before execution; unsupported link fixtures are explicit exclusions.
 Windows retains its [documented path normalization](https://learn.microsoft.com/dotnet/standard/io/file-path-formats#path-normalization),
 for ordinary paths, including a missing component followed by `..`; device paths
 may bypass that normalization. POSIX component lookup instead

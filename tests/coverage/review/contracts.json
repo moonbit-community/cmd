@@ -5119,9 +5119,12 @@
       "command": "make",
       "claim": "file",
       "case_ids": [
-        "coverage-make-file"
+        "coverage-make-file",
+        "make-file-missing-parent",
+        "make-file-link-parent",
+        "make-directory-link-parent"
       ],
-      "activation": "An explicit alternate makefile executes selected while a conflicting default Makefile would emit wrong; exact output distinguishes actual file selection.",
+      "activation": "An explicit alternate makefile executes selected while a conflicting default would emit wrong. POSIX raw parent paths distinguish missing-component rejection with no recipe output from physical link-parent selection of REAL instead of BASE, both under -f and -C. Windows link fixtures are excluded; definitions are not execution evidence.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },

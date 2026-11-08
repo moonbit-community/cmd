@@ -12,6 +12,16 @@ fn split_assignment(value : String) -> (String, String)? {
 }
 
 ///|
+fn directory_in(cwd : String, directory : String) -> String {
+  if directory == "" || @path.Path(directory).is_absolute() {
+    directory
+  } else {
+    // Path.join normalizes parent components before filesystem lookup.
+    cwd + "/" + directory
+  }
+}
+
+///|
 #cfg(target="native")
 fn empty_child_environment_unavailable() -> Bool {
   @async.platform is Windows
@@ -62,7 +72,7 @@ async fn main {
       options = false
     } else if options && arg == "--help" {
       @stdio.stdout.write(
-        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]\n  -S, --split-string=STRING  split quotes, escapes and original environment variables\n      --help      display this help and exit\n      --version   display version and exit\nWindows Native: child launches require a nonempty environment.\n",
+        "Usage: env [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]\n  -S, --split-string=STRING  split quotes, escapes and original environment variables\n      --help      display this help and exit\n      --version   display version and exit\nDirectory paths retain filesystem traversal before child launch.\nWindows Native: child launches require a nonempty environment.\n",
       )
       return
     } else if options && arg == "--version" {
@@ -118,28 +128,13 @@ async fn main {
       }
       i += 1
       chdir_requested = true
-      let directory = @path.Path(args[i])
-      cwd = if directory.is_absolute() {
-        directory.normalize().to_string()
-      } else {
-        @path.Path(base_cwd).join(directory).normalize().to_string()
-      }
+      cwd = directory_in(base_cwd, args[i])
     } else if options && arg.has_prefix("--chdir=") {
       chdir_requested = true
-      let directory = @path.Path(arg[8:].to_owned())
-      cwd = if directory.is_absolute() {
-        directory.normalize().to_string()
-      } else {
-        @path.Path(base_cwd).join(directory).normalize().to_string()
-      }
+      cwd = directory_in(base_cwd, arg[8:].to_owned())
     } else if options && arg.has_prefix("-C") && arg.length() > 2 {
       chdir_requested = true
-      let directory = @path.Path(arg[2:].to_owned())
-      cwd = if directory.is_absolute() {
-        directory.normalize().to_string()
-      } else {
-        @path.Path(base_cwd).join(directory).normalize().to_string()
-      }
+      cwd = directory_in(base_cwd, arg[2:].to_owned())
     } else if options && (arg == "-u" || arg == "--unset") {
       if i + 1 >= args.length() {
         @stdio.stderr.write("env: option requires an argument: \{arg}\n")

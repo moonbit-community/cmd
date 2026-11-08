@@ -14,6 +14,12 @@ moonx cli/make@0.2.8 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [
 
 Build targets with dependencies, variables, includes, conditionals, patterns, automatic variables, exports and parallel recipe chains.
 
+The development candidate preserves filesystem traversal in makefile, include,
+target and prerequisite paths. After option parsing, requested `-C` directories
+resolve in order. On POSIX, missing components fail and `link/..` uses the link
+target's parent; Windows retains its native normalization. This repair is not
+yet published.
+
 Recipe `test -s` uses the final target's metadata, including through symlinks,
 without opening it. Missing/cyclic targets are false; unavailable sizes such as
 macOS directories are explicit shell errors rather than fabricated zero.

@@ -11719,9 +11719,13 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [
-        "coverage-env-chdir"
+        "coverage-env-chdir",
+        "env-chdir-link-parent",
+        "env-chdir-link-parent-attached",
+        "env-chdir-link-parent-long",
+        "env-chdir-link-parent-equals"
       ],
-      "activation": "The launched child reports its actual canonical cwd after -C sub; the expected absolute fixture subdirectory is specified before execution.",
+      "activation": "The child reports its complete canonical cwd. POSIX parent-path cases distinguish missing-component rejection (125 and no child output) from physical link-parent traversal in all four option spellings, including an absolute path. Windows link fixtures are excluded; definitions are not execution evidence.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
@@ -11931,9 +11935,12 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [
-        "coverage-make-file"
+        "coverage-make-file",
+        "make-file-missing-parent",
+        "make-file-link-parent",
+        "make-directory-link-parent"
       ],
-      "activation": "An explicit alternate makefile executes selected while a conflicting default Makefile would emit wrong; exact output distinguishes actual file selection.",
+      "activation": "An explicit alternate makefile executes selected while a conflicting default would emit wrong. POSIX raw parent paths distinguish missing-component rejection with no recipe output from physical link-parent selection of REAL instead of BASE, both under -f and -C. Windows link fixtures are excluded; definitions are not execution evidence.",
       "scenario_bindings": [],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
