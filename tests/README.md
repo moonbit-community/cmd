@@ -72,6 +72,16 @@ The static corpus is in `fixtures/network/wget-cookies.json` and participates
 in the assertion-source snapshot. Full numeric/date grammar remains outside
 this finite profile.
 
+`network-wget-cookie-expiry` adds 194 frozen numeric-expiry controls through the
+same real request/save/reload observer. Each preserves both phases' exact logical
+rows and original row order, including session-cookie exclusion. The candidate
+scenario has a 120-second total bound and its separate Linux comparison has
+600 seconds for 388 oracle processes; each child keeps its existing deadline.
+The source receipt and extracted-fixture hashes accompany the corpus. Static
+expectations exclude current-second and relative-future expiry values. Private
+fixed-clock regressions and independent measured-clock observations cover those
+boundaries; uncertain clock windows cannot count as success.
+
 `network-wget-authentication` retains 73 independent fixed-Wget controls for
 optional credential fields, per-hop challenges, command-wide hostname cache,
 401 failures, attached booleans and binary named-file replay. Raw HTTP/CONNECT,

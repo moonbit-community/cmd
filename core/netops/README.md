@@ -178,11 +178,16 @@ not leak into those observations or cookie storage.
 
 The command profiles ignore Set-Cookie fields without `=` without failing a
 complete response body. Nonnumeric Max-Age deletes the matching stored cookie
-for curl, while Wget ignores the replacement and preserves its old cookie.
+for curl. Wget rejects a missing numeric prefix or an exactly -1 floating value,
+preserving its old cookie; valid prefixes can include suffix text.
 Positive decimal overflow keeps curl's replacement under its 400-day lifetime
 cap. Only lifetimes exceeding that cap round the capped expiry to the nearest
-minute. Wget expires matching cookies for numeric overflow below 32 digits;
-overlong attributes discard the replacement. The strict profile discards
+minute. Wget retains stale replacements for non-finite/overflow conversions
+under the fixed Linux/amd64 profile; floating zero explicitly deletes instead.
+Max-Age still requires fewer than 32 UTF-8 bytes. Nonzero near-zero values remain
+valid during the current second; permanent expiry zero differs from a session
+cookie until jar reload. Imported stale floating values are ignored before
+conversion, and saved expiry digits include binary64 rounding. The strict profile discards
 unparseable Max-Age replacements as a project choice.
 Repeated fields update storage in response order. Retained response fields
 remain observable even when cookie storage ignores them.

@@ -5,7 +5,7 @@ const CurlOutputBlockBytes = 4096
 ///|
 priv struct TransferSink {
   output : TransferOutput
-  response : @http.Response
+  response : Response
   deferred_open : Bool
   buffered : Bool
   mut sink : OutputSink?
@@ -18,7 +18,7 @@ priv struct TransferSink {
 ///|
 async fn TransferSink::new(
   output : TransferOutput,
-  response : @http.Response,
+  response : Response,
   profile : TransferProfile,
 ) -> TransferSink {
   let output = if profile == CurlProfile &&
@@ -156,7 +156,7 @@ async fn TransferSink::cleanup_after_error(self : TransferSink) -> Unit {
 }
 
 ///|
-fn output_path(output : TransferOutput, response : @http.Response) -> String? {
+fn output_path(output : TransferOutput, response : Response) -> String? {
   match output {
     FileOutput(path~, content_disposition=true, ..) =>
       match response.headers.get("Content-Disposition") {
@@ -182,7 +182,7 @@ priv enum OutputSink {
 ///|
 async fn open_sink(
   output : TransferOutput,
-  response : @http.Response,
+  response : Response,
   exclusive~ : Bool = false,
 ) -> OutputSink {
   match output {

@@ -42,7 +42,7 @@ netrc, configuration loading, password prompts or arbitrary stdin replay.
 
 Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
 sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
-rules do not apply to Wget. Complete numeric/date and remaining malformed jar
+rules do not apply to Wget. Complete date and remaining malformed jar
 grammar remain unfinished under issue #34.
 The workspace applies the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
 to response cookies, including wildcard and exception rules. Exact public-suffix
@@ -117,8 +117,17 @@ Single-label parent chains are excluded while exact single-label hosts remain
 eligible; hosts with more than 32 labels do not receive jar cookies.
 Quoted parameters and ASCII whitespace follow Wget's extractor; Secure ignores
 an assigned value and HttpOnly is ignored. Empty Expires and Max-Age=-1 reject
-the field; deletion remains sticky across later expiry attributes. Full floating
-expiry grammar, date parsing and Cookie Domain normalization remain separate work.
+the field; deletion remains sticky across later expiry attributes. Numeric expiry
+accepts C-locale decimal/hexadecimal floating prefixes, including incomplete
+exponents and numeric suffixes. Exactly -1 rejects a Max-Age update; only floating
+zero requests deletion. A nonzero negative age retains an expired entry and its
+domain-chain spelling. Expiry equal to the current second remains live; a
+permanent zero timestamp remains live and can be saved without the session flag.
+Imported zero timestamps become session cookies. Saved expiry integers use
+binary64 rounding, matching the fixed Wget profile. Non-finite/out-of-range
+conversion follows the observed Linux/amd64 oracle explicitly; it is not a
+portable C guarantee. Full date parsing and Cookie Domain normalization remain
+separate work.
 
 - Recursive mirroring, FTP, non-Basic authentication, HSTS and timestamp restoration are unsupported.
 - Content-encoded bodies remain encoded. Consumed stdin request bodies cannot be replayed.

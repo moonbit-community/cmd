@@ -8,7 +8,7 @@ async test "transfer sink scope closes real files on cancellation and repeated c
       })
       for profile in [StrictProfile, CurlProfile] {
         let path = directory + "/body"
-        let response : @http.Response = {
+        let response : Response = {
           code: 200,
           reason: "OK",
           headers: {},

@@ -334,7 +334,7 @@ async fn send_request(
   body : RequestBody,
   options : TransferOptions,
   started : Int64,
-) -> @http.Response {
+) -> Response {
   client.start_request(
     parsed, request_method, persistent, headers, body, options, started,
   )

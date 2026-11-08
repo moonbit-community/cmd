@@ -144,7 +144,7 @@ owns input, proxy and cookie boundaries.
 
 ## Wget cookie selection and persistence
 
-`HttpWire::read_response -> wget_wire_cookie -> CookieJar::receive` separates
+`HttpWire::response -> wget_wire_cookie -> CookieJar::receive` separates
 field extraction from domain/path admission. The extractor scans quoted and
 unquoted parameters once, preserving Wget's ASCII whitespace, quote and RFC
 2231 adjustments. Response parsing retains the existing header limits; trusted
@@ -167,7 +167,25 @@ Any indexing optimization must retain the chain representative, replacement
 order, port identity, jar failures and raw sequence in
 [`network-wget-cookies`](../../tests/scenarios/network/wget_cookies.mbt), with
 the frozen corpus in [network fixtures](../../tests/fixtures/network/README.md).
-Numeric/date and Domain-normalization limits remain in ADR-0005.
+Date and Domain-normalization limits remain in ADR-0005.
+
+Numeric expiry uses the private [prefix parser](../../core/netops/wget_cookie_number.mbt).
+It scans the C-locale prefix, delegates a valid decimal substring to the released
+binary64 parser, and converts hexadecimal digits directly. The hexadecimal path
+retains at most 53 significant bits plus guard/sticky state, rounds ties to even
+once, and handles subnormal exponents before constructing a power of two. Its
+digit scans take linear time and constant auxiliary space. Decimal conversion
+retains the public parser's storage costs. No new maximum is imposed on imported
+numeric fields; response Max-Age retains Wget's existing 31-byte maximum.
+
+Ordered expiry operations preserve the original Double and explicit deletion
+state until one jar timestamp is available. Converting immediately to Int64 was
+rejected because a nonzero fraction, floating zero, rejected -1 and overflow
+produce different mutation and persistence effects. Saving rounds Int64 through
+binary64 but formats the integral magnitude directly, avoiding exponent notation
+and preserving the oracle's rounded digits near 2^63. Fixed-clock tests own time
+boundaries; [frozen CLI inputs](../../tests/fixtures/network/wget-cookie-expiry.json)
+own real storage/reload expectations. This adds no performance acceptance claim.
 
 ## Verification routes
 

@@ -8,7 +8,7 @@ test "curl implicit cookie hosts preserve DNS case and canonicalize IPv6 case" {
     let jar = CookieJar::new()
     jar.receive(
       parse_absolute_url("http://" + host + "/set"),
-      [@http.Cookie("sid", "v", path="/")],
+      [Cookie::new("sid", "v", path="/")],
       100L,
       profile=CurlProfile,
     )
@@ -31,7 +31,7 @@ test "curl preserves received domain spelling while matching case insensitively"
   let url = parse_absolute_url("http://a.example.com/set")
   jar.receive(
     url,
-    [@http.Cookie("sid", "first", domain="EXAMPLE.COM", path="/")],
+    [Cookie::new("sid", "first", domain="EXAMPLE.COM", path="/")],
     100L,
     profile=CurlProfile,
   )
@@ -41,7 +41,7 @@ test "curl preserves received domain spelling while matching case insensitively"
   assert_eq(jar.header_for(url, 101L, profile=CurlProfile), Some("sid=first"))
   jar.receive(
     url,
-    [@http.Cookie("sid", "second", domain="eXample.com", path="/")],
+    [Cookie::new("sid", "second", domain="eXample.com", path="/")],
     102L,
     profile=CurlProfile,
   )
@@ -61,7 +61,7 @@ test "curl preserves imported domain spelling without weakening secure overlays 
   assert_eq(jar.entries[0].domain, "EXAMPLE.COM")
   jar.receive(
     parse_absolute_url("http://a.example.com/set"),
-    [@http.Cookie("sid", "plain", domain="example.com", path="/")],
+    [Cookie::new("sid", "plain", domain="example.com", path="/")],
     100L,
     profile=CurlProfile,
   )
@@ -102,7 +102,7 @@ test "curl secure cookies use the pinned HTTPS and exact loopback contexts" {
     let url = parse_absolute_url(source)
     jar.receive(
       url,
-      [@http.Cookie("sid", "secure", secure=true, path="/")],
+      [Cookie::new("sid", "secure", secure=true, path="/")],
       100L,
       profile=CurlProfile,
     )
@@ -120,7 +120,7 @@ test "curl secure cookies use the pinned HTTPS and exact loopback contexts" {
   let strict = CookieJar::new()
   strict.receive(
     parse_absolute_url("http://localhost/"),
-    [@http.Cookie("sid", "secure", secure=true)],
+    [Cookie::new("sid", "secure", secure=true)],
     100L,
   )
   assert_eq(
@@ -219,7 +219,7 @@ test "curl cookie prefixes inspect effective security path and domain scope" {
     let jar = CookieJar::new()
     jar.receive(
       parse_absolute_url(source),
-      [@http.Cookie(name, "value", secure~, domain?, path?)],
+      [Cookie::new(name, "value", secure~, domain?, path?)],
       100L,
       profile=CurlProfile,
     )
@@ -253,13 +253,13 @@ test "curl insecure replacements cannot overlay a live secure cookie" {
     let jar = CookieJar::new()
     jar.receive(
       parse_absolute_url("https://www.example.test/"),
-      [@http.Cookie("sid", "original", secure=true, path=old_path)],
+      [Cookie::new("sid", "original", secure=true, path=old_path)],
       100L,
       profile=CurlProfile,
     )
     jar.receive(
       parse_absolute_url("http://www.example.test/"),
-      [@http.Cookie("sid", "replacement", path=new_path)],
+      [Cookie::new("sid", "replacement", path=new_path)],
       101L,
       profile=CurlProfile,
     )
@@ -273,13 +273,13 @@ test "curl insecure replacements cannot overlay a live secure cookie" {
   let jar = CookieJar::new()
   jar.receive(
     parse_absolute_url("https://www.example.test/"),
-    [@http.Cookie("sid", "original", secure=true, path="/")],
+    [Cookie::new("sid", "original", secure=true, path="/")],
     100L,
     profile=CurlProfile,
   )
   jar.receive(
     parse_absolute_url("http://www.example.test/"),
-    [@http.Cookie("sid", "", path="/", max_age=0L)],
+    [Cookie::new("sid", "", path="/", max_age=0L)],
     101L,
     profile=CurlProfile,
   )
@@ -300,8 +300,8 @@ test "curl host-only and domain cookies keep independent replacement identity" {
   jar.receive(
     source,
     [
-      @http.Cookie("sid", "host", path="/"),
-      @http.Cookie("sid", "domain", domain="www.example.test", path="/"),
+      Cookie::new("sid", "host", path="/"),
+      Cookie::new("sid", "domain", domain="www.example.test", path="/"),
     ],
     100L,
     profile=CurlProfile,
@@ -309,7 +309,7 @@ test "curl host-only and domain cookies keep independent replacement identity" {
   assert_eq(jar.entries.length(), 2)
   jar.receive(
     source,
-    [@http.Cookie("sid", "", domain="www.example.test", path="/", max_age=0L)],
+    [Cookie::new("sid", "", domain="www.example.test", path="/", max_age=0L)],
     101L,
     profile=CurlProfile,
   )
@@ -390,8 +390,8 @@ test "wget retains its independent prefix admission and replacement policy" {
   jar.receive(
     source,
     [
-      @http.Cookie("__Host-a", "plain", path="/"),
-      @http.Cookie("sid", "secure", secure=true, path="/"),
+      Cookie::new("__Host-a", "plain", path="/"),
+      Cookie::new("sid", "secure", secure=true, path="/"),
     ],
     100L,
     profile=WgetProfile,
@@ -403,7 +403,7 @@ test "wget retains its independent prefix admission and replacement policy" {
   )
   jar.receive(
     source,
-    [@http.Cookie("sid", "domain", domain="www.example.test", path="/")],
+    [Cookie::new("sid", "domain", domain="www.example.test", path="/")],
     102L,
     profile=WgetProfile,
   )
@@ -439,10 +439,11 @@ test "curl insecure overlay checks overlap expiry and secure contexts" {
       secure: true,
       http_only: false,
       expires: old_expiry,
+      wget: false,
     })
     jar.receive(
       parse_absolute_url(source),
-      [@http.Cookie("sid", "plain", path="/oneelse")],
+      [Cookie::new("sid", "plain", path="/oneelse")],
       101L,
       profile=CurlProfile,
     )
@@ -460,7 +461,7 @@ test "curl prefix scope uses the effective public suffix host-only conversion" {
     let jar = CookieJar::new()
     jar.receive(
       parse_absolute_url("https://" + domain + "/set"),
-      [@http.Cookie("__Host-a", "v", secure=true, domain~, path="/")],
+      [Cookie::new("__Host-a", "v", secure=true, domain~, path="/")],
       100L,
       profile=CurlProfile,
     )
@@ -501,7 +502,7 @@ test "curl cookie OWS is normalized before prefix and overlay decisions" {
   let guarded = CookieJar::new()
   guarded.receive(
     source,
-    [@http.Cookie("sid", "secure", secure=true, path="/")],
+    [Cookie::new("sid", "secure", secure=true, path="/")],
     100L,
     profile=CurlProfile,
   )

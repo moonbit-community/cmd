@@ -141,10 +141,36 @@ expectations in `tests/fixtures/network/wget-cookies.json` drive real candidate
 and fixed-oracle wire, logical jar rows and second-process reload controls.
 They are independent of generated coverage definitions.
 
-Complete floating-point Max-Age/imported-expiry grammar, exact date parsing,
-remaining malformed jar/field behavior and Cookie Domain normalization remain
-issue #34 work. Negative/near-zero expiry and overflow storage require separate
-boundary controls. No host implementation or private API is needed.
+Wget numeric expiry keeps the original binary64 value until the owning jar
+applies it at one timestamp. Decimal and hexadecimal C-locale prefixes include
+numeric suffixes and incomplete exponents; Max-Age keeps its existing fewer-than-
+32-byte bound, while imported numeric fields have no such bound. Exactly -1
+rejects the entire Max-Age field. Floating zero requests deletion; a nonzero
+value that truncates to zero instead remains valid during the current second.
+Expiry operations retain field order and sticky explicit deletion. A stale
+negative replacement stays in the domain chain; a stale imported value is
+ignored before replacement. Expiry zero and the permanent/session flag remain
+distinct. Saving uses binary64-rounded integer digits, including values above
+2^53; a saved permanent zero becomes a session cookie on reload.
+
+The selected immutable Linux/amd64 Wget binary converts non-finite and
+out-of-range values to INT64_MIN and wraps the subsequent time addition.
+Pure MoonBit spells out this observed profile rather than depending on a host C
+cast. This does not assign portable semantics to undefined C conversions or
+claim identical behavior from every Wget build. The private wire response and
+cookie types retain ordered expiry information without changing the public
+CookieJar API or Curl/Strict expiry rules.
+
+The 194 fixed expectations in `tests/fixtures/network/wget-cookie-expiry.json`
+come directly from frozen independent oracle records and check both processes'
+requests, saved rows and row order. Current-second and relative-future cases
+are excluded from those static expectations: fixed-clock package tests and
+separate measured-clock real-process probes cover them. A crossed-second
+observation remains inconclusive; large integer timestamps are compared exactly,
+never normalized through a lossy Double difference. Full date parsing, remaining
+malformed jar/field behavior and Cookie Domain normalization remain issue #34
+work. Broader numeric spellings require independent fixed-oracle controls before
+extending the finite acceptance claim. No host implementation is needed.
 
 Wget retains the lowest nonzero transfer exit code across URL operands, matching
 the [GNU exit-status rule](https://www.gnu.org/software/wget/manual/wget.html#Exit-Status).

@@ -34,8 +34,8 @@ test "mapped brackets cannot acquire the native loopback cookie exception" {
   jar.receive(
     url,
     [
-      @http.Cookie("new_plain", "value", path="/"),
-      @http.Cookie("__Secure-new", "value", path="/", secure=true),
+      Cookie::new("new_plain", "value", path="/"),
+      Cookie::new("__Secure-new", "value", path="/", secure=true),
     ],
     1000L,
     profile=CurlProfile,

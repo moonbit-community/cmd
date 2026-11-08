@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "coverage_manifest_sha256": "57d055ef7f71bd951e3f22fb1be3a6e97d0f8743fb5e420298b72549e8314230",
+  "coverage_manifest_sha256": "2305bdfbf3e2ffd7bdd2ca9396e9dbbeab945286e8e63c6aa2b3e50d6ea3143a",
   "independent_review_sha256": "632717c75722e0c8dc4a310767c80e848fe7aada8bd16cf53711048a49db7391",
   "reviewed_definitions": 896,
   "remaining_catalog_labels": 0,
@@ -1060,7 +1060,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Finite Wget dialect controls additionally verify nondefault-port isolation and key deletion, exact imported flags/comments, first domain-chain spelling, quoted attributes and sticky deletion, with actual raw requests and second-process saved-jar reloads.",
+      "current_activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Finite Wget dialect controls additionally verify nondefault-port isolation and key deletion, exact imported flags/comments, first domain-chain spelling, quoted attributes and sticky deletion, with actual raw requests and second-process saved-jar reloads. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution.",
       "current_case_ids": [
         "repair-final-wget-cookie-session",
         "repair-final-wget-cookie-header"
@@ -1105,6 +1105,16 @@
             "wget-cookie/max-age-minus-one-rejects",
             "wget-cookie/empty-expires-rejects",
             "wget-cookie/age-after-expires"
+          ]
+        },
+        {
+          "case_id": "network-wget-cookie-expiry",
+          "assertions": [
+            "wget-cookie-expiry/import-fraction",
+            "wget-cookie-expiry/import-integer-rounds-2p53",
+            "wget-cookie-expiry/import-exact-minus-one",
+            "wget-cookie-expiry/import-nan",
+            "wget-cookie-expiry/import-zero-suffix"
           ]
         }
       ],

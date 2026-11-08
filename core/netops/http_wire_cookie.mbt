@@ -1,5 +1,5 @@
 ///|
-fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
+fn wire_cookie(value : String, profile : TransferProfile) -> Cookie? {
   if profile == WgetProfile {
     return wget_wire_cookie(value)
   }
@@ -21,7 +21,6 @@ fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
   let mut domain = None
   let mut secure = false
   let mut http_only = false
-  let extensions : Array[String] = []
   for part in parts[1:] {
     let part = part.trim().to_owned()
     match part.find("=") {
@@ -76,19 +75,19 @@ fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
               }
             }
           }
-          _ => extensions.push(part)
+          _ => ()
         }
       }
       None =>
         match part.to_lower() {
           "secure" => secure = true
           "httponly" => http_only = true
-          _ => extensions.push(part)
+          _ => ()
         }
     }
   }
   Some(
-    @http.Cookie(
+    Cookie::new(
       name,
       content,
       path?,
@@ -97,7 +96,6 @@ fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
       domain?,
       secure~,
       http_only~,
-      extensions~,
     ),
   )
 }
