@@ -153,6 +153,58 @@ async test "invocation intent does not appear among product-created files" {
 }
 
 ///|
+async test "before-response snapshots exclude exactly the current invocation intent" {
+  let work = @fs.tmpdir(prefix="mooncmd-network-before-response-")
+  defer (@fs.rmdir(work, recursive=true) catch { _ => () })
+  @fs.write_file(work + "/call-999.intent.json", b"product")
+  let observation : TransferFileObservation = {
+    work: None,
+    evidence_name: None,
+    snapshots: [],
+  }
+  let executor : Executor = {
+    proof: None,
+    invoke: _ => {
+      observation.capture()
+      @fs.write_file(work + "/out.bin", b"body")
+      observation.capture()
+      {
+        run: {
+          output: { status: 0, stdout: b"", stderr: b"", },
+          timed_out: false,
+          cleanup_error: None,
+        },
+        source_version: "fixture",
+        program: "fixture",
+        args: [],
+        infrastructure_error: None,
+        retain_identity: true,
+      }
+    },
+  }
+  ignore(
+    network_request(
+      executor,
+      work,
+      "curl",
+      ["url"],
+      transfer_files=observation,
+      expected_files=[
+        ("call-999.intent.json", Some("product")),
+        ("out.bin", Some("body")),
+      ],
+      expected_files_before_response=[
+        [("call-999.intent.json", "product")],
+        [("call-999.intent.json", "product"), ("out.bin", "body")],
+      ],
+    ),
+  )
+  assert_eq(observation.snapshots.length(), 2)
+  assert_eq(observation.work, None)
+  assert_eq(observation.evidence_name, None)
+}
+
+///|
 async test "shared network observations preserve raw bytes across launch adapters" {
   let work = @fs.tmpdir(prefix="mooncmd-network-adapter-")
   defer (@fs.rmdir(work, recursive=true) catch { _ => () })

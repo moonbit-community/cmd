@@ -60,6 +60,9 @@ last observation. That failed receipt remains a failure. Network calls now
 persist intent before invocation and a cancellation-protected returned/not-returned
 record, so an outer deadline does not erase which call was attempted. A call
 that never returns supplies no fabricated child status or cleanup verdict.
+File-effect observations exclude exactly that call's intent record, including
+snapshots taken before response bytes arrive. Other files with similar names
+remain observable product effects; a Native regression retains one as a control.
 
 ## Ownership
 

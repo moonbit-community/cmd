@@ -1,6 +1,7 @@
 ///|
 priv struct TransferFileObservation {
   mut work : String?
+  mut evidence_name : String?
   snapshots : Array[Array[(String, Bool, Bytes)]]
 }
 
@@ -9,7 +10,9 @@ async fn TransferFileObservation::capture(
   self : TransferFileObservation,
 ) -> Unit {
   guard self.work is Some(work) else { return }
-  let names = @fs.readdir(work).filter(name => name != "oracle")
+  let names = @fs.readdir(work).filter(name => {
+    name != "oracle" && self.evidence_name != Some(name)
+  })
   names.sort()
   let snapshot : Array[(String, Bool, Bytes)] = []
   for name in names {
@@ -51,9 +54,13 @@ async fn network_request(
 ) -> @harness.RunResult {
   if transfer_files is Some(observation) {
     observation.work = Some(work)
+    observation.evidence_name = None
     observation.snapshots.clear()
   }
-  defer (if transfer_files is Some(observation) { observation.work = None })
+  defer (if transfer_files is Some(observation) {
+    observation.work = None
+    observation.evidence_name = None
+  })
   if transfer_requests is Some(requests) {
     requests.clear()
   }
@@ -62,6 +69,15 @@ async fn network_request(
   }
   let name = "call-\{@fs.readdir(work).length()}"
   let prefix = work + "/" + name
+  if transfer_files is Some(observation) {
+    observation.evidence_name = Some(name + ".intent.json")
+  }
+  if expected_files is Some(files) {
+    assert_false(
+      files.any(file => file.0 == name + ".intent.json"),
+      msg="product fixture collides with invocation evidence",
+    )
+  }
   let invoked_at = @async.now()
   let returned = Ref(false)
   let returned_at = Ref(invoked_at)
@@ -196,6 +212,7 @@ async fn network_request(
     }
     if transfer_files is Some(observation) {
       observation.work = Some(oracle_work)
+      observation.evidence_name = None
       observation.snapshots.clear()
     }
     let oracle_environment : Array[String] = []
