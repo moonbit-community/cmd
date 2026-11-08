@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
+- Repair unpublished ln/mv numbered backups to advance after the highest valid
+  version instead of filling a gap. Preserve old contents, propagate scan errors,
+  handle decimal versions beyond machine integers, and refuse competing numbered
+  backup replacements in existing mode. Add shared and CLI
+  regressions; published packages and frozen expectations remain unchanged.
 - Repair unpublished env/make parent-path handling: retain missing components
   and symlink traversal, and resolve each make working-directory change before
   later paths. Add cwd, recipe-selection and no-execution regressions. Published

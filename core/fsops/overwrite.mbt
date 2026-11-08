@@ -69,25 +69,48 @@ pub fn overwrite_decision(
 }
 
 ///|
-fn is_numbered_backup(name : String, base : String) -> Bool {
-  let prefix = base + ".~"
-  if !name.has_prefix(prefix) || !name.has_suffix("~") {
-    return false
+fn backup_number(name : String) -> (String, String)? {
+  guard name.has_suffix("~") && name.rev_find(".~") is Some(marker) else {
+    return None
   }
-  let digits = name[prefix.length():name.length() - 1]
-  if digits == "" {
-    return false
+  let start = marker + 2
+  if name.length() <= start + 1 {
+    return None
+  }
+  let digits = name[start:name.length() - 1]
+  if !(digits[0] is ('1'..<='9')) {
+    return None
   }
   for digit in digits {
     if !(digit is ('0'..<='9')) {
-      return false
+      return None
     }
   }
-  true
+  Some((name[:marker].to_owned(), digits.to_owned()))
 }
 
 ///|
-async fn numbered_backups_exist(path : String) -> Bool {
+async fn backup_alias_exists(path : String, number : String) -> Bool {
+  try (kind_if_exists(path + ".~" + number + "~") is Some(_)) catch {
+    // An unrelated short basename can have a suffix too long for this target.
+    @os_error.OSError(code, ..) if code == name_too_long_code() => false
+    error => raise error
+  }
+}
+
+///|
+fn name_too_long_code() -> Int32 {
+  // Released OSError exposes native errno/GetLastError, but no named predicate
+  // for this code. OS definitions and replacement conditions are in ADR-0004.
+  match @async.platform {
+    Linux => 36
+    MacOS => 63
+    Windows => 206
+  }
+}
+
+///|
+async fn highest_backup_number(path : String) -> String? {
   let directory = dirname(path)
   let base = basename(path)
   let entries = @fs.readdir(
@@ -95,19 +118,69 @@ async fn numbered_backups_exist(path : String) -> Bool {
     include_hidden=true,
     include_special=false,
     sort=false,
-  ) catch {
-    _ => return false
+  )
+  let mut highest : String? = None
+  for entry in entries {
+    if backup_number(entry) is Some((entry_base, number)) {
+      let larger = match highest {
+        Some(previous) =>
+          number.length() > previous.length() ||
+          (number.length() == previous.length() && number > previous)
+        None => true
+      }
+      if larger && (entry_base == base || backup_alias_exists(path, number)) {
+        // Let the filesystem identify aliases; never assume case folding.
+        highest = Some(number)
+      }
+    }
   }
-  entries.any(name => is_numbered_backup(name, base))
+  highest
 }
 
 ///|
-async fn next_numbered_backup(path : String) -> String {
-  for number = 1; ; number = number + 1 {
-    let candidate = path + ".~" + number.to_string() + "~"
-    if kind_if_exists(candidate) is None {
-      return candidate
+fn next_backup_number(number : String) -> String {
+  // Decimal names may exceed machine integers; carry directly through digits.
+  let digits : Array[Char] = number.iter().collect()
+  for index = digits.length() - 1; index >= 0; index = index - 1 {
+    if digits[index] == '9' {
+      digits[index] = '0'
+    } else {
+      digits[index] = (digits[index].to_int() + 1).to_char().unwrap()
+      return String::from_array(digits)
     }
+  }
+  "1" + String::from_array(digits)
+}
+
+///|
+priv struct Backup {
+  path : String
+  replace : Bool
+}
+
+///|
+async fn select_backup(
+  path : String,
+  control : BackupControl,
+  suffix~ : String = "~",
+) -> Backup? {
+  match control {
+    NoBackup => None
+    SimpleBackup => Some({ path: path + suffix, replace: true, })
+    NumberedBackup | ExistingBackup =>
+      match highest_backup_number(path) {
+        Some(number) =>
+          Some({
+            path: path + ".~" + next_backup_number(number) + "~",
+            replace: false,
+          })
+        None =>
+          if control == NumberedBackup {
+            Some({ path: path + ".~1~", replace: false, })
+          } else {
+            Some({ path: path + suffix, replace: true, })
+          }
+      }
   }
 }
 
@@ -117,17 +190,31 @@ pub async fn select_backup_path(
   control : BackupControl,
   suffix~ : String = "~",
 ) -> String? {
-  match control {
-    NoBackup => None
-    SimpleBackup => Some(path + suffix)
-    NumberedBackup => Some(next_numbered_backup(path))
-    ExistingBackup =>
-      if numbered_backups_exist(path) {
-        Some(next_numbered_backup(path))
-      } else {
-        Some(path + suffix)
-      }
+  select_backup(path, control, suffix~).map(backup => backup.path)
+}
+
+///|
+async fn rename_backup(
+  source : String,
+  destination : String,
+  replace : Bool,
+) -> Unit {
+  @fs.rename(source, destination, replace~)
+}
+
+///|
+async fn backup_entry(
+  path : String,
+  control : BackupControl,
+  suffix~ : String = "~",
+  rename~ : async (String, String, Bool) -> Unit = rename_backup,
+) -> String? {
+  guard kind_if_exists(path) is Some(_) else { return None }
+  guard select_backup(path, control, suffix~) is Some(backup) else {
+    return None
   }
+  rename(path, backup.path, backup.replace)
+  Some(backup.path)
 }
 
 ///|
@@ -136,16 +223,7 @@ pub async fn backup_destination(
   control : BackupControl,
   suffix~ : String = "~",
 ) -> String? {
-  guard kind_if_exists(path) is Some(_) else { return None }
-  guard select_backup_path(path, control, suffix~) is Some(backup) else {
-    return None
-  }
-  @fs.rename(
-    path,
-    backup,
-    replace=control == SimpleBackup || control == ExistingBackup,
-  )
-  Some(backup)
+  backup_entry(path, control, suffix~)
 }
 
 ///|

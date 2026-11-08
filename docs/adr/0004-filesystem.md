@@ -65,6 +65,37 @@ paths and continues remaining operands. No-clobber/update skips are successful
 no-ops. The last ln -f/-i selector wins. Mv timestamp decisions do not follow
 symlinks, including dangling entries.
 
+The unpublished ln/mv backup repair scans sibling names once and chooses the
+version after the highest valid `NAME.~N~`, where N is positive decimal without
+leading zeroes. Compare and increment digits as strings to avoid machine-integer
+overflow. Existing mode uses a simple suffix only when no valid numbered name
+exists; failed directory scans remain filesystem errors. Simple and disabled
+modes do not scan. Shared tests cover gaps, malformed names, hidden entries,
+directory entries and long versions; CLI cases assert preserved backup contents,
+the new destination and source removal/retention. Linux CI compares the gap cases
+against the pinned oracle. Name-length limits and concurrent pathname changes
+retain filesystem errors and do not establish a handle-relative race guarantee.
+The selected mode carries its replacement policy independently of suffix text:
+numbered backups, including existing-numbered mode, never replace a backup that
+appears after selection. A deterministic private rename injection asserts the
+collision error and preserved original/competing contents. Simple suffixes still
+replace their previous backup, even when spelled like a numbered name.
+Nonliteral sibling basenames are confirmed through the operand-derived backup
+path, so actual case/Unicode aliases count without folding distinct names on a
+sensitive filesystem. Only larger versions need this extra metadata lookup.
+An oversized constructed nonliteral probe cannot name an existing backup;
+propagate all other lookup errors and every scan/real rename failure. The
+released public `OSError(Int32, context)` exposes the host error code, classified
+locally using Linux [ENAMETOOLONG 36](https://github.com/torvalds/linux/blob/master/include/uapi/asm-generic/errno.h),
+Darwin [ENAMETOOLONG 63](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/sys/errno.h),
+and Windows [ERROR_FILENAME_EXCED_RANGE 206](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-).
+Replace these private constants when a released named predicate is available.
+Actual Wasm oversized-name tests observe the host code; not-found results remain
+distinct from an observed name-too-long result. This is not an error-message
+parser or a host implementation of the command. Alias tests observe the volume
+before asserting either shared or distinct-name behavior. No timing acceptance
+is claimed for the additional metadata lookups.
+
 Windows Wasm source symlink/junction moves and destination-link backups reject
 before prompting or mutation. No-clobber/update-none skips remain; regular
 sources replacing destination links without backup have separate positive

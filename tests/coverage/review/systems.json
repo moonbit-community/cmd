@@ -195,9 +195,10 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "repair-fs-ln-backup"
+        "repair-fs-ln-backup",
+        "ln-backup-number-gap"
       ],
-      "activation": "-sb -S .save replaces old destination by a source-target symlink and requires exact old bytes in destination.save."
+      "activation": "-sb -S .save requires old bytes in destination.save. With existing versions 1 and 3, --backup=existing requires version 4 containing the old destination, unchanged older backups and source, no version 2/simple suffix, and the exact new link target."
     },
     {
       "command": "ln",
@@ -1304,9 +1305,10 @@
       "claim": "backup",
       "case_ids": [
         "repair-fs-mv-backup",
-        "repair-fs-mv-same-backup"
+        "repair-fs-mv-same-backup",
+        "mv-backup-number-gap"
       ],
-      "activation": "The explicit suffix preserves old destination bytes in destination.save while moving source bytes. A self-move with backup rejects with the complete same-file diagnostic, unchanged source and no backup artifact.",
+      "activation": "The explicit suffix preserves old destination bytes while moving source bytes; self-move rejects without effects. With numbered versions 1 and 3, require version 4 with old bytes, preserved older backups, no version 2/simple suffix, source removal and exact new destination bytes.",
       "kind": "supported-option",
       "disposition": "reviewed-definition"
     },

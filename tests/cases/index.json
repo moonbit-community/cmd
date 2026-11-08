@@ -45576,6 +45576,30 @@
         "posix"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:mv-backup-number-gap",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "mv-backup-number-gap",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:ln-backup-number-gap",
+      "command": "ln",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ln.json",
+      "case_id": "ln-backup-number-gap",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

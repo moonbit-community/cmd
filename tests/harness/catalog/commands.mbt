@@ -237,6 +237,7 @@ pub fn commands() -> Array[CommandContract] {
       "recursive", "verbose", "interactive", "update", "update-mode", "backup", "backup-control",
       "suffix", "dereference-command-line", "dereference", "no-dereference",
     ]),
+    // Numbered backups advance beyond the highest valid decimal sibling version.
     contract("ln", Extended, NoInput, LineStream, [FileWrite, SymbolicLink], [
       "force", "no-target-directory", "symbolic", "verbose", "interactive", "relative",
       "no-dereference-target", "target-directory", "backup", "backup-control", "suffix",
@@ -254,6 +255,7 @@ pub fn commands() -> Array[CommandContract] {
     // Timestamps describe entries, including dangling links, without dereferencing.
     // Windows Wasm link moves/backups reject until the host rename fix is verified.
     // A failed rollback reports its backup path alongside the original move failure.
+    // Numbered backups retain gaps and existing versions; scan errors propagate.
     contract("mv", Extended, NoInput, LineStream, [FileRead, FileWrite], [
       "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
       "update-mode", "backup", "backup-control", "suffix",

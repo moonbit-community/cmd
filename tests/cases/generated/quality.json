@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 3556,
+    "exact-local": 3558,
     "finite-diagnostic": 183,
     "typed-scenario": 64,
     "typed-dynamic-output": 12
@@ -1333,7 +1333,7 @@
     {
       "case_id": "release-metadata-ln-help",
       "source": "tests/cases/ln.json",
-      "definition_sha256": "5a27625d96025cd8f0ea21f0cfb71a12f9ba43f4fd2ced102fadcdf155d7e707",
+      "definition_sha256": "57e9fd28bfe7f43cb89f38db2576d84bf9cd134f830c78d153090946021a86fc",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -1504,6 +1504,16 @@
       "case_id": "f17-ln-reject-no-dereference-target",
       "source": "tests/cases/ln.json",
       "definition_sha256": "4893fc8ad8cfcd23555c987ed4f716fdcf482930b5939dff45619499336db928",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "ln-backup-number-gap",
+      "source": "tests/cases/ln.json",
+      "definition_sha256": "faeef8623b4df60ed7e1573cb9625272384bb7d48888b04bdfaa82ad4cca6193",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -2961,7 +2971,7 @@
     {
       "case_id": "release-metadata-mv-help",
       "source": "tests/cases/mv.json",
-      "definition_sha256": "6d1b762952d9579b1cbe24b0f1bc594d070ca02013b6ddac0691684795e38362",
+      "definition_sha256": "ff7b98b9c3234289e2228a231fd34f64b016dfd120707bc67caf10a8259bc9c4",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -3112,6 +3122,16 @@
       "case_id": "f17-mv-literal-internal-looking-operand",
       "source": "tests/cases/mv.json",
       "definition_sha256": "6d32c5275f6430d091929a4296023b174fa7cd5314e2f86103e63d44e1e21919",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "mv-backup-number-gap",
+      "source": "tests/cases/mv.json",
+      "definition_sha256": "a73f4ebad4560ac19f0e87b356a4efdc1887b492d64dc5cf00ddf56275fb18ad",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -39142,6 +39162,9 @@
     "f17-ln-reject-no-dereference-target": {
       "kind": "exact"
     },
+    "ln-backup-number-gap": {
+      "kind": "exact"
+    },
     "phase3-ls-basic": {
       "kind": "exact"
     },
@@ -39635,6 +39658,9 @@
       "kind": "exact"
     },
     "f17-mv-literal-internal-looking-operand": {
+      "kind": "exact"
+    },
+    "mv-backup-number-gap": {
       "kind": "exact"
     },
     "p9-nl-number-format": {

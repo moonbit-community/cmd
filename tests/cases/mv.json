@@ -1007,7 +1007,7 @@
         "help"
       ],
       "source_version": "workspace cli/mv@0.2.7 metadata contract",
-      "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
+      "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-166"
@@ -1648,6 +1648,81 @@
           "path": "target",
           "content_text": "payload"
         }
+      ]
+    },
+    {
+      "id": "mv-backup-number-gap",
+      "command": "mv",
+      "args": [
+        "--backup=numbered",
+        "source",
+        "destination"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        },
+        {
+          "path": "destination.~1~",
+          "content_text": "first"
+        },
+        {
+          "path": "destination.~3~",
+          "content_text": "third"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "destination.~1~",
+          "kind": "file",
+          "content_text": "first",
+          "unchanged": true
+        },
+        {
+          "path": "destination.~2~",
+          "exists": false
+        },
+        {
+          "path": "destination.~3~",
+          "kind": "file",
+          "content_text": "third",
+          "unchanged": true
+        },
+        {
+          "path": "destination.~4~",
+          "kind": "file",
+          "content_text": "old"
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        },
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "destination",
+          "kind": "file",
+          "content_text": "new"
+        }
+      ],
+      "environment": {},
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "backup",
+        "backup-control"
       ]
     }
   ]
