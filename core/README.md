@@ -2,7 +2,7 @@
 
 Shared runtime packages used by the independently published command modules.
 
-## 0.9.5 development candidate
+## 0.9.5 changes
 
 Apply the POSIX trailing-slash directory requirement to every shell file
 predicate and both timestamp-comparison operands. Validate the original path
@@ -10,7 +10,11 @@ before resolving valid directory links; their trailing slash selects the
 directory, so link predicates are false. Unsuffixed links retain their existing
 behavior. This also repairs make recipes and split filters on macOS 15, whose
 metadata API can otherwise return a regular target for a file link ending in
-a slash. Publication and three-platform exact-coordinate acceptance are pending.
+a slash. Published from `273ea9f` after
+[actual-main development checks](https://github.com/moonbit-community/cmd/actions/runs/42425407212).
+The uploaded make/sh/split consumers passed
+[three-platform exact-coordinate acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418).
+The [changelog](../CHANGELOG.md#2026-11-08) records the finite results and platform exclusions.
 
 ## 0.9.4 changes
 
