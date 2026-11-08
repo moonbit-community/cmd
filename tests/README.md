@@ -64,6 +64,13 @@ File-effect observations exclude exactly that call's intent record, including
 snapshots taken before response bytes arrive. Other files with similar names
 remain observable product effects; a Native regression retains one as a control.
 
+Development jobs have a 30-minute total bound. The final Linux run for 4930ae2
+completed all functional checks and interface generation, then hit the former
+20-minute job limit during final formatting before complete evidence upload.
+That cancelled run is not acceptance. The new finite total leaves room for
+the expanded pinned-data/oracle suite and report preservation; individual
+scenario, invocation and package-test bounds remain unchanged.
+
 ## Ownership
 
 | Path | Source of truth |
