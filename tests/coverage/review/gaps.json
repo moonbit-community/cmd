@@ -796,7 +796,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints; HTTP-specific credentials require a first-request Basic value, while preemptive cross-host redirect strips it with two requests.",
+      "current_activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints. With --auth-no-challenge, HTTP-specific credentials appear on the first request and generic credentials remain present after a cross-host redirect with two requests.",
       "current_case_ids": [
         "network-auth-cookie"
       ],
@@ -812,7 +812,7 @@
         }
       ],
       "current_remaining_facets": [],
-      "narrow_exact_scope_reminder": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints; HTTP-specific credentials require a first-request Basic value, while preemptive cross-host redirect strips it with two requests.",
+      "narrow_exact_scope_reminder": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints. With --auth-no-challenge, HTTP-specific credentials appear on the first request and generic credentials remain present after a cross-host redirect with two requests.",
       "review_action": "The stated finite facet now has required assertions. A fresh applicable execution must qualify every binding; skipped platforms and wider unstated semantics are not covered by this definition review."
     },
     {
@@ -820,7 +820,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Password assertions cover generic challenge and HTTP-specific preemptive spellings, exact reflected credentials, first-request counts and stripped credentials after cross-host redirect. This remains a finite Basic-auth profile.",
+      "current_activation": "Password assertions cover generic challenge and HTTP-specific spellings with --auth-no-challenge, exact reflected credentials, first-request counts and retained preemptive credentials after cross-host redirect. This remains a finite Basic-auth profile.",
       "current_case_ids": [
         "network-auth-cookie"
       ],
@@ -836,7 +836,7 @@
         }
       ],
       "current_remaining_facets": [],
-      "narrow_exact_scope_reminder": "Password assertions cover generic challenge and HTTP-specific preemptive spellings, exact reflected credentials, first-request counts and stripped credentials after cross-host redirect. This remains a finite Basic-auth profile.",
+      "narrow_exact_scope_reminder": "Password assertions cover generic challenge and HTTP-specific spellings with --auth-no-challenge, exact reflected credentials, first-request counts and retained preemptive credentials after cross-host redirect. This remains a finite Basic-auth profile.",
       "review_action": "The stated finite facet now has required assertions. A fresh applicable execution must qualify every binding; skipped platforms and wider unstated semantics are not covered by this definition review."
     },
     {
