@@ -1,4 +1,6 @@
 ///|
+// Select the supported input profile from environment spelling. MoonX does not
+// expose the host's installed locale inventory or setlocale success.
 fn utf8_hosts() -> Bool {
   for name in ["LC_ALL", "LC_CTYPE", "LANG"] {
     if @env.get_env_var(name) is Some(value) && value != "" {

@@ -95,8 +95,13 @@ async test "mapped hosts and relative redirects preserve request targets and cre
                 "GET /next HTTP/1.1"
               },
             )
+            let wire_host = if profile == WgetProfile && expected.contains(":") {
+              "[" + expected + "]"
+            } else {
+              expected
+            }
             assert_true(
-              requests[index + step].contains("Host: " + expected + ":8080"),
+              requests[index + step].contains("Host: " + wire_host + ":8080"),
             )
             assert_true(
               requests[index + step].contains(

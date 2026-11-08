@@ -413,6 +413,7 @@ pub fn commands() -> Array[CommandContract] {
     // Cookie paths use raw prefixes; missing Path retains the directory's trailing slash.
     // Explicit UTF-8 input selects pinned URL IDNA; failed conversion retains
     // the raw decoded host. Legacy encodings and full IRI retry remain open.
+    // Mapped colons are bracketed in Host; the scheme's default port is omitted.
     // Cookie ordering uses descending domain/path byte length, then name/value bytes.
     // Prefixes remain ordinary names; Secure sends require HTTPS. Curl's
     // loopback exception and admission/overlay checks do not apply to Wget.

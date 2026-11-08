@@ -116,6 +116,26 @@ fn request_component(
 }
 
 ///|
+fn ParsedUrl::request_host(
+  self : ParsedUrl,
+  profile : TransferProfile,
+) -> String {
+  if profile != WgetProfile {
+    return self.endpoint
+  }
+  let host = if self.host.contains(":") && !self.ip_literal {
+    "[" + self.host + "]"
+  } else {
+    self.host
+  }
+  match self.port {
+    Some(port) if port != (if self.scheme == "https" { 443 } else { 80 }) =>
+      host + ":" + port.to_string()
+    _ => host
+  }
+}
+
+///|
 fn ParsedUrl::for_transfer(
   self : ParsedUrl,
   profile : TransferProfile,

@@ -42,6 +42,7 @@ ASCII/US-ASCII/ANSI_X3.4-1968 explicitly select the default input profile.
 Other legacy encodings, invalid UTF-8 bytes, the complete IRI retry dialect and
 Cookie Domain normalization remain unsupported. Canonical hosts are retained
 as structured fields across connection setup, redirects and cookie selection.
+Outgoing Host fields bracket mapped colons and omit the scheme's default port.
 
 ## Options
 

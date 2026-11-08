@@ -100,7 +100,7 @@ fn usage() -> String {
     #|Secure cookie contexts are HTTPS or exact localhost/127.0.0.1/::1.
     #|Insecure origins cannot overlay live Secure cookies.
     #|Cookie domains preserve ASCII case and use the pinned ICANN/PRIVATE suffix list.
-    #|UTF-8 locales enable pinned Unicode 15 URL-host IDNA with whole-host fallback.
+    #|UTF-8 environment spellings select pinned Unicode 15 URL-host IDNA.
     #|Other input encodings and Cookie Domain normalization remain unsupported.
     #|An empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.
     #|An initial empty failure leaves ordinary unopened output untouched.

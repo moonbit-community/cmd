@@ -99,6 +99,7 @@ fn usage() -> String {
     #|Cookie request paths use raw prefix matching; missing Path uses the URL directory.
     #|Imported cookie files retain Wget's separate admission policy.
     #|UTF-8 URL hosts use pinned Unicode 15 IDNA with whole-host transitional fallback.
+    #|Host brackets mapped colons and omits the scheme's default port.
     #|Failed conversion retains the raw host; other input encodings are unsupported.
   text + "\n"
 }

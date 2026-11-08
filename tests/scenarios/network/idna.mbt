@@ -45,12 +45,22 @@ fn host_observations(
   let fields : Array[Json] = []
   for index, request in requests {
     let host = fixture.hosts[index]
+    let wire_host = if command == "wget" && fixture.label == "mapped-colon" {
+      "[" + host + "]"
+    } else {
+      host
+    }
+    let proxy_host = if command == "wget" {
+      wire_host.replace_all(old="@", new="%40")
+    } else {
+      wire_host
+    }
     guard request.0.strip_prefix("GET ") is Some(target) &&
       target.strip_suffix(" HTTP/1.1") is Some(target) else {
       fail("unexpected IDNA request method or version")
     }
     let target = target
-      .strip_prefix("http://" + host)
+      .strip_prefix("http://" + proxy_host)
       .unwrap_or(target)
       .to_owned()
     // The workspace uses a CONNECT tunnel for HTTP proxies; fixed clients
@@ -58,7 +68,7 @@ fn host_observations(
     // form without reparsing delimiters introduced by hostname mapping.
     assert_true(
       request.0 == "GET " + target + " HTTP/1.1" ||
-      request.0 == "GET http://" + host + target + " HTTP/1.1",
+      request.0 == "GET http://" + proxy_host + target + " HTTP/1.1",
       msg=request.0,
     )
     let authorization = if command == "curl" &&
@@ -70,7 +80,7 @@ fn host_observations(
     }
     assert_eq(target, fixture.targets[index])
     let cookie = host_cookie(fixture, index)
-    assert_eq(host_field(request.2, "host"), host)
+    assert_eq(host_field(request.2, "host"), wire_host)
     assert_eq(host_field(request.2, "authorization"), authorization)
     assert_eq(request.1, cookie)
     fields.push({
@@ -322,7 +332,11 @@ async fn network_idna_scenario(
           let expected : Array[Json] = []
           for index, host in fixture.hosts {
             expected.push({
-              "host": host,
+              "host": if command == "wget" && fixture.label == "mapped-colon" {
+                "[" + host + "]"
+              } else {
+                host
+              },
               "target": fixture.targets[index],
               "authorization": if command == "curl" &&
                 index > 0 &&

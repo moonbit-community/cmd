@@ -187,8 +187,14 @@ bidi rules, known-CONTEXTO-rule policy, ContextJ checks, ACE round-trip and
 length limits, and retries the entire original host transitionally after a
 nontransitional failure. It must not mix output from the two attempts.
 
-Curl selects UTF-8 input through LC_ALL, LC_CTYPE and LANG precedence; C/POSIX
-rejects non-ASCII hosts. Wget's fixed build defaults to ASCII input and enables
+Curl selects UTF-8 input by the environment value's suffix, through LC_ALL,
+LC_CTYPE and LANG precedence; C/POSIX rejects non-ASCII hosts. This does not
+query installed host locales or reproduce `setlocale` failure. The pinned
+oracle's differential acceptance covers its installed C and C.UTF-8 profiles;
+unavailable names such as en_US.UTF-8 are a separate known boundary. Lifting it
+requires a released public host-locale capability and real child-process
+controls for installed and unavailable profiles on each platform.
+Wget's fixed build defaults to ASCII input and enables
 UTF-8 through `--local-encoding`. Its failed conversion retains the decoded
 host. Percent decoding precedes conversion; already-ASCII hosts keep the
 command's bypass behavior. Invalid UTF-8 and other legacy encodings have an
@@ -207,6 +213,10 @@ exposed and constrain this distinction. The current proxy implementation always
 uses CONNECT; fixed Curl's mapped-bracket ordinary forward-proxy path can fail
 before sending a request, so its successful cookie comparison explicitly uses
 the equivalent tunnel route. That difference does not establish full proxy parity.
+Wget formats mapped colons in the outgoing Host field with brackets and omits
+the scheme's default port, while retaining the canonical host/port internally.
+Its fixed forward-proxy URL escapes host `@` as `%40`; raw assertions verify
+that absolute target separately from Host and the workspace's origin-form target.
 
 The private connection owner uses released TCP/TLS APIs. CONNECT headers are
 read one byte at a time to retain any tunnel prefetch in the underlying public

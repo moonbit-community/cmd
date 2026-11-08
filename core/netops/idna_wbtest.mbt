@@ -69,6 +69,32 @@ test "mapped brackets cannot acquire the native loopback cookie exception" {
 }
 
 ///|
+test "wget renders mapped host colons and default ports without changing identity" {
+  for
+    (input, expected) in [
+      ("http://foo：80.bü.example/start", "[foo:80.xn--b-eha.example]"),
+      (
+        "http://foo：80.bü.example:8123/start", "[foo:80.xn--b-eha.example]:8123",
+      ),
+      ("http://[::1]:80/start", "[::1]"),
+      ("https://[::1]:443/start", "[::1]"),
+      ("http://example.com:80/start", "example.com"),
+      ("http://example.com:443/start", "example.com:443"),
+    ] {
+    let parsed = parse_absolute_url(input).for_transfer(WgetProfile)
+    assert_eq(parsed.request_host(WgetProfile), expected)
+    let relative = resolve_location(parsed, "/next").for_transfer(
+      WgetProfile,
+      redirect=true,
+    )
+    assert_eq(relative.host, parsed.host)
+    assert_eq(relative.port, parsed.port)
+    assert_eq(relative.request_host(WgetProfile), expected)
+    assert_eq(parsed.request_host(CurlProfile), parsed.endpoint)
+  }
+}
+
+///|
 test "international URL hosts use one canonical origin before credentials and cookies" {
   for profile in [CurlProfile, WgetProfile] {
     for
