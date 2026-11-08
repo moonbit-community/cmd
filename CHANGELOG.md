@@ -18,7 +18,9 @@ Development and publication.
 
 - Integrate the serve candidate with the subsequent diagnostics, shell/make and
   filesystem work. Preserve both sets of command contracts and the independent
-  published snapshots; serve remains unpublished among 82 local modules.
+  published snapshots; serve remains unpublished among 82 local modules. Isolate
+  macOS scenario fixtures from background indexing while retaining exact
+  timestamp preservation checks.
 - Develop issue #29 candidates find 0.2.6, mkdir 0.2.7 and test 0.2.4:
   repair metadata size/time predicates, standalone test argument precedence,
   find action/error ordering and postorder snapshots, and honest mkdir parent

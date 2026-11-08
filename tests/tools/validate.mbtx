@@ -2,7 +2,6 @@
 import {
   "moonbitlang/async@0.22.7",
   "moonbitlang/async@0.22.7/fs",
-  "moonbitlang/async@0.22.7/process",
   "moonbitlang/async@0.22.7/shell",
   "moonbitlang/core/env",
   "moonbitlang/core/json",
@@ -22,62 +21,6 @@ async fn hash_file(path : String) -> String {
     digest.update(bytes[:count])
   }
   @crypto.bytes_to_hex_string(digest.finalize())
-}
-
-///|
-async fn observed_status(
-  program : String,
-  arguments : Array[String],
-  report_root : String,
-) -> Int32 {
-  if !(@async.platform is MacOS) ||
-    @env.get_env_var("GITHUB_ACTIONS") != Some("true") {
-    return @shell.Cmd(program, arguments, stdout=Inherit, stderr=Inherit).status()
-  }
-  let (reader, output) = @process.read_from_process(shared=true)
-  defer reader.close()
-  @async.with_task_group(group => {
-    let trace = @process.spawn(
-      group,
-      "/usr/bin/sudo",
-      ["-n", "/usr/bin/fs_usage", "-w", "-f", "filesys", "-t", "300"],
-      stdout=output,
-      stderr=output,
-      cancel_handler=@process.graceful_cancel(timeout=1000),
-    )
-    output.close()
-    let collector = group.spawn(() => {
-      let mut count = 0
-      let mut seen = 0
-      while reader.read_until("\n") is Some(line) {
-        seen += 1
-        if line.contains("/f29-") || seen <= 20 {
-          @fs.write_file(
-            report_root + "/filesystem-access.log",
-            line,
-            append=true,
-          )
-          count += 1
-        }
-      }
-      count
-    })
-    let status = @shell.Cmd(program, arguments, stdout=Inherit, stderr=Inherit).status()
-    trace.cancel()
-    let trace_status = trace.wait()
-    let lines = collector.wait()
-    @fs.write_file(
-      report_root + "/filesystem-access.json",
-      (
-        {
-          "trace_status": trace_status,
-          "lines": lines,
-          "command_status": status,
-        } : Json).stringify() +
-      "\n",
-    )
-    status
-  })
 }
 
 ///|
@@ -209,7 +152,7 @@ async fn main {
       "\n",
     )
   }
-  let status = observed_status(program, arguments, report_root)
+  let status = @shell.Cmd(program, arguments, stdout=Inherit, stderr=Inherit).status()
   let timing : Json = {
     "mode": args[1],
     "tool_profile": profile,
