@@ -62,7 +62,9 @@ fn usage() -> String {
     #|      --header=STRING             set a request header; last same-name value wins
     #|      --user=USER                 HTTP Basic user name
     #|      --password=PASSWORD         HTTP Basic password
-    #|      --auth-no-challenge         send Basic credentials on every request, including redirects
+    #|      --http-user=USER            HTTP-specific user, before --user fallback
+    #|      --http-password=PASSWORD    HTTP-specific password, before --password fallback
+    #|      --auth-no-challenge[=on|off] send Basic credentials before a challenge when enabled
     #|      --load-cookies=FILE         load a Netscape cookie jar
     #|      --header='Cookie: ...'      override jar cookies, including on redirects
     #|      --save-cookies=FILE         save persistent cookies
@@ -92,8 +94,10 @@ fn usage() -> String {
     #|Unsolicited 304 exits 8. Continued GET with --content-disposition selects
     #|the filename with HEAD before choosing that file's resume offset.
     #|Multiple URL failures retain the lowest nonzero transfer exit code.
-    #|Rejected Basic credentials exit 6; other HTTP errors exit 8.
     #|Basic challenges are recognized across repeated fields and quoted comma lists.
+    #|URL credentials take field-wise precedence; omitted and empty passwords differ.
+    #|URL credentials wait for each hop's challenge; global credentials cache by hostname.
+    #|HTTP 401 returns 6, including missing or unsupported challenges; other HTTP errors return 8.
     #|Response cookie domains use the complete pinned ICANN/PRIVATE suffix list.
     #|Rejected domains discard a matching stored cookie after request-path validation.
     #|Cookie request paths use raw prefix matching; missing Path uses the URL directory.
@@ -192,7 +196,7 @@ fn parse_statuses(value : String) -> Array[Int32] raise UsageError {
 
 ///|
 fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
-  let parsed = @cli.parse(args, [
+  let specs = [
     @cli.flag("quiet", short='q'),
     @cli.option("output-document", short='O'),
     @cli.option("output-file", short='o'),
@@ -211,7 +215,7 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
     @cli.option("password"),
     @cli.option("http-user"),
     @cli.option("http-password"),
-    @cli.flag("auth-no-challenge"),
+    @cli.option("auth-no-challenge"),
     @cli.option("load-cookies"),
     @cli.option("save-cookies"),
     @cli.flag("keep-session-cookies"),
@@ -227,7 +231,8 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
     @cli.option("read-timeout"),
     @cli.option("idle-timeout"),
     @cli.flag("help"),
-  ]) catch {
+  ]
+  let parsed = @cli.parse(auth_arguments(args, specs), specs) catch {
     @cli.CliError(option~, message~, ..) =>
       raise UsageError("\{message}: '\{option}'")
   }
@@ -253,16 +258,26 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
         )
     }
   }
-  options.user = match parsed.last_occurrence(["user", "http-user"]) {
-    Some(name) => parsed.last_value(name)
-    None => None
+  options.user = match parsed.last_value("http-user") {
+    Some(value) => Some(value)
+    None => parsed.last_value("user")
   }
-  options.password = match
-    parsed.last_occurrence(["password", "http-password"]) {
-    Some(name) => parsed.last_value(name)
-    None => None
+  options.password = match parsed.last_value("http-password") {
+    Some(value) => Some(value)
+    None => parsed.last_value("password")
   }
-  options.auth_no_challenge = parsed.contains("auth-no-challenge")
+  if parsed.last_value("auth-no-challenge") is Some(value) {
+    options.auth_no_challenge = match value.to_lower() {
+      "on" | "yes" | "1" => true
+      "off" | "no" | "0" => false
+      _ =>
+        raise UsageError(
+          "--auth-no-challenge: Invalid boolean '" +
+          value +
+          "'; use `on' or `off'.",
+        )
+    }
+  }
   options.cookies = !parsed.contains("no-cookies")
   options.load_cookies = parsed.last_value("load-cookies")
   options.save_cookies = parsed.last_value("save-cookies")

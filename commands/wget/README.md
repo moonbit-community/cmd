@@ -12,8 +12,9 @@ Download URLs or URL lists with resume, conditional requests, headers/bodies, re
 
 Unreleased workspace correction: multiple URL failures retain the lowest
 nonzero transfer exit code, regardless of operand order. A later success keeps
-that failure status and still writes its response body. A Basic challenge after
-Basic credentials were sent returns 6; other HTTP errors return 8. Network
+that failure status and still writes its response body. HTTP 401 returns 6,
+including absent credentials and missing or unsupported challenges; other HTTP
+errors return 8. URL parsing and unsupported input schemes return 1. Network
 failure 4 takes precedence over authentication failure 6, which takes precedence
 over HTTP failure 8. The published 0.2.5
 coordinate is unchanged; see [ADR-0005](../../docs/adr/0005-transfer.md).
@@ -23,6 +24,21 @@ and comma-separated challenge lists, preserving quoted commas and escapes.
 Final response fields retain their order, casing and repetition after
 optional-whitespace normalization. Same-name request headers still use the last
 value; explicit Cookie headers continue across origins.
+
+URL username/password fields take precedence individually. An omitted URL
+password can use the configured password; an explicit empty password cannot.
+HTTP-specific options precede general options regardless of argv order. A
+missing password prevents Basic authentication; an empty password is valid.
+Empty URL usernames reject before network access.
+
+By default URL credentials wait for a challenge independently at each redirect
+hop. Global option credentials cache challenged hostnames across ports, operands
+and retries, including failed authentication. URL credentials neither seed nor
+consume that cache. Explicit Authorization fields remain intact on retry.
+`--auth-no-challenge` enables preemptive Basic; attached on/off, yes/no and 1/0
+values are case-insensitive, with the last occurrence winning. Binary named-file
+request bodies replay unchanged. This finite profile does not add Digest/NTLM,
+netrc, configuration loading, password prompts or arbitrary stdin replay.
 
 Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
 sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
@@ -65,7 +81,8 @@ Outgoing Host fields bracket mapped colons and omit the scheme's default port.
 | `--header=STRING` | set a request header; last same-name value wins |
 | `--user=USER` | HTTP Basic user name |
 | `--password=PASSWORD` | HTTP Basic password |
-| `--auth-no-challenge` | send Basic credentials on every request, including redirects |
+| `--http-user`, `--http-password` | HTTP-specific credentials, before general option fallback |
+| `--auth-no-challenge[=on\|off]` | control preemptive Basic, including redirects |
 | `--load-cookies=FILE` | load a Netscape cookie jar |
 | `--header='Cookie: ...'` | override jar cookies, including on redirects |
 | `--save-cookies=FILE` | save persistent cookies |

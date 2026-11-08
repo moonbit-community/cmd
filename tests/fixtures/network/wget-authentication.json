@@ -1,0 +1,2195 @@
+{
+  "schema": 1,
+  "oracle": "wget 1.25.0",
+  "source_sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+  "baseline_sha256": "9aec3a8cd3acda9cabdb03f8a0a533d5494cf47a9ab90733772da91983796e0c",
+  "cases": [
+    {
+      "label": "url-public-default",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "url-challenge",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "url-rejection",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": true,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "url-plain-401",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "deny": false,
+          "plain": true,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "url-preemptive",
+      "args": [
+        "--auth-no-challenge"
+      ],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /public auth=Basic dXJsdXNlcjp1cmxwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "url-empty-password",
+      "args": [],
+      "urls": [
+        "http://urluser:@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjo=",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjo= body="
+        ]
+      }
+    },
+    {
+      "label": "url-user-without-password",
+      "args": [],
+      "urls": [
+        "http://urluser@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjo=",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "url-percent-decoded",
+      "args": [],
+      "urls": [
+        "http://url%75ser:url%70ass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-public-default",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "options-challenge",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-preemptive",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge"
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /public auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "url-over-options-default",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "url-over-options-preemptive",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge"
+      ],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "url-user-option-password",
+      "args": [
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://urluser@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "empty-url-password-over-option",
+      "args": [
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://urluser:@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjo=",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjo= body="
+        ]
+      }
+    },
+    {
+      "label": "http-options-before-general",
+      "args": [
+        "--http-user=httpuser",
+        "--http-password=httppass",
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic aHR0cHVzZXI6aHR0cHBhc3M=",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic aHR0cHVzZXI6aHR0cHBhc3M= body="
+        ]
+      }
+    },
+    {
+      "label": "http-options-after-general",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--http-user=httpuser",
+        "--http-password=httppass"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic aHR0cHVzZXI6aHR0cHBhc3M=",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic aHR0cHVzZXI6aHR0cHBhc3M= body="
+        ]
+      }
+    },
+    {
+      "label": "url-relative-redirect",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/start"
+      ],
+      "routes": [
+        {
+          "path": "/start",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "location": "/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/end",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /start auth= body=",
+          "GET a.example.com /start auth=Basic dXJsdXNlcjp1cmxwYXNz body=",
+          "GET a.example.com /end auth= body=",
+          "GET a.example.com /end auth=Basic dXJsdXNlcjp1cmxwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "url-absolute-same-host-redirect",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/start"
+      ],
+      "routes": [
+        {
+          "path": "/start",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "location": "http://a.example.com/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /start auth= body=",
+          "GET a.example.com /start auth=Basic dXJsdXNlcjp1cmxwYXNz body=",
+          "GET a.example.com /end auth= body="
+        ]
+      }
+    },
+    {
+      "label": "url-cross-host-redirect",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/start"
+      ],
+      "routes": [
+        {
+          "path": "/start",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "location": "http://b.example.com/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /start auth= body=",
+          "GET a.example.com /start auth=Basic dXJsdXNlcjp1cmxwYXNz body=",
+          "GET b.example.com /end auth= body="
+        ]
+      }
+    },
+    {
+      "label": "url-cross-host-new-credentials",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/start"
+      ],
+      "routes": [
+        {
+          "path": "/start",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "location": "http://optuser:optpass@b.example.com/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/end",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /start auth= body=",
+          "GET a.example.com /start auth=Basic dXJsdXNlcjp1cmxwYXNz body=",
+          "GET b.example.com /end auth= body=",
+          "GET b.example.com /end auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-relative-redirect-cache",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/start"
+      ],
+      "routes": [
+        {
+          "path": "/start",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "location": "/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /start auth= body=",
+          "GET a.example.com /start auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET a.example.com /end auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-cross-port-redirect-cache",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com:8123/start"
+      ],
+      "routes": [
+        {
+          "path": "/start",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "location": "http://a.example.com:8124/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com:8123 /start auth= body=",
+          "GET a.example.com:8123 /start auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET a.example.com:8124 /end auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-cross-host-challenge",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/start"
+      ],
+      "routes": [
+        {
+          "path": "/start",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "location": "http://b.example.com/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/end",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /start auth= body=",
+          "GET a.example.com /start auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET b.example.com /end auth= body=",
+          "GET b.example.com /end auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-cross-host-preemptive",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge"
+      ],
+      "urls": [
+        "http://a.example.com/start"
+      ],
+      "routes": [
+        {
+          "path": "/start",
+          "location": "http://b.example.com/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/end",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /start auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET b.example.com /end auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-two-operands-cache",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth",
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\nok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET a.example.com /public auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-cross-port-operands-cache",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com:8123/auth",
+        "http://a.example.com:8124/public"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\nok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com:8123 /auth auth= body=",
+          "GET a.example.com:8123 /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET a.example.com:8124 /public auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "options-other-host-not-cached",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth",
+        "http://b.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\nok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET b.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "url-auth-does-not-seed-option-cache",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth",
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\nok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body=",
+          "GET a.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "url-does-not-use-seeded-option-cache",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth",
+        "http://urluser:urlpass@a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\nok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET a.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "url-repeated-operands-challenge",
+      "args": [],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth",
+        "http://urluser:urlpass@a.example.com/second"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/second",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\nok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body=",
+          "GET a.example.com /second auth= body=",
+          "GET a.example.com /second auth=Basic dXJsdXNlcjp1cmxwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "url-body-data-replay",
+      "args": [
+        "--method=POST",
+        "--body-data=body-control"
+      ],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "POST a.example.com /auth auth= body=626f64792d636f6e74726f6c",
+          "POST a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body=626f64792d636f6e74726f6c"
+        ]
+      }
+    },
+    {
+      "label": "options-body-data-replay",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--method=POST",
+        "--body-data=body-control"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "POST a.example.com /auth auth= body=626f64792d636f6e74726f6c",
+          "POST a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body=626f64792d636f6e74726f6c"
+        ]
+      }
+    },
+    {
+      "label": "custom-authorization-first-request",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--header=Authorization: Basic Y3VzdG9tOmN1c3RvbQ=="
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /public auth=Basic Y3VzdG9tOmN1c3RvbQ== body="
+        ]
+      }
+    },
+    {
+      "label": "custom-authorization-challenge",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--header=Authorization: Basic Y3VzdG9tOmN1c3RvbQ=="
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth=Basic Y3VzdG9tOmN1c3RvbQ== body=",
+          "GET a.example.com /auth auth=Basic Y3VzdG9tOmN1c3RvbQ== body="
+        ]
+      }
+    },
+    {
+      "label": "no-credential-public-control",
+      "args": [],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "no-credential-challenge-control",
+      "args": [],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "no-credential-plain-401",
+      "args": [],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "deny": false,
+          "plain": true,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "options-plain-401",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "deny": false,
+          "plain": true,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "options-unknown-scheme-401",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "deny": true,
+          "plain": false,
+          "challenge": "Unknown realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "no-credential-unknown-scheme-401",
+      "args": [],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "deny": true,
+          "plain": false,
+          "challenge": "Unknown realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "custom-bearer-no-options-401",
+      "args": [
+        "--header=Authorization: Bearer example"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth=Bearer example body="
+        ]
+      }
+    },
+    {
+      "label": "custom-bearer-with-options-challenge",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--header=Authorization: Bearer example"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth=Bearer example body=",
+          "GET a.example.com /auth auth=Bearer example body="
+        ]
+      }
+    },
+    {
+      "label": "forbidden-remains-http-error",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "deny": false,
+          "plain": true,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 403
+        }
+      ],
+      "expected": {
+        "status": 8,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "explicit-auth-flag-off",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=off"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "explicit-auth-flag-on",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=on"
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /public auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "explicit-auth-flag-order",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge",
+        "--auth-no-challenge=off"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-option-user-no-password",
+      "args": [
+        "--user=optuser"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "extra-option-user-no-password-preemptive",
+      "args": [
+        "--user=optuser",
+        "--auth-no-challenge"
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "extra-option-explicit-empty-password",
+      "args": [
+        "--user=urluser",
+        "--password="
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjo=",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsdXNlcjo= body="
+        ]
+      }
+    },
+    {
+      "label": "extra-option-empty-user",
+      "args": [
+        "--user=",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic Om9wdHBhc3M=",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic Om9wdHBhc3M= body="
+        ]
+      }
+    },
+    {
+      "label": "extra-option-password-without-user",
+      "args": [
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body="
+        ]
+      }
+    },
+    {
+      "label": "extra-url-empty-username",
+      "args": [],
+      "urls": [
+        "http://:pass@a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "",
+        "requests": []
+      }
+    },
+    {
+      "label": "extra-url-empty-userinfo",
+      "args": [],
+      "urls": [
+        "http://@a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "",
+        "requests": []
+      }
+    },
+    {
+      "label": "extra-url-encoded-colon-username",
+      "args": [],
+      "urls": [
+        "http://url%3Auser:pass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsOnVzZXI6cGFzcw==",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic dXJsOnVzZXI6cGFzcw== body="
+        ]
+      }
+    },
+    {
+      "label": "extra-failed-auth-seeds-cache",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/reject",
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/reject",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": true,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /reject auth= body=",
+          "GET a.example.com /reject auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET a.example.com /public auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-failed-auth-other-host-not-cached",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/reject",
+        "http://b.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/reject",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": true,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /reject auth= body=",
+          "GET a.example.com /reject auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET b.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "extra-url-failed-auth-does-not-seed-cache",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/reject",
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/reject",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": true,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 6,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /reject auth= body=",
+          "GET a.example.com /reject auth=Basic dXJsdXNlcjp1cmxwYXNz body=",
+          "GET a.example.com /public auth= body="
+        ]
+      }
+    },
+    {
+      "label": "extra-host-cache-case-insensitive",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://a.example.com/auth",
+        "http://A.Example.COM:8123/public"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        },
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\nok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body=",
+          "GET a.example.com:8123 /public auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-url-body-file-replay",
+      "args": [
+        "--method=POST",
+        "--body-file=body.bin"
+      ],
+      "urls": [
+        "http://urluser:urlpass@a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic dXJsdXNlcjp1cmxwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "POST a.example.com /auth auth= body=000102414243ff0d0a",
+          "POST a.example.com /auth auth=Basic dXJsdXNlcjp1cmxwYXNz body=000102414243ff0d0a"
+        ]
+      }
+    },
+    {
+      "label": "extra-option-body-file-replay",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--method=POST",
+        "--body-file=body.bin"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "POST a.example.com /auth auth= body=000102414243ff0d0a",
+          "POST a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body=000102414243ff0d0a"
+        ]
+      }
+    },
+    {
+      "label": "extra-boolean-rejection-empty",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge="
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 2,
+        "stdout": "",
+        "stderr": "wget: --auth-no-challenge: Invalid boolean ''; use `on' or `off'.\n",
+        "requests": []
+      }
+    },
+    {
+      "label": "extra-boolean-rejection-invalid",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=maybe"
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 2,
+        "stdout": "",
+        "stderr": "wget: --auth-no-challenge: Invalid boolean 'maybe'; use `on' or `off'.\n",
+        "requests": []
+      }
+    },
+    {
+      "label": "extra-boolean-rejection-true",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=true"
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 2,
+        "stdout": "",
+        "stderr": "wget: --auth-no-challenge: Invalid boolean 'true'; use `on' or `off'.\n",
+        "requests": []
+      }
+    },
+    {
+      "label": "extra-boolean-rejection-spaced",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge= on "
+      ],
+      "urls": [
+        "http://a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 2,
+        "stdout": "",
+        "stderr": "wget: --auth-no-challenge: Invalid boolean ' on '; use `on' or `off'.\n",
+        "requests": []
+      }
+    },
+    {
+      "label": "extra-boolean-spelling-YES",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=YES"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-boolean-spelling-NO",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=NO"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-boolean-spelling-1",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=1"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-boolean-spelling-0",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=0"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-boolean-spelling-ON",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=ON"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-boolean-spelling-OFF",
+      "args": [
+        "--user=optuser",
+        "--password=optpass",
+        "--auth-no-challenge=OFF"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjpvcHRwYXNz",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjpvcHRwYXNz body="
+        ]
+      }
+    },
+    {
+      "label": "extra-literal-auth-token-as-password",
+      "args": [
+        "--user=optuser",
+        "--password",
+        "--auth-no-challenge"
+      ],
+      "urls": [
+        "http://a.example.com/auth"
+      ],
+      "routes": [
+        {
+          "path": "/auth",
+          "credential": "Basic b3B0dXNlcjotLWF1dGgtbm8tY2hhbGxlbmdl",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "requests": [
+          "GET a.example.com /auth auth= body=",
+          "GET a.example.com /auth auth=Basic b3B0dXNlcjotLWF1dGgtbm8tY2hhbGxlbmdl body="
+        ]
+      }
+    },
+    {
+      "label": "extra-URL-empty-username-with-options",
+      "args": [
+        "--user=optuser",
+        "--password=optpass"
+      ],
+      "urls": [
+        "http://:pass@a.example.com/public"
+      ],
+      "routes": [
+        {
+          "path": "/public",
+          "deny": false,
+          "plain": false,
+          "challenge": "Basic realm=\"independent\"",
+          "failure_status": 401
+        }
+      ],
+      "expected": {
+        "status": 1,
+        "stdout": "",
+        "stderr": "",
+        "requests": []
+      }
+    }
+  ],
+  "supplemental_baseline_sha256": "a50bbfcdbbe8d53498e2323a9c9a251b1609d28c9077db0ba5cda2ef0663a23c"
+}

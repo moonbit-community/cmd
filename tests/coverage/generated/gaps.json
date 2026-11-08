@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "coverage_manifest_sha256": "1c9388fec76c733063018bab5dd24e2c57f25911f487ea9af8adc5cc74969256",
+  "coverage_manifest_sha256": "57d055ef7f71bd951e3f22fb1be3a6e97d0f8743fb5e420298b72549e8314230",
   "independent_review_sha256": "632717c75722e0c8dc4a310767c80e848fe7aada8bd16cf53711048a49db7391",
   "reviewed_definitions": 896,
   "remaining_catalog_labels": 0,
@@ -945,7 +945,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints. With --auth-no-challenge, HTTP-specific credentials appear on the first request and generic credentials remain present after a cross-host redirect with two requests. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls.",
+      "current_activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints. With --auth-no-challenge, HTTP-specific credentials appear on the first request and generic credentials remain present after a cross-host redirect with two requests. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls. Fixed Wget credential controls observe real request order, 401 status, optional fields and host-cache boundaries; generated definitions alone are not execution evidence.",
       "current_case_ids": [
         "repair-final-wget-basic",
         "wget-auth-rejected",
@@ -963,6 +963,16 @@
             "auth/9",
             "auth/10"
           ]
+        },
+        {
+          "case_id": "network-wget-authentication",
+          "assertions": [
+            "wget-authentication/url-over-options-default",
+            "wget-authentication/url-over-options-preemptive",
+            "wget-authentication/options-two-operands-cache",
+            "wget-authentication/url-does-not-use-seeded-option-cache",
+            "wget-authentication/no-credential-challenge-control"
+          ]
         }
       ],
       "current_remaining_facets": [
@@ -977,7 +987,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Password assertions cover generic challenge and HTTP-specific spellings with --auth-no-challenge, exact reflected credentials, first-request counts and retained preemptive credentials after cross-host redirect. This remains a finite Basic-auth profile. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls.",
+      "current_activation": "Password assertions cover generic challenge and HTTP-specific spellings with --auth-no-challenge, exact reflected credentials, first-request counts and retained preemptive credentials after cross-host redirect. This remains a finite Basic-auth profile. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls. Fixed Wget credential controls observe real request order, 401 status, optional fields and host-cache boundaries; generated definitions alone are not execution evidence.",
       "current_case_ids": [
         "repair-final-wget-basic",
         "wget-auth-rejected",
@@ -994,6 +1004,16 @@
             "auth/11",
             "auth/9",
             "auth/10"
+          ]
+        },
+        {
+          "case_id": "network-wget-authentication",
+          "assertions": [
+            "wget-authentication/url-user-without-password",
+            "wget-authentication/url-user-option-password",
+            "wget-authentication/empty-url-password-over-option",
+            "wget-authentication/extra-option-user-no-password",
+            "wget-authentication/extra-option-explicit-empty-password"
           ]
         }
       ],

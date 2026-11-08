@@ -312,6 +312,10 @@ pub async fn execute_scenario(
           network_wget_cookies_scenario(root, work, proof?)
         "network-wget-cookies-oracle" =>
           network_wget_cookies_scenario(root, work, oracle_image?)
+        "network-wget-authentication" =>
+          network_wget_authentication_scenario(root, work, proof?)
+        "network-wget-authentication-oracle" =>
+          network_wget_authentication_scenario(root, work, oracle_image?)
         "network-idna-oracle" =>
           network_idna_scenario(root, work, oracle_image?)
         "network-cookie-suffix" =>

@@ -424,6 +424,10 @@ pub fn commands() -> Array[CommandContract] {
     // Same-name request fields keep the last value. Response observers retain
     // all final fields in wire order. Basic challenge lists preserve quoted commas.
     // Multiple URL failures retain the lowest nonzero transfer exit code.
+    // All HTTP 401 responses map to 6. Optional credential fields retain URL
+    // and HTTP-option precedence; global Basic challenges cache by hostname.
+    // URL credentials use per-hop challenges and do not enter the global cache.
+    // Attached authentication booleans retain value and literal-operand order.
     contract(
       "wget",
       Restricted,

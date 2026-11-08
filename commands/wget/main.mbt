@@ -160,12 +160,10 @@ fn exit_code(kind : @netops.TransferErrorKind) -> Int32 {
     @netops.AuthenticationFailure => 6
     @netops.TlsFailure => 5
     @netops.InputFailure | @netops.RewindFailure | @netops.OutputFailure => 3
-    @netops.UnsupportedProtocol
-    | @netops.InvalidMethod
-    | @netops.ProtocolFailure
-    | @netops.RedirectFailure => 7
-    @netops.InvalidUrl
-    | @netops.ConnectionFailure
+    @netops.UnsupportedProtocol | @netops.InvalidUrl => 1
+    @netops.InvalidMethod | @netops.ProtocolFailure | @netops.RedirectFailure =>
+      7
+    @netops.ConnectionFailure
     | @netops.ReceiveFailure
     | @netops.EmptyReplyFailure
     | @netops.PartialBodyFailure
@@ -337,6 +335,7 @@ async fn download_one(
   log : LogDestination,
   url : String,
   jar : @netops.CookieJar?,
+  basic_hosts~ : Map[String, Bool] = Map([]),
 ) -> Int32 {
   let mut discover_name = options.continue_download &&
     options.content_disposition &&
@@ -403,11 +402,11 @@ async fn download_one(
         cookie_jar?=jar,
         custom_cookie_mode=@netops.ReplaceStored,
         custom_cookie_cross_origin=true,
-        basic_credentials?=options.user.map(user => {
-          user + ":" + options.password.unwrap_or("")
-        }),
+        basic_user?=options.user,
+        basic_password?=options.password,
         basic_preemptive=options.auth_no_challenge,
         basic_credential_scope=@netops.AllOrigins,
+        basic_challenged_hosts=basic_hosts,
       )
       if discover_name {
         let discovery = @netops.transfer(url, @netops.DiscardOutput, {
@@ -530,8 +529,9 @@ async fn run(options : Options) -> Int32 {
     }
   }
   let mut result = 0
+  let basic_hosts : Map[String, Bool] = Map([])
   for url in urls {
-    let status = download_one(options, log, url, jar)
+    let status = download_one(options, log, url, jar, basic_hosts~)
     if status != 0 && (result == 0 || status < result) {
       result = status
     }

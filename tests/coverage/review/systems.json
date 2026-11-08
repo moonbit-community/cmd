@@ -1980,7 +1980,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-auth-cookie"
+        "network-auth-cookie",
+        "network-wget-authentication"
       ],
       "scenario_bindings": [
         {
@@ -1988,9 +1989,16 @@
           "assertions": [
             "auth/9"
           ]
+        },
+        {
+          "case_id": "network-wget-authentication",
+          "assertions": [
+            "wget-authentication/http-options-before-general",
+            "wget-authentication/http-options-after-general"
+          ]
         }
       ],
-      "activation": "--http-user=user --http-password=pass --auth-no-challenge produce one request and the exact reflected Basic credential. This selected explicit spelling facet does not prove generic user/password aliases."
+      "activation": "--http-user=user --http-password=pass --auth-no-challenge produce one request and the exact reflected Basic credential. This selected explicit spelling facet does not prove generic user/password aliases. Fixed Wget credential controls observe real request order, 401 status, optional fields and host-cache boundaries; generated definitions alone are not execution evidence."
     },
     {
       "command": "wget",
@@ -1998,7 +2006,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-auth-cookie"
+        "network-auth-cookie",
+        "network-wget-authentication"
       ],
       "scenario_bindings": [
         {
@@ -2006,9 +2015,16 @@
           "assertions": [
             "auth/9"
           ]
+        },
+        {
+          "case_id": "network-wget-authentication",
+          "assertions": [
+            "wget-authentication/http-options-before-general",
+            "wget-authentication/http-options-after-general"
+          ]
         }
       ],
-      "activation": "The HTTP-specific password participates in a single preemptive request with the exact independently specified Basic response. Other schemes and errors remain outside this finite facet."
+      "activation": "The HTTP-specific password participates in a single preemptive request with the exact independently specified Basic response. Other schemes and errors remain outside this finite facet. Fixed Wget credential controls observe real request order, 401 status, optional fields and host-cache boundaries; generated definitions alone are not execution evidence."
     },
     {
       "command": "wget",
@@ -2016,7 +2032,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-auth-cookie"
+        "network-auth-cookie",
+        "network-wget-authentication"
       ],
       "scenario_bindings": [
         {
@@ -2025,9 +2042,21 @@
             "auth/13",
             "auth/14"
           ]
+        },
+        {
+          "case_id": "network-wget-authentication",
+          "assertions": [
+            "wget-authentication/url-public-default",
+            "wget-authentication/url-preemptive",
+            "wget-authentication/explicit-auth-flag-off",
+            "wget-authentication/explicit-auth-flag-on",
+            "wget-authentication/explicit-auth-flag-order",
+            "wget-authentication/extra-boolean-rejection-invalid",
+            "wget-authentication/extra-literal-auth-token-as-password"
+          ]
         }
       ],
-      "activation": "The same HTTP-specific user/password and inspect endpoint return empty reflected auth without --auth-no-challenge and exact Basic credentials with it; both use exactly one request and empty stderr/status0. This controlled flag contrast proves only the selected preemptive Basic facet."
+      "activation": "The same HTTP-specific user/password and inspect endpoint return empty reflected auth without --auth-no-challenge and exact Basic credentials with it; both use exactly one request and empty stderr/status0. This controlled flag contrast proves only the selected preemptive Basic facet. Fixed Wget credential controls observe real request order, 401 status, optional fields and host-cache boundaries; generated definitions alone are not execution evidence."
     },
     {
       "command": "wget",
@@ -2041,7 +2070,8 @@
         "wget-exit-auth-before-http",
         "wget-exit-http-before-auth",
         "wget-exit-auth-before-network",
-        "wget-exit-network-before-auth"
+        "wget-exit-network-before-auth",
+        "network-wget-authentication"
       ],
       "scenario_bindings": [
         {
@@ -2052,9 +2082,19 @@
             "auth/9",
             "auth/10"
           ]
+        },
+        {
+          "case_id": "network-wget-authentication",
+          "assertions": [
+            "wget-authentication/url-over-options-default",
+            "wget-authentication/url-over-options-preemptive",
+            "wget-authentication/options-two-operands-cache",
+            "wget-authentication/url-does-not-use-seeded-option-cache",
+            "wget-authentication/no-credential-challenge-control"
+          ]
         }
       ],
-      "activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints. With --auth-no-challenge, HTTP-specific credentials appear on the first request and generic credentials remain present after a cross-host redirect with two requests. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls."
+      "activation": "Generic credentials require exact Basic challenge reflection and two/three requests on direct/redirected endpoints. With --auth-no-challenge, HTTP-specific credentials appear on the first request and generic credentials remain present after a cross-host redirect with two requests. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls. Fixed Wget credential controls observe real request order, 401 status, optional fields and host-cache boundaries; generated definitions alone are not execution evidence."
     },
     {
       "command": "wget",
@@ -2068,7 +2108,8 @@
         "wget-exit-auth-before-http",
         "wget-exit-http-before-auth",
         "wget-exit-auth-before-network",
-        "wget-exit-network-before-auth"
+        "wget-exit-network-before-auth",
+        "network-wget-authentication"
       ],
       "scenario_bindings": [
         {
@@ -2079,9 +2120,19 @@
             "auth/9",
             "auth/10"
           ]
+        },
+        {
+          "case_id": "network-wget-authentication",
+          "assertions": [
+            "wget-authentication/url-user-without-password",
+            "wget-authentication/url-user-option-password",
+            "wget-authentication/empty-url-password-over-option",
+            "wget-authentication/extra-option-user-no-password",
+            "wget-authentication/extra-option-explicit-empty-password"
+          ]
         }
       ],
-      "activation": "Password assertions cover generic challenge and HTTP-specific spellings with --auth-no-challenge, exact reflected credentials, first-request counts and retained preemptive credentials after cross-host redirect. This remains a finite Basic-auth profile. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls."
+      "activation": "Password assertions cover generic challenge and HTTP-specific spellings with --auth-no-challenge, exact reflected credentials, first-request counts and retained preemptive credentials after cross-host redirect. This remains a finite Basic-auth profile. The successful Basic challenge emits the fixed response; rejected transmitted credentials return 6 with empty output. Both orders against HTTP 8 and network 4 retain the lower status while a later successful URL emits hello. Private wire tests separately assert exact Authorization bytes, request counts and challenge-free 401 controls. Fixed Wget credential controls observe real request order, 401 status, optional fields and host-cache boundaries; generated definitions alone are not execution evidence."
     },
     {
       "command": "wget",

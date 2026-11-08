@@ -216,9 +216,11 @@ pub(all) struct TransferOptions {
   cookie_data : String?
   custom_cookie_mode : CustomCookieMode
   custom_cookie_cross_origin : Bool
-  basic_credentials : String?
+  basic_user : String?
+  basic_password : String?
   basic_preemptive : Bool
   basic_credential_scope : BasicCredentialScope
+  basic_challenged_hosts : Map[String, Bool]
 }
 
 ///|
@@ -246,9 +248,11 @@ pub fn transfer_options(
   cookie_data? : String,
   custom_cookie_mode~ : CustomCookieMode = SeparateFields,
   custom_cookie_cross_origin~ : Bool = false,
-  basic_credentials? : String,
+  basic_user? : String,
+  basic_password? : String,
   basic_preemptive~ : Bool = true,
   basic_credential_scope~ : BasicCredentialScope = InitialOrigin,
+  basic_challenged_hosts~ : Map[String, Bool] = Map([]),
 ) -> TransferOptions {
   {
     profile,
@@ -272,9 +276,11 @@ pub fn transfer_options(
     cookie_data,
     custom_cookie_mode,
     custom_cookie_cross_origin,
-    basic_credentials,
+    basic_user,
+    basic_password,
     basic_preemptive,
     basic_credential_scope,
+    basic_challenged_hosts,
   }
 }
 

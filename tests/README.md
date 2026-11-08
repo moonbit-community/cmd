@@ -72,6 +72,13 @@ The static corpus is in `fixtures/network/wget-cookies.json` and participates
 in the assertion-source snapshot. Full numeric/date grammar remains outside
 this finite profile.
 
+`network-wget-authentication` retains 73 independent fixed-Wget controls for
+optional credential fields, per-hop challenges, command-wide hostname cache,
+401 failures, attached booleans and binary named-file replay. Raw HTTP/CONNECT,
+streams/status, complete product file inventory and unchanged inputs are
+retained. The Linux counterpart repeats the corpus against the pinned oracle;
+configuration/netrc exclusions are explicit in its recorded argv.
+
 ## Ownership
 
 | Path | Source of truth |
