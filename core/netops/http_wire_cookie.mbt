@@ -2,8 +2,16 @@
 fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
   let parts = value.split(";").to_array()
   guard parts[0].find("=") is Some(equal) else { return None }
-  let name = parts[0][:equal].to_owned()
-  let content = parts[0][equal + 1:].to_owned()
+  let name = if profile == CurlProfile {
+    parts[0][:equal].trim(chars=" \t").to_owned()
+  } else {
+    parts[0][:equal].to_owned()
+  }
+  let content = if profile == CurlProfile {
+    parts[0][equal + 1:].trim(chars=" \t").to_owned()
+  } else {
+    parts[0][equal + 1:].to_owned()
+  }
   let mut path = None
   let mut expires_raw = None
   let mut max_age = None
@@ -15,12 +23,30 @@ fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
     let part = part.trim().to_owned()
     match part.find("=") {
       Some(equal) => {
-        let value = part[equal + 1:].to_owned()
-        match part[:equal].to_lower() {
+        let value = if profile == CurlProfile {
+          part[equal + 1:].trim(chars=" \t").to_owned()
+        } else {
+          part[equal + 1:].to_owned()
+        }
+        let attribute = if profile == CurlProfile {
+          part[:equal].trim(chars=" \t").to_owned()
+        } else {
+          part[:equal].to_owned()
+        }
+        match attribute.to_lower() {
           "path" => path = Some(value)
-          "expires" => expires_raw = Some(value)
-          "domain" => domain = Some(value)
+          "expires" =>
+            if profile != CurlProfile || value != "" {
+              expires_raw = Some(value)
+            }
+          "domain" =>
+            if profile != CurlProfile || value != "" {
+              domain = Some(value)
+            }
           "max-age" => {
+            if profile == CurlProfile && value == "" {
+              continue
+            }
             if profile == WgetProfile && @utf8.encode(value).length() >= 32 {
               return None
             }

@@ -18,3 +18,16 @@ async test "transfer file checks retain independent failures" {
   assert_true(error.contains("missing.bin"))
   assert_true(error.contains("wrong.bin"))
 }
+
+///|
+test "cookie row observations retain HttpOnly records and lexical ordering" {
+  assert_eq(
+    cookie_rows(
+      "# Netscape HTTP Cookie File\nlocalhost\tFALSE\t/\tFALSE\t0\tsid\thost\n.localhost\tTRUE\t/\tFALSE\t0\tsid\tdomain\n#HttpOnly_localhost\tFALSE\t/\tFALSE\t0\thidden\tv\n",
+    ),
+    [
+      "#HttpOnly_localhost\tFALSE\t/\tFALSE\t0\thidden\tv", ".localhost\tTRUE\t/\tFALSE\t0\tsid\tdomain",
+      "localhost\tFALSE\t/\tFALSE\t0\tsid\thost",
+    ],
+  )
+}

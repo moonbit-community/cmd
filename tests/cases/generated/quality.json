@@ -14196,7 +14196,7 @@
     {
       "case_id": "release-metadata-curl-help",
       "source": "tests/cases/curl.json",
-      "definition_sha256": "bad72dad90edfbca0604445833dfbfe0f103c9874ad3aa05bc9bca1cc1dd9f6f",
+      "definition_sha256": "b85c88bb4e0371673e3ee2014026714e57832445dc78aa8cff3123e1b4b0bb18",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
