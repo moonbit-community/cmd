@@ -1,4 +1,56 @@
 ///|
+async fn prepare_subsecond_fixture(
+  prepare : async () -> ((Int64, Int32), (Int64, Int32)),
+  record : async (Json) -> Unit,
+  attempt_limit~ : Int32 = 8,
+  timeout_ms~ : Int32 = 10000,
+) -> ((Int64, Int32), (Int64, Int32)) {
+  guard attempt_limit > 0 && timeout_ms > 0 else {
+    fail("subsecond fixture infrastructure: invalid preparation budget")
+  }
+  @async.with_timeout(
+    timeout_ms,
+    () => {
+      for attempt in 1..<=attempt_limit {
+        let started = @env.now()
+        let (early, late) = prepare()
+        let formed = early.0 == late.0 &&
+          early.1 >= 0 &&
+          early.1 < late.1 &&
+          late.1 < 1000000000
+        record({
+          "phase": "subsecond-fixture-attempt",
+          "attempt": attempt,
+          "clock_before_ms": started.to_string(),
+          "clock_after_ms": @env.now().to_string(),
+          "early_mtime": early,
+          "late_mtime": late,
+          "formed": formed,
+          "reason": if formed {
+            "same-second strictly ordered nanoseconds"
+          } else if early.0 != late.0 {
+            "different seconds"
+          } else {
+            "nanoseconds not strictly ordered within range"
+          },
+        })
+        if formed {
+          return (early, late)
+        }
+      }
+      fail(
+        "subsecond fixture infrastructure: no valid pair after " +
+        attempt_limit.to_string() +
+        " preparations",
+      )
+    },
+    error=Failure(
+      "subsecond fixture infrastructure: preparation deadline expired",
+    ),
+  )
+}
+
+///|
 async fn filesystem_precision_scenario(
   root : String,
   work : String,
@@ -10,25 +62,30 @@ async fn filesystem_precision_scenario(
     fail("preserve previous precision observations")
   }
   let observations : Array[Json] = []
-  // Choose a clock interval with room for both creations. The actual file
-  // timestamps, not the wall-clock estimate, establish the required ordering.
-  @async.with_timeout(10000, () => {
-    while @env.now() % 1000UL > 500UL {
-      @async.sleep(5)
-    }
-  })
-  @fs.write_file(work + "/early", "early")
-  @async.sleep(20)
-  @fs.write_file(work + "/late", "late")
-  let early = @fs.mtime(work + "/early")
-  let late = @fs.mtime(work + "/late")
+  // Filesystem timestamps can cross a second despite a wall-clock start guess.
+  // Only fixture preparation may repeat. Every observation is retained, and all
+  // product/oracle calls remain after actual metadata admits one valid pair.
+  let (early, late) = prepare_subsecond_fixture(
+    () => {
+      @fs.write_file(work + "/early", "early")
+      let early = @fs.mtime(work + "/early")
+      @async.sleep(20)
+      @fs.write_file(work + "/late", "late")
+      let late = @fs.mtime(work + "/late")
+      (early, late)
+    },
+    event => filesystem_record(observation_path, observations, event),
+  )
   filesystem_record(observation_path, observations, {
     "phase": "subsecond-precondition",
     "early_mtime": early,
     "late_mtime": late,
     "clock_ms": @env.now().to_string(),
   })
-  guard early.0 == late.0 && early.1 < late.1 else {
+  guard early.0 == late.0 &&
+    early.1 >= 0 &&
+    early.1 < late.1 &&
+    late.1 < 1000000000 else {
     fail(
       "subsecond fixture infrastructure: distinct same-second timestamps required",
     )
