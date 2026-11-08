@@ -238,6 +238,7 @@ pub fn commands() -> Array[CommandContract] {
       "suffix", "dereference-command-line", "dereference", "no-dereference",
     ]),
     // Numbered backups advance beyond the highest valid decimal sibling version.
+    // Failed backup recovery retains the creation error and both recovery paths.
     contract("ln", Extended, NoInput, LineStream, [FileWrite, SymbolicLink], [
       "force", "no-target-directory", "symbolic", "verbose", "interactive", "relative",
       "no-dereference-target", "target-directory", "backup", "backup-control", "suffix",

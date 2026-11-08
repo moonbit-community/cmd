@@ -19,6 +19,10 @@ older backups. Existing mode uses the same numbering when such a backup exists,
 and the simple suffix otherwise. Directory scan failures remain errors.
 Filesystem case/Unicode aliases count as existing backups. Numbered selections
 refuse a backup that appears before rename; simple suffixes still replace.
+If link creation and backup restoration both fail, the diagnostic retains both
+errors and names the destination and backup. A failed restore does not establish
+which path still contains the old entry. Rollback remains cancellable so that
+cancellation after committed creation does not replace the new entry.
 
 ## Options
 

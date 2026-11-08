@@ -529,7 +529,7 @@
         "help"
       ],
       "source_version": "workspace cli/ln@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n",
+      "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\nFailed backup recovery reports both errors and destination/backup paths.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-134"

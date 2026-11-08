@@ -73,18 +73,50 @@ async fn confirm_overwrite(path : String) -> Bool {
 }
 
 ///|
+async fn symlink_entry(link_path : String, target : String) -> Unit {
+  @fs.symlink(link_path, target~)
+}
+
+///|
 // Rollback stays cancellable because cancellation may follow a committed link.
 #warnings("-cancellable_defer")
 async fn create_symlink(
   link_path : String,
   target : String,
   backup_path : String?,
+  create~ : async (String, String) -> Unit = symlink_entry,
+  restore~ : async (String, String) -> Unit = @fsops.restore_backup,
 ) -> Unit {
-  errdefer (match backup_path {
-    Some(backup) => @fsops.restore_backup(link_path, backup) catch { _ => () }
-    None => ()
+  let mut failure_message = "link creation did not complete"
+  errdefer (if backup_path is Some(backup) {
+    restore(link_path, backup) catch {
+      recovery => {
+        let recovery_message = match recovery {
+          @fsops.FsOpError(message) => message
+          _ => recovery.to_string()
+        }
+        raise @fsops.FsOpError(
+          "\{failure_message}; cannot restore '\{link_path}' from backup '\{backup}': \{recovery_message}",
+        )
+      }
+    }
   })
-  @fs.symlink(link_path, target~)
+  let created = try {
+    create(link_path, target)
+    Ok(())
+  } catch {
+    primary => Err(primary)
+  }
+  match created {
+    Ok(_) => ()
+    Err(primary) => {
+      failure_message = match primary {
+        @fsops.FsOpError(message) => message
+        _ => primary.to_string()
+      }
+      raise primary
+    }
+  }
 }
 
 ///|
@@ -158,7 +190,7 @@ async fn main {
   }
   if parsed.contains("help") {
     @stdio.stdout.write(
-      "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n",
+      "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\nFailed backup recovery reports both errors and destination/backup paths.\n",
     )
     return
   }
