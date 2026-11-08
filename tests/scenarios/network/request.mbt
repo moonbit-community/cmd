@@ -60,6 +60,36 @@ async fn network_request(
   if request_wires is Some(wires) {
     wires.clear()
   }
+  let name = "call-\{@fs.readdir(work).length()}"
+  let prefix = work + "/" + name
+  let invoked_at = @async.now()
+  let returned = Ref(false)
+  let returned_at = Ref(invoked_at)
+  @fs.write_file(
+    prefix + ".intent.json",
+    (
+      {
+        "command": Json(command),
+        "args": Json(args),
+        "cwd": Json(work),
+        "phase": "before-invoke",
+        "started_ms": @json.to_json(invoked_at),
+      } : Json).stringify(indent=2),
+  )
+  defer @async.protect_from_cancel(() => {
+    // Without a returned execution there is no child status or cleanup verdict.
+    @fs.write_file(
+      prefix + ".invocation-end.json",
+      (
+        {
+          "returned": Json(returned.val),
+          "elapsed_ms": @json.to_json(
+            (if returned.val { returned_at.val } else { @async.now() }) -
+            invoked_at,
+          ),
+        } : Json).stringify(indent=2),
+    )
+  })
   let execution = (executor.invoke)({
     command,
     args,
@@ -67,10 +97,12 @@ async fn network_request(
     cwd: work,
     environment,
   })
+  returned_at.val = @async.now()
+  returned.val = true
   let result = execution.run.output
-  // Capture product effects before adding evidence files to this directory.
+  // Exclude only the invocation intent owned by this call from product effects.
   let output_names = if expected_files is Some(_) {
-    let names = @fs.readdir(work)
+    let names = @fs.readdir(work).filter(file => file != name + ".intent.json")
     let names = if oracle_image is Some(_) {
       names.filter(name => name != "oracle")
     } else {
@@ -81,7 +113,6 @@ async fn network_request(
   } else {
     None
   }
-  let prefix = work + "/call-\{@fs.readdir(work).length()}"
   @fs.write_file(prefix + ".stdout.bin", result.stdout)
   @fs.write_file(prefix + ".stderr.bin", result.stderr)
   @fs.write_file(prefix + ".status.txt", result.status.to_string())

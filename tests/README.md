@@ -53,6 +53,14 @@ execution records. Ordinary forward-proxy rewriting and full IRI behavior
 retain the limits in [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts).
 Generated tables and finite assertion descriptors do not count as executed tests.
 
+The expanded `network-auth-cookie` suite has a 60-second total scenario budget;
+each candidate invocation retains its 15-second bound. A previous Linux run
+completed successive calls up to the old 30-second deadline and lost only the
+last observation. That failed receipt remains a failure. Network calls now
+persist intent before invocation and a cancellation-protected returned/not-returned
+record, so an outer deadline does not erase which call was attempted. A call
+that never returns supplies no fabricated child status or cleanup verdict.
+
 ## Ownership
 
 | Path | Source of truth |

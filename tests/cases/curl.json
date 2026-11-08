@@ -562,7 +562,7 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "scenario",
-      "timeout_ms": 30000
+      "timeout_ms": 60000
     },
     {
       "id": "repair-final-curl-basic",

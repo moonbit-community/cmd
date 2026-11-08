@@ -14112,7 +14112,7 @@
     {
       "case_id": "network-auth-cookie",
       "source": "tests/cases/curl.json",
-      "definition_sha256": "4a3989e5acbcef6c4ab612b721e541224ea298a905e2329fb9f07dbc4d85341d",
+      "definition_sha256": "3b2654cdc06de0f61a42f0f7d0ed6bc232fb5d4edbb7790d430db8a09179b3bb",
       "classification": "typed-scenario",
       "descriptor": {
         "kind": "scenario",
