@@ -13166,7 +13166,7 @@
         "repair-final-wget-cookie-session",
         "repair-final-wget-cookie-header"
       ],
-      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records.",
+      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Finite Wget dialect controls additionally verify nondefault-port isolation and key deletion, exact imported flags/comments, first domain-chain spelling, quoted attributes and sticky deletion, with actual raw requests and second-process saved-jar reloads.",
       "scenario_bindings": [
         {
           "case_id": "network-auth-cookie",
@@ -13190,6 +13190,23 @@
             "cookie-suffix/wget-invalid-deletion",
             "cookie-suffix/wget-trailing-dot",
             "cookie-suffix/wget-current-private"
+          ]
+        },
+        {
+          "case_id": "network-wget-cookies",
+          "assertions": [
+            "wget-cookie/host-nondefault-isolated",
+            "wget-cookie/port-delete-preserves-any",
+            "wget-cookie/jar-default-ports-stay-explicit",
+            "wget-cookie/httponly-comments-ignored",
+            "wget-cookie/jar-flags-exact-uppercase",
+            "wget-cookie/expired-import-does-not-delete",
+            "wget-cookie/case-first-chain-replacement",
+            "wget-cookie/quoted-value-semicolon",
+            "wget-cookie/secure-flag-assigned",
+            "wget-cookie/max-age-minus-one-rejects",
+            "wget-cookie/empty-expires-rejects",
+            "wget-cookie/age-after-expires"
           ]
         }
       ],

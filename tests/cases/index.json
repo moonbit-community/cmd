@@ -45773,6 +45773,54 @@
         "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:network-wget-cookies",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-cookies",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-wget-cookies",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-cookies",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-wget-cookies-oracle",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-cookies-oracle",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:network-wget-cookies-oracle",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-cookies-oracle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

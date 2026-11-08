@@ -1,0 +1,2177 @@
+{
+  "schema": 1,
+  "oracle_image": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+  "upstream": "GNU Wget 1.25.0",
+  "source_sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+  "independent_observations_sha256": "103879f42d2b12d46812f5afaef508e3a2f5b12060048c62c35f65a27ff999dc",
+  "scope": "Finite fixed-oracle cookie port, attribute and persistence expectations; no complete numeric/date grammar claim.",
+  "cases": [
+    {
+      "label": "host-nondefault-isolated",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "default80-is-any",
+      "hosts": [
+        "a.example.com",
+        "a.example.com:8123",
+        "a.example.com:8124"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "explicit80-is-any",
+      "hosts": [
+        "a.example.com:80",
+        "a.example.com:8123",
+        "a.example.com:8124"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "explicit443-http-is-any",
+      "hosts": [
+        "a.example.com:443",
+        "a.example.com:8123",
+        "a.example.com:8124"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "explicit-domain-is-any",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124",
+        "child.a.example.com:8999"
+      ],
+      "fields": [
+        [
+          "sid=v; Domain=a.example.com; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          ".a.example.com\tTRUE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "port-replacement-preserves-neighbor",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=new; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone\na.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=one",
+          "sid=two",
+          "sid=new",
+          "sid=new"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tnew",
+          "a.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "port-delete-preserves-neighbor",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=; Max-Age=0; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone\na.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=one",
+          "sid=two",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "port-delete-preserves-any",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=; Max-Age=0; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone\na.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo\n.a.example.com\tTRUE\t/\tFALSE\t0\tsid\tany\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=any; sid=one",
+          "sid=any; sid=two",
+          "sid=any",
+          "sid=any"
+        ],
+        "rows": [
+          ".a.example.com\tTRUE\t/\tFALSE\t0\tsid\tany",
+          "a.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "domain-update-preserves-port",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=new; Domain=a.example.com; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone\na.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo\n.a.example.com\tTRUE\t/\tFALSE\t0\tsid\tany\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=any; sid=one",
+          "sid=new; sid=two",
+          "sid=new; sid=one",
+          "sid=new; sid=one"
+        ],
+        "rows": [
+          ".a.example.com\tTRUE\t/\tFALSE\t0\tsid\tnew",
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone",
+          "a.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "domain-delete-preserves-port",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=; Domain=a.example.com; Max-Age=0; Path=/"
+        ],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone\na.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo\n.a.example.com\tTRUE\t/\tFALSE\t0\tsid\tany\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=any; sid=one",
+          "sid=two",
+          "sid=one",
+          "sid=one"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone",
+          "a.example.com:8124\tFALSE\t/\tFALSE\t0\tsid\ttwo"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "default-host-replaces-domain-any",
+      "hosts": [
+        "a.example.com",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=new; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.a.example.com\tTRUE\t/\tFALSE\t0\tsid\tany\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=any",
+          "sid=new",
+          "sid=new"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tnew"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "default-host-delete-preserves-port",
+      "hosts": [
+        "a.example.com",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=; Max-Age=0; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.a.example.com\tTRUE\t/\tFALSE\t0\tsid\tany\na.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=any",
+          "sid=one",
+          "sid=one"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tone"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-default-ports-stay-explicit",
+      "hosts": [
+        "a.example.com",
+        "a.example.com:443",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:80\tFALSE\t/\tFALSE\t0\teighty\tv\na.example.com:443\tFALSE\t/\tFALSE\t0\ttlsport\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "eighty=v",
+          "tlsport=v",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:443\tFALSE\t/\tFALSE\t0\ttlsport\tv",
+          "a.example.com:80\tFALSE\t/\tFALSE\t0\teighty\tv"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "jar-port-normalizes-leading-zero",
+      "hosts": [
+        "a.example.com:8124",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:0008123\tFALSE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-zero-or-empty-port-zero",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:0\tFALSE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-zero-or-empty-port-empty",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:\tFALSE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-domain-port-subhost",
+      "hosts": [
+        "child.a.example.com:8123",
+        "child.a.example.com:8124",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [],
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.a.example.com:8123\tTRUE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v",
+          "",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          ".a.example.com:8123\tTRUE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "jar-malformed-port-retained-unsent",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com:bad\tFALSE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:bad\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "httponly-comments-ignored",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n#HttpOnly_a.example.com\tFALSE\t/\tFALSE\t0\thidden\tv\n  #HttpOnly_a.example.com\tFALSE\t/\tFALSE\t0\tspaced\tv\na.example.com\tFALSE\t/\tFALSE\t0\tplain\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "plain=v",
+          "plain=v",
+          "plain=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tplain\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "header-httponly-bare",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/; HttpOnly"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "header-httponly-assigned",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/; HttpOnly=1"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "secure-flag-bare",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/; Secure"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tTRUE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "secure-flag-assigned",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/; Secure=1"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tTRUE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "secure-flag-empty",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/; Secure="
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tTRUE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "secure-flag-false",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/; Secure=false"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tTRUE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "secure-flag-ows",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/; Secure = nonempty"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tTRUE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-flags-exact-uppercase",
+      "hosts": [
+        "child.a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.a.example.com\ttrue\t/\tFALSE\t0\tlowerdomain\tv\na.example.com\tFALSE\t/\ttrue\t0\tlowersecure\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "lowerdomain=v; lowersecure=v",
+          "lowerdomain=v; lowersecure=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tlowerdomain\tv",
+          "a.example.com\tFALSE\t/\tFALSE\t0\tlowersecure\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-leading-ascii-whitespace",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n \t\r\u000b\fa.example.com\tFALSE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "max-age-minus-one-rejects",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=new; Max-Age=-1; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=old",
+          "sid=old"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\told"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "empty-expires-rejects",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=new; Expires=; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=old",
+          "sid=old"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\told"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "cookie-pair-and-attribute-ows",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid = v ; Path = /"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "quoted-value-semicolon",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=\"one;two\"; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=\"one;two\"",
+          "sid=\"one;two\""
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\t\"one;two\""
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "unterminated-quoted-rejects",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=\"new; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=old",
+          "sid=old"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\told"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "quoted-path-unwrapped",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=\"/\""
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "header-identical-pair-deduplicates",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8123"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\tv\na.example.com\tFALSE\t/step\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv",
+          "a.example.com\tFALSE\t/step\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "expires-after-age",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=new; Path=/; Max-Age=3600; Expires=Wed, 21 Oct 2015 07:28:00 GMT"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "",
+          ""
+        ],
+        "rows": [],
+        "requests": 3
+      }
+    },
+    {
+      "label": "age-after-expires",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=new; Path=/; Expires=Wed, 21 Oct 2015 07:28:00 GMT; Max-Age=3600"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "",
+          ""
+        ],
+        "rows": [],
+        "requests": 3
+      }
+    },
+    {
+      "label": "case-first-chain-replacement",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=new; Domain=a.example.com; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.A.Example.com\tTRUE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=new",
+          "sid=new"
+        ],
+        "rows": [
+          ".A.Example.com\tTRUE\t/\tFALSE\t0\tsid\tnew"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "case-first-chain-new-name",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "other=v; Domain=a.eXample.com; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.A.Example.com\tTRUE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "other=v; sid=old",
+          "other=v; sid=old"
+        ],
+        "rows": [
+          ".A.Example.com\tTRUE\t/\tFALSE\t0\tother\tv",
+          ".A.Example.com\tTRUE\t/\tFALSE\t0\tsid\told"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "case-deleted-chain-new-spelling",
+      "hosts": [
+        "a.example.com",
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=; Domain=a.example.com; Path=/; Max-Age=0"
+        ],
+        [
+          "sid=new; Domain=a.eXample.com; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.A.Example.com\tTRUE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\nstep=2\n",
+          "step=2\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "",
+          "sid=new",
+          "sid=new"
+        ],
+        "rows": [
+          ".a.eXample.com\tTRUE\t/\tFALSE\t0\tsid\tnew"
+        ],
+        "requests": 4
+      }
+    },
+    {
+      "label": "expired-import-does-not-delete",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\na.example.com\tFALSE\t/\tFALSE\t1\tsid\texpired\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=old",
+          "sid=old"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\told"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-tab-value-retained",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\tv\tw\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v\tw",
+          "sid=v\tw",
+          "sid=v\tw"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv\tw"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-raw-relative-path-retained",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\tstep\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com\tFALSE\tstep\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "quoted-trailing-junk-truncates",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=\"new\"junk; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=\"new\"",
+          "sid=\"new\""
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\t\"new\""
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "single-star-name",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid*=new; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=new",
+          "sid=new"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tnew"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "double-star-name",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid**=new; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=new",
+          "sid=new"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tnew"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "numeric-star-name",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid*0=new; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=new",
+          "sid=new"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tnew"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "star-path",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=new; Path*=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=new",
+          "sid=new"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tnew"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "quoted-escaped-quote",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [
+          "sid=\"one\\\"two\"; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\told\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=old",
+          "sid=\"one\\\"",
+          "sid=\"one\\\""
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\t\"one\\\""
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "jar-distinct-pairs-identical-serialization",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\ta=b\tc\na.example.com\tFALSE\t/\tFALSE\t0\ta\tb=c\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "a=b=c; a=b=c",
+          "a=b=c; a=b=c",
+          "a=b=c; a=b=c"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\ta\tb=c",
+          "a.example.com\tFALSE\t/\tFALSE\t0\ta=b\tc"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "duplicate-path-representative-order",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\na.example.com\tFALSE\t/\tFALSE\t0\tsid\tv\na.example.com\tFALSE\t/st\tFALSE\t0\tother\tx\na.example.com\tFALSE\t/step\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "other=x; sid=v",
+          "other=x; sid=v",
+          "sid=v; other=x"
+        ],
+        "rows": [
+          "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv",
+          "a.example.com\tFALSE\t/st\tFALSE\t0\tother\tx",
+          "a.example.com\tFALSE\t/step\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3,
+        "row_orders": [
+          [
+            "a.example.com\tFALSE\t/step\tFALSE\t0\tsid\tv",
+            "a.example.com\tFALSE\t/st\tFALSE\t0\tother\tx",
+            "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+          ],
+          [
+            "a.example.com\tFALSE\t/\tFALSE\t0\tsid\tv",
+            "a.example.com\tFALSE\t/st\tFALSE\t0\tother\tx",
+            "a.example.com\tFALSE\t/step\tFALSE\t0\tsid\tv"
+          ]
+        ]
+      }
+    },
+    {
+      "label": "new-port-cookie-reload-mismatch",
+      "hosts": [
+        "a.example.com:8123",
+        "a.example.com:8124"
+      ],
+      "fields": [
+        [
+          "sid=v; Path=/"
+        ],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "a.example.com:8123\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "top-level-parent-skipped",
+      "hosts": [
+        "a.example.com",
+        "a.example.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.com\tTRUE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          ".com\tTRUE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "top-level-exact-host-retained",
+      "hosts": [
+        "com",
+        "com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.com\tTRUE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          ".com\tTRUE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "single-label-parent-skipped",
+      "hosts": [
+        "child.localhost",
+        "child.localhost"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.localhost\tTRUE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          ".localhost\tTRUE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "two-label-parent-retained",
+      "hosts": [
+        "x.a.com",
+        "x.a.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\n.a.com\tTRUE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          ".a.com\tTRUE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "exact-host-32-labels",
+      "hosts": [
+        "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.example.com",
+        "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.example.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\nx.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.example.com\tFALSE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "sid=v",
+          "sid=v",
+          "sid=v"
+        ],
+        "rows": [
+          "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    },
+    {
+      "label": "exact-host-33-labels",
+      "hosts": [
+        "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.example.com",
+        "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.example.com"
+      ],
+      "fields": [
+        [],
+        []
+      ],
+      "input": "# independent Wget dialect fixture\nx.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.example.com\tFALSE\t/\tFALSE\t0\tsid\tv\n",
+      "expected": {
+        "status": [
+          0,
+          0
+        ],
+        "stdout": [
+          "step=0\nstep=1\n",
+          "step=1\n"
+        ],
+        "stderr": [
+          "",
+          ""
+        ],
+        "cookies": [
+          "",
+          "",
+          ""
+        ],
+        "rows": [
+          "x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.example.com\tFALSE\t/\tFALSE\t0\tsid\tv"
+        ],
+        "requests": 3
+      }
+    }
+  ],
+  "supplemental_observations_sha256": "2b65d6ee32384dbad7e8c6958f6ad4c76117f9d702cab514776c51c3b73bdae5",
+  "chain_boundary_observations_sha256": "31f0a19cf25e92fa142876ec99d3649989a83e32bc7119a3266297981aeef498"
+}

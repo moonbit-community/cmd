@@ -142,6 +142,33 @@ converter controls and the [raw command scenario](../../tests/scenarios/network/
 establish different layers of correctness. [ADR-0005](../adr/0005-transfer.md#international-url-hosts)
 owns input, proxy and cookie boundaries.
 
+## Wget cookie selection and persistence
+
+`HttpWire::read_response -> wget_wire_cookie -> CookieJar::receive` separates
+field extraction from domain/path admission. The extractor scans quoted and
+unquoted parameters once, preserving Wget's ASCII whitespace, quote and RFC
+2231 adjustments. Response parsing retains the existing header limits; trusted
+jar input does not gain a new size limit in this repair.
+
+`CookieJar::replace` keeps the first domain-chain spelling and places each new
+or replaced Wget cookie at the head. `header_for` selects domain, port, path,
+expiry and Secure matches, orders domain chains, retains the last identical
+name/value pair, then orders by domain/path quality and name/value. Pair
+identity must precede serialization: `a=b` plus `c` differs from `a` plus `b=c`.
+Sorting by quality before removing duplicates was rejected because it selects
+the wrong path representative. Saving preserves chain order; reloading reverses
+that order and can change the representative, which real two-process controls
+observe explicitly.
+
+The current array insertion and duplicate scans use quadratic comparisons in
+the number of selected records, plus UTF-8 domain/path comparison costs. Extra
+selection storage is linear. No timing or resource acceptance is claimed.
+Any indexing optimization must retain the chain representative, replacement
+order, port identity, jar failures and raw sequence in
+[`network-wget-cookies`](../../tests/scenarios/network/wget_cookies.mbt), with
+the frozen corpus in [network fixtures](../../tests/fixtures/network/README.md).
+Numeric/date and Domain-normalization limits remain in ADR-0005.
+
 ## Verification routes
 
 `base32-byte-encoding`, `base64-byte-encoding` and `inflate-ready-spans` in

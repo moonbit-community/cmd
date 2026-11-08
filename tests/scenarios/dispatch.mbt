@@ -308,6 +308,10 @@ pub async fn execute_scenario(
         "ls-link-facets" => link_dereference_scenario(root, work, proof?)
         "network-auth-cookie" => network_cli_scenario(root, work, proof?)
         "network-idna" => network_idna_scenario(root, work, proof?)
+        "network-wget-cookies" =>
+          network_wget_cookies_scenario(root, work, proof?)
+        "network-wget-cookies-oracle" =>
+          network_wget_cookies_scenario(root, work, oracle_image?)
         "network-idna-oracle" =>
           network_idna_scenario(root, work, oracle_image?)
         "network-cookie-suffix" =>

@@ -26,8 +26,8 @@ value; explicit Cookie headers continue across origins.
 
 Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
 sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
-rules do not apply to Wget. Port-scoped jars, complete path dialects and jar
-serialization remain unfinished under issue #34.
+rules do not apply to Wget. Complete numeric/date and remaining malformed jar
+grammar remain unfinished under issue #34.
 The workspace applies the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
 to response cookies, including wildcard and exception rules. Exact public-suffix
 domains keep Wget's domain scope; imported files retain Wget's separate policy.
@@ -85,12 +85,23 @@ Outgoing Host fields bracket mapped colons and omit the scheme's default port.
 ## Limitations
 
 The workspace rejects response cookie domains using the complete pinned PSL.
-Wget then discards a matching stored name/domain/path even for an unexpired
+Wget then discards a matching stored name/domain/port/path even for an unexpired
 update, after validating that an explicit Path prefixes the request path.
 It strips one leading Domain dot and retains distinct repeated-dot keys.
 Request cookie paths use raw prefixes; a missing Path uses the URL directory
-including its trailing slash. Cookie ports and remaining jar grammar still
-need separate work.
+including its trailing slash. Host-only response cookies from ports other than
+80 and 443 retain that port in identity, request selection and jar persistence;
+explicit Domain cookies and response cookies from those two default ports have
+no port restriction. An explicit jar port remains restricted, including 80/443.
+Imported jars use exact uppercase TRUE flags, ignore all comment lines including
+`#HttpOnly_`, retain TABs in the last value column, and keep the first domain-chain
+spelling. Matching name/value pairs are sent once even across different paths.
+Single-label parent chains are excluded while exact single-label hosts remain
+eligible; hosts with more than 32 labels do not receive jar cookies.
+Quoted parameters and ASCII whitespace follow Wget's extractor; Secure ignores
+an assigned value and HttpOnly is ignored. Empty Expires and Max-Age=-1 reject
+the field; deletion remains sticky across later expiry attributes. Full floating
+expiry grammar, date parsing and Cookie Domain normalization remain separate work.
 
 - Recursive mirroring, FTP, non-Basic authentication, HSTS and timestamp restoration are unsupported.
 - Content-encoded bodies remain encoded. Consumed stdin request bodies cannot be replayed.

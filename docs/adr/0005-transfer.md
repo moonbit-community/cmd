@@ -120,10 +120,31 @@ image identity; real Curl/Wget file-read traces verify actual use. Old revision
 2 binding. Dataset updates require regeneration, complete rule/alias comparison
 and actual CLI regressions, never a partial handcrafted suffix list.
 
-Wget port-scoped cookies,
-its full path dialect, HttpOnly jar handling, and complete malformed jar/field
-grammar (including early rejection of conflicting Domain attributes) remain
-issue #34 work. No host implementation or private API is needed.
+Wget host-only response cookies retain nondefault ports in identity, matching
+and persistence. Response ports 80/443 and explicit Domain cookies use ANY;
+explicit imported ports remain exact even for 80/443. The first case-insensitive
+domain-chain key spelling survives replacement and additional names until the
+chain is deleted. Single-label parent chains are not searched, exact single-label
+hosts remain eligible, and lookup skips hosts above 32 labels. Stale imports do
+not remove live keys. Imported TRUE flags are
+case-sensitive, all comment lines including HttpOnly are ignored, the final
+value retains TABs, and nonempty raw paths remain stored. Selected identical
+name/value pairs are emitted once. New and replaced cookies enter the head of
+their domain chain; saving retains that chain order. The fixed profile keeps
+the last equal pair from specific-to-general domain-chain traversal before
+quality sorting, so a reload can change which duplicate path participates.
+The regression pins raw row order and both processes' Cookie order for that
+case, in addition to logical rows. The field extractor handles ASCII whitespace,
+quoted semicolons and Wget's RFC 2231 name adjustment; Secure ignores its value,
+HttpOnly is ignored, and an earlier deletion is sticky. Finite frozen oracle
+expectations in `tests/fixtures/network/wget-cookies.json` drive real candidate
+and fixed-oracle wire, logical jar rows and second-process reload controls.
+They are independent of generated coverage definitions.
+
+Complete floating-point Max-Age/imported-expiry grammar, exact date parsing,
+remaining malformed jar/field behavior and Cookie Domain normalization remain
+issue #34 work. Negative/near-zero expiry and overflow storage require separate
+boundary controls. No host implementation or private API is needed.
 
 Wget retains the lowest nonzero transfer exit code across URL operands, matching
 the [GNU exit-status rule](https://www.gnu.org/software/wget/manual/wget.html#Exit-Status).

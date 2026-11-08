@@ -4,7 +4,7 @@
   "counts": {
     "exact-local": 3565,
     "finite-diagnostic": 183,
-    "typed-scenario": 68,
+    "typed-scenario": 70,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -29908,7 +29908,7 @@
     {
       "case_id": "release-metadata-wget-help",
       "source": "tests/cases/wget.json",
-      "definition_sha256": "4e3945c42da9d73e87aa71deeb98302a3c6ed417719819bf05337033f777932c",
+      "definition_sha256": "1f7bcdd324f8e472f25bc5ddb746c08be4df355d2d8e68dcd77e9ce6c527950c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -29984,6 +29984,34 @@
         "kind": "exact"
       },
       "required_work": ""
+    },
+    {
+      "case_id": "network-wget-cookies",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "0cc0c7beb68d88e24677f8e0521ebb1c4ed7dd94ce8398074a7e8dd4244293ab",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-wget-cookies"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-wget-cookies-oracle",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "c8a57fa5b4b4d1b20c8dc767cc33126c958a8c855e103593e4dce69866a5b2ac",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-wget-cookies-oracle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "p1-zcat-concatenated",
@@ -48141,6 +48169,20 @@
     },
     "wget-exit-network-before-auth": {
       "kind": "exact"
+    },
+    "network-wget-cookies": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-wget-cookies"
+      ]
+    },
+    "network-wget-cookies-oracle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-wget-cookies-oracle"
+      ]
     },
     "p1-zcat-concatenated": {
       "kind": "exact"
