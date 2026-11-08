@@ -78,8 +78,9 @@ Results are `pass`, `fail`, `skip` or `infra`; verification distinguishes
 availability, local contracts, differential comparisons and explicit boundaries.
 Missing fixtures, empty required selections, deadlines, uncertain cleanup and
 report failures cannot pass. Stateful fixtures run serially; independent cases
-use at most four tasks. Successful fixtures are removed and failure captures
-are retained. Reports and driver/source receipts stay under the fresh report
+use at most four tasks. Successful fixtures are normally removed; the four
+shared network scenarios retain raw success receipts for independent review.
+Failure captures are retained. Reports and driver/source receipts stay under the fresh report
 root, outside versioned definitions.
 
 Development CI runs all applicable Wasm checks on Linux, macOS and Windows,

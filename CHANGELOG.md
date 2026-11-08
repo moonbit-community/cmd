@@ -18,7 +18,8 @@ Development only.
 
 - Repair unpublished curl repeated request fields, ordered response fields and
   Basic challenge-list recognition. Replace lossy header observations and the
-  misbound Wget Cookie redirect claim with real wire coverage; #34 remains open
+  misbound Wget Cookie redirect claim with real wire coverage. Retain successful
+  network launch, wire and oracle receipts in CI artifacts; #34 remains open
   for its remaining protocol, cookie, configuration and jq work.
 
 ## 2026-11-08

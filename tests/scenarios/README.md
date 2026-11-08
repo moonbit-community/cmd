@@ -24,3 +24,7 @@ Workspace and published launch adapters execute these same assertions.
 Reviewed finite descriptors live in `coverage/review/scenarios.json`.
 A passing scenario label is insufficient: actual receipts must contain the
 matching expected values, command identity and complete observation dimensions.
+The four shared network scenarios retain their successful work directories in
+the fresh report root, including candidate launch identities, raw wire records,
+streams, statuses and Linux oracle lifecycle receipts. These records are kept
+in the ordinary CI artifact so a later audit can inspect individual comparisons.
