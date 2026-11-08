@@ -312,6 +312,7 @@ pub fn commands() -> Array[CommandContract] {
     // Positive decimal overflow keeps the replacement under a 400-day lifetime cap.
     // Cookie ordering uses descending path/domain/name byte length, then creation.
     // Candidate prefix checks use normalized paths and final host-only scope.
+    // Header cookie pairs and attributes trim ASCII OWS before identity checks.
     // Secure contexts are HTTPS or exact localhost/127.0.0.1/::1. Insecure
     // overlays cannot replace live Secure cookies; identity includes host-only.
     // PSL-dependent host-only conversion and complete jar grammar remain open.

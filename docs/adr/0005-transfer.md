@@ -53,7 +53,11 @@ policies remain profile-specific. Exact wire tests own the detailed cases;
 this does not establish browser policy, PSL/IDNA or full jar serialization.
 
 The unpublished Curl profile checks case-sensitive `__Secure-` and `__Host-`
-prefixes before mutating storage, including Netscape imports. `__Host-` uses
+prefixes before mutating storage, including Netscape imports. Header cookie
+names, values and attributes trim ASCII SP/HTAB before identity, prefix and
+overlay decisions. Empty Domain, Max-Age and Expires attributes retain earlier
+values; assigned Secure attributes remain distinct from the Curl flag.
+`__Host-` uses
 the normalized root path and final host-only scope, not mere Domain-attribute
 absence; an exact IP Domain remains host-only. Path normalization removes
 quotes and one trailing slash, maps invalid provided paths to `/`, and uses
@@ -64,6 +68,8 @@ rule compares the old path's first component as a prefix, including
 `/loginhelper` for `/login`; expired records do not block updates. Curl identity
 includes host-only/domain scope, while Wget retains its separate identity and
 HTTPS-only transmission without these prefix/admission/overlay policies.
+Cookie files are trusted for Secure attributes; response-origin admission and
+overlay checks do not apply to local jar imports.
 
 Private fixed-clock tests cover domain overlap, expiration, path and identity.
 The shared CLI security matrix observes real redirect requests, unchanged
@@ -74,7 +80,8 @@ must convert accepted exact public-suffix domains to host-only scope: current
 rejected where pinned curl accepts them. Lift that limitation only with a
 complete pinned PSL dataset and actual oracle cases. Wget port-scoped cookies,
 its full path dialect, HttpOnly jar handling, and complete malformed jar/field
-grammar remain issue #34 work. No host implementation or private API is needed.
+grammar (including early rejection of conflicting Domain attributes) remain
+issue #34 work. No host implementation or private API is needed.
 
 Wget retains the lowest nonzero transfer exit code across URL operands, matching
 the [GNU exit-status rule](https://www.gnu.org/software/wget/manual/wget.html#Exit-Status).

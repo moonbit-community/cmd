@@ -381,3 +381,69 @@ test "curl prefix scope keeps the unfinished public suffix conversion explicit" 
     assert_true(jar.entries.is_empty())
   }
 }
+
+///|
+test "curl cookie OWS is normalized before prefix and overlay decisions" {
+  let source = parse_absolute_url("https://www.example.test/set")
+  for
+    field in [
+      "__Host-a=bad; Secure; Path= /nested", "__Host-a=bad; Secure; Path =/nested",
+      "__Host-a=bad; Secure; Path= \t\"/nested\"", "__Host-a=bad; Secure; Path\t=\t/nested",
+      "__Host-a=bad; Secure; Domain = www.example.test; Path=/", "__Host-a=bad; Secure; Domain=www.example.test; Domain=; Path=/",
+    ] {
+    let jar = CookieJar::new()
+    jar.receive(
+      source,
+      [wire_cookie(field, CurlProfile).unwrap()],
+      100L,
+      profile=CurlProfile,
+    )
+    assert_true(jar.entries.is_empty(), msg=field)
+  }
+  let jar = CookieJar::new()
+  jar.receive(
+    source,
+    [wire_cookie(" __Host-a \t= v \t; Secure; Path = / ", CurlProfile).unwrap()],
+    100L,
+    profile=CurlProfile,
+  )
+  assert_eq(
+    jar.header_for(source, 101L, profile=CurlProfile),
+    Some("__Host-a=v"),
+  )
+  let guarded = CookieJar::new()
+  guarded.receive(
+    source,
+    [@http.Cookie("sid", "secure", secure=true, path="/")],
+    100L,
+    profile=CurlProfile,
+  )
+  guarded.receive(
+    parse_absolute_url("http://www.example.test/set"),
+    [wire_cookie("sid \t= plain ; Path = /", CurlProfile).unwrap()],
+    101L,
+    profile=CurlProfile,
+  )
+  assert_eq(
+    guarded.header_for(source, 102L, profile=CurlProfile),
+    Some("sid=secure"),
+  )
+}
+
+///|
+test "curl empty attributes retain prior domain expiry and flag semantics" {
+  let parsed = wire_cookie(
+    "__Host-a=v; Domain= 127.0.0.1 ; Domain=; Path = / ; Max-Age= 100 ; Max-Age= ; Expires=Wed, 21 Oct 2015 07:28:00 GMT; Expires=; Secure",
+    CurlProfile,
+  ).unwrap()
+  assert_eq(parsed.domain, Some("127.0.0.1"))
+  assert_eq(parsed.path, Some("/"))
+  assert_eq(parsed.max_age, Some(100L))
+  assert_eq(parsed.expires_raw, Some("Wed, 21 Oct 2015 07:28:00 GMT"))
+  assert_true(parsed.secure)
+  let assigned_flag = wire_cookie(
+    "__Secure-a=v; Secure = true; Path=/",
+    CurlProfile,
+  ).unwrap()
+  assert_false(assigned_flag.secure)
+}

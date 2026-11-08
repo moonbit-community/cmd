@@ -17,10 +17,12 @@ Interim fields are excluded. Request Content-Length must be singular; framing
 and generated-header validation still apply. The published coordinate is unchanged.
 
 The workspace also validates `__Secure-` and `__Host-` cookies before storage
-or jar import, after curl path normalization. Secure cookies require HTTPS or
+or jar import, after curl path normalization. Receiving and sending Secure
+cookies requires HTTPS or
 the exact localhost, 127.0.0.1 or ::1 exception; other HTTP origins cannot
 replace or delete an overlapping live Secure cookie. Host-only and domain
 cookies keep separate replacement identities. Explicit Cookie text is unchanged.
+Header cookie names, values and attributes trim ASCII SP/HTAB before these checks.
 
 ## Options
 

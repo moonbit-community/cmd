@@ -49,6 +49,22 @@ async fn network_cookie_security_scenario(
       ("host-relative-path", "__Host-a=v; Secure; Path=relative", true),
       ("host-quoted-path", "__Host-a=v; Secure; Path=\"/\"", true),
       ("host-double-slash-path", "__Host-a=v; Secure; Path=//", true),
+      ("host-path-value-ows", "__Host-a=bad; Secure; Path= /nested", false),
+      ("host-path-name-ows", "__Host-a=bad; Secure; Path =/nested", false),
+      (
+        "host-path-quoted-ows", "__Host-a=bad; Secure; Path= \t\"/nested\"", false,
+      ),
+      ("host-path-tab-ows", "__Host-a=bad; Secure; Path\t=\t/nested", false),
+      (
+        "host-domain-ows", "__Host-a=v; Secure; Domain = 127.0.0.1 ; Path = /", true,
+      ),
+      (
+        "host-empty-domain", "__Host-a=v; Secure; Domain=127.0.0.1; Domain=; Path=/",
+        true,
+      ),
+      ("host-pair-ows", "__Host-a \t= v \t; Secure; Path = /", true),
+      ("host-empty-maxage", "__Host-a=v; Secure; Path=/; Max-Age=", true),
+      ("secure-assigned-flag", "__Secure-a=v; Secure = true; Path=/", false),
     ] {
     let name = if label.has_prefix("secure-") {
       "__Secure-a"
@@ -154,6 +170,7 @@ async fn network_cookie_security_scenario(
       ("first-component", "/login/en", "sid=plain; Path=/login/fr", false),
       ("different-path", "/login", "sid=plain; Path=/other", true),
       ("deletion", "/login", "sid=; Path=/login; Max-Age=0", false),
+      ("pair-name-ows", "/", "sid = plain; Path = /", false),
     ] {
     let old_row = "localhost.\tFALSE\t" + path + "\tTRUE\t0\tsid\tsecure"
     cases.push({
