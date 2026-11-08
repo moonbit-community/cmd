@@ -154,7 +154,7 @@ async fn run_panels(options : Map[String, String]) -> Bool {
   @fs.mkdir(output, recursive=true, allow_exist=false)
   @fs.mkdir(output + "/tools/oracle", recursive=true)
   let fixed : Array[(String, String)] = []
-  @fs.mkdir(output + "/policy/tests/harness/catalog", recursive=true)
+  @fs.mkdir(output + "/policy/tests/cases/generated", recursive=true)
   @fs.mkdir(output + "/policy/tests/benchmark", recursive=true)
   let actual = options.copy()
   let commands = real_selected_commands(options, rows)
