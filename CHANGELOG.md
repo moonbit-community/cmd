@@ -16,6 +16,10 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
+- Repair the unpublished mkdir candidate's standalone build against its declared
+  published core dependency after package consolidation. Preserve numeric mode
+  grammar and mark find/test examples as unpublished candidates. Publication
+  remains separate from development validation.
 - Repair unpublished ln recovery diagnostics to retain creation and restoration
   failures together with destination/backup paths. Assert real file states and
   preserve cancellation after committed creation; published packages are unchanged.
