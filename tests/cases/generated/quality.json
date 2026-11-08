@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 3558,
+    "exact-local": 3565,
     "finite-diagnostic": 183,
     "typed-scenario": 64,
     "typed-dynamic-output": 12
@@ -14278,6 +14278,26 @@
         ]
       },
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "curl-auth-rejected",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "18721cf98c15778ed0e64b38e9ade064297422d7cd798036e2b167e7475b38bd",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "curl-auth-rejected-fail",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "7fe107bee947054327dc5998f806c0bf8498341c0beee69aa8cdb2ce3fa22384",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
     },
     {
       "case_id": "p2-date-epoch-format",
@@ -29832,7 +29852,7 @@
     {
       "case_id": "release-metadata-wget-help",
       "source": "tests/cases/wget.json",
-      "definition_sha256": "c395bf7cf98d3d15ae34a169a67912de96872484f9b79ad67439a280c212c6dd",
+      "definition_sha256": "59a0dd685169c891e5ce9291c83fd29b1d365b0b000228d19fa762739a4fd58b",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -29853,6 +29873,56 @@
       "case_id": "quality-wget-timestamping-control",
       "source": "tests/cases/wget.json",
       "definition_sha256": "fde177b05e91ae2e7a3723dd1e83b69be4f3d5962b38fb381b2ce8fa314e1876",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "wget-auth-rejected",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "a1719efa5fed44bb6158423414a1f074aad94098ebe1dd6b3d088e782ffef438",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "wget-exit-auth-before-http",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "8c887c18a96c063ecf2fe5da57a147b9e0a1f071661fe2a85e80f7687f459600",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "wget-exit-http-before-auth",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "1c25f669e14b18896f33a1669ecc1862d49961031d36f6f0d5c6b0d40e0cf19e",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "wget-exit-auth-before-network",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "bd1b6b3bae76391a454124cc7f7882cdf4b45deb653846bd0d1898d1f8f7c522",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "wget-exit-network-before-auth",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "3bb497b4b73beed73e1af78bfcba39f8f8dfae2b7ee8addc88e9e04990c782eb",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -43132,6 +43202,12 @@
         "scenario:network-option-effects"
       ]
     },
+    "curl-auth-rejected": {
+      "kind": "exact"
+    },
+    "curl-auth-rejected-fail": {
+      "kind": "exact"
+    },
     "p2-date-epoch-format": {
       "kind": "exact"
     },
@@ -47965,6 +48041,21 @@
       "kind": "exact"
     },
     "quality-wget-timestamping-control": {
+      "kind": "exact"
+    },
+    "wget-auth-rejected": {
+      "kind": "exact"
+    },
+    "wget-exit-auth-before-http": {
+      "kind": "exact"
+    },
+    "wget-exit-http-before-auth": {
+      "kind": "exact"
+    },
+    "wget-exit-auth-before-network": {
+      "kind": "exact"
+    },
+    "wget-exit-network-before-auth": {
       "kind": "exact"
     },
     "p1-zcat-concatenated": {

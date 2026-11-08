@@ -921,6 +921,50 @@
       "expected_stderr_text": "",
       "stdin_text": "",
       "expected_stdout_text": ""
+    },
+    {
+      "id": "curl-auth-rejected",
+      "command": "curl",
+      "args": [
+        "-s",
+        "-u",
+        "user:bad",
+        "${HTTP_BASE}/auth-rejected"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true
+    },
+    {
+      "id": "curl-auth-rejected-fail",
+      "command": "curl",
+      "args": [
+        "-sf",
+        "-u",
+        "user:bad",
+        "${HTTP_BASE}/auth-rejected"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "NO_PROXY": "*",
+        "no_proxy": "*"
+      },
+      "expected_status": 22,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true
     }
   ]
 }

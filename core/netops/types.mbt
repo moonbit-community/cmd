@@ -98,6 +98,7 @@ pub(all) enum TransferErrorKind {
   TimeoutFailure
   RedirectFailure
   HttpStatusFailure
+  AuthenticationFailure
   InputFailure
   RewindFailure
   OutputFailure

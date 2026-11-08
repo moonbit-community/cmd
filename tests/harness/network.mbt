@@ -23,6 +23,13 @@ pub async fn run_http_fixture(server : @http.Server) -> Unit {
       return
     }
     match request.path {
+      "/auth-rejected" =>
+        connection
+        ..send_response(401, "Unauthorized", extra_headers={
+          "WWW-Authenticate": "Basic realm=\"fixture\"",
+          "Content-Length": "0",
+        })
+        .end_response()
       "/auth-cookie-challenge" if request.headers.get("Authorization") is None =>
         connection
         ..send_response(401, "Unauthorized", extra_headers={

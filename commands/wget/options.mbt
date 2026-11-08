@@ -90,6 +90,7 @@ fn usage() -> String {
     #|Unsolicited 304 exits 8. Continued GET with --content-disposition selects
     #|the filename with HEAD before choosing that file's resume offset.
     #|Multiple URL failures retain the lowest nonzero transfer exit code.
+    #|Rejected Basic credentials exit 6; other HTTP errors exit 8.
   text + "\n"
 }
 

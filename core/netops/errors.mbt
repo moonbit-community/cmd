@@ -108,6 +108,7 @@ pub fn retryable_failure(kind : TransferErrorKind, status : Int32?) -> Bool {
     | InputFailure
     | RewindFailure
     | OutputFailure
+    | AuthenticationFailure
     | ProtocolFailure => false
   }
 }

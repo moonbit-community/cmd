@@ -203,7 +203,7 @@ fn exit_code(kind : @netops.TransferErrorKind) -> Int32 {
     @netops.ProxyFailure => 5
     @netops.ConnectionFailure => 7
     @netops.PartialBodyFailure => 18
-    @netops.HttpStatusFailure => 22
+    @netops.HttpStatusFailure | @netops.AuthenticationFailure => 22
     @netops.OutputFailure => 23
     @netops.InputFailure => 26
     @netops.RewindFailure => 65
@@ -293,7 +293,8 @@ fn can_retry(
     return kind != @netops.InputFailure && kind != @netops.OutputFailure
   }
   match kind {
-    @netops.HttpStatusFailure => @netops.retryable_failure(kind, status)
+    @netops.HttpStatusFailure | @netops.AuthenticationFailure =>
+      @netops.retryable_failure(kind, status)
     @netops.ConnectionFailure => options.retry_connection_refused
     @netops.TimeoutFailure => true
     _ => false
@@ -306,7 +307,10 @@ fn reports_retry_error(
   kind : @netops.TransferErrorKind,
 ) -> Bool {
   (!options.silent || options.show_error) &&
-  (kind != @netops.HttpStatusFailure || options.fail)
+  (
+    ![@netops.HttpStatusFailure, @netops.AuthenticationFailure].contains(kind) ||
+    options.fail
+  )
 }
 
 ///|

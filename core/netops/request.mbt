@@ -55,6 +55,12 @@ priv struct PreparedHeaders {
 }
 
 ///|
+fn uses_basic_authentication(value : String) -> Bool {
+  let value = value.to_lower().trim_start()
+  value == "basic" || value.has_prefix("basic ") || value.has_prefix("basic\t")
+}
+
+///|
 async fn body_length(body : RequestBody) -> Int64? {
   match body {
     EmptyBody => None
