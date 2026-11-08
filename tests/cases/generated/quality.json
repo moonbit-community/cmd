@@ -14196,7 +14196,7 @@
     {
       "case_id": "release-metadata-curl-help",
       "source": "tests/cases/curl.json",
-      "definition_sha256": "99261e30aefd136f87b5e0d3dc5e8ca2a46fc7915bc6eceadf966e2fa5ece620",
+      "definition_sha256": "bad72dad90edfbca0604445833dfbfe0f103c9874ad3aa05bc9bca1cc1dd9f6f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -29852,7 +29852,7 @@
     {
       "case_id": "release-metadata-wget-help",
       "source": "tests/cases/wget.json",
-      "definition_sha256": "59a0dd685169c891e5ce9291c83fd29b1d365b0b000228d19fa762739a4fd58b",
+      "definition_sha256": "4e8704cf3f15cb52cc3e368be061fba368eac55085c4b27c58e78aa3ad060d55",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

@@ -116,19 +116,6 @@ fn resumed_response_range(
 }
 
 ///|
-fn response_headers(
-  response : @http.Response,
-  cookie_fields : Array[HttpHeader],
-) -> Array[HttpHeader] {
-  let result : Array[HttpHeader] = []
-  for name, value in response.headers {
-    result.push({ name: name.to_string(), value, })
-  }
-  result.append(cookie_fields)
-  result
-}
-
-///|
 fn content_disposition_filename(value : String) -> String? {
   let mut regular : String? = None
   for part in value.split(";") {

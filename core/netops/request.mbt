@@ -49,15 +49,88 @@ fn validate_headers(
 
 ///|
 priv struct PreparedHeaders {
-  persistent : Map[@http.CaseInsensitiveString, String]
-  per_request : Map[@http.CaseInsensitiveString, String]
+  persistent : HeaderFields
+  per_request : HeaderFields
   authorization_supplied : Bool
+}
+
+///|
+priv struct HeaderFields {
+  fields : Array[HttpHeader]
+}
+
+///|
+fn HeaderFields::get(self : HeaderFields, name : String) -> String? {
+  let name = name.to_lower()
+  for header in self.fields {
+    if header.name.to_lower() == name {
+      return Some(header.value)
+    }
+  }
+  None
+}
+
+///|
+fn HeaderFields::contains(self : HeaderFields, name : String) -> Bool {
+  self.get(name) is Some(_)
+}
+
+///|
+fn HeaderFields::set(
+  self : HeaderFields,
+  name : String,
+  value : String,
+) -> Unit {
+  let lower = name.to_lower()
+  for index in 0..<self.fields.length() {
+    if self.fields[index].name.to_lower() == lower {
+      self.fields[index] = http_header(self.fields[index].name, value)
+      return
+    }
+  }
+  self.fields.push(http_header(name, value))
 }
 
 ///|
 fn uses_basic_authentication(value : String) -> Bool {
   let value = value.to_lower().trim_start()
   value == "basic" || value.has_prefix("basic ") || value.has_prefix("basic\t")
+}
+
+///|
+fn has_basic_challenge(value : String) -> Bool {
+  let mut part = StringBuilder()
+  let mut quoted = false
+  let mut escaped = false
+  for character in value {
+    if quoted {
+      part.write_char(character)
+      if escaped {
+        escaped = false
+      } else if character == '\\' {
+        escaped = true
+      } else if character == '"' {
+        quoted = false
+      }
+    } else if character == ',' {
+      if basic_challenge_part(part.to_string()) {
+        return true
+      }
+      part = StringBuilder()
+    } else {
+      part.write_char(character)
+      if character == '"' {
+        quoted = true
+      }
+    }
+  }
+  !quoted && basic_challenge_part(part.to_string())
+}
+
+///|
+fn basic_challenge_part(value : String) -> Bool {
+  let value = value.trim().to_owned()
+  uses_basic_authentication(value) && !value[5:].trim_start().has_prefix("=")
 }
 
 ///|
@@ -87,35 +160,40 @@ async fn body_length(body : RequestBody) -> Int64? {
 }
 
 ///|
-fn request_header_maps(
+fn request_headers(
   parsed : ParsedUrl,
   headers : ArrayView[HttpHeader],
   length : Int64?,
   resume_from : Int64?,
+  profile : TransferProfile,
 ) -> PreparedHeaders {
-  let persistent : Map[@http.CaseInsensitiveString, String] = Map([])
-  let per_request : Map[@http.CaseInsensitiveString, String] = Map([])
+  let persistent : HeaderFields = { fields: [], }
+  let per_request : HeaderFields = { fields: [], }
   for header in headers {
-    if header.name.to_lower() == "user-agent" {
-      persistent[header.name] = header.value
+    if profile == CurlProfile {
+      per_request.fields.push(header)
+    } else if header.name.to_lower() == "user-agent" {
+      persistent.set(header.name, header.value)
     } else {
-      per_request[header.name] = header.value
+      per_request.set(header.name, header.value)
     }
   }
   let authorization_supplied = per_request.contains("Authorization")
   if !authorization_supplied && parsed.user_info is Some(user_info) {
-    per_request["Authorization"] = "Basic " +
-      @base64.encode(@utf8.encode(percent_decode(user_info)))
+    per_request.set(
+      "Authorization",
+      "Basic " + @base64.encode(@utf8.encode(percent_decode(user_info))),
+    )
   }
   if length is Some(value) && !per_request.contains("Content-Length") {
-    per_request["Content-Length"] = value.to_string()
+    per_request.set("Content-Length", value.to_string())
   }
   if !per_request.contains("Accept-Encoding") {
     // Keep transfer counts and Range offsets on the encoded representation.
-    per_request["Accept-Encoding"] = "identity"
+    per_request.set("Accept-Encoding", "identity")
   }
   if resume_from is Some(value) && value > 0L && !per_request.contains("Range") {
-    per_request["Range"] = "bytes=\{value}-"
+    per_request.set("Range", "bytes=\{value}-")
   }
   { persistent, per_request, authorization_supplied, }
 }
@@ -256,8 +334,8 @@ async fn send_request(
   client : HttpWire,
   parsed : ParsedUrl,
   request_method : HttpMethod,
-  persistent : Map[@http.CaseInsensitiveString, String],
-  headers : Map[@http.CaseInsensitiveString, String],
+  persistent : HeaderFields,
+  headers : HeaderFields,
   body : RequestBody,
   options : TransferOptions,
   started : Int64,

@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-08
+Updated: 2026-11-09
 
 ## Decision
 
@@ -18,7 +18,9 @@ Do not delegate to host tools or add responsibility-free forwarding layers.
   response; proxy CONNECT remains connection setup. Distinguish request-write,
   response-header and response-body errors.
 - Validate final names and CR/LF-free values, including generated cookies.
-  Preserve ordered, repeated final Set-Cookie fields; ignore interim cookies.
+  Preserve ordered, repeated final response fields, including interleaved
+  Set-Cookie fields, after optional-whitespace normalization. Ignore interim
+  fields. Keep the separate semantic framing map and its existing validation.
 - Default Accept-Encoding to identity and preserve content-coded bytes.
   Lengths and Range offsets describe those bytes; no implicit decompression.
 - Preserve delivered prefixes. A failed Writer call has unknown partial extent,
@@ -40,6 +42,7 @@ headers and premature fixed/chunked EOF.
 | Initial URL controls | Reject raw space/TAB/CR/LF/DEL before connection, status 3 | Percent-escape them, preserving existing escapes |
 | Redirect spaces | %20 in path, + in query; TAB becomes %09 | %20 in path/query; TAB becomes %09 |
 | Basic credentials | Initial-origin scope; custom Authorization routes separately | Explicit credentials span origins; each origin first challenges unless --auth-no-challenge |
+| Custom request fields | Retain repeats and argument order, including User-Agent | Last same-name value replaces the earlier value |
 | Explicit cookies | Initial-origin scope; jar and explicit fields stay separate | Replace outgoing jar cookies and follow origins; response storage remains active |
 | Body failure | Empty reply 52, partial body 18, receive 56, write 23 | Fixed truncation/malformed framing fail; exhausted network retries return 4 |
 | Chunk EOF | Incomplete framing/payload fails | Payload/trailer EOF accepted; next-size-line or post-payload-CRLF EOF fails |
@@ -71,8 +74,32 @@ cases cover statuses and later successful output. Wget's private wire test
 checks both challenge-based and preemptive credentials, exact Authorization
 bytes, request counts, challenge-free 401 controls and unopened file contents.
 The existing successful Basic case and Curl rejection cases remain controls.
-This does not add non-Basic authentication or general challenge-list parsing;
-reconsider those limits with protocol fixtures under issue #34.
+The unpublished header repair recognizes Basic among repeated WWW-Authenticate
+fields and comma-separated challenges, respecting quoted commas and escaped
+quotes. A Basic-named auth parameter or a longer scheme token does not qualify.
+It does not implement non-Basic authentication.
+
+Private ordered request fields replace the lossy map in Curl's profile; Wget
+and StrictProfile retain same-name replacement. Generated jar Cookie fields
+still precede explicit fields. Multiple request Content-Length fields reject
+before request bytes, retaining the existing single-length upload invariant.
+Raw request/response tests assert order and repetition, actual authentication
+attempts, interim exclusion and preserved framing failures. The CLI header
+fixture reads raw fields rather than letting a server Map erase duplicates.
+The shared authentication scenario also compares reflected request fields,
+default User-Agent placement, final HEAD fields and a multi-field Basic
+challenge through its pinned Linux oracle route. Product and oracle request
+counts are checked separately; challenge attempts assert exact Authorization
+presence and bytes. This preserves custom-field relative order, without claiming
+full absolute ordering of every generated header and jar field.
+Wget's explicit Cookie cross-origin coverage now uses an actual --header
+redirect, independently of its unchanged --no-cookies case.
+
+Header removal/semicolon syntax and header files, PSL/IDNA, complete cookie-jar
+serialization, configuration loading and stdin authentication replay remain
+project work under issue #34. Extend the owning parser and protocol fixtures
+before lifting these limits; no upstream list API is required. This batch does
+not establish full curl/Wget parity or performance qualification.
 
 ## Output ownership
 

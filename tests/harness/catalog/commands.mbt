@@ -311,7 +311,9 @@ pub fn commands() -> Array[CommandContract] {
     // Set-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.
     // Positive decimal overflow keeps the replacement under a 400-day lifetime cap.
     // Cookie ordering uses descending path/domain/name byte length, then creation.
-    // Response observers retain final Set-Cookie fields separately from storage.
+    // Custom request fields retain repetition and argument order. Response
+    // observers retain all final fields in wire order, separately from storage.
+    // Multiple request Content-Length fields reject before request bytes.
     // Requests default to identity encoding and retain content-coded wire bytes.
     // Resumed 206 bodies must complete their declared Content-Range span.
     contract(
@@ -396,7 +398,8 @@ pub fn commands() -> Array[CommandContract] {
     // Set-Cookie without '=' and nonnumeric Max-Age replacements preserve old cookies.
     // Positive decimal overflow below 32 digits expires the matching stored cookie.
     // Cookie ordering uses descending domain/path byte length, then name/value bytes.
-    // Response observers retain final Set-Cookie fields separately from storage.
+    // Same-name request fields keep the last value. Response observers retain
+    // all final fields in wire order. Basic challenge lists preserve quoted commas.
     // Multiple URL failures retain the lowest nonzero transfer exit code.
     contract(
       "wget",

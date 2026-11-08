@@ -18,6 +18,12 @@ failure 4 takes precedence over authentication failure 6, which takes precedence
 over HTTP failure 8. The published 0.2.5
 coordinate is unchanged; see [ADR-0005](../../docs/adr/0005-transfer.md).
 
+The workspace recognizes Basic challenges in repeated WWW-Authenticate fields
+and comma-separated challenge lists, preserving quoted commas and escapes.
+Final response fields retain their order, casing and repetition after
+optional-whitespace normalization. Same-name request headers still use the last
+value; explicit Cookie headers continue across origins.
+
 ## Options
 
 | Option | Description |
@@ -35,7 +41,7 @@ coordinate is unchanged; see [ADR-0005](../../docs/adr/0005-transfer.md).
 | `--waitretry=SECONDS` | wait between retries |
 | `--max-redirect=NUMBER` | maximum redirects (default 20) |
 | `--content-disposition` | honor Content-Disposition filenames |
-| `--header=STRING` | insert STRING among request headers |
+| `--header=STRING` | set a request header; last same-name value wins |
 | `--user=USER` | HTTP Basic user name |
 | `--password=PASSWORD` | HTTP Basic password |
 | `--auth-no-challenge` | send Basic credentials on every request, including redirects |

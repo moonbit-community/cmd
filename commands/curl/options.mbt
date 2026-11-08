@@ -66,7 +66,7 @@ fn usage() -> String {
     #|  -L, --location               follow redirects
     #|      --max-redirs <num>       maximum redirects (default 50)
     #|  -I, --head                   show response headers only
-    #|  -H, --header <header>        pass a custom header to the server
+    #|  -H, --header <header>        send custom fields in order, retaining repeats
     #|  -u, --user <user:password>   HTTP Basic authentication
     #|  -b, --cookie <data|file>     send cookies or load a Netscape jar
     #|  -c, --cookie-jar <file>      write a Netscape cookie jar
@@ -91,6 +91,7 @@ fn usage() -> String {
     #|      --remove-on-error        remove opened output after final failure
     #|Already written stdout remains; final partial files remain without cleanup.
     #|Cookie values containing CR/LF are rejected before request bytes are sent.
+    #|Final response fields retain order and repetition; request Content-Length is singular.
     #|Raw space/TAB/CR/LF/DEL in an initial URL path or query exits 3 before connecting.
     #|Redirect spaces use %20 in paths and + in queries; TAB uses %09.
     #|Set-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.

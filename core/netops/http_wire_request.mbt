@@ -48,20 +48,20 @@ async fn HttpWire::start_request(
   self : HttpWire,
   parsed : ParsedUrl,
   request_method : HttpMethod,
-  persistent : Map[@http.CaseInsensitiveString, String],
-  headers : Map[@http.CaseInsensitiveString, String],
+  persistent : HeaderFields,
+  headers : HeaderFields,
   body : RequestBody,
   options : TransferOptions,
   started : Int64,
 ) -> Unit {
-  let fields : Array[HttpHeader] = []
-  for name, value in persistent {
-    fields.push(http_header(name.to_string(), value))
-  }
-  for name, value in headers {
-    fields.push(http_header(name.to_string(), value))
-  }
+  let fields = persistent.fields + headers.fields
   validate_headers(fields)
+  guard fields
+    .filter(header => header.name.to_lower() == "content-length")
+    .length() <=
+    1 else {
+    raise transfer_error(InputFailure, "multiple request Content-Length fields")
+  }
   self.request_remaining = match headers.get("Content-Length") {
     None => None
     Some(value) =>
@@ -76,14 +76,11 @@ async fn HttpWire::start_request(
     request_method.wire_name() + " " + parsed.request_target() + " HTTP/1.1\r\n",
   )
   text.write_string("Host: " + parsed.endpoint + "\r\n")
-  if !persistent.contains("User-Agent") {
+  if !persistent.contains("User-Agent") && !headers.contains("User-Agent") {
     text.write_string("User-Agent: moonbit-http-client/1.1\r\n")
   }
-  for name, value in persistent {
-    text.write_string(name.to_string() + ": " + value + "\r\n")
-  }
-  for name, value in headers {
-    text.write_string(name.to_string() + ": " + value + "\r\n")
+  for header in fields {
+    text.write_string(header.name + ": " + header.value + "\r\n")
   }
   if self.request_chunked {
     text.write_string("Transfer-Encoding: chunked\r\n")

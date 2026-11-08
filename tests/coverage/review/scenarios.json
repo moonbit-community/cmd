@@ -297,6 +297,53 @@
       "case_id": "network-auth-cookie",
       "assertions": [
         {
+          "id": "headers/curl-default-agent",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {"status": 0, "stdout": "User-Agent: curl/8.22.0\nX-Marker: first\nX-Marker: second\n", "stderr": "", "requests": 1},
+          "observations": ["status", "stdout", "stderr", "request-count"]
+        },
+        {
+          "id": "headers/curl-fields",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {"status": 0, "stdout": "X-Marker: first\nUser-Agent: coverage\nX-Marker: second\n", "stderr": "", "requests": 1},
+          "observations": ["status", "stdout", "stderr", "request-count"]
+        },
+        {
+          "id": "headers/wget-fields",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {"status": 0, "stdout": "User-Agent: coverage\nX-Marker: second\n", "stderr": "", "requests": 1},
+          "observations": ["status", "stdout", "stderr", "request-count"]
+        },
+        {
+          "id": "headers/curl-response-fields",
+          "command": "curl",
+          "relation": "equal",
+          "expected": {"status": 0, "stdout": "HTTP/1.1 200 OK\r\nX-Value: first\r\nSet-Cookie: a=1\r\nx-value: second\r\nSet-Cookie: b=2\r\nContent-Length: 0\r\n\r\n", "stderr": "", "requests": 1},
+          "observations": ["status", "stdout", "stderr", "request-count"]
+        },
+        {
+          "id": "headers/wget-challenge-fields",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {"status": 0, "stdout": "Authorization: Basic dXNlcjpwYXNz\n", "stderr": "", "requests": 2},
+          "observations": ["status", "stdout", "stderr", "request-count"]
+        },
+        {
+          "id": "auth/15",
+          "command": "wget",
+          "relation": "equal",
+          "expected": {
+            "status": 0,
+            "stdout": "auth=\ncookie=sid=header\n",
+            "stderr": "",
+            "requests": 2
+          },
+          "observations": ["status", "stdout", "stderr", "request-count"]
+        },
+        {
           "id": "auth/0",
           "command": "curl",
           "relation": "equal",
@@ -5171,12 +5218,7 @@
             "status": 0,
             "stdout": "hello",
             "stderr": "",
-            "headers": [
-              {
-                "marker": "second",
-                "agent": "coverage"
-              }
-            ],
+            "headers": [["X-Marker: first", "User-Agent: coverage", "X-Marker: second"]],
             "requests": 1
           },
           "observations": [
@@ -5195,12 +5237,7 @@
             "status": 0,
             "stdout": "hello",
             "stderr": "",
-            "headers": [
-              {
-                "marker": "second",
-                "agent": "coverage"
-              }
-            ],
+            "headers": [["User-Agent: coverage", "X-Marker: second"]],
             "requests": 1
           },
           "observations": [

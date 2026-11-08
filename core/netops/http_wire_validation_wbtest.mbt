@@ -1,4 +1,54 @@
 ///|
+async test "repeated request lengths reject without writing or opening output" {
+  @async.with_timeout(10000, () => {
+    @async.with_task_group(group => {
+      let directory = @fs.tmpdir(prefix="netops-request-length-")
+      defer @async.protect_from_cancel(() => {
+        @fs.rmdir(directory, recursive=true)
+      })
+      let output = directory + "/output"
+      @fs.write_file(output, b"preserve")
+      for second in ["3", "4", "bad"] {
+        let server = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
+        defer server.close()
+        let observed = group.spawn(() => {
+          let (connection, _) = server.accept()
+          defer connection.close()
+          connection.read_all().binary()
+        })
+        try
+          transfer(
+            "http://127.0.0.1:\{server.addr.port()}/",
+            FileOutput(
+              path=output,
+              mode=Truncate,
+              content_disposition=false,
+              remove_on_error=false,
+            ),
+            transfer_options(
+              profile=CurlProfile,
+              request_method=Post,
+              body=BytesBody(b"abc"),
+              headers=[
+                http_header("Content-Length", "3"),
+                http_header("content-length", second),
+              ],
+            ),
+          )
+        catch {
+          TransferError(kind~, ..) => assert_eq(kind, InputFailure)
+          error => raise error
+        } noraise {
+          _ => fail("repeated lengths must reject")
+        }
+        assert_eq(observed.wait(), b"")
+        assert_eq(@fs.read_file(output).binary(), b"preserve")
+      }
+    })
+  })
+}
+
+///|
 async test "generated Cookie fields reject line injection before writing request bytes" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {

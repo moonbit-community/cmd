@@ -417,15 +417,16 @@ async fn transfer_one(
       return 26
     }
   }
-  let headers = options.headers.copy()
+  let headers : Array[@netops.HttpHeader] = []
+  if !has_header(options.headers, "user-agent") {
+    headers.push(@netops.http_header("User-Agent", "curl/8.22.0"))
+  }
+  headers.append(options.headers)
   let explicit_cookies = options.cookies.filter(value => value.contains("="))
   let cookie_data = if explicit_cookies.is_empty() {
     None
   } else {
     Some(explicit_cookies.join("; "))
-  }
-  if !has_header(headers, "user-agent") {
-    headers.push(@netops.http_header("User-Agent", "curl/8.22.0"))
   }
   if !has_header(headers, "accept") {
     headers.push(@netops.http_header("Accept", "*/*"))
