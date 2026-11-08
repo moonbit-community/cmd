@@ -311,6 +311,17 @@ fn CookieJar::receive(
       }
       _ => (host, true)
     }
+    if (profile == CurlProfile && !curl_suffix_admission(Some(host), domain)) ||
+      (profile == WgetProfile && !cookie_suffix_allows(host, domain)) {
+      continue
+    }
+    let host_only = host_only ||
+      (
+        profile == CurlProfile &&
+        host == domain &&
+        !cookie_ip_literal(domain) &&
+        cookie_public_suffix(curl_suffix_name(domain))
+      )
     let path = if profile == CurlProfile {
       match cookie.path {
         Some(path) if path != "" => curl_cookie_path(path)
@@ -481,10 +492,21 @@ pub fn CookieJar::load_netscape(
       continue
     }
     let expires = @string.parse_int64(fields[4]) catch { _ => continue }
-    let domain = fields[0].trim_start(chars=".").to_owned().to_lower()
+    let domain = (if profile == CurlProfile {
+      if fields[0].has_prefix(".") {
+        fields[0][1:].to_owned()
+      } else {
+        fields[0]
+      }
+    } else {
+      fields[0].trim_start(chars=".").to_owned()
+    }).to_lower()
     if domain == "" ||
       fields[5] == "" ||
       (profile != CurlProfile && !fields[2].has_prefix("/")) {
+      continue
+    }
+    if profile == CurlProfile && !curl_suffix_admission(None, domain) {
       continue
     }
     let cookie : StoredCookie = {

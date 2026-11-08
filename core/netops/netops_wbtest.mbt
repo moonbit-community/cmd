@@ -253,6 +253,15 @@ test "URL parser normalizes origins and remote names without exposing its type" 
 }
 
 ///|
+test "empty no-proxy entries do not bypass trailing-dot hosts" {
+  for list in ["", ",", " , ", "other.test,", ",other.test"] {
+    assert_false(proxy_bypassed("http://a.co.uk./", Some(list)), msg=list)
+  }
+  assert_true(proxy_bypassed("http://a.co.uk./", Some("*")))
+  assert_true(proxy_bypassed("http://a.co.uk./", Some("a.co.uk.")))
+}
+
+///|
 test "unsupported protocols and invalid ports fail before network access" {
   for value in ["ftp://example.test/x", "http://example.test:0/x"] {
     try parse_absolute_url(value) catch {

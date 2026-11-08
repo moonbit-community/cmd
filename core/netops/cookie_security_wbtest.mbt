@@ -367,7 +367,7 @@ test "curl insecure overlay checks overlap expiry and secure contexts" {
 }
 
 ///|
-test "curl prefix scope keeps the unfinished public suffix conversion explicit" {
+test "curl prefix scope uses the effective public suffix host-only conversion" {
   for domain in ["localhost", "co.uk"] {
     let jar = CookieJar::new()
     jar.receive(
@@ -376,9 +376,8 @@ test "curl prefix scope keeps the unfinished public suffix conversion explicit" 
       100L,
       profile=CurlProfile,
     )
-    // PSL may convert these exact domains to host-only upstream. Until the
-    // complete dataset is implemented, this documented boundary rejects them.
-    assert_true(jar.entries.is_empty())
+    assert_eq(jar.entries.length(), 1)
+    assert_true(jar.entries[0].host_only)
   }
 }
 

@@ -343,6 +343,9 @@ pub fn proxy_bypassed(url : String, no_proxy : String?) -> Bool {
   }
   for part in list.split(",") {
     let raw = part.trim().to_owned().to_lower()
+    if raw == "" {
+      continue
+    }
     if raw == "*" {
       return true
     }

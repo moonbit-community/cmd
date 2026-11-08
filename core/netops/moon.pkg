@@ -5,6 +5,7 @@ import {
   "moonbitlang/async/fs",
   "moonbitlang/async/http",
   "moonbitlang/async/io",
+  "moonbitlang/async/socket",
   "moonbitlang/async/stdio",
   "moonbitlang/async/tls",
   "moonbitlang/core/encoding/base64",
@@ -16,9 +17,10 @@ import {
 import {
   "moonbitlang/async/cond_var",
   "moonbitlang/async/process",
-  "moonbitlang/async/socket",
   "moonbitlang/core/env",
   "moonbitlang/x/fs" @sync_fs,
+  "moonbitlang/x/path",
+  "moonbitlang/x/crypto",
 } for "wbtest"
 
 supported_targets = "native+wasm"

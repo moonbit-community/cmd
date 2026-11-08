@@ -4,7 +4,7 @@
   "counts": {
     "exact-local": 3565,
     "finite-diagnostic": 183,
-    "typed-scenario": 64,
+    "typed-scenario": 66,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -14196,7 +14196,7 @@
     {
       "case_id": "release-metadata-curl-help",
       "source": "tests/cases/curl.json",
-      "definition_sha256": "b85c88bb4e0371673e3ee2014026714e57832445dc78aa8cff3123e1b4b0bb18",
+      "definition_sha256": "da847bdccc22a6e35ad80ec4a3b4d32254254879109c0e82c933c822dbca047c",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -14298,6 +14298,34 @@
         "kind": "exact"
       },
       "required_work": ""
+    },
+    {
+      "case_id": "network-cookie-suffix",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "49c05fb667f77c0443531beafb8c6f16e928112c549c385f83e5fce51d78d280",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-cookie-suffix"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-cookie-suffix-oracle",
+      "source": "tests/cases/curl.json",
+      "definition_sha256": "d62bbf88946578255727a6a2e254648267ec8f20f547382f74bfc0d76782043d",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-cookie-suffix-oracle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
     },
     {
       "case_id": "p2-date-epoch-format",
@@ -29852,7 +29880,7 @@
     {
       "case_id": "release-metadata-wget-help",
       "source": "tests/cases/wget.json",
-      "definition_sha256": "4e8704cf3f15cb52cc3e368be061fba368eac55085c4b27c58e78aa3ad060d55",
+      "definition_sha256": "6ea537467eec5ffa0fe947d71b0a87c14ada9e80959740b1cf554c8193012026",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -43207,6 +43235,20 @@
     },
     "curl-auth-rejected-fail": {
       "kind": "exact"
+    },
+    "network-cookie-suffix": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-cookie-suffix"
+      ]
+    },
+    "network-cookie-suffix-oracle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-cookie-suffix-oracle"
+      ]
     },
     "p2-date-epoch-format": {
       "kind": "exact"

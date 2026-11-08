@@ -27,7 +27,7 @@ pub(all) struct Executor {
 pub fn supports(id : String) -> Bool {
   [
     "network-auth-cookie", "network-auth-cookie-oracle", "network-transfer-boundaries",
-    "network-transfer-boundaries-oracle",
+    "network-transfer-boundaries-oracle", "network-cookie-suffix", "network-cookie-suffix-oracle",
   ].contains(id)
 }
 
@@ -45,6 +45,11 @@ pub async fn run(
       network_cli_scenario(executor, work, oracle_image?)
     "network-transfer-boundaries" | "network-transfer-boundaries-oracle" =>
       network_transfer_scenario(executor, work, oracle_image?)
+    "network-cookie-suffix" | "network-cookie-suffix-oracle" => {
+      let failures : Array[String] = []
+      network_cookie_suffix_scenario(executor, work, failures, oracle_image?)
+      guard failures.is_empty() else { fail(failures.join("\n")) }
+    }
     _ => fail("unknown shared network scenario: " + id)
   }
 }

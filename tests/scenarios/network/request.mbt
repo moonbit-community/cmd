@@ -41,6 +41,12 @@ async fn network_request(
   expected_files? : Array[(String, String?)],
   transfer_files? : TransferFileObservation,
   expected_files_before_response? : Array[Array[(String, String)]],
+  environment~ : Map[String, String] = {
+    "NO_PROXY": "*",
+    "no_proxy": "*",
+    "LC_ALL": "C",
+  },
+  trace_suffix~ : Bool = false,
 ) -> @harness.RunResult {
   if transfer_files is Some(observation) {
     observation.work = Some(work)
@@ -58,7 +64,7 @@ async fn network_request(
     args,
     stdin,
     cwd: work,
-    environment: { "NO_PROXY": "*", "no_proxy": "*", "LC_ALL": "C" },
+    environment,
   })
   let result = execution.run.output
   // Capture product effects before adding evidence files to this directory.
@@ -158,6 +164,21 @@ async fn network_request(
       observation.work = Some(oracle_work)
       observation.snapshots.clear()
     }
+    let oracle_environment : Array[String] = []
+    let environment_names = environment.keys().to_array()
+    environment_names.sort_by((left, right) => left.lexical_compare(right))
+    for name in environment_names {
+      oracle_environment.append(["-e", name + "=" + environment[name]])
+    }
+    let trace_path = oracle_work + "/psl.trace"
+    let observer = if trace_suffix {
+      [
+        "/usr/bin/strace", "-f", "-qq", "-yy", "-e", "trace=openat,read,close", "-s",
+        "128", "-o", trace_path,
+      ]
+    } else {
+      []
+    }
     let run = @harness.run_oracle_with_deadline(
       "docker",
       [
@@ -172,13 +193,9 @@ async fn network_request(
         oracle_work + ":" + oracle_work + ":rw",
         "-w",
         oracle_work,
-        "-e",
-        "LC_ALL=C",
-        "-e",
-        "NO_PROXY=*",
-        "-e",
-        "no_proxy=*",
+        ..oracle_environment,
         image,
+        ..observer,
         command,
         ..oracle_args,
       ],
@@ -189,6 +206,13 @@ async fn network_request(
     @fs.write_file(prefix + ".oracle.stdout.bin", run.output.stdout)
     @fs.write_file(prefix + ".oracle.stderr.bin", run.output.stderr)
     @fs.write_file(prefix + ".oracle.status.txt", run.output.status.to_string())
+    if trace_suffix {
+      let trace = @fs.read_file(trace_path).text()
+      guard trace.contains("/usr/share/publicsuffix/public_suffix_list.dat") &&
+        trace.contains("</usr/share/publicsuffix/public_suffix_list.dat>,") else {
+        fail("real oracle client did not read the pinned public suffix file")
+      }
+    }
     @fs.write_file(
       prefix + ".oracle.execution.json",
       @harness.canonical_json({

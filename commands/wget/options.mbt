@@ -92,6 +92,8 @@ fn usage() -> String {
     #|Multiple URL failures retain the lowest nonzero transfer exit code.
     #|Rejected Basic credentials exit 6; other HTTP errors exit 8.
     #|Basic challenges are recognized across repeated fields and quoted comma lists.
+    #|Response cookie domains use the complete pinned ICANN/PRIVATE suffix list.
+    #|Imported cookie files retain Wget's separate admission policy; IDNA is unsupported.
   text + "\n"
 }
 

@@ -307,6 +307,10 @@ pub async fn execute_scenario(
         "stream-failure-prefixes" => failure_prefix_scenario(root, work, proof?)
         "ls-link-facets" => link_dereference_scenario(root, work, proof?)
         "network-auth-cookie" => network_cli_scenario(root, work, proof?)
+        "network-cookie-suffix" =>
+          network_cookie_suffix_scenario(root, work, proof?)
+        "network-cookie-suffix-oracle" =>
+          network_cookie_suffix_scenario(root, work, oracle_image?)
         "network-auth-cookie-oracle" =>
           network_cli_scenario(root, work, oracle_image?)
         "network-transfer-boundaries" =>

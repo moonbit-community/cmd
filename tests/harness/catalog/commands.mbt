@@ -315,7 +315,9 @@ pub fn commands() -> Array[CommandContract] {
     // Header cookie pairs and attributes trim ASCII OWS before identity checks.
     // Secure contexts are HTTPS or exact localhost/127.0.0.1/::1. Insecure
     // overlays cannot replace live Secure cookies; identity includes host-only.
-    // PSL-dependent host-only conversion and complete jar grammar remain open.
+    // Complete pinned ICANN/PRIVATE suffix rules constrain response and imported
+    // cookies; accepted exact suffix responses become host-only. URL IDNA and
+    // complete jar grammar remain open.
     // Custom request fields retain repetition and argument order. Response
     // observers retain all final fields in wire order, separately from storage.
     // Multiple request Content-Length fields reject before request bytes.
@@ -402,6 +404,8 @@ pub fn commands() -> Array[CommandContract] {
     // Redirect space/TAB uses %20/%09. Existing percent-encoded bytes remain.
     // Set-Cookie without '=' and nonnumeric Max-Age replacements preserve old cookies.
     // Positive decimal overflow below 32 digits expires the matching stored cookie.
+    // Complete pinned ICANN/PRIVATE suffix rules constrain response cookies.
+    // Exact suffix scope and imported-file admission retain Wget's dialect.
     // Cookie ordering uses descending domain/path byte length, then name/value bytes.
     // Prefixes remain ordinary names; Secure sends require HTTPS. Curl's
     // loopback exception and admission/overlay checks do not apply to Wget.

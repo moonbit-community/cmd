@@ -28,6 +28,10 @@ Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
 sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
 rules do not apply to Wget. Port-scoped jars, complete path dialects and jar
 serialization remain unfinished under issue #34.
+The workspace applies the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
+to response cookies, including wildcard and exception rules. Exact public-suffix
+domains keep Wget's domain scope; imported files retain Wget's separate policy.
+Published coordinates retain their recorded profile.
 
 ## Options
 
@@ -70,7 +74,7 @@ serialization remain unfinished under issue #34.
 
 - Recursive mirroring, FTP, non-Basic authentication, HSTS and timestamp restoration are unsupported.
 - Content-encoded bodies remain encoded. Consumed stdin request bodies cannot be replayed.
-- Resume retains prior bytes without proving the server's earlier prefix is unchanged. Public-suffix and IDNA cookie handling are unsupported.
+- Resume retains prior bytes without proving the server's earlier prefix is unchanged. IDNA/NFKC normalization of URL and Domain inputs is unsupported.
 
 ## Examples
 
