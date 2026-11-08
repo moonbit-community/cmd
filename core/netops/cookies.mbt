@@ -37,6 +37,22 @@ fn cookie_ascii_lower(value : String) -> String {
 }
 
 ///|
+fn cookie_stored_domain(value : String, profile : TransferProfile) -> String {
+  let domain = if profile == StrictProfile {
+    value.trim_start(chars=".").to_owned()
+  } else if value.has_prefix(".") {
+    value[1:].to_owned()
+  } else {
+    value
+  }
+  if profile == CurlProfile {
+    domain
+  } else {
+    domain.to_lower()
+  }
+}
+
+///|
 fn ParsedUrl::cookie_host(
   self : ParsedUrl,
   profile : TransferProfile,
@@ -305,9 +321,14 @@ fn CookieJar::receive(
   let host = url.cookie_host(profile)
   let secure_context = cookie_secure_context(url, profile)
   for cookie in cookies {
+    let mut discard = false
     if cookie.name == "" ||
       cookie.name.contains("\t") ||
       cookie.value.contains("\t") {
+      continue
+    }
+    if profile == WgetProfile &&
+      (cookie.domain == Some("") || cookie.path == Some("")) {
       continue
     }
     if profile == CurlProfile && cookie.secure && !secure_context {
@@ -315,17 +336,16 @@ fn CookieJar::receive(
     }
     let (domain, host_only) = match cookie.domain {
       Some(domain) if domain != "" => {
-        let domain = if profile == CurlProfile {
-          if domain.has_prefix(".") {
-            domain[1:].to_owned()
-          } else {
-            domain
-          }
-        } else {
-          domain.trim_start(chars=".").to_owned().to_lower()
-        }
-        if domain == "" || !cookie_domain_matches(host, domain) {
+        let domain = cookie_stored_domain(domain, profile)
+        if domain == "" {
           continue
+        }
+        if !cookie_domain_matches(host, domain) {
+          if profile == WgetProfile {
+            discard = true
+          } else {
+            continue
+          }
         }
         let host_only = profile == CurlProfile &&
           (
@@ -340,9 +360,11 @@ fn CookieJar::receive(
       }
       _ => (host, true)
     }
-    if (profile == CurlProfile && !curl_suffix_admission(Some(host), domain)) ||
-      (profile == WgetProfile && !cookie_suffix_allows(host, domain)) {
+    if profile == CurlProfile && !curl_suffix_admission(Some(host), domain) {
       continue
+    }
+    if profile == WgetProfile && !cookie_suffix_allows(host, domain) {
+      discard = true
     }
     let host_only = host_only ||
       (
@@ -355,6 +377,20 @@ fn CookieJar::receive(
       match cookie.path {
         Some(path) if path != "" => curl_cookie_path(path)
         _ => default_cookie_path(url.path)
+      }
+    } else if profile == WgetProfile {
+      match cookie.path {
+        Some(path) => {
+          if !url.path.has_prefix(path) {
+            continue
+          }
+          path
+        }
+        None =>
+          match url.path.rev_find("/") {
+            Some(index) => url.path[:index + 1].to_owned()
+            None => "/"
+          }
       }
     } else {
       match cookie.path {
@@ -391,7 +427,13 @@ fn CookieJar::receive(
       path,
       secure: cookie.secure,
       http_only: cookie.http_only,
-      expires,
+      // Wget marks a rejected domain for deletion, then validates Path before
+      // removing the matching key, even when the response has no expiry.
+      expires: if discard {
+        Some(0L)
+      } else {
+        expires
+      },
     }
     if profile == CurlProfile &&
       (
@@ -478,7 +520,11 @@ fn CookieJar::header_for(
     } else {
       cookie_domain_matches(host, cookie.domain)
     }) &&
-    cookie_path_matches(url.path, cookie.path) &&
+    (if profile == WgetProfile {
+      url.path.has_prefix(cookie.path)
+    } else {
+      cookie_path_matches(url.path, cookie.path)
+    }) &&
     (!cookie.secure || secure_context)
   })
   // Strict retains creation order among equal-length paths. The command profiles
@@ -525,15 +571,7 @@ pub fn CookieJar::load_netscape(
       continue
     }
     let expires = @string.parse_int64(fields[4]) catch { _ => continue }
-    let domain = if profile == CurlProfile {
-      if fields[0].has_prefix(".") {
-        fields[0][1:].to_owned()
-      } else {
-        fields[0]
-      }
-    } else {
-      fields[0].trim_start(chars=".").to_owned().to_lower()
-    }
+    let domain = cookie_stored_domain(fields[0], profile)
     if domain == "" ||
       fields[5] == "" ||
       (profile != CurlProfile && !fields[2].has_prefix("/")) {

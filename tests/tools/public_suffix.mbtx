@@ -252,9 +252,7 @@ async fn main {
           ),
         ),
         "generated_sha256": Json(
-          @crypto.bytes_to_hex_string(
-            @crypto.sha256(@utf8.encode(generated)),
-          ),
+          @crypto.bytes_to_hex_string(@crypto.sha256(@utf8.encode(generated))),
         ),
         "passed": Json(true),
       }).stringify(indent=2),

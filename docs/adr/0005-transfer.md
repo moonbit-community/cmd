@@ -87,6 +87,17 @@ wildcard bases, exceptions and the longest suffix of the request host. Curl
 converts accepted exact suffix responses to host-only before prefix validation;
 imports reject public suffixes with the localhost exception. Wget retains
 domain scope for exact suffixes and does not apply response admission to jars.
+Its response domain rejection marks the matching cookie for removal, including
+unexpired updates and foreign domains; explicit Path must prefix the request
+path before that removal can occur. Missing Path uses the request directory
+including its trailing slash. One leading Domain dot is removed from response
+and imported keys, so additional dots cannot accidentally target another key.
+Real Linux observations exposed the earlier incorrect ignore-only behavior;
+permanent cases cover expired/unexpired updates, private suffixes, foreign
+domains and the path gate. Wget's port component remains in the open scope below.
+Request selection also uses Wget's raw path prefix, independently of Curl's
+segment-boundary rule. CLI jar loading explicitly selects the Wget profile;
+defaulting to Strict would collapse additional leading dots before deletion.
 Storage spelling and admission views remain distinct for leading/trailing dots
 and ASCII case. Curl keeps received/imported domain spelling while domain
 selection, replacement and insecure overlay protection compare ASCII case

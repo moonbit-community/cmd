@@ -121,6 +121,42 @@ async fn network_cookie_suffix_scenario(
     field: Some("sid=; Domain=co.uk; Path=/; Max-Age=0"),
     input: ".co.uk\tTRUE\t/\tFALSE\t0\tsid\told\n",
     curl_cookie: "",
+    wget_cookie: "",
+    curl_rows: [],
+  })
+  for
+    (label, host, domain) in [
+      ("invalid-update", "shop.co.uk", "co.uk"),
+      ("private-update", "tenant.blogspot.com", "blogspot.com"),
+    ] {
+    cases.push({
+      label,
+      host,
+      target: host,
+      field: Some("sid=new; Domain=" + domain + "; Path=/"),
+      input: "." + domain + "\tTRUE\t/\tFALSE\t0\tsid\told\n",
+      curl_cookie: "",
+      wget_cookie: "",
+      curl_rows: [],
+    })
+  }
+  cases.push({
+    label: "foreign-domain-discard",
+    host: "shop.co.uk",
+    target: "victim.example",
+    field: Some("sid=new; Domain=victim.example; Path=/"),
+    input: ".victim.example\tTRUE\t/\tFALSE\t0\tsid\told\n",
+    curl_cookie: "sid=old",
+    wget_cookie: "",
+    curl_rows: [".victim.example\tTRUE\t/\tFALSE\t0\tsid\told"],
+  })
+  cases.push({
+    label: "path-rejection",
+    host: "shop.co.uk",
+    target: "shop.co.uk/blocked",
+    field: Some("sid=; Domain=co.uk; Path=/blocked; Max-Age=0"),
+    input: ".co.uk\tTRUE\t/blocked\tFALSE\t0\tsid\told\n",
+    curl_cookie: "",
     wget_cookie: "sid=old",
     curl_rows: [],
   })
@@ -139,6 +175,16 @@ async fn network_cookie_suffix_scenario(
       "localhost\tFALSE\t/\tFALSE\t0\tone\tv", "..localhost\tFALSE\t/\tFALSE\t0\tthree\tv",
       ".example.com\tFALSE\t/\tFALSE\t0\tfour\tv",
     ],
+  })
+  cases.push({
+    label: "wget-repeated-dot-discard",
+    host: "x...co.uk",
+    target: "x...co.uk",
+    field: Some("sid=; Domain=...co.uk; Path=/; Max-Age=0"),
+    input: "...co.uk\tTRUE\t/\tFALSE\t0\tsid\told\n",
+    curl_cookie: "",
+    wget_cookie: "",
+    curl_rows: [],
   })
   cases.push({
     label: "jar-invalid-ip",
@@ -254,7 +300,9 @@ async fn network_cookie_suffix_scenario(
     })
     let proxy = "http://127.0.0.1:\{server.addr.port()}"
     for fixture in cases {
-      let commands = if [
+      let commands = if fixture.label.has_prefix("wget-") {
+        ["wget"]
+      } else if [
           "jar-leading-dots", "jar-invalid-ip", "reload-exact", "reload-exception",
         ].contains(fixture.label) ||
         fixture.label.has_prefix("case-") {

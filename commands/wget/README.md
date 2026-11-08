@@ -72,6 +72,14 @@ Published coordinates retain their recorded profile.
 
 ## Limitations
 
+The workspace rejects response cookie domains using the complete pinned PSL.
+Wget then discards a matching stored name/domain/path even for an unexpired
+update, after validating that an explicit Path prefixes the request path.
+It strips one leading Domain dot and retains distinct repeated-dot keys.
+Request cookie paths use raw prefixes; a missing Path uses the URL directory
+including its trailing slash. Cookie ports and remaining jar grammar still
+need separate work.
+
 - Recursive mirroring, FTP, non-Basic authentication, HSTS and timestamp restoration are unsupported.
 - Content-encoded bodies remain encoded. Consumed stdin request bodies cannot be replayed.
 - Resume retains prior bytes without proving the server's earlier prefix is unchanged. IDNA/NFKC normalization of URL and Domain inputs is unsupported.

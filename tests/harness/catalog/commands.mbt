@@ -407,6 +407,8 @@ pub fn commands() -> Array[CommandContract] {
     // Positive decimal overflow below 32 digits expires the matching stored cookie.
     // Complete pinned ICANN/PRIVATE suffix rules constrain response cookies.
     // Exact suffix scope and imported-file admission retain Wget's dialect.
+    // Rejected domains discard the matching key only after request-path validation.
+    // Cookie paths use raw prefixes; missing Path retains the directory's trailing slash.
     // Cookie ordering uses descending domain/path byte length, then name/value bytes.
     // Prefixes remain ordinary names; Secure sends require HTTPS. Curl's
     // loopback exception and admission/overlay checks do not apply to Wget.

@@ -29880,7 +29880,7 @@
     {
       "case_id": "release-metadata-wget-help",
       "source": "tests/cases/wget.json",
-      "definition_sha256": "6ea537467eec5ffa0fe947d71b0a87c14ada9e80959740b1cf554c8193012026",
+      "definition_sha256": "efc232575e9259332fdab7a6e50f038772bf65464dfd8c76aae1bbc22ff43dfb",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"

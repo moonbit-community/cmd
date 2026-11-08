@@ -52,7 +52,7 @@ test "curl imported suffix cookies are rejected while wget keeps file policy" {
 }
 
 ///|
-test "rejected wget suffix deletion leaves a loaded value intact" {
+test "rejected wget suffix update discards a matching loaded value" {
   let jar = CookieJar::new()
   jar.load_netscape("co.uk\tTRUE\t/\tFALSE\t0\tsid\told\n", profile=WgetProfile)
   jar.receive(
@@ -61,8 +61,115 @@ test "rejected wget suffix deletion leaves a loaded value intact" {
     1000L,
     profile=WgetProfile,
   )
-  assert_eq(jar.entries.length(), 1)
-  assert_eq(jar.entries[0].value, "old")
+  assert_eq(jar.entries.length(), 0)
+}
+
+///|
+test "wget domain rejection discards only the matching key after path validation" {
+  for domain in ["co.uk", "blogspot.com", "victim.example"] {
+    for age in [None, Some(0L), Some(3600L)] {
+      for (path, expected) in [("/", 0), ("/blocked", 1)] {
+        let jar = CookieJar::new()
+        jar.load_netscape(
+          domain +
+          "\tTRUE\t" +
+          path +
+          "\tFALSE\t0\tsid\told\n" +
+          domain +
+          "\tTRUE\t" +
+          path +
+          "\tFALSE\t0\tother\tkeep\n",
+          profile=WgetProfile,
+        )
+        jar.receive(
+          parse_absolute_url("https://shop.co.uk/set"),
+          [@http.Cookie("sid", "new", domain~, path~, max_age?=age)],
+          1000L,
+          profile=WgetProfile,
+        )
+        assert_eq(
+          jar.entries.filter(cookie => cookie.name == "sid").length(),
+          expected,
+          msg=domain + " " + path,
+        )
+        assert_eq(
+          jar.entries.filter(cookie => cookie.name == "other").length(),
+          1,
+        )
+      }
+    }
+  }
+}
+
+///|
+test "empty wget Domain and Path reject the cookie before replacement or deletion" {
+  for
+    field in [
+      "sid=new; Domain=co.uk; Path=", "sid=new; Domain=co.uk; Path=/; Path=", "sid=new; Domain=; Path=/",
+      "sid=new; Domain=co.uk; Domain=; Path=/",
+    ] {
+    assert_true(wire_cookie(field, WgetProfile) is None, msg=field)
+  }
+  for
+    cookie in [
+      @http.Cookie("sid", "new", domain="co.uk", path="", max_age=0L),
+      @http.Cookie("sid", "new", domain="", path="/", max_age=0L),
+    ] {
+    let jar = CookieJar::new()
+    jar.load_netscape(
+      "co.uk\tTRUE\t/\tFALSE\t0\tsid\told\n",
+      profile=WgetProfile,
+    )
+    jar.receive(
+      parse_absolute_url("https://shop.co.uk/set"),
+      [cookie],
+      1000L,
+      profile=WgetProfile,
+    )
+    assert_eq(jar.entries.length(), 1)
+    assert_eq(jar.entries[0].value, "old")
+  }
+}
+
+///|
+test "wget path admission and request selection use raw prefixes and directory defaults" {
+  let url = parse_absolute_url("http://shop.example.com/set")
+  for profile in [CurlProfile, WgetProfile] {
+    let jar = CookieJar::new()
+    jar.load_netscape(".example.com\tTRUE\t/se\tFALSE\t0\tsid\told\n", profile~)
+    assert_eq(
+      jar.header_for(url, 1000L, profile~),
+      if profile == WgetProfile {
+        Some("sid=old")
+      } else {
+        None
+      },
+    )
+  }
+  let jar = CookieJar::new()
+  jar.receive(
+    parse_absolute_url("http://shop.example.com/dir/set"),
+    [@http.Cookie("sid", "new")],
+    1000L,
+    profile=WgetProfile,
+  )
+  assert_eq(jar.entries[0].path, "/dir/")
+  assert_eq(
+    jar.header_for(
+      parse_absolute_url("http://shop.example.com/directory"),
+      1000L,
+      profile=WgetProfile,
+    ),
+    None,
+  )
+  assert_eq(
+    jar.header_for(
+      parse_absolute_url("http://shop.example.com/dir/next"),
+      1000L,
+      profile=WgetProfile,
+    ),
+    Some("sid=new"),
+  )
 }
 
 ///|

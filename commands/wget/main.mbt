@@ -519,7 +519,7 @@ async fn run(options : Options) -> Int32 {
   }
   let jar = if options.cookies { Some(@netops.CookieJar::new()) } else { None }
   if jar is Some(jar) && options.load_cookies is Some(path) {
-    jar.load(path) catch {
+    jar.load(path, profile=@netops.WgetProfile) catch {
       err => log.write("wget: cannot read cookie jar '\{path}': \{err}\n")
     }
   }
