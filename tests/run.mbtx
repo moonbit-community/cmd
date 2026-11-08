@@ -93,9 +93,9 @@ async fn main {
     fail("unknown test-tool profile")
   }
   let tools = [
-    "tests/harness", "tests/harness/catalog", "tests/harness/contracts", "tests/scenarios",
-    "tests/scenarios/network", "tests/scenarios/filesystem", "tests/harness/driver",
-    "tests/release", "tests/benchmark", "tests/coverage", "tests/resources",
+    "tests/harness", "tests/harness/catalog", "tests/scenarios", "tests/scenarios/network",
+    "tests/scenarios/filesystem", "tests/harness/driver", "tests/release", "tests/benchmark",
+    "tests/coverage", "tests/resources",
   ]
   let rest = args[1:].to_owned()
   match args[0] {

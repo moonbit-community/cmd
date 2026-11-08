@@ -259,7 +259,7 @@ async fn write_joined(
 ///|
 async fn next_ordered_row(
   output : @stream.BlockWriter,
-  scanner : JoinInput,
+  scanner : Input,
   state : JoinOrder,
   field : Int32,
   separator : Byte?,
@@ -268,7 +268,7 @@ async fn next_ordered_row(
   ignore_case : Bool,
   unpairable : Ref[Bool],
 ) -> JoinRow? {
-  match next_join_record(scanner, output) {
+  match scanner.next(output) {
     Some(line) => {
       let row : JoinRow = { fields: split_fields(line.data, separator), }
       let key = key_of(row.fields, field)
@@ -332,8 +332,8 @@ async fn merge_readers(
 ) -> Unit {
   let output = @stream.BlockWriter::new(writer)
   defer output.flush()
-  let scanner1 = JoinInput::new(reader1, record_delimiter)
-  let scanner2 = JoinInput::new(reader2, record_delimiter)
+  let scanner1 = Input::new(reader1, record_delimiter)
+  let scanner2 = Input::new(reader2, record_delimiter)
   let state1 : JoinOrder = {
     previous_key: None,
     line_number: 0,

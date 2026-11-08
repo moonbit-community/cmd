@@ -401,7 +401,7 @@ and frozen published expectations remain unchanged.
 Authorization belongs to the caller/host. Catalog capabilities and the
 restricted label describe requirements, not command-local policy.
 Split is Restricted because `--filter` can launch external children. The
-[catalog](../tests/harness/contracts/catalog.mbt) owns classifications;
+[catalog](../tests/harness/catalog/commands.mbt) owns classifications;
 [ADR-0002](adr/0002-policy.md) explains the authorization boundary.
 
 ## Published R resource changes
@@ -887,6 +887,11 @@ Full shell compatibility is not claimed. See
 | `yes` | subset verified | Infinite repeated `y` or joined arguments, help/version, broken-pipe termination | Exact signal diagnostics and terminal interaction are not claimed |
 | `xargs` | subset verified | Existing batching/process windows plus raw delimiter grammar, last -0/-d selection and separately opened interactive confirmations; empty Windows `-p -r` exits 0 when CONIN$ opens | Child policy remains required; invalid-byte argv needs public byte transport. POSIX no-channel fixtures reject before input/launch; an available unattended Windows console waits for confirmation |
 | `xxd` | subset verified | Styles/autoskip/group/case/EBCDIC, wide named-file seeks, forward stdin discard, reverse address adjustment and new named output backpatching | Existing-output identity/mode/content and backward/end-relative stdin seek retain narrow public-API limits |
+
+The unpublished 2026-11-08 Wget workspace correction retains the lowest nonzero
+transfer exit code across URL operands, including when a later URL succeeds.
+Both failure orders are registered in `tests/cases/wget.json`; the published
+0.2.5 coordinate remains unchanged. See [ADR-0005](adr/0005-transfer.md).
 
 ## Common capability boundaries
 

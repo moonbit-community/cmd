@@ -264,7 +264,7 @@ test "differential proofs require a definition-bound complete local receipt" {
 test "proof definitions reject tags alone missing claims aliases and cross-command cases" {
   let index = proof_test_index()
   let fixture = proof_test_case()
-  let contract : @contracts.CommandContract = {
+  let contract : @catalog.CommandContract = {
     name: "cat",
     tier: Core,
     input: FileOrStdin,

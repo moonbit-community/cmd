@@ -32,7 +32,7 @@ fn contract(
 // unified-lines/context-lines describe public option behavior through command
 // adapters, but their raw long spellings are private. Public/project aliases and
 // diagnostic contracts are recorded in docs/compatibility.md and CLI cases.
-pub fn command_catalog() -> Array[CommandContract] {
+pub fn commands() -> Array[CommandContract] {
   [
     contract(
       "serve",
@@ -392,6 +392,7 @@ pub fn command_catalog() -> Array[CommandContract] {
     // Positive decimal overflow below 32 digits expires the matching stored cookie.
     // Cookie ordering uses descending domain/path byte length, then name/value bytes.
     // Response observers retain final Set-Cookie fields separately from storage.
+    // Multiple URL failures retain the lowest nonzero transfer exit code.
     contract(
       "wget",
       Restricted,
@@ -592,8 +593,8 @@ pub fn command_catalog() -> Array[CommandContract] {
 }
 
 ///|
-pub fn find_contract(name : String) -> CommandContract? {
-  for item in command_catalog() {
+pub fn find(name : String) -> CommandContract? {
+  for item in commands() {
     if item.name == name {
       return Some(item)
     }
@@ -602,12 +603,6 @@ pub fn find_contract(name : String) -> CommandContract? {
 }
 
 ///|
-pub fn process_group_cancellation_available() -> Bool {
-  false
-}
-
-///|
 pub fn releasable(contract : CommandContract) -> Bool {
-  !contract.capabilities.contains(ProcessGroupCancellation) ||
-  process_group_cancellation_available()
+  !contract.capabilities.contains(ProcessGroupCancellation)
 }

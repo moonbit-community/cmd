@@ -75,7 +75,7 @@ fn replace_arguments(
 }
 
 ///|
-fn xargs_child_status(status : Int32) -> Int32 {
+fn child_status(status : Int32) -> Int32 {
   if status == 0 {
     0
   } else if status == 255 {
@@ -123,7 +123,7 @@ priv enum ChildOutcome {
 }
 
 ///|
-async fn run_xargs_child(
+async fn run_child(
   program : String,
   arguments : Array[String],
   context : @process.ExecutionContext,
@@ -136,28 +136,23 @@ async fn run_xargs_child(
     diagnose(command_line)
   }
   let code = launch(@process.child(program, arguments, context~)) catch {
-    @os_error.OSError(_) as err => {
-      diagnose("xargs: cannot run '\{program}': \{err}\n")
-      return FailedToLaunch(
-        if err.is_ENOENT() {
-          CommandNotFound
-        } else {
-          CommandNotInvokable
-        },
-      )
-    }
     err => {
       diagnose("xargs: cannot run '\{program}': \{err}\n")
-      return FailedToLaunch(CommandNotInvokable)
+      return FailedToLaunch(
+        match err {
+          @os_error.OSError(_) as os if os.is_ENOENT() => CommandNotFound
+          _ => CommandNotInvokable
+        },
+      )
     }
   }
   Exited(code)
 }
 
 ///|
-fn aggregate_xargs_status(current : Int32, child : ChildOutcome) -> Int32 {
+fn combine_status(current : Int32, child : ChildOutcome) -> Int32 {
   let mapped = match child {
-    Exited(status) => xargs_child_status(status)
+    Exited(status) => child_status(status)
     FailedToLaunch(failure) => @process.launch_failure_status(failure)
   }
   if mapped == 125 || current == 125 {
@@ -431,11 +426,11 @@ async fn main {
     defer diagnostic_slot.release()
     @stdio.stderr.write(text)
   }
-  let status = run_xargs_stream(
+  let status = run_stream(
     batches,
     max_procs,
     arguments => {
-      run_xargs_child(
+      run_child(
         program,
         arguments,
         context,

@@ -342,7 +342,7 @@ pub async fn transfer(
           let chunk = match read_result {
             Some(Some(chunk)) => chunk
             Some(None) => break
-            None => raise timeout_message("response body", timeout)
+            None => raise timeout_error("response body", timeout)
           }
           let skipped = skip_remaining.min(chunk.length().to_int64()).to_int()
           skip_remaining -= skipped.to_int64()

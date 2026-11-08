@@ -74,7 +74,7 @@ pub async fn read_fd(
     raise IOError::other(Unsupported, "use File::read for file handles")
   }
   @stdio.stdin.read(buf, offset=start, max_len=len) catch {
-    e => raise io_error(e)
+    e => raise from_error(e)
   }
 }
 
@@ -87,8 +87,8 @@ pub async fn write_fd(
 ) -> Unit {
   let bytes = Bytes::from_array(buf[start:start + len])
   match fd {
-    1 => @stdio.stdout.write(bytes) catch { e => raise io_error(e) }
-    2 => @stdio.stderr.write(bytes) catch { e => raise io_error(e) }
+    1 => @stdio.stdout.write(bytes) catch { e => raise from_error(e) }
+    2 => @stdio.stderr.write(bytes) catch { e => raise from_error(e) }
     _ =>
       raise IOError::other(
         Unsupported,

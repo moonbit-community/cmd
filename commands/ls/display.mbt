@@ -458,7 +458,7 @@ fn indent(
 ///|
 async fn write_layout(
   names : Array[DisplayName],
-  options : LsOptions,
+  options : Options,
   palette : Palette?,
   used : Ref[Bool],
   emit : async (Bytes) -> Unit,

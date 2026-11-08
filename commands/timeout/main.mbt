@@ -87,22 +87,16 @@ async fn main {
   let result = @async.with_timeout_opt(milliseconds, () => {
     @process.run(@process.child(command[0], command[1:].to_owned(), context~))
   }) catch {
-    @os_error.OSError(_) as err => {
+    err => {
       @stdio.stderr.write("timeout: cannot run '\{command[0]}': \{err}\n")
       @sys.exit(
         @process.launch_failure_status(
-          if err.is_ENOENT() {
-            CommandNotFound
-          } else {
-            CommandNotInvokable
+          match err {
+            @os_error.OSError(_) as os if os.is_ENOENT() => CommandNotFound
+            _ => CommandNotInvokable
           },
         ),
       )
-      return
-    }
-    err => {
-      @stdio.stderr.write("timeout: cannot run '\{command[0]}': \{err}\n")
-      @sys.exit(@process.launch_failure_status(CommandNotInvokable))
       return
     }
   }

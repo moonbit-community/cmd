@@ -24,7 +24,7 @@ fn delimited_items(
 }
 
 ///|
-test "xargs delimiter parsing follows byte escape and signed char provider rules" {
+test "delimiter parsing follows byte escape and signed char provider rules" {
   for
     (text, value) in [
       (",", 44),
@@ -53,7 +53,7 @@ test "xargs delimiter parsing follows byte escape and signed char provider rules
 }
 
 ///|
-test "xargs byte items preserve raw length and reject untransportable argv prefixes" {
+test "byte items preserve raw length and reject untransportable argv prefixes" {
   let item = input_item(b"a\x00\xfftail"[:])
   assert_eq(item.value, "a")
   assert_eq(item.size, 8L)
@@ -66,7 +66,7 @@ test "xargs byte items preserve raw length and reject untransportable argv prefi
 }
 
 ///|
-async test "xargs confirmations use a separate reader and preserve C locale yes rules" {
+async test "confirmations use a separate reader and preserve C locale yes rules" {
   let input = @io.MemoryReader(writer => writer.write("yep\n no\nY\n"))
   defer input.close()
   assert_true(confirm_batch(input, "command", ["one"]))

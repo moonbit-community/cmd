@@ -62,7 +62,7 @@ async fn main {
     manifest,
     index,
     cases,
-    @contracts.command_catalog(),
+    @catalog.commands(),
     scenario_catalog~,
   )
   guard errors.is_empty() else { fail(errors.join("\n")) }

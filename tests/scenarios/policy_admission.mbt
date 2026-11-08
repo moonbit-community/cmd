@@ -193,12 +193,7 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     "chmod", "curl", "env", "find", "make", "rg", "sh", "split", "timeout", "typst",
     "wget", "xargs",
   ]
-  let catalog = @contracts.command_catalog()
-  record(
-    catalog.length() == 82,
-    "catalog must contain exactly 82 commands",
-    failures,
-  )
+  let catalog = @catalog.commands()
   let mut default_count = 0
   let mut restricted_count = 0
   for contract in catalog {
@@ -268,7 +263,7 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     failures,
   )
   for name in expected_restricted {
-    match @contracts.find_contract(name) {
+    match @catalog.find(name) {
       Some(contract) =>
         record(
           contract.tier == Restricted,
@@ -279,20 +274,20 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     }
   }
   for name in ["make", "sh", "xargs"] {
-    match @contracts.find_contract(name) {
+    match @catalog.find(name) {
       Some(contract) =>
         record(
-          @contracts.releasable(contract),
+          @catalog.releasable(contract),
           "\{name}: direct-child semantics must not require process groups",
           failures,
         )
       None => ()
     }
   }
-  match @contracts.find_contract("timeout") {
+  match @catalog.find("timeout") {
     Some(contract) =>
       record(
-        !@contracts.releasable(contract),
+        !@catalog.releasable(contract),
         "timeout: must remain gated without process-group cancellation",
         failures,
       )

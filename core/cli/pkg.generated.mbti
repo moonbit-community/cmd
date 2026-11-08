@@ -31,8 +31,6 @@ pub(all) enum ErrorKind {
   UnexpectedOptionValue
   DuplicateOption
   InvalidValue
-  MissingOperand
-  UnsupportedCapability
 }
 pub fn ErrorKind::equal(Self, Self) -> Bool
 pub fn ErrorKind::not_equal(Self, Self) -> Bool

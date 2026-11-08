@@ -2,6 +2,28 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "case:wget-exit-network-before-http",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "wget-exit-network-before-http",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:wget-exit-http-before-network",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "wget-exit-http-before-network",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
       "behavior_id": "metadata:typst",
       "command": "typst",
       "status": "supported",

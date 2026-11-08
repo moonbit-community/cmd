@@ -1,5 +1,5 @@
 import {
-  "mooxCLI/cmd-tests/harness/contracts",
+  "mooxCLI/cmd-tests/harness/catalog",
   "cli/core/platform",
   "mooxCLI/cmd-tests/scenarios/network",
   "mooxCLI/cmd-tests/scenarios/filesystem",

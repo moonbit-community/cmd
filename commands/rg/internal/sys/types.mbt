@@ -150,8 +150,3 @@ pub fn from_error(error : Error) -> IOError {
     _ => IOError::other(Other, error.to_string())
   }
 }
-
-///|
-fn io_error(error : Error) -> IOError {
-  from_error(error)
-}

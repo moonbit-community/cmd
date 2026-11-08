@@ -27,7 +27,7 @@ async fn retry_fixture(
 }
 
 ///|
-async test "wget retries partial output with an updated range without duplicating aggregate files" {
+async test "retries partial output with an updated range without duplicating aggregate files" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="wget-retry-output-")
@@ -61,7 +61,7 @@ async test "wget retries partial output with an updated range without duplicatin
 }
 
 ///|
-async test "wget retries the same collision selected output and preserves existing names" {
+async test "retries the same collision selected output and preserves existing names" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let name = "wget-retry-unique-\{@async.now()}.tmp"
@@ -96,7 +96,7 @@ async test "wget retries the same collision selected output and preserves existi
 }
 
 ///|
-async test "wget exhausted partial retries retain one prefix and report network failure" {
+async test "exhausted partial retries retain one prefix and report network failure" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="wget-retry-exhausted-")
@@ -125,7 +125,7 @@ async test "wget exhausted partial retries retain one prefix and report network 
 }
 
 ///|
-async test "wget accepts not modified only for timestamping and preserves existing output" {
+async test "accepts not modified only for timestamping and preserves existing output" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let name = "wget-not-modified-\{@async.now()}.tmp"
@@ -176,7 +176,7 @@ async test "wget accepts not modified only for timestamping and preserves existi
 }
 
 ///|
-async test "wget continued downloads discover the disposition filename before selecting the resume offset" {
+async test "continued downloads discover the disposition filename before selecting the resume offset" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let name = "wget-resume-disposition-\{@async.now()}.tmp"

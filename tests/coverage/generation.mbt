@@ -26,7 +26,7 @@ async fn generate_proof_obligations(output : String) -> Unit {
     annotations.append(proof_array(proof_field(data, "claims")))
     features.append(proof_array(proof_field(data, "features")))
   }
-  let catalog = @contracts.command_catalog()
+  let catalog = @catalog.commands()
   let scenario_catalog = @json.parse(
     @fs.read_file("tests/coverage/review/scenarios.json").text(),
   )

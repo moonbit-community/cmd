@@ -107,12 +107,12 @@ fn BatchReader::empty(self : BatchReader) -> Array[String]? {
 }
 
 ///|
-fn stop_xargs(status : Int32) -> Bool {
+fn stop_on_status(status : Int32) -> Bool {
   status == 124 || status == 125 || status == 126 || status == 127
 }
 
 ///|
-async fn run_xargs_stream(
+async fn run_stream(
   batches : BatchReader,
   max_procs : Int32,
   execute : async (Array[String]) -> ChildOutcome,
@@ -126,11 +126,11 @@ async fn run_xargs_stream(
     producer.val = Some(
       group.spawn(() => {
         try {
-          while !stop_xargs(result.val) {
+          while !stop_on_status(result.val) {
             slots.acquire()
             let mut dispatched = false
             defer (if !dispatched { slots.release() })
-            if stop_xargs(result.val) {
+            if stop_on_status(result.val) {
               break
             }
             guard batches.next() is Some(arguments) else { break }
@@ -140,15 +140,15 @@ async fn run_xargs_stream(
             group.spawn_bg(() => {
               defer slots.release()
               let status = execute(arguments)
-              result.val = aggregate_xargs_status(result.val, status)
-              if stop_xargs(result.val) && producer.val is Some(task) {
+              result.val = combine_status(result.val, status)
+              if stop_on_status(result.val) && producer.val is Some(task) {
                 task.cancel()
               }
             })
             dispatched = true
           }
         } catch {
-          error => if !stop_xargs(result.val) { failure.val = Some(error) }
+          error => if !stop_on_status(result.val) { failure.val = Some(error) }
         }
       }),
     )

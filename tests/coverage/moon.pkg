@@ -1,5 +1,4 @@
 import {
-  "mooxCLI/cmd-tests/harness/contracts",
   "mooxCLI/cmd-tests/harness/catalog",
   "mooxCLI/cmd-tests/harness",
   "moonbitlang/async",

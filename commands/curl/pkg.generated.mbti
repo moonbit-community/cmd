@@ -4,10 +4,10 @@ package "cli/curl"
 // Values
 
 // Errors
-type CurlUsageError
+type UsageError
 
 // Types and methods
-type CurlOptions
+type Options
 
 // Type aliases
 

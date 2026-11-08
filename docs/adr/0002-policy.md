@@ -37,7 +37,7 @@ TMP/TEMP/TMPDIR so Windows can resolve a temporary path without granting writes.
 Keep command semantics unchanged when adapting host permission interfaces;
 only upstream rules justify command-local environment changes.
 
-Implementation: [catalog](../../tests/harness/contracts/catalog.mbt),
+Implementation: [catalog](../../tests/harness/catalog/commands.mbt),
 [process context](../../core/process/process.mbt),
 [policy scenarios](../../tests/scenarios/policy_suite.mbt). Delivery gates are defined
 once in [ADR-0001](0001-evidence.md).

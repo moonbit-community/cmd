@@ -1,5 +1,5 @@
 ///|
-test "rm interaction normalization preserves option order and literal operands" {
+test "interaction normalization preserves option order and literal operands" {
   assert_eq(interaction_args(["-fI", "--interactive", "a", "--", "-i"]), [
     "-f", "--interactive=once", "--interactive=always", "a", "--", "-i",
   ])

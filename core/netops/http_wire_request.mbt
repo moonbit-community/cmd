@@ -39,7 +39,7 @@ async fn HttpWire::write_raw(
       raise transfer_error(ConnectionFailure, "request write failed: \{error}")
   }
   if result is None {
-    raise timeout_message("request", timeout)
+    raise timeout_error("request", timeout)
   }
 }
 

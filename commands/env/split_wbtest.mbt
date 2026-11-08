@@ -1,5 +1,5 @@
 ///|
-test "env split strings preserve quotes expansions and argument splice tokens" {
+test "split strings preserve quotes expansions and argument splice tokens" {
   let environment = Map([("KEEP", "one two"), ("EMPTY", "")])
   assert_eq(
     split_string(
@@ -21,7 +21,7 @@ test "env split strings preserve quotes expansions and argument splice tokens" {
 }
 
 ///|
-test "env split errors reject unsupported expansions escapes and quotes" {
+test "split errors reject unsupported expansions escapes and quotes" {
   for
     text in [
       "$KEEP", "${1BAD}", "${KEEP", "\\q", "trailing\\", "\"\\c\"", "'unclosed",

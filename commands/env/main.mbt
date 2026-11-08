@@ -233,12 +233,16 @@ async fn main {
       }
       let context : @process.ExecutionContext = { cwd, env: variables, }
       let code = @process.run(@process.child(program, command_args, context~)) catch {
-        @os_error.OSError(_) as err => {
+        err => {
           @stdio.stderr.write("env: cannot run '\{program}': \{err}\n")
+          let missing = match err {
+            @os_error.OSError(_) as os => os.is_ENOENT()
+            _ => false
+          }
           let explicit_path = @path.Path(program).is_absolute() ||
             program.contains("/") ||
             program.contains("\\")
-          let existing_directory = if err.is_ENOENT() && explicit_path {
+          let existing_directory = if missing && explicit_path {
             let kind = @fs.kind(program) catch { _ => Regular }
             kind == Directory
           } else {
@@ -246,18 +250,13 @@ async fn main {
           }
           @sys.exit(
             @process.launch_failure_status(
-              if err.is_ENOENT() && !existing_directory {
+              if missing && !existing_directory {
                 CommandNotFound
               } else {
                 CommandNotInvokable
               },
             ),
           )
-          return
-        }
-        err => {
-          @stdio.stderr.write("env: cannot run '\{program}': \{err}\n")
-          @sys.exit(@process.launch_failure_status(CommandNotInvokable))
           return
         }
       }

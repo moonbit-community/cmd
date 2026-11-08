@@ -1,5 +1,5 @@
 ///|
-async fn curl_output_retry_fixture(
+async fn output_retry_fixture(
   group : @async.TaskGroup[Unit],
   responses : Array[String],
   output : String,
@@ -32,8 +32,8 @@ async fn curl_output_retry_fixture(
 }
 
 ///|
-fn curl_output_retry_options() -> CurlOptions {
-  let options = default_curl_options()
+fn retry_options() -> Options {
+  let options = default_options()
   options.silent = true
   options.no_proxy = Some("*")
   options.retry_count = 1
@@ -43,7 +43,7 @@ fn curl_output_retry_options() -> CurlOptions {
 }
 
 ///|
-async test "curl accepted retries reset opened files before a later empty failure" {
+async test "accepted retries reset opened files before a later empty failure" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="curl-retry-empty-")
@@ -59,7 +59,7 @@ async test "curl accepted retries reset opened files before a later empty failur
               @fs.write_file(path, b"preserve")
             }
             let before : Array[Bytes?] = []
-            let server = curl_output_retry_fixture(
+            let server = output_retry_fixture(
               group,
               [
                 "HTTP/1.1 200 OK\r\nContent-Length: 9\r\n\r\nhello",
@@ -72,10 +72,10 @@ async test "curl accepted retries reset opened files before a later empty failur
               path,
               before,
             )
-            let options = curl_output_retry_options()
+            let options = retry_options()
             options.output_specs.push(path)
             options.remove_on_error = remove_on_error
-            let status = curl_transfer_one(
+            let status = transfer_one(
               options,
               "http://127.0.0.1:\{server.addr.port()}/body",
               0,
@@ -102,7 +102,7 @@ async test "curl accepted retries reset opened files before a later empty failur
 }
 
 ///|
-async test "curl leaves partial files intact when a retry is not accepted" {
+async test "leaves partial files intact when a retry is not accepted" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="curl-retry-refused-")
@@ -112,13 +112,13 @@ async test "curl leaves partial files intact when a retry is not accepted" {
       for exhausted_budget in [false, true] {
         let path = directory + "/\{exhausted_budget}"
         let before : Array[Bytes?] = []
-        let server = curl_output_retry_fixture(
+        let server = output_retry_fixture(
           group,
           ["HTTP/1.1 200 OK\r\nContent-Length: 9\r\n\r\nhello"],
           path,
           before,
         )
-        let options = curl_output_retry_options()
+        let options = retry_options()
         options.output_specs.push(path)
         if exhausted_budget {
           options.retry_max_time_ms = Some(1)
@@ -127,7 +127,7 @@ async test "curl leaves partial files intact when a retry is not accepted" {
           options.retry_count = 0
         }
         assert_eq(
-          curl_transfer_one(
+          transfer_one(
             options,
             "http://127.0.0.1:\{server.addr.port()}/body",
             0,
@@ -143,7 +143,7 @@ async test "curl leaves partial files intact when a retry is not accepted" {
 }
 
 ///|
-async test "curl first empty failures preserve unopened files with final cleanup enabled" {
+async test "first empty failures preserve unopened files with final cleanup enabled" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="curl-first-empty-")
@@ -156,18 +156,18 @@ async test "curl first empty failures preserve unopened files with final cleanup
           @fs.write_file(path, b"preserve")
         }
         let before : Array[Bytes?] = []
-        let server = curl_output_retry_fixture(
+        let server = output_retry_fixture(
           group,
           ["HTTP/1.1 200 OK\r\nContent-Length: 9\r\n\r\n"],
           path,
           before,
         )
-        let options = curl_output_retry_options()
+        let options = retry_options()
         options.output_specs.push(path)
         options.retry_count = 0
         options.remove_on_error = true
         assert_eq(
-          curl_transfer_one(
+          transfer_one(
             options,
             "http://127.0.0.1:\{server.addr.port()}/body",
             0,
@@ -186,7 +186,7 @@ async test "curl first empty failures preserve unopened files with final cleanup
 }
 
 ///|
-async test "curl retries retain the selected content disposition path and defer removal" {
+async test "retries retain the selected content disposition path and defer removal" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let token = @async.now().to_string()
@@ -208,7 +208,7 @@ async test "curl retries retain the selected content disposition path and defer 
           } else {
             "Content-Disposition: attachment; filename=\"\{second}\"\r\n"
           }
-          let server = curl_output_retry_fixture(
+          let server = output_retry_fixture(
             group,
             [
               "HTTP/1.1 200 OK\r\nContent-Disposition: attachment; filename=\"\{first}\"\r\nContent-Length: 9\r\n\r\nhello",
@@ -223,12 +223,12 @@ async test "curl retries retain the selected content disposition path and defer 
             first,
             before,
           )
-          let options = curl_output_retry_options()
+          let options = retry_options()
           options.remote_name = true
           options.remote_header_name = true
           options.remove_on_error = remove_on_error
           assert_eq(
-            curl_transfer_one(
+            transfer_one(
               options,
               "http://127.0.0.1:\{server.addr.port()}/" + fallback,
               0,

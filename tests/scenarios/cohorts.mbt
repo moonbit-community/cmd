@@ -2,7 +2,7 @@
 /// Multi-command scenarios preserve their original assertions. Register
 /// their scope explicitly so filtering never silently executes the whole suite.
 pub fn cohort_cases() -> Array[@harness.Case] raise {
-  let all = @contracts.command_catalog().map(item => item.name)
+  let all = @catalog.commands().map(item => item.name)
   let specs : Array[(String, String, Array[String])] = [
     ("compat-catalog", "compat", all),
     ("compat-environment", "compat", ["sh", "make", "xargs", "env", "printenv"]),

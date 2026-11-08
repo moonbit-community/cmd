@@ -7,13 +7,74 @@ import {
 }
 
 // Values
+pub fn commands() -> Array[CommandContract]
+
+pub fn find(String) -> CommandContract?
+
 pub async fn load(String) -> Registry raise Failure
+
+pub fn releasable(CommandContract) -> Bool
 
 pub fn validate(Registry) -> Array[String]
 
 // Errors
 
 // Types and methods
+#derive(Eq, @debug.Debug)
+pub(all) enum Capability {
+  FileRead
+  FileWrite
+  ProcessSpawn
+  Network
+  PermissionMutation
+  SymbolicLink
+  ProcessGroupCancellation
+}
+pub fn Capability::equal(Self, Self) -> Bool
+pub fn Capability::not_equal(Self, Self) -> Bool
+pub fn Capability::to_repr(Self) -> @debug.Repr
+
+pub(all) struct CommandContract {
+  name : String
+  tier : CompatibilityTier
+  input : InputMode
+  output : OutputMode
+  exit_codes : Array[Int32]
+  capabilities : Array[Capability]
+  options : Array[String]
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum CompatibilityTier {
+  Core
+  Extended
+  Restricted
+}
+pub fn CompatibilityTier::equal(Self, Self) -> Bool
+pub fn CompatibilityTier::not_equal(Self, Self) -> Bool
+pub fn CompatibilityTier::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug)
+pub(all) enum InputMode {
+  NoInput
+  OptionalStdin
+  FileOrStdin
+  StructuredInput
+}
+pub fn InputMode::equal(Self, Self) -> Bool
+pub fn InputMode::not_equal(Self, Self) -> Bool
+pub fn InputMode::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug)
+pub(all) enum OutputMode {
+  ByteStream
+  LineStream
+  StructuredOutput
+}
+pub fn OutputMode::equal(Self, Self) -> Bool
+pub fn OutputMode::not_equal(Self, Self) -> Bool
+pub fn OutputMode::to_repr(Self) -> @debug.Repr
+
 #derive(@debug.Debug, @json.FromJson, @json.ToJson)
 pub(all) struct Registry {
   schema : Int32

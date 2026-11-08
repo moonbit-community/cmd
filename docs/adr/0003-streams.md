@@ -97,9 +97,9 @@ values. Generated index/coverage records are definitions, not execution receipts
 
 | Package | Responsibility |
 | --- | --- |
-| core/cli / tests/harness/contracts | Runtime argument parsing and diagnostics / validation-only capability records and command catalog |
+| core/cli / tests/harness/catalog | Runtime argument parsing and diagnostics / validation-only command records, case index and release policy |
 | platform / process | Honest capability queries / execution context and direct-child lifetime |
-| fsops / fsops/mode | Shared filesystem preflight and octal mode parsing; command-local ordered effects |
+| fsops | Shared filesystem preflight and octal mode parsing; command-local ordered effects |
 | fswalk | Directory handles and requested observations; callers own sorting, pruning and links |
 | stream / tempio | Record and output ownership / exclusive temporary storage and range copying |
 | bytesearch / bytere | Reusable byte kernels / C-byte regex semantics and bounded accelerators |
@@ -122,7 +122,7 @@ its intentional source API breaks.
 Check both product and test-tool consumers before reducing visibility. Keep
 private-state tests with their implementation, and keep generated tables and
 imported corpus records even when they have no runtime consumer. The catalog
-now belongs to `tests/harness/contracts`: its consumers are Native validation
+now belongs to `tests/harness/catalog`: its consumers are Native validation
 tools, so it no longer expands the published runtime module.
 
 Validate stable arguments at their owning entry boundary. Inner loops use those
@@ -273,6 +273,16 @@ unnecessary. Commands without a justified change retain their specialized code.
 | Consolidate tests | Merge four byte-identical rg test bodies, retaining their names in the surviving titles. Retire tests solely for removed APIs or events the adapter cannot produce; keep failure injection, lifetime, cleanup and independent CLI assertions. |
 | Output and transfer ownership | BlockWriter checks span/state at synchronous admission once; slow paths run directly from that result. Keep active/failed state around actual I/O. Transfer output keeps its 4096-byte commit boundary and consumes queued data before awaiting writes. |
 | Make `Session::finish` synchronous (C02) | Retain async: EOF now reparses pending source and may execute async `run_jobs`. The earlier synchronous trial predates this behavior and is no longer applicable. Reconsider only if command execution is deliberately moved to another async API while preserving EOF and adapter contracts. |
+| Consolidate small packages | Fold octal mode parsing into fsops and combine command contracts with the existing test catalog. Keep catalog declarations separate from runtime parsing; no compatibility forwarding packages. |
+| Name owners directly | Remove redundant command prefixes from curl, wget, ls, join and xargs internals. Use `exit_code` for numeric mappings, `input.mbt` for join's reader, and `main.mbt` for the Wasm-capable jq entries. Group Typst argument tests in one file and replace historical audit-number filenames with subjects. |
+| Own tests at their behavior boundary | Byte-count algorithm tests move to bytesearch with the implementation. Test the HTTP method table once in netops; command tests retain explicit-method precedence, repeated input mapping and error conversion. Remove a field-by-field constructor test. Keep separate scanner EOF cases for terminated empty and unterminated final records. Imported corpora and frozen published expectations remain unchanged. |
+| Simplify errors and checks | Use one diagnostic branch for child-launch failures while retaining env's directory observation and command-specific 126/127 mapping. Remove rg's duplicate error-conversion alias, unused CLI error variants and the unreachable positive-timeout postcondition. Keep I/O races, short writes, cancellation, primary-error precedence and protocol-layer validation. |
+
+Package and file size alone is not a reason to split or merge. Keep specialized
+loops and direct command adapters. Curl and Wget error/retry policies, synchronous
+Typst host errors and async rg errors retain distinct owners; a generic error or
+command framework would conceal their different contracts. Wget's multi-URL
+exit-priority correction is recorded in [ADR-0005](0005-transfer.md).
 
 These are development changes, not publication or performance acceptance. On
 2026-11-08 the maintainer explicitly deferred performance qualification and

@@ -337,7 +337,6 @@
     {
       "sources": [
         "core/bytesearch",
-        "core/stream/count.mbt",
         "commands/wc/main.mbt",
         "commands/rg/internal/searcher",
         "core/bytere"
@@ -403,7 +402,7 @@
     },
     {
       "sources": [
-        "tests/harness/contracts",
+        "tests/harness/catalog",
         "core/cli"
       ],
       "retain": "Catalog ownership separated from parsing, with unchanged option precedence and metadata contracts"
@@ -1866,7 +1865,7 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/join/output.mbt",
+        "commands/join/input.mbt",
         "commands/join/main.mbt"
       ],
       "tests": [

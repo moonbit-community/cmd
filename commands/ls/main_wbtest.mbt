@@ -65,14 +65,14 @@ async test "command-line dereferencing differs from traversal and reports broken
 
 ///|
 test "time sorting uses nanoseconds with bytewise ties and reverse order" {
-  let newer : LsEntry = {
+  let newer : Entry = {
     name: "z",
     path: "z",
     kind: Some(Regular),
     timestamp: Some({ seconds: 10L, nanoseconds: 2, }),
     size: Some(1L),
   }
-  let older : LsEntry = {
+  let older : Entry = {
     name: "a",
     path: "a",
     kind: Some(Regular),

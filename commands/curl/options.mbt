@@ -1,5 +1,5 @@
 ///|
-priv enum CurlDataKind {
+priv enum DataKind {
   FormData
   RawData
   BinaryData
@@ -7,13 +7,13 @@ priv enum CurlDataKind {
 }
 
 ///|
-priv struct CurlDataSpec {
-  kind : CurlDataKind
+priv struct DataSpec {
+  kind : DataKind
   value : String
 }
 
 ///|
-struct CurlOptions {
+struct Options {
   urls : Array[String]
   output_specs : Array[String]
   mut remote_name : Bool
@@ -26,7 +26,7 @@ struct CurlOptions {
   mut head : Bool
   mut request_method : @netops.HttpMethod?
   headers : Array[@netops.HttpHeader]
-  data_specs : Array[CurlDataSpec]
+  data_specs : Array[DataSpec]
   mut upload_file : String?
   mut retry_count : Int32
   mut retry_delay_ms : Int32
@@ -47,12 +47,12 @@ struct CurlOptions {
 }
 
 ///|
-suberror CurlUsageError {
-  CurlUsageError(String)
+suberror UsageError {
+  UsageError(String)
 }
 
 ///|
-fn curl_usage() -> String {
+fn usage() -> String {
   let text =
     #|Usage: curl [options...] <url>
     #|      --help      display this help and exit
@@ -112,82 +112,73 @@ fn curl_usage() -> String {
 }
 
 ///|
-fn curl_nonnegative(
-  value : String,
-  option : String,
-) -> Int32 raise CurlUsageError {
+fn parse_nonnegative(value : String, option : String) -> Int32 raise UsageError {
   let result = @string.parse_int(value) catch {
-    _ => raise CurlUsageError("\{option}: expected a non-negative integer")
+    _ => raise UsageError("\{option}: expected a non-negative integer")
   }
   if result < 0 {
-    raise CurlUsageError("\{option}: expected a non-negative integer")
+    raise UsageError("\{option}: expected a non-negative integer")
   }
   result
 }
 
 ///|
-fn curl_redirect_limit(value : String) -> Int32 raise CurlUsageError {
+fn parse_redirect_limit(value : String) -> Int32 raise UsageError {
   let result = @string.parse_int(value) catch {
-    _ =>
-      raise CurlUsageError(
-        "--max-redirs: expected -1 or a non-negative integer",
-      )
+    _ => raise UsageError("--max-redirs: expected -1 or a non-negative integer")
   }
   if result < -1 {
-    raise CurlUsageError("--max-redirs: expected -1 or a non-negative integer")
+    raise UsageError("--max-redirs: expected -1 or a non-negative integer")
   }
   result
 }
 
 ///|
-fn curl_seconds(value : String, option : String) -> Int32 raise CurlUsageError {
+fn parse_seconds(value : String, option : String) -> Int32 raise UsageError {
   @cli.parse_idle_timeout(value) catch {
-    _ =>
-      raise CurlUsageError("\{option}: expected a positive number of seconds")
+    _ => raise UsageError("\{option}: expected a positive number of seconds")
   }
 }
 
 ///|
-fn curl_seconds_or_zero(
+fn parse_seconds_or_zero(
   value : String,
   option : String,
-) -> Int32 raise CurlUsageError {
+) -> Int32 raise UsageError {
   let seconds = @string.parse_double(value) catch {
     _ =>
-      raise CurlUsageError(
-        "\{option}: expected a non-negative number of seconds",
-      )
+      raise UsageError("\{option}: expected a non-negative number of seconds")
   }
   if seconds == 0.0 {
     return 0
   }
   if seconds < 0.0 {
-    raise CurlUsageError("\{option}: expected a non-negative number of seconds")
+    raise UsageError("\{option}: expected a non-negative number of seconds")
   }
-  curl_seconds(value, option)
+  parse_seconds(value, option)
 }
 
 ///|
-fn curl_retry_seconds(
+fn parse_retry_seconds(
   value : String,
   option : String,
-) -> Int32 raise CurlUsageError {
+) -> Int32 raise UsageError {
   let seconds = @string.parse_int(value) catch {
     _ =>
-      raise CurlUsageError(
+      raise UsageError(
         "\{option}: expected a non-negative integer number of seconds",
       )
   }
   if seconds < 0 || seconds > 2_147_483 {
-    raise CurlUsageError("\{option}: seconds exceed the supported timer range")
+    raise UsageError("\{option}: seconds exceed the supported timer range")
   }
   seconds * 1000
 }
 
 ///|
-fn curl_header(value : String) -> @netops.HttpHeader raise CurlUsageError {
+fn parse_header(value : String) -> @netops.HttpHeader raise UsageError {
   guard value.find(":") is Some(index) && index > 0 else {
-    raise CurlUsageError("--header: invalid header '\{value}'")
+    raise UsageError("--header: invalid header '\{value}'")
   }
   @netops.http_header(
     value[:index].to_owned().trim().to_owned(),
@@ -196,7 +187,7 @@ fn curl_header(value : String) -> @netops.HttpHeader raise CurlUsageError {
 }
 
 ///|
-fn default_curl_options() -> CurlOptions {
+fn default_options() -> Options {
   {
     urls: [],
     output_specs: [],
@@ -232,9 +223,7 @@ fn default_curl_options() -> CurlOptions {
 }
 
 ///|
-fn parse_curl_options(
-  args : ArrayView[String],
-) -> CurlOptions raise CurlUsageError {
+fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
   let parsed = @cli.parse(args, [
     @cli.flag("silent", short='s'),
     @cli.flag("show-error", short='S'),
@@ -271,9 +260,9 @@ fn parse_curl_options(
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) =>
-      raise CurlUsageError("\{message}: '\{option}'")
+      raise UsageError("\{message}: '\{option}'")
   }
-  let options = default_curl_options()
+  let options = default_options()
   options.urls.append(parsed.operands)
   options.output_specs.append(parsed.values("output"))
   options.remote_name = parsed.contains("remote-name")
@@ -290,23 +279,22 @@ fn parse_curl_options(
   options.help = parsed.contains("help")
   options.user = parsed.last_value("user")
   if options.user is Some(user) && !user.contains(":") {
-    raise CurlUsageError(
+    raise UsageError(
       "--user requires user:password; interactive password entry is unavailable",
     )
   }
   options.cookies.append(parsed.values("cookie"))
   options.cookie_jar = parsed.last_value("cookie-jar")
   if parsed.last_value("max-redirs") is Some(value) {
-    options.max_redirects = curl_redirect_limit(value)
+    options.max_redirects = parse_redirect_limit(value)
   }
   for value in parsed.values("header") {
-    options.headers.push(curl_header(value))
+    options.headers.push(parse_header(value))
   }
   if parsed.last_value("request") is Some(value) {
     options.request_method = Some(
       @netops.parse_http_method(value) catch {
-        _ =>
-          raise CurlUsageError("--request: unsupported HTTP method '\{value}'")
+        _ => raise UsageError("--request: unsupported HTTP method '\{value}'")
       },
     )
   }
@@ -332,33 +320,33 @@ fn parse_curl_options(
   }
   options.upload_file = parsed.last_value("upload-file")
   if parsed.last_value("retry") is Some(value) {
-    options.retry_count = curl_nonnegative(value, "--retry")
+    options.retry_count = parse_nonnegative(value, "--retry")
   }
   if parsed.last_value("retry-delay") is Some(value) {
-    options.retry_delay_ms = curl_retry_seconds(value, "--retry-delay")
+    options.retry_delay_ms = parse_retry_seconds(value, "--retry-delay")
   }
   if parsed.last_value("retry-max-time") is Some(value) {
-    let timeout = curl_retry_seconds(value, "--retry-max-time")
+    let timeout = parse_retry_seconds(value, "--retry-max-time")
     options.retry_max_time_ms = if timeout == 0 { None } else { Some(timeout) }
   }
   if parsed.last_value("connect-timeout") is Some(value) {
-    let timeout = curl_seconds_or_zero(value, "--connect-timeout")
+    let timeout = parse_seconds_or_zero(value, "--connect-timeout")
     options.connect_timeout_ms = if timeout == 0 { 300_000 } else { timeout }
   }
   if parsed.last_value("max-time") is Some(value) {
-    let timeout = curl_seconds_or_zero(value, "--max-time")
+    let timeout = parse_seconds_or_zero(value, "--max-time")
     options.max_time_ms = if timeout == 0 { None } else { Some(timeout) }
   }
   if parsed.last_value("idle-timeout") is Some(value) {
-    options.idle_timeout_ms = curl_seconds(value, "--idle-timeout")
+    options.idle_timeout_ms = parse_seconds(value, "--idle-timeout")
   }
   options.proxy_url = parsed.last_value("proxy")
   options.no_proxy = parsed.last_value("noproxy")
   if options.data_specs.length() > 0 && options.upload_file is Some(_) {
-    raise CurlUsageError("--data and --upload-file are mutually exclusive")
+    raise UsageError("--data and --upload-file are mutually exclusive")
   }
   if options.remote_header_name && !options.remote_name {
-    raise CurlUsageError("--remote-header-name requires --remote-name")
+    raise UsageError("--remote-header-name requires --remote-name")
   }
   options
 }

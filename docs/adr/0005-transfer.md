@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-01
+Updated: 2026-11-08
 
 ## Decision
 
@@ -48,6 +48,16 @@ headers and premature fixed/chunked EOF.
 Cookie domain/path/Secure/expiry, update order and malformed/overflow Max-Age
 policies remain profile-specific. Exact wire tests own the detailed cases;
 this does not establish browser policy, PSL/IDNA or full jar serialization.
+
+Wget retains the lowest nonzero transfer exit code across URL operands, matching
+the [GNU exit-status rule](https://www.gnu.org/software/wget/manual/wget.html#Exit-Status).
+Usage and generic setup failures return before the transfer loop. A later
+success does not clear an earlier failure. The previous implementation retained
+the last failure, so network error 4 followed by HTTP error 8 incorrectly exited
+8. `wget-exit-network-before-http` and `wget-exit-http-before-network` in the
+[CLI cases](../../tests/cases/wget.json) assert both orders and a later successful
+body, with the pinned Linux oracle route registered in the case index. This is
+an unpublished workspace correction; the frozen 0.2.5 coordinate is unchanged.
 
 ## Output ownership
 

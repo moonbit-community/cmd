@@ -1,8 +1,5 @@
 ///|
-fn curl_has_header(
-  headers : ArrayView[@netops.HttpHeader],
-  name : String,
-) -> Bool {
+fn has_header(headers : ArrayView[@netops.HttpHeader], name : String) -> Bool {
   let normalized = name.to_lower()
   for header in headers {
     if header.name.to_lower() == normalized {
@@ -13,7 +10,7 @@ fn curl_has_header(
 }
 
 ///|
-fn curl_without_line_endings(data : Bytes) -> Bytes {
+fn without_line_endings(data : Bytes) -> Bytes {
   let output = @buffer.Buffer(size_hint=data.length())
   for byte in data {
     if byte != b'\r' && byte != b'\n' && byte != b'\x00' {
@@ -24,7 +21,7 @@ fn curl_without_line_endings(data : Bytes) -> Bytes {
 }
 
 ///|
-fn curl_url_encoded(data : Bytes) -> Bytes {
+fn url_encode(data : Bytes) -> Bytes {
   let output = @buffer.Buffer(size_hint=data.length())
   let digits = b"0123456789ABCDEF"
   for byte in data {
@@ -47,12 +44,12 @@ fn curl_url_encoded(data : Bytes) -> Bytes {
 }
 
 ///|
-async fn curl_data_value(spec : CurlDataSpec) -> Bytes {
+async fn read_data(spec : DataSpec) -> Bytes {
   match spec.kind {
     RawData => @utf8.encode(spec.value)
     FormData =>
       if spec.value.has_prefix("@") {
-        curl_without_line_endings(@fs.read_file(spec.value[1:]).binary())
+        without_line_endings(@fs.read_file(spec.value[1:]).binary())
       } else {
         @utf8.encode(spec.value)
       }
@@ -65,30 +62,30 @@ async fn curl_data_value(spec : CurlDataSpec) -> Bytes {
     UrlEncodedData => {
       let value = spec.value
       if value.has_prefix("@") {
-        curl_url_encoded(@fs.read_file(value[1:]).binary())
+        url_encode(@fs.read_file(value[1:]).binary())
       } else if value.find("@") is Some(index) && index > 0 {
         let name = value[:index].to_owned()
         @utf8.encode(name + "=") +
-        curl_url_encoded(@fs.read_file(value[index + 1:]).binary())
+        url_encode(@fs.read_file(value[index + 1:]).binary())
       } else if value.find("=") is Some(index) {
         @utf8.encode(value[:index + 1].to_owned()) +
-        curl_url_encoded(@utf8.encode(value[index + 1:].to_owned()))
+        url_encode(@utf8.encode(value[index + 1:].to_owned()))
       } else {
-        curl_url_encoded(@utf8.encode(value))
+        url_encode(@utf8.encode(value))
       }
     }
   }
 }
 
 ///|
-async fn curl_request_body(options : CurlOptions) -> @netops.RequestBody {
+async fn request_body(options : Options) -> @netops.RequestBody {
   if options.data_specs.length() > 0 {
     let output = @buffer.Buffer()
     for index, spec in options.data_specs {
       if index > 0 {
         output.write_byte(b'&')
       }
-      output.write_bytes(curl_data_value(spec))
+      output.write_bytes(read_data(spec))
     }
     return @netops.BytesBody(output.to_bytes())
   }
@@ -100,7 +97,7 @@ async fn curl_request_body(options : CurlOptions) -> @netops.RequestBody {
 }
 
 ///|
-fn curl_request_method(options : CurlOptions) -> @netops.HttpMethod {
+fn request_method(options : Options) -> @netops.HttpMethod {
   match options.request_method {
     Some(request) => request
     None if options.head => @netops.Head
@@ -111,7 +108,7 @@ fn curl_request_method(options : CurlOptions) -> @netops.HttpMethod {
 }
 
 ///|
-fn curl_proxy_for(options : CurlOptions, url : String) -> String? {
+fn proxy_for(options : Options, url : String) -> String? {
   let no_proxy = match options.no_proxy {
     Some(value) => Some(value)
     None =>
@@ -151,8 +148,8 @@ fn curl_proxy_for(options : CurlOptions, url : String) -> String? {
 }
 
 ///|
-fn curl_output(
-  options : CurlOptions,
+fn output_for(
+  options : Options,
   url : String,
   index : Int32,
 ) -> @netops.TransferOutput raise @netops.TransferError {
@@ -198,7 +195,7 @@ fn curl_output(
 }
 
 ///|
-fn curl_exit_kind(kind : @netops.TransferErrorKind) -> Int32 {
+fn exit_code(kind : @netops.TransferErrorKind) -> Int32 {
   match kind {
     @netops.UnsupportedProtocol => 1
     @netops.InvalidMethod | @netops.ProtocolFailure => 2
@@ -219,7 +216,7 @@ fn curl_exit_kind(kind : @netops.TransferErrorKind) -> Int32 {
 }
 
 ///|
-async fn curl_write_headers(
+async fn write_headers(
   status : Int32,
   reason : String,
   headers : ArrayView[@netops.HttpHeader],
@@ -232,7 +229,7 @@ async fn curl_write_headers(
 }
 
 ///|
-fn curl_progress_text(
+fn progress_text(
   received : Int64,
   content_length : Int64?,
   interactive : Bool,
@@ -255,7 +252,7 @@ fn curl_progress_text(
 }
 
 ///|
-async fn curl_observer(
+async fn observe_transfer(
   show_headers : Bool,
   show_progress : Bool,
   interactive : Bool,
@@ -264,7 +261,7 @@ async fn curl_observer(
   match event {
     @netops.ResponseStarted(status~, reason~, headers~, ..) => {
       if show_headers {
-        curl_write_headers(status, reason, headers)
+        write_headers(status, reason, headers)
       }
       if show_progress {
         @stdio.stderr.write(
@@ -273,24 +270,22 @@ async fn curl_observer(
       }
     }
     @netops.Progress(received~, content_length~) if show_progress => {
-      let text = curl_progress_text(
-        received, content_length, interactive, false,
-      )
+      let text = progress_text(received, content_length, interactive, false)
       if text != "" {
         @stdio.stderr.write(text)
       }
     }
     @netops.Completed(received~, content_length~) if show_progress =>
       @stdio.stderr.write(
-        curl_progress_text(received, content_length, interactive, true),
+        progress_text(received, content_length, interactive, true),
       )
     _ => ()
   }
 }
 
 ///|
-fn curl_can_retry(
-  options : CurlOptions,
+fn can_retry(
+  options : Options,
   kind : @netops.TransferErrorKind,
   status : Int32?,
 ) -> Bool {
@@ -306,8 +301,8 @@ fn curl_can_retry(
 }
 
 ///|
-fn curl_reports_retry_error(
-  options : CurlOptions,
+fn reports_retry_error(
+  options : Options,
   kind : @netops.TransferErrorKind,
 ) -> Bool {
   (!options.silent || options.show_error) &&
@@ -315,7 +310,7 @@ fn curl_reports_retry_error(
 }
 
 ///|
-fn curl_error_message(
+fn error_message(
   kind : @netops.TransferErrorKind,
   message : String,
   context : @netops.TransferFailureContext?,
@@ -330,7 +325,7 @@ fn curl_error_message(
 }
 
 ///|
-fn curl_retry_delay(options : CurlOptions, attempt : Int32) -> Int32 {
+fn retry_delay(options : Options, attempt : Int32) -> Int32 {
   if options.retry_delay_ms > 0 {
     return options.retry_delay_ms
   }
@@ -339,15 +334,13 @@ fn curl_retry_delay(options : CurlOptions, attempt : Int32) -> Int32 {
 }
 
 ///|
-priv struct CurlTransferOutput {
+priv struct TransferOutput {
   original : @netops.TransferOutput
   mut opened_path : String?
 }
 
 ///|
-fn CurlTransferOutput::for_attempt(
-  self : CurlTransferOutput,
-) -> @netops.TransferOutput {
+fn TransferOutput::for_attempt(self : TransferOutput) -> @netops.TransferOutput {
   match (self.original, self.opened_path) {
     (@netops.FileOutput(..), Some(path)) =>
       @netops.FileOutput(
@@ -368,8 +361,8 @@ fn CurlTransferOutput::for_attempt(
 }
 
 ///|
-fn CurlTransferOutput::observe(
-  self : CurlTransferOutput,
+fn TransferOutput::observe(
+  self : TransferOutput,
   event : @netops.TransferEvent,
 ) -> Unit {
   if event is @netops.OutputStarted(path=Some(path), ..) {
@@ -378,7 +371,7 @@ fn CurlTransferOutput::observe(
 }
 
 ///|
-async fn CurlTransferOutput::reset_for_retry(self : CurlTransferOutput) -> Unit {
+async fn TransferOutput::reset_for_retry(self : TransferOutput) -> Unit {
   if self.opened_path is Some(path) {
     let path = @platform.normalize_input_separators(path)
     // Released fs APIs reset by pathname; this does not pin the prior handle's
@@ -391,9 +384,7 @@ async fn CurlTransferOutput::reset_for_retry(self : CurlTransferOutput) -> Unit 
 }
 
 ///|
-async fn CurlTransferOutput::cleanup_after_failure(
-  self : CurlTransferOutput,
-) -> Unit {
+async fn TransferOutput::cleanup_after_failure(self : TransferOutput) -> Unit {
   if self.original is @netops.FileOutput(remove_on_error=true, ..) &&
     self.opened_path is Some(path) {
     let path = @platform.normalize_input_separators(path)
@@ -408,13 +399,13 @@ async fn CurlTransferOutput::cleanup_after_failure(
 }
 
 ///|
-async fn curl_transfer_one(
-  options : CurlOptions,
+async fn transfer_one(
+  options : Options,
   url : String,
   index : Int32,
   jar : @netops.CookieJar?,
 ) -> Int32 {
-  let body = curl_request_body(options) catch {
+  let body = request_body(options) catch {
     err => {
       if !options.silent || options.show_error {
         @stdio.stderr.write("curl: (26) \{err}\n")
@@ -429,14 +420,13 @@ async fn curl_transfer_one(
   } else {
     Some(explicit_cookies.join("; "))
   }
-  if !curl_has_header(headers, "user-agent") {
+  if !has_header(headers, "user-agent") {
     headers.push(@netops.http_header("User-Agent", "curl/8.22.0"))
   }
-  if !curl_has_header(headers, "accept") {
+  if !has_header(headers, "accept") {
     headers.push(@netops.http_header("Accept", "*/*"))
   }
-  if options.data_specs.length() > 0 &&
-    !curl_has_header(headers, "content-type") {
+  if options.data_specs.length() > 0 && !has_header(headers, "content-type") {
     headers.push(
       @netops.http_header("Content-Type", "application/x-www-form-urlencoded"),
     )
@@ -445,18 +435,18 @@ async fn curl_transfer_one(
     if options.head {
       @netops.DiscardOutput
     } else {
-      curl_output(options, url, index)
+      output_for(options, url, index)
     }
   } catch {
     @netops.TransferError(kind~, message~, ..) => {
-      let code = curl_exit_kind(kind)
+      let code = exit_code(kind)
       if !options.silent || options.show_error {
         @stdio.stderr.write("curl: (\{code}) \{message}\n")
       }
       return code
     }
   }
-  let transfer_output : CurlTransferOutput = {
+  let transfer_output : TransferOutput = {
     original: output,
     opened_path: None,
   }
@@ -481,14 +471,14 @@ async fn curl_transfer_one(
     } else {
       []
     }
-    let proxy_url = curl_proxy_for(options, url)
+    let proxy_url = proxy_for(options, url)
     let result = try
       @netops.transfer(
         url,
         transfer_output.for_attempt(),
         @netops.transfer_options(
           profile=@netops.CurlProfile,
-          request_method=curl_request_method(options),
+          request_method=request_method(options),
           headers~,
           body~,
           redirects=if options.location {
@@ -516,23 +506,22 @@ async fn curl_transfer_one(
         ),
         observer=event => {
           transfer_output.observe(event)
-          curl_observer(options.head, show_progress, stderr_terminal, event)
+          observe_transfer(options.head, show_progress, stderr_terminal, event)
         },
       )
     catch {
       @netops.TransferError(kind~, message~, status~, context~) => {
-        let diagnostic = curl_error_message(kind, message, context)
-        if attempt < options.retry_count &&
-          curl_can_retry(options, kind, status) {
+        let diagnostic = error_message(kind, message, context)
+        if attempt < options.retry_count && can_retry(options, kind, status) {
           let next_attempt = attempt + 1
-          let retry_delay = curl_retry_delay(options, next_attempt)
+          let retry_delay = retry_delay(options, next_attempt)
           let elapsed = @async.now() - retry_started
           if options.retry_max_time_ms is None ||
             elapsed + retry_delay.to_int64() <
             options.retry_max_time_ms.unwrap().to_int64() {
             attempt = next_attempt
-            if curl_reports_retry_error(options, kind) {
-              let code = curl_exit_kind(kind)
+            if reports_retry_error(options, kind) {
+              let code = exit_code(kind)
               @stdio.stderr.write("curl: (\{code}) \{diagnostic}\n")
             }
             if !options.silent {
@@ -556,7 +545,7 @@ async fn curl_transfer_one(
           }
         }
         transfer_output.cleanup_after_failure()
-        let code = curl_exit_kind(kind)
+        let code = exit_code(kind)
         if !options.silent || options.show_error {
           @stdio.stderr.write("curl: (\{code}) \{diagnostic}\n")
         }
@@ -578,9 +567,9 @@ async fn curl_transfer_one(
 }
 
 ///|
-async fn curl_run(options : CurlOptions) -> Int32 {
+async fn run(options : Options) -> Int32 {
   if options.help {
-    @stdio.stdout.write(curl_usage())
+    @stdio.stdout.write(usage())
     return 0
   }
   if options.urls.is_empty() {
@@ -608,7 +597,7 @@ async fn curl_run(options : CurlOptions) -> Int32 {
   }
   let mut status = 0
   for index, url in options.urls {
-    status = curl_transfer_one(options, url, index, jar)
+    status = transfer_one(options, url, index, jar)
   }
   if options.cookie_jar is Some(path) && jar is Some(jar) {
     jar.save(path) catch {
@@ -626,14 +615,14 @@ async fn main {
     @stdio.stdout.write("curl 0.2.5\n")
     return
   }
-  let options = parse_curl_options(@env.args()[1:]) catch {
-    CurlUsageError(message) => {
+  let options = parse_options(@env.args()[1:]) catch {
+    UsageError(message) => {
       @stdio.stderr.write("curl: option error: \{message}\n")
       @sys.exit(2)
       return
     }
   }
-  let status = curl_run(options)
+  let status = run(options)
   if status != 0 {
     @sys.exit(status)
   }

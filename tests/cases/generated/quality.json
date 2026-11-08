@@ -2,7 +2,7 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 3547,
+    "exact-local": 3549,
     "finite-diagnostic": 181,
     "typed-scenario": 64,
     "typed-dynamic-output": 12
@@ -29408,6 +29408,26 @@
       "required_work": ""
     },
     {
+      "case_id": "wget-exit-network-before-http",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "6a17e39ec216fa35e26fc04ebfe9e806fb9e869582880053ad252d68f247f36d",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "wget-exit-http-before-network",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "25e769bf620f09e15cd9148f971d40fe8057e293ca481eb3f5925d621a66981c",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
       "case_id": "transfer-wget-chunk-initial-eof",
       "source": "tests/cases/wget.json",
       "definition_sha256": "c17b6a68f09929dd6a81737240a960681aaa6e3a78d4c576165dd3feee165dff",
@@ -29700,7 +29720,7 @@
     {
       "case_id": "release-metadata-wget-help",
       "source": "tests/cases/wget.json",
-      "definition_sha256": "e8e085acbeb52fe9de7d67f6d86f3436b4d4472181e705e1cf2c1378bec148fa",
+      "definition_sha256": "c395bf7cf98d3d15ae34a169a67912de96872484f9b79ad67439a280c212c6dd",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -47696,6 +47716,12 @@
       "kind": "exact"
     },
     "f17-uniq-missing-option-value": {
+      "kind": "exact"
+    },
+    "wget-exit-network-before-http": {
+      "kind": "exact"
+    },
+    "wget-exit-http-before-network": {
       "kind": "exact"
     },
     "transfer-wget-chunk-initial-eof": {

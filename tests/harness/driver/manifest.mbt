@@ -21,7 +21,7 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
   if manifest.cases.is_empty() {
     failures.push("manifest: required case corpus is empty")
   }
-  let catalog = @contracts.command_catalog()
+  let catalog = @catalog.commands()
   if manifest.commands.length() != catalog.length() {
     failures.push(
       "manifest: expected \{catalog.length()} command rows, got \{manifest.commands.length()}",
