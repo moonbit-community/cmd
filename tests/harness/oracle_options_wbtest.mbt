@@ -118,6 +118,18 @@ async test "staged oracle sealing preserves reviewed inputs and verified identit
   assert_eq(sealed_profile.image_digest, digest)
   assert_eq(sealed_profile.versions_sha256, sha256_text(inventory))
   assert_eq(sealed_profile.sources.length(), 1)
+  let revised = { ..reviewed, profile_version: 2, }
+  let revised_receipt = { ..sealed_profile, profile_version: 2, }
+  assert_true(
+    oracle_profile_binding_errors(revised_receipt, revised, required_profile_ids=[
+      "pinned-oracle-v1",
+    ]).is_empty(),
+  )
+  assert_false(
+    oracle_profile_binding_errors(sealed_profile, revised, required_profile_ids=[
+      "pinned-oracle-v1",
+    ]).is_empty(),
+  )
   let identity = verify_oracle_image_with(
     reviewed.image,
     staged_path,

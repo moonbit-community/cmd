@@ -8,3 +8,8 @@ tests/cases/generated/*.json text eol=lf
 tests/coverage/review/*.json text eol=lf
 tests/coverage/generated/* text eol=lf
 tests/release/*.json text eol=lf
+
+# Preserve the exact upstream PSL bytes and deterministic generated output.
+tests/fixtures/psl/public_suffix_list.dat -text
+tests/fixtures/psl/test_psl.txt -text
+core/netops/cookie_suffix_data.mbt text eol=lf

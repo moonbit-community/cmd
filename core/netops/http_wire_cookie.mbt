@@ -33,6 +33,11 @@ fn wire_cookie(value : String, profile : TransferProfile) -> @http.Cookie? {
         } else {
           part[:equal].to_owned()
         }
+        if profile == WgetProfile &&
+          value == "" &&
+          (attribute.to_lower() == "domain" || attribute.to_lower() == "path") {
+          return None
+        }
         match attribute.to_lower() {
           "path" => path = Some(value)
           "expires" =>

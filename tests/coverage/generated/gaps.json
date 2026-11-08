@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "coverage_manifest_sha256": "a06c2da1a6e90371d6cf84910d2857004430ea2923087bf59f412db1a772fcb3",
+  "coverage_manifest_sha256": "20e96fad4b2aeb5a4b296b25d7e2d0792ac463c81fdbfc6b8d1903433fa38c2c",
   "independent_review_sha256": "632717c75722e0c8dc4a310767c80e848fe7aada8bd16cf53711048a49db7391",
   "reviewed_definitions": 895,
   "remaining_catalog_labels": 0,
@@ -1040,7 +1040,7 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available.",
+      "current_activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records.",
       "current_case_ids": [
         "repair-final-wget-cookie-session",
         "repair-final-wget-cookie-header"
@@ -1053,6 +1053,21 @@
             "cookie/wget/loaded",
             "cookie/wget/missing-parent",
             "cookie/wget/session-excluded"
+          ]
+        },
+        {
+          "case_id": "network-cookie-suffix",
+          "assertions": [
+            "cookie-suffix/wget-icann",
+            "cookie-suffix/wget-private",
+            "cookie-suffix/wget-wildcard-child",
+            "cookie-suffix/wget-exception",
+            "cookie-suffix/wget-noncontiguous",
+            "cookie-suffix/wget-exact-child",
+            "cookie-suffix/wget-jar-icann",
+            "cookie-suffix/wget-invalid-deletion",
+            "cookie-suffix/wget-trailing-dot",
+            "cookie-suffix/wget-current-private"
           ]
         }
       ],

@@ -1651,9 +1651,10 @@
       "claim": "load-cookies",
       "case_ids": [
         "repair-final-wget-cookie-session",
-        "repair-final-wget-cookie-header"
+        "repair-final-wget-cookie-header",
+        "network-cookie-suffix"
       ],
-      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available.",
+      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records.",
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "scenario_bindings": [
@@ -1664,6 +1665,21 @@
             "cookie/wget/loaded",
             "cookie/wget/missing-parent",
             "cookie/wget/session-excluded"
+          ]
+        },
+        {
+          "case_id": "network-cookie-suffix",
+          "assertions": [
+            "cookie-suffix/wget-icann",
+            "cookie-suffix/wget-private",
+            "cookie-suffix/wget-wildcard-child",
+            "cookie-suffix/wget-exception",
+            "cookie-suffix/wget-noncontiguous",
+            "cookie-suffix/wget-exact-child",
+            "cookie-suffix/wget-jar-icann",
+            "cookie-suffix/wget-invalid-deletion",
+            "cookie-suffix/wget-trailing-dot",
+            "cookie-suffix/wget-current-private"
           ]
         }
       ]
@@ -1834,7 +1850,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-auth-cookie"
+        "network-auth-cookie",
+        "network-cookie-suffix"
       ],
       "scenario_bindings": [
         {
@@ -1853,9 +1870,26 @@
             "cookie-security/insecure-overlay-deletion",
             "cookie-security/secure-loopback-allows-replacement"
           ]
+        },
+        {
+          "case_id": "network-cookie-suffix",
+          "assertions": [
+            "cookie-suffix/curl-icann",
+            "cookie-suffix/curl-private",
+            "cookie-suffix/curl-wildcard-child",
+            "cookie-suffix/curl-wildcard-base",
+            "cookie-suffix/curl-exception",
+            "cookie-suffix/curl-noncontiguous",
+            "cookie-suffix/curl-noncontiguous-positive",
+            "cookie-suffix/curl-alabel",
+            "cookie-suffix/curl-exact-child",
+            "cookie-suffix/curl-multiple-dots",
+            "cookie-suffix/curl-trailing-dot",
+            "cookie-suffix/curl-current-private"
+          ]
         }
       ],
-      "activation": "Explicit and repeated-b cookies retain exact reflected values and origin boundaries. Finite security cases observe exact redirect cookies, all logical saved rows and request counts for invalid/valid prefixes, exact IP Domain scope, nested default paths, nonsecure-origin rejection, protected insecure replacement/deletion and the loopback exception. PSL-dependent domain conversion and full cookie grammar remain outside this scope."
+      "activation": "Explicit and repeated-b cookies retain exact reflected values and origin boundaries. Finite security cases observe exact redirect cookies, all logical saved rows and request counts for invalid/valid prefixes, exact IP Domain scope, nested default paths, nonsecure-origin rejection, protected insecure replacement/deletion and the loopback exception. Full cookie grammar remains outside this scope. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records."
     },
     {
       "command": "curl",
@@ -1888,7 +1922,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-auth-cookie"
+        "network-auth-cookie",
+        "network-cookie-suffix"
       ],
       "scenario_bindings": [
         {
@@ -1905,9 +1940,21 @@
             "cookie-security/jar-scope-identity",
             "cookie-security/host-deletion-preserves-domain"
           ]
+        },
+        {
+          "case_id": "network-cookie-suffix",
+          "assertions": [
+            "cookie-suffix/curl-jar-icann",
+            "cookie-suffix/curl-jar-private",
+            "cookie-suffix/curl-jar-wildcard",
+            "cookie-suffix/curl-jar-leading-dots",
+            "cookie-suffix/curl-jar-invalid-ip",
+            "cookie-suffix/curl-exact-same",
+            "cookie-suffix/curl-invalid-deletion"
+          ]
         }
       ],
-      "activation": "Actual save/load and missing-parent effects remain required. New jar imports validate prefixes after path normalization, including stdin; host-only/domain identities coexist and host-only deletion preserves the domain record. Exact redirect output, request counts, unchanged input jars and complete logical output rows qualify these finite inputs. Full jar grammar, file headers/order and mode policy remain separate."
+      "activation": "Actual save/load and missing-parent effects remain required. New jar imports validate prefixes after path normalization, including stdin; host-only/domain identities coexist and host-only deletion preserves the domain record. Exact redirect output, request counts, unchanged input jars and complete logical output rows qualify these finite inputs. Full jar grammar, file headers/order and mode policy remain separate. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records."
     },
     {
       "command": "wget",

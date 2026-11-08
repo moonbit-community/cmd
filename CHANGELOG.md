@@ -18,8 +18,15 @@ Development only.
 
 - Repair workspace curl cookie-prefix validation, normalized jar paths, Secure
   origin/overlay rules and host-only replacement identity. Preserve Wget's
-  distinct security behavior; PSL-dependent scope and complete jar dialects
-  remain open under #34. Published coordinates are unchanged.
+  distinct security behavior; complete jar dialects remain open under #34.
+  Published coordinates are unchanged.
+
+- Add complete pinned ICANN/PRIVATE cookie suffix admission and Curl's exact
+  suffix host-only conversion and original domain case in saved jars. Retain
+  case-insensitive identity/overlay checks, Wget's imported-file and rejected-domain
+  deletion policies, independent
+  raw input and full-list oracle checks; advance oracle PSL data in profile
+  revision 2. URL IDNA and the remaining #34 dialects stay open.
 
 - Repair unpublished curl repeated request fields, ordered response fields and
   Basic challenge-list recognition. Replace lossy header observations and the

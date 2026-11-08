@@ -109,6 +109,7 @@ async fn main {
       for path in scripts {
         moon(root, ["check", "--deny-warn", path])
       }
+      moon(root, ["run", "tests/tools/public_suffix.mbtx", "--", "check"])
     }
     "test" => {
       guard rest is [selection] &&

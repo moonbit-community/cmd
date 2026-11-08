@@ -50,7 +50,7 @@ headers and premature fixed/chunked EOF.
 
 Cookie domain/path/Secure/expiry, update order and malformed/overflow Max-Age
 policies remain profile-specific. Exact wire tests own the detailed cases;
-this does not establish browser policy, PSL/IDNA or full jar serialization.
+this does not establish browser policy, URL IDNA or full jar serialization.
 
 The unpublished Curl profile checks case-sensitive `__Secure-` and `__Host-`
 prefixes before mutating storage, including Netscape imports. Header cookie
@@ -74,11 +74,52 @@ overlay checks do not apply to local jar imports.
 Private fixed-clock tests cover domain overlap, expiration, path and identity.
 The shared CLI security matrix observes real redirect requests, unchanged
 input jars and all logical saved rows, with separate candidate/oracle records.
-Headers and row ordering in jar files are not byte-parity claims. PSL still
-must convert accepted exact public-suffix domains to host-only scope: current
-`__Host-` cookies with `Domain=localhost` or an exact public suffix can be
-rejected where pinned curl accepts them. Lift that limitation only with a
-complete pinned PSL dataset and actual oracle cases. Wget port-scoped cookies,
+Headers and row ordering in jar files are not byte-parity claims.
+
+The workspace embeds the complete ICANN and PRIVATE PSL snapshot at
+`94ec5df7273926560d91e77c002000ba1a53fec4`, with original input, license and
+checksums in `tests/fixtures/psl`. The pure MoonBit generator retains Unicode
+rules and adds Punycode aliases. This does not normalize incoming URL or
+Domain spellings with IDNA/NFKC; that distinct Unicode input behavior remains
+unfinished under #34. Complete data coverage is not complete Unicode admission.
+Private sorted tables implement libpsl 0.21.2's cookie policy, including
+wildcard bases, exceptions and the longest suffix of the request host. Curl
+converts accepted exact suffix responses to host-only before prefix validation;
+imports reject public suffixes with the localhost exception. Wget retains
+domain scope for exact suffixes and does not apply response admission to jars.
+Its response domain rejection marks the matching cookie for removal, including
+unexpired updates and foreign domains; explicit Path must prefix the request
+path before that removal can occur. Missing Path uses the request directory
+including its trailing slash. One leading Domain dot is removed from response
+and imported keys, so additional dots cannot accidentally target another key.
+Real Linux observations exposed the earlier incorrect ignore-only behavior;
+permanent cases cover expired/unexpired updates, private suffixes, foreign
+domains and the path gate. Wget's port component remains in the open scope below.
+Request selection also uses Wget's raw path prefix, independently of Curl's
+segment-boundary rule. CLI jar loading explicitly selects the Wget profile;
+defaulting to Strict would collapse additional leading dots before deletion.
+Storage spelling and admission views remain distinct for leading/trailing dots
+and ASCII case. Curl keeps received/imported domain spelling while domain
+selection, replacement and insecure overlay protection compare ASCII case
+insensitively. Linux raw jar observations exposed the earlier lowercase rewrite;
+case-preservation and mixed-case replacement/overlay regressions retain it.
+Strict IP spelling is checked before using the released public address parser.
+
+`network-cookie-suffix` independently observes real proxy requests, unchanged
+input files and all logical Curl saved rows. It has its own bounded execution
+window; existing authentication and transfer deadlines are unchanged. The
+official 78-record corpus remains an independent input. Full rule/alias
+observations use fixed libpsl over the raw official data, not generated product
+tables. Oracle profile revision 2 advances the PSL snapshot prospectively while
+retaining the family ID required by frozen case bindings. The recipe checks
+that client and PSL/IDNA library binaries remain unchanged when adding fixed
+diagnostic tools. Fresh receipts bind data bytes, counts, metadata and immutable
+image identity; real Curl/Wget file-read traces verify actual use. Old revision
+1 profiles and receipts retain their original scope and cannot satisfy revision
+2 binding. Dataset updates require regeneration, complete rule/alias comparison
+and actual CLI regressions, never a partial handcrafted suffix list.
+
+Wget port-scoped cookies,
 its full path dialect, HttpOnly jar handling, and complete malformed jar/field
 grammar (including early rejection of conflicting Domain attributes) remain
 issue #34 work. No host implementation or private API is needed.
@@ -126,7 +167,7 @@ full absolute ordering of every generated header and jar field.
 Wget's explicit Cookie cross-origin coverage now uses an actual --header
 redirect, independently of its unchanged --no-cookies case.
 
-Header removal/semicolon syntax and header files, PSL/IDNA, complete cookie-jar
+Header removal/semicolon syntax and header files, URL IDNA, complete cookie-jar
 serialization, configuration loading and stdin authentication replay remain
 project work under issue #34. Extend the owning parser and protocol fixtures
 before lifting these limits; no upstream list API is required. This batch does

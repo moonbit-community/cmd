@@ -68,9 +68,13 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
 
 - Only HTTP/HTTPS and GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE and PATCH are supported.
 - Header removal, semicolon empty-field syntax and header files are not yet supported; Host and Transfer-Encoding remain transport-managed.
-- PSL/IDNA remain unsupported. In particular, `__Host-` with `Domain=localhost`
-  or an exact public suffix still lacks curl's PSL host-only conversion; full
-  prefix/domain parity and complete jar grammar/serialization are not claimed.
+- The workspace uses the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
+  for response and imported cookies. Accepted exact public-suffix response
+  domains become host-only before prefix checks; file imports retain curl's
+  localhost exception. Stored domain spellings retain their ASCII case;
+  matching, replacement, secure overlay checks and PSL admission fold ASCII case.
+  IDNA/NFKC normalization of URL and Domain inputs and complete jar grammar and
+  serialization remain unfinished. Published coordinates retain their recorded profile.
 - Content-encoded responses remain encoded. A redirect cannot rewind consumed stdin uploads.
 - Partial stdout remains after failure; files remain unless --remove-on-error is selected. -O -J does not overwrite an existing selected name.
 

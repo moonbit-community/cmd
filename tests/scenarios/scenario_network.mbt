@@ -36,6 +36,21 @@ fn workspace_network_executor(
 }
 
 ///|
+async fn network_cookie_suffix_scenario(
+  root : String,
+  work : String,
+  oracle_image? : String,
+  proof? : @harness.ScenarioProof,
+) -> Unit {
+  @network.run(
+    "network-cookie-suffix",
+    workspace_network_executor(root, proof?),
+    work,
+    oracle_image?,
+  )
+}
+
+///|
 async fn network_transfer_scenario(
   root : String,
   work : String,

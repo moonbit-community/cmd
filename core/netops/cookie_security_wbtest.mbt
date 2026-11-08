@@ -1,4 +1,90 @@
 ///|
+test "curl implicit cookie hosts preserve DNS case and canonicalize IPv6 case" {
+  for
+    (host, target, stored) in [
+      ("MiXeD.Example.COM", "mixed.example.com", "MiXeD.Example.COM"),
+      ("[2001:DB8::1]", "[2001:db8::1]", "2001:db8::1"),
+    ] {
+    let jar = CookieJar::new()
+    jar.receive(
+      parse_absolute_url("http://" + host + "/set"),
+      [@http.Cookie("sid", "v", path="/")],
+      100L,
+      profile=CurlProfile,
+    )
+    assert_eq(jar.entries.length(), 1)
+    assert_eq(jar.entries[0].domain, stored)
+    assert_eq(
+      jar.header_for(
+        parse_absolute_url("http://" + target + "/"),
+        101L,
+        profile=CurlProfile,
+      ),
+      Some("sid=v"),
+    )
+  }
+}
+
+///|
+test "curl preserves received domain spelling while matching case insensitively" {
+  let jar = CookieJar::new()
+  let url = parse_absolute_url("http://a.example.com/set")
+  jar.receive(
+    url,
+    [@http.Cookie("sid", "first", domain="EXAMPLE.COM", path="/")],
+    100L,
+    profile=CurlProfile,
+  )
+  assert_true(
+    jar.netscape().contains(".EXAMPLE.COM\tTRUE\t/\tFALSE\t0\tsid\tfirst\n"),
+  )
+  assert_eq(jar.header_for(url, 101L, profile=CurlProfile), Some("sid=first"))
+  jar.receive(
+    url,
+    [@http.Cookie("sid", "second", domain="eXample.com", path="/")],
+    102L,
+    profile=CurlProfile,
+  )
+  assert_eq(jar.entries.length(), 1)
+  assert_eq(jar.entries[0].domain, "eXample.com")
+  assert_eq(jar.header_for(url, 103L, profile=CurlProfile), Some("sid=second"))
+}
+
+///|
+test "curl preserves imported domain spelling without weakening secure overlays or PSL checks" {
+  let jar = CookieJar::new()
+  jar.load_netscape(
+    ".EXAMPLE.COM\tTRUE\t/\tTRUE\t0\tsid\tsecure\n.CO.UK\tTRUE\t/\tFALSE\t0\tbad\tv\n",
+    profile=CurlProfile,
+  )
+  assert_eq(jar.entries.length(), 1)
+  assert_eq(jar.entries[0].domain, "EXAMPLE.COM")
+  jar.receive(
+    parse_absolute_url("http://a.example.com/set"),
+    [@http.Cookie("sid", "plain", domain="example.com", path="/")],
+    100L,
+    profile=CurlProfile,
+  )
+  assert_eq(jar.entries.length(), 1)
+  assert_eq(
+    jar.header_for(
+      parse_absolute_url("https://A.EXAMPLE.COM/"),
+      101L,
+      profile=CurlProfile,
+    ),
+    Some("sid=secure"),
+  )
+  assert_eq(
+    jar.header_for(
+      parse_absolute_url("http://A.EXAMPLE.COM/"),
+      101L,
+      profile=CurlProfile,
+    ),
+    None,
+  )
+}
+
+///|
 test "curl secure cookies use the pinned HTTPS and exact loopback contexts" {
   for
     (source, secure) in [
@@ -336,6 +422,7 @@ test "curl insecure overlay checks overlap expiry and secure contexts" {
     (old_domain, old_expiry, source, blocked) in [
       ("example.test", None, "http://www.example.test/", true),
       ("www.example.test", None, "http://example.test/", true),
+      ("1.2.3.4", None, "http://2.3.4/", true),
       ("other.test", None, "http://www.example.test/", false),
       ("example.test", Some(100L), "http://www.example.test/", false),
       ("example.test", None, "https://www.example.test/", false),
@@ -367,7 +454,7 @@ test "curl insecure overlay checks overlap expiry and secure contexts" {
 }
 
 ///|
-test "curl prefix scope keeps the unfinished public suffix conversion explicit" {
+test "curl prefix scope uses the effective public suffix host-only conversion" {
   for domain in ["localhost", "co.uk"] {
     let jar = CookieJar::new()
     jar.receive(
@@ -376,9 +463,8 @@ test "curl prefix scope keeps the unfinished public suffix conversion explicit" 
       100L,
       profile=CurlProfile,
     )
-    // PSL may convert these exact domains to host-only upstream. Until the
-    // complete dataset is implemented, this documented boundary rejects them.
-    assert_true(jar.entries.is_empty())
+    assert_eq(jar.entries.length(), 1)
+    assert_true(jar.entries[0].host_only)
   }
 }
 

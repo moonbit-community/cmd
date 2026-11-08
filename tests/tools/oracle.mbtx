@@ -45,4 +45,17 @@ async fn main {
   versions.check()
   @fs.write_file(report_root + "/oracle-versions.txt", versions.stdout())
   @fs.write_file(report_root + "/oracle-image.txt", image + "\n")
+  @shell.Cmd(
+    "moon",
+    [
+      "run",
+      "tests/tools/public_suffix.mbtx",
+      "--",
+      "oracle",
+      image,
+      report_root + "/oracle-public-suffix",
+    ],
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
 }

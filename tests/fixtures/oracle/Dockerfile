@@ -336,6 +336,32 @@ COPY --from=build-tree /oracle/ /oracle/
 COPY --from=build-ripgrep /oracle/ /oracle/
 COPY --from=build-typst /oracle/ /oracle/
 
+# Advance only the reviewed PSL data. Keep the compiled clients and their
+# PSL/IDNA libraries byte-identical when adding fixed diagnostic observers.
+ARG PSL_VERSION=94ec5df7273926560d91e77c002000ba1a53fec4
+ARG PSL_SHA256=762b6cbdd2dacc597b398fcd7860e2184b684125a58aa177dbdf54916a1f3430
+RUN sha256sum /oracle/bin/curl /oracle/bin/wget \
+      /usr/lib/*/libpsl.so.5.* /usr/lib/*/libidn2.so.0.* /usr/lib/*/libunistring.so.5.* \
+      > /tmp/retained-network-binaries.sha256 \
+  && apt-get update \
+  && apt-get install --yes --no-install-recommends psl=0.21.2-1.1build1 strace=6.8-0ubuntu2 \
+  && sha256sum --check --strict /tmp/retained-network-binaries.sha256 \
+  && /usr/bin/psl --print-info > /tmp/psl-before.txt \
+  && grep --fixed-strings --line-regexp 'builtin filename: /usr/share/publicsuffix/public_suffix_list.dat' /tmp/psl-before.txt \
+  && grep --fixed-strings --line-regexp 'dist filename: /usr/share/publicsuffix/public_suffix_list.dafsa' /tmp/psl-before.txt \
+  && test ! -e /usr/share/publicsuffix/public_suffix_list.dafsa \
+  && mkdir -p /usr/share/publicsuffix \
+  && curl --fail --location --connect-timeout 15 --max-time 120 --retry 3 \
+      "https://raw.githubusercontent.com/publicsuffix/list/${PSL_VERSION}/public_suffix_list.dat" \
+      --output /usr/share/publicsuffix/public_suffix_list.dat \
+  && echo "${PSL_SHA256}  /usr/share/publicsuffix/public_suffix_list.dat" | sha256sum --check --strict \
+  && touch --date='2026-11-06T09:01:36Z' /usr/share/publicsuffix/public_suffix_list.dat \
+  && mkdir -p /oracle/observations \
+  && cp /tmp/retained-network-binaries.sha256 /tmp/psl-before.txt /oracle/observations/ \
+  && /usr/bin/psl --print-info > /oracle/observations/psl-after.txt \
+  && /usr/bin/dpkg-query -W psl strace libpsl5t64 libidn2-0 libunistring5 > /oracle/observations/network-packages.txt \
+  && rm -rf /var/lib/apt/lists/*
+
 # GNU make's default shell must be the same checksum-pinned Dash as the direct
 # sh oracle. Keep fixture argv and MAKEFLAGS unchanged by shell selection.
 RUN ln -s /oracle/bin/dash /oracle/bin/sh \

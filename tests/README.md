@@ -18,7 +18,7 @@ Moon commands sharing the workspace build directory run serially.
 | `functional` | Build Wasm, execute applicable correctness checks, and verify fresh coverage evidence |
 | `architecture /absolute/fresh.json` | Validate package and strategy boundaries |
 | `published` | Build acceptance tools and validate the exact published coordinates |
-| `oracle --image sha256:ID` | Verify the immutable Linux reference used by functional/published checks |
+| `oracle --image sha256:ID` | Verify the immutable Linux reference and complete pinned PSL rules/aliases used by functional/published checks |
 | `corpus`, `benchmark`, `protect` | Pinned sources and the single [timing engine](benchmark/README.md) |
 | `resources`, `resource-profiles` | Separate manual [resource observations](resources/README.md) |
 
@@ -34,6 +34,14 @@ On Linux, prepare `oracle` into the same report root first: the complete Linux
 run adds pinned differential comparisons. Diagnostic driver selections are
 documented in [harness/driver](harness/driver/README.md); subsets do not qualify
 full development or publication acceptance.
+
+The oracle family ID remains `pinned-oracle-v1` for frozen registry bindings;
+the reviewed `profile_version` is now 2. Its recipe fixes the complete official
+PSL snapshot and verifies retained client/library binaries. `oracle` additionally
+checks every raw Unicode rule and generated A-label alias with libpsl, recording
+fresh data/metadata and immutable-image receipts. Old revision 1 receipts do not
+satisfy the new recipe. `network-cookie-suffix-oracle` retains real client file
+reads and a rule absent from the old builtin data, alongside wire/jar effects.
 
 ## Ownership
 
