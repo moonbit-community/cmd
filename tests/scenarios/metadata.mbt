@@ -36,8 +36,26 @@ async fn metadata_pair(
 async fn metadata_scenario(
   root : String,
   work : String,
+  observation_path : String,
   proof? : @harness.ScenarioProof,
+  selectors_only~ : Bool = false,
+  oracle_image? : String,
 ) -> Unit {
+  guard !@fs.exists(observation_path) else {
+    fail("metadata infrastructure: preserve previous observations")
+  }
+  let observations : Array[Json] = []
+  @fs.write_file(observation_path, "[]\n")
+  errdefer @async.protect_from_cancel(() => {
+    observations.push({
+      "phase": "incomplete",
+      "detail": "The case report retains the error; prior raw observations are preserved.",
+    })
+    @fs.write_file(
+      observation_path,
+      Json(observations).stringify(indent=2) + "\n",
+    )
+  })
   // Workspace readers can change atime independently of the command under test.
   let isolated = @fs.tmpdir(prefix="cmd-metadata-")
   defer @async.protect_from_cancel(() => {
@@ -54,13 +72,32 @@ async fn metadata_scenario(
     }
   })
   @fs.mkdir(isolated + "/work")
-  metadata_observations(root, isolated + "/work", proof?)
+  if selectors_only {
+    metadata_selector_matrix(
+      root,
+      isolated + "/work",
+      observation_path,
+      observations,
+      proof?,
+      oracle_image?,
+    )
+  } else {
+    metadata_observations(
+      root,
+      isolated + "/work",
+      observation_path,
+      observations,
+      proof?,
+    )
+  }
 }
 
 ///|
 async fn metadata_observations(
   root : String,
   work : String,
+  observation_path : String,
+  observations : Array[Json],
   proof? : @harness.ScenarioProof,
 ) -> Unit {
   // Native observation prepares timestamps; commands still execute as Wasm.
@@ -73,16 +110,50 @@ async fn metadata_observations(
     let set = @harness.run("touch", ["-t", date, work + "/" + name], extra_env={
       "TZ": "UTC",
     })
+    observations.push({
+      "phase": "time-setup",
+      "path": name,
+      "requested": date,
+      "status": set.status,
+      "stdout": @harness.scenario_text(set.stdout),
+      "stderr": @harness.scenario_text(set.stderr),
+    })
+    @fs.write_file(
+      observation_path,
+      Json(observations).stringify(indent=2) + "\n",
+    )
     assert_eq(set.status, 0)
     assert_eq(set.stderr, b"")
-    assert_eq(@fs.atime(work + "/" + name), (seconds, 0))
-    assert_eq(@fs.mtime(work + "/" + name), (seconds, 0))
+    let accessed = @fs.atime(work + "/" + name)
+    let modified = @fs.mtime(work + "/" + name)
+    observations.push({
+      "phase": "time-precondition",
+      "path": name,
+      "atime": accessed,
+      "mtime": modified,
+      "expected_seconds": seconds.to_string(),
+    })
+    @fs.write_file(
+      observation_path,
+      Json(observations).stringify(indent=2) + "\n",
+    )
+    assert_eq(accessed, (seconds, 0))
+    assert_eq(modified, (seconds, 0))
   }
   @fs.write_file(work + "/reference", "reference")
   let reference_change = @fs.ctime(work + "/reference")
   @async.sleep(20)
   @fs.write_file(work + "/fresh", "fresh")
   let fresh_change = @fs.ctime(work + "/fresh")
+  observations.push({
+    "phase": "ctime-precondition",
+    "reference_ctime": reference_change,
+    "fresh_ctime": fresh_change,
+  })
+  @fs.write_file(
+    observation_path,
+    Json(observations).stringify(indent=2) + "\n",
+  )
   assert_true(
     fresh_change.0 > reference_change.0 ||
     (
@@ -97,6 +168,11 @@ async fn metadata_observations(
   assert_true(
     clock_before / 1000L - fresh_change.0 >= 0L &&
     clock_before / 1000L - fresh_change.0 < 30L,
+  )
+  ignore(
+    save_metadata_observations(
+      work, observation_path, observations, "time-fixtures-before",
+    ),
   )
   for label in ["amin", "atime", "mmin"] {
     metadata_pair(
@@ -162,6 +238,12 @@ async fn metadata_observations(
   assert_true(
     clock_after >= clock_before && clock_after - clock_before < 30000L,
   )
+  ignore(
+    save_metadata_observations(
+      work, observation_path, observations, "time-fixtures-after",
+    ),
+  )
+  metadata_selector_matrix(root, work, observation_path, observations, proof?)
   for
     (label, option, mode) in [
       ("readable", "-r", 0o400),
@@ -177,10 +259,28 @@ async fn metadata_observations(
       "writable" => (@fs.can_write(allowed), @fs.can_write(denied))
       _ => (@fs.can_execute(allowed), @fs.can_execute(denied))
     }
+    observations.push({
+      "phase": "access-precondition",
+      "predicate": label,
+      "observed": observed,
+      "requested_modes": [mode, 0],
+    })
+    @fs.write_file(
+      observation_path,
+      Json(observations).stringify(indent=2) + "\n",
+    )
     assert_eq(
       observed,
       (true, false),
-      msg="effective-access fixture precondition",
+      msg="public access-check fixture precondition",
+    )
+    ignore(
+      save_metadata_observations(
+        work,
+        observation_path,
+        observations,
+        "access-" + label + "-before",
+      ),
     )
     metadata_pair(
       root,
@@ -213,5 +313,13 @@ async fn metadata_observations(
     if proof is Some(proof) {
       proof.observe_equal("test/" + label, "test", actual, expected)
     }
+    ignore(
+      save_metadata_observations(
+        work,
+        observation_path,
+        observations,
+        "access-" + label + "-after",
+      ),
+    )
   }
 }

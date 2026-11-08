@@ -5612,6 +5612,12 @@
           "assertions": [
             "find/amin"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -5638,6 +5644,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/atime"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5666,6 +5678,12 @@
           "assertions": [
             "find/cmin"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -5692,6 +5710,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/ctime"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5720,6 +5744,12 @@
           "assertions": [
             "find/mmin"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -5746,6 +5776,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/anewer"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -5774,6 +5810,12 @@
           "assertions": [
             "find/cnewer"
           ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -5798,7 +5840,7 @@
         "coverage-find-reject--newermB",
         "coverage-find-reject--newermt"
       ],
-      "activation": "All nine supported a/c/m source/reference combinations execute true/false comparisons with independently checked timestamp relations, including strict equality rejection for c/c. Birth and literal-time selectors reject explicitly without touching a sentinel; POSIX timestamp scenario plus portable rejection vectors.",
+      "activation": "Nine a/c/m selectors require 144 independent source/reference comparisons on POSIX and Windows, including ties, distinct a/m fields and reversed birth-versus-change order. Real metadata and preservation receipts survive cleanup. Windows observes actual ChangeTime, NTFS file IDs and ACLs separately; these are not POSIX mode claims. Fixed Linux comparison is independently executed.",
       "scenario_bindings": [
         {
           "case_id": "metadata-relations",
@@ -5811,7 +5853,23 @@
             "find/newercm",
             "find/newerma",
             "find/newermc",
-            "find/newermm"
+            "find/newermm",
+            "find/selectors-neweraa",
+            "find/selectors-newerac",
+            "find/selectors-neweram",
+            "find/selectors-newerca",
+            "find/selectors-newercc",
+            "find/selectors-newercm",
+            "find/selectors-newerma",
+            "find/selectors-newermc",
+            "find/selectors-newermm",
+            "find/selectors-preserved"
+          ]
+        },
+        {
+          "case_id": "f29-windows-metadata",
+          "assertions": [
+            "find/windows-selectors"
           ]
         }
       ],
@@ -5839,6 +5897,12 @@
           "case_id": "metadata-relations",
           "assertions": [
             "find/used"
+          ]
+        },
+        {
+          "case_id": "f29-time-references",
+          "assertions": [
+            "find/time-reference-controls"
           ]
         }
       ],
@@ -7913,8 +7977,21 @@
         "coverage-test-time--nt-new-missing",
         "coverage-test-time--ot-missing-new"
       ],
-      "activation": "Independently fixed old/new/equal mtimes exercise both -nt/-ot true, false, equality and documented one-missing-file relations, with exact statuses and empty streams; POSIX.",
-      "scenario_bindings": [],
+      "activation": "Fixed old/new/equal, missing either/both, followed-link and three -N relations are independently checked; Windows uses real UTC setters and observations. Actual same-second distinct subsecond mtimes distinguish full timestamps from truncation. Definitions do not establish execution.",
+      "scenario_bindings": [
+        {
+          "case_id": "f29-windows-metadata",
+          "assertions": [
+            "test/windows-metadata"
+          ]
+        },
+        {
+          "case_id": "f29-subsecond-order",
+          "assertions": [
+            "test/subsecond-order"
+          ]
+        }
+      ],
       "unqualified_bindings": [],
       "scope": "Only the stated finite facet is reviewed. Definition kind: supported-option. Every named binding is required. Exact streams and typed scenario observations prove only the stated facet; unqualified companions are never silently dropped.",
       "remaining_facets": [

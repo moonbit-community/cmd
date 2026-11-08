@@ -170,7 +170,9 @@ pub fn command_catalog() -> Array[CommandContract] {
     contract("expand", Core, FileOrStdin, ByteStream, [FileRead], [
       "initial", "tabs",
     ]),
-    // Directory reads follow evaluated predicates/descent; exec batches flush during traversal.
+    // Stat snapshots precede names and child effects; actions obey expression
+    // order. Size uses upward-rounded uint64 units, with K as a project alias.
+    // Finite time windows and unavailable metadata retain explicit boundaries.
     contract(
       "find",
       Restricted,
@@ -214,6 +216,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       "binary", "check", "ignore-missing", "quiet", "status", "strict", "tag", "text",
       "warn", "zero",
     ]),
+    // Standalone arity precedes expression parsing. Size follows metadata
+    // without reading content; integers use signed-64-bit decimal with ASCII
+    // edge whitespace. Unary -a remains a project extension.
     contract("test", Core, NoInput, LineStream, [FileRead], [
       "expression-language", "file-kinds", "access-checks", "size", "timestamps",
     ]),
@@ -228,7 +233,9 @@ pub fn command_catalog() -> Array[CommandContract] {
       "no-dereference-target", "target-directory", "backup", "backup-control", "suffix",
     ]),
     // Symbolic leaf permissions preserve platform creation semantics: sticky
-    // creation requires a final permission adjustment on Darwin.
+    // creation requires a final permission adjustment on Darwin. New parents
+    // lacking public write/search access report a partial-effect boundary;
+    // these checks do not establish raw-mode parity. Windows -m preflights.
     contract("mkdir", Extended, NoInput, LineStream, [FileWrite], [
       "mode", "parents", "verbose",
     ]),

@@ -2,14 +2,14 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-07
+Updated: 2026-11-08
 
 ## Decision
 
 Implement each operation's correct subset through released public MoonBit APIs.
 Do not infer inode identity from paths, timestamps or content, use rename as
 inode-preserving overwrite, or rewrite content to simulate touch. Public async
-0.22.5 lacks the identity, raw mode, handle truncation, timestamp-setting,
+0.22.7 lacks the identity, raw mode, handle truncation, timestamp-setting,
 hard-link and readlink operations required by the boundaries below. Host
 observers, private APIs and FFI do not expand the product's capabilities.
 
@@ -67,7 +67,7 @@ Missing link privileges/observers fail the fixture. See
 | mkdir/chmod | Numeric chmod follows operand links and skips recursively encountered links. Mkdir applies leaf modes and accepts mask-independent omitted-who results. Parent-mode, temporary-owner and unavailable Windows setter cases remain narrow limits. |
 | rm | Explicit -i/-I uses original operand-count/recursive rules and a byte reader. Automatic write-protect prompting needs terminal state and raw permissions. |
 | ls | Selected layouts, quoting, ordering and explicit colors use actual metadata. Execute access does not substitute for mode bits; automatic color needs terminal detection. |
-| tree | Iterative traversal and postorder totals use actual metadata. Links are named leaves, never traversed, and count as files; -d selects actual child directories while retaining explicit operands. JSON preserves link type and HTML link color. Target text and selected-link sizes remain unavailable; filtered-out links do not trigger size rejection. macOS directory-size queries may reject. |
+| tree | Iterative traversal and postorder totals use actual metadata. Links are named leaves, never traversed, and count as files; -d selects actual child directories while retaining explicit operands. JSON preserves link type and HTML link color. Target text needs readlink. Selected-link sizes retain the project's explicit rejection profile; filtered-out links do not trigger it. macOS directory-size queries may reject. |
 | mktemp | Secure public randomness, exclusive creation and bounded collision retries establish ownership. No unsafe -u or inferred Windows ACL parity. |
 | csplit names | Windows trailing dot/space names reject until verbatim creation, reading, enumeration and cleanup work. POSIX padding remains supported. |
 | diff directories | Report FIFO/socket kinds without reading them. Distinct device numbers require public metadata. |
@@ -85,9 +85,93 @@ Tree's name-only link profile resolves issue #74 without fabricating readlink
 text or replacing it with realpath. Dangling and cyclic links remain displayable.
 Size requests reject selected links before querying their referents, and
 `ln=target` color requests reject instead of following the target. Reopen target
-display and link-size support only with released public APIs and exact link,
-dangling-target and no-follow tests. The CLI contracts in `tests/cases/tree.json`
+display only with public readlink support. Async 0.22.7 already exposes no-follow
+entry sizes; extending tree's selected-link-size profile is a separate decision
+requiring exact link, dangling-target and no-follow tests. The CLI contracts in `tests/cases/tree.json`
 and private traversal tests in `commands/tree/symlink_wbtest.mbt` own this scope.
+
+## Metadata predicates and parent creation
+
+Find and standalone test inspect file sizes through metadata, never by opening
+the file or inventing a fallback size. Find uses no-follow entry size, UInt64
+thresholds and upward unit rounding; test follows the validated target. Public
+ENOTSUP produces an explicit error (find 1, test 2). macOS directory size remains
+such a boundary. POSIX trailing separators require a directory before physical
+resolution, including the macOS Wasm file-link case.
+
+Find retains the stat fields needed by its expression before directory reads,
+actions or child processing, while each evaluated empty-directory query reads
+names again. An observed enumeration error remains a final failure even if a
+later action deletes the directory or resets its listing cache. Actions obey
+short circuits and expression order. Postorder cannot
+reclassify a parent as newer merely because deleting its child changed mtime.
+Prune/delete combinations require explicit depth. The default GNU optimization
+profile promotes name/path/constants within its left operator chain, preserving
+right compound groups and action barriers. These are command-private rules.
+
+Age and used predicates follow the fixed GNU 4.10.0 window definitions and
+finite binary64 input grammar, with signed 64-bit second bounds. Nonfinite and
+out-of-range C conversions are not a portable contract. The current public
+startup clock is millisecond-based; file timestamp nanoseconds are retained.
+The a/c/m reference matrix uses distinct fields and ordered real ctimes, and
+persists raw observations outside successful fixture cleanup. A local contract
+or numerical vector does not substitute for immutable Linux differential runs.
+Create its files in the reverse order from later metadata changes, so birth time
+cannot masquerade as status-change time. Windows records CreationTime separately
+as a negative control, queries real NTFS file IDs/hard-link lists and retains
+attributes/ACLs without calling them POSIX permission bits. Missing required
+host setup or observation fails infrastructure; host utilities never implement
+the product predicates.
+
+The async 0.22.7 Native Windows observer returns FILETIME seconds since 1601;
+its records retain that raw pair and subtract 11,644,473,600 seconds only in the
+test observer. The pinned Wasm host already converts to Unix time in
+[`windows_timestamp`](https://github.com/moonbitlang/moon/blob/940aa18df6db921386e87e16fa94b84fa267864b/crates/moonrun/src/filesystem/job/stat.rs#L246).
+Do not apply the correction to product code. Fixed .NET UTC setup/readback and
+the actual current clock validate the conversion, while 24 Windows Wasm age
+controls distinguish old, future and fresh timestamps; relative comparisons
+alone cannot detect a shared epoch error. A changed Native API epoch must fail
+the fixed preconditions until the observer is reviewed.
+
+The stateful contracts in `tests/scenarios/filesystem_{predicates,special,time,
+precision,windows,unreadable}.mbt` retain original modes, identities, timestamps and effects.
+Sparse fixtures above 2 GiB retain allocation and sentinel receipts outside the
+large payloads. POSIX socket, character and block nodes have actual positive and
+mutually exclusive negative controls; the socket is an inode left after its
+owned setup process has stopped, not a live-listener claim. These node fixtures
+do not apply to Windows. Windows executes ordinary-file negatives and its own
+file-link, directory-link and junction controls. The Linux immutable oracle is
+an additional execution gate; generated definitions do not establish acceptance.
+Unreadable size fixtures require real mode 000 and failed read-open, exercise
+empty/full positive and negative controls, and compare original metadata before
+observer-only permission restoration and exact retained-content checks. Protected
+restoration also runs on failure so owned fixtures cannot block artifact upload.
+The error-order fixture pins the denied link's atime in 2099 and verifies it
+after observer readlink/follow before taking the baseline. This stabilizes
+relatime observations; it does not claim that link access preserves atime on
+every mount. Exact GNU diagnostic expectations retain the invoked
+`/oracle/bin/find:` prefix without stripping actual error output. The first
+[PR validation failure](https://github.com/moonbit-community/cmd/actions/runs/42437838515)
+is retained and is not acceptance evidence.
+
+Standalone test applies its one-through-four-argument rules before recursive
+parsing. Its missing-operand time comparisons intentionally differ from the
+shared shell's subset. Integer comparisons accept signed 64-bit decimal with
+an optional sign and surrounding ASCII whitespace; radix prefixes, separators
+and internal whitespace reject. GNU's unbounded integer range remains outside
+this profile. Unary `-a` and find's uppercase size `K` remain named
+project extensions. Public access checks are not raw permission observations
+and do not establish differing real/effective-identity or ACL parity.
+
+Mkdir checks public write/search access after creating each new POSIX parent.
+A failed check reports capability status 2 and retains already-created parents;
+later operands are attempted. It cannot safely reproduce GNU's owner-bit
+adjustment without raw mode/umask, and does not guess a chmod mask. Access may
+succeed under elevated privileges or ACLs even when the raw owner bits differ;
+success therefore does not establish complete GNU parent-mode parity. Windows
+explicit numeric and symbolic modes reject before creation, while all-existing
+`-p` operands remain no-ops. Reopen the permission boundary with public mode or
+umask operations and independent parent/leaf, ACL and privilege observations.
 
 ## Verification and reconsideration
 

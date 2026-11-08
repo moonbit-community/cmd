@@ -175,7 +175,34 @@ pub async fn prepare_fixture(
         }
       }
       Some("directory") =>
-        @fs.mkdir(destination, recursive=true, permission?=file.mode)
+        // A prior child fixture may have created this owned parent implicitly.
+        // Its explicit declaration can set the final timestamps below.
+        if @fs.exists(destination) {
+          guard @fs.kind(destination, follow_symlink=false) is Directory else {
+            fail("directory fixture already exists with a different kind")
+          }
+          guard file.mode is None else {
+            fail(
+              "an implicit parent declaration can set timestamps but cannot override its creation mode",
+            )
+          }
+        } else {
+          @fs.mkdir(destination, recursive=true, permission?=file.mode)
+        }
+      Some("pipe") => {
+        guard !(@async.platform is Windows) else {
+          fail("POSIX FIFO fixture requires a POSIX host")
+        }
+        // Fixture setup only. Product metadata predicates never delegate to
+        // this host utility and must not open the resulting pipe.
+        let setup = run("/usr/bin/mkfifo", [destination])
+        guard setup.status == 0 && setup.stderr == b"" else {
+          fail("required FIFO fixture setup failed")
+        }
+        guard @fs.kind(destination, follow_symlink=false) == Pipe else {
+          fail("FIFO fixture did not create an actual pipe")
+        }
+      }
       Some("hardlink") => {
         guard file.target is Some(target) && safe_relative_path(target) else {
           fail("unsafe hardlink target")

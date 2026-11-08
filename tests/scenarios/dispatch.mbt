@@ -113,7 +113,174 @@ pub async fn execute_scenario(
           yes_stream_lifecycle_scenario(root, work, proof?)
         "compression-selectors" =>
           compression_selectors_scenario(root, work, proof?)
-        "metadata-relations" => metadata_scenario(root, work, proof?)
+        "metadata-relations" =>
+          metadata_scenario(
+            root,
+            work,
+            report_dir + "/metadata-relations.observations.json",
+            proof?,
+          )
+        "f29-mkdir-umasks" =>
+          mkdir_umask_scenario(
+            root,
+            work,
+            report_dir + "/f29-mkdir-umasks.observations.json",
+            proof?,
+          )
+        "f29-sparse-size" =>
+          filesystem_sparse_scenario(
+            root,
+            work,
+            report_dir + "/f29-sparse-size.observations.json",
+            proof?,
+          )
+        "f29-sparse-size-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("sparse oracle requires a sealed oracle")
+          }
+          filesystem_sparse_scenario(
+            root,
+            work,
+            report_dir + "/f29-sparse-size-oracle.observations.json",
+            oracle_image=image,
+          )
+        }
+        "f29-find-size-unreadable" | "f29-test-size-unreadable" =>
+          filesystem_unreadable_scenario(
+            root,
+            work,
+            report_dir + "/" + fixture.id + ".observations.json",
+            fixture.command,
+            proof?,
+          )
+        "f29-find-size-unreadable-oracle" | "f29-test-size-unreadable-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("unreadable size oracle requires a sealed oracle")
+          }
+          filesystem_unreadable_scenario(
+            root,
+            work,
+            report_dir + "/" + fixture.id + ".observations.json",
+            fixture.command,
+            oracle_image=image,
+          )
+        }
+        "f29-special-kinds" =>
+          filesystem_special_scenario(
+            root,
+            work,
+            report_dir + "/f29-special-kinds.observations.json",
+            proof?,
+          )
+        "f29-windows-metadata" =>
+          filesystem_windows_scenario(
+            root,
+            work,
+            report_dir + "/f29-windows-metadata.observations.json",
+            proof?,
+          )
+        "f29-subsecond-order" =>
+          filesystem_precision_scenario(
+            root,
+            work,
+            report_dir + "/f29-subsecond-order.observations.json",
+            proof?,
+          )
+        "f29-subsecond-order-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("subsecond oracle requires a sealed oracle")
+          }
+          filesystem_precision_scenario(
+            root,
+            work,
+            report_dir + "/f29-subsecond-order-oracle.observations.json",
+            oracle_image=image,
+          )
+        }
+        "f29-directory-size" =>
+          filesystem_directory_size_scenario(
+            root,
+            work,
+            report_dir + "/f29-directory-size.observations.json",
+            proof?,
+          )
+        "f29-time-references" =>
+          filesystem_time_scenario(
+            root,
+            work,
+            report_dir + "/f29-time-references.observations.json",
+            proof?,
+          )
+        "f29-time-references-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("time oracle requires a sealed oracle")
+          }
+          filesystem_time_scenario(
+            root,
+            work,
+            report_dir + "/f29-time-references-oracle.observations.json",
+            oracle_image=image,
+          )
+        }
+        "f29-predicate-errors" =>
+          filesystem_error_scenario(
+            root,
+            work,
+            report_dir + "/f29-predicate-errors.observations.json",
+            proof?,
+          )
+        "f29-predicate-errors-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("error oracle requires a sealed oracle")
+          }
+          filesystem_error_scenario(
+            root,
+            work,
+            report_dir + "/f29-predicate-errors-oracle.observations.json",
+            oracle_image=image,
+          )
+        }
+        "f29-special-kinds-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("special kind oracle requires a sealed oracle")
+          }
+          filesystem_special_scenario(
+            root,
+            work,
+            report_dir + "/f29-special-kinds-oracle.observations.json",
+            oracle_image=image,
+          )
+        }
+        "f29-mkdir-umasks-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("umask oracle requires a sealed oracle")
+          }
+          @fs.mkdir(work + "/candidate")
+          @fs.mkdir(work + "/oracle")
+          mkdir_umask_scenario(
+            root,
+            work + "/candidate",
+            report_dir + "/f29-mkdir-umasks-oracle.candidate.json",
+          )
+          mkdir_umask_scenario(
+            root,
+            work + "/oracle",
+            report_dir + "/f29-mkdir-umasks-oracle.gnu.json",
+            oracle_image=image,
+          )
+        }
+        "f29-metadata-selectors-oracle" => {
+          guard oracle_image is Some(image) else {
+            fail("metadata selectors require a sealed oracle")
+          }
+          metadata_scenario(
+            root,
+            work,
+            report_dir + "/f29-metadata-selectors-oracle.observations.json",
+            selectors_only=true,
+            oracle_image=image,
+          )
+        }
         "rg-type-listing" => type_listing_scenario(root, work, proof?)
         "sort-live-spill" => sort_spill_scenario(root, work, proof?)
         "rm-root-guard" => removal_guard_scenario(root, work, proof?)

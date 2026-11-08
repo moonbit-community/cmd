@@ -16,6 +16,13 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development and publication.
 
+- Develop issue #29 candidates find 0.2.6, mkdir 0.2.7 and test 0.2.4:
+  repair metadata size/time predicates, standalone test argument precedence,
+  find action/error ordering and postorder snapshots, and honest mkdir parent
+  permission/Windows setter boundaries. Add real special-file, sparse-file,
+  time/reference, partial-effect and Windows metadata contracts. Three-platform
+  development, exact-version publication acceptance and final independent audit
+  remain pending; the published coordinates below are unchanged by preparation.
 - Extend the finite shell/make language profile with arithmetic side effects,
   backticks, expanded here-documents, standard-stream aliases, loop levels,
   printf/test, variable/export recursion, secondary expansion and SHELLSTATUS.

@@ -5,12 +5,19 @@
 [walk_find](../../commands/find/walk.mbt) traverses an explicit stack and derives
 metadata requirements from the expression. Each directory visit starts `Unread`;
 `names()` transitions to `Read(names)` or `Failed` only when descent or an
-evaluated emptiness predicate needs enumeration. The result is reused within
-that visit. Short-circuited predicates, pruned directories and depth limits do
-not trigger an unnecessary directory read.
+evaluated emptiness predicate needs enumeration. Descent can reuse that listing;
+each evaluated `-empty` refreshes it, including after a deletion or an earlier
+enumeration error. Short-circuited predicates, pruned directories and depth
+limits do not trigger an unnecessary directory read.
 
-A postorder visit creates fresh observation state after child effects, so
-emptiness does not reuse the earlier pre-descent listing. Sorted children and
+A postorder visit creates fresh directory-listing state after child effects,
+but retains the entry's pre-descent stat fields. [FindEntry](../../commands/find/metadata.mbt)
+loads the expression's required size/a/m/c fields before directory reads,
+actions or children. A failed metadata load stays a typed cached error until
+its predicate is evaluated; a skipped predicate does not emit a diagnostic.
+This prevents child deletion from changing the parent's `-newer` decision.
+Access and followed-kind checks remain real operations at evaluation time.
+Sorted children and
 pending paths still occupy memory proportional to traversal state; this is not
 constant-memory traversal. Shared [fswalk](../../core/fswalk/) owns directory
 handle lifetime and requested metadata, while each command owns ordering and
@@ -21,6 +28,23 @@ during traversal instead of retaining all paths until EOF. Its UTF-8 argv-byte
 accounting is shared with xargs through [core/process](../../core/process/).
 The shared mechanism counts bytes; it does not own either command's grammar,
 termination rules or exit aggregation.
+
+[Expression optimization](../../commands/find/optimize.mbt) promotes cheap
+name/path/constants only within the left operator chain. Right compound groups
+and action barriers preserve error and effect ordering. [Actions](../../commands/find/actions.mbt)
+execute inline; a failed single `-exec` is false, while failed grouped batches
+affect the command's final status. The finite one-action/final-exec grammar
+remains unchanged. Reintroducing deferred actions, flattening every group or
+refreshing postorder stat fields would violate the registered filesystem cases.
+
+Size rounding uses division/remainder with UInt64 thresholds, so unit scaling
+cannot overflow a signed byte count. [Time windows](../../commands/find/time.mbt)
+retain file nanoseconds and the fixed GNU binary64 conversion/window rules,
+with explicit finite signed-64-bit bounds. Standalone test uses its own argc
+precedence and followed-target metadata; neither predicate implementation opens
+files to obtain size. These correctness changes do not establish a timing gain
+or an accepted timing cost. The registered `real-find-*` and `real-test-*`
+workloads retain their independent performance scope.
 
 ## Xargs: one producer and bounded child slots
 
