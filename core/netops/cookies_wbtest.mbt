@@ -111,7 +111,8 @@ async test "HTTP fixture challenges Basic credentials and carries redirect cooki
       "http://127.0.0.1:\{server.addr.port()}/auth",
       DiscardOutput,
       transfer_options(
-        basic_credentials="user:password",
+        basic_user="user",
+        basic_password="password",
         basic_preemptive=false,
         cookie_jar=jar,
         redirects=FollowRedirects(3),

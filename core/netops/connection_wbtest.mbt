@@ -179,7 +179,8 @@ async test "mapped host serialization cannot create a false redirect loop" {
         transfer_options(
           profile=CurlProfile,
           redirects=FollowRedirects(2),
-          basic_credentials="user:secret",
+          basic_user="user",
+          basic_password="secret",
           proxy_url="http://127.0.0.1:\{server.addr.port()}",
         ),
       )

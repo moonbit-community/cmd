@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Repair Wget URL/option credential precedence, per-hop Basic challenges and
+  hostname caching across ports and operands. Correct uncovered 401 exits,
+  empty URL usernames and attached authentication booleans with independent
+  raw request and binary replay controls; broader #34 work remains open.
+
 - Repair Wget cookie port isolation, persistent jar interpretation, domain-chain
   spelling, quoted attribute extraction and sticky deletion. Verify real request
   fields and saved/reloaded state against finite fixed-oracle expectations;

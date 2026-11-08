@@ -123,7 +123,8 @@ async test "Basic challenge lists distinguish schemes from quoted auth parameter
             DiscardOutput,
             transfer_options(
               profile=WgetProfile,
-              basic_credentials="user:bad",
+              basic_user="user",
+              basic_password="bad",
               basic_preemptive=false,
               fail_on_http_error=true,
             ),
@@ -134,10 +135,7 @@ async test "Basic challenge lists distinguish schemes from quoted auth parameter
         } noraise {
           _ => None
         }
-        assert_eq(
-          failure,
-          Some(if basic { AuthenticationFailure } else { HttpStatusFailure }),
-        )
+        assert_eq(failure, Some(AuthenticationFailure))
         assert_eq(requests.length(), if basic { 2 } else { 1 })
         assert_false(requests[0].contains("Authorization:"))
         if basic {

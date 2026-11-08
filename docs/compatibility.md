@@ -631,6 +631,15 @@ count. The registered binary-stdin retry scenario compares those stderr bytes
 as well as both request bodies. Internal HTTP-status retries without `-f` do
 not produce a false error 22 diagnostic.
 
+The unreleased Wget authentication profile resolves optional URL and configured
+credential fields independently, honors HTTP-specific option precedence and
+uses separate per-hop URL challenges and command-wide hostname caching. All
+HTTP 401 responses return 6, including absent credentials or unsupported
+challenges; URL parsing/unsupported input schemes return 1. Seventy-three frozen
+raw controls cover requests, binary file replay, statuses and unchanged inputs.
+Named-file replay does not establish arbitrary stdin replay. Digest/NTLM,
+netrc/configuration and full URL grammar remain #34 work; see ADR-0005.
+
 The originally published transfer rows retain their actual Native/Wasm runs,
 backend-pair observations, exact-revision audits and exact-version acceptance
 from the stage 0 release report. Rows explicitly marked unreleased above do not

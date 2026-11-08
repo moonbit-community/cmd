@@ -57,7 +57,8 @@ async test "explicit Basic credential scope and redirect challenges remain indep
       base + "/restricted",
       DiscardOutput,
       transfer_options(
-        basic_credentials="user:pass",
+        basic_user="user",
+        basic_password="pass",
         redirects=FollowRedirects(3),
       ),
     )
@@ -68,7 +69,8 @@ async test "explicit Basic credential scope and redirect challenges remain indep
       base + "/start",
       DiscardOutput,
       transfer_options(
-        basic_credentials="user:pass",
+        basic_user="user",
+        basic_password="pass",
         basic_credential_scope=AllOrigins,
         redirects=FollowRedirects(3),
       ),
@@ -80,7 +82,8 @@ async test "explicit Basic credential scope and redirect challenges remain indep
       base + "/challenge-open",
       DiscardOutput,
       transfer_options(
-        basic_credentials="user:pass",
+        basic_user="user",
+        basic_password="pass",
         basic_preemptive=false,
         basic_credential_scope=AllOrigins,
         redirects=FollowRedirects(3),
@@ -97,7 +100,8 @@ async test "explicit Basic credential scope and redirect challenges remain indep
       base + "/challenge-auth",
       DiscardOutput,
       transfer_options(
-        basic_credentials="user:pass",
+        basic_user="user",
+        basic_password="pass",
         basic_preemptive=false,
         basic_credential_scope=AllOrigins,
         redirects=FollowRedirects(3),

@@ -72,6 +72,16 @@ The static corpus is in `fixtures/network/wget-cookies.json` and participates
 in the assertion-source snapshot. Full numeric/date grammar remains outside
 this finite profile.
 
+`network-wget-authentication` retains 73 independent fixed-Wget controls for
+optional credential fields, per-hop challenges, command-wide hostname cache,
+401 failures, attached booleans and binary named-file replay. Raw HTTP/CONNECT,
+streams/status, complete product file inventory and unchanged inputs are
+retained. The Linux counterpart repeats the corpus against the pinned oracle;
+configuration/netrc exclusions are explicit in its recorded argv.
+Absolute proxy request lines are bound to the original oracle wire, including
+URL userinfo. Raw requests and parser errors are retained before validation;
+any observer error prevents an acceptance proof.
+
 Development jobs have a 30-minute total bound. The final Linux run for 4930ae2
 completed all functional checks and interface generation, then hit the former
 20-minute job limit during final formatting before complete evidence upload.

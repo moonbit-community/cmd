@@ -29,6 +29,7 @@ pub fn supports(id : String) -> Bool {
     "network-auth-cookie", "network-auth-cookie-oracle", "network-transfer-boundaries",
     "network-transfer-boundaries-oracle", "network-cookie-suffix", "network-cookie-suffix-oracle",
     "network-idna", "network-idna-oracle", "network-wget-cookies", "network-wget-cookies-oracle",
+    "network-wget-authentication", "network-wget-authentication-oracle",
   ].contains(id)
 }
 
@@ -55,6 +56,8 @@ pub async fn run(
       network_idna_scenario(executor, work, oracle_image?)
     "network-wget-cookies" | "network-wget-cookies-oracle" =>
       network_wget_cookies_scenario(executor, work, oracle_image?)
+    "network-wget-authentication" | "network-wget-authentication-oracle" =>
+      network_wget_authentication_scenario(executor, work, oracle_image?)
     _ => fail("unknown shared network scenario: " + id)
   }
 }
@@ -79,7 +82,10 @@ pub fn observations(id : String) -> Array[String] {
     if id.has_prefix("network-idna") {
       result.push("request-target")
     }
-    if !(@async.platform is Windows) && !id.has_prefix("network-wget-cookies") {
+    if id.has_prefix("network-wget-authentication") {
+      result.append(["request-method", "request-target", "request-body"])
+    }
+    if !(@async.platform is Windows) && !id.has_prefix("network-wget-") {
       result.push("mode")
     }
   }

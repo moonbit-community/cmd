@@ -156,11 +156,12 @@ the last failure, so network error 4 followed by HTTP error 8 incorrectly exited
 body, with the pinned Linux oracle route registered in the case index. This is
 an unpublished workspace correction; the frozen 0.2.5 coordinate is unchanged.
 
-The transfer error retains authentication failure only when a 401 Basic
-challenge rejects an outgoing Basic Authorization field. Wget maps that state
-to 6; other HTTP errors remain 8. This distinguishes actual transmitted
-credentials from configured credentials that were never sent. Curl preserves
-its ordinary HTTP response behavior and maps both HTTP failure kinds to 22
+Wget classifies every HTTP 401 as authentication failure and maps it to 6,
+including absent credentials and missing or unsupported challenges. Other HTTP
+errors remain 8; URL parse failures and unsupported input schemes return 1.
+The earlier sent-Basic-only classification missed these 401 cases. Independent
+fixed Wget controls retain their actual status and absence of extra requests.
+Curl preserves its ordinary HTTP response behavior and maps both HTTP failure kinds to 22
 under `--fail`. Authentication rejection does not become a default retryable
 network failure; explicit HTTP retry selection still applies.
 `wget-auth-rejected` and the four authentication/HTTP/network operand-order
@@ -172,6 +173,26 @@ The unpublished header repair recognizes Basic among repeated WWW-Authenticate
 fields and comma-separated challenges, respecting quoted commas and escaped
 quotes. A Basic-named auth parameter or a longer scheme token does not qualify.
 It does not implement non-Basic authentication.
+
+Keep optional username and password separate until each hop resolves URL and
+command options. URL fields override configured fields individually; empty
+values prevent fallback while an absent password can use the configured one.
+HTTP-specific options precede general options regardless of argv order. Wget
+rejects empty URL usernames before connection setup. The command owns a
+case-insensitive hostname challenge map across operands, discovery and retries;
+this is Wget domain state. Registration happens when Basic is selected even
+if authorization later fails. URL credentials neither register nor consume
+this cache and use a separate per-hop challenge flag. Preserve explicit
+Authorization fields on retry and Curl's existing initial-origin policy.
+
+The 73 frozen controls in `tests/fixtures/network/wget-authentication.json`
+cover real request order, statuses, streams, binary file-body replay and
+unchanged inputs. Negative controls include absent passwords, invalid booleans,
+other hosts and non-401 errors. New independent observations reopen this finite
+profile. Digest/NTLM, netrc, configuration, password prompts, arbitrary stdin
+replay and full URL grammar remain #34 work. Absent schemes, empty/zero ports,
+signed ports, malformed IP literals and space-containing hosts need separate
+grammar controls; this batch does not establish full URL parsing parity.
 
 Private ordered request fields replace the lossy map in Curl's profile; Wget
 and StrictProfile retain same-name replacement. Generated jar Cookie fields

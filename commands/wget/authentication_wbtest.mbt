@@ -48,7 +48,7 @@ async test "rejected Basic credentials retain the wire authentication state" {
           "http://127.0.0.1:\{server.addr.port()}/",
           None,
         )
-        assert_eq(status, if challenge { 6 } else { 8 })
+        assert_eq(status, 6)
         assert_eq(
           requests.length(),
           if challenge && !preemptive {

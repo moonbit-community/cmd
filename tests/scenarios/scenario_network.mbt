@@ -51,6 +51,21 @@ async fn network_wget_cookies_scenario(
 }
 
 ///|
+async fn network_wget_authentication_scenario(
+  root : String,
+  work : String,
+  oracle_image? : String,
+  proof? : @harness.ScenarioProof,
+) -> Unit {
+  @network.run(
+    "network-wget-authentication",
+    workspace_network_executor(root, proof?),
+    work,
+    oracle_image?,
+  )
+}
+
+///|
 async fn network_idna_scenario(
   root : String,
   work : String,

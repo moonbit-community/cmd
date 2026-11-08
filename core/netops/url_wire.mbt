@@ -142,6 +142,11 @@ fn ParsedUrl::for_transfer(
   redirect~ : Bool = false,
   utf8_hosts~ : Bool = true,
 ) -> ParsedUrl raise TransferError {
+  if profile == WgetProfile &&
+    self.user_info is Some(info) &&
+    (info.is_empty() || info.has_prefix(":")) {
+    raise invalid_url("URL username is empty")
+  }
   if !self.host_normalized {
     for character in self.endpoint {
       guard !unsafe_request_character(character) else {

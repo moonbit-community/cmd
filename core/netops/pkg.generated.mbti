@@ -18,7 +18,7 @@ pub fn retryable_failure(TransferErrorKind, Int32?) -> Bool
 
 pub async fn transfer(String, TransferOutput, TransferOptions, observer? : async (TransferEvent) -> Unit) -> TransferResult
 
-pub fn transfer_options(profile? : TransferProfile, utf8_hosts? : Bool, request_method? : HttpMethod, headers? : Array[HttpHeader], body? : RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int32, idle_timeout_ms? : Int32, max_time_ms? : Int32, fail_on_http_error? : Bool, http_error_statuses? : Array[Int32], resume_from? : Int64, resume_skip_existing? : Bool, keep_output_on_not_modified? : Bool, cookie_jar? : CookieJar, cookie_data? : String, custom_cookie_mode? : CustomCookieMode, custom_cookie_cross_origin? : Bool, basic_credentials? : String, basic_preemptive? : Bool, basic_credential_scope? : BasicCredentialScope) -> TransferOptions
+pub fn transfer_options(profile? : TransferProfile, utf8_hosts? : Bool, request_method? : HttpMethod, headers? : Array[HttpHeader], body? : RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int32, idle_timeout_ms? : Int32, max_time_ms? : Int32, fail_on_http_error? : Bool, http_error_statuses? : Array[Int32], resume_from? : Int64, resume_skip_existing? : Bool, keep_output_on_not_modified? : Bool, cookie_jar? : CookieJar, cookie_data? : String, custom_cookie_mode? : CustomCookieMode, custom_cookie_cross_origin? : Bool, basic_user? : String, basic_password? : String, basic_preemptive? : Bool, basic_credential_scope? : BasicCredentialScope, basic_challenged_hosts? : Map[String, Bool]) -> TransferOptions
 
 // Errors
 #derive(Eq, @debug.Debug)
@@ -186,9 +186,11 @@ pub(all) struct TransferOptions {
   cookie_data : String?
   custom_cookie_mode : CustomCookieMode
   custom_cookie_cross_origin : Bool
-  basic_credentials : String?
+  basic_user : String?
+  basic_password : String?
   basic_preemptive : Bool
   basic_credential_scope : BasicCredentialScope
+  basic_challenged_hosts : Map[String, Bool]
 }
 
 #derive(@debug.Debug)

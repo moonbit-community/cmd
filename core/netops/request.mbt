@@ -179,7 +179,9 @@ fn request_headers(
     }
   }
   let authorization_supplied = per_request.contains("Authorization")
-  if !authorization_supplied && parsed.user_info is Some(user_info) {
+  if profile != WgetProfile &&
+    !authorization_supplied &&
+    parsed.user_info is Some(user_info) {
     per_request.set(
       "Authorization",
       "Basic " + @base64.encode(@utf8.encode(percent_decode(user_info))),

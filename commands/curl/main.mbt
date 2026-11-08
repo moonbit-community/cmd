@@ -475,6 +475,15 @@ async fn transfer_one(
   let show_progress = !options.silent && !(writes_stdout && stdout_terminal)
   let mut attempt = 0
   let retry_started = @async.now()
+  let (basic_user, basic_password) = match options.user {
+    Some(value) =>
+      match value.split_once(":") {
+        Some((user, password)) =>
+          (Some(user.to_owned()), Some(password.to_owned()))
+        None => (Some(value), None)
+      }
+    None => (None, None)
+  }
   for ;; {
     let transient_statuses = if attempt < options.retry_count {
       [408, 429, 500, 502, 503, 504]
@@ -513,7 +522,8 @@ async fn transfer_one(
           http_error_statuses=transient_statuses,
           cookie_jar?=jar,
           cookie_data?,
-          basic_credentials?=options.user,
+          basic_user?,
+          basic_password?,
         ),
         observer=event => {
           transfer_output.observe(event)

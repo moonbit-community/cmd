@@ -868,7 +868,8 @@ async fn run_http_cases(bin_root : String, failures : Array[String]) -> Unit {
         base + "/" + endpoint,
       ])
       record_result(
-        wget_status.status == 8 && curl_status.status == 22,
+        wget_status.status == (if endpoint == "unauthorized" { 6 } else { 8 }) &&
+        curl_status.status == 22,
         "HTTP error status mapping mismatch for \{endpoint}",
         failures,
       )

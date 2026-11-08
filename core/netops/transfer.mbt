@@ -32,12 +32,22 @@ pub async fn transfer(
   let cookie_data = options.cookie_data
   let seen : Map[(String, String?, String), Bool] = Map([])
   let mut redirect_count = 0
+  let mut url_challenged = false
   for ;; {
     let origin = parsed.origin_key()
     let credentials_allowed = options.basic_credential_scope == AllOrigins ||
       origin == credential_origin
     let send_basic = options.basic_preemptive ||
-      challenged_origins.contains(origin)
+      (if options.profile == WgetProfile {
+        url_challenged ||
+        (
+          parsed.user_info is None &&
+          options.basic_challenged_hosts.contains(parsed.host.to_lower())
+        )
+      } else {
+        challenged_origins.contains(origin)
+      })
+    let credentials = parsed.basic_credentials(options)
     let key = (origin, parsed.user_info, parsed.request_target())
     if seen.contains(key) {
       raise transfer_error(
@@ -58,7 +68,7 @@ pub async fn transfer(
     let per_request = prepared_headers.per_request
     if credentials_allowed &&
       send_basic &&
-      options.basic_credentials is Some(credentials) &&
+      credentials is Some(credentials) &&
       !prepared_headers.authorization_supplied {
       per_request.set(
         "Authorization",
@@ -142,7 +152,7 @@ pub async fn transfer(
     if basic_challenge &&
       !send_basic &&
       credentials_allowed &&
-      options.basic_credentials is Some(_) {
+      credentials is Some(_) {
       if body is StdinBody {
         client.close()
         raise transfer_error(
@@ -151,6 +161,10 @@ pub async fn transfer(
         )
       }
       challenged_origins[origin] = true
+      url_challenged = true
+      if options.profile == WgetProfile && parsed.user_info is None {
+        options.basic_challenged_hosts[parsed.host.to_lower()] = true
+      }
       seen.remove(key)
       client.close()
       continue
@@ -205,6 +219,7 @@ pub async fn transfer(
       request_method = next_method
       body = next_body
       parsed = next
+      url_challenged = false
       redirect_count += 1
       client.close()
       continue
@@ -237,11 +252,14 @@ pub async fn transfer(
       options.http_error_statuses.contains(response.code) {
       client.close()
       raise transfer_error(
-        if basic_challenge &&
-          per_request.fields.any(header => {
-            header.name.to_lower() == "authorization" &&
-            uses_basic_authentication(header.value)
-          }) {
+        if (options.profile == WgetProfile && response.code == 401) ||
+          (
+            basic_challenge &&
+            per_request.fields.any(header => {
+              header.name.to_lower() == "authorization" &&
+              uses_basic_authentication(header.value)
+            })
+          ) {
           AuthenticationFailure
         } else {
           HttpStatusFailure

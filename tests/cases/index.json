@@ -45821,6 +45821,54 @@
         "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:network-wget-authentication",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-authentication",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-wget-authentication",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-authentication",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-wget-authentication-oracle",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-authentication-oracle",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:network-wget-authentication-oracle",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-authentication-oracle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }
