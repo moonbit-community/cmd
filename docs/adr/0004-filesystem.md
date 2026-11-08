@@ -154,6 +154,18 @@ every mount. Exact GNU diagnostic expectations retain the invoked
 [PR validation failure](https://github.com/moonbit-community/cmd/actions/runs/42437838515)
 is retained and is not acceptance evidence.
 
+Same-second precision fixtures admit only actual equal seconds and strictly
+ordered nanoseconds in range. Wall-clock start estimates cannot establish that
+condition: the first [actual-main run](https://github.com/moonbit-community/cmd/actions/runs/42441153813)
+observed writes across a second and failed before invoking either product or
+oracle. Preparation now records at most eight real timestamp pairs within a
+10-second total deadline; only a pair failing the metadata condition may cause
+another preparation. I/O, observation-write and cancellation failures propagate.
+Exhaustion remains infrastructure failure. The six test and two find calls run
+once after admission, followed by the original metadata/content preservation
+checks. Private injected regressions check preparation control flow only; actual
+CLI evidence always comes from real filesystem writes and timestamp readback.
+
 Standalone test applies its one-through-four-argument rules before recursive
 parsing. Its missing-operand time comparisons intentionally differ from the
 shared shell's subset. Integer comparisons accept signed 64-bit decimal with
