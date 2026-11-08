@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "coverage_manifest_sha256": "a624eeefeaea98a85c6cb334a7bf27f211a7d4d9239284bff1e2bac55bf605de",
+  "coverage_manifest_sha256": "7ef708f0806fbef7bd7144ecf2b94d43a84752b96ccbe1f9caebc8d142faa8dd",
   "independent_review_sha256": "d4965ce6187b71d7896caab440d695bd79fac24e2fa20d371c26e8562a349ffe",
   "reviewed_definitions": 895,
   "remaining_catalog_labels": 0,
@@ -462,10 +462,11 @@
       "classification": "known_partial_facet_reminder",
       "counts_as_new_label_gap": false,
       "current_reviewed": true,
-      "current_activation": "The explicit suffix preserves old destination bytes in destination.save while moving source bytes. A self-move with backup rejects with the complete same-file diagnostic, unchanged source and no backup artifact.",
+      "current_activation": "The explicit suffix preserves old destination bytes while moving source bytes; self-move rejects without effects. With numbered versions 1 and 3, require version 4 with old bytes, preserved older backups, no version 2/simple suffix, source removal and exact new destination bytes.",
       "current_case_ids": [
         "repair-fs-mv-backup",
-        "repair-fs-mv-same-backup"
+        "repair-fs-mv-same-backup",
+        "mv-backup-number-gap"
       ],
       "current_scenario_bindings": [],
       "current_remaining_facets": [

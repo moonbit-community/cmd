@@ -13,6 +13,13 @@ moonx cli/ln@0.2.5 -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX]
 
 Create POSIX symbolic links with explicit destinations or target directories, replacement, relative targets and backups.
 
+In the unpublished development candidate, numbered backups use one more than
+the highest existing positive, unpadded decimal version, retaining gaps and all
+older backups. Existing mode uses the same numbering when such a backup exists,
+and the simple suffix otherwise. Directory scan failures remain errors.
+Filesystem case/Unicode aliases count as existing backups. Numbered selections
+refuse a backup that appears before rename; simple suffixes still replace.
+
 ## Options
 
 | Option | Description |

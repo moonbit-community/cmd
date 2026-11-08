@@ -529,7 +529,7 @@
         "help"
       ],
       "source_version": "workspace cli/ln@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
+      "expected_stdout_text": "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n      --help      display this help and exit\n      --version   display version and exit\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-134"
@@ -1298,6 +1298,87 @@
       ],
       "expected_stderr_contains": "option",
       "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "ln-backup-number-gap",
+      "command": "ln",
+      "args": [
+        "-sf",
+        "--backup=existing",
+        "source",
+        "destination"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "new"
+        },
+        {
+          "path": "destination",
+          "content_text": "old"
+        },
+        {
+          "path": "destination.~1~",
+          "content_text": "first"
+        },
+        {
+          "path": "destination.~3~",
+          "content_text": "third"
+        }
+      ],
+      "expected_files": [
+        {
+          "path": "destination.~1~",
+          "kind": "file",
+          "content_text": "first",
+          "unchanged": true
+        },
+        {
+          "path": "destination.~2~",
+          "exists": false
+        },
+        {
+          "path": "destination.~3~",
+          "kind": "file",
+          "content_text": "third",
+          "unchanged": true
+        },
+        {
+          "path": "destination.~4~",
+          "kind": "file",
+          "content_text": "old"
+        },
+        {
+          "path": "destination~",
+          "exists": false
+        },
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "new",
+          "unchanged": true
+        },
+        {
+          "path": "destination",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "environment": {},
+      "stdin_text": "",
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "coverage": [
+        "backup",
+        "backup-control"
+      ],
+      "host_platforms": [
+        "posix"
+      ]
     }
   ]
 }
