@@ -34,6 +34,15 @@ fn contract(
 // diagnostic contracts are recorded in docs/compatibility.md and CLI cases.
 pub fn command_catalog() -> Array[CommandContract] {
   [
+    contract(
+      "serve",
+      Restricted,
+      NoInput,
+      LineStream,
+      [FileRead, Network],
+      ["host", "port"],
+      exit_codes=[0, 1],
+    ),
     // Typesetting is owned by an external MoonBit engine; this command owns
     // argument policy, local files/fonts/packages, diagnostics and byte streams.
     contract(

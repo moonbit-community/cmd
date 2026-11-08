@@ -4861,6 +4861,28 @@
         "typst-artifacts",
         "typst-watch"
       ]
+    },
+    {
+      "name": "serve",
+      "package_name": "cli/serve",
+      "compare_profile": "contract",
+      "supported_options": [
+        "host",
+        "port",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "serve-version",
+        "serve-reject-port",
+        "serve-reject-option",
+        "serve-reject-extra-root",
+        "serve-reject-missing-port",
+        "serve-static",
+        "serve-policy"
+      ]
     }
   ]
 }

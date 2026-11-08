@@ -195,8 +195,8 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
   ]
   let catalog = @contracts.command_catalog()
   record(
-    catalog.length() == 81,
-    "catalog must contain exactly 81 commands",
+    catalog.length() == 82,
+    "catalog must contain exactly 82 commands",
     failures,
   )
   let mut default_count = 0
@@ -263,8 +263,8 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     failures,
   )
   record(
-    restricted_count == 12,
-    "restricted tier must contain 12 commands",
+    restricted_count == 13,
+    "restricted tier must contain 13 commands",
     failures,
   )
   for name in expected_restricted {

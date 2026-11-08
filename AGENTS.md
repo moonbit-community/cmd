@@ -210,10 +210,12 @@ module and version before any release operation.
   unverified candidate.
 - Current registry baseline after the 2026-11-08 raw-path repair: core is 0.9.5.
   Published make 0.2.8, sh 0.2.9 and split 0.1.10; retained the other 77 coordinates,
-  giving 80 published commands among 81 local modules. Core dependencies are
+  giving 80 published commands. The current workspace contains 82 local modules,
+  including the unpublished serve candidate and local-only timeout.
+  Published-command core dependencies are
   3 commands on 0.9.5, 25 on 0.9.1, 24 on 0.9.0 and 23 on 0.8.2;
   echo/false/sleep/true/typst do not depend on core.
-  timeout remains unpublished and local-only. Exact coordinates and independent
+  serve does not depend on core. Exact published coordinates and independent
   expectations are in tests/release/latest.json and latest-cases.json.
   Source commit 273ea9f passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42425407212).
   All four uploads, registry builds and package checksums were verified.

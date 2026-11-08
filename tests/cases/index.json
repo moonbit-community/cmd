@@ -45327,6 +45327,116 @@
         "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "metadata:serve",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:serve-version",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-version",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:serve-reject-port",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-reject-port",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:serve-reject-option",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-reject-option",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:serve-reject-extra-root",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-reject-extra-root",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:serve-reject-missing-port",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-reject-missing-port",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:serve-static",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-static",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:serve-static",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::serve-static",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:serve-policy",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-policy",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:serve-policy",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::serve-policy",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
     }
   ]
 }

@@ -243,6 +243,9 @@
     },
     {
       "name": "typst"
+    },
+    {
+      "name": "serve"
     }
   ],
   "cases": [],
@@ -327,6 +330,7 @@
     "which.json",
     "date.json",
     "rg.json",
-    "typst.json"
+    "typst.json",
+    "serve.json"
   ]
 }

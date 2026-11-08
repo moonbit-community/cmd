@@ -39,7 +39,11 @@ pub async fn execute_scenario(
   if @fs.exists(evidence) {
     fail("evidence already exists; use a fresh report directory")
   }
-  let work = evidence + "/work"
+  // Background indexing can read new files and change atime without a command
+  // invocation. Exclude the fixture before creating any files; retain every
+  // timestamp assertion and the host filesystem's normal access-time behavior.
+  let work = evidence +
+    (if @async.platform is MacOS { "/work.noindex" } else { "/work" })
   @fs.mkdir(work, recursive=true)
   let failures : Array[String] = []
   let proof = match proof_catalog {
@@ -59,6 +63,8 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "serve-static" => serve_static_scenario(root, work, false, proof?)
+        "serve-policy" => serve_static_scenario(root, work, true, proof?)
         "typst-artifacts" => typst_artifacts_scenario(root, work, proof?)
         "typst-watch" => typst_watch_scenario(root, work, proof?)
         "tee-output-errors" =>

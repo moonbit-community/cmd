@@ -2,9 +2,9 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 3542,
+    "exact-local": 3547,
     "finite-diagnostic": 181,
-    "typed-scenario": 62,
+    "typed-scenario": 64,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -31888,6 +31888,84 @@
       "required_work": ""
     },
     {
+      "case_id": "serve-version",
+      "source": "tests/cases/serve.json",
+      "definition_sha256": "3d96a44781088a18159e6c25ae67ec3cac57ef964ea31fb43bec98a03827f611",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "serve-reject-port",
+      "source": "tests/cases/serve.json",
+      "definition_sha256": "fce8dc9f67cccf047bb3aedcd31febac12b3c3ac6cb9b598f311722f2d962473",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "serve-reject-option",
+      "source": "tests/cases/serve.json",
+      "definition_sha256": "66a481e31e4e10dae099fb2c8ba7b94e280935ea41dc21614a8dc2d1258d4ac5",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "serve-reject-extra-root",
+      "source": "tests/cases/serve.json",
+      "definition_sha256": "bba3aae2c2bf8dea4fd646f34aab02be0023b6840d55e95fd95cb0d3dd6336e2",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "serve-reject-missing-port",
+      "source": "tests/cases/serve.json",
+      "definition_sha256": "ababba44e5c4541ad5efbae0069ecf43ebc87e855d5c1a378440c9cca9c7148f",
+      "classification": "exact-local",
+      "descriptor": {
+        "kind": "exact"
+      },
+      "required_work": ""
+    },
+    {
+      "case_id": "serve-static",
+      "source": "tests/cases/serve.json",
+      "definition_sha256": "55d66daf6728d2f4788a140508d49acbd94fed981ce6b98b50c59dbdae5744e5",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:serve-static"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "serve-policy",
+      "source": "tests/cases/serve.json",
+      "definition_sha256": "9fc94f222db87ceaee10f272c99a09e197469085fd5e5e2634cbba8ff7beb138",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:serve-policy"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
       "case_id": "phase3-sleep-zero",
       "source": "tests/cases/sleep.json",
       "definition_sha256": "0c11998862f097ec4934aff47f5fe385d3f0b1ddacd619e2f5786662b0c57d4f",
@@ -48377,6 +48455,35 @@
     },
     "f17-rmdir-long-ignored-failure-stops-parents": {
       "kind": "exact"
+    },
+    "serve-version": {
+      "kind": "exact"
+    },
+    "serve-reject-port": {
+      "kind": "exact"
+    },
+    "serve-reject-option": {
+      "kind": "exact"
+    },
+    "serve-reject-extra-root": {
+      "kind": "exact"
+    },
+    "serve-reject-missing-port": {
+      "kind": "exact"
+    },
+    "serve-static": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:serve-static"
+      ]
+    },
+    "serve-policy": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:serve-policy"
+      ]
     },
     "phase3-sleep-zero": {
       "kind": "exact"

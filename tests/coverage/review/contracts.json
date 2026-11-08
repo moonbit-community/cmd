@@ -6035,6 +6035,50 @@
           ]
         }
       ]
+    },
+    {
+      "command": "serve",
+      "claim": "host",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed."
+    },
+    {
+      "command": "serve",
+      "claim": "port",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed."
     }
   ],
   "features": [
@@ -6174,6 +6218,72 @@
           ]
         }
       ]
+    },
+    {
+      "command": "serve",
+      "claim": "primary-operation",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed."
+    },
+    {
+      "command": "serve",
+      "claim": "mime-types",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed."
+    },
+    {
+      "command": "serve",
+      "claim": "path-safety",
+      "kind": "supported-operation",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "serve-static",
+          "assertions": [
+            "serve/static"
+          ]
+        },
+        {
+          "case_id": "serve-policy",
+          "assertions": [
+            "serve/policy"
+          ]
+        }
+      ],
+      "activation": "Actual Wasm server on explicitly selected loopback and ephemeral port: exact index/CSS/UTF-8-name bytes, 150003 binary bytes spanning refills, HEAD length without body, MIME/nosniff, invalid encoded traversal, 404 and 405; a root-read/listen-only policy also runs, and deny-all must reject. POSIX scenarios additionally check external directory/index symlinks and an internal alias. No hostile concurrent replacement isolation claim; Windows symlink privilege is not assumed."
     }
   ],
   "boundary_dispositions": [

@@ -5,6 +5,11 @@ multi-command and permission selections. Both are bound by `cases/index.json`.
 The driver owns selection and reporting orchestration, while this package
 owns concrete assertions, shared fixture lifetimes and child coordination.
 
+On macOS, scenario files live under `work.noindex` so background indexing does
+not read fixtures and change their access times. Timestamp assertions remain
+exact; the runner neither resets observed timestamps nor disables atime updates.
+Other platforms retain the `work` directory name.
+
 Shell sessions, make handshakes, filesystem fidelity and process lifetimes
 have separate files. Permission admission, runtime, mutation, process,
 network and permission-mode checks are separated by responsibility. HTTP,
