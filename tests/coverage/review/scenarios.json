@@ -3760,6 +3760,626 @@
             "stderr",
             "effective-access-preconditions"
           ]
+        },
+        {
+          "id": "find/selectors-neweraa",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "",
+              "",
+              "",
+              "selector-b\n",
+              "",
+              "",
+              "selector-b\n",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "selector-c\n",
+              "selector-d\n",
+              "",
+              "",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newerac",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "",
+              "",
+              "",
+              "selector-b\n",
+              "selector-b\n",
+              "selector-b\n",
+              "selector-b\n",
+              "selector-c\n",
+              "selector-c\n",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "",
+              "",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-neweram",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "selector-b\n",
+              "selector-b\n",
+              "",
+              "",
+              "selector-c\n",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "",
+              "selector-d\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newerca",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "selector-a\n",
+              "",
+              "",
+              "selector-a\n",
+              "selector-b\n",
+              "",
+              "",
+              "selector-b\n",
+              "selector-c\n",
+              "",
+              "",
+              "selector-c\n",
+              "selector-d\n",
+              "",
+              "",
+              "selector-d\n"
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newercc",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "",
+              "",
+              "",
+              "selector-b\n",
+              "",
+              "",
+              "",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "",
+              "selector-d\n",
+              "selector-d\n",
+              "selector-d\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newercm",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "selector-a\n",
+              "selector-a\n",
+              "",
+              "",
+              "selector-b\n",
+              "selector-b\n",
+              "",
+              "",
+              "selector-c\n",
+              "selector-c\n",
+              "",
+              "",
+              "selector-d\n",
+              "selector-d\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newerma",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "selector-a\n",
+              "selector-a\n",
+              "",
+              "selector-a\n",
+              "selector-b\n",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "selector-d\n",
+              "",
+              "",
+              "selector-d\n"
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newermc",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "selector-a\n",
+              "selector-a\n",
+              "selector-a\n",
+              "selector-a\n",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "selector-d\n",
+              "selector-d\n",
+              "selector-d\n",
+              "selector-d\n"
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-newermm",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "statuses": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "stdout": [
+              "",
+              "selector-a\n",
+              "selector-a\n",
+              "selector-a\n",
+              "",
+              "",
+              "selector-b\n",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "selector-d\n",
+              "selector-d\n",
+              ""
+            ],
+            "stderr": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "independent-metadata-preconditions"
+          ]
+        },
+        {
+          "id": "find/selectors-preserved",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "metadata_unchanged": true,
+            "entry_count": 4,
+            "content_preserved": true
+          },
+          "observations": [
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity",
+            "file-timestamps"
+          ]
         }
       ]
     },
@@ -5389,6 +6009,252 @@
             "stderr",
             "type",
             "deadline"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-mkdir-umasks",
+      "assertions": [
+        {
+          "id": "mkdir/umask-effects",
+          "command": "mkdir",
+          "relation": "equal",
+          "expected": {
+            "checked": 12,
+            "masks": 6,
+            "explicit_and_default": true,
+            "existing_preserved": true,
+            "mixed_error_orders": 2
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-sparse-size",
+      "assertions": [
+        {
+          "id": "find/sparse-size",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 20,
+            "sparse_files": 2,
+            "sentinels_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-special-kinds",
+      "assertions": [
+        {
+          "id": "test/special-kinds",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "kind_checks": 18,
+            "positive_kinds": 3,
+            "regular_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-mode",
+            "file-identity"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-windows-metadata",
+      "assertions": [
+        {
+          "id": "test/windows-metadata",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "time_comparisons": 18,
+            "identity_alias_equal": true,
+            "independent_identity_distinct": true,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-identity",
+            "file-timestamps",
+            "symlink-target"
+          ]
+        },
+        {
+          "id": "find/windows-selectors",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 144,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "file-identity",
+            "file-timestamps"
+          ]
+        },
+        {
+          "id": "test/windows-link-kinds",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "kind_checks": 14,
+            "file_link": true,
+            "directory_symlink": true,
+            "junction": true,
+            "targets_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-content",
+            "file-type",
+            "symlink-target"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-time-references",
+      "assertions": [
+        {
+          "id": "find/time-reference-controls",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 122,
+            "nofollow_references": 2,
+            "clock_margin_valid": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-predicate-errors",
+      "assertions": [
+        {
+          "id": "find/error-order-effects",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 33,
+            "victim_preserved": true,
+            "denied_child_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-subsecond-order",
+      "assertions": [
+        {
+          "id": "test/subsecond-order",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 6,
+            "same_second": true,
+            "distinct_subseconds": true,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        },
+        {
+          "id": "find/subsecond-order",
+          "command": "find",
+          "relation": "equal",
+          "expected": {
+            "comparisons": 2,
+            "same_second": true,
+            "distinct_subseconds": true,
+            "metadata_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "f29-directory-size",
+      "assertions": [
+        {
+          "id": "test/directory-size-capability",
+          "command": "test",
+          "relation": "equal",
+          "expected": {
+            "actual_wasm_calls": 3,
+            "native_capability_matched": true,
+            "directory_and_link_preserved": true
+          },
+          "observations": [
+            "status",
+            "stdout",
+            "stderr",
+            "file-type",
+            "file-timestamps"
           ]
         }
       ]

@@ -27,12 +27,9 @@ fn FindBatch::new(
 
 ///|
 async fn execute_find_batch(argv : Array[String]) -> Bool {
-  guard argv.get(0) is Some(program) else { return false }
-  let code = @process.run(@process.child(program, argv[1:].to_owned())) catch {
-    error => {
-      @stdio.stderr.write("find: \{error}\n")
-      return false
-    }
+  let code = run_find_child(argv)
+  if code < 0 {
+    @stdio.stderr.write("find: '\{argv[0]}' terminated by signal \{-code}\n")
   }
   code == 0
 }

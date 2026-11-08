@@ -50,6 +50,18 @@ Only cleanup is shielded; output backpressure remains cancellable.
 
 ## Package ownership
 
+Find's expression optimizer, action evaluator, stat cache and time windows stay
+private to `commands/find`; standalone test's argc and file-predicate rules stay
+private to `commands/test`. Their dialects and missing-file time relations are
+not interchangeable with the shared shell. The issue #29 repair uses existing
+published core interfaces and adds no shared runtime mechanism or core API.
+Keep the original postorder stat snapshot while refreshing directory listings;
+do not trade observable error/action ordering for generic traversal reuse.
+Reconsider sharing only with two real consumers of the same contract. The
+[execution guide](../performance/execution.md) owns call paths and costs;
+[ADR-0004](0004-filesystem.md) owns public-API boundaries. No new performance
+acceptance is inferred from the correctness repair.
+
 The shared shell owns interpretation for sh, make recipes and split filters.
 Keep printf parsing, test expressions, here-document scanning and stream aliases
 private to that package. Make-specific expansion, prerequisite planning and

@@ -72,9 +72,9 @@ jobs:
           key: ${{ steps.cache-key.outputs.prefix }}-${{ github.sha }}
           restore-keys: |
             ${{ steps.cache-key.outputs.prefix }}-
-      - name: Linux listener observer
+      - name: Linux listener and socket fixture tools
         if: runner.os == 'Linux'
-        run: command -v lsof || (sudo apt-get update && sudo apt-get install --yes lsof)
+        run: (command -v lsof && test -x /usr/bin/nc) || (sudo apt-get update && sudo apt-get install --yes lsof netcat-openbsd)
       - name: Dependencies
         run: moon update
       - name: Check products and test tools

@@ -132,14 +132,24 @@ async fn check_process_and_network_policy(
     "find: allowed metadata traversal mismatch",
     failures,
   )
-  expect_denied(
-    root,
-    "read-workspace.json",
-    "find",
-    ["tests/fixtures/policy", "-maxdepth", "1", "-exec", "echo", "{}", ";"],
-    None,
-    failures,
-  )
+  for (terminator, status) in [(";", 0), ("+", 1)] {
+    let denied_exec = moon_run(root, "read-workspace.json", "find", [
+      "tests/fixtures/policy", "-maxdepth", "0", "-exec", "echo", "{}", terminator,
+    ]) catch {
+      error => {
+        failures.push("find: denied child invocation failed: \{error}")
+        continue
+      }
+    }
+    record(
+      denied_exec.status == status &&
+      denied_exec.stdout.is_empty() &&
+      @harness.contains_bytes(denied_exec.stderr, "blocked process spawn") &&
+      @harness.contains_bytes(denied_exec.stderr, "Permission denied"),
+      "find: process denial must prevent child output and preserve '\{terminator}' exit semantics (status=\{denied_exec.status}, stdout=\{denied_exec.stdout}, stderr=\{denied_exec.stderr})",
+      failures,
+    )
+  }
   expect_denied(
     root,
     "read-workspace.json",
