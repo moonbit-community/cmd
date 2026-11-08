@@ -274,13 +274,21 @@ unnecessary. Commands without a justified change retain their specialized code.
 | Output and transfer ownership | BlockWriter checks span/state at synchronous admission once; slow paths run directly from that result. Keep active/failed state around actual I/O. Transfer output keeps its 4096-byte commit boundary and consumes queued data before awaiting writes. |
 | Make `Session::finish` synchronous (C02) | Retain async: EOF now reparses pending source and may execute async `run_jobs`. The earlier synchronous trial predates this behavior and is no longer applicable. Reconsider only if command execution is deliberately moved to another async API while preserving EOF and adapter contracts. |
 
-These are development candidate changes, not publication or performance
-acceptance. The baseline source and all 82 optimized Wasm artifacts were frozen
-before edits. Changed artifacts without timing workloads remain blocked by the
-existing protection policy; static simplification and passing correctness do not
-waive that gate. Register genuine workloads and qualify complete old/new windows
-before adopting a performance claim. Existing wc/fmt calibration limitations
-retain their recorded scope in the benchmark guide.
+These are development changes, not publication or performance acceptance. On
+2026-11-08 the maintainer explicitly deferred performance qualification and
+optimization to a separate stage. This simplification stage is accepted through
+CLI correctness, architecture checks and required three-platform development CI;
+incomplete timing coverage does not block its integration. No benchmark threshold
+or historical result changes with this scoped decision.
+
+The baseline source at `34bd03be871dbfcd5d3b1b17352fce59296b2d5a` and all 82
+optimized Wasm artifacts were frozen before edits. The initial protection run
+found 38 changed artifacts, including nine without real timing coverage: sh,
+make, mkdir, rmdir, serve, typst, which, mktemp and realpath. Preserve that failed
+coverage result and the local subset measurements as scoped observations.
+Resume performance work by registering genuine workloads and qualifying complete
+old/new windows before claiming performance acceptance. Existing wc/fmt
+calibration limitations retain their recorded scope in the benchmark guide.
 
 ## Verification and reconsideration
 

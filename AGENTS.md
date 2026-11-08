@@ -23,6 +23,10 @@ You can browse and install extra skills here:
   and test-tool consumers; retain imported corpus records and independent frozen
   published expectations. Name policy constants locally, validate stable inputs
   at their owning boundary, and retain checks for dynamic I/O and cancellation.
+  For the 2026-11-08 repository simplification, the maintainer explicitly deferred
+  performance qualification and optimization to a separate stage. Correctness,
+  architecture and required development CI govern this stage; retain benchmark
+  failures and baselines without claiming performance acceptance. See ADR-0003.
 
 - Repository documentation, issue titles/bodies, PR descriptions and new
   explanatory comments must be written in English. Historical document
