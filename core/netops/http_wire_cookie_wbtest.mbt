@@ -412,6 +412,11 @@ test "cookie profiles cap curl Max-Age with fixed-clock overflow and rounding bo
       let jar = CookieJar::new()
       jar.receive(url, [Cookie::new("age", "old")], 100L, profile~)
       jar.receive(url, [Cookie::new("age", "new", max_age=age)], 100L, profile~)
+      if profile == CurlProfile {
+        assert_eq(jar.entries.length(), 1)
+        assert_true(jar.entries[0].live && jar.entries[0].expired(100L))
+      }
+      assert_eq(jar.header_for(url, 100L, profile~), None)
       assert_eq(jar.entries.length(), 0)
     }
   }

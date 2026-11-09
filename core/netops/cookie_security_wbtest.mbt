@@ -313,9 +313,9 @@ test "curl host-only and domain cookies keep independent replacement identity" {
     101L,
     profile=CurlProfile,
   )
+  assert_eq(jar.header_for(source, 102L, profile=CurlProfile), Some("sid=host"))
   assert_eq(jar.entries.length(), 1)
   assert_true(jar.entries[0].host_only)
-  assert_eq(jar.header_for(source, 102L, profile=CurlProfile), Some("sid=host"))
 }
 
 ///|
@@ -439,7 +439,8 @@ test "curl insecure overlay checks overlap expiry and secure contexts" {
       secure: true,
       http_only: false,
       expires: old_expiry,
-      wget: false,
+      profile: CurlProfile,
+      live: true,
     })
     jar.receive(
       parse_absolute_url(source),

@@ -45,7 +45,7 @@ pub struct CookieJar {
 pub async fn CookieJar::load(Self, String, profile? : TransferProfile) -> Unit
 pub fn CookieJar::load_netscape(Self, String, profile? : TransferProfile) -> Unit
 pub fn CookieJar::new() -> Self
-pub async fn CookieJar::save(Self, String, include_session? : Bool) -> Unit
+pub async fn CookieJar::save(Self, String, include_session? : Bool, profile? : TransferProfile) -> Unit
 
 pub(all) enum CustomCookieMode {
   SeparateFields

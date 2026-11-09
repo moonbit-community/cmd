@@ -45,7 +45,7 @@ sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
 rules do not apply to Wget. Cookie dates follow the finite C-locale profile
 below; remaining malformed jar grammar stays open under issue #34.
 The workspace applies the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
-to response cookies, including wildcard and exception rules. Exact public-suffix
+to ASCII response cookie domains and hosts, including wildcard and exception rules. Exact public-suffix
 domains keep Wget's domain scope; imported files retain Wget's separate policy.
 Published coordinates retain their recorded profile.
 
@@ -101,7 +101,15 @@ Outgoing Host fields bracket mapped colons and omit the scheme's default port.
 
 ## Limitations
 
-The workspace rejects response cookie domains using the complete pinned PSL.
+The workspace checks ASCII response cookie domains using the complete pinned PSL.
+Admission folds ASCII case and strips leading dots without rewriting the
+stored key. The fixed Linux Wget build disables NLS: a non-ASCII host or Domain
+uses its older label heuristic instead of Unicode normalization. Exact matches
+remain eligible; a parent needs a label boundary and at least two labels.
+Two-label domains outside `.com`, `.edu`, `.net`, `.org`, `.gov`, `.mil`, `.int`
+need more than three UTF-8 bytes in the second-level label. Consequently raw
+`a.公司.cn` can accept `公司.cn`, while UTF-8 URL conversion changes the actual
+host and admission result. This is the selected upstream dialect, not browser policy.
 Wget then discards a matching stored name/domain/port/path even for an unexpired
 update, after validating that an explicit Path prefixes the request path.
 It strips one leading Domain dot and retains distinct repeated-dot keys.

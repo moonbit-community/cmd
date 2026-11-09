@@ -73,6 +73,15 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
   domains become host-only before prefix checks; file imports retain curl's
   localhost exception. Stored domain spellings retain their ASCII case;
   matching, replacement, secure overlay checks and PSL admission fold ASCII case.
+  Jar output adds a leading Domain dot only when absent. Logical rows save
+  newest creation first; replacing a cookie retains its creation position.
+  Named cookie files reload before each URL operand and CLI retry, but not a
+  redirect within a transfer. Response cookies, including pending expired
+  records, take precedence over file imports until cleanup. `-c` saves after
+  each URL operand, clearing expired records before the next operand; retries
+  do not save between attempts. `-c -` writes the fixed Curl jar header and
+  rows to stdout after each operand. Stdin is consumed, not cached for replay.
+  Inputs remain unchanged unless also selected as the output jar.
   Cookie Domain normalization and complete jar grammar and
   serialization remain unfinished. Published coordinates retain their recorded profile.
 - The unpublished workspace converts Unicode URL hosts with the pinned
@@ -86,6 +95,10 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
   Host, credential origins, cookies and NO_PROXY comparisons; exclusion tokens
   themselves are not IDNA-converted. Full IRI and configuration behavior remain open.
 - Content-encoded responses remain encoded. A redirect cannot rewind consumed stdin uploads.
+- Without `-f`, a complete retryable HTTP response delivers its body before
+  retry selection. Stdout retains that body; a regular output file resets for
+  an accepted retry. An exhausted or declined retry leaves the actual successful
+  transfer status unchanged. Partial-body and write failures retain precedence.
 - Partial stdout remains after failure; files remain unless --remove-on-error is selected. -O -J does not overwrite an existing selected name.
 
 ## Examples

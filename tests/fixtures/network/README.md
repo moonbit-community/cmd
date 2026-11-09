@@ -69,3 +69,49 @@ expectations do not come from the candidate or establish every libc dialect.
 These finite definitions are not execution evidence. The remaining jar behavior,
 date-profile extension conditions and Domain-normalization boundaries are in
 [ADR-0005](../../../docs/adr/0005-transfer.md).
+
+## Cookie Domain observations
+
+`cookie-domains.json` retains 255 fixed-oracle command records: 120 Curl and
+135 Wget. Input bytes, response bytes, actual URL encoding flags, locale,
+Host fields, absolute oracle targets and both processes' saved row orders are
+independent frozen inputs. Candidate origin-form targets and CONNECT authority
+are checked separately; transport framing and jar comment headers are not
+claimed byte-identical. The original 16 invalid UTF-8/NUL records are explicitly
+excluded and remain unresolved. The corpus retains the four initial Curl
+reload failures without changing their expectations. Source receipts and
+observation hashes are recorded with each case.
+Windows receives the same proxy address in both environment-name spellings,
+because its environment is case-insensitive; other platforms retain the
+original lowercase-only proxy profile. This adaptation is not a locale or
+transport-equivalence claim.
+The existing candidate CONNECT line names the destination, while its Host
+field names the proxy endpoint. Both are checked explicitly against fixture
+inputs; this historical transport behavior is not upstream CONNECT parity.
+
+## Curl Cookie lifecycle and HTTP retries
+
+`curl-cookie-lifecycle.json` contains 20 independently observed controls and
+38 actual process phases. Named-file mutation, stdin exhaustion, live response
+cookie precedence, expiry cleanup, same input/output paths and saves between
+URL operands retain the original requests, complete streams and jar bytes.
+Fresh observations added complete file inventories immediately after each
+process and were checked against all existing original-oracle observations.
+The observer's saved-file copy is represented as a pre-response observation,
+not a product-created file. Two deliberately unexecuted reload phases retain
+their original reasons; they are not counted as process passes.
+
+`curl-http-retry.json` contains 15 independent controls for complete and
+truncated HTTP responses, stdout retention, regular-file reset, directory
+output failures, `-f`, exhausted time/count budgets, `--retry-all-errors`, and
+522/524 responses. It retains actual arguments, request fields, supplied and
+consumed response bytes, complete pre-response inventories and terminal files.
+Directory controls include their inner sentinel. Immediate post-write snapshots
+in the source records are not assumed to prove child flushing.
+
+Both corpora run through the same real-CLI replay with evidence outside the
+product working directory. Missing/extra exchanges, observer errors, incomplete
+processes and changed file types or bytes fail acceptance. Linux repeats the
+observations against its verified immutable oracle; other platforms run the
+frozen candidate contracts. These finite controls do not establish full retry
+grammar, disk-full handling, raw invalid-byte Cookie support or publication.
