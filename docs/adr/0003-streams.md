@@ -236,6 +236,12 @@ address and owns URL-to-file mapping, MIME types and the bounded file-copy loop.
 Use released `moonbitlang/async@0.22.7` HTTP and filesystem
 APIs without another server framework or shared core mechanism. GET/HEAD,
 index.html and explicit error responses are the complete initial scope.
+Successful file responses enter passthrough mode and write the header and each
+64 KiB chunk directly: the `@http` fixed-length body path copies through a
+1 KiB send buffer, one socket write per KiB. Passthrough cannot return to HTTP
+framing, so these responses close the connection; redirects and errors leave
+keep-alive intact. Reopen this when released `@http` writes large
+fixed-length chunks without the per-KiB copy.
 The module is independent of cli/core and has an untimed disposition in the
 [real workload registry](../../tests/benchmark/real-coverage.json); registered
 request/policy scenarios establish correctness only. Add a genuine HTTP workload
