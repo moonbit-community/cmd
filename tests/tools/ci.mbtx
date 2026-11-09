@@ -2,8 +2,8 @@
 import {
   "moonbitlang/async@0.22.7", "moonbitlang/async@0.22.7/fs",
   "moonbitlang/async@0.22.7/shell", "moonbitlang/core/env",
-  "moonbitlang/core/json", "moonbitlang/x@0.5.5/path",
-  "moonbitlang/x@0.5.5/crypto",
+  "moonbitlang/core/json", "moonbitlang/x@0.5.7/path",
+  "moonbitlang/x@0.5.7/crypto",
 }
 ----
 
@@ -63,7 +63,7 @@ fn selection_required(selection : Json, commit : String) -> Bool raise {
     seen.add(id)
   }
   guard scope != "none" ||
-    reason == "documentation-only change" ||
+    reason == "no functional changes" ||
     reason.has_prefix("explicit registered upstream boundaries: ") else {
     fail("undeclared differential omission")
   }

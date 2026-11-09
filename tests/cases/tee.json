@@ -646,34 +646,16 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "scenario",
-      "timeout_ms": 60000,
-      "coverage": [
-        "output-error",
-        "pipe-errors"
-      ],
-      "source_version": "Five explicit output-error modes with an actually closed stdout pipe and later file sink",
-      "oracle": false
-    },
-    {
-      "id": "tee-output-errors-oracle",
-      "command": "tee",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
       "timeout_ms": 120000,
       "coverage": [
         "output-error",
         "pipe-errors"
       ],
-      "source_version": "GNU coreutils 9.11 immutable oracle with the same pure MoonBit pipe observer",
-      "oracle": false
+      "source_version": "Five explicit output-error modes with an actually closed stdout pipe and later file sink",
+      "oracle": true,
+      "aliases": [
+        "tee-output-errors-oracle"
+      ]
     },
     {
       "id": "tee-default-pipe-boundary",

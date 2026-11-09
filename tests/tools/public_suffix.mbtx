@@ -5,8 +5,8 @@ import {
   "moonbitlang/async@0.22.7/shell",
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
-  "moonbitlang/x@0.5.5/crypto",
-  "moonbit-community/punycode@0.5.2",
+  "moonbitlang/x@0.5.7/crypto",
+  "moonbit-community/punycode@0.7.1",
 }
 ----
 

@@ -1,6 +1,6 @@
 ///|
 test "regression identity ignores labels and assertion strength but retains actual inputs" {
-  let base = quality_case({
+  let base = assertion_case({
     "expected_stdout_text": "value",
     "expected_stderr_text": "",
     "args": ["-n", "-b"],

@@ -1,7 +1,7 @@
 # Internal public-API system adapter
 
-The fixed rg.mbt system boundary was replaced with released public
-`moonbitlang/async@0.22.5` and `moonbitlang/x@0.5.5` APIs. Both Native development
+The rg.mbt system boundary uses released public
+`moonbitlang/async@0.22.7` and `moonbitlang/x@0.5.7` APIs. Both Native development
 observations and the Wasm product run through this adapter. No C stub, custom
 WASI import or dependency-internal package is used.
 

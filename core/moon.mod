@@ -16,8 +16,8 @@ description = "Shared runtime core for cli command modules."
 
 import {
   "moonbitlang/async@0.22.7",
-  "moonbitlang/x@0.5.5",
+  "moonbitlang/x@0.5.7",
   "cc06b/mooncry@0.95.0",
   "moonbit-community/normalization@0.5.2",
-  "moonbit-community/punycode@0.5.2",
+  "moonbit-community/punycode@0.7.1",
 }

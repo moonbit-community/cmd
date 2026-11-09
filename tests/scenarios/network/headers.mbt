@@ -34,7 +34,7 @@ async fn network_header_fields_scenario(
           connection.write("HTTP/1.1 200 OK\r\n" + response_fields + "\r\n")
         } else if start.has_prefix("GET /challenge ") && authorization is None {
           connection.write(
-            "HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: Unknown realm=\"first\"\r\nWWW-Authenticate: Basic realm=\"a,b\"\r\nContent-Length: 0\r\n\r\n",
+            "HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: Unknown realm=\"first\"\r\nWWW-Authenticate: Basic realm=\"a,b\"\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
           )
         } else {
           let body = if start.has_prefix("GET /challenge ") {
@@ -43,7 +43,8 @@ async fn network_header_fields_scenario(
             fields.join("\n") + "\n"
           }
           connection.write(
-            "HTTP/1.1 200 OK\r\nContent-Length: \{body.length()}\r\n\r\n" + body,
+            "HTTP/1.1 200 OK\r\nContent-Length: \{body.length()}\r\nConnection: close\r\n\r\n" +
+            body,
           )
         }
       })

@@ -14,7 +14,7 @@ test "worker reuse requires compatible scoped mounts and no leftover processes" 
   assert_eq(plan.environment, ["-e", "LANG=C"])
   for
     volume in [
-      "/reports/case:/work:rw", "/outside:/outside:rw", "/reports/case:/reports/case:ro",
+      "/reports/case:/work:rw", "/outside:/outside:rw", "/reports:/reports:ro", "/reports/case/../other:/reports/case/../other:rw",
     ] {
     assert_true(
       oracle_exec_plan(
@@ -25,6 +25,43 @@ test "worker reuse requires compatible scoped mounts and no leftover processes" 
       is None,
     )
   }
+  for source in ["/reports/case", "/isolated/metadata"] {
+    let volume = source + ":" + source + ":ro"
+    let plan = oracle_exec_plan(
+      ["run", "--rm", "-v", volume, "-w", source, image, "find", "."],
+      "/reports",
+      image,
+    ).unwrap()
+    assert_true(plan.configuration.contains(volume))
+    assert_false(plan.configuration.contains(source + ":" + source + ":rw"))
+    assert_eq(plan.directory, Some(source))
+    assert_true(
+      oracle_exec_plan(
+        [
+          "run",
+          "--rm",
+          "-v",
+          volume,
+          "-w",
+          source + "/../other",
+          image,
+          "find",
+          ".",
+        ],
+        "/reports",
+        image,
+      )
+      is None,
+    )
+  }
+  assert_true(
+    oracle_exec_plan(
+      ["run", "--rm", "-w", "/undeclared", image, "cat"],
+      "/reports",
+      image,
+    )
+    is None,
+  )
   assert_true(oracle_worker_is_idle(b"PID\n 123\n"))
   for output in [b"PID\n123\n456\n", b"PID\n", b"PID\ninvalid\n", b""] {
     assert_false(oracle_worker_is_idle(output))

@@ -67,9 +67,7 @@ async test "workspace dependency manifests keep one async baseline and the selec
     fail("published manifest must name its core coordinate")
   }
   let published_core_coordinate = "cli/core@" + published_core
-  let retained_core_coordinates = [
-    "cli/core@0.8.2", "cli/core@0.9.0", "cli/core@0.9.1",
-  ]
+  let retained_core_coordinates = ["cli/core@0.9.5"]
   let commands = command_names(root + "commands")
   assert_eq(commands.length(), 82)
   let independent = [
@@ -111,8 +109,6 @@ async test "workspace dependency manifests keep one async baseline and the selec
       // selected released dependency. A candidate version does not upgrade pins.
       if directory == "tests" {
         assert_eq(core_imports, [candidate_core_coordinate])
-      } else if directory == "commands/timeout" {
-        assert_eq(core_imports, ["cli/core@0.7.0"])
       } else {
         assert_true(
           retained_core_coordinates.contains(core_imports[0]) ||

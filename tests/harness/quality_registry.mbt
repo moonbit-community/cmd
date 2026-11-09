@@ -1,5 +1,5 @@
 ///|
-pub fn case_stimulus_digest(fixture : Case) -> String raise {
+fn case_stimulus_digest(fixture : Case) -> String raise {
   let platforms = fixture.host_platforms
     .unwrap_or(["linux", "macos", "windows"])
     .copy()
@@ -61,12 +61,7 @@ pub fn validate_local_assertions(
       )
     }
     stimuli[identity] = fixture.id
-    let (_, descriptor, _) = quality_catalog_classification(fixture)
-    let errors = case_quality_errors(
-      fixture,
-      descriptor~,
-      wired_observers=quality_wired_observers(fixture, scenario_ids),
-    )
+    let errors = case_assertion_errors(fixture, scenario_ids~)
     guard errors.is_empty() else { fail(fixture.id + ": " + errors.join("; ")) }
   }
 }

@@ -13,7 +13,7 @@ preferred_target = "wasm"
 description = "Recursive text search for MoonX."
 
 import {
-  "cli/core@0.9.1",
+  "cli/core@0.9.5",
   "moonbitlang/async@0.22.7",
-  "moonbitlang/x@0.5.5",
+  "moonbitlang/x@0.5.7",
 }

@@ -13,16 +13,6 @@ fn runtime_template(text : String) -> Bool {
 }
 
 ///|
-pub fn runtime_contract_observers(fixture : Case) -> Array[String] {
-  if fixture.expected_stdout_json is Some(_) ||
-    runtime_template(fixture.expected_stdout_text.unwrap_or("")) {
-    ["dynamic:" + fixture.id]
-  } else {
-    []
-  }
-}
-
-///|
 fn runtime_directory_size(observed : RunResult) -> Int64 raise {
   guard observed.status == 0 &&
     observed.stderr == b"" &&

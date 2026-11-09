@@ -20,12 +20,11 @@ From the repository root, run
 `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/tools/public_suffix.mbtx -- update`
 to regenerate `core/netops/cookie_suffix_data.mbt`, or use `check` to verify it.
 The generator rejects a missing or changed source and retains every rule.
-Its generator-only dependency `moonbit-community/punycode@0.5.2` is pure MoonBit
-(registry ZIP SHA-256
-`f3d3aefa1e45b0e8f7f67c4e41ba106d511eda9322c016d8723b67d49aaad8c9`).
+The pure MoonBit Punycode dependency is pinned in the generator's imports.
 It adds A-label aliases only for non-ASCII labels; it does not implement
-IDNA/NFKC normalization of URL or Domain inputs. Product lookup has no runtime
-data-file or Punycode dependency.
+IDNA/NFKC normalization of URL or Domain inputs. Product suffix lookup has no
+runtime data-file or Punycode dependency; URL/IDNA conversion uses Punycode
+separately.
 
 Cookie admission follows libpsl 0.21.2's complete ICANN plus PRIVATE policy:
 wildcard bases are suffixes, exception rules win, and the request host's longest

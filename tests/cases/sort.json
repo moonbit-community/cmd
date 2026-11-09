@@ -3067,6 +3067,7 @@
     {
       "id": "sort-live-spill",
       "command": "sort",
+      "isolated": true,
       "comparison": "scenario",
       "timeout_ms": 60000,
       "args": [],

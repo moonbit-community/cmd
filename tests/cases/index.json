@@ -22943,23 +22943,13 @@
       "implementation": "json-case",
       "source": "tests/cases/mktemp.json",
       "case_id": "mktemp-option-effects",
-      "aliases": [],
+      "aliases": [
+        "mktemp-option-effects-oracle",
+        "case:mktemp-option-effects-oracle"
+      ],
       "platforms": [
         "linux",
         "macos"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:mktemp-option-effects-oracle",
-      "command": "mktemp",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/mktemp.json",
-      "case_id": "mktemp-option-effects-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -22983,21 +22973,11 @@
       "implementation": "json-case",
       "source": "tests/cases/tee.json",
       "case_id": "tee-output-errors",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:tee-output-errors-oracle",
-      "command": "tee",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/tee.json",
-      "case_id": "tee-output-errors-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "tee-output-errors-oracle",
+        "case:tee-output-errors-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -23055,23 +23035,12 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::mktemp-option-effects",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:mktemp-option-effects-oracle"
+      ],
       "platforms": [
         "linux",
         "macos"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "scenario:mktemp-option-effects-oracle",
-      "command": "mktemp",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::mktemp-option-effects-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -23095,21 +23064,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::tee-output-errors",
       "case_id": "",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "scenario:tee-output-errors-oracle",
-      "command": "tee",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::tee-output-errors-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "scenario:tee-output-errors-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -28414,11 +28372,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "metadata-relations",
-      "aliases": [],
+      "aliases": [
+        "f29-metadata-selectors-oracle",
+        "case:f29-metadata-selectors-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:metadata-relations",
@@ -28427,11 +28388,13 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::metadata-relations",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-metadata-selectors-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:coverage-find-reject--newerBm",
@@ -33583,9 +33546,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "f31-sh-printf-state",
-      "aliases": [],
+      "aliases": [
+        "f31-sh-printf-state-oracle",
+        "case:f31-sh-printf-state-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f31-sh-printf-state",
@@ -33594,34 +33560,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f31-sh-printf-state",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f31-sh-printf-state-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f31-sh-printf-state-oracle",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "f31-sh-printf-state-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f31-sh-printf-state-oracle",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f31-sh-printf-state-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -39216,32 +39158,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:f29-metadata-selectors-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-metadata-selectors-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-metadata-selectors-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-metadata-selectors-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:f29-test-invalid-path-0-e",
       "command": "test",
       "status": "supported",
@@ -42793,11 +42709,14 @@
       "implementation": "json-case",
       "source": "tests/cases/test.json",
       "case_id": "f29-test-size-unreadable",
-      "aliases": [],
+      "aliases": [
+        "f29-test-size-unreadable-oracle",
+        "case:f29-test-size-unreadable-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:f29-find-size-unreadable",
@@ -42806,11 +42725,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "f29-find-size-unreadable",
-      "aliases": [],
+      "aliases": [
+        "f29-find-size-unreadable-oracle",
+        "case:f29-find-size-unreadable-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:f29-find-xtype-file-link-positive",
@@ -43095,11 +43017,14 @@
       "implementation": "json-case",
       "source": "tests/cases/mkdir.json",
       "case_id": "f29-mkdir-umasks",
-      "aliases": [],
+      "aliases": [
+        "f29-mkdir-umasks-oracle",
+        "case:f29-mkdir-umasks-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-mkdir-umasks",
@@ -43108,35 +43033,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-mkdir-umasks",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-mkdir-umasks-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-mkdir-umasks-oracle",
-      "command": "mkdir",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/mkdir.json",
-      "case_id": "f29-mkdir-umasks-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-mkdir-umasks-oracle",
-      "command": "mkdir",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-mkdir-umasks-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43147,11 +43048,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "f29-sparse-size",
-      "aliases": [],
+      "aliases": [
+        "f29-sparse-size-oracle",
+        "case:f29-sparse-size-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-sparse-size",
@@ -43160,35 +43064,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-sparse-size",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-sparse-size-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-sparse-size-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-sparse-size-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-sparse-size-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-sparse-size-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43199,11 +43079,14 @@
       "implementation": "json-case",
       "source": "tests/cases/test.json",
       "case_id": "f29-special-kinds",
-      "aliases": [],
+      "aliases": [
+        "f29-special-kinds-oracle",
+        "case:f29-special-kinds-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-special-kinds",
@@ -43212,35 +43095,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-special-kinds",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-special-kinds-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-special-kinds-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/test.json",
-      "case_id": "f29-special-kinds-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-special-kinds-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-special-kinds-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43277,11 +43136,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "f29-time-references",
-      "aliases": [],
+      "aliases": [
+        "f29-time-references-oracle",
+        "case:f29-time-references-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-time-references",
@@ -43290,35 +43152,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-time-references",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-time-references-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-time-references-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-time-references-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-time-references-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-time-references-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43329,11 +43167,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "f29-predicate-errors",
-      "aliases": [],
+      "aliases": [
+        "f29-predicate-errors-oracle",
+        "case:f29-predicate-errors-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-predicate-errors",
@@ -43342,35 +43183,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-predicate-errors",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-predicate-errors-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-predicate-errors-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-predicate-errors-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-predicate-errors-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-predicate-errors-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43947,9 +43764,12 @@
       "implementation": "json-case",
       "source": "tests/cases/test.json",
       "case_id": "f29-subsecond-order",
-      "aliases": [],
+      "aliases": [
+        "f29-subsecond-order-oracle",
+        "case:f29-subsecond-order-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-subsecond-order",
@@ -43958,9 +43778,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-subsecond-order",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-subsecond-order-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:f29-directory-size",
@@ -45179,32 +45001,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:f29-subsecond-order-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/test.json",
-      "case_id": "f29-subsecond-order-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-subsecond-order-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-subsecond-order-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:f29-find-delete-preserves-enumeration-error",
       "command": "find",
       "status": "supported",
@@ -45237,35 +45033,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-find-size-unreadable",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-find-size-unreadable-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-find-size-unreadable-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-find-size-unreadable-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-find-size-unreadable-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-find-size-unreadable-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -45276,35 +45048,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-test-size-unreadable",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-test-size-unreadable-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-test-size-unreadable-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/test.json",
-      "case_id": "f29-test-size-unreadable-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-test-size-unreadable-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-test-size-unreadable-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },

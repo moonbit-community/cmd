@@ -105,7 +105,6 @@ async test "runtime observations freeze expected sizes before product execution"
       "size": { "$sum": [{ "$stat_size": "file" }, 2] },
     },
   })
-  assert_eq(runtime_contract_observers(fixture), ["dynamic:runtime-quality"])
   let resolved = resolve_runtime_contract(fixture, root)
   assert_eq(resolved.expected_stdout_text, Some("😀[   3]    5    3    3"))
   assert_eq(resolved.expected_stdout_json, Some({ "size": 5 }))
@@ -141,12 +140,6 @@ async test "runtime observations freeze expected sizes before product execution"
     let result = resolve_runtime_contract(directory, root)
     assert_eq(result.expected_stdout_json, Some({ "size": before }))
   }
-  assert_eq(
-    runtime_contract_observers(
-      runtime_fixture({ "expected_stdout_text": "literal" }),
-    ),
-    [],
-  )
 }
 
 ///|

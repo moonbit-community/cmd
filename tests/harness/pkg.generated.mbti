@@ -23,12 +23,6 @@ pub fn canonical_json(@json.Json) -> String
 
 pub fn case_directory_name(String) -> String
 
-pub fn case_quality_errors(Case, descriptor? : @json.Json, wired_observers? : Array[String]) -> Array[String]
-
-pub fn case_quality_kind(Case, descriptor? : @json.Json) -> String
-
-pub fn case_stimulus_digest(Case) -> String raise
-
 pub fn check_contract(Case, RunResult, String, http_base? : String) -> Array[String]
 
 pub async fn check_expected_files(Case, String, http_base? : String, baseline? : Array[SnapshotEntry]) -> Array[String]
@@ -138,8 +132,6 @@ pub async fn run_option_child(ArrayView[String]) -> Int32
 pub async fn run_oracle_with_deadline(String, Array[String], Int32, evidence_dir~ : String, stdin? : Bytes, extra_env? : Map[String, String], inherit_env? : Bool) -> TimedRun
 
 pub async fn run_with_deadline(String, Array[String], Int32, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool, read_stream? : async (@process.ReadFromProcess) -> Bytes?) -> TimedRun
-
-pub fn runtime_contract_observers(Case) -> Array[String]
 
 pub fn safe_relative_path(String) -> Bool
 

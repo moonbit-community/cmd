@@ -21,26 +21,23 @@ Development only.
   user-facing MoonX examples and distinguish published 0.1.1, its incorrect
   0.1.0 version output, and the unpublished 0.1.2 candidate.
 
-- Return copy/removal/mode policies, tac extent copying, seq evaluation, jq AST
-  adaptations and tab grids to their commands with their original assertions.
-  Share independent jq input/expected records, remove obsolete core interfaces
-  and dependencies, and preserve optimized loops and frozen release inputs.
+- Return command-specific filesystem, arithmetic, filter, tab and download policies
+  to their commands, preserving assertions and optimized loops. Core now performs
+  scoped streaming transport; equivalent TZif conversion uses released x/time,
+  retaining POSIX and legacy compatibility. See [ADR-0003](docs/adr/0003-streams.md).
 
-- Separate Linux correctness from mandatory affected-command upstream comparison,
-  preserving the three required platform statuses. Reuse verified same-run build
-  inputs and compatible oracle workers, unify network scenario modes, and fail
-  closed on selection, artifact, process-lifecycle and required-gate failures.
-  Comparable CI latency qualification remains pending.
+- Retire the per-assertion proof/source-sealing chain. All 594 Cookie and 73
+  authentication records execute beside their owners, while real command events
+  and complete required Linux differential remain. Prepare products/tools once,
+  reuse compatible oracle workers, unify scenario modes and keep the three required
+  platform checks. Original expectations, cleanup and complete-result checks remain.
 
-- Replace the per-assertion proof and source-sealing chain with direct assertions
-  and complete-result checks. Prepare CI products/tools once, compact successful
-  network observations and retain failure diagnostics. Original corpora and
-  frozen published expectations are unchanged; CI timing remains unqualified.
-
-- Execute all 594 frozen Cookie dialect, expiry, date and Domain records beside
-  the implementation, with fixed-time request/save/reload assertions. Retain
-  full Linux CLI differential and a real seeded Cookie session; stop repeating
-  dense grammar records as ordinary three-platform process scenarios.
+- Refresh declared MoonBit and CI Action dependencies, remove unnecessary Nushell
+  setup, and limit upstream selection to functional changes. Plain documentation
+  and license notices select none. Three warm runs have three-platform critical
+  paths of 9:00–11:18; complete mandatory gates take 15:41–20:12 warm and 27:09 cold.
+  [Counts, cost boundaries and runs](tests/README.md#ci-timing-observations-2026-11-09)
+  remain explicit. No package is published; frozen acceptance coordinates are unchanged.
 
 - Use the standard MoonBit argument parser for `serve`, including generated
   help, attached port values and usage diagnostics for invalid arguments.

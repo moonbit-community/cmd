@@ -16,5 +16,5 @@ description = "Minimal static HTTP file server for MoonX."
 
 import {
   "moonbitlang/async@0.22.7",
-  "moonbitlang/x@0.5.5",
+  "moonbitlang/x@0.5.7",
 }
