@@ -148,6 +148,13 @@ module and version before any release operation.
   than runtime command consumers. Preserve dialects, error ordering and fast
   loops instead of forcing them into a generic command framework.
 
+- Keep copy/removal/mode policies, tac range copying, seq arithmetic, jq AST
+  adapters and expand/unexpand grids in their owning commands. Do not import
+  another command's internal packages. Small identical adaptations may remain
+  local when their dialects evolve independently; share independent test inputs
+  rather than widening runtime APIs. The jq adapter corpus retains the original
+  28 positive expectations, including stable-order and deep-key records.
+
 - rg search policy and its concrete matcher adapter are private to `driver`.
   Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms
   in `core/bytesearch`; `matcher` and `searcher` must not import the driver.

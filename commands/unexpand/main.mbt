@@ -3,8 +3,8 @@ fn unexpand_bytes(
   data : Bytes,
   all_blanks : Bool,
   first_only : Bool,
-  stops : @tabstops.TabStops,
-) -> Bytes raise @tabstops.TabError {
+  stops : TabStops,
+) -> Bytes raise TabError {
   let output : Array[Byte] = []
   let pending : Array[Byte] = []
   let mut column = 0L
@@ -24,7 +24,7 @@ fn unexpand_bytes(
     if convert {
       let blank = byte is (b' ' | b'\t')
       if blank {
-        match @tabstops.next(column, stops) {
+        match next_tab(column, stops) {
           None => convert = false
           Some(stop) => {
             if byte == b'\t' {
@@ -61,7 +61,7 @@ fn unexpand_bytes(
         }
       } else if byte != b'\x00' {
         if column == 9223372036854775807L {
-          raise @tabstops.TabError("input line is too long")
+          raise TabError("input line is too long")
         }
         column += 1
       }
@@ -132,8 +132,8 @@ async fn main {
     @stdio.stdout.write(help_message() + "\n")
     return
   }
-  let stops = @tabstops.parse(parsed.values("tabs")) catch {
-    @tabstops.TabError(message) => {
+  let stops = parse_tabs(parsed.values("tabs")) catch {
+    TabError(message) => {
       @stdio.stderr.write("unexpand: \{message}\n")
       @sys.exit(1)
       return
@@ -160,7 +160,7 @@ async fn main {
       parsed.contains("first-only"),
       stops,
     ) catch {
-      @tabstops.TabError(message) => {
+      TabError(message) => {
         @stdio.stderr.write("unexpand: \{message}\n")
         @sys.exit(1)
         return

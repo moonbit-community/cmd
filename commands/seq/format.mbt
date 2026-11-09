@@ -195,7 +195,7 @@ async fn print_formatted(
     [first, step, last] => (first, step, last)
     _ => abort("unreachable")
   }
-  let direction = @numfmt.compare(step, @numfmt.zero())
+  let direction = compare_binary(step, @numfmt.zero())
   if direction == 0 {
     let text = if operands.length() == 3 { operands[1] } else { "1" }
     raise SeqError(
@@ -203,7 +203,7 @@ async fn print_formatted(
     )
   }
   let before_end = fn(value) {
-    let order = @numfmt.compare(value, last)
+    let order = compare_binary(value, last)
     if direction < 0 {
       order >= 0
     } else {
@@ -226,7 +226,7 @@ async fn print_formatted(
     output.write(field)
     output.write(format.suffix)
     emitted = true
-    let next = @numfmt.sequence_value(first, step, index, sequence_profile)
+    let next = sequence_value(first, step, index, sequence_profile)
     index = index + BigInt::from_int(1)
     if !before_end(next) {
       let next_field = format.field(next)
@@ -236,7 +236,7 @@ async fn print_formatted(
       if consumed == next_field.iter().count() &&
         consumed > 0 &&
         !range_error &&
-        @numfmt.compare(recovered, last) == 0 &&
+        compare_binary(recovered, last) == 0 &&
         next_field != field {
         output.write(separator)
         output.write(format.prefix)

@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Return copy/removal/mode policies, tac extent copying, seq evaluation, jq AST
+  adaptations and tab grids to their commands with their original assertions.
+  Share independent jq input/expected records, remove obsolete core interfaces
+  and dependencies, and preserve optimized loops and frozen release inputs.
+
 - Separate Linux correctness from mandatory affected-command upstream comparison,
   preserving the three required platform statuses. Reuse verified same-run build
   inputs and compatible oracle workers, unify network scenario modes, and fail

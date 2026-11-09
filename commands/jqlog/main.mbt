@@ -143,7 +143,7 @@ async fn main {
     Run(options) =>
       try {
         let input = read_input(options.input)
-        let query = @jq_filter.parse(options.query)
+        let query = parse_filter(options.query)
         for line in input.split("\n") {
           let value = @json.parse(line.strip_suffix("\r").unwrap_or(line)) catch {
             _ => continue

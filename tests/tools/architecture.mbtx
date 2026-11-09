@@ -251,6 +251,13 @@ fn package_name(path : String) -> String {
 
 ///|
 fn invalid_driver_dependency(name : String, dependency : String) -> Bool {
+  let parts = dependency.split("/").collect()
+  if parts is ["cli", command, "internal", ..] && command != "core" {
+    let owner = "cli/" + command.to_owned()
+    if name != owner && !name.has_prefix(owner + "/") {
+      return true
+    }
+  }
   (
     ["cli/rg/internal/matcher", "cli/rg/internal/searcher"].contains(name) &&
     dependency == "cli/rg/internal/driver"
@@ -386,6 +393,15 @@ async fn main {
     assert_false(invalid_driver_dependency(name, "cli/core/bytesearch"))
   }
   assert_false(invalid_driver_dependency("cli/rg", "cli/rg/internal/driver"))
+  assert_true(
+    invalid_driver_dependency("cli/curl", "cli/wget/internal/download"),
+  )
+  assert_true(
+    invalid_driver_dependency("cli/core/netops", "cli/wget/internal/download"),
+  )
+  assert_false(
+    invalid_driver_dependency("cli/wget", "cli/wget/internal/download"),
+  )
   for
     name in [
       "cli/typst/internal/kit", "cli/typst/internal/kit/platform", "cli/typst/internal/kit/watcher",
@@ -454,7 +470,7 @@ async fn main {
           "cli/core/bytesearch", "cli/core/bytere", "cli/core/stream", "cli/core/tempio",
           "cli/core/fswalk", "cli/core/platform", "cli/core/process", "cli/core/checksum",
           "cli/core/gzipops", "cli/core/numfmt", "cli/core/time_zone", "cli/core/quoting",
-          "cli/core/tabstops", "cli/core/fsops",
+          "cli/core/fsops",
         ].contains(name) &&
         (dep == "cli/core/cli" || dep.has_suffix("/cli")) {
         failures.push(name + " imports a command adapter: " + dep)

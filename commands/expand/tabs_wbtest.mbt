@@ -14,7 +14,7 @@ test "tab stops distinguish periodic aligned and relative continuation" {
         (["4,10,+8"], 25L, Some(26L)),
         (["+4"], 5L, Some(8L)),
       ] : Array[(Array[String], Int64, Int64?)]) {
-    assert_eq(@tabstops.next(column, @tabstops.parse(values)), expected)
+    assert_eq(next_tab(column, parse_tabs(values)), expected)
   }
 }
 
@@ -28,16 +28,15 @@ test "tab stop validation preserves diagnostics and overflow rejection" {
       ("4x", "tab size contains invalid character(s): 'x'"),
       ("9223372036854775808", "tab stop is too large '9223372036854775808'"),
     ] {
-    try @tabstops.parse([value]) catch {
-      @tabstops.TabError(actual) => assert_eq(actual, message)
+    try parse_tabs([value]) catch {
+      TabError(actual) => assert_eq(actual, message)
     } noraise {
       _ => fail("invalid tab stops must fail")
     }
   }
   for values in [[], ["4,8"], ["4,+8"]] {
-    try @tabstops.next(9223372036854775807L, @tabstops.parse(values)) catch {
-      @tabstops.TabError(message) =>
-        assert_eq(message, "input line is too long")
+    try next_tab(9223372036854775807L, parse_tabs(values)) catch {
+      TabError(message) => assert_eq(message, "input line is too long")
     } noraise {
       _ => fail("column overflow must fail")
     }

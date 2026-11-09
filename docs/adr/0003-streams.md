@@ -110,17 +110,17 @@ execution or selection defect, not to reproduce assertions in another format.
 | --- | --- |
 | core/cli / tests/harness/catalog | Runtime argument parsing and diagnostics / validation-only command records, case index and release policy |
 | platform / process | Honest capability queries / execution context and direct-child lifetime |
-| fsops | Shared filesystem preflight and octal mode parsing; command-local ordered effects |
+| fsops | Shared path relationships, output handles, timestamps and backup mechanisms; command-local copy, removal and mode policies |
 | fswalk | Directory handles and requested observations; callers own sorting, pruning and links |
-| stream / tempio | Record and output ownership / exclusive temporary storage and range copying |
+| stream / tempio | Record and output ownership / exclusive temporary storage; tac owns positional range copying |
 | bytesearch / bytere | Reusable byte kernels / C-byte regex semantics and bounded accelerators |
 | checksum / checksum/cli | Incremental algorithms / command records, files and diagnostics |
 | gzipops / gzipops/cli | Codec state and history / command options and execution |
 | shell | Session and control-flow state; sh, make and split own orchestration |
 | netops | Request, response, redirect and output responsibilities within one transfer path |
 | numfmt / time_zone | Exact fixed-profile numeric formatting / checked timezone conversion |
-| jq_filter | Public-AST adaptation preserving lexical bindings and assignment paths |
-| quoting / tabstops | Byte quoting and parsed tab grids; callers retain their dialects |
+| jq / jqlog command internals | Local public-AST adaptations preserving lexical bindings and assignment paths, checked against shared independent inputs |
+| quoting / expand and unexpand internals | Shared byte quoting / command-local tab grids and dialects |
 
 The compatibility boundary for internal restructuring is `moonx cli/<command>`:
 accepted arguments, output/status, error ordering, filesystem effects and
@@ -135,6 +135,19 @@ private-state tests with their implementation, and keep generated tables and
 imported corpus records even when they have no runtime consumer. The catalog
 now belongs to `tests/harness/catalog`: its consumers are Native validation
 tools, so it no longer expands the published runtime module.
+
+The 2026-11-09 ownership migration moves recursive-copy traversal/preflight to
+cp, octal mode parsing to chmod, removal operand protection to rm, ancestor
+protection to rmdir, positional extent copying to tac, and binary sequence
+evaluation/comparison to seq. Core retains the cp/mv path relationship mechanism
+and private numeric rounding/comparison needed by its formatter. Seq keeps its
+own bounded arithmetic helpers rather than publishing an arithmetic API just to
+avoid duplication. The test-only backup-name wrapper is removed; its tests call
+the private selection directly. Jq and jqlog each own their small AST adaptation;
+their 28 original positive expectations share one fixture and error tests stay
+local. Expand and unexpand own their grids independently. Reconsider sharing
+only for an actual common mechanism and identical consumer contracts; consumer
+count alone does not establish that boundary.
 
 Validate stable arguments at their owning entry boundary. Inner loops use those
 established invariants; filesystem races, short reads, failed writes and
