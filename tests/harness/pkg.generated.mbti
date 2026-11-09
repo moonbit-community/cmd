@@ -207,6 +207,7 @@ pub(all) struct Case {
   comparison : String?
   oracle : Bool?
   inputs : Array[String]?
+  isolated : Bool?
   expected_stdout_hex : String?
   expected_stdout_text : String?
   expected_stderr_hex : String?

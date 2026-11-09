@@ -27,8 +27,8 @@ fn append_scenario_reports(
 }
 
 ///|
-// Stateful scenarios share process and fixture state. The requested job limit
-// applies to independent cases; both scenario suites use this serial path.
+// Only reviewed scenarios with private directories, servers and process state
+// opt into concurrency. Every event still executes its own steps in order.
 async fn run_scenario_batch(
   cases : Array[@harness.Case],
   reports : Array[@harness.CaseReport],
@@ -36,7 +36,19 @@ async fn run_scenario_batch(
   execute : async (@harness.Case) -> @harness.CaseReport,
 ) -> Unit {
   guard jobs > 0 else { fail("scenario job limit must be positive") }
+  let independent : Array[async () -> Unit] = []
+  let serial : Array[@harness.Case] = []
   for fixture in cases {
+    if fixture.isolated == Some(true) {
+      independent.push(() => {
+        append_scenario_reports(reports, fixture, execute(fixture))
+      })
+    } else {
+      serial.push(fixture)
+    }
+  }
+  ignore(@async.all(independent, max_concurrent=jobs.min(4)))
+  for fixture in serial {
     append_scenario_reports(reports, fixture, execute(fixture))
   }
 }

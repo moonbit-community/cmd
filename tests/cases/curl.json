@@ -158,7 +158,8 @@
       "oracle": true,
       "aliases": [
         "network-transfer-boundaries-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "transfer-curl-fixed-complete",
@@ -534,7 +535,8 @@
       "oracle": true,
       "aliases": [
         "network-auth-cookie-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "repair-final-curl-basic",
@@ -841,7 +843,8 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "isolated": true
     },
     {
       "id": "network-retry-effects",
@@ -858,7 +861,8 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "isolated": true
     },
     {
       "id": "network-refusal-recovery",
@@ -875,7 +879,8 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "isolated": true
     },
     {
       "id": "network-option-effects",
@@ -892,7 +897,8 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "isolated": true
     },
     {
       "id": "curl-auth-rejected",
@@ -960,7 +966,8 @@
       "oracle": true,
       "aliases": [
         "network-cookie-suffix-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "network-idna",
@@ -984,7 +991,8 @@
       "oracle": true,
       "aliases": [
         "network-idna-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "network-curl-cookie-domains",
@@ -1005,7 +1013,8 @@
       ],
       "aliases": [
         "network-curl-cookie-domains-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "network-curl-cookie-lifecycle",
@@ -1029,7 +1038,8 @@
       ],
       "aliases": [
         "network-curl-cookie-lifecycle-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "network-curl-http-retry",
@@ -1053,7 +1063,8 @@
       ],
       "aliases": [
         "network-curl-http-retry-oracle"
-      ]
+      ],
+      "isolated": true
     }
   ]
 }

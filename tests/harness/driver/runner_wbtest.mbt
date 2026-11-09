@@ -171,7 +171,7 @@ test "one scenario execution preserves its selectable ID and failure" {
 }
 
 ///|
-async test "scenario scheduler stays serial with eight requested jobs" {
+async test "unisolated scenario scheduler stays serial with eight requested jobs" {
   let fixture : @harness.Case = @json.from_json({
     "id": "serial",
     "command": "sh",
@@ -206,5 +206,35 @@ async test "scenario scheduler stays serial with eight requested jobs" {
     assert_eq(events[index * 2], "start:serial-\{index}")
     assert_eq(events[index * 2 + 1], "finish:serial-\{index}")
     assert_eq(reports[index].id, "serial-\{index}")
+  }
+}
+
+///|
+async test "isolated scenario concurrency respects the requested limit and four task ceiling" {
+  let fixture : @harness.Case = @json.from_json({
+    "id": "isolated",
+    "command": "curl",
+    "args": [],
+    "files": [],
+    "environment": {},
+    "expected_status": 0,
+    "normalizations": [],
+    "isolated": true,
+  })
+  for jobs in [1, 2, 8] {
+    let cases = Array::makei(8, index => { ..fixture, id: "isolated-\{index}", })
+    let reports : Array[@harness.CaseReport] = []
+    let active = Ref(0)
+    let peak = Ref(0)
+    run_scenario_batch(cases, reports, jobs, fixture => {
+      active.val += 1
+      peak.val = peak.val.max(active.val)
+      @async.sleep(1)
+      active.val -= 1
+      @harness.suite_report(fixture.id, "wasm", @async.now(), [])
+    })
+    assert_eq(peak.val, jobs.min(4))
+    assert_eq(active.val, 0)
+    assert_eq(reports.length(), cases.length())
   }
 }
