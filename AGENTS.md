@@ -166,7 +166,10 @@ module and version before any release operation.
 - Use released public x/time APIs for equivalent TZif conversion and reject
   ambiguous/nonexistent local times explicitly. Keep timezone file selection,
   POSIX strings and documented legacy compatibility in `core/time_zone`; never
-  import x/internal or assume system local-zone APIs exist on Wasm.
+  import x/internal or assume system local-zone APIs exist on Wasm. Declare the
+  required public API release in core/moon.mod; another workspace module must
+  not supply a newer dependency implicitly. Check standalone core when changing
+  that dependency boundary.
 
 - rg search policy and its concrete matcher adapter are private to `driver`.
   Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms

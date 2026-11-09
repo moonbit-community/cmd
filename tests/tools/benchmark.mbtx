@@ -4,7 +4,7 @@ import {
   "moonbitlang/async@0.22.7/shell",
   "moonbitlang/async@0.22.7/fs",
   "moonbitlang/core/env",
-  "moonbitlang/x@0.5.5/sys",
+  "moonbitlang/x@0.5.7/sys",
 }
 ----
 

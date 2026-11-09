@@ -134,7 +134,7 @@ implementations; complete CLI differential and published routes remain intact.
 Reconsider shared policy only when real consumers require the same stable
 contract, without command-identity branching.
 
-Timezone conversion uses the resolved released `x/time` public TZif loader and
+Timezone conversion uses the declared released `x/time` public TZif loader and
 `ZonedDateTime::from_plain(..., disambiguation=Reject)` for validated equivalent
 inputs. The adapter retains TZ/TZDIR/path I/O and the existing rejection boundary
 for malformed and leap-bearing data. It keeps POSIX strings and compatibility
