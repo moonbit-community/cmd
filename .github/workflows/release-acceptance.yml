@@ -39,12 +39,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: hustcer/setup-moonbit@v1.23
-        with:
-          version: latest
-          core-version: latest
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - uses: ./.github/actions/setup-moonbit
       - name: Toolchain and dependencies
         run: |
           mkdir -p test-reports
