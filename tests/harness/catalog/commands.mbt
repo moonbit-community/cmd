@@ -321,6 +321,11 @@ pub fn commands() -> Array[CommandContract] {
     // Canonical hosts govern transport, credential origins, cookies and NO_PROXY.
     // Cookie Domain normalization and complete jar grammar remain open.
     // Saved domains retain case; matching, identity and overlays fold ASCII case.
+    // Saved Domain dots are not duplicated; newest creation saves first.
+    // File inputs reload per URL/retry; response cookies take precedence.
+    // Expired response records survive until lookup, import cleanup or saving.
+    // Jars save per operand, including fixed Curl header text on stdout.
+    // Completed HTTP bodies precede retry selection; 522/524 are Curl statuses.
     // Custom request fields retain repetition and argument order. Response
     // observers retain all final fields in wire order, separately from storage.
     // Multiple request Content-Length fields reject before request bytes.
@@ -411,7 +416,9 @@ pub fn commands() -> Array[CommandContract] {
     // GMT/signed-digit suffixes are accepted without applying timezone offsets.
     // Floating zero deletes, while nonzero stale replacements retain domain chains.
     // Overflow follows the fixed Linux/amd64 profile; saved digits round via binary64.
-    // Complete pinned ICANN/PRIVATE suffix rules constrain response cookies.
+    // Complete pinned ICANN/PRIVATE rules constrain ASCII response domains/hosts.
+    // Non-ASCII input uses fixed non-NLS Wget's label/byte-length fallback.
+    // Dot-stripped admission does not rewrite the stored Domain key.
     // Exact suffix scope and imported-file admission retain Wget's dialect.
     // Host-only nondefault ports participate in cookie identity and jar reload.
     // Lookup excludes single-label parent chains and hosts above 32 labels.

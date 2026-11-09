@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Repair Wget Domain admission and Curl saved Domain dots, creation order and
+  cookie-file reload/save timing. Preserve HTTP response bodies before Curl
+  retry decisions, with independent request, output and file-state controls.
+  Invalid-byte jar/header handling and full grammar remain explicit work.
+
 - Repair Wget Expires date grammar, short-year mapping, UTC normalization and
   invalid-date ordering with an independent C-locale parser and frozen real
   process controls. Retain Domain/configuration and publication boundaries.

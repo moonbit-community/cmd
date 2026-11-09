@@ -31,6 +31,9 @@ pub fn supports(id : String) -> Bool {
     "network-idna", "network-idna-oracle", "network-wget-cookies", "network-wget-cookies-oracle",
     "network-wget-authentication", "network-wget-authentication-oracle", "network-wget-cookie-expiry",
     "network-wget-cookie-expiry-oracle", "network-wget-cookie-dates", "network-wget-cookie-dates-oracle",
+    "network-curl-cookie-domains", "network-curl-cookie-domains-oracle", "network-wget-cookie-domains",
+    "network-wget-cookie-domains-oracle", "network-curl-cookie-lifecycle", "network-curl-cookie-lifecycle-oracle",
+    "network-curl-http-retry", "network-curl-http-retry-oracle",
   ].contains(id)
 }
 
@@ -44,6 +47,34 @@ pub async fn run(
   oracle_image? : String,
 ) -> Unit {
   match id {
+    "network-curl-cookie-lifecycle" | "network-curl-cookie-lifecycle-oracle" =>
+      network_curl_transfers_scenario(
+        executor,
+        work,
+        corpus="curl-cookie-lifecycle",
+        oracle_image?,
+      )
+    "network-curl-http-retry" | "network-curl-http-retry-oracle" =>
+      network_curl_transfers_scenario(
+        executor,
+        work,
+        corpus="curl-http-retry",
+        oracle_image?,
+      )
+    "network-curl-cookie-domains" | "network-curl-cookie-domains-oracle" =>
+      network_cookie_domains_scenario(
+        executor,
+        work,
+        tool="curl",
+        oracle_image?,
+      )
+    "network-wget-cookie-domains" | "network-wget-cookie-domains-oracle" =>
+      network_cookie_domains_scenario(
+        executor,
+        work,
+        tool="wget",
+        oracle_image?,
+      )
     "network-auth-cookie" | "network-auth-cookie-oracle" =>
       network_cli_scenario(executor, work, oracle_image?)
     "network-transfer-boundaries" | "network-transfer-boundaries-oracle" =>
@@ -79,7 +110,8 @@ pub async fn run(
 
 ///|
 /// These dimensions come from the shared assertions, not from an empty JSON
-/// case's availability contract. Cookie-jar bytes are not compared wholesale.
+/// case's availability contract. The lifecycle and retry corpora compare full
+/// file bytes; older Cookie scenarios compare logical jar rows.
 pub fn observations(id : String) -> Array[String] {
   if !supports(id) {
     return []
@@ -87,7 +119,13 @@ pub fn observations(id : String) -> Array[String] {
   let result = [
     "status", "stdout", "stdout-bytes", "stderr", "stderr-bytes", "content", "file-content",
   ]
-  if id.has_prefix("network-transfer-boundaries") {
+  if id.has_prefix("network-curl-cookie-lifecycle") ||
+    id.has_prefix("network-curl-http-retry") {
+    result.append([
+      "type", "file-type", "request-count", "request-target", "request-host", "request-cookie",
+      "pre-response-file-state", "cookie-effects",
+    ])
+  } else if id.has_prefix("network-transfer-boundaries") {
     result.append([
       "type", "file-type", "request-method", "request-target", "request-body", "request-cookie",
       "request-range", "pre-response-file-state",
@@ -100,7 +138,12 @@ pub fn observations(id : String) -> Array[String] {
     if id.has_prefix("network-wget-authentication") {
       result.append(["request-method", "request-target", "request-body"])
     }
-    if !(@async.platform is Windows) && !id.has_prefix("network-wget-") {
+    if id.contains("cookie-domains") {
+      result.append(["request-target", "request-host", "cookie-row-order"])
+    }
+    if !(@async.platform is Windows) &&
+      !id.has_prefix("network-wget-") &&
+      !id.contains("cookie-domains") {
       result.push("mode")
     }
   }

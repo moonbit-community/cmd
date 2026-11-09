@@ -289,6 +289,14 @@ async fn observe_transfer(
 }
 
 ///|
+fn retryable_http_status(status : Int32) -> Bool {
+  match status {
+    408 | 429 | 500 | 502 | 503 | 504 | 522 | 524 => true
+    _ => false
+  }
+}
+
+///|
 fn can_retry(
   options : Options,
   kind : @netops.TransferErrorKind,
@@ -298,8 +306,8 @@ fn can_retry(
     return kind != @netops.InputFailure && kind != @netops.OutputFailure
   }
   match kind {
-    @netops.HttpStatusFailure | @netops.AuthenticationFailure =>
-      @netops.retryable_failure(kind, status)
+    @netops.HttpStatusFailure =>
+      status.map(retryable_http_status).unwrap_or(false)
     @netops.ConnectionFailure => options.retry_connection_refused
     @netops.TimeoutFailure => true
     _ => false
@@ -485,10 +493,19 @@ async fn transfer_one(
     None => (None, None)
   }
   for ;; {
-    let transient_statuses = if attempt < options.retry_count {
-      [408, 429, 500, 502, 503, 504]
-    } else {
-      []
+    if jar is Some(jar) {
+      for source in options.cookies {
+        if source == "" || source.contains("=") {
+          continue
+        }
+        if source == "-" {
+          jar.load_netscape(@stdio.stdin.read_all().text(), profile=CurlProfile)
+        } else {
+          jar.load(source, profile=CurlProfile) catch {
+            _ => () // Curl treats unreadable cookie inputs as an empty source.
+          }
+        }
+      }
     }
     let proxy_url = proxy_for(options, url)
     let result = try
@@ -519,7 +536,6 @@ async fn transfer_one(
           idle_timeout_ms=options.idle_timeout_ms,
           max_time_ms?=options.max_time_ms,
           fail_on_http_error=options.fail,
-          http_error_statuses=transient_statuses,
           cookie_jar?=jar,
           cookie_data?,
           basic_user?,
@@ -582,7 +598,34 @@ async fn transfer_one(
     } noraise {
       value => value
     }
-    ignore(result)
+    if attempt < options.retry_count && retryable_http_status(result.status) {
+      let next_attempt = attempt + 1
+      let delay = retry_delay(options, next_attempt)
+      let elapsed = @async.now() - retry_started
+      if options.retry_max_time_ms is None ||
+        elapsed + delay.to_int64() <
+        options.retry_max_time_ms.unwrap().to_int64() {
+        attempt = next_attempt
+        if !options.silent {
+          @stdio.stderr.write(
+            "Warning: transient problem: server returned HTTP status \{result.status} \{result.reason}. Retrying...\n",
+          )
+        }
+        transfer_output.reset_for_retry() catch {
+          error => {
+            transfer_output.cleanup_after_failure()
+            if !options.silent || options.show_error {
+              @stdio.stderr.write(
+                "curl: (23) cannot reset output for retry: \{error}\n",
+              )
+            }
+            return 23
+          }
+        }
+        @async.sleep(delay)
+        continue
+      }
+    }
     return 0
   }
 }
@@ -602,28 +645,14 @@ async fn run(options : Options) -> Int32 {
   } else {
     Some(@netops.CookieJar::new())
   }
-  if jar is Some(jar) {
-    for source in options.cookies {
-      if source == "" || source.contains("=") {
-        continue
-      }
-      if source == "-" {
-        jar.load_netscape(@stdio.stdin.read_all().text(), profile=CurlProfile)
-      } else {
-        jar.load(source, profile=CurlProfile) catch {
-          _ => () // curl treats missing cookie input files as an empty jar.
-        }
-      }
-    }
-  }
   let mut status = 0
   for index, url in options.urls {
     status = transfer_one(options, url, index, jar)
-  }
-  if options.cookie_jar is Some(path) && jar is Some(jar) {
-    jar.save(path) catch {
-      // Like curl, cookie-jar persistence does not change transfer status.
-      _ => ()
+    if options.cookie_jar is Some(path) && jar is Some(jar) {
+      jar.save(path, profile=CurlProfile) catch {
+        // Like curl, cookie-jar persistence does not change transfer status.
+        _ => ()
+      }
     }
   }
   status

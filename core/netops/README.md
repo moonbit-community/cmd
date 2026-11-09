@@ -169,7 +169,9 @@ public-suffix database; Curl also enforces its reserved cookie prefixes and
 secure-overlay rules. Curl retains domain spelling in saved files and uses
 ASCII case-insensitive matching, replacement and admission views. URL hosts
 use the pinned Unicode 15 IDNA profile selected by `utf8_hosts`; Cookie Domain
-normalization and remaining jar/configuration dialects remain project work.
+admission follows each command profile; remaining raw-byte jar/configuration
+dialects remain project work. Wget's non-NLS Unicode fallback is distinct from
+ASCII PSL admission, as described in ADR-0005.
 Mapped brackets retain their host identity and do not acquire Curl's HTTP
 loopback exception for Secure cookies. Response events preserve final Set-Cookie
 field-name capitalization, values, attribute order and repeated-field order,
@@ -196,7 +198,13 @@ Curl sends cookies by descending UTF-8 path, domain and name byte length, then
 newer creation first; replacement retains the original creation order. Wget
 uses descending domain and path byte length, then ascending name and value byte
 order. Registered tests distinguish these profiles with subsequent request
-bytes and fixed-clock expiry boundaries. This does not claim byte-for-byte jar
+bytes and fixed-clock expiry boundaries. `CookieJar::save(profile=CurlProfile)`
+uses the fixed Curl header, removes expired Curl entries and preserves reverse
+creation order; other profiles retain their own serialization. The command
+saves after each URL operand and reloads inputs before each CLI attempt, with
+live response cookies protected from file replacement. The 20 lifecycle
+controls compare complete Curl jar bytes for their finite inputs. This does
+not claim byte-for-byte jar
 serialization or complete cross-scope duplicate-cookie compatibility.
 
 Basic credentials are scoped to the initial origin. Callers choose preemptive

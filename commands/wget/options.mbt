@@ -102,7 +102,9 @@ fn usage() -> String {
     #|URL credentials take field-wise precedence; omitted and empty passwords differ.
     #|URL credentials wait for each hop's challenge; global credentials cache by hostname.
     #|HTTP 401 returns 6, including missing or unsupported challenges; other HTTP errors return 8.
-    #|Response cookie domains use the complete pinned ICANN/PRIVATE suffix list.
+    #|ASCII response cookie domains use the complete pinned ICANN/PRIVATE suffix list.
+    #|Non-ASCII domains/hosts use the fixed non-NLS Wget label/byte-length heuristic.
+    #|Admission strips leading dots separately from stored Domain identity.
     #|Rejected domains discard a matching stored cookie after request-path validation.
     #|Cookie request paths use raw prefix matching; missing Path uses the URL directory.
     #|Imported cookie files retain Wget's separate admission policy.

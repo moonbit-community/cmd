@@ -8,7 +8,6 @@ test "response cookies cannot cross complete public suffix boundaries" {
         ("a.test.ck", "test.ck"),
         ("a.kawasaki.jp", "kawasaki.jp"),
         ("forgot.his.name", "his.name"),
-        ("a.公司.cn", "公司.cn"),
         ("a.xn--55qx5d.cn", "xn--55qx5d.cn"),
       ] {
       let jar = CookieJar::new()
@@ -20,6 +19,20 @@ test "response cookies cannot cross complete public suffix boundaries" {
       )
       assert_eq(jar.entries.length(), 0, msg=host + " -> " + domain)
     }
+  }
+}
+
+///|
+test "raw unicode domain admission retains the non-NLS wget fallback" {
+  for profile in [CurlProfile, WgetProfile] {
+    let jar = CookieJar::new()
+    jar.receive(
+      parse_absolute_url("http://a.公司.cn/set"),
+      [Cookie::new("sid", "new", domain="公司.cn", path="/")],
+      1000L,
+      profile~,
+    )
+    assert_eq(jar.entries.length(), if profile == WgetProfile { 1 } else { 0 })
   }
 }
 

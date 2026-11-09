@@ -31,6 +31,7 @@ async fn network_request(
   work : String,
   command : String,
   args : Array[String],
+  evidence_work? : String,
   stdin~ : Bytes = b"",
   oracle_image? : String,
   oracle_args? : Array[String],
@@ -67,12 +68,17 @@ async fn network_request(
   if request_wires is Some(wires) {
     wires.clear()
   }
-  let name = "call-\{@fs.readdir(work).length()}"
-  let prefix = work + "/" + name
+  let evidence = evidence_work.unwrap_or(work)
+  let name = "call-\{@fs.readdir(evidence).length()}"
+  let prefix = evidence + "/" + name
   if transfer_files is Some(observation) {
-    observation.evidence_name = Some(name + ".intent.json")
+    observation.evidence_name = if evidence == work {
+      Some(name + ".intent.json")
+    } else {
+      None
+    }
   }
-  if expected_files is Some(files) {
+  if evidence == work && expected_files is Some(files) {
     assert_false(
       files.any(file => file.0 == name + ".intent.json"),
       msg="product fixture collides with invocation evidence",
@@ -118,7 +124,9 @@ async fn network_request(
   let result = execution.run.output
   // Exclude only the invocation intent owned by this call from product effects.
   let output_names = if expected_files is Some(_) {
-    let names = @fs.readdir(work).filter(file => file != name + ".intent.json")
+    let names = @fs.readdir(work).filter(file => {
+      evidence != work || file != name + ".intent.json"
+    })
     let names = if oracle_image is Some(_) {
       names.filter(name => name != "oracle")
     } else {
