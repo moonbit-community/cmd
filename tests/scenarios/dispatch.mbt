@@ -307,6 +307,52 @@ pub async fn execute_scenario(
         "stream-failure-prefixes" => failure_prefix_scenario(root, work, proof?)
         "ls-link-facets" => link_dereference_scenario(root, work, proof?)
         "network-auth-cookie" => network_cli_scenario(root, work, proof?)
+        "network-curl-cookie-lifecycle" =>
+          network_curl_transfers_scenario(
+            root,
+            work,
+            corpus="curl-cookie-lifecycle",
+            proof?,
+          )
+        "network-curl-cookie-lifecycle-oracle" =>
+          network_curl_transfers_scenario(
+            root,
+            work,
+            corpus="curl-cookie-lifecycle",
+            oracle_image?,
+          )
+        "network-curl-http-retry" =>
+          network_curl_transfers_scenario(
+            root,
+            work,
+            corpus="curl-http-retry",
+            proof?,
+          )
+        "network-curl-http-retry-oracle" =>
+          network_curl_transfers_scenario(
+            root,
+            work,
+            corpus="curl-http-retry",
+            oracle_image?,
+          )
+        "network-curl-cookie-domains" =>
+          network_cookie_domains_scenario(root, work, tool="curl", proof?)
+        "network-curl-cookie-domains-oracle" =>
+          network_cookie_domains_scenario(
+            root,
+            work,
+            tool="curl",
+            oracle_image?,
+          )
+        "network-wget-cookie-domains" =>
+          network_cookie_domains_scenario(root, work, tool="wget", proof?)
+        "network-wget-cookie-domains-oracle" =>
+          network_cookie_domains_scenario(
+            root,
+            work,
+            tool="wget",
+            oracle_image?,
+          )
         "network-idna" => network_idna_scenario(root, work, proof?)
         "network-wget-cookies" =>
           network_wget_cookies_scenario(root, work, proof?)

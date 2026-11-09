@@ -1,0 +1,3017 @@
+{
+  "schema": 1,
+  "case_count": 15,
+  "cases": [
+    {
+      "label": "budget-expired-complete-503-without-fail",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "--retry-max-time",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 1250,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "7472616e7369656e740a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/budget-expired-complete-503-without-fail-oracle/observation.json",
+        "observation_sha256": "dead05783f0361f3b3934db0621cbe7a15099822fad9bd5b3bda5df17d6b7c63",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54902",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "--retry-max-time",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "container": "59ed09f3b3840a3932a8c5db2970714c59e0ada1ed2f7e2d6f41c39692be9dc5",
+          "status": 0,
+          "elapsed_ms": "1447"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 1250,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "fail-suppresses-output-open",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "output",
+          "kind": "directory",
+          "entries": [
+            {
+              "name": "inner-sentinel",
+              "hex": "756e746f75636865642d6469726563746f72790a"
+            }
+          ]
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "output",
+                  "kind": "directory",
+                  "entries": [
+                    {
+                      "name": "inner-sentinel",
+                      "hex": "756e746f75636865642d6469726563746f72790a"
+                    }
+                  ]
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a20360d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a66696e616c0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "output",
+                  "kind": "directory",
+                  "entries": [
+                    {
+                      "name": "inner-sentinel",
+                      "hex": "756e746f75636865642d6469726563746f72790a"
+                    }
+                  ]
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 22,
+          "stdout_hex": "",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "output",
+              "kind": "directory",
+              "entries": [
+                {
+                  "name": "inner-sentinel",
+                  "hex": "756e746f75636865642d6469726563746f72790a"
+                }
+              ]
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/fail-suppresses-output-open-oracle/observation.json",
+        "observation_sha256": "e206e94c48eca759e5a865206a565de41f6b1fc4756571691a09b13558bafc0d",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54840",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "container": "859b83f5f0f290a8c41faa59e36a515172999b946477ff57cce7ac6e7527babc",
+          "status": 22,
+          "elapsed_ms": "1217"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a20360d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a66696e616c0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "file-503-then-final-503",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "output",
+          "hex": "736565642d6578697374696e672d66696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a20353030310d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a78787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878780a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "output",
+                  "hex": "736565642d6578697374696e672d66696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a20360d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a66696e616c0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "output",
+                  "hex": ""
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "output",
+              "hex": "66696e616c0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/file-503-then-final-503-oracle/observation.json",
+        "observation_sha256": "2fa636afa05149c9d9409e03f6ac46d3915b956fa25584a567e411cc6ae9763a",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54782",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "container": "70e40465c7085df653cddbf15171aa29c97f3a856d08f52300f0e0a0965f944f",
+          "status": 0,
+          "elapsed_ms": "1228"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a20353030310d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a78787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878780a",
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a20360d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a66696e616c0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "file-fail-503-then-200",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "output",
+          "hex": "736565642d6578697374696e672d66696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "output",
+                  "hex": "736565642d6578697374696e672d66696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "output",
+                  "hex": "736565642d6578697374696e672d66696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "output",
+              "hex": "6f6b0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/file-fail-503-then-200-oracle/observation.json",
+        "observation_sha256": "f88f3c12beb814d8ddbad16f0f6e833ba21f1d9a2752597bd5494966c49692c5",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54808",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "container": "f49d7b1d801e0d5da4549cef3224b75a42ae438e9fd14a454dc32e0e864104fb",
+          "status": 0,
+          "elapsed_ms": "1223"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "file-truncated-503-retains-prefix",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "output",
+          "hex": "736565642d6578697374696e672d66696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031320d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a706172740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "output",
+                  "hex": "736565642d6578697374696e672d66696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 18,
+          "stdout_hex": "",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "output",
+              "hex": "706172740a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/file-truncated-503-retains-prefix-oracle/observation.json",
+        "observation_sha256": "8b35075f1d31b1f42f966d49eb290611092894672b1b65877aae3a81acd16507",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54865",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "container": "8f0b5030237e74f20957de464c950a1c40b5e2e17c0844bf24ee9b39ab30190c",
+          "status": 18,
+          "elapsed_ms": "166"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031320d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a706172740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "output-failure-precedes-transient-status",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "output",
+          "kind": "directory",
+          "entries": [
+            {
+              "name": "inner-sentinel",
+              "hex": "756e746f75636865642d6469726563746f72790a"
+            }
+          ]
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "output",
+                  "kind": "directory",
+                  "entries": [
+                    {
+                      "name": "inner-sentinel",
+                      "hex": "756e746f75636865642d6469726563746f72790a"
+                    }
+                  ]
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 23,
+          "stdout_hex": "",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "output",
+              "kind": "directory",
+              "entries": [
+                {
+                  "name": "inner-sentinel",
+                  "hex": "756e746f75636865642d6469726563746f72790a"
+                }
+              ]
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/output-failure-precedes-transient-status-oracle/observation.json",
+        "observation_sha256": "456ff4f0e84249724165de4414643778c45f000173cabc5facae9851e7d0a541",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54835",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-o",
+            "output",
+            "http://retry.example/retry"
+          ],
+          "container": "2c648b65ca269d54535c26bae3e0dbcae661f3208250eb26fe6df4b3e2f55200",
+          "status": 23,
+          "elapsed_ms": "150"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-503-then-200",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "7472616e7369656e740a6f6b0a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-503-then-200-oracle/observation.json",
+        "observation_sha256": "0ba0799953ed2e8e82bb3542786197bf76b0b0c16c93b3a6bc240f593ae7c7a7",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54776",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "container": "318a6ca33d6c825ce0718c04a9bb7379953911fbd8486ee82a7bc953fdc579a6",
+          "status": 0,
+          "elapsed_ms": "1226"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-522-then-200",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e31203532322054657374205374617475730d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "7472616e7369656e740a6f6b0a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-522-then-200-oracle/observation.json",
+        "observation_sha256": "5d1477cabedcb84ce741e548fc06be08519d2642f052625c98d40bb9f8535253",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54931",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "container": "8f6a109579b645be0c08972c3e9603f3d936c6467961ab7686d8c1dd9daa1590",
+          "status": 0,
+          "elapsed_ms": "1211"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e31203532322054657374205374617475730d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-524-then-200",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e31203532342054657374205374617475730d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "7472616e7369656e740a6f6b0a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-524-then-200-oracle/observation.json",
+        "observation_sha256": "dfc4e5b2f5d936c75f1055cfe908549965e9775b7ecb57a96a0cebc9b8961f57",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54979",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "container": "597cdb2decc045715881c330595a36256211dab78b63f5243f0bd7c3833a8949",
+          "status": 0,
+          "elapsed_ms": "1221"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e31203532342054657374205374617475730d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-fail-503-then-200",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "6f6b0a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-fail-503-then-200-oracle/observation.json",
+        "observation_sha256": "b0479f61f51c943a430dc7c7157dc545d973f882ddab6307e88438d11d00b555",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54788",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "http://retry.example/retry"
+          ],
+          "container": "b8ea5422f5a995b74b6488dffac7fc01e14ac3ac6499d31c26072964d1c5e279",
+          "status": 0,
+          "elapsed_ms": "1217"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-fail-522-then-200",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e31203532322054657374205374617475730d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "6f6b0a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-fail-522-then-200-oracle/observation.json",
+        "observation_sha256": "de299a83958f319adbb991224586b7d5e536ec405281fcffcf54b1f5ffdb6fbe",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54965",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "http://retry.example/retry"
+          ],
+          "container": "65da6c742b8fa5c3a7eeb43a0b879cd46cd09a30e1e9c43500604d24eb19795e",
+          "status": 0,
+          "elapsed_ms": "1208"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e31203532322054657374205374617475730d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-fail-524-then-200",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e31203532342054657374205374617475730d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "6f6b0a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-fail-524-then-200-oracle/observation.json",
+        "observation_sha256": "deab31b9aeef571748b9e9e4b01375a8d13f69e0f0222312f4274fd2668b710c",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:55005",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "-f",
+            "http://retry.example/retry"
+          ],
+          "container": "f3f7aad8418405e5f965a3d1d2dec09cea3fcf240be3c40d4ad20bfc699ab0ec",
+          "status": 0,
+          "elapsed_ms": "1225"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e31203532342054657374205374617475730d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-final-503-without-fail",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a20360d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a66696e616c0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "7472616e7369656e740a66696e616c0a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-final-503-without-fail-oracle/observation.json",
+        "observation_sha256": "e99920f316abb38f5a489c7c9773aa4dd1b8699cab450a59646ff52ed9bc387c",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54818",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "container": "f41a6b574ef41e4b85f65801a065d4e449fa1d19f68b11b950e1f619bca93e2e",
+          "status": 0,
+          "elapsed_ms": "1218"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031300d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7472616e7369656e740a",
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a20360d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a66696e616c0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-truncated-503-no-default-retry",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031320d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a706172740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 18,
+          "stdout_hex": "706172740a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-truncated-503-no-default-retry-oracle/observation.json",
+        "observation_sha256": "5921c1465ee85e575fe5aad28da8ef6d6674491ddb2d06ef3fa1a0bc8aac20af",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54813",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "http://retry.example/retry"
+          ],
+          "container": "c9da3862e0b6a5ab7d7afef292ac8c78b6b06a74609d376c24f74d94a30790a7",
+          "status": 18,
+          "elapsed_ms": "159"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031320d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a706172740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    },
+    {
+      "label": "stdout-truncated-503-retry-all-errors",
+      "group": "retry",
+      "command": "curl",
+      "locale": "C.UTF-8",
+      "lc_ctype": "C",
+      "lang": "C",
+      "tz": "UTC",
+      "initial_files": [
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e6765640a"
+        }
+      ],
+      "phases": [
+        {
+          "oracle_args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "--retry-all-errors",
+            "http://retry.example/retry"
+          ],
+          "stdin_hex": "",
+          "exchanges": [
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031320d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a706172740a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            },
+            {
+              "request_line": "GET http://retry.example/retry HTTP/1.1",
+              "host_fields": [
+                "Host: retry.example"
+              ],
+              "cookie": "",
+              "cookie_fields": [],
+              "request_fields": [
+                "Host: retry.example",
+                "User-Agent: curl/8.22.0",
+                "Accept: */*",
+                "Proxy-Connection: Keep-Alive"
+              ],
+              "request_lines_hex": [
+                "47455420687474703a2f2f72657472792e6578616d706c652f726574727920485454502f312e31",
+                "486f73743a2072657472792e6578616d706c65",
+                "557365722d4167656e743a206375726c2f382e32322e30",
+                "4163636570743a202a2f2a",
+                "50726f78792d436f6e6e656374696f6e3a204b6565702d416c697665"
+              ],
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a",
+              "delay_ms": 0,
+              "files_before_response": [
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e6765640a"
+                }
+              ],
+              "files_before_response_complete": true
+            }
+          ],
+          "status": 0,
+          "stdout_hex": "706172740a6f6b0a",
+          "stderr_hex": "",
+          "files_after": [
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e6765640a"
+            }
+          ],
+          "files_after_complete": true,
+          "files_absent_after": []
+        }
+      ],
+      "skipped_phases": [],
+      "source": {
+        "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+        "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+        "observation_path": "/tmp/cmd-curl-http-retry-actual-02/stdout-truncated-503-retry-all-errors-oracle/observation.json",
+        "observation_sha256": "0427ffce80467c1f17675813c5f19b63faa78b216bee72bf28842124cf45ed1c",
+        "probe_path": "/tmp/cmd-curl-http-retry-actual-02/probe.mbtx",
+        "probe_sha256": "f6663fe3976e14e96f0907e8de71bd7624913d80c810333b338108f97c052356",
+        "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+        "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+        "profile": {
+          "schema": 1,
+          "id": "local-wget-cookie-diagnostic-20261109",
+          "profile_version": 1,
+          "image_digest": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+          "parent_image_digest": "sha256:237cba3f35216a3a37774e33a2c28e4f6cc5fcaf1f974b9adbe26f53df37ca81",
+          "docker_context": "colima-cmd-oracle",
+          "recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Pinned.Dockerfile",
+          "dockerfile_sha256": "921a9ff2fb493a79f0d610d1c45e21f004968409e122b9a18b32e62085670acd",
+          "observer_recipe_path": "/tmp/cmd-wget-diagnostic-profile-01/Observer.Dockerfile",
+          "observer_recipe_sha256": "f150265cbb25f07993fd1ab96b8d4e8edb5001f813b30bfb1100e43d3795e30c",
+          "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+          "versions_sha256": "ef9069d774e6a786151c4c074ea011b4d49b99f424b4019d9a41798eafe0c0a9",
+          "versions_script_path": "/tmp/cmd-wget-diagnostic-profile-01/versions-script.txt",
+          "versions_script_sha256": "819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7",
+          "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+          "retained_network_manifest_sha256": "878e99547224c222c1c3b5dd7d7981f7066d1fe44c73360993fc61df589effad",
+          "sources": [
+            {
+              "project": "WGET",
+              "version": "1.25.0",
+              "sha256": "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+              "binding": "immutable image build history retains checksum-verified source build; current binary independently matches retained pre-overlay manifest"
+            }
+          ],
+          "scope": "Local immutable diagnostic oracle only. Not the repository CI recipe or a published acceptance profile. Observer layer adds psl/strace and current pinned PSL; retained curl/wget/libpsl/libidn2/libunistring binaries checked."
+        },
+        "oracle_process": {
+          "program": "docker",
+          "argv": [
+            "create",
+            "-i",
+            "--platform=linux/amd64",
+            "--network=host",
+            "-w",
+            "/work",
+            "-e",
+            "LC_ALL=C.UTF-8",
+            "-e",
+            "LC_CTYPE=C",
+            "-e",
+            "LANG=C",
+            "-e",
+            "TZ=UTC",
+            "-e",
+            "http_proxy=http://192.168.5.2:54871",
+            "-e",
+            "HTTP_PROXY=",
+            "-e",
+            "https_proxy=",
+            "-e",
+            "HTTPS_PROXY=",
+            "-e",
+            "all_proxy=",
+            "-e",
+            "ALL_PROXY=",
+            "-e",
+            "NO_PROXY=",
+            "-e",
+            "no_proxy=",
+            "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+            "curl",
+            "-q",
+            "-s",
+            "--max-time",
+            "5",
+            "--retry",
+            "1",
+            "--retry-delay",
+            "1",
+            "--retry-all-errors",
+            "http://retry.example/retry"
+          ],
+          "container": "5d01b3ea8bb5922233a49b3586d57918b7a43ba7bd619d0665c03ffc544d43c5",
+          "status": 0,
+          "elapsed_ms": "1230"
+        },
+        "supplied_response_plan_hex": [
+          "485454502f312e3120353033205365727669636520556e617661696c61626c650d0a436f6e74656e742d4c656e6774683a2031320d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a706172740a",
+          "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20330d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a6f6b0a"
+        ],
+        "configured_first_delay_ms": 0,
+        "stdin_binding": "Empty binary stdin is explicit in the hash-verified executed probe.",
+        "observer_files": []
+      }
+    }
+  ],
+  "sources": [
+    {
+      "group": "retry",
+      "receipt_path": "/tmp/cmd-curl-http-retry-actual-02/receipt.json",
+      "receipt_sha256": "c9f688491f1b7daf7ef950e8461bfc8220cebc0f67b0e05ae3de9e68c84bb1cf",
+      "original_frozen_path": "/tmp/cmd-curl-http-retry-oracle-only-15-01.json",
+      "original_frozen_sha256": "179d0c33d9435479af5d27ff3f318e9fc98f9331963420088ec680c4300b0da5",
+      "count": 15
+    }
+  ],
+  "scope": "Oracle-only mechanical export of all 15 actual Curl retry records. The reload20 phase schema is extended with per-exchange delay_ms, complete files_before_response and preserved directory entries. Actual argv retains -q and every public option; stdin is bound to the exact executed probe. Each exchange is an actual oracle request and response, with original request-line/Host/Cookie and raw header bytes. Replays must reject any additional request or missing expected request. The unused supplied response suffix remains source evidence, never an invented exchange. Complete before-response and terminal file inventories include directory sentinels; immediate after-write snapshots remain only in the original raw report because they are not atomic client-flush observations. No candidate-derived expected value, new artifact acceptance or complete retry grammar claim."
+}

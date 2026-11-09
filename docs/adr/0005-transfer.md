@@ -13,6 +13,12 @@ framing, request payloads, timeouts and write errors. The public default is
 StrictProfile; curl and wget explicitly select their distinct policies.
 Do not delegate to host tools or add responsibility-free forwarding layers.
 
+The existing proxy connection emits a destination authority in the CONNECT
+request line but the proxy endpoint in its Host field. Cookie Domain controls
+bind that behavior explicitly without claiming upstream CONNECT parity. A
+separate real proxy/HTTPS comparison must establish target authority, Host,
+authentication, framing and failure effects before that transport gap closes.
+
 ## Wire and failure contracts
 
 - Complete origin request headers, payload and framing before reading the
@@ -105,6 +111,57 @@ selection, replacement and insecure overlay protection compare ASCII case
 insensitively. Linux raw jar observations exposed the earlier lowercase rewrite;
 case-preservation and mixed-case replacement/overlay regressions retain it.
 Strict IP spelling is checked before using the released public address parser.
+
+Wget's ASCII admission view folds case and strips all leading dots, while its
+stored and transmitted identity still strips only one. Exact public suffixes
+remain eligible under that view. The fixed Linux Wget build has NLS disabled;
+it does not call `setlocale(LC_ALL)`, so libpsl's non-ASCII locale conversion
+fails and Wget uses its older domain heuristic. That fallback folds ASCII only,
+requires an exact match or a boundary-aligned parent, and uses UTF-8 byte lengths
+for the two-label unknown-TLD rule. Applying Unicode normalization because
+standalone libpsl supports it was rejected: actual Wget requests contradict it.
+Changing this profile requires a deliberate oracle/build decision and fresh
+raw-host, explicit UTF-8, public/private-suffix and saved/reloaded controls.
+
+Curl saves logical rows in descending creation order, preserving creation when
+replacing a key, and adds a Domain dot only when the stored spelling lacks it.
+Its private response-origin marker protects a live response cookie from file
+imports. Files reload before each URL operand and accepted CLI retry; redirects
+inside a transfer do not reload them. Stdin is consumed again without replaying
+prior bytes. Imports remove expired records after that file is read. The
+frozen Domain corpus retains 255 actual command records and both jar orders;
+the original 16 invalid UTF-8/NUL records remain separate unresolved byte-level
+work. This finite repair does not establish complete jar grammar or whole-file
+parity. Those limits require independent byte-preserving HTTP, jar and effect
+ordering observations before being lifted.
+
+An expired Curl response cookie remains marked as live until request selection,
+the end of a file import, or jar saving removes it. This preserves the
+distinction between retrying one handle and completing an operand: `-c` saves
+after every URL, while retry attempts do not save. Without that save, the
+expired live record can reject an imported replacement before file-load cleanup.
+The fixed Curl header is emitted even for an empty jar, including every `-c -`
+stdout save. Same input/output jar paths therefore affect the next operand.
+The 20 frozen `curl-cookie-lifecycle.json` controls retain 38 actual process
+phases, complete per-process file inventories and request-time mutation/save
+observations. The original upstream expectations remain independent of the
+candidate; supplemental observations only fill previously unobserved file
+inventories and must first agree with the original fields.
+
+Curl decides successful HTTP retries in the command layer after complete body
+delivery. The shared transfer engine keeps its existing failure ordering.
+Turning a successful 503 into an early synthetic transfer error was rejected:
+it discarded bodies and changed status when the retry budget rejected another
+attempt. Real read/write failures take precedence, `-f` remains an early HTTP
+failure, and unsuccessful retry selection preserves status 0 without `-f`.
+The 15 frozen `curl-http-retry.json` controls verify complete/truncated bodies,
+stdout and regular-file behavior, directory-open errors, `-f`, 522/524 and
+exhausted retry budgets. Each records actual HTTP requests and complete file
+states before responses and after the process. Output-open controls do not
+establish disk-full/flush-error behavior; broader Retry-After and delay policy
+remain separate work.
+The Curl status set includes 522/524 without broadening Wget's default policy.
+These finite controls do not establish every Retry-After or delay-budget rule.
 
 `network-cookie-suffix` independently observes real proxy requests, unchanged
 input files and all logical Curl saved rows. It has its own bounded execution

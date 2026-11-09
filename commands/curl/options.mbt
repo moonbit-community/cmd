@@ -100,6 +100,11 @@ fn usage() -> String {
     #|Secure cookie contexts are HTTPS or exact localhost/127.0.0.1/::1.
     #|Insecure origins cannot overlay live Secure cookies.
     #|Cookie domains preserve ASCII case and use the pinned ICANN/PRIVATE suffix list.
+    #|Cookie jars save newer creation first without adding a second leading Domain dot.
+    #|Cookie files reload before each URL or retry; response cookies take precedence.
+    #|-c saves after each URL, including fixed-header jar output for -c -.
+    #|Without -f, HTTP retry bodies reach output before a retry is selected.
+    #|Retryable HTTP statuses include 408, 429, 500, 502, 503, 504, 522 and 524.
     #|UTF-8 environment spellings select pinned Unicode 15 URL-host IDNA.
     #|Other input encodings and Cookie Domain normalization remain unsupported.
     #|An empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.

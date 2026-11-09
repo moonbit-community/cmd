@@ -36,6 +36,38 @@ fn workspace_network_executor(
 }
 
 ///|
+async fn network_curl_transfers_scenario(
+  root : String,
+  work : String,
+  corpus~ : String,
+  oracle_image? : String,
+  proof? : @harness.ScenarioProof,
+) -> Unit {
+  @network.run(
+    "network-" + corpus,
+    workspace_network_executor(root, proof?),
+    work,
+    oracle_image?,
+  )
+}
+
+///|
+async fn network_cookie_domains_scenario(
+  root : String,
+  work : String,
+  tool~ : String,
+  oracle_image? : String,
+  proof? : @harness.ScenarioProof,
+) -> Unit {
+  @network.run(
+    "network-" + tool + "-cookie-domains",
+    workspace_network_executor(root, proof?),
+    work,
+    oracle_image?,
+  )
+}
+
+///|
 async fn network_wget_cookies_scenario(
   root : String,
   work : String,

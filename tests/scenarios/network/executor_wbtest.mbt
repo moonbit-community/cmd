@@ -153,6 +153,61 @@ async test "invocation intent does not appear among product-created files" {
 }
 
 ///|
+async test "external invocation evidence never hides a same-named product file" {
+  for expected_file in [true, false] {
+    let root = @fs.tmpdir(prefix="mooncmd-external-evidence-")
+    defer @fs.rmdir(root, recursive=true)
+    let work = root + "/work"
+    let evidence = root + "/evidence"
+    @fs.mkdir(work)
+    @fs.mkdir(evidence)
+    let executor : Executor = {
+      proof: None,
+      invoke: _ => {
+        @fs.write_file(work + "/call-0.intent.json", b"product")
+        {
+          run: {
+            output: { status: 0, stdout: b"", stderr: b"", },
+            timed_out: false,
+            cleanup_error: None,
+          },
+          source_version: "injected-test",
+          program: "injected-test",
+          args: [],
+          infrastructure_error: None,
+          retain_identity: true,
+        }
+      },
+    }
+    let accepted = try {
+      ignore(
+        network_request(
+          executor,
+          work,
+          "curl",
+          ["url"],
+          evidence_work=evidence,
+          expected_files=if expected_file {
+            [("call-0.intent.json", Some("product"))]
+          } else {
+            []
+          },
+        ),
+      )
+      true
+    } catch {
+      _ => false
+    }
+    assert_eq(accepted, expected_file)
+    assert_eq(
+      @json.parse(@fs.read_file(evidence + "/call-0.files.json").text()),
+      Json(["call-0.intent.json"]),
+    )
+    assert_eq(@fs.read_file(work + "/call-0.intent.json").binary(), b"product")
+  }
+}
+
+///|
 async test "before-response snapshots exclude exactly the current invocation intent" {
   let work = @fs.tmpdir(prefix="mooncmd-network-before-response-")
   defer (@fs.rmdir(work, recursive=true) catch { _ => () })

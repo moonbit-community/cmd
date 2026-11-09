@@ -1655,9 +1655,10 @@
         "network-cookie-suffix",
         "network-wget-cookies",
         "network-wget-cookie-expiry",
-        "network-wget-cookie-dates"
+        "network-wget-cookie-dates",
+        "network-wget-cookie-domains"
       ],
-      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Finite Wget dialect controls additionally verify nondefault-port isolation and key deletion, exact imported flags/comments, first domain-chain spelling, quoted attributes and sticky deletion, with actual raw requests and second-process saved-jar reloads. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution. Separate frozen Wget date controls retain actual TZ, both processes' Cookie requests, exact rows and row order across four date layouts, calendar normalization and no-session saving. Definitions alone do not establish execution.",
+      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Finite Wget dialect controls additionally verify nondefault-port isolation and key deletion, exact imported flags/comments, first domain-chain spelling, quoted attributes and sticky deletion, with actual raw requests and second-process saved-jar reloads. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution. Separate frozen Wget date controls retain actual TZ, both processes' Cookie requests, exact rows and row order across four date layouts, calendar normalization and no-session saving. Definitions alone do not establish execution. Separate frozen Domain and jar-order controls preserve both process observations, original logical row order and actual URL encoding/Host values. Invalid UTF-8/NUL records remain explicit separate debt. Definitions alone are not execution evidence.",
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "scenario_bindings": [
@@ -1718,6 +1719,14 @@
             "wget-cookie-date/rfc1123",
             "wget-cookie-date/epoch-zero",
             "wget-cookie-date/ambient-zone-ignored"
+          ]
+        },
+        {
+          "case_id": "network-wget-cookie-domains",
+          "assertions": [
+            "cookie-domain/domain/wget/import-two-leading-dots",
+            "cookie-domain/company-ascii/wget/company-ulabel-parent",
+            "cookie-domain/company-utf8/wget/company-ulabel-parent"
           ]
         }
       ]
@@ -1889,7 +1898,9 @@
       "disposition": "reviewed-definition",
       "case_ids": [
         "network-auth-cookie",
-        "network-cookie-suffix"
+        "network-cookie-suffix",
+        "network-curl-cookie-domains",
+        "network-curl-cookie-lifecycle"
       ],
       "scenario_bindings": [
         {
@@ -1925,9 +1936,42 @@
             "cookie-suffix/curl-trailing-dot",
             "cookie-suffix/curl-current-private"
           ]
+        },
+        {
+          "case_id": "network-curl-cookie-domains",
+          "assertions": [
+            "cookie-domain/domain/curl/response-two-leading-dots",
+            "cookie-domain/curl-order/curl/curl-delete-oldest-then-recreate",
+            "cookie-domain/company-utf8/curl/company-ulabel-parent"
+          ]
+        },
+        {
+          "case_id": "network-curl-cookie-lifecycle",
+          "assertions": [
+            "curl-cookie-lifecycle/operand-delete",
+            "curl-cookie-lifecycle/operand-live",
+            "curl-cookie-lifecycle/operand-delete-create-live",
+            "curl-cookie-lifecycle/operand-multi-source-order",
+            "curl-cookie-lifecycle/operand-multi-live",
+            "curl-cookie-lifecycle/operand-stdin-delete",
+            "curl-cookie-lifecycle/operand-mutate-import",
+            "curl-cookie-lifecycle/operand-mutate-live",
+            "curl-cookie-lifecycle/redirect-delete",
+            "curl-cookie-lifecycle/redirect-mutate-import",
+            "curl-cookie-lifecycle/redirect-live",
+            "curl-cookie-lifecycle/retry-delete",
+            "curl-cookie-lifecycle/retry-mutate-import",
+            "curl-cookie-lifecycle/retry-live",
+            "curl-cookie-lifecycle/redirect-then-operand-delete",
+            "curl-cookie-lifecycle/retry-then-operand-delete",
+            "curl-cookie-lifecycle/operand-no-save-delete",
+            "curl-cookie-lifecycle/operand-observe-save-delete",
+            "curl-cookie-lifecycle/operand-same-file-delete",
+            "curl-cookie-lifecycle/operand-stdout-save-delete"
+          ]
         }
       ],
-      "activation": "Explicit and repeated-b cookies retain exact reflected values and origin boundaries. Finite security cases observe exact redirect cookies, all logical saved rows and request counts for invalid/valid prefixes, exact IP Domain scope, nested default paths, nonsecure-origin rejection, protected insecure replacement/deletion and the loopback exception. Full cookie grammar remains outside this scope. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records."
+      "activation": "Explicit and repeated-b cookies retain exact reflected values and origin boundaries. Finite security cases observe exact redirect cookies, all logical saved rows and request counts for invalid/valid prefixes, exact IP Domain scope, nested default paths, nonsecure-origin rejection, protected insecure replacement/deletion and the loopback exception. Full cookie grammar remains outside this scope. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Separate frozen Domain and jar-order controls preserve both process observations, original logical row order and actual URL encoding/Host values. Invalid UTF-8/NUL records remain explicit separate debt. Definitions alone are not execution evidence. Additional immutable-oracle transfer controls check exact body/status, actual request sequence, per-response observations and complete per-process file states. Definitions do not establish execution acceptance or complete retry grammar."
     },
     {
       "command": "curl",
@@ -1961,7 +2005,9 @@
       "disposition": "reviewed-definition",
       "case_ids": [
         "network-auth-cookie",
-        "network-cookie-suffix"
+        "network-cookie-suffix",
+        "network-curl-cookie-domains",
+        "network-curl-cookie-lifecycle"
       ],
       "scenario_bindings": [
         {
@@ -1990,9 +2036,43 @@
             "cookie-suffix/curl-exact-same",
             "cookie-suffix/curl-invalid-deletion"
           ]
+        },
+        {
+          "case_id": "network-curl-cookie-domains",
+          "assertions": [
+            "cookie-domain/domain/curl/import-two-leading-dots",
+            "cookie-domain/curl-order/curl/curl-create-equal-quality",
+            "cookie-domain/curl-order/curl/curl-replace-oldest-keeps-age",
+            "cookie-domain/curl-order/curl/curl-delete-oldest-then-recreate"
+          ]
+        },
+        {
+          "case_id": "network-curl-cookie-lifecycle",
+          "assertions": [
+            "curl-cookie-lifecycle/operand-delete",
+            "curl-cookie-lifecycle/operand-live",
+            "curl-cookie-lifecycle/operand-delete-create-live",
+            "curl-cookie-lifecycle/operand-multi-source-order",
+            "curl-cookie-lifecycle/operand-multi-live",
+            "curl-cookie-lifecycle/operand-stdin-delete",
+            "curl-cookie-lifecycle/operand-mutate-import",
+            "curl-cookie-lifecycle/operand-mutate-live",
+            "curl-cookie-lifecycle/redirect-delete",
+            "curl-cookie-lifecycle/redirect-mutate-import",
+            "curl-cookie-lifecycle/redirect-live",
+            "curl-cookie-lifecycle/retry-delete",
+            "curl-cookie-lifecycle/retry-mutate-import",
+            "curl-cookie-lifecycle/retry-live",
+            "curl-cookie-lifecycle/redirect-then-operand-delete",
+            "curl-cookie-lifecycle/retry-then-operand-delete",
+            "curl-cookie-lifecycle/operand-no-save-delete",
+            "curl-cookie-lifecycle/operand-observe-save-delete",
+            "curl-cookie-lifecycle/operand-same-file-delete",
+            "curl-cookie-lifecycle/operand-stdout-save-delete"
+          ]
         }
       ],
-      "activation": "Actual save/load and missing-parent effects remain required. New jar imports validate prefixes after path normalization, including stdin; host-only/domain identities coexist and host-only deletion preserves the domain record. Exact redirect output, request counts, unchanged input jars and complete logical output rows qualify these finite inputs. Full jar grammar, file headers/order and mode policy remain separate. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records."
+      "activation": "Actual save/load and missing-parent effects remain required. New jar imports validate prefixes after path normalization, including stdin; host-only/domain identities coexist and host-only deletion preserves the domain record. Exact redirect output, request counts, unchanged input jars and complete logical output rows qualify these finite inputs. Full jar grammar, file headers/order and mode policy remain separate. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Separate frozen Domain and jar-order controls preserve both process observations, original logical row order and actual URL encoding/Host values. Invalid UTF-8/NUL records remain explicit separate debt. Definitions alone are not execution evidence. Additional immutable-oracle transfer controls check exact body/status, actual request sequence, per-response observations and complete per-process file states. Definitions do not establish execution acceptance or complete retry grammar."
     },
     {
       "command": "wget",
@@ -2181,7 +2261,8 @@
       "case_ids": [
         "network-auth-cookie",
         "network-wget-cookie-expiry",
-        "network-wget-cookie-dates"
+        "network-wget-cookie-dates",
+        "network-wget-cookie-domains"
       ],
       "scenario_bindings": [
         {
@@ -2210,9 +2291,16 @@
             "wget-cookie-date/netscape",
             "wget-cookie-date/feb30"
           ]
+        },
+        {
+          "case_id": "network-wget-cookie-domains",
+          "assertions": [
+            "cookie-domain/domain/wget/response-public-exact-upper",
+            "cookie-domain/domain/wget/response-two-leading-dots"
+          ]
         }
       ],
-      "activation": "--save-cookies writes the independently specified session-cookie property when requested, actual reloading sends it, and a missing parent creates no file. Whole-jar formatting and mode remain separate. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution. Separate frozen Wget date controls retain actual TZ, both processes' Cookie requests, exact rows and row order across four date layouts, calendar normalization and no-session saving. Definitions alone do not establish execution."
+      "activation": "--save-cookies writes the independently specified session-cookie property when requested, actual reloading sends it, and a missing parent creates no file. Whole-jar formatting and mode remain separate. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution. Separate frozen Wget date controls retain actual TZ, both processes' Cookie requests, exact rows and row order across four date layouts, calendar normalization and no-session saving. Definitions alone do not establish execution. Separate frozen Domain and jar-order controls preserve both process observations, original logical row order and actual URL encoding/Host values. Invalid UTF-8/NUL records remain explicit separate debt. Definitions alone are not execution evidence."
     },
     {
       "command": "wget",
@@ -2222,7 +2310,8 @@
       "case_ids": [
         "network-auth-cookie",
         "network-wget-cookie-expiry",
-        "network-wget-cookie-dates"
+        "network-wget-cookie-dates",
+        "network-wget-cookie-domains"
       ],
       "scenario_bindings": [
         {
@@ -2250,9 +2339,16 @@
             "wget-cookie-date/extra-future-without-keep",
             "wget-cookie-date/extra-empty-without-keep"
           ]
+        },
+        {
+          "case_id": "network-wget-cookie-domains",
+          "assertions": [
+            "cookie-domain/company-ascii/wget/company-ulabel-parent",
+            "cookie-domain/domain/wget/response-public-exact-upper"
+          ]
         }
       ],
-      "activation": "Saving with --keep-session-cookies includes the actual sid/fixture session record; saving without it excludes that property. Only this same-server session persistence contrast is attested. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution. Separate frozen Wget date controls retain actual TZ, both processes' Cookie requests, exact rows and row order across four date layouts, calendar normalization and no-session saving. Definitions alone do not establish execution."
+      "activation": "Saving with --keep-session-cookies includes the actual sid/fixture session record; saving without it excludes that property. Only this same-server session persistence contrast is attested. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution. Separate frozen Wget date controls retain actual TZ, both processes' Cookie requests, exact rows and row order across four date layouts, calendar normalization and no-session saving. Definitions alone do not establish execution. Separate frozen Domain and jar-order controls preserve both process observations, original logical row order and actual URL encoding/Host values. Invalid UTF-8/NUL records remain explicit separate debt. Definitions alone are not execution evidence."
     },
     {
       "command": "curl",
@@ -2283,7 +2379,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-transfer-boundaries"
+        "network-transfer-boundaries",
+        "network-curl-http-retry"
       ],
       "scenario_bindings": [
         {
@@ -2296,9 +2393,29 @@
             "transfer/curl-retry-all-stdout/ranges",
             "transfer/curl-retry-all-stdout/methods"
           ]
+        },
+        {
+          "case_id": "network-curl-http-retry",
+          "assertions": [
+            "curl-http-retry/budget-expired-complete-503-without-fail",
+            "curl-http-retry/fail-suppresses-output-open",
+            "curl-http-retry/file-503-then-final-503",
+            "curl-http-retry/file-fail-503-then-200",
+            "curl-http-retry/file-truncated-503-retains-prefix",
+            "curl-http-retry/output-failure-precedes-transient-status",
+            "curl-http-retry/stdout-503-then-200",
+            "curl-http-retry/stdout-522-then-200",
+            "curl-http-retry/stdout-524-then-200",
+            "curl-http-retry/stdout-fail-503-then-200",
+            "curl-http-retry/stdout-fail-522-then-200",
+            "curl-http-retry/stdout-fail-524-then-200",
+            "curl-http-retry/stdout-final-503-without-fail",
+            "curl-http-retry/stdout-truncated-503-no-default-retry",
+            "curl-http-retry/stdout-truncated-503-retry-all-errors"
+          ]
         }
       ],
-      "activation": "For an incomplete fixed-length response, --retry 2 alone makes one GET and retains hello/status18; adding --retry-all-errors produces exactly three GETs and hellohellohello/status18. This is a bounded attempt/output facet, with no numerical delay, retry budget clock or general transient-error claim."
+      "activation": "For an incomplete fixed-length response, --retry 2 alone makes one GET and retains hello/status18; adding --retry-all-errors produces exactly three GETs and hellohellohello/status18. This is a bounded attempt/output facet, with no numerical delay, retry budget clock or general transient-error claim. Additional immutable-oracle transfer controls check exact body/status, actual request sequence, per-response observations and complete per-process file states. Definitions do not establish execution acceptance or complete retry grammar."
     },
     {
       "command": "curl",
@@ -2306,7 +2423,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-transfer-boundaries"
+        "network-transfer-boundaries",
+        "network-curl-http-retry"
       ],
       "scenario_bindings": [
         {
@@ -2319,9 +2437,29 @@
             "transfer/curl-retry-all-stdout/ranges",
             "transfer/curl-retry-all-stdout/methods"
           ]
+        },
+        {
+          "case_id": "network-curl-http-retry",
+          "assertions": [
+            "curl-http-retry/budget-expired-complete-503-without-fail",
+            "curl-http-retry/fail-suppresses-output-open",
+            "curl-http-retry/file-503-then-final-503",
+            "curl-http-retry/file-fail-503-then-200",
+            "curl-http-retry/file-truncated-503-retains-prefix",
+            "curl-http-retry/output-failure-precedes-transient-status",
+            "curl-http-retry/stdout-503-then-200",
+            "curl-http-retry/stdout-522-then-200",
+            "curl-http-retry/stdout-524-then-200",
+            "curl-http-retry/stdout-fail-503-then-200",
+            "curl-http-retry/stdout-fail-522-then-200",
+            "curl-http-retry/stdout-fail-524-then-200",
+            "curl-http-retry/stdout-final-503-without-fail",
+            "curl-http-retry/stdout-truncated-503-no-default-retry",
+            "curl-http-retry/stdout-truncated-503-retry-all-errors"
+          ]
         }
       ],
-      "activation": "An incomplete fixed-length response is not retried by --retry 2 alone but becomes three exact GET attempts with --retry-all-errors; exact retained stdout changes from hello to hellohellohello while final status18 remains. Only this framing-failure retry contrast is proved."
+      "activation": "An incomplete fixed-length response is not retried by --retry 2 alone but becomes three exact GET attempts with --retry-all-errors; exact retained stdout changes from hello to hellohellohello while final status18 remains. Only this framing-failure retry contrast is proved. Additional immutable-oracle transfer controls check exact body/status, actual request sequence, per-response observations and complete per-process file states. Definitions do not establish execution acceptance or complete retry grammar."
     },
     {
       "command": "curl",
@@ -2329,7 +2467,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-transfer-boundaries"
+        "network-transfer-boundaries",
+        "network-curl-http-retry"
       ],
       "scenario_bindings": [
         {
@@ -2342,9 +2481,29 @@
             "transfer/curl-retry-all-stdout/response",
             "transfer/curl-retry-all-stdout/ranges"
           ]
+        },
+        {
+          "case_id": "network-curl-http-retry",
+          "assertions": [
+            "curl-http-retry/budget-expired-complete-503-without-fail",
+            "curl-http-retry/fail-suppresses-output-open",
+            "curl-http-retry/file-503-then-final-503",
+            "curl-http-retry/file-fail-503-then-200",
+            "curl-http-retry/file-truncated-503-retains-prefix",
+            "curl-http-retry/output-failure-precedes-transient-status",
+            "curl-http-retry/stdout-503-then-200",
+            "curl-http-retry/stdout-522-then-200",
+            "curl-http-retry/stdout-524-then-200",
+            "curl-http-retry/stdout-fail-503-then-200",
+            "curl-http-retry/stdout-fail-522-then-200",
+            "curl-http-retry/stdout-fail-524-then-200",
+            "curl-http-retry/stdout-final-503-without-fail",
+            "curl-http-retry/stdout-truncated-503-no-default-retry",
+            "curl-http-retry/stdout-truncated-503-retry-all-errors"
+          ]
         }
       ],
-      "activation": "Under three incomplete fixed-length attempts, -o partial.bin leaves one regular file containing exactly hello with empty stdout/status18; the stdout variant emits hellohellohello. This proves named output and nonduplicated retained file prefix for this fixture; existing-file, device failure and general truncation matrices remain separate."
+      "activation": "Under three incomplete fixed-length attempts, -o partial.bin leaves one regular file containing exactly hello with empty stdout/status18; the stdout variant emits hellohellohello. This proves named output and nonduplicated retained file prefix for this fixture; existing-file, device failure and general truncation matrices remain separate. Additional immutable-oracle transfer controls check exact body/status, actual request sequence, per-response observations and complete per-process file states. Definitions do not establish execution acceptance or complete retry grammar."
     },
     {
       "command": "curl",
@@ -2427,7 +2586,8 @@
       "kind": "supported-option",
       "disposition": "reviewed-definition",
       "case_ids": [
-        "network-transfer-boundaries"
+        "network-transfer-boundaries",
+        "network-curl-http-retry"
       ],
       "scenario_bindings": [
         {
@@ -2444,9 +2604,29 @@
             "transfer/curl-cd-status-404-body-complete-fail-true/files",
             "transfer/curl-cd-status-404-body-complete-fail-true/before-response"
           ]
+        },
+        {
+          "case_id": "network-curl-http-retry",
+          "assertions": [
+            "curl-http-retry/budget-expired-complete-503-without-fail",
+            "curl-http-retry/fail-suppresses-output-open",
+            "curl-http-retry/file-503-then-final-503",
+            "curl-http-retry/file-fail-503-then-200",
+            "curl-http-retry/file-truncated-503-retains-prefix",
+            "curl-http-retry/output-failure-precedes-transient-status",
+            "curl-http-retry/stdout-503-then-200",
+            "curl-http-retry/stdout-522-then-200",
+            "curl-http-retry/stdout-524-then-200",
+            "curl-http-retry/stdout-fail-503-then-200",
+            "curl-http-retry/stdout-fail-522-then-200",
+            "curl-http-retry/stdout-fail-524-then-200",
+            "curl-http-retry/stdout-final-503-without-fail",
+            "curl-http-retry/stdout-truncated-503-no-default-retry",
+            "curl-http-retry/stdout-truncated-503-retry-all-errors"
+          ]
         }
       ],
-      "activation": "For the same complete HTTP404 response under -s --retry 0 -O -J, ordinary mode exits0 and writes exactly hello to the URL-derived regular file; --fail exits22 and creates no product file. Both make one GET with empty CLI streams and an empty pre-response file state. Only this complete404 contrast is proved, not all HTTP statuses or body-framing combinations."
+      "activation": "For the same complete HTTP404 response under -s --retry 0 -O -J, ordinary mode exits0 and writes exactly hello to the URL-derived regular file; --fail exits22 and creates no product file. Both make one GET with empty CLI streams and an empty pre-response file state. Only this complete404 contrast is proved, not all HTTP statuses or body-framing combinations. Additional immutable-oracle transfer controls check exact body/status, actual request sequence, per-response observations and complete per-process file states. Definitions do not establish execution acceptance or complete retry grammar."
     },
     {
       "command": "wget",

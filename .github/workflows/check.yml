@@ -26,7 +26,8 @@ jobs:
   check:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    # Linux also runs the fixed upstream comparisons and uploads their raw records.
+    timeout-minutes: ${{ matrix.os == 'ubuntu-24.04' && 45 || 30 }}
     strategy:
       fail-fast: false
       matrix:

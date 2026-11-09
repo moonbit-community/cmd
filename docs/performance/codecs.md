@@ -169,6 +169,30 @@ order, port identity, jar failures and raw sequence in
 the frozen corpus in [network fixtures](../../tests/fixtures/network/README.md).
 Date profiles and Domain-normalization limits remain in ADR-0005.
 
+Domain admission keeps an independent view of the stored key. The private
+[`wget_cookie_domain_allows`](../../core/netops/wget_cookie_domain.mbt) uses
+ASCII case-folded, leading-dot-stripped PSL lookup for ASCII inputs and the
+fixed non-NLS Wget fallback for non-ASCII inputs. The latter counts labels
+and UTF-8 bytes without IDNA or Unicode normalization. Actual URL conversion
+occurs earlier and can select a different admission path. Both scans are
+linear in their input lengths; splitting labels allocates linear storage.
+
+Curl's stored creation order stays in the existing array. Saving selects Curl
+entries through a backwards cursor while leaving other profiles' ordering
+intact, using linear time and constant extra cursor storage. A private live
+marker distinguishes response cookies from file imports; reloading a file
+cannot overwrite a response key. Loading before each URL/retry preserves real
+file changes and deletion/refill behavior, with file I/O and parsing costs on
+each transfer. Caching the first file contents would change observable behavior.
+Expired response records retain their live marker until a cleanup boundary.
+Saving after every Curl operand, but not between retries, provides one such
+boundary; it also makes input/output aliasing and `-c -` observable. Expiry
+cleanup scans the existing array linearly. Successful HTTP retry decisions stay
+in the command layer after body completion, so no synthetic early HTTP error
+can discard body bytes or replace the terminal status of a declined retry.
+The [Domain scenario](../../tests/scenarios/network/cookie_domains.mbt) checks
+two processes, raw Host/targets, unchanged inputs and original saved row order.
+
 Numeric expiry uses the private [prefix parser](../../core/netops/wget_cookie_number.mbt).
 It scans the C-locale prefix, delegates a valid decimal substring to the released
 binary64 parser, and converts hexadecimal digits directly. The hexadecimal path

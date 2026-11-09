@@ -42,6 +42,8 @@ pub async fn scenario_contract_snapshot(cases : Array[Case]) -> Json {
     "tests/fixtures/idna/NormalizationTest.txt", "tests/fixtures/idna/LICENSE.txt",
     "tests/fixtures/network/wget-cookies.json", "tests/fixtures/network/wget-authentication.json",
     "tests/fixtures/network/wget-cookie-expiry.json", "tests/fixtures/network/wget-cookie-dates.json",
+    "tests/fixtures/network/cookie-domains.json", "tests/fixtures/network/curl-cookie-lifecycle.json",
+    "tests/fixtures/network/curl-http-retry.json",
   ]
   for directory in ["tests/harness", "tests/scenarios", "tests/coverage"] {
     scenario_source_files(directory, files)

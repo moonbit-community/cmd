@@ -19,6 +19,11 @@ Development only.
 - Use the standard MoonBit argument parser for `serve`, including generated
   help, attached port values and usage diagnostics for invalid arguments.
 
+- Repair Wget Domain admission and Curl saved Domain dots, creation order and
+  cookie-file reload/save timing. Preserve HTTP response bodies before Curl
+  retry decisions, with independent request, output and file-state controls.
+  Invalid-byte jar/header handling and full grammar remain explicit work.
+
 - Repair Wget Expires date grammar, short-year mapping, UTC normalization and
   invalid-date ordering with an independent C-locale parser and frozen real
   process controls. Retain Domain/configuration and publication boundaries.
