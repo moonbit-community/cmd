@@ -20,6 +20,7 @@ import {
   "moonbitlang/async/cond_var",
   "moonbitlang/async/process",
   "moonbitlang/core/env",
+  "moonbitlang/core/json",
   "moonbitlang/x/fs" @sync_fs,
   "moonbitlang/x/path",
   "moonbitlang/x/crypto",

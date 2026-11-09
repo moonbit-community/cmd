@@ -37,6 +37,15 @@ values, and fail on missing files. Command scenarios own argument mapping,
 diagnostics and real file, network, stream and child-process effects. Do not
 expose product internals to relocate tests.
 
+The complete Cookie tables run beside `CookieJar`: 58 Wget dialect records,
+194 expiry records, 87 date records and 255 Curl/Wget Domain records. These
+tests retain original IDs and expectations, use a fixed clock, and assert the
+request/save/reload state including row order. Missing or duplicate records
+fail. Their full CLI differential remains selectable on Linux under the same
+scenario ID; ordinary correctness uses the package tables and real session
+events. Authentication, retry and output events remain in command scenarios
+until their policy state has an independently testable owning boundary.
+
 | Location | Responsibility |
 | --- | --- |
 | `run.mbtx`, `tools/` | Public entry and internal MoonBit orchestration |

@@ -28,9 +28,13 @@ async fn network_cli_scenario(
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
     let requests : Array[(String, String?)] = []
+    let cookie_requests : Array[(String, String)] = []
     group.spawn_bg(no_wait=true) <| () => {
       server.run_forever() <| ((request, _, connection) => {
         requests.push((request.path, request.headers.get("Authorization")))
+        cookie_requests.push(
+          (request.path, request.headers.get("Cookie").unwrap_or("")),
+        )
         match request.path {
           "/auth" if request.headers.get("Authorization") is None =>
             connection
@@ -272,11 +276,25 @@ async fn network_cli_scenario(
     }
     for command in ["curl", "wget"] {
       let jar = work + "/" + command + ".cookies"
+      let input = work + "/" + command + ".input.cookies"
+      let seed = (if command == "wget" {
+          "127.0.0.1:" + server.addr.port().to_string()
+        } else {
+          "127.0.0.1"
+        }) +
+        "\tFALSE\t/\tFALSE\t0\tsid\told\n"
+      @fs.write_file(input, seed)
+      if oracle_image is Some(_) {
+        @fs.mkdir(work + "/oracle", allow_exist=true)
+        @fs.write_file(work + "/oracle/" + command + ".input.cookies", seed)
+      }
+      let before = cookie_requests.length()
       let save = if command == "curl" {
-        ["-sSL", "-c", jar, base + "/set"]
+        ["-sSL", "-b", input, "-c", jar, base + "/set"]
       } else {
         [
           "-qO-",
+          "--load-cookies=" + input,
           "--save-cookies=" + jar,
           "--keep-session-cookies",
           base + "/set",
@@ -294,6 +312,23 @@ async fn network_cli_scenario(
         "auth=\ncookie=sid=fixture\n",
       )
       assert_true(@fs.read_file(jar).text().contains("\tsid\tfixture"))
+      let rounds = if oracle_image is Some(_) { 2 } else { 1 }
+      assert_eq(cookie_requests.length() - before, rounds * 2)
+      for round in 0..<rounds {
+        assert_eq(cookie_requests[before + round * 2], ("/set", "sid=old"))
+        assert_eq(
+          cookie_requests[before + round * 2 + 1],
+          ("/inspect", "sid=fixture"),
+        )
+      }
+      assert_eq(@fs.read_file(input).text(), seed)
+      if oracle_image is Some(_) {
+        assert_eq(
+          @fs.read_file(work + "/oracle/" + command + ".input.cookies").text(),
+          seed,
+        )
+      }
+      let saved = @fs.read_file(jar).binary()
       if oracle_image is None {
         @harness.assert_observation(
           "cookie/" + command + "/saved",
@@ -316,6 +351,7 @@ async fn network_cli_scenario(
         oracle_failures~,
       )
       check_network_response(loaded, "auth=\ncookie=sid=fixture\n")
+      assert_eq(@fs.read_file(jar).binary(), saved)
       if oracle_image is None {
         @harness.assert_observation(
           "cookie/" + command + "/loaded",
