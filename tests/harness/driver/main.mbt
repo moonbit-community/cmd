@@ -82,12 +82,7 @@ async fn run_driver() -> Unit {
       return
     }
   }
-  let args = if oracle_options.arguments
-    is ["--run-oracle-selection", path, report] {
-    oracle_selection_arguments(path, report)
-  } else {
-    oracle_options.arguments
-  }
+  let args = expand_oracle_selection(oracle_options.arguments)
   if args.get(0) == Some("--mv-test-helper") {
     @filesystem.run_helper(args[1:])
     return

@@ -42,6 +42,18 @@ fn changed_paths(data : String) -> Array[String] raise {
 }
 
 ///|
+async fn expand_oracle_selection(args : Array[String]) -> Array[String] {
+  if args.get(0) != Some("--run-oracle-selection") {
+    return args
+  }
+  guard args
+    is ["--run-oracle-selection", path, report, "--oracle-image", image] else {
+    fail("selected differential requires its pinned oracle image")
+  }
+  [..oracle_selection_arguments(path, report), "--oracle-image", image]
+}
+
+///|
 async fn oracle_selection_arguments(
   path : String,
   report : String,

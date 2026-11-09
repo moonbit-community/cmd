@@ -1,4 +1,48 @@
 ///|
+async test "selected differential preserves the pinned image through both option parsers" {
+  let root = @fs.tmpdir(prefix="cmd-selection-options-")
+  defer @fs.rmdir(root, recursive=true)
+  let current = @harness.run_with_deadline("git", ["rev-parse", "HEAD"], 15000)
+  assert_eq(current.output.status, 0)
+  let head = @utf8.decode(current.output.stdout).trim().to_owned()
+  let selection : Json = {
+    "schema": 1,
+    "commit": head,
+    "scope": "commands",
+    "reason": "test selection",
+    "commands": ["cat"],
+    "case_ids": ["selected-cat"],
+    "changed_paths": ["commands/cat/main.mbt"],
+  }
+  let path = root + "/selection.json"
+  @fs.write_file(path, selection.stringify())
+  let image = "sha256:" + "a".repeat(64)
+  let oracle = @harness.parse_oracle_options([
+    "--run-oracle-selection",
+    path,
+    root + "/report",
+    "--oracle-image",
+    image,
+    "--oracle-profile",
+    root + "/profile.json",
+  ])
+  let args = expand_oracle_selection(oracle.arguments)
+  let parsed = parse_driver_options(args, root, root + "/manifest.json")
+  assert_eq(parsed.oracle_image, image)
+  assert_eq(parsed.ids, ["selected-cat"])
+  assert_eq(parsed.suites, ["oracle"])
+  assert_eq(parsed.jobs, 2)
+  assert_eq(oracle.profile_path, root + "/profile.json")
+  try
+    expand_oracle_selection(["--run-oracle-selection", path, root + "/report"])
+  catch {
+    _ => ()
+  } noraise {
+    _ => fail("selected differential lost its pinned oracle")
+  }
+}
+
+///|
 test "impact selection keeps rename sources and destinations and fails closed" {
   assert_eq(
     changed_paths(
