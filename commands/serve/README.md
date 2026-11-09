@@ -1,11 +1,10 @@
 # serve
 
 Minimal static HTTP file server, implemented in pure MoonBit with
-`moonbitlang/async@0.22.7`. The local candidate is `cli/serve@0.1.0`; it is not
-published yet.
+`moonbitlang/async@0.22.7`.
 
 ```sh
-moon run --target wasm --release commands/serve -- public
+moonx cli/serve@0.1.0 -- public
 ```
 
 Usage: `serve [--host ADDRESS] [-p PORT|--port PORT] [DIRECTORY]`.
@@ -46,10 +45,10 @@ and launch from that parent directory:
 }
 ```
 
-After building the workspace:
+Launch with the policy:
 
 ```sh
-moonrun --policy serve-policy.json _build/wasm/release/build/cli/serve/serve.wasm -- public
+moonx --experimental-policy serve-policy.json cli/serve@0.1.0 -- public
 ```
 
 Keep write/process/network-connect permissions absent. Neither path-based
