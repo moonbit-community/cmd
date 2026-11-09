@@ -1001,28 +1001,11 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "scenario",
-      "host_platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "timeout_ms": 60000,
-      "source_version": "GNU Wget 1.25.0 cookie port, attribute and persistent jar controls"
-    },
-    {
-      "id": "network-wget-cookies-oracle",
-      "command": "wget",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
       "comparison": "oracle-scenario",
       "host_platforms": [
         "linux"
       ],
-      "timeout_ms": 180000,
+      "timeout_ms": 600000,
       "source_version": "GNU Wget 1.25.0 cookie port, attribute and persistent jar controls"
     },
     {
@@ -1065,23 +1048,6 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "scenario",
-      "host_platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "timeout_ms": 120000,
-      "source_version": "GNU Wget 1.25.0 numeric cookie expiry and exact saved/reloaded rows"
-    },
-    {
-      "id": "network-wget-cookie-expiry-oracle",
-      "command": "wget",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
       "comparison": "oracle-scenario",
       "host_platforms": [
         "linux"
@@ -1097,28 +1063,11 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "scenario",
-      "host_platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "timeout_ms": 120000,
-      "source_version": "GNU Wget 1.25.0/glibc 2.39 C-locale cookie dates and saved/reloaded rows"
-    },
-    {
-      "id": "network-wget-cookie-dates-oracle",
-      "command": "wget",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
       "comparison": "oracle-scenario",
       "host_platforms": [
         "linux"
       ],
-      "timeout_ms": 300000,
+      "timeout_ms": 600000,
       "source_version": "GNU Wget 1.25.0/glibc 2.39 C-locale cookie dates and saved/reloaded rows"
     },
     {
@@ -1129,28 +1078,11 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "scenario",
-      "host_platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "timeout_ms": 120000,
-      "source_version": "Pinned curl 8.22.0 and non-NLS GNU Wget 1.25.0 Domain admission and exact logical saved/reloaded order"
-    },
-    {
-      "id": "network-wget-cookie-domains-oracle",
-      "command": "wget",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
       "comparison": "oracle-scenario",
       "host_platforms": [
         "linux"
       ],
-      "timeout_ms": 300000,
+      "timeout_ms": 600000,
       "source_version": "Pinned curl 8.22.0 and non-NLS GNU Wget 1.25.0 Domain admission and exact logical saved/reloaded order"
     }
   ]

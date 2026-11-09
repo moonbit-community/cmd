@@ -301,7 +301,12 @@ pub async fn execute_scenario(
             oracle_image?,
           )
         "network-curl-cookie-domains" =>
-          network_cookie_domains_scenario(root, work, tool="curl")
+          network_cookie_domains_scenario(
+            root,
+            work,
+            tool="curl",
+            oracle_image?,
+          )
         "network-curl-cookie-domains-oracle" =>
           network_cookie_domains_scenario(
             root,
@@ -310,7 +315,12 @@ pub async fn execute_scenario(
             oracle_image?,
           )
         "network-wget-cookie-domains" =>
-          network_cookie_domains_scenario(root, work, tool="wget")
+          network_cookie_domains_scenario(
+            root,
+            work,
+            tool="wget",
+            oracle_image?,
+          )
         "network-wget-cookie-domains-oracle" =>
           network_cookie_domains_scenario(
             root,
@@ -319,11 +329,17 @@ pub async fn execute_scenario(
             oracle_image?,
           )
         "network-idna" => network_idna_scenario(root, work)
-        "network-wget-cookies" => network_wget_cookies_scenario(root, work)
+        "network-wget-cookies" =>
+          network_wget_cookies_scenario(root, work, oracle_image?)
         "network-wget-cookies-oracle" =>
           network_wget_cookies_scenario(root, work, oracle_image?)
         "network-wget-cookie-expiry" =>
-          network_wget_cookies_scenario(root, work, corpus="wget-cookie-expiry")
+          network_wget_cookies_scenario(
+            root,
+            work,
+            corpus="wget-cookie-expiry",
+            oracle_image?,
+          )
         "network-wget-cookie-expiry-oracle" =>
           network_wget_cookies_scenario(
             root,
@@ -332,7 +348,12 @@ pub async fn execute_scenario(
             corpus="wget-cookie-expiry",
           )
         "network-wget-cookie-dates" =>
-          network_wget_cookies_scenario(root, work, corpus="wget-cookie-dates")
+          network_wget_cookies_scenario(
+            root,
+            work,
+            corpus="wget-cookie-dates",
+            oracle_image?,
+          )
         "network-wget-cookie-dates-oracle" =>
           network_wget_cookies_scenario(
             root,
