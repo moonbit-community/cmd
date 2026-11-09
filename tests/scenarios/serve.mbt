@@ -184,6 +184,34 @@ async fn serve_static_scenario(
       check("/index-escape/", Get, 404, None, b"")
       check("/alias.CSS", Get, 200, Some("text/css"), b"space\n")
     }
+    @async.with_timeout(5000, () => {
+      let connection = @socket.Tcp::connect(@socket.Addr::parse(address))
+      defer connection.close()
+      for
+        (request, status, length) in [
+          ("GET /nested", "301 Moved Permanently", "0"),
+          ("GET /missing", "404 Not Found", "0"),
+          ("HEAD /data.bin", "200 OK", binary.length().to_string()),
+        ] {
+        connection.write("\{request} HTTP/1.1\r\nHost: \{address}\r\n\r\n")
+        assert_eq(connection.read_until("\r\n"), Some("HTTP/1.1 " + status))
+        let headers : Array[String] = []
+        for ;; {
+          guard connection.read_until("\r\n") is Some(line) else {
+            fail("serve closed before completing response headers")
+          }
+          if line == "" {
+            break
+          }
+          headers.push(line.to_lower())
+        }
+        assert_true(headers.contains("content-length: " + length))
+        if status == "200 OK" {
+          assert_true(headers.contains("connection: close"))
+        }
+      }
+      assert_eq(connection.read_all().binary(), b"")
+    })
     child.cancel()
     @async.with_timeout(5000, () => {
       child.wait() |> ignore
