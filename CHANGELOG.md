@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Prepare `serve` 0.1.2 with version output matching its package version and
+  verify the `-V` alias against the same metadata contract. Use `@latest` in
+  user-facing MoonX examples and distinguish published 0.1.1, its incorrect
+  0.1.0 version output, and the unpublished 0.1.2 candidate.
+
 - Return copy/removal/mode policies, tac extent copying, seq evaluation, jq AST
   adaptations and tab grids to their commands with their original assertions.
   Share independent jq input/expected records, remove obsolete core interfaces

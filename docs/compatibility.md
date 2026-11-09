@@ -194,9 +194,13 @@ The inherited relative-link watcher fixture is Unix-only because the public
 filesystem API cannot create that fixture on Windows. Ordinary file-watch
 recompilation has a registered CLI assertion on all three platforms.
 
-The current workspace has 82 command modules, including the unpublished serve
-candidate and local-only timeout. Published coordinates remain unchanged.
-The local `cli/serve@0.1.0` candidate serves regular files and index.html over
+The current workspace has 82 command modules, including serve and local-only
+timeout. `cli/serve@0.1.1` is published and selected by `moonx cli/serve@latest`,
+but incorrectly reports `serve 0.1.0` with `--version`. The unpublished
+`cli/serve@0.1.2` candidate corrects that output. Serve remains outside the
+80-command published acceptance baseline in `tests/release/latest.json`;
+complete three-platform published acceptance is pending.
+The local `cli/serve@0.1.2` candidate serves regular files and index.html over
 HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
 return 400; missing, unreadable, outside-root and nonregular targets return 404.
 The CLI follows standard `argparse` syntax, including `--port=8000`, `-p8000`

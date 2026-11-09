@@ -10,7 +10,11 @@ async test "command README coordinates match source and preserve unpublished bou
       .replace_all(old="\r\n", new="\n")
     assert_true(readme.contains("../../docs/compatibility.md"))
     assert_true(readme.contains("../../docs/adr/"))
-    let invocation = if name == "timeout" || name == "serve" {
+    let invocation = if name == "serve" {
+      assert_true(!readme.contains("MOON_HOME"))
+      assert_true(readme.contains("cli/serve@" + version))
+      "moonx cli/serve@latest"
+    } else if name == "timeout" {
       assert_true(!readme.contains("moonx cli/" + name + "@"))
       "moon run --target wasm --release commands/" + name + " --"
     } else {
