@@ -203,6 +203,8 @@ complete three-platform published acceptance is pending.
 The local `cli/serve@0.1.2` candidate serves regular files and index.html over
 HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
 return 400; missing, unreadable, outside-root and nonregular targets return 404.
+Successful file responses are written directly to the socket and close the
+connection with `Connection: close`.
 The CLI follows standard `argparse` syntax, including `--port=8000`, `-p8000`
 and short help/version aliases. Syntax errors report usage and exit 1.
 There is no listing, SPA fallback or upload. Wasm policy separately limits
