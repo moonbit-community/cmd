@@ -30,6 +30,37 @@ async fn filesystem_mode(path : String) -> (Int32, String) {
 }
 
 ///|
+async fn mkdir_umask_event(
+  root : String,
+  work : String,
+  report_dir : String,
+  id : String,
+  oracle_image? : String,
+) -> Unit {
+  if oracle_image is Some(image) {
+    @fs.mkdir(work + "/candidate")
+    @fs.mkdir(work + "/oracle")
+    mkdir_umask_scenario(
+      root,
+      work + "/candidate",
+      report_dir + "/" + id + ".candidate.json",
+    )
+    mkdir_umask_scenario(
+      root,
+      work + "/oracle",
+      report_dir + "/" + id + ".gnu.json",
+      oracle_image=image,
+    )
+  } else {
+    mkdir_umask_scenario(
+      root,
+      work,
+      report_dir + "/" + id + ".observations.json",
+    )
+  }
+}
+
+///|
 async fn mkdir_umask_scenario(
   root : String,
   work : String,

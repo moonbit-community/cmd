@@ -1,6 +1,6 @@
 ///|
 test "selected results reject omissions, duplicates, substitutions and undeclared skips" {
-  let fixture = quality_case({
+  let fixture = assertion_case({
     "expected_stdout_text": "",
     "expected_stderr_text": "",
   })

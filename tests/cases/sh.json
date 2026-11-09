@@ -2474,23 +2474,10 @@
       "normalizations": [],
       "comparison": "scenario",
       "timeout_ms": 120000,
-      "oracle": false
-    },
-    {
-      "id": "f31-sh-printf-state-oracle",
-      "command": "sh",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 120000,
-      "oracle": false
+      "oracle": true,
+      "aliases": [
+        "f31-sh-printf-state-oracle"
+      ]
     },
     {
       "id": "f31-sh-boundary-additional-descriptor",

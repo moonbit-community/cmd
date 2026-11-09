@@ -43,6 +43,41 @@ async test "selected differential preserves the pinned image through both option
 }
 
 ///|
+async test "shared filesystem events select either consumer without duplicate alias execution" {
+  let cases = @harness.load_cases(
+    workspace_root() + "/tests/cases/manifest.json",
+  )
+  for command in ["find", "test"] {
+    let selected = @harness.select_cases(cases, [command], []).filter(fixture => {
+      case_in_suites(fixture, ["oracle"])
+    })
+    for
+      id in [
+        "metadata-relations", "f29-sparse-size", "f29-predicate-errors", "f29-special-kinds",
+        "f29-subsecond-order",
+      ] {
+      assert_eq(
+        selected.filter(fixture => fixture.id == id).length(),
+        1,
+        msg=command + ": " + id,
+      )
+    }
+  }
+  for
+    (id, old_id) in [
+      ("metadata-relations", "f29-metadata-selectors-oracle"),
+      ("f29-subsecond-order", "f29-subsecond-order-oracle"),
+      ("tee-output-errors", "tee-output-errors-oracle"),
+      ("mktemp-option-effects", "mktemp-option-effects-oracle"),
+    ] {
+    let selected = @harness.select_cases(cases, [], [id, old_id])
+    assert_eq(selected.map(fixture => fixture.id), [id])
+    assert_true(case_in_suites(selected[0], ["oracle"]))
+    assert_true(case_in_suites(selected[0], ["scenarios"]))
+  }
+}
+
+///|
 test "impact selection keeps rename sources and destinations and fails closed" {
   assert_eq(
     changed_paths(

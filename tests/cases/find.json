@@ -410,7 +410,7 @@
       "host_platforms": [
         "posix"
       ],
-      "timeout_ms": 60000,
+      "timeout_ms": 300000,
       "args": [],
       "files": [],
       "environment": {},
@@ -418,7 +418,11 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "oracle": true,
+      "aliases": [
+        "f29-metadata-selectors-oracle"
+      ]
     },
     {
       "id": "coverage-find-reject--newerBm",
@@ -7857,25 +7861,6 @@
       "source_version": "Issue 29 finite independent filesystem contracts: fixed GNU find 4.10.0/coreutils 9.11 semantics, with explicitly separate project extensions and capability boundaries. Definitions are not execution evidence."
     },
     {
-      "id": "f29-metadata-selectors-oracle",
-      "command": "find",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "normalizations": [],
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "stdin_text": "",
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "144 source/reference comparisons with independent metadata preconditions and a verified immutable GNU find oracle; actual observations are retained separately."
-    },
-    {
       "id": "f29-find-size-unreadable",
       "command": "find",
       "args": [],
@@ -7890,9 +7875,12 @@
       "host_platforms": [
         "posix"
       ],
-      "oracle": false,
+      "oracle": true,
       "timeout_ms": 60000,
-      "source_version": "Issue 29 real mode-000 empty/full files: require actual EACCES, execute Wasm predicates, preserve original metadata before observer chmod, then verify retained content. Sealed Linux GNU counterpart is separate."
+      "source_version": "Issue 29 real mode-000 empty/full files: require actual EACCES, execute Wasm predicates, preserve original metadata before observer chmod, then verify retained content. Sealed Linux GNU counterpart is separate.",
+      "aliases": [
+        "f29-find-size-unreadable-oracle"
+      ]
     },
     {
       "id": "f29-find-xtype-file-link-positive",
@@ -9075,27 +9063,14 @@
         "posix"
       ],
       "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "Actual Wasm predicates on independently observed POSIX sparse/special fixtures; Linux fixed-oracle evidence is separate; unsupported fixture setup fails infrastructure."
-    },
-    {
-      "id": "f29-sparse-size-oracle",
-      "command": "find",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "normalizations": [],
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "stdin_text": "",
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
+      "oracle": true,
+      "source_version": "Actual Wasm predicates on independently observed POSIX sparse/special fixtures; Linux fixed-oracle evidence is separate; unsupported fixture setup fails infrastructure.",
+      "aliases": [
+        "f29-sparse-size-oracle"
       ],
-      "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "Actual Wasm predicates on independently observed POSIX sparse/special fixtures; Linux fixed-oracle evidence is separate; unsupported fixture setup fails infrastructure."
+      "related_commands": [
+        "test"
+      ]
     },
     {
       "id": "f29-time-references",
@@ -9113,27 +9088,11 @@
         "posix"
       ],
       "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "Actual Wasm time/reference and access-error effects with independent fixtures and explicit clock/access preconditions; Linux comparison uses the immutable oracle profile."
-    },
-    {
-      "id": "f29-time-references-oracle",
-      "command": "find",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "normalizations": [],
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "stdin_text": "",
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "Actual Wasm time/reference and access-error effects with independent fixtures and explicit clock/access preconditions; Linux comparison uses the immutable oracle profile."
+      "oracle": true,
+      "source_version": "Actual Wasm time/reference and access-error effects with independent fixtures and explicit clock/access preconditions; Linux comparison uses the immutable oracle profile.",
+      "aliases": [
+        "f29-time-references-oracle"
+      ]
     },
     {
       "id": "f29-predicate-errors",
@@ -9151,27 +9110,14 @@
         "posix"
       ],
       "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "Actual Wasm time/reference and access-error effects with independent fixtures and explicit clock/access preconditions; Linux comparison uses the immutable oracle profile."
-    },
-    {
-      "id": "f29-predicate-errors-oracle",
-      "command": "find",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "normalizations": [],
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "stdin_text": "",
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
+      "oracle": true,
+      "source_version": "Actual Wasm time/reference and access-error effects with independent fixtures and explicit clock/access preconditions; Linux comparison uses the immutable oracle profile.",
+      "aliases": [
+        "f29-predicate-errors-oracle"
       ],
-      "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "Actual Wasm time/reference and access-error effects with independent fixtures and explicit clock/access preconditions; Linux comparison uses the immutable oracle profile."
+      "related_commands": [
+        "test"
+      ]
     },
     {
       "id": "f29-find-exec-single-missing",
@@ -11024,25 +10970,6 @@
       "source_version": "Issue 29 independently audited cumulative failure and actual deletion effects; immutable GNU comparison is separately executed.",
       "expected_stderr_contains": "Directory not empty",
       "diagnostic_reason": "GNU names the deleting action while the candidate names the failed entry; the actual nonempty-directory reason, final status, retained sentinel and deletion of the later root are independently required."
-    },
-    {
-      "id": "f29-find-size-unreadable-oracle",
-      "command": "find",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "stdin_text": "",
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "oracle": false,
-      "timeout_ms": 60000,
-      "source_version": "Issue 29 immutable GNU and Wasm size predicates on actual unreadable empty/full files, same user; original metadata and restored exact content are independently checked."
     }
   ]
 }

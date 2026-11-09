@@ -79,7 +79,9 @@ and timestamp formatting. These are compatibility checks, not timing evidence.
 | `release/` | Candidate generation and independent published expectations |
 | `benchmark/`, `resources/` | Manual timing and resource programs |
 
-Assertions execute directly. The per-assertion review/descriptor/proof chain,
+Assertions execute directly. Registration checks inspect the case expectations
+and scenario dispatch without generating an intermediate descriptor. The
+per-assertion review/descriptor/proof chain,
 generated quality/coverage catalogs and assertion-source sealing are retired.
 Their historical content is preserved in Git at `aa65c57`. This does not retire
 original cases, corpus records, immutable oracle identity or performance baselines.
@@ -87,7 +89,17 @@ original cases, corpus records, immutable oracle identity or performance baselin
 `index check` validates current bindings and assertion routes before platform
 filtering, then checks the candidate. `index update` changes only the candidate
 after validation. Neither rewrites `release/latest.json` or `latest-cases.json`.
-Case aliases do not cause duplicate execution. Every selected case must produce
+Case aliases do not cause duplicate execution.
+The same rule covers network, filesystem metadata/umask, tee, mktemp and printf
+state events: current registrations select one scenario, and differential mode
+uses its candidate observations for assertions and comparison. Published aliases
+retain their frozen dispatch routes. Metadata relations compare their documented
+selector subset upstream; other relation assertions remain independent contracts.
+Shared filesystem events register both find and test as consumers. Read-only
+scenario mounts remain read-only in each worker signature, including isolated
+metadata directories; incompatible mount layouts still use owned containers.
+
+Every selected case must produce
 exactly one terminal result, with explicit platform exclusions; missing,
 duplicate, unknown or substituted results cannot pass.
 
