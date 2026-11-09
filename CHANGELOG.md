@@ -21,6 +21,11 @@ Development only.
   network observations and retain failure diagnostics. Original corpora and
   frozen published expectations are unchanged; CI timing remains unqualified.
 
+- Execute all 594 frozen Cookie dialect, expiry, date and Domain records beside
+  the implementation, with fixed-time request/save/reload assertions. Retain
+  full Linux CLI differential and a real seeded Cookie session; stop repeating
+  dense grammar records as ordinary three-platform process scenarios.
+
 - Use the standard MoonBit argument parser for `serve`, including generated
   help, attached port values and usage diagnostics for invalid arguments.
 

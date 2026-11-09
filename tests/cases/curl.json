@@ -1050,28 +1050,11 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "scenario",
-      "host_platforms": [
-        "linux",
-        "macos",
-        "windows"
-      ],
-      "timeout_ms": 120000,
-      "source_version": "Pinned curl 8.22.0 and non-NLS GNU Wget 1.25.0 Domain admission and exact logical saved/reloaded order"
-    },
-    {
-      "id": "network-curl-cookie-domains-oracle",
-      "command": "curl",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
       "comparison": "oracle-scenario",
       "host_platforms": [
         "linux"
       ],
-      "timeout_ms": 300000,
+      "timeout_ms": 600000,
       "source_version": "Pinned curl 8.22.0 and non-NLS GNU Wget 1.25.0 Domain admission and exact logical saved/reloaded order"
     },
     {
