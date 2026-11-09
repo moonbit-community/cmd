@@ -1,5 +1,5 @@
 ///|
-const CommandVersion = "0.1.0"
+const CommandVersion = "0.1.1"
 
 ///|
 priv suberror UsageError {
@@ -26,6 +26,11 @@ let command : @argparse.Command = Command(
       default_values=["8000"],
       allow_hyphen_values=true,
     ),
+    OptionArg(
+      "preview-token",
+      long="preview-token",
+      about="Serve a loopback preview under a 64-character lowercase hex token until stdin closes. Print the bound port to stdout.",
+    ),
   ],
   positionals=[
     PositionArg("directory", about="Directory to serve.", default_values=["."]),
@@ -33,8 +38,18 @@ let command : @argparse.Command = Command(
 )
 
 ///|
-fn options(args : @argparse.Matches) -> (String, @socket.Addr) raise {
+fn options(args : @argparse.Matches) -> (String, @socket.Addr, String?) raise {
   let host = args.values["host"][0]
+  let token = args.values.get("preview-token").bind(values => values.get(0))
+  if token is Some(token) {
+    guard host == "127.0.0.1" else {
+      raise UsageError("preview requires host 127.0.0.1")
+    }
+    guard token.length() == 64 &&
+      token.iter().all(c => c is ('0'..<='9' | 'a'..<='f')) else {
+      raise UsageError("invalid preview token")
+    }
+  }
   let raw_port = args.values["port"][0]
   let port = @string.parse_int(raw_port) catch {
     _ => raise UsageError("invalid port: " + raw_port)
@@ -47,7 +62,7 @@ fn options(args : @argparse.Matches) -> (String, @socket.Addr) raise {
   } else {
     host + ":" + port.to_string()
   }
-  (args.values["directory"][0], @socket.Addr::parse(address))
+  (args.values["directory"][0], @socket.Addr::parse(address), token)
 }
 
 ///|
@@ -65,20 +80,37 @@ async fn main {
     }
   }
   try {
-    let (directory, address) = options(args)
+    let (directory, address, token) = options(args)
     let root = @fs.realpath(directory)
     guard @fs.kind(root) is Directory else {
       fail("not a directory: " + directory)
     }
     let server = @http.Server(address)
     defer server.close()
-    @stdio.stderr.write(
-      "Serving " + root + " on http://" + server.addr.to_string() + "\n",
-    )
-    server.run_forever(
-      (request, _body, connection) => serve_file(root, request, connection),
-      max_connections=64,
-    )
+    let port = server.addr.port()
+    if token is Some(_) {
+      @stdio.stdout.write("\{port}\n")
+    } else {
+      @stdio.stderr.write(
+        "Serving " + root + " on http://" + server.addr.to_string() + "\n",
+      )
+    }
+    @async.with_task_group(group => {
+      if token is Some(_) {
+        group.spawn_bg(() => {
+          while @stdio.stdin.read_some() is Some(_) {
+
+          }
+          group.return_immediately(())
+        })
+      }
+      server.run_forever(
+        (request, _body, connection) => {
+          serve_file(root, request, connection, port~, token?)
+        },
+        max_connections=64,
+      )
+    })
   } catch {
     UsageError(message) => {
       @stdio.stderr.write("serve: " + message + "\n")

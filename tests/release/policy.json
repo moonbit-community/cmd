@@ -4869,6 +4869,7 @@
       "supported_options": [
         "host",
         "port",
+        "preview-token",
         "help",
         "version"
       ],
@@ -4881,7 +4882,8 @@
         "serve-reject-extra-root",
         "serve-reject-missing-port",
         "serve-static",
-        "serve-policy"
+        "serve-policy",
+        "serve-preview"
       ]
     }
   ]

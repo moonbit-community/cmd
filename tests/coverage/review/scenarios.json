@@ -6536,6 +6536,30 @@
       ]
     },
     {
+      "case_id": "serve-preview",
+      "assertions": [
+        {
+          "id": "serve/preview",
+          "command": "serve",
+          "relation": "equal",
+          "expected": {
+            "untokened": 404,
+            "redirect": 301,
+            "location": "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/nested/?q=1",
+            "served": 200,
+            "cache": "no-store",
+            "foreign_host_rejected": true,
+            "exit_status": 0
+          },
+          "observations": [
+            "http-status",
+            "http-headers",
+            "child-exit"
+          ]
+        }
+      ]
+    },
+    {
       "case_id": "serve-policy",
       "assertions": [
         {

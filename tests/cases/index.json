@@ -45461,6 +45461,28 @@
       "oracle_profile": ""
     },
     {
+      "behavior_id": "case:serve-preview",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-preview",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:serve-preview",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::serve-preview",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:env-chdir-missing-parent",
       "command": "env",
       "status": "supported",

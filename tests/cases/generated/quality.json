@@ -4,7 +4,7 @@
   "counts": {
     "exact-local": 3562,
     "finite-diagnostic": 186,
-    "typed-scenario": 84,
+    "typed-scenario": 85,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -32372,7 +32372,7 @@
     {
       "case_id": "serve-version",
       "source": "tests/cases/serve.json",
-      "definition_sha256": "3d96a44781088a18159e6c25ae67ec3cac57ef964ea31fb43bec98a03827f611",
+      "definition_sha256": "2f6d6636cee745bf9aa79e5fcc4daeb7b6ba57ed37d122016adb496bc122157f",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -32446,6 +32446,20 @@
         "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
         "required_observers": [
           "scenario:serve-policy"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "serve-preview",
+      "source": "tests/cases/serve.json",
+      "definition_sha256": "6c903ee850915e1d25b2f7943c8a98eaef541d5609147e4f339a924e9a2a3d64",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:serve-preview"
         ]
       },
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
@@ -49173,6 +49187,13 @@
       "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
       "required_observers": [
         "scenario:serve-policy"
+      ]
+    },
+    "serve-preview": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:serve-preview"
       ]
     },
     "phase3-sleep-zero": {

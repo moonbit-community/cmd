@@ -58,17 +58,21 @@ test "minimal CLI defaults and explicit address" {
       _ => fail("expected executable arguments")
     }
   }
-  let (root, addr) = parse([])
+  let (root, addr, token) = parse([])
+  assert_eq(token, None)
   assert_eq(root, ".")
   assert_eq(addr.to_string(), "127.0.0.1:8000")
-  let (root, addr) = parse(["--host", "::1", "-p", "0", "public"])
+  let (root, addr, _) = parse(["--host", "::1", "-p", "0", "public"])
   assert_eq(root, "public")
   assert_eq(addr.to_string(), "[::1]:0")
-  let (root, addr) = parse(["--port=0", "--", "-public"])
+  let (root, addr, _) = parse(["--port=0", "--", "-public"])
   assert_eq(root, "-public")
   assert_eq(addr.to_string(), "127.0.0.1:0")
-  let (_, addr) = parse(["-p0"])
+  let (_, addr, _) = parse(["-p0"])
   assert_eq(addr.port(), 0)
+  let valid_token = "a".repeat(64)
+  let (_, _, token) = parse(["--preview-token", valid_token])
+  assert_eq(token, Some(valid_token))
   for
     args in [
       ["-p"],
@@ -79,6 +83,8 @@ test "minimal CLI defaults and explicit address" {
       ["--host", "localhost"],
       ["a", "b"],
       ["--spa"],
+      ["--preview-token", "../public"],
+      ["--host", "0.0.0.0", "--preview-token", valid_token],
     ] {
     let result = Some(parse(args[:])) catch { _ => None }
     assert_true(result is None)

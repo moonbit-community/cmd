@@ -14,7 +14,7 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": false,
-      "expected_stdout_text": "serve 0.1.0\n",
+      "expected_stdout_text": "serve 0.1.1\n",
       "expected_stderr_text": ""
     },
     {
@@ -110,6 +110,19 @@
     },
     {
       "id": "serve-policy",
+      "command": "serve",
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "oracle": false,
+      "timeout_ms": 20000
+    },
+    {
+      "id": "serve-preview",
       "command": "serve",
       "args": [],
       "stdin_text": "",

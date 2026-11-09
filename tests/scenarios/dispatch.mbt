@@ -68,6 +68,7 @@ pub async fn execute_scenario(
       match fixture.id {
         "serve-static" => serve_static_scenario(root, work, false, proof?)
         "serve-policy" => serve_static_scenario(root, work, true, proof?)
+        "serve-preview" => serve_preview_scenario(root, work, proof?)
         "typst-artifacts" => typst_artifacts_scenario(root, work, proof?)
         "typst-watch" => typst_watch_scenario(root, work, proof?)
         "tee-output-errors" =>

@@ -217,3 +217,81 @@ async fn serve_static_scenario(
     }
   })
 }
+
+///|
+async fn serve_preview_scenario(
+  root : String,
+  work : String,
+  proof? : @harness.ScenarioProof,
+) -> Unit {
+  let public = work + "/public"
+  @fs.mkdir(public + "/nested", recursive=true)
+  @fs.write_file(public + "/nested/index.html", "<h1>Preview</h1>")
+  let policy = work + "/policy.json"
+  @fs.write_file(
+    policy,
+    ({ "fs": { "read": [public] }, "net": { "bind": ["127.0.0.1:0"] } } : Json).stringify(),
+  )
+  let token = "a".repeat(64)
+  let (stdin, lease) = @process.write_to_process()
+  defer lease.close()
+  let (output, stdout) = @process.read_from_process()
+  defer output.close()
+  @async.with_task_group(group => {
+    let child = @process.spawn(
+      group,
+      @harness.command_program(),
+      @harness.command_args(
+        root,
+        "serve",
+        ["--port", "0", "--preview-token", token, public],
+        policy~,
+      ),
+      cwd=work,
+      stdin~,
+      stdout~,
+    )
+    guard output.read_until("\n") is Some(line) else {
+      fail("preview exited before binding")
+    }
+    let port = @string.parse_int(line.trim())
+    let address = "127.0.0.1:\{port}"
+    let origin = "http://\{address}"
+    let (missing_token, _) = @http.get(origin + "/nested/")
+    let (redirect, _) = @http.get(origin + "/\{token}/nested?q=1")
+    let (served, body) = @http.get(origin + "/\{token}/nested/")
+    assert_eq(body.text(), "<h1>Preview</h1>")
+    let socket = @socket.Tcp::connect(@socket.Addr::parse(address))
+    let denied = {
+      defer socket.close()
+      socket.write(
+        "GET /\{token}/nested/ HTTP/1.1\r\nHost: foreign.example\r\nConnection: close\r\n\r\n",
+      )
+      socket.read_until("\r\n").unwrap_or("").contains("403 Forbidden")
+    }
+    lease.close()
+    let status = child.wait()
+    let actual : Json = {
+      "untokened": missing_token.code,
+      "redirect": redirect.code,
+      "location": redirect.headers.get("location").unwrap_or(""),
+      "served": served.code,
+      "cache": served.headers.get("cache-control").unwrap_or(""),
+      "foreign_host_rejected": denied,
+      "exit_status": status,
+    }
+    let expected : Json = {
+      "untokened": 404,
+      "redirect": 301,
+      "location": "/\{token}/nested/?q=1",
+      "served": 200,
+      "cache": "no-store",
+      "foreign_host_rejected": true,
+      "exit_status": 0,
+    }
+    assert_eq(actual, expected)
+    if proof is Some(proof) {
+      proof.observe_equal("serve/preview", "serve", actual, expected)
+    }
+  })
+}

@@ -1,7 +1,7 @@
 # serve
 
 Minimal static HTTP file server, implemented in pure MoonBit with
-`moonbitlang/async@0.22.7`. The local candidate is `cli/serve@0.1.0`; it is not
+`moonbitlang/async@0.22.7`. The local candidate is `cli/serve@0.1.1`; it is not
 published yet.
 
 ```sh
@@ -16,6 +16,14 @@ each option may be supplied once, and `--` ends option parsing. Use `-h` or
 `--help` for usage and `-V` or `--version` for version information. Metadata
 requests exit without reading stdin or starting a listener. Argument syntax
 errors print the standard parser diagnostic with usage to stderr and exit 1.
+
+For an application-owned preview, pass `--preview-token TOKEN` with a
+cryptographically random 64-character lowercase hex token. The command
+requires `127.0.0.1` and only serves requests with the bound Host and a
+`/TOKEN/` path prefix. Responses are not cached, and directory redirects
+keep the prefix. The command writes the bound port as one decimal line to
+stdout after listening. The application keeps stdin open for the lifetime
+of the preview. EOF stops the listener, including after the owner exits.
 
 GET streams regular files with Content-Length and an extension-based MIME type;
 HEAD sends the same headers without a body. Unknown extensions use

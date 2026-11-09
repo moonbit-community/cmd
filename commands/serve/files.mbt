@@ -99,29 +99,38 @@ fn mime_type(path : String) -> String {
 }
 
 ///|
-async fn empty_response(
-  connection : @http.ServerConnection,
-  code : Int32,
-  reason : String,
-) -> Unit {
-  connection.send_response(code, reason, extra_headers={ "Content-Length": "0" })
-}
-
-///|
 async fn serve_file(
   root : String,
   request : @http.Request,
   connection : @http.ServerConnection,
+  port~ : Int32,
+  token? : String,
 ) -> Unit {
+  let headers : Map[@http.CaseInsensitiveString, String] = {
+    "Content-Length": "0",
+  }
+  let target = if token is Some(token) {
+    headers["Cache-Control"] = "no-store"
+    headers["Referrer-Policy"] = "no-referrer"
+    guard request.headers.get("host") == Some("127.0.0.1:\{port}") else {
+      connection.send_response(403, "Forbidden", extra_headers=headers)
+      return
+    }
+    guard request.path.strip_prefix("/\{token}/") is Some(path) else {
+      connection.send_response(404, "Not Found", extra_headers=headers)
+      return
+    }
+    "/" + path.to_owned()
+  } else {
+    request.path
+  }
   guard request.meth is (Get | Head) else {
-    connection.send_response(405, "Method Not Allowed", extra_headers={
-      "Content-Length": "0",
-      "Allow": "GET, HEAD",
-    })
+    headers["Allow"] = "GET, HEAD"
+    connection.send_response(405, "Method Not Allowed", extra_headers=headers)
     return
   }
-  guard request_path(request.path) is Some(relative) else {
-    empty_response(connection, 400, "Bad Request")
+  guard request_path(target) is Some(relative) else {
+    connection.send_response(400, "Bad Request", extra_headers=headers)
     return
   }
   // Resolve and check the actual target, including index.html symlinks.
@@ -140,31 +149,33 @@ async fn serve_file(
     _ => None
   }
   guard opened is Some((file, index)) else {
-    empty_response(connection, 404, "Not Found")
+    connection.send_response(404, "Not Found", extra_headers=headers)
     return
   }
   defer file.close()
   let raw_path = request.path.split("?").next().unwrap()
   if index && !raw_path.has_suffix("/") {
-    connection.send_response(301, "Moved Permanently", extra_headers={
-      "Content-Length": "0",
-      "Location": "/" +
+    headers["Location"] = "/" +
       raw_path.trim_start(chars="/").to_owned() +
       "/" +
-      request.path[raw_path.length():].to_owned(),
-    })
+      request.path[raw_path.length():].to_owned()
+    connection.send_response(301, "Moved Permanently", extra_headers=headers)
     return
   }
   guard file.kind() is Regular else {
-    empty_response(connection, 404, "Not Found")
+    connection.send_response(404, "Not Found", extra_headers=headers)
     return
   }
   let size = file.size()
-  connection.send_response(200, "OK", extra_headers={
-    "Content-Length": size.to_string(),
-    "Content-Type": mime_type(if index { "index.html" } else { relative }),
-    "X-Content-Type-Options": "nosniff",
-  })
+  let mime = mime_type(if index { "index.html" } else { relative })
+  headers["Content-Length"] = size.to_string()
+  headers["Content-Type"] = if token is Some(_) && mime.has_prefix("text/") {
+    mime + "; charset=utf-8"
+  } else {
+    mime
+  }
+  headers["X-Content-Type-Options"] = "nosniff"
+  connection.send_response(200, "OK", extra_headers=headers)
   if request.meth is Head {
     return
   }

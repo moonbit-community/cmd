@@ -6063,6 +6063,22 @@
     },
     {
       "command": "serve",
+      "claim": "preview-token",
+      "kind": "supported-option",
+      "disposition": "reviewed-definition",
+      "case_ids": [],
+      "scenario_bindings": [
+        {
+          "case_id": "serve-preview",
+          "assertions": [
+            "serve/preview"
+          ]
+        }
+      ],
+      "activation": "Launch Wasm with root-read and ephemeral loopback-bind authority. Verify token and Host checks, directory redirect, cache control, served bytes and process exit after stdin EOF."
+    },
+    {
+      "command": "serve",
       "claim": "port",
       "kind": "supported-option",
       "disposition": "reviewed-definition",

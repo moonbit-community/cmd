@@ -196,11 +196,13 @@ recompilation has a registered CLI assertion on all three platforms.
 
 The current workspace has 82 command modules, including the unpublished serve
 candidate and local-only timeout. Published coordinates remain unchanged.
-The local `cli/serve@0.1.0` candidate serves regular files and index.html over
+The local `cli/serve@0.1.1` candidate serves regular files and index.html over
 HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
 return 400; missing, unreadable, outside-root and nonregular targets return 404.
 The CLI follows standard `argparse` syntax, including `--port=8000`, `-p8000`
 and short help/version aliases. Syntax errors report usage and exit 1.
+Optional preview mode confines requests to a loopback Host and a token
+prefix, prints the bound port, and ends when the owner closes stdin.
 There is no listing, SPA fallback or upload. Wasm policy separately limits
 read roots and bind addresses. Hostile concurrent path replacement remains
 unsupported until released public Wasm APIs provide confined descriptor-relative
