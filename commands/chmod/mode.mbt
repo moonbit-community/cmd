@@ -1,6 +1,6 @@
 ///|
 /// Parse an octal permission mode, allowing the existing 0o/0O prefix.
-pub fn parse_octal_mode(text : String) -> Int32 raise {
+fn parse_octal_mode(text : String) -> Int32 raise {
   let digits = if text.has_prefix("0o") || text.has_prefix("0O") {
     text[2:]
   } else {

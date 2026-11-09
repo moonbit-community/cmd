@@ -1,7 +1,7 @@
 ///|
 /// Compile a jq filter through released public AST adaptations for string
 /// slicing and stable grouping of complete key streams.
-pub fn parse(source : String) -> @ast.Expr raise {
+fn parse_filter(source : String) -> @ast.Expr raise {
   lower(@moonjq.parse(source).expr)
 }
 

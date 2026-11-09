@@ -1,5 +1,5 @@
 import {
-  "cli/core/jq_filter",
+  "bobzhang/moonjq",
   "bobzhang/moonjq/ast",
   "moonbitlang/core/json",
   "moonbitlang/async",
@@ -12,3 +12,7 @@ import {
 supported_targets = "native+wasm"
 
 pkgtype(kind: "executable")
+
+import {
+  "moonbitlang/async/fs" @fixture_fs,
+} for "wbtest"

@@ -94,7 +94,7 @@ async fn run_tail_follow_process(
   let stdout = @process.redirect_to_file(stdout_path)
   let stderr = @process.redirect_to_file(stderr_path)
   @async.with_task_group <| group => {
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       program,
       args,

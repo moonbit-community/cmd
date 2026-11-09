@@ -1006,7 +1006,14 @@
         "linux"
       ],
       "timeout_ms": 600000,
-      "source_version": "GNU Wget 1.25.0 cookie port, attribute and persistent jar controls"
+      "source_version": "GNU Wget 1.25.0 cookie port, attribute and persistent jar controls",
+      "inputs": [
+        "tests/fixtures/network/wget-cookies.json"
+      ],
+      "aliases": [
+        "network-wget-cookies-oracle"
+      ],
+      "isolated": true
     },
     {
       "id": "network-wget-authentication",
@@ -1023,22 +1030,15 @@
         "windows"
       ],
       "timeout_ms": 60000,
-      "source_version": "GNU Wget 1.25.0 credentials, Basic challenge/cache, 401 and binary replay controls"
-    },
-    {
-      "id": "network-wget-authentication-oracle",
-      "command": "wget",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
+      "source_version": "GNU Wget 1.25.0 credentials, Basic challenge/cache, 401 and binary replay controls",
+      "oracle": true,
+      "inputs": [
+        "tests/fixtures/network/wget-authentication.json"
       ],
-      "timeout_ms": 180000,
-      "source_version": "GNU Wget 1.25.0 credentials, Basic challenge/cache, 401 and binary replay controls"
+      "aliases": [
+        "network-wget-authentication-oracle"
+      ],
+      "isolated": true
     },
     {
       "id": "network-wget-cookie-expiry",
@@ -1053,7 +1053,14 @@
         "linux"
       ],
       "timeout_ms": 600000,
-      "source_version": "GNU Wget 1.25.0 numeric cookie expiry and exact saved/reloaded rows"
+      "source_version": "GNU Wget 1.25.0 numeric cookie expiry and exact saved/reloaded rows",
+      "inputs": [
+        "tests/fixtures/network/wget-cookie-expiry.json"
+      ],
+      "aliases": [
+        "network-wget-cookie-expiry-oracle"
+      ],
+      "isolated": true
     },
     {
       "id": "network-wget-cookie-dates",
@@ -1068,7 +1075,14 @@
         "linux"
       ],
       "timeout_ms": 600000,
-      "source_version": "GNU Wget 1.25.0/glibc 2.39 C-locale cookie dates and saved/reloaded rows"
+      "source_version": "GNU Wget 1.25.0/glibc 2.39 C-locale cookie dates and saved/reloaded rows",
+      "inputs": [
+        "tests/fixtures/network/wget-cookie-dates.json"
+      ],
+      "aliases": [
+        "network-wget-cookie-dates-oracle"
+      ],
+      "isolated": true
     },
     {
       "id": "network-wget-cookie-domains",
@@ -1083,7 +1097,14 @@
         "linux"
       ],
       "timeout_ms": 600000,
-      "source_version": "Pinned curl 8.22.0 and non-NLS GNU Wget 1.25.0 Domain admission and exact logical saved/reloaded order"
+      "source_version": "Pinned curl 8.22.0 and non-NLS GNU Wget 1.25.0 Domain admission and exact logical saved/reloaded order",
+      "inputs": [
+        "tests/fixtures/network/cookie-domains.json"
+      ],
+      "aliases": [
+        "network-wget-cookie-domains-oracle"
+      ],
+      "isolated": true
     }
   ]
 }

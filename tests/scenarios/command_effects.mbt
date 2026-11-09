@@ -78,7 +78,7 @@ async fn sort_spill_scenario(root : String, work : String) -> Unit {
     defer writer.close()
     let stdout_path = work + "/../sort.stdout"
     let stderr_path = work + "/../sort.stderr"
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       @harness.command_program(),
       @harness.command_args(root, "sort", [

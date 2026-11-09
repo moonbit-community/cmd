@@ -4,6 +4,7 @@
     {
       "id": "phase3-jq-property",
       "command": "jq",
+      "inputs": ["tests/fixtures/jq/adapter.json"],
       "args": [
         ".name"
       ],

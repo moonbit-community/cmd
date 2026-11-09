@@ -124,7 +124,7 @@ async fn observe_sleep_cancellation(
   args : Array[String],
 ) -> Bool {
   @async.with_task_group <| group => {
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       program,
       args,

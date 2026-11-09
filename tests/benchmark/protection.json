@@ -456,7 +456,8 @@
         "core/bytere/cache.mbt",
         "core/platform",
         "core/process",
-        "core/tabstops"
+        "commands/expand/tabs.mbt",
+        "commands/unexpand/tabs.mbt"
       ],
       "retain": "Explicit adaptive-cache failure state, required capability boundaries, launch policy and aligned/relative tab-stop overflow checks"
     }

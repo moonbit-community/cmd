@@ -167,16 +167,16 @@ async fn run_case(
     "--tmpfs",
     "/tmp:rw,nosuid,nodev,size=64m",
     "-v",
-    oracle_root + ":/work:rw",
+    oracle_root + ":" + oracle_root + ":rw",
     "-w",
-    fixture.working_directory("/work"),
+    fixture.working_directory(oracle_root),
   ]
   if @harness.option_child_required(fixture) {
     let helper = @harness.option_child_path()
     docker_args.append(["-v", helper + ":" + helper + ":ro"])
   }
   let oracle_environment = controlled_environment(
-    @harness.expand_environment(fixture.environment, "/work", http_base~),
+    @harness.expand_environment(fixture.environment, oracle_root, http_base~),
   )
   for name, value in oracle_environment {
     if name != "PATH" {
@@ -191,7 +191,7 @@ async fn run_case(
   docker_args.append(
     @harness.expand_args(
       expand_fixture_args(fixture.args, http_base, https_base),
-      "/work",
+      oracle_root,
     ),
   )
   let oracle_run = @harness.run_oracle_with_deadline(
@@ -199,7 +199,7 @@ async fn run_case(
     docker_args,
     fixture.timeout_ms.unwrap_or(120000),
     evidence_dir=root + "/oracle.lifecycle",
-    stdin=fixture.input(root="/work", http_base~),
+    stdin=fixture.input(root=oracle_root, http_base~),
     inherit_env=true,
   ) catch {
     err => {

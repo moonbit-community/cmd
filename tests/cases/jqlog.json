@@ -76,6 +76,7 @@
     },
     {
       "id": "repair-jqlog-slice-lines",
+      "inputs": ["tests/fixtures/jq/adapter.json"],
       "command": "jqlog",
       "args": [
         ".[1:-1]"

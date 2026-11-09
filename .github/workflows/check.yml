@@ -23,15 +23,10 @@ defaults:
     shell: bash
 
 jobs:
-  check:
-    name: ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    # Linux also runs the fixed upstream comparisons and uploads their raw records.
-    timeout-minutes: ${{ matrix.os == 'ubuntu-24.04' && 45 || 30 }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-24.04, macos-15, windows-2025]
+  linux:
+    name: linux-correctness
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     env:
       LANG: C
       LC_ALL: C
@@ -43,6 +38,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+          fetch-depth: 0
       - uses: hustcer/setup-moonbit@v1.23
         with:
           version: latest
@@ -92,27 +88,7 @@ jobs:
         run: moon run tests/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log
       - name: Native test-tool regressions
         run: moon run tests/run.mbtx -- test tools 2>&1 | tee test-reports/packages-harness.log
-      - uses: docker/setup-buildx-action@v3
-        if: runner.os == 'Linux'
-        with:
-          cache-binary: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) }}
-          buildkitd-config-inline: |
-            [worker.oci]
-              max-parallelism = 2
-      - name: Pinned upstream image
-        id: oracle
-        if: runner.os == 'Linux'
-        uses: docker/build-push-action@v6
-        with:
-          context: tests/fixtures/oracle
-          load: true
-          tags: mooncmd-oracle:phase0
-          cache-from: ${{ (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,scope=mooncmd-oracle' || '' }}
-          cache-to: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
-      - name: Record pinned oracle
-        if: runner.os == 'Linux'
-        run: moon run tests/run.mbtx -- oracle --image '${{ steps.oracle.outputs.imageid }}'
-      - name: Wasm functional checks and Linux upstream comparisons
+      - name: Complete Wasm functional checks
         run: moon run tests/run.mbtx -- functional 2>&1 | tee test-reports/functional.log
       - name: Interfaces and harness formatting
         if: runner.os == 'Linux'
@@ -120,6 +96,133 @@ jobs:
           moon info
           moon run tests/run.mbtx -- format --check
           git diff --exit-code
+      - name: Select required upstream comparisons
+        if: runner.os == 'Linux'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: moon run tests/run.mbtx -- ci select "$BASE_SHA" "$GITHUB_SHA"
+      - name: Export prepared Linux inputs
+        if: runner.os == 'Linux'
+        run: moon run tests/run.mbtx -- ci export
+      - name: Share prepared Linux inputs
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmd-linux-build
+          path: ci-inputs
+          retention-days: 1
+          if-no-files-found: error
+      - name: Record report footprint
+        if: ${{ always() && !cancelled() }}
+        run: moon run tests/run.mbtx -- ci metrics
+      - name: Preserve results and failure diagnostics
+        id: upload_results
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmd-test-reports-ubuntu-24.04
+          path: test-reports
+          retention-days: 7
+          if-no-files-found: error
+      - name: Preserve logs when interrupted or full upload fails
+        if: ${{ always() && (cancelled() || steps.upload_results.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmd-test-diagnostics-ubuntu-24.04
+          path: |
+            test-reports/*.log
+            test-reports/*.json
+            test-reports/oracle-*.txt
+            test-reports/functional/*.json
+            test-reports/functional/*.jsonl
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Save dependency and compilation state
+        if: ${{ success() && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && steps.compilation-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.moon/cache/deps
+            .mooncakes
+            core/.mooncakes
+            tests/.mooncakes
+            commands/*/.mooncakes
+            _build/.moon_db
+            _build/native/debug
+            _build/wasm/release
+          key: ${{ steps.cache-key.outputs.prefix }}-${{ github.sha }}
+
+  platforms:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, windows-2025]
+    env:
+      LANG: C
+      LC_ALL: C
+      TZ: UTC
+      DOCKER_BUILD_RECORD_RETENTION_DAYS: 7
+      CMD_TEST_PROFILE: debug
+      CMD_TEST_PREPARED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: hustcer/setup-moonbit@v1.23
+        with:
+          version: latest
+          core-version: latest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Toolchain and report directory
+        run: |
+          mkdir -p test-reports
+          moon version --all | tee test-reports/toolchain.log
+      - name: Compute compilation cache key
+        id: cache-key
+        env:
+          CACHE_PREFIX: wasm-ci-v6-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('test-reports/toolchain.log') }}-wasm-release-tools-debug-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg', '!**/.mooncakes/**', '!**/_build/**', '!**/target/**') }}
+        run: echo "prefix=$CACHE_PREFIX" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@v4
+        id: compilation-cache
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.use_cache }}
+        with:
+          path: |
+            ~/.moon/cache/deps
+            .mooncakes
+            core/.mooncakes
+            tests/.mooncakes
+            commands/*/.mooncakes
+            _build/.moon_db
+            _build/native/debug
+            _build/wasm/release
+          key: ${{ steps.cache-key.outputs.prefix }}-${{ github.sha }}
+          restore-keys: |
+            ${{ steps.cache-key.outputs.prefix }}-
+      - name: Dependencies
+        run: moon update
+      - name: Check products and test tools
+        run: moon run tests/run.mbtx -- check
+      - name: Architecture and strategy registry
+        run: moon run tests/run.mbtx -- architecture test-reports/architecture.json
+      - name: Prepare products and execution tools
+        run: moon run tests/run.mbtx -- prepare
+      - name: Check case registry and candidate
+        run: moon run tests/run.mbtx -- index check
+      - name: Wasm package tests
+        timeout-minutes: 5
+        run: moon run tests/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log
+      - name: Native test-tool regressions
+        run: moon run tests/run.mbtx -- test tools 2>&1 | tee test-reports/packages-harness.log
+      - name: Complete Wasm functional checks
+        run: moon run tests/run.mbtx -- functional 2>&1 | tee test-reports/functional.log
+      - name: Record report footprint
+        if: ${{ always() && !cancelled() }}
+        run: moon run tests/run.mbtx -- ci metrics
       - name: Preserve results and failure diagnostics
         id: upload_results
         if: ${{ always() && !cancelled() }}
@@ -156,3 +259,104 @@ jobs:
             _build/native/debug
             _build/wasm/release
           key: ${{ steps.cache-key.outputs.prefix }}-${{ github.sha }}
+
+  differential:
+    name: linux-upstream
+    needs: linux
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    outputs:
+      required: ${{ steps.inputs.outputs.required }}
+      executed: ${{ steps.compare.outputs.executed }}
+    env:
+      LANG: C
+      LC_ALL: C
+      TZ: UTC
+      CMD_TEST_PROFILE: debug
+      CMD_TEST_PREPARED: '1'
+      DOCKER_BUILD_RECORD_RETENTION_DAYS: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: hustcer/setup-moonbit@v1.23
+        with:
+          version: latest
+          core-version: latest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Record toolchain
+        run: |
+          mkdir -p test-reports
+          moon version --all | tee test-reports/toolchain.log
+      - uses: actions/download-artifact@v4
+        with:
+          name: cmd-linux-build
+          path: ci-inputs
+      - name: Refresh script dependency registry
+        run: moon update
+      - name: Verify prepared inputs and selection
+        id: inputs
+        run: moon run tests/run.mbtx -- ci import
+      - name: Install loopback observation tools
+        if: steps.inputs.outputs.required == 'true'
+        run: (command -v lsof && test -x /usr/bin/nc) || (sudo apt-get update && sudo apt-get install --yes lsof netcat-openbsd)
+      - uses: docker/setup-buildx-action@v3
+        if: steps.inputs.outputs.required == 'true'
+        with:
+          cache-binary: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) }}
+          buildkitd-config-inline: |
+            [worker.oci]
+              max-parallelism = 2
+      - name: Pinned upstream image
+        id: oracle
+        if: steps.inputs.outputs.required == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: tests/fixtures/oracle
+          load: true
+          tags: mooncmd-oracle:phase0
+          cache-from: ${{ (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,scope=mooncmd-oracle' || '' }}
+          cache-to: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
+      - name: Record pinned oracle
+        if: steps.inputs.outputs.required == 'true'
+        run: moon run tests/run.mbtx -- oracle --image '${{ steps.oracle.outputs.imageid }}'
+      - name: Run required differential
+        id: compare
+        if: steps.inputs.outputs.required == 'true'
+        run: moon run tests/run.mbtx -- ci differential 2>&1 | tee test-reports/differential.log
+      - name: Record report footprint
+        if: ${{ always() && !cancelled() }}
+        run: moon run tests/run.mbtx -- ci metrics
+      - name: Preserve differential results
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmd-test-reports-upstream
+          path: test-reports
+          retention-days: 7
+          if-no-files-found: error
+
+  linux-required:
+    name: ubuntu-24.04
+    if: ${{ always() }}
+    needs: [linux, differential]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hustcer/setup-moonbit@v1.23
+        with:
+          version: latest
+          core-version: latest
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Refresh script dependency registry
+        run: moon update
+      - name: Require correctness and selected upstream results
+        env:
+          LINUX_RESULT: ${{ needs.linux.result }}
+          ORACLE_RESULT: ${{ needs.differential.result }}
+          ORACLE_REQUIRED: ${{ needs.differential.outputs.required }}
+          ORACLE_EXECUTED: ${{ needs.differential.outputs.executed }}
+        run: moon run tests/run.mbtx -- ci gate

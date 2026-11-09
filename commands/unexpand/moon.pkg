@@ -1,6 +1,6 @@
 import {
+  "moonbitlang/core/string",
   "cli/core/cli",
-  "cli/core/tabstops",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/stdio",

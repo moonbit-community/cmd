@@ -1,7 +1,12 @@
 ///|
+priv suberror TemporaryError {
+  TemporaryError(String)
+}
+
+///|
 /// Copy a known file extent using caller-owned scratch storage. Every read and
 /// write completes before that storage is reused. A shortened extent is an error.
-pub async fn copy_range(
+async fn copy_range(
   file : @fs.File,
   start : Int64,
   end : Int64,

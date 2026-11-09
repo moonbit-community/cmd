@@ -69,7 +69,7 @@ async fn reverse_file(
     // until both endpoints are local; only then is the scan buffer sufficient.
     while index < matches.length() && past_end > block_end {
       let boundary = block_start + (matches[index] + offset).to_int64()
-      @tempio.copy_range(file, boundary, past_end, output, writer)
+      copy_range(file, boundary, past_end, output, writer)
       past_end = boundary
       index += 1
     }
@@ -91,7 +91,7 @@ async fn reverse_file(
     }
     block_end = block_start
   }
-  @tempio.copy_range(file, 0L, past_end, output, writer)
+  copy_range(file, 0L, past_end, output, writer)
   writer.flush()
 }
 
@@ -148,7 +148,7 @@ async fn reverse_byte_file(
             data[(boundary - block_start).to_int():(past_end - block_start).to_int()],
           )
         } else {
-          @tempio.copy_range(file, boundary, past_end, range, writer)
+          copy_range(file, boundary, past_end, range, writer)
         }
       }
       past_end = block_start +
@@ -162,7 +162,7 @@ async fn reverse_byte_file(
     }
     block_end = block_start
   }
-  @tempio.copy_range(file, 0L, past_end, range, writer)
+  copy_range(file, 0L, past_end, range, writer)
   writer.flush()
 }
 
@@ -187,19 +187,13 @@ async fn reverse_regex(
     }
     let boundary = if before { start } else { end }
     if before || !first || boundary != past_end {
-      @tempio.copy_range(
-        file,
-        boundary.to_int64(),
-        past_end.to_int64(),
-        output,
-        writer,
-      )
+      copy_range(file, boundary.to_int64(), past_end.to_int64(), output, writer)
     }
     past_end = boundary
     search_end = start
     first = false
   }
-  @tempio.copy_range(file, 0L, past_end.to_int64(), output, writer)
+  copy_range(file, 0L, past_end.to_int64(), output, writer)
   writer.flush()
 }
 

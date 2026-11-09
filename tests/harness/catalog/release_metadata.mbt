@@ -10,6 +10,7 @@ pub(all) struct ReleaseCommandMetadata {
   policy_sensitive : Bool
   releasable : Bool
   case_ids : Array[String]?
+  oracle_boundary : String?
 }
 
 ///|

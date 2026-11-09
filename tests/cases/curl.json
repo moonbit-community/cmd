@@ -154,25 +154,12 @@
       "normalizations": [],
       "comparison": "scenario",
       "timeout_ms": 120000,
-      "source_version": "Raw HTTP transfer framing, partial output and retry contract"
-    },
-    {
-      "id": "network-transfer-boundaries-oracle",
-      "command": "curl",
-      "related_commands": [
-        "wget"
+      "source_version": "Raw HTTP transfer framing, partial output and retry contract",
+      "oracle": true,
+      "aliases": [
+        "network-transfer-boundaries-oracle"
       ],
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 240000,
-      "source_version": "curl 8.22.0 and wget 1.25.0 in sealed oracle image; exact failure statuses are measured"
+      "isolated": true
     },
     {
       "id": "transfer-curl-fixed-complete",
@@ -253,24 +240,6 @@
       "oracle": true,
       "expected_stdout_text": "hello",
       "expected_stderr_text": ""
-    },
-    {
-      "id": "network-auth-cookie-oracle",
-      "command": "curl",
-      "related_commands": [
-        "wget"
-      ],
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 120000,
-      "source_version": "curl 8.22.0 and wget 1.25.0 in pinned oracle image"
     },
     {
       "id": "phase2-curl-does-not-follow",
@@ -562,7 +531,12 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "scenario",
-      "timeout_ms": 60000
+      "timeout_ms": 60000,
+      "oracle": true,
+      "aliases": [
+        "network-auth-cookie-oracle"
+      ],
+      "isolated": true
     },
     {
       "id": "repair-final-curl-basic",
@@ -869,7 +843,8 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "isolated": true
     },
     {
       "id": "network-retry-effects",
@@ -886,7 +861,8 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "isolated": true
     },
     {
       "id": "network-refusal-recovery",
@@ -903,7 +879,8 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "isolated": true
     },
     {
       "id": "network-option-effects",
@@ -920,7 +897,8 @@
       "expected_status": 0,
       "expected_stderr_text": "",
       "stdin_text": "",
-      "expected_stdout_text": ""
+      "expected_stdout_text": "",
+      "isolated": true
     },
     {
       "id": "curl-auth-rejected",
@@ -984,25 +962,12 @@
         "windows"
       ],
       "timeout_ms": 60000,
-      "source_version": "Complete pinned PSL cookie admission, proxy wire and jar observations"
-    },
-    {
-      "id": "network-cookie-suffix-oracle",
-      "command": "curl",
-      "related_commands": [
-        "wget"
+      "source_version": "Complete pinned PSL cookie admission, proxy wire and jar observations",
+      "oracle": true,
+      "aliases": [
+        "network-cookie-suffix-oracle"
       ],
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 120000,
-      "source_version": "Complete pinned PSL cookie admission, proxy wire and jar observations"
+      "isolated": true
     },
     {
       "id": "network-idna",
@@ -1022,25 +987,12 @@
         "windows"
       ],
       "timeout_ms": 60000,
-      "source_version": "Pinned Unicode 15 URL identity, raw host and credential/cookie observations"
-    },
-    {
-      "id": "network-idna-oracle",
-      "command": "curl",
-      "related_commands": [
-        "wget"
+      "source_version": "Pinned Unicode 15 URL identity, raw host and credential/cookie observations",
+      "oracle": true,
+      "aliases": [
+        "network-idna-oracle"
       ],
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 120000,
-      "source_version": "Pinned Unicode 15 URL identity, raw host and credential/cookie observations"
+      "isolated": true
     },
     {
       "id": "network-curl-cookie-domains",
@@ -1055,7 +1007,14 @@
         "linux"
       ],
       "timeout_ms": 600000,
-      "source_version": "Pinned curl 8.22.0 and non-NLS GNU Wget 1.25.0 Domain admission and exact logical saved/reloaded order"
+      "source_version": "Pinned curl 8.22.0 and non-NLS GNU Wget 1.25.0 Domain admission and exact logical saved/reloaded order",
+      "inputs": [
+        "tests/fixtures/network/cookie-domains.json"
+      ],
+      "aliases": [
+        "network-curl-cookie-domains-oracle"
+      ],
+      "isolated": true
     },
     {
       "id": "network-curl-cookie-lifecycle",
@@ -1072,22 +1031,15 @@
         "windows"
       ],
       "timeout_ms": 120000,
-      "source_version": "Pinned curl 8.22.0 actual request, body, retry and complete per-process file observations"
-    },
-    {
-      "id": "network-curl-cookie-lifecycle-oracle",
-      "command": "curl",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
+      "source_version": "Pinned curl 8.22.0 actual request, body, retry and complete per-process file observations",
+      "oracle": true,
+      "inputs": [
+        "tests/fixtures/network/curl-cookie-lifecycle.json"
       ],
-      "timeout_ms": 300000,
-      "source_version": "Pinned curl 8.22.0 actual request, body, retry and complete per-process file observations"
+      "aliases": [
+        "network-curl-cookie-lifecycle-oracle"
+      ],
+      "isolated": true
     },
     {
       "id": "network-curl-http-retry",
@@ -1104,22 +1056,15 @@
         "windows"
       ],
       "timeout_ms": 120000,
-      "source_version": "Pinned curl 8.22.0 actual request, body, retry and complete per-process file observations"
-    },
-    {
-      "id": "network-curl-http-retry-oracle",
-      "command": "curl",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
+      "source_version": "Pinned curl 8.22.0 actual request, body, retry and complete per-process file observations",
+      "oracle": true,
+      "inputs": [
+        "tests/fixtures/network/curl-http-retry.json"
       ],
-      "timeout_ms": 300000,
-      "source_version": "Pinned curl 8.22.0 actual request, body, retry and complete per-process file observations"
+      "aliases": [
+        "network-curl-http-retry-oracle"
+      ],
+      "isolated": true
     }
   ]
 }

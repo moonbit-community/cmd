@@ -148,6 +148,13 @@ module and version before any release operation.
   than runtime command consumers. Preserve dialects, error ordering and fast
   loops instead of forcing them into a generic command framework.
 
+- Keep copy/removal/mode policies, tac range copying, seq arithmetic, jq AST
+  adapters and expand/unexpand grids in their owning commands. Do not import
+  another command's internal packages. Small identical adaptations may remain
+  local when their dialects evolve independently; share independent test inputs
+  rather than widening runtime APIs. The jq adapter corpus retains the original
+  28 positive expectations, including stable-order and deep-key records.
+
 - rg search policy and its concrete matcher adapter are private to `driver`.
   Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms
   in `core/bytesearch`; `matcher` and `searcher` must not import the driver.
@@ -169,6 +176,13 @@ module and version before any release operation.
 - Product delivery and required correctness acceptance target Wasm through MoonX.
   Development CI runs the complete applicable Wasm suite on Linux, macOS and
   Windows. Native is retained only for test tools and their own regressions.
+- Linux upstream comparison is a required separate job. Command and registered
+  fixture changes select their consumers; shared or unclassified execution inputs
+  and missing Git baselines select all. `ubuntu-24.04` aggregates correctness and
+  the required comparison, failing on missing, cancelled or unexpected skips.
+  Reuse only same-run source/toolchain-bound build artifacts, never dynamic
+  candidate observations. Fixture paths belong to existing case `inputs` fields;
+  unsupported oracle profiles require explicit policy boundaries.
 - Mainline changes use a PR and the required ubuntu-24.04, macos-15 and
   windows-2025 checks, followed by actual-main validation. Do not bypass branch
   protection. The former C1 coverage audit, change declaration, source/artifact

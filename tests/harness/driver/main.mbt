@@ -27,8 +27,8 @@ fn append_scenario_reports(
 }
 
 ///|
-// Stateful scenarios share process and fixture state. The requested job limit
-// applies to independent cases; both scenario suites use this serial path.
+// Only reviewed scenarios with private directories, servers and process state
+// opt into concurrency. Every event still executes its own steps in order.
 async fn run_scenario_batch(
   cases : Array[@harness.Case],
   reports : Array[@harness.CaseReport],
@@ -36,7 +36,19 @@ async fn run_scenario_batch(
   execute : async (@harness.Case) -> @harness.CaseReport,
 ) -> Unit {
   guard jobs > 0 else { fail("scenario job limit must be positive") }
+  let independent : Array[async () -> Unit] = []
+  let serial : Array[@harness.Case] = []
   for fixture in cases {
+    if fixture.isolated == Some(true) {
+      independent.push(() => {
+        append_scenario_reports(reports, fixture, execute(fixture))
+      })
+    } else {
+      serial.push(fixture)
+    }
+  }
+  ignore(@async.all(independent, max_concurrent=jobs.min(4)))
+  for fixture in serial {
     append_scenario_reports(reports, fixture, execute(fixture))
   }
 }
@@ -70,7 +82,7 @@ async fn run_driver() -> Unit {
       return
     }
   }
-  let args = oracle_options.arguments[:]
+  let args = expand_oracle_selection(oracle_options.arguments)
   if args.get(0) == Some("--mv-test-helper") {
     @filesystem.run_helper(args[1:])
     return
@@ -88,6 +100,10 @@ async fn run_driver() -> Unit {
     return
   }
   let project_root = workspace_root()
+  if args is ["--select-oracle", base, head, output] {
+    select_oracle_changes(project_root, base, head, output)
+    return
+  }
   let registry_path = workspace_path(project_root, "tests/cases/index.json")
   let canonical_corpus_path = workspace_path(
     project_root, "tests/cases/manifest.json",
@@ -167,6 +183,7 @@ async fn run_driver() -> Unit {
     }
     let manifest = { ..manifest, cases: all, }
     if published is None {
+      validate_case_inputs(project_root, all)
       @harness.validate_local_assertions(
         all,
         registry.entries
@@ -396,174 +413,184 @@ async fn run_driver() -> Unit {
           println(
             "oracle identity: \{oracle_identity.profile_id}@\{oracle_identity.digest}",
           )
-          let docker_user = @harness.docker_user()
-          run_scenario_batch(
-            selected.filter(item => item.comparison == Some("oracle-scenario")),
-            reports,
-            jobs,
-            fixture => {
-              @scenarios.execute_scenario(
-                fixture,
-                bin_root,
-                report_dir,
-                oracle_image~,
+          @harness.with_oracle_workers(report_dir, oracle_image, 2, () => {
+            let docker_user = @harness.docker_user()
+            run_scenario_batch(
+              selected.filter(item => {
+                case_in_suites(item, ["oracle"]) &&
+                [Some("scenario"), Some("oracle-scenario")].contains(
+                  item.comparison,
+                )
+              }),
+              reports,
+              jobs,
+              fixture => {
+                @scenarios.execute_scenario(
+                  fixture,
+                  bin_root,
+                  report_dir,
+                  oracle_image~,
+                )
+              },
+            )
+            let selected = selected.filter(item => {
+              case_in_suites(item, ["oracle"]) &&
+              ![Some("scenario"), Some("oracle-scenario")].contains(
+                item.comparison,
               )
-            },
-          )
-          let selected = selected.filter(item => {
-            case_in_suites(item, ["oracle"]) &&
-            item.comparison != Some("oracle-scenario")
-          })
-          if selected.is_empty() && !suites.contains("metadata") {
-            continue
-          }
-          @async.with_task_group(group => {
-            let mut http_base = ""
-            let mut https_base = ""
-            let fixture_root = @fs.tmpdir(prefix="mooncmd-oracle-http-")
-            defer @fs.rmdir(fixture_root, recursive=true)
-            if selected.any(item => @harness.is_network_case(item)) {
-              let (child, reader, url) = @harness.spawn_http_fixture_process(
-                group,
-              )
-              http_base = url
-              group.add_defer(() => {
-                reader.close()
-                child.cancel()
-                @async.protect_from_cancel(() => ignore(child.wait()))
-              })
+            })
+            if selected.is_empty() && !suites.contains("metadata") {
+              return
             }
-            if selected.any(item => {
-                item.args.any(arg => arg.contains("${HTTPS_BASE}"))
-              }) {
-              let (child, url) = spawn_https_fixture_process(
-                group,
-                fixture_root,
-                fixture_directory=http_fixture_directory,
-              )
-              https_base = url
-              group.add_defer(() => {
-                child.cancel()
-                @async.protect_from_cancel(() => ignore(child.wait()))
-              })
-            }
-            let tasks : Array[async () -> Unit] = selected.map(fixture => {
-              () => {
-                let begin = @async.now()
-                if !fixture.platform_applies() {
+            @async.with_task_group(group => {
+              let mut http_base = ""
+              let mut https_base = ""
+              let fixture_root = @fs.tmpdir(prefix="mooncmd-oracle-http-")
+              defer @fs.rmdir(fixture_root, recursive=true)
+              if selected.any(item => @harness.is_network_case(item)) {
+                let (child, reader, url) = @harness.spawn_http_fixture_process(
+                  group,
+                )
+                http_base = url
+                group.add_defer(() => {
+                  reader.close()
+                  child.cancel()
+                  @async.protect_from_cancel(() => ignore(child.wait()))
+                })
+              }
+              if selected.any(item => {
+                  item.args.any(arg => arg.contains("${HTTPS_BASE}"))
+                }) {
+                let (child, url) = spawn_https_fixture_process(
+                  group,
+                  fixture_root,
+                  fixture_directory=http_fixture_directory,
+                )
+                https_base = url
+                group.add_defer(() => {
+                  child.cancel()
+                  @async.protect_from_cancel(() => ignore(child.wait()))
+                })
+              }
+              let tasks : Array[async () -> Unit] = selected.map(fixture => {
+                () => {
+                  let begin = @async.now()
+                  if !fixture.platform_applies() {
+                    let report = @harness.suite_report(
+                      fixture.id,
+                      backend,
+                      begin,
+                      [],
+                    )
+                    @harness.append_report(reports, {
+                      ..report,
+                      command: fixture.command,
+                      result: "skip",
+                      verification: "differential",
+                      stage: "platform",
+                      detail: "case excludes this platform",
+                      observations: [],
+                    })
+                    return
+                  }
+                  let outcome = run_case(
+                    fixture, bin_root, oracle_image, http_base, https_base, report_dir,
+                    docker_user,
+                  ) catch {
+                    error =>
+                      {
+                        failures: ["infrastructure: " + error.to_string()],
+                        local_contract: None,
+                      }
+                  }
+                  let failures = outcome.failures
                   let report = @harness.suite_report(
                     fixture.id,
                     backend,
                     begin,
-                    [],
+                    failures,
                   )
+                  let infrastructure = failures.any(message => {
+                    message.contains("failed to start") ||
+                    message.has_prefix("infrastructure:")
+                  })
+                  let stage = if failures.any(message => {
+                      message.contains("cleanup")
+                    }) {
+                    "cleanup"
+                  } else if failures.any(message => message.contains("timeout:")) {
+                    "timeout"
+                  } else if failures.any(message => {
+                      message.contains("oracle failed") ||
+                      message.contains("oracle unavailable")
+                    }) {
+                    "oracle"
+                  } else if infrastructure {
+                    "infrastructure"
+                  } else if failures.is_empty() {
+                    "complete"
+                  } else {
+                    "assertion"
+                  }
                   @harness.append_report(reports, {
                     ..report,
                     command: fixture.command,
-                    result: "skip",
-                    verification: "differential",
-                    stage: "platform",
-                    detail: "case excludes this platform",
-                    observations: [],
-                  })
-                  return
-                }
-                let outcome = run_case(
-                  fixture, bin_root, oracle_image, http_base, https_base, report_dir,
-                  docker_user,
-                ) catch {
-                  error =>
-                    {
-                      failures: ["infrastructure: " + error.to_string()],
-                      local_contract: None,
-                    }
-                }
-                let failures = outcome.failures
-                let report = @harness.suite_report(
-                  fixture.id,
-                  backend,
-                  begin,
-                  failures,
-                )
-                let infrastructure = failures.any(message => {
-                  message.contains("failed to start") ||
-                  message.has_prefix("infrastructure:")
-                })
-                let stage = if failures.any(message => {
-                    message.contains("cleanup")
-                  }) {
-                  "cleanup"
-                } else if failures.any(message => message.contains("timeout:")) {
-                  "timeout"
-                } else if failures.any(message => {
-                    message.contains("oracle failed") ||
-                    message.contains("oracle unavailable")
-                  }) {
-                  "oracle"
-                } else if infrastructure {
-                  "infrastructure"
-                } else if failures.is_empty() {
-                  "complete"
-                } else {
-                  "assertion"
-                }
-                @harness.append_report(reports, {
-                  ..report,
-                  command: fixture.command,
-                  source_version: fixture.source_version.unwrap_or(
-                    oracle_identity.image + "@" + oracle_identity.digest,
-                  ),
-                  result: if infrastructure {
-                    "infra"
-                  } else {
-                    report.result
-                  },
-                  verification: if fixture.expected_rejection is Some(_) {
-                    "boundary"
-                  } else {
-                    "differential"
-                  },
-                  stage,
-                  observations: if failures.is_empty() {
-                    let observed = [
-                      "status",
-                      "stdout",
-                      "stderr",
-                      "content",
-                      "type",
-                      ..fixture.observe.unwrap_or([]),
-                    ]
-                    if outcome.local_contract is Some(receipt) {
-                      for dimension in receipt.observations {
-                        if !observed.contains(dimension) {
-                          observed.push(dimension)
+                    source_version: fixture.source_version.unwrap_or(
+                      oracle_identity.image + "@" + oracle_identity.digest,
+                    ),
+                    result: if infrastructure {
+                      "infra"
+                    } else {
+                      report.result
+                    },
+                    verification: if fixture.expected_rejection is Some(_) {
+                      "boundary"
+                    } else {
+                      "differential"
+                    },
+                    stage,
+                    observations: if failures.is_empty() {
+                      let observed = [
+                        "status",
+                        "stdout",
+                        "stderr",
+                        "content",
+                        "type",
+                        ..fixture.observe.unwrap_or([]),
+                      ]
+                      if outcome.local_contract is Some(receipt) {
+                        for dimension in receipt.observations {
+                          if !observed.contains(dimension) {
+                            observed.push(dimension)
+                          }
                         }
                       }
-                    }
-                    observed
-                  } else {
-                    []
-                  },
-                  missing_observations: if infrastructure {
-                    fixture.observe.unwrap_or([])
-                  } else {
-                    []
-                  },
-                  local_contract: outcome.local_contract,
-                  evidence: if report.result == "pass" {
-                    None
-                  } else {
-                    Some(report_dir + "/" + fixture.id)
-                  },
-                })
-              }
+                      observed
+                    } else {
+                      []
+                    },
+                    missing_observations: if infrastructure {
+                      fixture.observe.unwrap_or([])
+                    } else {
+                      []
+                    },
+                    local_contract: outcome.local_contract,
+                    evidence: if report.result == "pass" {
+                      None
+                    } else {
+                      Some(report_dir + "/" + fixture.id)
+                    },
+                  })
+                }
+              })
+              run_scheduled_tasks(selected, tasks, jobs.min(2))
             })
-            run_scheduled_tasks(selected, tasks, jobs)
           })
         }
         _ => {
           let cases = selected.filter(item => {
-            item.comparison == Some("scenario")
+            item.comparison == Some("scenario") &&
+            !(suites.contains("oracle") && case_in_suites(item, ["oracle"]))
           })
           run_scenario_batch(cases, reports, jobs, fixture => {
             @scenarios.execute_scenario(fixture, bin_root, report_dir)
@@ -603,7 +630,7 @@ fn require_oracle_bindings(
   registry : @catalog.Registry,
 ) -> Unit raise Failure {
   for fixture in selected {
-    if fixture.oracle == Some(true) {
+    if case_in_suites(fixture, ["oracle"]) {
       guard registry.entries.any(entry => {
         (entry.case_id == fixture.id || entry.aliases.contains(fixture.id)) &&
         entry.oracle_profile != ""
