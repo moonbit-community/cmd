@@ -6,8 +6,6 @@ import {
 }
 
 // Values
-pub fn compare(Value, Value) -> Int32
-
 pub fn decode(BytesView, Profile, big_endian? : Bool) -> Value
 
 pub fn format_magnitude(Value, Char, Int32?, Bool, Profile, normalized_hex? : Bool) -> String
@@ -15,8 +13,6 @@ pub fn format_magnitude(Value, Char, Int32?, Bool, Profile, normalized_hex? : Bo
 pub fn format_roundtrip(Value, Profile) -> String
 
 pub fn parse_prefix(String, Profile) -> (Value, Int32, Bool)
-
-pub fn sequence_value(Value, Value, @bigint.BigInt, Profile) -> Value
 
 pub fn zero(negative? : Bool) -> Value
 

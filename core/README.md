@@ -12,11 +12,14 @@ consumers use `decode_reader`. These are intentional source API breaks for a
 future release, not changes to the immutable 0.9.5 coordinate. Publication and
 exact-coordinate acceptance remain separate steps.
 
-The second review folds `fsops/mode.parse_octal_mode` into
-`fsops.parse_octal_mode` and removes the `stream.count_byte` forwarding API;
+Command-owned copy, removal, permission-mode, jq, tab-grid, sequence-evaluation
+and tac extent-copy policies now live beside their commands. The `jq_filter`
+and `tabstops` packages and test-only backup-name wrapper are removed. Shared
+fsops keeps path relationships and filesystem mechanisms; numfmt keeps numeric
+parsing/formatting. The `stream.count_byte` forwarding API is also removed;
 call `bytesearch.count_byte` directly. Unused CLI error variants are removed.
 The immutable published interfaces remain unchanged.
-Chmod and mkdir will need the future core coordinate in their module
+Commands with changed core dependencies will need the future core coordinate in their module
 dependencies when preparing a release; workspace checks do not validate those
 unpublished interfaces against the current registry versions.
 
@@ -133,7 +136,6 @@ matching, formatting, ordering and resource policies.
 | `stream.LineScanner` | An owned-record facade over the same parser, retaining 64 KiB reads. Use it when records survive the current batch. | sort, join, comm, head, jq, nl, paste and existing scanner clients. |
 | `stream.BlockWriter` | Fixed output capacity; private storage cannot be reused during an awaited write. Failure/cancellation consumes the pending queue and poisons further writes; a deferred flush cannot replay a partial prefix. | rg stdout, column snapshot streams, nl, paste and comm. |
 | `tempio.Directory` | Exclusive creation, invocation-owned cleanup, idempotent close after success. Close files before the directory. Cleanup failures propagate; each command chooses error precedence. | tac, column and sort. |
-| `tempio.copy_range` | Exact positional extent copy with caller-owned scratch storage, 64-bit file offsets and completion before buffer reuse. A short extent is an error. | tac reverse output. |
 
 `BlockWriter.write_slice` borrows a fixed-array span until the call returns;
 callers must not mutate it during that interval. Small writes are copied into

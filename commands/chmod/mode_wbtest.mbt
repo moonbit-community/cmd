@@ -8,7 +8,7 @@ test "octal permission modes retain prefixes, bounds and errors" {
       ("0O7777", 0o7777),
       ("000000000000007", 7),
     ] {
-    assert_eq(@fsops.parse_octal_mode(text), mode)
+    assert_eq(parse_octal_mode(text), mode)
   }
   for
     (text, message) in [
@@ -20,7 +20,7 @@ test "octal permission modes retain prefixes, bounds and errors" {
       ("10000", "mode out of range"),
       ("777777777777777777777", "mode out of range"),
     ] {
-    try @fsops.parse_octal_mode(text) catch {
+    try parse_octal_mode(text) catch {
       Failure(actual) => assert_true(actual.has_suffix("FAILED: " + message))
       _ => fail("unexpected mode error")
     } noraise {

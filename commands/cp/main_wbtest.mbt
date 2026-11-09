@@ -21,7 +21,7 @@ fn copy_options() -> CpOptions {
     no_clobber: false,
     no_target_directory: false,
     verbose: false,
-    traversal: @fsops.NeverFollowLinks,
+    traversal: NeverFollowLinks,
     update: @fsops.UpdateAll,
     preserve_permissions: false,
   }

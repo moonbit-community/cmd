@@ -72,7 +72,9 @@ async test "workspace dependency manifests keep one async baseline and the selec
   ]
   let commands = command_names(root + "commands")
   assert_eq(commands.length(), 82)
-  let independent = ["echo", "false", "serve", "sleep", "true", "typst"]
+  let independent = [
+    "echo", "false", "jqlog", "serve", "sleep", "true", "typst",
+  ]
   let modules = ["core", "tests"]
   for command in commands {
     modules.push("commands/" + command)

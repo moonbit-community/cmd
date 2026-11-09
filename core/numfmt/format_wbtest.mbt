@@ -72,12 +72,3 @@ test "numeric prefixes distinguish malformed overflow and exact subnormal" {
   assert_true(parse_prefix("0x1p-1074", Binary64).0 is Finite(_, _, _))
   assert_true(!parse_prefix("0x1p-1074", Binary64).2)
 }
-
-///|
-test "sequence arithmetic rounds multiplication before addition" {
-  let first = parse_prefix("0.1", Binary64).0
-  let step = first
-  let value = sequence_value(first, step, BigInt::from_int(2), Binary64)
-  assert_true(compare(value, parse_prefix("0.3", Binary64).0) > 0)
-  assert_eq(format_magnitude(value, 'f', Some(2), false, Binary64), "0.30")
-}

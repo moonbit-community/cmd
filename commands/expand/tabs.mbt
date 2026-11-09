@@ -1,17 +1,17 @@
 ///|
-pub(all) suberror TabError {
+priv suberror TabError {
   TabError(String)
 }
 
 ///|
-struct TabStops {
+priv struct TabStops {
   columns : Array[Int64]
   interval : Int64
   relative : Bool
 }
 
 ///|
-pub fn parse(values : Array[String]) -> TabStops raise TabError {
+fn parse_tabs(values : Array[String]) -> TabStops raise TabError {
   let columns : Array[Int64] = []
   let mut absolute_interval = 0L
   let mut increment = 0L
@@ -104,7 +104,7 @@ pub fn parse(values : Array[String]) -> TabStops raise TabError {
 }
 
 ///|
-pub fn next(column : Int64, stops : TabStops) -> Int64? raise TabError {
+fn next_tab(column : Int64, stops : TabStops) -> Int64? raise TabError {
   for stop in stops.columns {
     if stop > column {
       return Some(stop)

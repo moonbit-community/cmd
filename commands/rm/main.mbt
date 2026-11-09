@@ -460,7 +460,7 @@ async fn main {
   }
   let mut failed = false
   for path in paths {
-    if @fsops.protects_removal_operand(path, preserve_root~) {
+    if protects_removal_operand(path, preserve_root~) {
       @stdio.stderr.write("rm: refusing to remove protected path '\{path}'\n")
       failed = true
       continue

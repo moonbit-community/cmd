@@ -152,13 +152,7 @@ async test "tac byte ranges retain 64-bit sparse offsets" {
   let start = 4294967296L - 2L
   file.write_at(b"tail", position=start)
   let output = @io.MemoryReader(writer => {
-    @tempio.copy_range(
-      file,
-      start,
-      start + 4L,
-      FixedArray::make(3, b'\x00'),
-      writer,
-    )
+    copy_range(file, start, start + 4L, FixedArray::make(3, b'\x00'), writer)
   })
   defer output.close()
   assert_eq(output.read_all().binary(), b"tail")
