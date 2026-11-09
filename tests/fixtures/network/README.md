@@ -54,6 +54,24 @@ tests cover their state transitions without replacing those timing receipts.
 The local diagnostic profile fixes Linux/amd64 conversion behavior; it does not
 establish portable C semantics for out-of-range floating conversion.
 
-These finite definitions are not execution evidence. The outstanding date,
-remaining jar behavior and Domain-normalization boundaries are in
+`wget-cookie-dates.json` retains 87 stable Expires controls: 58 original
+observations from receipt
+`c1148cf940204a2fc7ee9d52e09a5095837f7236cf5789be450c32d2d2a54860`
+and 29 additional controls from receipt
+`4c2205bcba506d2702e213472e284802bf5efdf0b07eae0178d16aa2c9730169`.
+The original frozen expectations have digest
+`e918001ceb123a3d9e9da94cde5540606a702318edd1cf3ee68223798aa6bdbf`;
+the extra oracle-only expectations have digest
+`e73a462316e2350eddcbcc164293a475dc76710ce3e9b53f17e7029852e424c5`.
+Extraction preserves the actual oracle rows and row order from each saved file,
+with separate source hashes and original labels. Extra labels use `extra-` to
+keep the four normal-format controls as independent records. Per-case TZ is
+passed to both real execution paths, and no-session cases omit the actual flag.
+The fixed executable uses glibc 2.39. Four ordered formats, field-width and ASCII
+whitespace edges, the 69 pivot, UTC calendar normalization, timezone suffixes,
+epoch -1 ordering and the 127/128-byte boundary have explicit controls. These
+expectations do not come from the candidate or establish every libc dialect.
+
+These finite definitions are not execution evidence. The remaining jar behavior,
+date-profile extension conditions and Domain-normalization boundaries are in
 [ADR-0005](../../../docs/adr/0005-transfer.md).

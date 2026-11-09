@@ -91,6 +91,8 @@ fn usage() -> String {
     #|Wget expiry accepts decimal/hex floating prefixes; exactly -1 rejects an update.
     #|Zero requests deletion; nonzero negative values retain stale domain-chain entries.
     #|Overflow follows the fixed Linux/amd64 profile; saved expiry digits round via binary64.
+    #|Expires uses four C-locale date formats, UTC normalization and the 69 year pivot.
+    #|Missing/GMT/signed-digit timezone tails are accepted without applying offsets.
     #|GNU chunk payload/trailer EOF rules apply; missing size lines or CRLF fail.
     #|HTTP 416 succeeds without opening transfer output; -O is initialized first.
     #|Unsolicited 304 exits 8. Continued GET with --content-disposition selects

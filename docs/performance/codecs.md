@@ -167,7 +167,7 @@ Any indexing optimization must retain the chain representative, replacement
 order, port identity, jar failures and raw sequence in
 [`network-wget-cookies`](../../tests/scenarios/network/wget_cookies.mbt), with
 the frozen corpus in [network fixtures](../../tests/fixtures/network/README.md).
-Date and Domain-normalization limits remain in ADR-0005.
+Date profiles and Domain-normalization limits remain in ADR-0005.
 
 Numeric expiry uses the private [prefix parser](../../core/netops/wget_cookie_number.mbt).
 It scans the C-locale prefix, delegates a valid decimal substring to the released
@@ -186,6 +186,20 @@ binary64 but formats the integral magnitude directly, avoiding exponent notation
 and preserving the oracle's rounded digits near 2^63. Fixed-clock tests own time
 boundaries; [frozen CLI inputs](../../tests/fixtures/network/wget-cookie-expiry.json)
 own real storage/reload expectations. This adds no performance acceptance claim.
+
+Wget [date parsing](../../core/netops/wget_cookie_date.mbt) keeps four explicit
+layouts in upstream order. A shared cursor scans English names, bounded decimal
+fields and exact punctuation; format spaces consume zero or more ASCII spaces.
+The numeric scanner preserves the range-dependent stopping rule, since adjacent
+year/time fields can select an earlier format. Original text remains available
+for the case-sensitive trailing GMT check. Starting at the month's first valid
+day and adding day/time offsets implements UTC normalization without asking the
+public calendar constructor to accept an invalid date. A valid result of -1 is
+then rejected explicitly. Reusing Curl's permissive token scan was rejected
+because it changes accepted grammar, year mapping and calendar normalization.
+The field owner bounds input below 128 UTF-8 bytes; the fixed number of scans
+is linear in that bounded input with one lowercase copy. The date corpus and
+private regressions preserve these rules without establishing timing acceptance.
 
 ## Verification routes
 

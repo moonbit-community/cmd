@@ -82,6 +82,14 @@ expectations exclude current-second and relative-future expiry values. Private
 fixed-clock regressions and independent measured-clock observations cover those
 boundaries; uncertain clock windows cannot count as success.
 
+`network-wget-cookie-dates` retains 87 fixed date controls using the same
+request/save/reload observer. Its C-locale profile includes format ordering,
+field-width and whitespace edges, UTC normalization, epoch -1 and non-UTC TZ.
+The recorded TZ is passed to both candidate and oracle processes. Every record
+pins both saved files' rows and row order, including session-cookie exclusion.
+The candidate scenario has a 120-second bound and the Linux oracle route has
+300 seconds; each child retains its existing deadline.
+
 `network-wget-authentication` retains 73 independent fixed-Wget controls for
 optional credential fields, per-hop challenges, command-wide hostname cache,
 401 failures, attached booleans and binary named-file replay. Raw HTTP/CONNECT,

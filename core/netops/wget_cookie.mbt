@@ -152,7 +152,7 @@ fn wget_wire_cookie(text : String) -> Cookie? {
           @utf8.encode(value).length() < 128 else {
           return None
         }
-        if cookie_date(value) is Some(date) {
+        if wget_cookie_date(value) is Some(date) {
           expiry.push(Date(date))
         }
       }

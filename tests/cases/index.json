@@ -45917,6 +45917,54 @@
         "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:network-wget-cookie-dates",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-cookie-dates",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-wget-cookie-dates",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-cookie-dates",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-wget-cookie-dates-oracle",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-cookie-dates-oracle",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:network-wget-cookie-dates-oracle",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-cookie-dates-oracle",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

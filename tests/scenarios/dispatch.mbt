@@ -313,9 +313,33 @@ pub async fn execute_scenario(
         "network-wget-cookies-oracle" =>
           network_wget_cookies_scenario(root, work, oracle_image?)
         "network-wget-cookie-expiry" =>
-          network_wget_cookies_scenario(root, work, proof?, numeric=true)
+          network_wget_cookies_scenario(
+            root,
+            work,
+            proof?,
+            corpus="wget-cookie-expiry",
+          )
         "network-wget-cookie-expiry-oracle" =>
-          network_wget_cookies_scenario(root, work, oracle_image?, numeric=true)
+          network_wget_cookies_scenario(
+            root,
+            work,
+            oracle_image?,
+            corpus="wget-cookie-expiry",
+          )
+        "network-wget-cookie-dates" =>
+          network_wget_cookies_scenario(
+            root,
+            work,
+            proof?,
+            corpus="wget-cookie-dates",
+          )
+        "network-wget-cookie-dates-oracle" =>
+          network_wget_cookies_scenario(
+            root,
+            work,
+            oracle_image?,
+            corpus="wget-cookie-dates",
+          )
         "network-wget-authentication" =>
           network_wget_authentication_scenario(root, work, proof?)
         "network-wget-authentication-oracle" =>
