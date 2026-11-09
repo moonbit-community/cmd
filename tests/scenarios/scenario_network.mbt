@@ -1,10 +1,6 @@
 ///|
-fn workspace_network_executor(
-  root : String,
-  proof? : @harness.ScenarioProof,
-) -> @network.Executor {
+fn workspace_network_executor(root : String) -> @network.Executor {
   {
-    proof,
     invoke: invocation => {
       let program = @harness.command_program()
       let args = @harness.command_args(
@@ -41,11 +37,10 @@ async fn network_curl_transfers_scenario(
   work : String,
   corpus~ : String,
   oracle_image? : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   @network.run(
     "network-" + corpus,
-    workspace_network_executor(root, proof?),
+    workspace_network_executor(root),
     work,
     oracle_image?,
   )
@@ -57,11 +52,10 @@ async fn network_cookie_domains_scenario(
   work : String,
   tool~ : String,
   oracle_image? : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   @network.run(
     "network-" + tool + "-cookie-domains",
-    workspace_network_executor(root, proof?),
+    workspace_network_executor(root),
     work,
     oracle_image?,
   )
@@ -72,12 +66,11 @@ async fn network_wget_cookies_scenario(
   root : String,
   work : String,
   oracle_image? : String,
-  proof? : @harness.ScenarioProof,
   corpus~ : String = "wget-cookies",
 ) -> Unit {
   @network.run(
     "network-" + corpus,
-    workspace_network_executor(root, proof?),
+    workspace_network_executor(root),
     work,
     oracle_image?,
   )
@@ -88,11 +81,10 @@ async fn network_wget_authentication_scenario(
   root : String,
   work : String,
   oracle_image? : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   @network.run(
     "network-wget-authentication",
-    workspace_network_executor(root, proof?),
+    workspace_network_executor(root),
     work,
     oracle_image?,
   )
@@ -103,11 +95,10 @@ async fn network_idna_scenario(
   root : String,
   work : String,
   oracle_image? : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   @network.run(
     "network-idna",
-    workspace_network_executor(root, proof?),
+    workspace_network_executor(root),
     work,
     oracle_image?,
   )
@@ -118,11 +109,10 @@ async fn network_cookie_suffix_scenario(
   root : String,
   work : String,
   oracle_image? : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   @network.run(
     "network-cookie-suffix",
-    workspace_network_executor(root, proof?),
+    workspace_network_executor(root),
     work,
     oracle_image?,
   )
@@ -133,11 +123,10 @@ async fn network_transfer_scenario(
   root : String,
   work : String,
   oracle_image? : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   @network.run(
     "network-transfer-boundaries",
-    workspace_network_executor(root, proof?),
+    workspace_network_executor(root),
     work,
     oracle_image?,
   )
@@ -148,11 +137,10 @@ async fn network_cli_scenario(
   root : String,
   work : String,
   oracle_image? : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   @network.run(
     "network-auth-cookie",
-    workspace_network_executor(root, proof?),
+    workspace_network_executor(root),
     work,
     oracle_image?,
   )

@@ -319,10 +319,8 @@ async fn transfer_scenario_call(
       )
     }
     let expected_status = transfer_oracle_status(command, label)
-    if oracle_image is None &&
-      executor.proof is Some(proof) &&
-      proof.accepts("transfer/" + command + "-" + label + "/response", command) {
-      proof.observe_equal(
+    if oracle_image is None {
+      @harness.assert_observation(
         "transfer/" + command + "-" + label + "/response",
         command,
         {

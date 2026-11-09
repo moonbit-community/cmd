@@ -34,7 +34,6 @@ async fn mkdir_umask_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   guard !(@async.platform is Windows) else {
@@ -261,26 +260,25 @@ async fn mkdir_umask_scenario(
     observations,
     oracle_image?,
   )
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "mkdir/umask-effects",
-      "mkdir",
-      {
-        "checked": checked,
-        "mixed_error_orders": 2,
-        "masks": 6,
-        "explicit_and_default": true,
-        "existing_preserved": true,
-      },
-      {
-        "checked": 12,
-        "mixed_error_orders": 2,
-        "masks": 6,
-        "explicit_and_default": true,
-        "existing_preserved": true,
-      },
-    )
-  }
+
+  @harness.assert_observation(
+    "mkdir/umask-effects",
+    "mkdir",
+    {
+      "checked": checked,
+      "mixed_error_orders": 2,
+      "masks": 6,
+      "explicit_and_default": true,
+      "existing_preserved": true,
+    },
+    {
+      "checked": 12,
+      "mixed_error_orders": 2,
+      "masks": 6,
+      "explicit_and_default": true,
+      "existing_preserved": true,
+    },
+  )
 }
 
 ///|

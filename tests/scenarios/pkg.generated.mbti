@@ -2,7 +2,6 @@
 package "mooxCLI/cmd-tests/scenarios"
 
 import {
-  "moonbitlang/core/json",
   "mooxCLI/cmd-tests/harness",
 }
 
@@ -11,7 +10,7 @@ pub fn cohort_cases() -> Array[@harness.Case] raise
 
 pub async fn execute_cohort(@harness.Case, String, String, String, String) -> @harness.CaseReport
 
-pub async fn execute_scenario(@harness.Case, String, String, oracle_image? : String, retain_success? : Bool, proof_catalog? : @json.Json, proof_receipts? : Array[@json.Json]) -> @harness.CaseReport
+pub async fn execute_scenario(@harness.Case, String, String, oracle_image? : String, retain_success? : Bool) -> @harness.CaseReport
 
 pub async fn run_test_helper(ArrayView[String]) -> Unit
 

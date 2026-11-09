@@ -73,7 +73,8 @@ async fn main {
       #|  check                         Check products, tools, and all standalone scripts
       #|  test tools|packages|all        Run Native tools, Wasm packages, or both
       #|  format [--check]              Format packages and every standalone script
-      #|  functional                    Run workspace correctness and coverage evidence
+      #|  prepare                       Build Wasm products and Native execution tools once
+      #|  functional                    Run workspace correctness and validate complete results
       #|  published                     Run exact-coordinate published acceptance
       #|  list|validate [DRIVER_ARGS]    Inspect the current functional selection
       #|  index check|update            Check or regenerate current derived definitions
@@ -95,10 +96,19 @@ async fn main {
   let tools = [
     "tests/harness", "tests/harness/catalog", "tests/scenarios", "tests/scenarios/network",
     "tests/scenarios/filesystem", "tests/harness/driver", "tests/release", "tests/benchmark",
-    "tests/coverage", "tests/resources",
+    "tests/resources",
   ]
   let rest = args[1:].to_owned()
+  let prepared = @env.get_env_var("CMD_TEST_PREPARED") == Some("1")
   match args[0] {
+    "prepare" => {
+      guard rest.is_empty() else { fail("prepare takes no arguments") }
+      moon(root, ["build", "--target", "wasm", "--release", "--deny-warn"])
+      moon(
+        root,
+        tool_arguments(profile, ["tests/harness/driver", "tests/release"]),
+      )
+    }
     "check" => {
       guard rest.is_empty() else { fail("check takes no arguments") }
       moon(root, ["check", "--target", "wasm", "--deny-warn"])
@@ -144,7 +154,9 @@ async fn main {
       }
     }
     "list" | "validate" => {
-      moon(root, tool_arguments(profile, ["tests/harness/driver"]))
+      if !prepared {
+        moon(root, tool_arguments(profile, ["tests/harness/driver"]))
+      }
       @shell.Cmd(
         root +
         "/_build/native/" +
@@ -174,8 +186,9 @@ async fn main {
           root,
           tool_arguments("release", ["tests/harness/driver", "tests/release"]),
         )
-      } else {
+      } else if !prepared {
         moon(root, ["build", "--target", "wasm", "--release", "--deny-warn"])
+        moon(root, tool_arguments(profile, ["tests/harness/driver"]))
       }
       @shell.Cmd(
         "moon",
@@ -219,8 +232,14 @@ async fn main {
         "resource-profiles" => "tests/tools/resource_profiles.mbtx"
         _ => fail("unknown test command: " + command)
       }
-      if command == "oracle" {
+      if command == "oracle" && !prepared {
         moon(root, tool_arguments(profile, ["tests/harness/driver"]))
+      }
+      if command == "index" && !prepared {
+        moon(
+          root,
+          tool_arguments(profile, ["tests/harness/driver", "tests/release"]),
+        )
       }
       moon(root, ["run", script, "--", ..rest])
     }

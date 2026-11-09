@@ -1,9 +1,5 @@
 ///|
-async fn follow_interval_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn follow_interval_scenario(root : String, work : String) -> Unit {
   for (label, interval) in [("fast", "0.05"), ("slow", "2")] {
     let source = work + "/" + label
     @fs.write_file(source, "ready\n")
@@ -58,19 +54,14 @@ async fn follow_interval_scenario(
         ),
       )
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        proof.observe_equal("tail/" + label, "tail", actual, expected)
-      }
+
+      @harness.assert_observation("tail/" + label, "tail", actual, expected)
     })
   }
 }
 
 ///|
-async fn failure_prefix_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn failure_prefix_scenario(root : String, work : String) -> Unit {
   let gzip = scenario_run(
     work,
     root,
@@ -93,11 +84,11 @@ async fn failure_prefix_scenario(
     "truncated_error": true,
   }
   assert_eq(gzip_actual, gzip_expected)
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "gzip/truncated-prefix", "gzip", gzip_actual, gzip_expected,
-    )
-  }
+
+  @harness.assert_observation(
+    "gzip/truncated-prefix", "gzip", gzip_actual, gzip_expected,
+  )
+
   @fs.write_file(work + "/short", "a\n")
   assert_false(@fs.exists(work + "/missing"))
   let wc = scenario_run(work, root, "wc", ["-l", "short", "missing"], cwd=work)
@@ -116,9 +107,9 @@ async fn failure_prefix_scenario(
     "retained": "a\n",
   }
   assert_eq(wc_actual, wc_expected)
-  if proof is Some(proof) {
-    proof.observe_equal("wc/error-prefix", "wc", wc_actual, wc_expected)
-  }
+
+  @harness.assert_observation("wc/error-prefix", "wc", wc_actual, wc_expected)
+
   @fs.write_file(work + "/hay", "source\n")
   let rg = scenario_run(
     work,
@@ -143,7 +134,8 @@ async fn failure_prefix_scenario(
     "retained": "source\n",
   }
   assert_eq(rg_actual, rg_expected)
-  if proof is Some(proof) {
-    proof.observe_equal("rg/preprocessor-failure", "rg", rg_actual, rg_expected)
-  }
+
+  @harness.assert_observation(
+    "rg/preprocessor-failure", "rg", rg_actual, rg_expected,
+  )
 }

@@ -1,9 +1,5 @@
 ///|
-async fn network_retries_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn network_retries_scenario(root : String, work : String) -> Unit {
   for
     (command, label, limited, enabled) in [
       ("curl", "retry-delay", false, true),
@@ -144,19 +140,19 @@ async fn network_retries_scenario(
         Json(requests).stringify(indent=2),
       )
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        proof.observe_equal(command + "/" + label, command, actual, expected)
-      }
+
+      @harness.assert_observation(
+        command + "/" + label,
+        command,
+        actual,
+        expected,
+      )
     })
   }
 }
 
 ///|
-async fn refused_retry_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn refused_retry_scenario(root : String, work : String) -> Unit {
   for command in ["curl", "wget"] {
     for retry in [false, true] {
       @async.with_task_group(group => {
@@ -275,14 +271,13 @@ async fn refused_retry_scenario(
           "retry_delay": true,
         }
         assert_eq(actual, expected)
-        if proof is Some(proof) {
-          proof.observe_equal(
-            command + "/refused-" + (if retry { "retry" } else { "control" }),
-            command,
-            actual,
-            expected,
-          )
-        }
+
+        @harness.assert_observation(
+          command + "/refused-" + (if retry { "retry" } else { "control" }),
+          command,
+          actual,
+          expected,
+        )
       })
     }
   }

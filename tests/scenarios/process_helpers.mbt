@@ -3,7 +3,6 @@ async fn scenario_read_exact(
   reader : &@io.Reader,
   trace : String,
   expected : String,
-  proof? : @harness.ScenarioProof,
   assertion_id? : String,
 ) -> Unit {
   let expected = @utf8.encode(expected)
@@ -20,8 +19,8 @@ async fn scenario_read_exact(
     assert_eq(bytes, expected[offset:offset + bytes.length()].to_owned())
     offset += bytes.length()
   }
-  if proof is Some(proof) && assertion_id is Some(id) {
-    proof.observe_equal(
+  if assertion_id is Some(id) {
+    @harness.assert_observation(
       id,
       "sh",
       Json(@harness.scenario_text(Bytes::from_array(observed))),

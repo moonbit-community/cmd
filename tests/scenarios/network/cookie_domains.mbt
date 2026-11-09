@@ -251,7 +251,6 @@ async fn network_cookie_domains_scenario(
           []
         }
         let observing : Executor = {
-          proof: executor.proof,
           invoke: invocation => {
             let before = @fs.readdir(directory)
             assert_false(before.contains(output_name))
@@ -427,8 +426,8 @@ async fn network_cookie_domains_scenario(
         frozen[key] = expected[key]
       }
       assert_eq(observed, Json(frozen), msg=fixture.id)
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           "cookie-domain/" + fixture.id,
           tool,
           observed,

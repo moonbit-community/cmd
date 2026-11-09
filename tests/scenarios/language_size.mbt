@@ -3,7 +3,6 @@ async fn shell_size_platform_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   guard !@fs.exists(observation_path) else {
     fail("preserve previous size observations")
@@ -73,9 +72,8 @@ async fn shell_size_platform_scenario(
     "targets_preserved": true,
   }
   assert_eq(actual, expected)
-  if proof is Some(proof) {
-    proof.observe_equal("sh/size-absolute-links", "sh", actual, expected)
-  }
+
+  @harness.assert_observation("sh/size-absolute-links", "sh", actual, expected)
 
   @fs.mkdir(work + "/directory")
   let directory_target = @fs.realpath(work + "/directory")
@@ -205,18 +203,18 @@ async fn shell_size_platform_scenario(
       "diagnostic_matches_capability": true,
     }
     assert_eq(actual, expected)
-    if proof is Some(proof) {
-      proof.observe_equal("sh/size-platform-" + name, "sh", actual, expected)
-    }
+
+    @harness.assert_observation(
+      "sh/size-platform-" + name,
+      "sh",
+      actual,
+      expected,
+    )
   }
 }
 
 ///|
-async fn shell_size_posix_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn shell_size_posix_scenario(root : String, work : String) -> Unit {
   guard !(@async.platform is Windows) else {
     fail("POSIX size scenario selected on Windows")
   }
@@ -247,9 +245,8 @@ async fn shell_size_posix_scenario(
     "preserved_content": "payload",
   }
   assert_eq(actual, expected)
-  if proof is Some(proof) {
-    proof.observe_equal("sh/size-unreadable", "sh", actual, expected)
-  }
+
+  @harness.assert_observation("sh/size-unreadable", "sh", actual, expected)
 
   // This fixed host utility creates a fixture only; the product never delegates
   // its predicate to a host command or opens the FIFO to obtain its size.
@@ -279,7 +276,6 @@ async fn shell_size_posix_scenario(
     "still_fifo": true,
   }
   assert_eq(actual, expected)
-  if proof is Some(proof) {
-    proof.observe_equal("sh/size-fifo", "sh", actual, expected)
-  }
+
+  @harness.assert_observation("sh/size-fifo", "sh", actual, expected)
 }

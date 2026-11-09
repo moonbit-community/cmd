@@ -315,7 +315,6 @@ async fn network_cookie_security_scenario(
         )
       })
       let observing : Executor = {
-        proof: executor.proof,
         invoke: invocation => {
           let execution = (executor.invoke)(invocation)
           candidate.append(requests)
@@ -367,8 +366,8 @@ async fn network_cookie_security_scenario(
         )
         assert_eq(@fs.read_file(directory + "/oracle/input.jar").text(), jar)
       }
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           "cookie-security/" + fixture.label,
           "curl",
           {
@@ -410,7 +409,6 @@ async fn network_cookie_security_scenario(
         )
       })
       let observing : Executor = {
-        proof: executor.proof,
         invoke: invocation => {
           let execution = (executor.invoke)(invocation)
           candidate.append(requests)
@@ -429,8 +427,8 @@ async fn network_cookie_security_scenario(
       check_network_response(result, expected)
       assert_eq(candidate.length(), 2)
       assert_eq(requests.length(), if oracle_image is Some(_) { 2 } else { 0 })
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           "cookie-security/wget-" + label,
           "wget",
           {

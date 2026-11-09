@@ -10,14 +10,13 @@ Validation rejects duplicate or empty identities, invalid selections, unknown
 platforms and malformed release policy. Moon discovers package tests directly;
 there is no second inventory of individual package-test names.
 
-`tests/cases/generated/quality.json` binds each current JSON case to its source
-digest and assertion kind. Generate it with `tests/run.mbtx -- index update`;
-`index check` and runtime validation reject stale or incomplete definitions.
-The driver validates the whole quality inventory before platform filtering.
+`index check` validates the current case registry and candidate manifest.
+The driver checks actual assertion routes before platform filtering; it does
+not generate or consume a parallel assertion-quality catalog.
 Duplicate-stimulus checks preserve argument order, input bytes, fixtures,
 environment and timing. Consolidation must preserve original assertions,
 aliases and oracle routes.
 
-The [coverage review](../../coverage/README.md) separately binds finite catalog
-facets to actual assertions. Index membership, labels and differential equality
-alone do not establish local contract coverage or upstream parity.
+Direct assertions and original corpus expectations establish the finite scope.
+Index membership, labels and differential equality alone do not establish
+local contract coverage or upstream parity.

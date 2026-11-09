@@ -1,9 +1,5 @@
 ///|
-async fn make_fifo_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn make_fifo_scenario(root : String, work : String) -> Unit {
   let helper = shell_quote(@fs.realpath(@env.args()[0]))
   for recursive in [false, true] {
     let name = if recursive { "recursive" } else { "direct" }
@@ -133,30 +129,29 @@ async fn make_fifo_scenario(
         indent=2,
       ),
     )
-    if proof is Some(proof) {
-      proof.observe_equal(
-        "make/fifo-" + name,
-        "make",
-        {
-          "status": result.status,
-          "stdout": @harness.scenario_text(result.stdout),
-          "stderr": @harness.scenario_text(result.stderr),
-          "done": done,
-          "token": byte[0].to_int(),
-          "extra_token": extra is Some(_),
-          "fifo_retained": @fs.kind(fifo) == Pipe,
-        },
-        {
-          "status": 0,
-          "stdout": "",
-          "stderr": "",
-          "done": names.map(_ => true),
-          "token": 81,
-          "extra_token": false,
-          "fifo_retained": true,
-        },
-      )
-    }
+
+    @harness.assert_observation(
+      "make/fifo-" + name,
+      "make",
+      {
+        "status": result.status,
+        "stdout": @harness.scenario_text(result.stdout),
+        "stderr": @harness.scenario_text(result.stderr),
+        "done": done,
+        "token": byte[0].to_int(),
+        "extra_token": extra is Some(_),
+        "fifo_retained": @fs.kind(fifo) == Pipe,
+      },
+      {
+        "status": 0,
+        "stdout": "",
+        "stderr": "",
+        "done": names.map(_ => true),
+        "token": 81,
+        "extra_token": false,
+        "fifo_retained": true,
+      },
+    )
   }
 }
 

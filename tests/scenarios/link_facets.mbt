@@ -1,9 +1,5 @@
 ///|
-async fn link_dereference_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn link_dereference_scenario(root : String, work : String) -> Unit {
   @fs.mkdir(work + "/dir")
   @fs.write_file(work + "/dir/a", "retained\n")
   @fs.symlink(target="dir", work + "/link")
@@ -47,8 +43,7 @@ async fn link_dereference_scenario(
       "source": "retained\n",
     }
     assert_eq(actual, expected)
-    if proof is Some(proof) {
-      proof.observe_equal("ls/" + label, "ls", actual, expected)
-    }
+
+    @harness.assert_observation("ls/" + label, "ls", actual, expected)
   }
 }

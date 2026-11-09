@@ -1,166 +1,91 @@
 # Command validation
 
-Use one entry: `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- COMMAND`.
-Keep the current PATH toolchain. The entry discovers the workspace from any
-working directory inside it; arguments passed through this entry are relative
-to the repository root unless absolute. From `tests/`, use `moon run run.mbtx`.
-Moon commands sharing the workspace build directory run serially.
+Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- COMMAND`.
+Keep the current PATH toolchain. The entry discovers the workspace and resolves
+its arguments from that root. Moon commands sharing a build directory run
+serially. Product acceptance targets Wasm; Native is only for test tools.
 
 ## Commands
 
 | Command | Responsibility |
 | --- | --- |
-| `check` | Wasm products, Native test packages, and every `.mbtx` script |
-| `test tools` / `test packages` / `test all` | Native infrastructure regressions, Wasm package tests, or both |
-| `format --check` | Package formatting and explicit formatting of every standalone script |
-| `index check` / `index update` | Verify or regenerate current derived definitions; never execution evidence |
-| `list --command sort` / `validate` | Inspect or validate functional selection without executing products |
-| `functional` | Build Wasm, execute applicable correctness checks, and verify fresh coverage evidence |
-| `architecture /absolute/fresh.json` | Validate package and strategy boundaries |
-| `published` | Build acceptance tools and validate the exact published coordinates |
-| `oracle --image sha256:ID` | Verify the immutable Linux reference and complete pinned PSL rules/aliases used by functional/published checks |
-| `corpus`, `benchmark`, `protect` | Pinned sources and the single [timing engine](benchmark/README.md) |
+| `check` | Wasm products, Native tools and every standalone `.mbtx` script |
+| `prepare` | Build product Wasm and Native execution tools once |
+| `test packages` / `test tools` / `test all` | Wasm package tests and Native infrastructure regressions |
+| `format --check` | Packages and all standalone scripts |
+| `index check` / `index update` | Validate cases and bindings; check or update the derived candidate |
+| `list --command sort` / `validate` | Inspect or validate selection without product execution |
+| `functional` | Run applicable workspace assertions and verify complete results |
+| `architecture /absolute/fresh.json` | Validate package and strategy dependencies |
+| `oracle --image sha256:ID` | Prepare and verify the immutable Linux oracle |
+| `published` | Validate independent exact published coordinates and expectations |
+| `corpus`, `benchmark`, `protect` | Separate [performance protection](benchmark/PROTECTION.md) |
 | `resources`, `resource-profiles` | Separate manual [resource observations](resources/README.md) |
 
-Daily tools default to debug builds; product Wasm and package tests use release.
-`CMD_TEST_PROFILE=release` selects optimized tools. Published acceptance always
-uses release tools. Choose a fresh absolute report root for every execution:
+Tools default to debug, products and package tests to release. Published tools
+use release. Standalone commands build their required tools. CI runs `prepare`
+first and sets `CMD_TEST_PREPARED=1` for later commands; missing artifacts fail.
+Choose a fresh absolute `CMD_TEST_REPORT_ROOT` for each execution. Linux currently
+prepares `oracle` in that root before the full functional run. Diagnostic subsets
+do not qualify complete development or published acceptance.
 
-```sh
-MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-report moon run tests/run.mbtx -- functional
-```
+## Ownership and assertions
 
-On Linux, prepare `oracle` into the same report root first: the complete Linux
-run adds pinned differential comparisons. Diagnostic driver selections are
-documented in [harness/driver](harness/driver/README.md); subsets do not qualify
-full development or publication acceptance.
+Package tests own parser tables, numeric boundaries and private state. Keep
+large original corpora in `fixtures/`, preserve their independent expected
+values, and fail on missing files. Command scenarios own argument mapping,
+diagnostics and real file, network, stream and child-process effects. Do not
+expose product internals to relocate tests.
 
-The oracle family ID remains `pinned-oracle-v1` for frozen registry bindings;
-the reviewed `profile_version` is now 2. Its recipe fixes the complete official
-PSL snapshot and verifies retained client/library binaries. `oracle` additionally
-checks every raw Unicode rule and generated A-label alias with libpsl, recording
-fresh data/metadata and immutable-image receipts. Old revision 1 receipts do not
-satisfy the new recipe. `network-cookie-suffix-oracle` retains real client file
-reads and a rule absent from the old builtin data, alongside wire/jar effects.
-
-`check` also verifies the complete fixed Unicode 15 inputs and generated IDNA
-tables through `tools/idna.mbtx`. The original normalization corpus supplies
-19,074 independent NFC records. `network-idna` records real Host, request-target,
-credential and Cookie effects, including mapped-bracket Secure-cookie rejection.
-Its fixed Curl comparison explicitly selects `--proxytunnel` to match the
-workspace's existing HTTP proxy route; both argument vectors remain in raw
-execution records. Ordinary forward-proxy rewriting and full IRI behavior
-retain the limits in [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts).
-Generated tables and finite assertion descriptors do not count as executed tests.
-
-The expanded `network-auth-cookie` suite has a 60-second total scenario budget;
-each candidate invocation retains its 15-second bound. A previous Linux run
-completed successive calls up to the old 30-second deadline and lost only the
-last observation. That failed receipt remains a failure. Network calls now
-persist intent before invocation and a cancellation-protected returned/not-returned
-record, so an outer deadline does not erase which call was attempted. A call
-that never returns supplies no fabricated child status or cleanup verdict.
-File-effect observations exclude exactly that call's intent record, including
-snapshots taken before response bytes arrive. Other files with similar names
-remain observable product effects; a Native regression retains one as a control.
-
-`network-wget-cookies` executes 58 fixed-oracle cookie dialect controls, including
-nondefault ports, jar flags/comments, quoted attributes, chain spelling and
-sticky deletion. Each retains raw requests and checks a second-process jar
-reload; its Linux oracle counterpart runs the same inputs independently.
-The static corpus is in `fixtures/network/wget-cookies.json` and participates
-in the assertion-source snapshot. Full numeric/date grammar remains outside
-this finite profile.
-
-`network-wget-cookie-expiry` adds 194 frozen numeric-expiry controls through the
-same real request/save/reload observer. Each preserves both phases' exact logical
-rows and original row order, including session-cookie exclusion. The candidate
-scenario has a 120-second total bound and its separate Linux comparison has
-600 seconds for 388 oracle processes; each child keeps its existing deadline.
-The source receipt and extracted-fixture hashes accompany the corpus. Static
-expectations exclude current-second and relative-future expiry values. Private
-fixed-clock regressions and independent measured-clock observations cover those
-boundaries; uncertain clock windows cannot count as success.
-
-`network-wget-cookie-dates` retains 87 fixed date controls using the same
-request/save/reload observer. Its C-locale profile includes format ordering,
-field-width and whitespace edges, UTC normalization, epoch -1 and non-UTC TZ.
-The recorded TZ is passed to both candidate and oracle processes. Every record
-pins both saved files' rows and row order, including session-cookie exclusion.
-The candidate scenario has a 120-second bound and the Linux oracle route has
-300 seconds; each child retains its existing deadline.
-
-`network-wget-authentication` retains 73 independent fixed-Wget controls for
-optional credential fields, per-hop challenges, command-wide hostname cache,
-401 failures, attached booleans and binary named-file replay. Raw HTTP/CONNECT,
-streams/status, complete product file inventory and unchanged inputs are
-retained. The Linux counterpart repeats the corpus against the pinned oracle;
-configuration/netrc exclusions are explicit in its recorded argv.
-Absolute proxy request lines are bound to the original oracle wire, including
-URL userinfo. Raw requests and parser errors are retained before validation;
-any observer error prevents an acceptance proof.
-
-Development jobs have a 30-minute total bound. The final Linux run for 4930ae2
-completed all functional checks and interface generation, then hit the former
-20-minute job limit during final formatting before complete evidence upload.
-That cancelled run is not acceptance. The new finite total leaves room for
-the expanded pinned-data/oracle suite and report preservation; individual
-scenario, invocation and package-test bounds remain unchanged.
-
-## Ownership
-
-| Path | Source of truth |
+| Location | Responsibility |
 | --- | --- |
-| `run.mbtx` | Public command routing, workspace paths, script discovery |
-| `tools/` | Internal orchestration scripts; CI uses the public entry |
-| `harness/` | Generic fixtures, launchers, deadlines, assertions and reports |
-| `harness/driver/` | Selection, scheduling and execution orchestration |
-| `harness/catalog/` | Command capability declarations, case index and release policy for Native validation tools |
-| `cases/*.json` | Current CLI cases; `manifest.json` lists files, `index.json` binds stable identities |
-| `cases/generated/` | Derived assertion-quality inventory |
-| `scenarios/` | Stateful, multi-command and permission assertions with private regressions |
-| `fixtures/` | Static corpora and pinned external oracle setup inputs |
-| `coverage/review/` | Manually reviewed finite facets, expected observations and remaining work |
-| `coverage/generated/` | Derived definitions and gap indexes; no saved execution passes |
-| `coverage/*.mbt` | Join actual execution receipts to reviewed definitions |
-| `release/` | Release policy, generated candidate, independent published coordinates and expectations |
-| `benchmark/` | Single timing inventory, engine and protection policy |
-| `resources/` | Resource observer, input recipes and effect relations |
+| `run.mbtx`, `tools/` | Public entry and internal MoonBit orchestration |
+| `harness/`, `harness/driver/` | Execution, observation, selection and reporting |
+| `harness/catalog/`, `cases/` | Current command declarations, identities and cases |
+| `scenarios/` | Concrete events and resource lifetimes |
+| `fixtures/` | Original corpora and immutable oracle inputs |
+| `release/` | Candidate generation and independent published expectations |
+| `benchmark/`, `resources/` | Manual timing and resource programs |
 
-Keep private-state and injected-runtime tests beside product packages. Large
-static rg corpora belong to [fixtures/rg](fixtures/rg/README.md); CLI-equivalent
-cases belong to `cases/`. Do not widen product APIs to relocate tests. New
-automation is pure MoonBit. Host programs are limited to oracle setup,
-observation and diagnostics.
+Assertions execute directly. The per-assertion review/descriptor/proof chain,
+generated quality/coverage catalogs and assertion-source sealing are retired.
+Their historical content is preserved in Git at `aa65c57`. This does not retire
+original cases, corpus records, immutable oracle identity or performance baselines.
 
-## Maintaining definitions and evidence
+`index check` validates current bindings and assertion routes before platform
+filtering, then checks the candidate. `index update` changes only the candidate
+after validation. Neither rewrites `release/latest.json` or `latest-cases.json`.
+Case aliases do not cause duplicate execution. Every selected case must produce
+exactly one terminal result, with explicit platform exclusions; missing,
+duplicate, unknown or substituted results cannot pass.
 
-Change a case and its `cases/index.json` entry together. Change manually reviewed
-coverage only when a concrete discriminating assertion justifies it; follow
-[the coverage guide](coverage/README.md). Run `index update`, review the diff,
-then run `index check` and applicable tests. CI rejects stale generated files.
-The generator completes every stage before replacing derived outputs.
+## Reports and lifecycle
 
-Current cases use schema 2 and the identity index uses schema 3. There are no
-old path forwarders, overlay chains or alternative product backends. Aliases
-remain stable case identities without duplicate execution. Frozen published
-expectations are independent inputs, never an overlay on current cases.
+Each run retains the selection, structured result stream, stage durations and a
+short summary of counts and nonpassing results. Successful temporary fixtures
+are removed. Network success observations are compacted into one JSONL stream
+per scenario, preserving relative paths, file kinds and exact hexadecimal bytes.
+Failures retain raw directories and diagnostics. Compaction reads, writes and
+cleanup must complete before the scenario passes.
 
-Results are `pass`, `fail`, `skip` or `infra`; verification distinguishes
-availability, local contracts, differential comparisons and explicit boundaries.
+Results are `pass`, `fail`, `skip` or `infra`. Availability, local contract,
+differential comparison and explicit boundary are separate verification kinds.
 Missing fixtures, empty required selections, deadlines, uncertain cleanup and
-report failures cannot pass. Stateful fixtures run serially; independent cases
-use at most four tasks. Successful fixtures are normally removed; the four
-shared network scenarios retain raw success receipts for independent review.
-Failure captures are retained. Reports and driver/source receipts stay under the fresh report
-root, outside versioned definitions.
+report failures cannot pass. Original expected values never come from candidate
+output. Stateful scenarios remain serial; independent cases use at most four
+tasks. Partial child observations remain failures, not fabricated completion.
 
-Development CI runs all applicable Wasm checks on Linux, macOS and Windows,
-using the official `latest` toolchain and core, with pinned upstream comparisons
-on Linux. Every run records its resolved toolchain; compilation caches include
-that identity. Mainline changes require a PR,
-the three checks and actual-main validation. Resource observations and exact
-[published acceptance](release/README.md) are separate manual workflows.
-Correctness, finite coverage, upstream agreement and performance retain their
-own scopes. Historical reports remain recoverable from Git, without an active
-compatibility path or backfilled acceptance claims.
+## Oracle and delivery boundaries
+
+The oracle family remains `pinned-oracle-v1`, with reviewed profile version 2.
+It verifies image identity, tool inventory and source/distribution checksums.
+PSL rules and A-label aliases are checked against the pinned libpsl. Complete
+Unicode 15 inputs and IDNA generation remain checked by `check`; the independent
+normalization corpus retains all 19,074 records. Network corpora retain their
+original request, jar, file and authentication expectations.
+
+Required development checks cover Linux, macOS and Windows. Mainline changes
+use a PR and actual-main validation. Resource observations and exact published
+acceptance remain separate manual workflows. Historical run claims remain
+dated in CHANGELOG and Git; this restructuring does not establish full upstream
+parity or formal product performance acceptance.

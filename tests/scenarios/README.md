@@ -21,10 +21,11 @@ relations and tee output-failure modes. Command-specific assertions belong
 here, with private regression tests beside their implementation.
 
 Workspace and published launch adapters execute these same assertions.
-Reviewed finite descriptors live in `coverage/review/scenarios.json`.
-A passing scenario label is insufficient: actual receipts must contain the
-matching expected values, command identity and complete observation dimensions.
-The four shared network scenarios retain their successful work directories in
-the fresh report root, including candidate launch identities, raw wire records,
-streams, statuses and Linux oracle lifecycle receipts. These records are kept
-in the ordinary CI artifact so a later audit can inspect individual comparisons.
+Assertions execute directly, without a parallel descriptor or proof catalog.
+A passing scenario requires all assertions and owned-resource cleanup to finish;
+the driver checks every selected case has exactly one terminal result.
+Successful network observations are compacted into one JSONL stream per scenario
+before work files are removed. Each row preserves a relative path, file kind,
+exact content as hexadecimal and observed link metadata. Launch identities,
+raw wire records, streams, statuses and Linux oracle lifecycle observations
+remain inspectable. Failed scenarios retain their original work directories.

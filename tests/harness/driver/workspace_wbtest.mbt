@@ -67,6 +67,14 @@ async test "cohort selection requires its unique typed registry owner" {
   let registry = @catalog.load(workspace_path(root, "tests/cases/index.json"))
   let fixtures = registered_cohort_cases(registry)
   assert_eq(fixtures.length(), @scenarios.cohort_cases().length())
+  for fixture in fixtures {
+    let reports = []
+    append_scenario_reports(reports, fixture, {
+      ..@harness.suite_report("cohort:" + fixture.id, "wasm", 0L, []),
+      command: fixture.command,
+    })
+    assert_eq(@harness.result_integrity_errors([fixture], reports), [])
+  }
   let removed = {
     ..registry,
     entries: registry.entries.filter(entry => {

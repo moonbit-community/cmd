@@ -52,13 +52,6 @@ async fn run_driver() -> Unit {
     metadata_observer(raw[1:])
     return
   }
-  if raw.get(0) == Some("--generate-quality-catalog") {
-    guard raw is [_, output] else {
-      fail("Usage: cmd-test-runner --generate-quality-catalog FRESH_JSON")
-    }
-    @harness.generate_local_quality_catalog(output)
-    return
-  }
   if raw.get(0) == Some("--option-test-helper") {
     if raw[1:] is ["tee-modes", program, work] {
       @filesystem.check_tee_modes(program, [], work)
@@ -174,8 +167,7 @@ async fn run_driver() -> Unit {
     }
     let manifest = { ..manifest, cases: all, }
     if published is None {
-      @harness.configure_local_quality(
-        workspace_input(project_root, "tests/cases/generated/quality.json"),
+      @harness.validate_local_assertions(
         all,
         registry.entries
         .filter(row => row.implementation == "stateful-scenario")
@@ -245,22 +237,15 @@ async fn run_driver() -> Unit {
       "choose a fresh report directory; preserve previous definitions/results",
     )
   }
-  let scenario_contracts = @harness.scenario_contract_snapshot(selected)
-  let scenario_receipts : Array[Json] = []
   let definition_text = (
       {
         "schema": 1,
         "cases": ToJson::to_json(selected),
         "metadata_contracts": @harness.metadata_contract_snapshot(selected),
-        "scenario_contracts": scenario_contracts,
-        "driver_sha256": @harness.sha256_bytes(
-          @fs.read_file(@fs.realpath(@env.args()[0])).binary(),
-        ),
         "prepared_at_ms": @async.now(),
       } : Json).stringify(indent=2) +
     "\n"
   @fs.write_file(report_dir + "/selected-cases.json", definition_text)
-  let definition_hash = @harness.sha256_bytes(@utf8.encode(definition_text))
   let run_started = @async.now()
   let reports : Array[@harness.CaseReport] = []
   let stage_durations : Map[String, Int64] = Map([])
@@ -283,8 +268,9 @@ async fn run_driver() -> Unit {
           }
         "compat" | "stress" | "policy" =>
           for fixture in selected.filter(item => item.comparison == Some(suite)) {
-            @harness.append_report(
+            append_scenario_reports(
               reports,
+              fixture,
               @scenarios.execute_cohort(
                 fixture, bin_root, backend, project_root, wasm_root,
               ),
@@ -580,13 +566,7 @@ async fn run_driver() -> Unit {
             item.comparison == Some("scenario")
           })
           run_scenario_batch(cases, reports, jobs, fixture => {
-            @scenarios.execute_scenario(
-              fixture,
-              bin_root,
-              report_dir,
-              proof_catalog=scenario_contracts,
-              proof_receipts=scenario_receipts,
-            )
+            @scenarios.execute_scenario(fixture, bin_root, report_dir)
           })
         }
       }
@@ -597,20 +577,16 @@ async fn run_driver() -> Unit {
     report_dir + "/stages.json",
     ToJson::to_json(stage_durations).stringify(indent=2) + "\n",
   )
-  let scenario_text = ({ "schema": 1, "scenarios": scenario_receipts } : Json).stringify(
-      indent=2,
-    ) +
-    "\n"
-  guard !@fs.exists(report_dir + "/scenario-proofs.json") else {
-    fail("preserve previous scenario proof receipts")
+  let integrity_errors = @harness.result_integrity_errors(selected, reports)
+  if !integrity_errors.is_empty() {
+    @harness.append_report(reports, {
+      ..@harness.suite_report(
+        "runner:result-integrity", backend, run_started, integrity_errors,
+      ),
+      result: "infra",
+    })
   }
-  @fs.write_file(report_dir + "/scenario-proofs.json", scenario_text)
-  @harness.write_reports(
-    report_dir,
-    reports,
-    case_definitions_sha256=definition_hash,
-    scenario_proofs_sha256=@harness.sha256_bytes(@utf8.encode(scenario_text)),
-  )
+  @harness.write_reports(report_dir, reports)
   println(
     "semantic passes: \{reports.filter(item => item.semantic_pass()).length()}; report: \{report_dir}",
   )

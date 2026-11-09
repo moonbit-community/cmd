@@ -1,9 +1,5 @@
 ///|
-async fn shell_interactive_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn shell_interactive_scenario(root : String, work : String) -> Unit {
   let startup = work + "/startup.sh"
   @fs.write_file(startup, "STARTUP=loaded\n")
   let program = @harness.command_program()
@@ -34,7 +30,6 @@ async fn shell_interactive_scenario(
       stderr,
       work + "/../stderr.bin",
       "P> ",
-      proof?,
       assertion_id="sh/prompt",
     )
     writer.write("VALUE=kept\n")
@@ -44,7 +39,6 @@ async fn shell_interactive_scenario(
       stdout,
       work + "/../stdout.bin",
       "kept|loaded\n",
-      proof?,
       assertion_id="sh/startup-state",
     )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
@@ -61,7 +55,6 @@ async fn shell_interactive_scenario(
       stdout,
       work + "/../stdout.bin",
       "multiline\n",
-      proof?,
       assertion_id="sh/multiline",
     )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
@@ -72,7 +65,6 @@ async fn shell_interactive_scenario(
       stdout,
       work + "/../stdout.bin",
       "read=<hello foreground>\n",
-      proof?,
       assertion_id="sh/foreground-read",
     )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
@@ -84,7 +76,6 @@ async fn shell_interactive_scenario(
       stdout,
       work + "/../stdout.bin",
       "child input\n",
-      proof?,
       assertion_id="sh/child-stdin",
     )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
@@ -95,7 +86,6 @@ async fn shell_interactive_scenario(
       stdout,
       work + "/../stdout.bin",
       "function:kept\n",
-      proof?,
       assertion_id="sh/function-state",
     )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
@@ -120,7 +110,6 @@ async fn shell_interactive_scenario(
       stdout,
       work + "/../stdout.bin",
       "recovered\n",
-      proof?,
       assertion_id="sh/recovery",
     )
     scenario_read_exact(stderr, work + "/../stderr.bin", "P> ")
@@ -132,18 +121,17 @@ async fn shell_interactive_scenario(
     let remaining_stderr = stderr.read_all().binary()
     assert_eq(remaining_stdout, b"")
     assert_eq(remaining_stderr, b"")
-    if proof is Some(proof) {
-      proof.observe_equal(
-        "sh/eof",
-        "sh",
-        {
-          "status": status,
-          "stdout": @harness.scenario_text(remaining_stdout),
-          "stderr": @harness.scenario_text(remaining_stderr),
-        },
-        { "status": 0, "stdout": "", "stderr": "" },
-      )
-    }
+
+    @harness.assert_observation(
+      "sh/eof",
+      "sh",
+      {
+        "status": status,
+        "stdout": @harness.scenario_text(remaining_stdout),
+        "stderr": @harness.scenario_text(remaining_stderr),
+      },
+      { "status": 0, "stdout": "", "stderr": "" },
+    )
   })
   let exited = scenario_run(
     work,
@@ -157,16 +145,15 @@ async fn shell_interactive_scenario(
   assert_eq(exited.status, 7)
   assert_eq(exited.stdout, b"")
   assert_eq(exited.stderr, b"P> ")
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "sh/exit",
-      "sh",
-      {
-        "status": exited.status,
-        "stdout": @harness.scenario_text(exited.stdout),
-        "stderr": @harness.scenario_text(exited.stderr),
-      },
-      { "status": 7, "stdout": "", "stderr": "P> " },
-    )
-  }
+
+  @harness.assert_observation(
+    "sh/exit",
+    "sh",
+    {
+      "status": exited.status,
+      "stdout": @harness.scenario_text(exited.stdout),
+      "stderr": @harness.scenario_text(exited.stderr),
+    },
+    { "status": 7, "stdout": "", "stderr": "P> " },
+  )
 }

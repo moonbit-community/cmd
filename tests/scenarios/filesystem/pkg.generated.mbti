@@ -6,7 +6,7 @@ import {
 }
 
 // Values
-pub async fn check_mktemp_options(String, async (Array[String], String, Map[String, String]) -> @harness.RunResult, check_mode~ : Bool, proof? : @harness.ScenarioProof) -> Unit
+pub async fn check_mktemp_options(String, async (Array[String], String, Map[String, String]) -> @harness.RunResult, check_mode~ : Bool) -> Unit
 
 pub async fn check_mktemp_oracle(String, String) -> Unit
 
