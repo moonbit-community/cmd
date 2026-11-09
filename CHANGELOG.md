@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Repair Wget numeric Cookie expiry parsing, explicit deletion versus retained
+  stale entries, permanent zero timestamps and saved integer rounding. Retain
+  independent fixed-oracle expectations and separate clock-sensitive controls;
+  date/Domain/configuration work and publication remain outstanding.
+
 - Repair Wget URL/option credential precedence, per-hop Basic challenges and
   hostname caching across ports and operands. Correct uncovered 401 exits,
   empty URL usernames and attached authentication booleans with independent

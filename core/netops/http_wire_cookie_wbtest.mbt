@@ -363,7 +363,11 @@ async test "public transfer distinguishes numeric Max-Age overflow from nonnumer
               assert_eq(stored[0].value, "new")
               assert_true(stored[0].expires is Some(_))
             }
-            WgetProfile => assert_eq(stored.length(), 0)
+            WgetProfile => {
+              assert_eq(stored.length(), 1)
+              assert_eq(stored[0].value, "new")
+              assert_true(stored[0].expires is Some(expiry) && expiry < 0L)
+            }
             StrictProfile => {
               assert_eq(stored.length(), 1)
               assert_eq(stored[0].value, "old")
@@ -379,7 +383,7 @@ async test "public transfer distinguishes numeric Max-Age overflow from nonnumer
 ///|
 test "cookie profiles cap curl Max-Age with fixed-clock overflow and rounding boundaries" {
   let url = parse_absolute_url("https://example.test/")
-  for profile in [StrictProfile, CurlProfile, WgetProfile] {
+  for profile in [StrictProfile, CurlProfile] {
     for
       (now, age, curl_expiry) in [
         (100L, 1L, 101L),
@@ -392,7 +396,7 @@ test "cookie profiles cap curl Max-Age with fixed-clock overflow and rounding bo
       let jar = CookieJar::new()
       jar.receive(
         url,
-        [@http.Cookie("age", "value", max_age=age)],
+        [Cookie::new("age", "value", max_age=age)],
         now,
         profile~,
       )
@@ -406,13 +410,8 @@ test "cookie profiles cap curl Max-Age with fixed-clock overflow and rounding bo
     }
     for age in [0L, -1L] {
       let jar = CookieJar::new()
-      jar.receive(url, [@http.Cookie("age", "old")], 100L, profile~)
-      jar.receive(
-        url,
-        [@http.Cookie("age", "new", max_age=age)],
-        100L,
-        profile~,
-      )
+      jar.receive(url, [Cookie::new("age", "old")], 100L, profile~)
+      jar.receive(url, [Cookie::new("age", "new", max_age=age)], 100L, profile~)
       assert_eq(jar.entries.length(), 0)
     }
   }
@@ -423,7 +422,9 @@ test "cookie profiles cap curl Max-Age with fixed-clock overflow and rounding bo
   let padded = "0000000000000000" + "000000000000001"
   assert_eq(padded.length(), 31)
   let accepted = wire_cookie("sid=new; Max-Age=" + padded, WgetProfile).unwrap()
-  assert_eq(accepted.max_age, Some(1L))
+  let jar = CookieJar::new()
+  jar.receive(url, [accepted], 100L, profile=WgetProfile)
+  assert_eq(jar.entries[0].expires, Some(101L))
   let oversized = "sid=new; Max-Age=0" + padded
   assert_true(wire_cookie(oversized, WgetProfile) is None)
   for profile in [StrictProfile, CurlProfile] {

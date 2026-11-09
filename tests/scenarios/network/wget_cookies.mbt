@@ -40,26 +40,40 @@ async fn network_wget_cookies_scenario(
   executor : Executor,
   work : String,
   oracle_image? : String,
+  numeric~ : Bool = false,
 ) -> Unit {
+  let identity = if numeric { "wget-cookie-expiry" } else { "wget-cookie" }
+  let corpus = if numeric {
+    "wget-cookie-expiry.json"
+  } else {
+    "wget-cookies.json"
+  }
   let source = @json.parse(
     @fs.read_file(
-      @harness.repository_root() + "/tests/fixtures/network/wget-cookies.json",
+      @harness.repository_root() + "/tests/fixtures/network/" + corpus,
     ).text(),
   )
   guard source is { "schema": 1, "cases": Array(definitions), .. } else {
     fail("Wget cookie corpus required")
   }
-  assert_eq(definitions.length(), 58)
+  assert_eq(definitions.length(), if numeric { 194 } else { 58 })
   let failures : Array[String] = []
   for definition in definitions {
     let fixture : WgetCookieCase = @json.from_json(definition)
+    let keep_session = !(definition is { "keep_session": false, .. })
     assert_eq(fixture.hosts.length(), fixture.fields.length())
     guard fixture.expected is Object(expected) else {
       fail("expected observations required")
     }
     let expected_rows : Array[String] = @json.from_json(expected["rows"])
+    let expected_rows_by_phase : Array[Array[String]] = match
+      expected.get("rows_by_phase") {
+      Some(value) => @json.from_json(value)
+      None => [expected_rows, expected_rows]
+    }
+    assert_eq(expected_rows_by_phase.length(), 2)
     let expected_cookies : Array[String] = @json.from_json(expected["cookies"])
-    let directory = work + "/wget-cookie-" + fixture.label
+    let directory = work + "/" + identity + "-" + fixture.label
     @fs.mkdir(directory)
     @fs.write_file(directory + "/input.jar", fixture.input)
     @fs.write_file(directory + "/sentinel", b"unchanged\n")
@@ -108,6 +122,7 @@ async fn network_wget_cookies_scenario(
       let errors : Array[String] = []
       let cookies : Array[String] = []
       let row_orders : Array[Array[String]] = []
+      let rows_by_phase : Array[Array[String]] = []
       for pass in [0, 1] {
         reload.val = pass == 1
         requests.clear()
@@ -163,7 +178,11 @@ async fn network_wget_cookies_scenario(
           [
             "-qO-",
             "-t1",
-            "--keep-session-cookies",
+            ..if keep_session {
+              ["--keep-session-cookies"]
+            } else {
+              []
+            },
             "--load-cookies=" +
             directory +
             (if pass == 0 { "/input.jar" } else { "/saved.jar" }),
@@ -201,11 +220,11 @@ async fn network_wget_cookies_scenario(
         }
         assert_eq(observed, expected_slice, msg=fixture.label)
         cookies.append(observed)
-        assert_eq(
-          cookie_rows(@fs.read_file(directory + "/" + output_name).text()),
-          expected_rows,
-          msg=fixture.label,
+        let rows = cookie_rows(
+          @fs.read_file(directory + "/" + output_name).text(),
         )
+        rows_by_phase.push(rows)
+        assert_eq(rows, expected_rows_by_phase[pass], msg=fixture.label)
         if expected.get("row_orders") is Some(order) {
           let orders : Array[Array[String]] = @json.from_json(order)
           let actual = cookie_rows(
@@ -230,7 +249,7 @@ async fn network_wget_cookies_scenario(
             cookie_rows(
               @fs.read_file(directory + "/oracle/" + output_name).text(),
             ),
-            expected_rows,
+            expected_rows_by_phase[pass],
             msg="oracle " + fixture.label,
           )
           if expected.get("row_orders") is Some(order) {
@@ -273,10 +292,13 @@ async fn network_wget_cookies_scenario(
       if observed is Object(fields) && expected.contains("row_orders") {
         fields["row_orders"] = Json(row_orders)
       }
+      if observed is Object(fields) && expected.contains("rows_by_phase") {
+        fields["rows_by_phase"] = Json(rows_by_phase)
+      }
       assert_eq(observed, fixture.expected, msg=fixture.label)
       if oracle_image is None && executor.proof is Some(proof) {
         proof.observe_equal(
-          "wget-cookie/" + fixture.label,
+          identity + "/" + fixture.label,
           "wget",
           observed,
           fixture.expected,

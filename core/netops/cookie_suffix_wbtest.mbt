@@ -14,7 +14,7 @@ test "response cookies cannot cross complete public suffix boundaries" {
       let jar = CookieJar::new()
       jar.receive(
         parse_absolute_url("https://" + host + "/set"),
-        [@http.Cookie("sid", "bad", domain~, path="/")],
+        [Cookie::new("sid", "bad", domain~, path="/")],
         1000L,
         profile~,
       )
@@ -29,7 +29,7 @@ test "curl exact public suffix response becomes host-only before prefix check" {
     let jar = CookieJar::new()
     jar.receive(
       parse_absolute_url("https://" + host + "/set"),
-      [@http.Cookie("__Host-a", "v", secure=true, domain=host, path="/")],
+      [Cookie::new("__Host-a", "v", secure=true, domain=host, path="/")],
       1000L,
       profile=CurlProfile,
     )
@@ -57,7 +57,7 @@ test "rejected wget suffix update discards a matching loaded value" {
   jar.load_netscape("co.uk\tTRUE\t/\tFALSE\t0\tsid\told\n", profile=WgetProfile)
   jar.receive(
     parse_absolute_url("https://shop.co.uk/set"),
-    [@http.Cookie("sid", "", domain="co.uk", path="/", max_age=0L)],
+    [Cookie::new("sid", "", domain="co.uk", path="/", max_age=0L)],
     1000L,
     profile=WgetProfile,
   )
@@ -83,7 +83,7 @@ test "wget domain rejection discards only the matching key after path validation
         )
         jar.receive(
           parse_absolute_url("https://shop.co.uk/set"),
-          [@http.Cookie("sid", "new", domain~, path~, max_age?=age)],
+          [Cookie::new("sid", "new", domain~, path~, max_age?=age)],
           1000L,
           profile=WgetProfile,
         )
@@ -112,8 +112,8 @@ test "empty wget Domain and Path reject the cookie before replacement or deletio
   }
   for
     cookie in [
-      @http.Cookie("sid", "new", domain="co.uk", path="", max_age=0L),
-      @http.Cookie("sid", "new", domain="", path="/", max_age=0L),
+      Cookie::new("sid", "new", domain="co.uk", path="", max_age=0L),
+      Cookie::new("sid", "new", domain="", path="/", max_age=0L),
     ] {
     let jar = CookieJar::new()
     jar.load_netscape(
@@ -149,7 +149,7 @@ test "wget path admission and request selection use raw prefixes and directory d
   let jar = CookieJar::new()
   jar.receive(
     parse_absolute_url("http://shop.example.com/dir/set"),
-    [@http.Cookie("sid", "new")],
+    [Cookie::new("sid", "new")],
     1000L,
     profile=WgetProfile,
   )
@@ -302,7 +302,7 @@ test "multi-dot suffix response cannot delete a trusted wget file cookie" {
   jar.load_netscape("co.uk\tTRUE\t/\tFALSE\t0\tsid\told\n", profile=WgetProfile)
   jar.receive(
     parse_absolute_url("https://x..co.uk/"),
-    [@http.Cookie("sid", "", domain="..co.uk", path="/", max_age=0L)],
+    [Cookie::new("sid", "", domain="..co.uk", path="/", max_age=0L)],
     1000L,
     profile=WgetProfile,
   )
@@ -311,7 +311,7 @@ test "multi-dot suffix response cannot delete a trusted wget file cookie" {
   let curl = CookieJar::new()
   curl.receive(
     parse_absolute_url("https://x..co.uk/"),
-    [@http.Cookie("sid", "bad", domain="..co.uk", path="/")],
+    [Cookie::new("sid", "bad", domain="..co.uk", path="/")],
     1000L,
     profile=CurlProfile,
   )

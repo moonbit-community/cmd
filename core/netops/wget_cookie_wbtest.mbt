@@ -6,7 +6,7 @@ test "wget host cookies isolate nondefault ports and preserve any-port neighbors
   for (url, value) in [(first, "one"), (second, "two")] {
     jar.receive(
       url,
-      [@http.Cookie("sid", value, path="/")],
+      [Cookie::new("sid", value, path="/")],
       100L,
       profile=WgetProfile,
     )
@@ -15,7 +15,7 @@ test "wget host cookies isolate nondefault ports and preserve any-port neighbors
   assert_eq(jar.header_for(second, 100L, profile=WgetProfile), Some("sid=two"))
   jar.receive(
     first,
-    [@http.Cookie("sid", "any", domain="a.example.com", path="/")],
+    [Cookie::new("sid", "any", domain="a.example.com", path="/")],
     100L,
     profile=WgetProfile,
   )
@@ -25,7 +25,7 @@ test "wget host cookies isolate nondefault ports and preserve any-port neighbors
   )
   jar.receive(
     first,
-    [@http.Cookie("sid", "", path="/", max_age=0L)],
+    [Cookie::new("sid", "", path="/", max_age=0L)],
     100L,
     profile=WgetProfile,
   )
@@ -56,7 +56,7 @@ test "wget wire default ports are any-port while explicit jar ports remain scope
     let jar = CookieJar::new()
     jar.receive(
       parse_absolute_url("http://" + host + "/"),
-      [@http.Cookie("sid", "v")],
+      [Cookie::new("sid", "v")],
       100L,
       profile=WgetProfile,
     )
@@ -140,7 +140,7 @@ test "wget imported stale cookies preserve live records and domain chain spellin
   assert_eq(jar.header_for(url, 100L, profile=WgetProfile), Some("sid=old"))
   jar.receive(
     url,
-    [@http.Cookie("sid", "new", domain="a.example.com", path="/")],
+    [Cookie::new("sid", "new", domain="a.example.com", path="/")],
     100L,
     profile=WgetProfile,
   )
@@ -149,13 +149,13 @@ test "wget imported stale cookies preserve live records and domain chain spellin
   )
   jar.receive(
     url,
-    [@http.Cookie("sid", "", path="/", max_age=0L)],
+    [Cookie::new("sid", "", path="/", max_age=0L)],
     100L,
     profile=WgetProfile,
   )
   jar.receive(
     url,
-    [@http.Cookie("fresh", "v", domain="a.EXAMPLE.com", path="/")],
+    [Cookie::new("fresh", "v", domain="a.EXAMPLE.com", path="/")],
     100L,
     profile=WgetProfile,
   )
@@ -314,17 +314,30 @@ test "wget parses quoted parameters flags and ASCII whitespace" {
 ///|
 test "wget expiry deletion remains sticky across later attributes" {
   let expired = "Expires=Wed, 21 Oct 2015 07:28:00 GMT"
+  let url = parse_absolute_url("https://example.com/")
   for
     attributes in [
       expired + "; Max-Age=3600",
       "Max-Age=3600; " + expired,
       "Max-Age=0; Max-Age=3600",
     ] {
-    assert_eq(
-      wire_cookie("sid=new; Path=/; " + attributes, WgetProfile).unwrap().max_age,
-      Some(0L),
+    let jar = CookieJar::new()
+    jar.receive(
+      url,
+      [Cookie::new("sid", "old", path="/")],
+      2000000000L,
+      profile=WgetProfile,
     )
+    jar.receive(
+      url,
+      [wire_cookie("sid=new; Path=/; " + attributes, WgetProfile).unwrap()],
+      2000000000L,
+      profile=WgetProfile,
+    )
+    assert_true(jar.entries.is_empty())
   }
   let ignored = wire_cookie("sid=v; Max-Age=3600; Expires=invalid", WgetProfile).unwrap()
-  assert_eq(ignored.max_age, Some(3600L))
+  let jar = CookieJar::new()
+  jar.receive(url, [ignored], 2000000000L, profile=WgetProfile)
+  assert_eq(jar.entries[0].expires, Some(2000003600L))
 }

@@ -126,7 +126,7 @@ fn wget_cookie_fields(text : String) -> Array[WgetCookieField]? {
 }
 
 ///|
-fn wget_wire_cookie(text : String) -> @http.Cookie? {
+fn wget_wire_cookie(text : String) -> Cookie? {
   guard wget_cookie_fields(text) is Some(fields) &&
     fields.get(0) is Some(first) &&
     first.value is Some(_) else {
@@ -134,11 +134,8 @@ fn wget_wire_cookie(text : String) -> @http.Cookie? {
   }
   let mut path = None
   let mut domain = None
-  let mut max_age = None
-  let mut expires_raw = None
+  let expiry : Array[WgetCookieExpiry] = []
   let mut secure = false
-  let mut discard = false
-  let now = @fsops.current_timestamp().seconds
   for field in fields[1:] {
     match cookie_ascii_lower(field.name) {
       "domain" => {
@@ -155,12 +152,8 @@ fn wget_wire_cookie(text : String) -> @http.Cookie? {
           @utf8.encode(value).length() < 128 else {
           return None
         }
-        if cookie_date(value) is Some(expiry) {
-          expires_raw = Some(value)
-          max_age = None
-          if expiry < now {
-            discard = true
-          }
+        if cookie_date(value) is Some(date) {
+          expiry.push(Date(date))
         }
       }
       "max-age" => {
@@ -169,41 +162,22 @@ fn wget_wire_cookie(text : String) -> @http.Cookie? {
           @utf8.encode(value).length() < 32 else {
           return None
         }
-        let age = @string.parse_int64(value) catch {
-          _ =>
-            if value
-              .iter()
-              .all(character => character >= '0' && character <= '9') {
-              0L
-            } else {
-              return None
-            }
-        }
-        if age == -1L {
+        guard wget_cookie_number(value) is Some(age) && age != -1.0 else {
           return None
         }
-        max_age = Some(age)
-        expires_raw = None
-        if age == 0L {
-          discard = true
-        }
+        expiry.push(Age(age))
       }
       "secure" => secure = true
       _ => ()
     }
   }
-  // A later expiry never reverses an earlier explicit deletion request.
-  if discard {
-    max_age = Some(0L)
-  }
   Some(
-    @http.Cookie(
+    Cookie::new(
       first.name,
       first.primary,
       path?,
       domain?,
-      max_age?,
-      expires_raw?,
+      wget_expiry=expiry,
       secure~,
     ),
   )

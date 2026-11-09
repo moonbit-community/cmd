@@ -87,8 +87,10 @@ fn usage() -> String {
     #|Content-coding bytes remain encoded; Accept-Encoding defaults to identity.
     #|Raw space/TAB/CR/LF/DEL in URL paths or queries uses uppercase percent escapes.
     #|Redirect spaces use %20 and TAB uses %09; existing escapes remain encoded.
-    #|Set-Cookie without '=' and nonnumeric Max-Age replacements are ignored.
-    #|Positive decimal Max-Age overflow below 32 digits expires its stored cookie.
+    #|Set-Cookie without '=' or a valid Max-Age numeric prefix is ignored.
+    #|Wget expiry accepts decimal/hex floating prefixes; exactly -1 rejects an update.
+    #|Zero requests deletion; nonzero negative values retain stale domain-chain entries.
+    #|Overflow follows the fixed Linux/amd64 profile; saved expiry digits round via binary64.
     #|GNU chunk payload/trailer EOF rules apply; missing size lines or CRLF fail.
     #|HTTP 416 succeeds without opening transfer output; -O is initialized first.
     #|Unsolicited 304 exits 8. Continued GET with --content-disposition selects

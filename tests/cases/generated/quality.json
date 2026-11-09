@@ -4,7 +4,7 @@
   "counts": {
     "exact-local": 3565,
     "finite-diagnostic": 183,
-    "typed-scenario": 72,
+    "typed-scenario": 74,
     "typed-dynamic-output": 12
   },
   "definitions": [
@@ -29908,7 +29908,7 @@
     {
       "case_id": "release-metadata-wget-help",
       "source": "tests/cases/wget.json",
-      "definition_sha256": "332f22b803cf3874f439f2305d7542907378de2cd550f4034ea417a6d13e3991",
+      "definition_sha256": "bfe2cc48aea2303597541f7f01f5526ef9ead1f574dabaeb2be13dbc42f5d69d",
       "classification": "exact-local",
       "descriptor": {
         "kind": "exact"
@@ -30037,6 +30037,34 @@
         "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
         "required_observers": [
           "scenario:network-wget-authentication-oracle"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-wget-cookie-expiry",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "dcad9d6a725347d8c3df7a91aa3f8459e0fd102d3483e1d4602337c255d2fb07",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-wget-cookie-expiry"
+        ]
+      },
+      "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
+    },
+    {
+      "case_id": "network-wget-cookie-expiry-oracle",
+      "source": "tests/cases/wget.json",
+      "definition_sha256": "c363599e8698467e8dc76eb6836a1899c1aad4f253d69d6bbac1a55c76b794e7",
+      "classification": "typed-scenario",
+      "descriptor": {
+        "kind": "scenario",
+        "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+        "required_observers": [
+          "scenario:network-wget-cookie-expiry-oracle"
         ]
       },
       "required_work": "Wire the named observer to the existing scenario dispatch and validate its actual assertion outcome; never use the descriptor itself as evidence."
@@ -48224,6 +48252,20 @@
       "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
       "required_observers": [
         "scenario:network-wget-authentication-oracle"
+      ]
+    },
+    "network-wget-cookie-expiry": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-wget-cookie-expiry"
+      ]
+    },
+    "network-wget-cookie-expiry-oracle": {
+      "kind": "scenario",
+      "reason": "Retain the existing scenario's independently asserted values and file or process effects; its executing observer must run all assertions before acceptance.",
+      "required_observers": [
+        "scenario:network-wget-cookie-expiry-oracle"
       ]
     },
     "p1-zcat-concatenated": {

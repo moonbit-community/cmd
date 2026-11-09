@@ -5,11 +5,11 @@ test "cookie matching, deletion and expiry preserve path and domain boundaries" 
   jar.receive(
     source,
     [
-      @http.Cookie("host", "one"),
-      @http.Cookie("domain", "two", domain=".example.test", path="/"),
-      @http.Cookie("private", "three", secure=true, path="/"),
-      @http.Cookie("bad", "ignored", domain="other.test"),
-      @http.Cookie("short", "life", max_age=2L, path="/"),
+      Cookie::new("host", "one"),
+      Cookie::new("domain", "two", domain=".example.test", path="/"),
+      Cookie::new("private", "three", secure=true, path="/"),
+      Cookie::new("bad", "ignored", domain="other.test"),
+      Cookie::new("short", "life", max_age=2L, path="/"),
     ],
     100L,
   )
@@ -30,14 +30,14 @@ test "cookie matching, deletion and expiry preserve path and domain boundaries" 
   )
   jar.receive(
     source,
-    [@http.Cookie("domain", "", domain="example.test", path="/", max_age=0L)],
+    [Cookie::new("domain", "", domain="example.test", path="/", max_age=0L)],
     103L,
   )
   assert_eq(
     jar.header_for(parse_absolute_url("https://other.example.test/"), 103L),
     None,
   )
-  jar.receive(source, [@http.Cookie("host", "replacement")], 103L)
+  jar.receive(source, [Cookie::new("host", "replacement")], 103L)
   assert_eq(
     jar.header_for(source, 103L),
     Some("host=replacement; private=three"),

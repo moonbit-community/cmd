@@ -169,7 +169,7 @@ async fn HttpWire::response(
   self : HttpWire,
   request_method : HttpMethod,
   profile~ : TransferProfile = StrictProfile,
-) -> @http.Response {
+) -> Response {
   for interim = 0; ; interim = interim + 1 {
     guard interim <= MaxInterimResponses else {
       raise transfer_error(ReceiveFailure, "too many informational responses")
@@ -187,7 +187,7 @@ async fn HttpWire::response(
     }
     let reason = if status.length() == 12 { "" } else { status[13:].to_owned() }
     let headers : Map[@http.CaseInsensitiveString, String] = Map([])
-    let cookies : Array[@http.Cookie] = []
+    let cookies : Array[Cookie] = []
     let response_fields : Array[HttpHeader] = []
     for fields = 0; ; fields = fields + 1 {
       let line = self.line(header=true) catch {
@@ -220,7 +220,7 @@ async fn HttpWire::response(
     if code >= 100 && code < 200 && code != 101 {
       continue
     }
-    let response : @http.Response = { code, reason, headers, cookies, }
+    let response : Response = { code, reason, headers, cookies, }
     if !response_has_body(code, request_method) {
       self.body = Finished
     } else if headers.get("Transfer-Encoding") is Some(encoding) {

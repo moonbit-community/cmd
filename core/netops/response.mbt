@@ -1,5 +1,5 @@
 ///|
-fn response_content_length(response : @http.Response) -> Int64? {
+fn response_content_length(response : Response) -> Int64? {
   if response.headers.get("Transfer-Encoding") is Some(encoding) &&
     encoding.to_lower() == "chunked" {
     return None
@@ -19,7 +19,7 @@ fn response_content_length(response : @http.Response) -> Int64? {
 
 ///|
 fn response_framing(
-  response : @http.Response,
+  response : Response,
   request_method : HttpMethod,
 ) -> ResponseFraming {
   if !response_has_body(response.code, request_method) {
@@ -37,7 +37,7 @@ fn response_framing(
 
 ///|
 fn response_body_eof(
-  response : @http.Response,
+  response : Response,
   request_method : HttpMethod,
   received : Int64,
 ) -> TransferError {
@@ -61,7 +61,7 @@ fn response_body_eof(
 
 ///|
 fn resumed_response_range(
-  response : @http.Response,
+  response : Response,
   resume_from : Int64?,
 ) -> (Int64, Int64?) raise TransferError {
   guard resume_from is Some(offset) && offset > 0L && response.code == 206 else {

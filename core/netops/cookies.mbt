@@ -9,6 +9,20 @@ struct StoredCookie {
   secure : Bool
   http_only : Bool
   expires : Int64?
+  wget : Bool
+}
+
+///|
+fn StoredCookie::expired(self : StoredCookie, now : Int64) -> Bool {
+  match self.expires {
+    None => false
+    Some(expiry) =>
+      if self.wget {
+        expiry != 0L && expiry < now
+      } else {
+        expiry <= now
+      }
+  }
 }
 
 ///|
@@ -292,6 +306,7 @@ fn CookieJar::replace(
   cookie : StoredCookie,
   now : Int64,
   profile~ : TransferProfile = StrictProfile,
+  discard~ : Bool = false,
 ) -> Unit {
   // Wget's case-insensitive domain table retains its first key spelling until
   // the last cookie in that domain chain is explicitly removed.
@@ -314,7 +329,8 @@ fn CookieJar::replace(
       break
     }
   }
-  if cookie.expires is Some(expiry) && expiry <= now {
+  if discard ||
+    (profile != WgetProfile && cookie.expires is Some(expiry) && expiry <= now) {
     self.entries = self.entries.filter(old => {
       !cookie_same_key(old, cookie, profile)
     })
@@ -335,7 +351,7 @@ fn CookieJar::replace(
 fn CookieJar::receive(
   self : CookieJar,
   url : ParsedUrl,
-  cookies : Array[@http.Cookie],
+  cookies : Array[Cookie],
   now : Int64,
   profile~ : TransferProfile = StrictProfile,
 ) -> Unit {
@@ -419,7 +435,7 @@ fn CookieJar::receive(
         _ => default_cookie_path(url.path)
       }
     }
-    let expires = match cookie.max_age {
+    let mut expires = match cookie.max_age {
       Some(age) if age <= 0L => Some(0L)
       Some(age) => {
         let expiry = now + age.min(9223372036854775807L - now)
@@ -440,6 +456,35 @@ fn CookieJar::receive(
           None => None
         }
     }
+    if profile == WgetProfile {
+      // Preserve the original floating value through parsing: a nonzero age
+      // truncating to zero is a permanent cookie valid during this second.
+      let operations = if cookie.wget_expiry.is_empty() {
+        match cookie.max_age {
+          Some(age) => [Age(age.to_double())]
+          None =>
+            match expires {
+              Some(date) => [Date(date)]
+              None => []
+            }
+        }
+      } else {
+        cookie.wget_expiry
+      }
+      expires = None
+      for operation in operations {
+        match operation {
+          Age(age) => {
+            expires = Some(now + wget_cookie_time(age))
+            discard = discard || age == 0.0
+          }
+          Date(date) => {
+            expires = Some(date)
+            discard = discard || date < now
+          }
+        }
+      }
+    }
     let stored : StoredCookie = {
       name: cookie.name,
       value: cookie.value,
@@ -456,13 +501,8 @@ fn CookieJar::receive(
       path,
       secure: cookie.secure,
       http_only: profile != WgetProfile && cookie.http_only,
-      // Wget marks a rejected domain for deletion, then validates Path before
-      // removing the matching key, even when the response has no expiry.
-      expires: if discard {
-        Some(0L)
-      } else {
-        expires
-      },
+      expires,
+      wget: profile == WgetProfile,
     }
     if profile == CurlProfile &&
       (
@@ -475,7 +515,8 @@ fn CookieJar::receive(
       ) {
       continue
     }
-    self.replace(stored, now, profile~)
+    // Domain and expiry rejection requests are applied after Path validation.
+    self.replace(stored, now, profile~, discard~)
   }
 }
 
@@ -545,7 +586,7 @@ fn CookieJar::header_for(
     return None
   }
   let mut selected = self.entries.filter(cookie => {
-    !(cookie.expires is Some(expiry) && expiry <= now) &&
+    !cookie.expired(now) &&
     (
       cookie.port is None ||
       cookie.port ==
@@ -627,7 +668,16 @@ pub fn CookieJar::load_netscape(
   text : String,
   profile~ : TransferProfile = StrictProfile,
 ) -> Unit {
-  let now = @fsops.current_timestamp().seconds
+  self.load_netscape_at(text, @fsops.current_timestamp().seconds, profile)
+}
+
+///|
+fn CookieJar::load_netscape_at(
+  self : CookieJar,
+  text : String,
+  now : Int64,
+  profile : TransferProfile,
+) -> Unit {
   for line in text.split("\n") {
     let line = if profile == WgetProfile {
       let line = line.trim_start(chars=" \t\r\n\u{000b}\u{000c}")
@@ -661,9 +711,23 @@ pub fn CookieJar::load_netscape(
       ("TRUE".has_prefix(fields[2]) || "FALSE".has_prefix(fields[2])) {
       continue
     }
-    let expires = @string.parse_int64(fields[4]) catch { _ => continue }
-    if profile == WgetProfile && expires != 0L && expires < now {
-      continue
+    let expires = if profile == WgetProfile {
+      guard wget_cookie_number(fields[4]) is Some(value) else { continue }
+      if value == 0.0 {
+        None
+      } else {
+        if value < now.to_double() {
+          continue
+        }
+        Some(wget_cookie_time(value))
+      }
+    } else {
+      let value = @string.parse_int64(fields[4]) catch { _ => continue }
+      if value == 0L {
+        None
+      } else {
+        Some(value)
+      }
     }
     let (domain, port) = if profile == WgetProfile {
       wget_cookie_domain_port(fields[0])
@@ -702,11 +766,8 @@ pub fn CookieJar::load_netscape(
       }) ==
       "TRUE",
       http_only,
-      expires: if expires == 0L {
-        None
-      } else {
-        Some(expires)
-      },
+      expires,
+      wget: profile == WgetProfile,
     }
     if profile == CurlProfile && !cookie_prefix_allowed(cookie) {
       continue
@@ -719,12 +780,12 @@ pub fn CookieJar::load_netscape(
 fn CookieJar::netscape(
   self : CookieJar,
   include_session~ : Bool = true,
+  now~ : Int64 = @fsops.current_timestamp().seconds,
 ) -> String {
-  let now = @fsops.current_timestamp().seconds
   let out = StringBuilder()
   out.write_string("# Netscape HTTP Cookie File\n# Generated by cli/core\n\n")
   for cookie in self.entries {
-    if cookie.expires is Some(expiry) && expiry <= now {
+    if cookie.expired(now) {
       continue
     }
     if !include_session && cookie.expires is None {
@@ -743,7 +804,14 @@ fn CookieJar::netscape(
     out.write_string(if cookie.host_only { "\tFALSE\t" } else { "\tTRUE\t" })
     out.write_string(cookie.path)
     out.write_string(if cookie.secure { "\tTRUE\t" } else { "\tFALSE\t" })
-    out.write_string(cookie.expires.unwrap_or(0L).to_string())
+    let expiry = cookie.expires.unwrap_or(0L)
+    out.write_string(
+      if cookie.wget {
+        wget_cookie_saved_time(expiry)
+      } else {
+        expiry.to_string()
+      },
+    )
     out.write_string("\t" + cookie.name + "\t" + cookie.value + "\n")
   }
   out.to_string()

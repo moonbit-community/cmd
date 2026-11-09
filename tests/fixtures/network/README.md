@@ -36,7 +36,24 @@ The duplicate-path representative control additionally pins the original row
 order in both saved files and observes different initial/reloaded Cookie order.
 Its supplemental immutable-oracle observation digest is retained in the corpus.
 
-These finite definitions are not execution evidence. Decimal fractions,
-exponents and numeric-prefix expiry diagnostics remain outside this corpus;
-the outstanding numeric/date and Domain-normalization boundaries are in
+`wget-cookie-expiry.json` retains 194 stable numeric-expiry controls. The first
+103 were mechanically extracted from the frozen independent Wget receipt
+`c96827d584807314bbb65deed07d0d7cd5215755893fe9a7d26127f5151dea7a`.
+The intermediate extraction digest is
+`8e3e7b9e6e84e165f9e3d49618f9688d1d63681ab076b1bad1a340f5f100b3e5`;
+91 additional controls come from the separately frozen extraction
+`b05f0d18524d507b8b72762ab9be5fe4a6998c2c6dc091f90bc031df8e2a9935`,
+including the independently discovered `0x.` empty hexadecimal significand
+rule, infinity prefixes and hexadecimal rounding boundaries. Each record also
+keeps its original oracle observation digest. No candidate output supplies
+expected values. Both phases' sorted rows and actual row order
+are retained, including cases without session-cookie saving. The excluded IDs
+name current-second, relative-future and dynamic addition probes whose real
+observations need independently measured time intervals. Private fixed-clock
+tests cover their state transitions without replacing those timing receipts.
+The local diagnostic profile fixes Linux/amd64 conversion behavior; it does not
+establish portable C semantics for out-of-range floating conversion.
+
+These finite definitions are not execution evidence. The outstanding date,
+remaining jar behavior and Domain-normalization boundaries are in
 [ADR-0005](../../../docs/adr/0005-transfer.md).

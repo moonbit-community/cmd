@@ -13212,7 +13212,7 @@
         "repair-final-wget-cookie-session",
         "repair-final-wget-cookie-header"
       ],
-      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Finite Wget dialect controls additionally verify nondefault-port isolation and key deletion, exact imported flags/comments, first domain-chain spelling, quoted attributes and sticky deletion, with actual raw requests and second-process saved-jar reloads.",
+      "activation": "Actual cookie load reflects exact cookies; save/reload, missing-parent failure and exclusion of session cookies have independently bound lifecycle assertions. Path/domain/expiry and response interactions remain checked by the full scenario, with public mode observations where available. Public-suffix admission additionally has fixed real proxy/wire cases and exact cookie effects, with separate Curl/Wget file policy and exact-host controls; complete raw PSL rule/alias validation is independent of these finite CLI records. Finite Wget dialect controls additionally verify nondefault-port isolation and key deletion, exact imported flags/comments, first domain-chain spelling, quoted attributes and sticky deletion, with actual raw requests and second-process saved-jar reloads. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution.",
       "scenario_bindings": [
         {
           "case_id": "network-auth-cookie",
@@ -13254,6 +13254,16 @@
             "wget-cookie/empty-expires-rejects",
             "wget-cookie/age-after-expires"
           ]
+        },
+        {
+          "case_id": "network-wget-cookie-expiry",
+          "assertions": [
+            "wget-cookie-expiry/import-fraction",
+            "wget-cookie-expiry/import-integer-rounds-2p53",
+            "wget-cookie-expiry/import-exact-minus-one",
+            "wget-cookie-expiry/import-nan",
+            "wget-cookie-expiry/import-zero-suffix"
+          ]
         }
       ],
       "unqualified_bindings": [],
@@ -13274,7 +13284,7 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [],
-      "activation": "--save-cookies writes the independently specified session-cookie property when requested, actual reloading sends it, and a missing parent creates no file. Whole-jar formatting and mode remain separate.",
+      "activation": "--save-cookies writes the independently specified session-cookie property when requested, actual reloading sends it, and a missing parent creates no file. Whole-jar formatting and mode remain separate. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution.",
       "scenario_bindings": [
         {
           "case_id": "network-auth-cookie",
@@ -13282,6 +13292,16 @@
             "cookie/wget/saved",
             "cookie/wget/loaded",
             "cookie/wget/missing-parent"
+          ]
+        },
+        {
+          "case_id": "network-wget-cookie-expiry",
+          "assertions": [
+            "wget-cookie-expiry/max-age-minus-one-fraction",
+            "wget-cookie-expiry/max-age-zero",
+            "wget-cookie-expiry/max-age-overflow",
+            "wget-cookie-expiry/import-integer-rounds-2p53",
+            "wget-cookie-expiry/import-signed-limit-largest-double"
           ]
         }
       ],
@@ -13303,13 +13323,24 @@
       "kind": "contract",
       "reviewed": true,
       "case_ids": [],
-      "activation": "Saving with --keep-session-cookies includes the actual sid/fixture session record; saving without it excludes that property. Only this same-server session persistence contrast is attested.",
+      "activation": "Saving with --keep-session-cookies includes the actual sid/fixture session record; saving without it excludes that property. Only this same-server session persistence contrast is attested. Additional fixed Wget numeric-expiry controls retain two processes' exact request cookies, sorted rows and original row order, including explicit-zero deletion, retained stale entries and no-session saving. Clock-sensitive cases are separate private and measured-clock controls; these definitions alone do not establish execution.",
       "scenario_bindings": [
         {
           "case_id": "network-auth-cookie",
           "assertions": [
             "cookie/wget/saved",
             "cookie/wget/session-excluded"
+          ]
+        },
+        {
+          "case_id": "network-wget-cookie-expiry",
+          "assertions": [
+            "wget-cookie-expiry/import-zero",
+            "wget-cookie-expiry/import-negative-zero",
+            "wget-cookie-expiry/import-without-keep-zero",
+            "wget-cookie-expiry/import-without-keep-negative-zero",
+            "wget-cookie-expiry/import-without-keep-zero-suffix",
+            "wget-cookie-expiry/import-without-keep-future"
           ]
         }
       ],

@@ -41,9 +41,14 @@ async fn network_wget_cookies_scenario(
   work : String,
   oracle_image? : String,
   proof? : @harness.ScenarioProof,
+  numeric~ : Bool = false,
 ) -> Unit {
   @network.run(
-    "network-wget-cookies",
+    if numeric {
+      "network-wget-cookie-expiry"
+    } else {
+      "network-wget-cookies"
+    },
     workspace_network_executor(root, proof?),
     work,
     oracle_image?,

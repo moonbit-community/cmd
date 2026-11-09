@@ -405,8 +405,10 @@ pub fn commands() -> Array[CommandContract] {
     // then uses that file's offset. The core API rejects a direct resumed switch.
     // Raw space/TAB/CR/LF/DEL in initial path/query uses uppercase percent escapes.
     // Redirect space/TAB uses %20/%09. Existing percent-encoded bytes remain.
-    // Set-Cookie without '=' and nonnumeric Max-Age replacements preserve old cookies.
-    // Positive decimal overflow below 32 digits expires the matching stored cookie.
+    // Set-Cookie without '=' or a valid numeric prefix preserves old cookies.
+    // Wget accepts decimal/hex floating prefixes; exactly -1 rejects Max-Age.
+    // Floating zero deletes, while nonzero stale replacements retain domain chains.
+    // Overflow follows the fixed Linux/amd64 profile; saved digits round via binary64.
     // Complete pinned ICANN/PRIVATE suffix rules constrain response cookies.
     // Exact suffix scope and imported-file admission retain Wget's dialect.
     // Host-only nondefault ports participate in cookie identity and jar reload.
