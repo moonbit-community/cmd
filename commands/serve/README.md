@@ -5,7 +5,7 @@ Minimal static HTTP file server, implemented in pure MoonBit with
 published yet.
 
 ```sh
-MOON_HOME="$HOME/.moon-accounts/cli" moon run --target wasm --release commands/serve -- public
+moon run --target wasm --release commands/serve -- public
 ```
 
 Usage: `serve [--host ADDRESS] [-p PORT|--port PORT] [DIRECTORY]`.
