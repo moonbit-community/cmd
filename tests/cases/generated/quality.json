@@ -2,8 +2,8 @@
   "schema": 1,
   "scope": "Independent local assertion classification only; semantic activation and actual execution are separate requirements. Exact retained bytes were never filled from candidate output.",
   "counts": {
-    "exact-local": 3565,
-    "finite-diagnostic": 183,
+    "exact-local": 3562,
+    "finite-diagnostic": 186,
     "typed-scenario": 76,
     "typed-dynamic-output": 12
   },
@@ -32280,30 +32280,33 @@
     {
       "case_id": "serve-reject-option",
       "source": "tests/cases/serve.json",
-      "definition_sha256": "66a481e31e4e10dae099fb2c8ba7b94e280935ea41dc21614a8dc2d1258d4ac5",
-      "classification": "exact-local",
+      "definition_sha256": "a86eb2912a5c73ed3e648e096fe064d3fb33ce4263d2f26b94b3b76c21f76290",
+      "classification": "finite-diagnostic",
       "descriptor": {
-        "kind": "exact"
+        "kind": "diagnostic-fragment",
+        "reason": "Require the unknown argument and usage heading while allowing changes to the standard help layout."
       },
       "required_work": ""
     },
     {
       "case_id": "serve-reject-extra-root",
       "source": "tests/cases/serve.json",
-      "definition_sha256": "bba3aae2c2bf8dea4fd646f34aab02be0023b6840d55e95fd95cb0d3dd6336e2",
-      "classification": "exact-local",
+      "definition_sha256": "3c79aabe899ca2408709f326c13e727ed881e16ab20eefd6051528ac90b52656",
+      "classification": "finite-diagnostic",
       "descriptor": {
-        "kind": "exact"
+        "kind": "diagnostic-fragment",
+        "reason": "Require the rejected directory operand and usage heading while allowing changes to the standard help layout."
       },
       "required_work": ""
     },
     {
       "case_id": "serve-reject-missing-port",
       "source": "tests/cases/serve.json",
-      "definition_sha256": "ababba44e5c4541ad5efbae0069ecf43ebc87e855d5c1a378440c9cca9c7148f",
-      "classification": "exact-local",
+      "definition_sha256": "3a58ab190b3294436eace3e1e851b791fcf3d3acd7cd98d16cce02092e260ae7",
+      "classification": "finite-diagnostic",
       "descriptor": {
-        "kind": "exact"
+        "kind": "diagnostic-fragment",
+        "reason": "Require the missing port value and usage heading while allowing changes to the standard help layout."
       },
       "required_work": ""
     },
@@ -48979,13 +48982,16 @@
       "kind": "exact"
     },
     "serve-reject-option": {
-      "kind": "exact"
+      "kind": "diagnostic-fragment",
+      "reason": "Require the unknown argument and usage heading while allowing changes to the standard help layout."
     },
     "serve-reject-extra-root": {
-      "kind": "exact"
+      "kind": "diagnostic-fragment",
+      "reason": "Require the rejected directory operand and usage heading while allowing changes to the standard help layout."
     },
     "serve-reject-missing-port": {
-      "kind": "exact"
+      "kind": "diagnostic-fragment",
+      "reason": "Require the missing port value and usage heading while allowing changes to the standard help layout."
     },
     "serve-static": {
       "kind": "scenario",

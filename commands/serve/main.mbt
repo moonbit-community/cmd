@@ -7,69 +7,62 @@ priv suberror UsageError {
 }
 
 ///|
-const Usage =
-  #|Usage: serve [--host ADDRESS] [-p PORT|--port PORT] [DIRECTORY]
-  #|Serve regular files over HTTP (default: ., 127.0.0.1:8000).
-  #|Directories serve index.html; no directory listing is generated.
-  #|  --host ADDRESS  numeric IPv4 or IPv6 listen address
-  #|  -p, --port PORT listen port (0 chooses an available port)
-  #|  --help          display this help and exit
-  #|  --version       display version and exit
+let command : @argparse.Command = Command(
+  "serve",
+  about="Serve regular files and directory index.html documents over HTTP.",
+  version="serve " + CommandVersion,
+  options=[
+    OptionArg(
+      "host",
+      long="host",
+      about="Numeric IPv4 or IPv6 listen address.",
+      default_values=["127.0.0.1"],
+    ),
+    OptionArg(
+      "port",
+      short='p',
+      long="port",
+      about="Listen port. Use 0 to choose an available port.",
+      default_values=["8000"],
+      allow_hyphen_values=true,
+    ),
+  ],
+  positionals=[
+    PositionArg("directory", about="Directory to serve.", default_values=["."]),
+  ],
+)
 
 ///|
-fn options(args : ArrayView[String]) -> (String, @socket.Addr) raise {
-  let mut host = "127.0.0.1"
-  let mut port = 8000
-  let mut directory : String? = None
-  let mut operands = false
-  let mut i = 0
-  while i < args.length() {
-    let arg = args[i]
-    if !operands && arg == "--" {
-      operands = true
-    } else if !operands && (arg == "--host" || arg == "--port" || arg == "-p") {
-      i += 1
-      guard i < args.length() else {
-        raise UsageError("missing value for " + arg)
-      }
-      if arg == "--host" {
-        host = args[i]
-      } else {
-        port = @string.parse_int(args[i]) catch {
-          _ => raise UsageError("invalid port: " + args[i])
-        }
-        guard port >= 0 && port <= 65535 else {
-          raise UsageError("invalid port: " + args[i])
-        }
-      }
-    } else if !operands && arg.has_prefix("-") {
-      raise UsageError("unknown option: " + arg)
-    } else {
-      guard directory is None else {
-        raise UsageError("expected at most one directory")
-      }
-      directory = Some(arg)
-    }
-    i += 1
+fn options(args : @argparse.Matches) -> (String, @socket.Addr) raise {
+  let host = args.values["host"][0]
+  let raw_port = args.values["port"][0]
+  let port = @string.parse_int(raw_port) catch {
+    _ => raise UsageError("invalid port: " + raw_port)
+  }
+  guard port >= 0 && port <= 65535 else {
+    raise UsageError("invalid port: " + raw_port)
   }
   let address = if host.contains(":") {
     "[" + host + "]:" + port.to_string()
   } else {
     host + ":" + port.to_string()
   }
-  (directory.unwrap_or("."), @socket.Addr::parse(address))
+  (args.values["directory"][0], @socket.Addr::parse(address))
 }
 
 ///|
 async fn main {
-  let args = @env.args()[1:]
-  if args is ["--help"] {
-    @stdio.stdout.write(Usage + "\n")
-    return
-  }
-  if args is ["--version"] {
-    @stdio.stdout.write("serve " + CommandVersion + "\n")
-    return
+  let args = match command.parse_outcome(argv=@env.args()[1:]) {
+    Parsed(args) => args
+    Help(text) | Version(text) => {
+      @stdio.stdout.write(text + "\n")
+      return
+    }
+    Failed(error) => {
+      @stdio.stderr.write(error.to_string())
+      @sys.exit(1)
+      return
+    }
   }
   try {
     let (directory, address) = options(args)

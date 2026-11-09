@@ -16,6 +16,9 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Use the standard MoonBit argument parser for `serve`, including generated
+  help, attached port values and usage diagnostics for invalid arguments.
+
 - Repair Wget Expires date grammar, short-year mapping, UTC normalization and
   invalid-date ordering with an independent C-locale parser and frozen real
   process controls. Retain Domain/configuration and publication boundaries.

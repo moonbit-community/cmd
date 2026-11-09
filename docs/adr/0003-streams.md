@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-08
+Updated: 2026-11-09
 
 ## Decision
 
@@ -180,8 +180,10 @@ baseline containing all current command artifacts.
 
 ## Static HTTP serving
 
-`commands/serve` owns its CLI, URL-to-file mapping, MIME table and bounded
-file-copy loop. Use released `moonbitlang/async@0.22.7` HTTP and filesystem
+`commands/serve` declares its CLI with `moonbitlang/core/argparse`, which owns
+option syntax, help and syntax diagnostics. The command validates the listen
+address and owns URL-to-file mapping, MIME types and the bounded file-copy loop.
+Use released `moonbitlang/async@0.22.7` HTTP and filesystem
 APIs without another server framework or shared core mechanism. GET/HEAD,
 index.html and explicit error responses are the complete initial scope.
 The module is independent of cli/core and has an untimed disposition in the

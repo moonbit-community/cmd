@@ -199,6 +199,8 @@ candidate and local-only timeout. Published coordinates remain unchanged.
 The local `cli/serve@0.1.0` candidate serves regular files and index.html over
 HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
 return 400; missing, unreadable, outside-root and nonregular targets return 404.
+The CLI follows standard `argparse` syntax, including `--port=8000`, `-p8000`
+and short help/version aliases. Syntax errors report usage and exit 1.
 There is no listing, SPA fallback or upload. Wasm policy separately limits
 read roots and bind addresses. Hostile concurrent path replacement remains
 unsupported until released public Wasm APIs provide confined descriptor-relative
