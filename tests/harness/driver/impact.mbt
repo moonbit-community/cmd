@@ -98,8 +98,8 @@ fn oracle_impact(
       (
         path.has_prefix("docs/") ||
         path.contains("/docs/") ||
-        path == "LICENSE" ||
-        path == "LICENSE.txt" ||
+        path.has_suffix("LICENSE") ||
+        path.has_suffix("LICENSE.txt") ||
         path.has_suffix("README.md") ||
         (
           path.has_suffix(".md") &&
