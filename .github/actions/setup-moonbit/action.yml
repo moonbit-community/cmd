@@ -1,0 +1,46 @@
+name: Setup MoonBit
+description: Install the latest stable toolchain and core directly from MoonBit
+
+runs:
+  using: composite
+  steps:
+    - name: Install MoonBit on Unix
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        # Apply bounded retries to the official installer's archive downloads too.
+        export CURL_HOME="$RUNNER_TEMP/moonbit-curl"
+        mkdir -p "$CURL_HOME"
+        cat > "$CURL_HOME/.curlrc" <<'CONFIG'
+        connect-timeout = 15
+        max-time = 180
+        retry = 3
+        retry-delay = 2
+        retry-max-time = 300
+        CONFIG
+        installer="$RUNNER_TEMP/moonbit-install.sh"
+        curl --fail --silent --show-error --location \
+          --output "$installer" https://cli.moonbitlang.com/install/unix.sh
+        bash "$installer" latest
+        echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+    - name: Install MoonBit on Windows
+      if: runner.os == 'Windows'
+      shell: pwsh
+      env:
+        MOONBIT_INSTALL_VERSION: latest
+      run: |
+        $installer = Join-Path $env:RUNNER_TEMP 'moonbit-install.ps1'
+        curl.exe --fail --silent --show-error --location --retry 3 --retry-delay 2 --retry-max-time 300 --connect-timeout 15 --max-time 180 --output $installer https://cli.moonbitlang.com/install/powershell.ps1
+        if ($LASTEXITCODE -ne 0) { throw 'Failed to download the official MoonBit installer' }
+        $PSDefaultParameterValues['Invoke-WebRequest:MaximumRetryCount'] = 3
+        $PSDefaultParameterValues['Invoke-WebRequest:RetryIntervalSec'] = 2
+        $PSDefaultParameterValues['Invoke-WebRequest:TimeoutSec'] = 180
+        # Make a failed core bundle fail setup as well as failed HTTP requests.
+        $PSNativeCommandUseErrorActionPreference = $true
+        & $installer
+        Join-Path $HOME '.moon/bin' | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+    - name: Verify MoonBit installation
+      shell: bash
+      run: moon version --all

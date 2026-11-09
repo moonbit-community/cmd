@@ -4,7 +4,7 @@ priv struct CpOptions {
   no_clobber : Bool
   no_target_directory : Bool
   verbose : Bool
-  traversal : @fsops.LinkTraversal
+  traversal : LinkTraversal
   update : @fsops.UpdateMode
   preserve_permissions : Bool
 }
@@ -102,7 +102,7 @@ async fn copy_one(
       ReplaceDestination => ()
     }
   }
-  @fsops.copy_path_with_links(
+  copy_path_with_links(
     source,
     target,
     options.recursive,
@@ -199,10 +199,9 @@ async fn main {
     parsed.last_occurrence([
       "dereference-command-line", "dereference", "no-dereference",
     ]) {
-    Some("dereference-command-line") =>
-      @fsops.LinkTraversal::FollowCommandLineLinks
-    Some("dereference") => @fsops.LinkTraversal::FollowAllLinks
-    Some("no-dereference") => @fsops.LinkTraversal::NeverFollowLinks
+    Some("dereference-command-line") => LinkTraversal::FollowCommandLineLinks
+    Some("dereference") => LinkTraversal::FollowAllLinks
+    Some("no-dereference") => LinkTraversal::NeverFollowLinks
     _ => if recursive { NeverFollowLinks } else { FollowCommandLineLinks }
   }
   let options : CpOptions = {

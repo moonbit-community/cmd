@@ -4,6 +4,7 @@
     {
       "id": "mv-windows-wasm-links-boundary",
       "command": "mv",
+      "isolated": true,
       "args": [],
       "stdin_text": "",
       "files": [],

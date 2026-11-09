@@ -2,7 +2,7 @@
 import {
   "moonbitlang/async@0.22.7", "moonbitlang/async@0.22.7/fs",
   "moonbitlang/async@0.22.7/shell", "moonbitlang/core/env",
-  "moonbitlang/core/json", "moonbitlang/x@0.5.5/path",
+  "moonbitlang/core/json", "moonbitlang/x@0.5.7/path",
 }
 ----
 
@@ -39,7 +39,7 @@ async fn main {
   }
   let arguments = [
     "--suite",
-    if @async.platform is Linux {
+    if published && @async.platform is Linux {
       "all"
     } else {
       "functional"
@@ -61,7 +61,7 @@ async fn main {
       ),
     ])
   }
-  if @async.platform is Linux {
+  if published && @async.platform is Linux {
     let image = @fs.read_file(report_root + "/oracle-image.txt")
       .text()
       .trim()

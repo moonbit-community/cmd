@@ -16,15 +16,23 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
-- Replace the per-assertion proof and source-sealing chain with direct assertions
-  and complete-result checks. Prepare CI products/tools once, compact successful
-  network observations and retain failure diagnostics. Original corpora and
-  frozen published expectations are unchanged; CI timing remains unqualified.
+- Return command-specific filesystem, arithmetic, filter, tab and download policies
+  to their commands, preserving assertions and optimized loops. Core now performs
+  scoped streaming transport; equivalent TZif conversion uses released x/time,
+  retaining POSIX and legacy compatibility. See [ADR-0003](docs/adr/0003-streams.md).
 
-- Execute all 594 frozen Cookie dialect, expiry, date and Domain records beside
-  the implementation, with fixed-time request/save/reload assertions. Retain
-  full Linux CLI differential and a real seeded Cookie session; stop repeating
-  dense grammar records as ordinary three-platform process scenarios.
+- Retire the per-assertion proof/source-sealing chain. All 594 Cookie and 73
+  authentication records execute beside their owners, while real command events
+  and complete required Linux differential remain. Prepare products/tools once,
+  reuse compatible oracle workers, unify scenario modes and keep the three required
+  platform checks. Original expectations, cleanup and complete-result checks remain.
+
+- Refresh declared MoonBit and CI Action dependencies, remove unnecessary Nushell
+  setup, and limit upstream selection to functional changes. Plain documentation
+  and license notices select none. Three warm runs have three-platform critical
+  paths of 9:00–11:18; complete mandatory gates take 15:41–20:12 warm and 27:09 cold.
+  [Counts, cost boundaries and runs](tests/README.md#ci-timing-observations-2026-11-09)
+  remain explicit. No package is published; frozen acceptance coordinates are unchanged.
 
 - Write successful `serve` file bodies directly to the socket instead of
   through the 1 KiB HTTP send buffer; these responses now close the connection.

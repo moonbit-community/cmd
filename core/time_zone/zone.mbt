@@ -1,10 +1,21 @@
 ///|
-/// Timezone selected from TZ or the host TZif file. All timestamp conversion
-/// uses checked 64-bit TZif transitions, including POSIX future rules.
+/// Timezone selected from TZ or a caller-readable TZif file. Released x/time
+/// handles compatible TZif conversion; POSIX and legacy input rules stay local.
 pub struct Zone {
-  priv types : Array[Offset]
-  priv transitions : Array[(Int64, Int32)]
-  priv future : Rules?
+  priv implementation : Implementation
+}
+
+///|
+priv enum Implementation {
+  Tzif(@time.Zone)
+  Compatible(Compatibility)
+}
+
+///|
+priv struct Compatibility {
+  types : Array[Offset]
+  transitions : Array[(Int64, Int32)]
+  future : Rules?
 }
 
 ///|
@@ -13,7 +24,9 @@ fn from_rules(rules : Rules) -> Zone {
   if rules.daylight is Some(offset) {
     types.push(offset)
   }
-  { types, transitions: [], future: Some(rules), }
+  {
+    implementation: Compatible({ types, transitions: [], future: Some(rules), }),
+  }
 }
 
 ///|
@@ -54,7 +67,7 @@ pub async fn load(utc~ : Bool = false) -> Zone {
 }
 
 ///|
-fn Zone::offset(self : Zone, seconds : Int64) -> Offset raise {
+fn Compatibility::offset(self : Compatibility, seconds : Int64) -> Offset raise {
   if self.transitions.is_empty() ||
     seconds > self.transitions[self.transitions.length() - 1].0 {
     if self.future is Some(rules) {
@@ -77,6 +90,18 @@ pub fn Zone::at_unix(
   seconds : Int64,
   nanosecond~ : Int32 = 0,
 ) -> @time.ZonedDateTime raise {
+  match self.implementation {
+    Tzif(zone) => @time.unix(seconds, nanosecond~, zone~)
+    Compatible(zone) => zone.at_unix(seconds, nanosecond~)
+  }
+}
+
+///|
+fn Compatibility::at_unix(
+  self : Compatibility,
+  seconds : Int64,
+  nanosecond~ : Int32 = 0,
+) -> @time.ZonedDateTime raise {
   let offset = self.offset(seconds)
   let zone = @time.fixed_zone(
     offset.name,
@@ -88,15 +113,37 @@ pub fn Zone::at_unix(
 }
 
 ///|
-/// Preserve TZif abbreviations even at zero offset, where x/time 0.5.5's
-/// ZoneOffset factory substitutes the shared UTC value.
+/// Preserve abbreviations even at zero offset. The public TZif loader retains
+/// this metadata; the fixed-zone constructor used by POSIX rules does not.
 pub fn Zone::abbreviation(self : Zone, seconds : Int64) -> String raise {
-  self.offset(seconds).name
+  match self.implementation {
+    Tzif(zone) => @time.unix(seconds, zone~).offset().abbreviation()
+    Compatible(zone) => zone.offset(seconds).name
+  }
 }
 
 ///|
 pub fn Zone::at_local(
   self : Zone,
+  plain : @time.PlainDateTime,
+) -> @time.ZonedDateTime raise {
+  match self.implementation {
+    Tzif(zone) =>
+      @time.ZonedDateTime::from_plain(plain, zone~, disambiguation=@time.Reject) catch {
+        Failure::Failure(message) if message.has_suffix("Ambiguous local time") =>
+          fail("ambiguous local time; use @SECONDS")
+        Failure::Failure(message) if message.has_suffix(
+            "Nonexistent local time",
+          ) => fail("invalid local time in timezone")
+        error => raise error
+      }
+    Compatible(zone) => zone.at_local(plain)
+  }
+}
+
+///|
+fn Compatibility::at_local(
+  self : Compatibility,
   plain : @time.PlainDateTime,
 ) -> @time.ZonedDateTime raise {
   let offsets = self.types.map(t => t.seconds)

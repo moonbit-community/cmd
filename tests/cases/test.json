@@ -26793,9 +26793,12 @@
       "host_platforms": [
         "posix"
       ],
-      "oracle": false,
+      "oracle": true,
       "timeout_ms": 60000,
-      "source_version": "Issue 29 real mode-000 empty/full files: require actual EACCES, execute Wasm predicates, preserve original metadata before observer chmod, then verify retained content. Sealed Linux GNU counterpart is separate."
+      "source_version": "Issue 29 real mode-000 empty/full files: require actual EACCES, execute Wasm predicates, preserve original metadata before observer chmod, then verify retained content. Sealed Linux GNU counterpart is separate.",
+      "aliases": [
+        "f29-test-size-unreadable-oracle"
+      ]
     },
     {
       "id": "f29-special-kinds",
@@ -26813,27 +26816,14 @@
         "posix"
       ],
       "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "Actual Wasm predicates on independently observed POSIX sparse/special fixtures; Linux fixed-oracle evidence is separate; unsupported fixture setup fails infrastructure."
-    },
-    {
-      "id": "f29-special-kinds-oracle",
-      "command": "test",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "normalizations": [],
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "stdin_text": "",
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
+      "oracle": true,
+      "source_version": "Actual Wasm predicates on independently observed POSIX sparse/special fixtures; Linux fixed-oracle evidence is separate; unsupported fixture setup fails infrastructure.",
+      "aliases": [
+        "f29-special-kinds-oracle"
       ],
-      "timeout_ms": 300000,
-      "oracle": false,
-      "source_version": "Actual Wasm predicates on independently observed POSIX sparse/special fixtures; Linux fixed-oracle evidence is separate; unsupported fixture setup fails infrastructure."
+      "related_commands": [
+        "find"
+      ]
     },
     {
       "id": "f29-windows-metadata",
@@ -26938,9 +26928,15 @@
       "expected_stderr_text": "",
       "stdin_text": "",
       "comparison": "scenario",
-      "timeout_ms": 60000,
-      "oracle": false,
-      "source_version": "Actual Wasm predicates with independent timestamp/size capability observations; directory ENOTSUP is explicit and subsecond precision is actually observed."
+      "timeout_ms": 180000,
+      "oracle": true,
+      "source_version": "Actual Wasm predicates with independent timestamp/size capability observations; directory ENOTSUP is explicit and subsecond precision is actually observed.",
+      "aliases": [
+        "f29-subsecond-order-oracle"
+      ],
+      "related_commands": [
+        "find"
+      ]
     },
     {
       "id": "f29-directory-size",
@@ -32285,44 +32281,6 @@
       "host_platforms": [
         "posix"
       ]
-    },
-    {
-      "id": "f29-subsecond-order-oracle",
-      "command": "test",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "normalizations": [],
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "stdin_text": "",
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 180000,
-      "oracle": false,
-      "source_version": "Actual same-second distinct nanosecond file mtimes; eight candidate and immutable GNU comparisons plus metadata preservation."
-    },
-    {
-      "id": "f29-test-size-unreadable-oracle",
-      "command": "test",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "stdin_text": "",
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "oracle": false,
-      "timeout_ms": 60000,
-      "source_version": "Issue 29 immutable GNU and Wasm size predicates on actual unreadable empty/full files, same user; original metadata and restored exact content are independently checked."
     }
   ]
 }

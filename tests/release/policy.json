@@ -8,7 +8,8 @@
       "supported_options": [],
       "policy_sensitive": true,
       "releasable": false,
-      "case_ids": []
+      "case_ids": [],
+      "oracle_boundary": "Local-only command with an explicit unsupported Wasm execution boundary; no published product or applicable upstream execution profile."
     },
     {
       "name": "base32",
@@ -1580,7 +1581,8 @@
         "repair-edge-jqlog-slice-type-error",
         "repair-final-jqlog-non-json-whitespace",
         "proof-jqlog-group-null-false-true"
-      ]
+      ],
+      "oracle_boundary": "The source coordinate is recorded, but the pinned image does not contain a runnable jqlog oracle; direct JSONL contracts remain mandatory."
     },
     {
       "name": "ln",
@@ -4689,7 +4691,8 @@
         "repair-edge-which-empty-path",
         "repair-which-windows-pathext",
         "repair-final-which-duplicate-path"
-      ]
+      ],
+      "oracle_boundary": "The pinned image has no checksum-qualified which executable; platform PATH and permission contracts remain mandatory."
     },
     {
       "name": "rg",
@@ -4882,7 +4885,8 @@
         "serve-reject-missing-port",
         "serve-static",
         "serve-policy"
-      ]
+      ],
+      "oracle_boundary": "Project-specific server; the pinned oracle has no corresponding executable or upstream contract."
     }
   ]
 }

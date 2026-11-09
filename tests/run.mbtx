@@ -4,7 +4,7 @@ import {
   "moonbitlang/async@0.22.7/fs",
   "moonbitlang/async@0.22.7/shell",
   "moonbitlang/core/env",
-  "moonbitlang/x@0.5.5/path",
+  "moonbitlang/x@0.5.7/path",
 }
 ----
 
@@ -80,6 +80,7 @@ async fn main {
       #|  index check|update            Check or regenerate current derived definitions
       #|  architecture FRESH_JSON       Validate package and strategy boundaries
       #|  oracle --image SHA256_ID      Prepare the pinned upstream identity
+      #|  ci COMMAND                    Select, transfer, verify, and summarize CI inputs
       #|  corpus ARGS                   Prepare complete pinned benchmark sources
       #|  benchmark ARGS                Run the generic timing engine
       #|  protect BASELINE REPORT       Run old/new artifact performance protection
@@ -139,6 +140,7 @@ async fn main {
             "test", "--target", "native", "--deny-warn", "--no-parallelize", ..tools,
           ],
         )
+        moon(root, ["run", "tests/tools/ci.mbtx", "--", "self-test"])
       }
     }
     "format" => {
@@ -223,6 +225,7 @@ async fn main {
     }
     command => {
       let script = match command {
+        "ci" => "tests/tools/ci.mbtx"
         "index" => "tests/tools/index.mbtx"
         "architecture" => "tests/tools/architecture.mbtx"
         "oracle" => "tests/tools/oracle.mbtx"

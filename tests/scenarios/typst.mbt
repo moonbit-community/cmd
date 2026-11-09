@@ -78,7 +78,7 @@ async fn typst_artifacts_scenario(root : String, work : String) -> Unit {
   let failure_status = @async.with_task_group(group => {
     let (consumer, stdout) = @process.read_from_process()
     consumer.close()
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       @harness.command_program(),
       @harness.command_args(root, "typst", [
@@ -148,7 +148,7 @@ async fn typst_watch_scenario(root : String, work : String) -> Unit {
   @async.with_task_group(group => {
     let out_task = group.spawn(() => reader_out.read_all().binary())
     let err_task = group.spawn(() => reader_err.read_all().binary())
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       @harness.command_program(),
       @harness.command_args(root, "typst", [

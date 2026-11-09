@@ -1,0 +1,393 @@
+----
+import {
+  "moonbitlang/async@0.22.7", "moonbitlang/async@0.22.7/fs",
+  "moonbitlang/async@0.22.7/shell", "moonbitlang/core/env",
+  "moonbitlang/core/json", "moonbitlang/x@0.5.7/path",
+  "moonbitlang/x@0.5.7/crypto",
+}
+----
+
+///|
+let driver = "_build/native/debug/build/mooxCLI/cmd-tests/harness/driver/driver.exe"
+
+///|
+async fn run(args : Array[String]) -> Unit {
+  @shell.Cmd(driver, args, stdout=Inherit, stderr=Inherit).run()
+}
+
+///|
+fn required(name : String) -> String raise {
+  guard @env.get_env_var(name) is Some(value) && value != "" else {
+    fail("missing " + name)
+  }
+  value
+}
+
+///|
+async fn build_paths() -> Array[String] {
+  let source = @json.parse(@fs.read_file("tests/cases/manifest.json").text())
+  guard source is { "commands": Array(commands), .. } && !commands.is_empty() else {
+    fail("missing commands")
+  }
+  let paths = [driver]
+  for command in commands {
+    guard command is { "name": String(name), .. } else {
+      fail("invalid command")
+    }
+    paths.push("_build/wasm/release/build/cli/" + name + "/" + name + ".wasm")
+  }
+  paths
+}
+
+///|
+fn selection_required(selection : Json, commit : String) -> Bool raise {
+  guard selection
+    is {
+      "schema": 1,
+      "commit": String(selected_commit),
+      "scope": String(scope),
+      "reason": String(reason),
+      "case_ids": Array(ids),
+      ..
+    } &&
+    selected_commit == commit &&
+    ["none", "all", "commands"].contains(scope) &&
+    (scope == "none") == ids.is_empty() else {
+    fail("missing or invalid oracle selection")
+  }
+  let seen : Set[String] = Set([])
+  for id in ids {
+    guard id is String(id) && id != "" && !seen.contains(id) else {
+      fail("invalid selected case ID")
+    }
+    seen.add(id)
+  }
+  guard scope != "none" ||
+    reason == "no functional changes" ||
+    reason.has_prefix("explicit registered upstream boundaries: ") else {
+    fail("undeclared differential omission")
+  }
+  scope != "none"
+}
+
+///|
+fn checked_inventory(
+  manifest : Json,
+  commit : String,
+  toolchain : String,
+  paths : Array[String],
+) -> Array[(String, String)] raise {
+  guard manifest
+    is {
+      "schema": 1,
+      "commit": String(source),
+      "platform": "linux",
+      "profile": "wasm-release-tools-debug",
+      "toolchain": String(version),
+      "files": Array(files),
+      ..
+    } &&
+    source == commit &&
+    version == toolchain &&
+    !files.is_empty() else {
+    fail("build artifact source or toolchain mismatch")
+  }
+  let result : Array[(String, String)] = []
+  let seen : Set[String] = Set([])
+  for file in files {
+    guard file is { "path": String(path), "sha256": String(digest), .. } &&
+      paths.contains(path) &&
+      !seen.contains(path) &&
+      digest.length() == 64 else {
+      fail("invalid build inventory")
+    }
+    seen.add(path)
+    result.push((path, digest))
+  }
+  guard seen.length() == paths.length() else {
+    fail("missing required build artifact")
+  }
+  result
+}
+
+///|
+async fn checked_artifact(path : String, digest : String) -> Bytes {
+  let bytes = @fs.read_file(path).binary()
+  guard !bytes.is_empty() else { fail("empty build artifact: " + path) }
+  assert_eq(
+    @crypto.bytes_to_hex_string(@crypto.sha256(bytes)),
+    digest,
+    msg=path,
+  )
+  bytes
+}
+
+///|
+fn require_gate(
+  linux : String,
+  oracle : String,
+  needed : String,
+  executed : String,
+) -> Unit raise {
+  assert_eq(linux, "success", msg="Linux correctness must pass")
+  assert_eq(oracle, "success", msg="differential job must pass")
+  guard needed == "false" || (needed == "true" && executed == "true") else {
+    fail("required differential did not execute")
+  }
+}
+
+///|
+async fn self_test() -> Unit {
+  let valid : Json = {
+    "schema": 1,
+    "commit": "sha",
+    "scope": "commands",
+    "reason": "registered command and fixture consumers",
+    "case_ids": ["cat-value"],
+  }
+  assert_true(selection_required(valid, "sha"))
+  for
+    invalid in [
+      Json::null(),
+      {
+        "schema": 1,
+        "commit": "sha",
+        "scope": "commands",
+        "reason": "selected",
+        "case_ids": [],
+      },
+      {
+        "schema": 1,
+        "commit": "sha",
+        "scope": "none",
+        "reason": "unexpected skip",
+        "case_ids": [],
+      },
+      {
+        "schema": 1,
+        "commit": "sha",
+        "scope": "all",
+        "reason": "selected",
+        "case_ids": ["a", "a"],
+      },
+    ] {
+    try selection_required(invalid, "sha") catch {
+      _ => ()
+    } noraise {
+      _ => fail("invalid selection passed")
+    }
+  }
+  try selection_required(valid, "different") catch {
+    _ => ()
+  } noraise {
+    _ => fail("wrong selection source passed")
+  }
+  for
+    (linux, oracle, required, executed) in [
+      ("failure", "success", "true", "true"),
+      ("success", "cancelled", "true", "true"),
+      ("success", "skipped", "false", ""),
+      ("success", "success", "true", ""),
+      ("success", "success", "", "true"),
+    ] {
+    try require_gate(linux, oracle, required, executed) catch {
+      _ => ()
+    } noraise {
+      _ => fail("incomplete required gate passed")
+    }
+  }
+  require_gate("success", "success", "true", "true")
+  require_gate("success", "success", "false", "")
+  let digest = @crypto.bytes_to_hex_string(@crypto.sha256(b"artifact"))
+  let manifest : Json = {
+    "schema": 1,
+    "commit": "sha",
+    "platform": "linux",
+    "profile": "wasm-release-tools-debug",
+    "toolchain": "version",
+    "files": [{ "path": driver, "sha256": digest }],
+  }
+  assert_eq(checked_inventory(manifest, "sha", "version", [driver]), [
+    (driver, digest),
+  ])
+  for
+    (commit, toolchain, paths) in [
+      ("wrong", "version", [driver]),
+      ("sha", "wrong", [driver]),
+      ("sha", "version", [driver, "missing.wasm"]),
+    ] {
+    try checked_inventory(manifest, commit, toolchain, paths) catch {
+      _ => ()
+    } noraise {
+      _ => fail("invalid build inventory passed")
+    }
+  }
+  let root = @fs.tmpdir(prefix="cmd-ci-integrity-")
+  defer @fs.rmdir(root, recursive=true)
+  try checked_artifact(root + "/missing", digest) catch {
+    _ => ()
+  } noraise {
+    _ => fail("missing artifact passed")
+  }
+  @fs.write_file(root + "/changed", b"changed")
+  try checked_artifact(root + "/changed", digest) catch {
+    _ => ()
+  } noraise {
+    _ => fail("changed artifact passed")
+  }
+  println("CI selection, gate and build-integrity negative regressions passed")
+}
+
+///|
+async fn report_size(directory : String) -> (Int32, Int64) {
+  let mut files = 0
+  let mut bytes = 0L
+  for name in @fs.readdir(directory) {
+    let path = directory + "/" + name
+    match @fs.kind(path, follow_symlink=false) {
+      Directory => {
+        let (count, size) = report_size(path)
+        files += count
+        bytes += size
+      }
+      Regular => {
+        files += 1
+        bytes += @fs.file_size(path)
+      }
+      _ => ()
+    }
+  }
+  (files, bytes)
+}
+
+///|
+async fn main {
+  let root = @fs.realpath(".")
+  let report = @env.get_env_var("CMD_TEST_REPORT_ROOT").unwrap_or(
+    root + "/test-reports",
+  )
+  let bundle = root + "/ci-inputs"
+  match @env.args()[1:] {
+    ["self-test"] => self_test()
+    ["metrics"] => {
+      let (files, bytes) = report_size(report)
+      @fs.write_file(
+        report + "/footprint.json",
+        (
+          {
+            "scope": "report files before footprint metadata",
+            "files": files,
+            "bytes": @json.to_json(bytes),
+          } : Json).stringify(indent=2) +
+        "\n",
+      )
+    }
+    ["select", base, head] => {
+      @fs.mkdir(report, recursive=true, allow_exist=true)
+      run(["--select-oracle", base, head, report + "/oracle-selection.json"])
+    }
+    ["export"] => {
+      guard @async.platform is Linux else {
+        fail("CI build export requires Linux")
+      }
+      guard !@fs.exists(bundle) else { fail("build bundle must be fresh") }
+      let paths = build_paths()
+      let files : Array[Json] = []
+      for path in paths {
+        let bytes = @fs.read_file(path).binary()
+        guard !bytes.is_empty() else { fail("empty build artifact: " + path) }
+        let destination = bundle + "/" + path
+        @fs.mkdir(
+          @path.Path(destination).dirname().to_string(),
+          recursive=true,
+          allow_exist=true,
+        )
+        @fs.write_file(destination, bytes)
+        files.push({
+          "path": path,
+          "sha256": @crypto.bytes_to_hex_string(@crypto.sha256(bytes)),
+        })
+      }
+      @fs.write_file(
+        bundle + "/oracle-selection.json",
+        @fs.read_file(report + "/oracle-selection.json").binary(),
+      )
+      @fs.write_file(
+        bundle + "/build.json",
+        (
+          {
+            "schema": 1,
+            "commit": required("GITHUB_SHA"),
+            "platform": "linux",
+            "profile": "wasm-release-tools-debug",
+            "toolchain": @fs.read_file(report + "/toolchain.log").text(),
+            "files": Json(files),
+          } : Json).stringify(indent=2) +
+        "\n",
+      )
+    }
+    ["import"] => {
+      guard @async.platform is Linux else {
+        fail("CI build import requires Linux")
+      }
+      let manifest = @json.parse(@fs.read_file(bundle + "/build.json").text())
+      let commit = required("GITHUB_SHA")
+      for
+        (path, digest) in checked_inventory(
+          manifest,
+          commit,
+          @fs.read_file(report + "/toolchain.log").text(),
+          build_paths(),
+        ) {
+        let bytes = checked_artifact(bundle + "/" + path, digest)
+        @fs.mkdir(
+          @path.Path(path).dirname().to_string(),
+          recursive=true,
+          allow_exist=true,
+        )
+        @fs.write_file(path, bytes)
+      }
+      @fs.chmod(driver, 0o755)
+      let selection = @json.parse(
+        @fs.read_file(bundle + "/oracle-selection.json").text(),
+      )
+      let needed = selection_required(selection, commit)
+      @fs.write_file(
+        report + "/oracle-selection.json",
+        selection.stringify(indent=2) + "\n",
+      )
+      @fs.write_file(
+        required("GITHUB_OUTPUT"),
+        "required=" + needed.to_string() + "\n",
+        append=true,
+      )
+    }
+    ["differential"] => {
+      let image = @fs.read_file(report + "/oracle-image.txt")
+        .text()
+        .trim()
+        .to_owned()
+      run([
+        "--run-oracle-selection",
+        report + "/oracle-selection.json",
+        report + "/differential",
+        "--oracle-image",
+        image,
+        "--oracle-profile",
+        report + "/oracle-profile/profile.json",
+      ])
+      @fs.write_file(required("GITHUB_OUTPUT"), "executed=true\n", append=true)
+    }
+    ["gate"] => {
+      require_gate(
+        required("LINUX_RESULT"),
+        required("ORACLE_RESULT"),
+        required("ORACLE_REQUIRED"),
+        @env.get_env_var("ORACLE_EXECUTED").unwrap_or(""),
+      )
+      println("Linux correctness and required upstream differential passed")
+    }
+    _ =>
+      fail("ci requires select BASE HEAD, export, import, differential or gate")
+  }
+}

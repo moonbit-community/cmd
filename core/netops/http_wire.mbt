@@ -32,7 +32,6 @@ priv struct HttpWire {
   mut request_remaining : Int64?
   mut request_chunked : Bool
   mut request_payload_bytes : Int64
-  mut response_fields : Array[HttpHeader]
 }
 
 ///|
@@ -47,7 +46,6 @@ fn HttpWire::new(client : Connection, read_limit~ : Int32 = 65536) -> HttpWire {
     request_remaining: None,
     request_chunked: false,
     request_payload_bytes: 0L,
-    response_fields: [],
   }
 }
 
@@ -168,8 +166,8 @@ fn wire_content_length(value : String) -> Int64 raise TransferError {
 async fn HttpWire::response(
   self : HttpWire,
   request_method : HttpMethod,
-  profile~ : TransferProfile = StrictProfile,
-) -> Response {
+  capture_header_eof~ : Bool = false,
+) -> ResponseHead {
   for interim = 0; ; interim = interim + 1 {
     guard interim <= MaxInterimResponses else {
       raise transfer_error(ReceiveFailure, "too many informational responses")
@@ -187,11 +185,14 @@ async fn HttpWire::response(
     }
     let reason = if status.length() == 12 { "" } else { status[13:].to_owned() }
     let headers : Map[@http.CaseInsensitiveString, String] = Map([])
-    let cookies : Array[Cookie] = []
     let response_fields : Array[HttpHeader] = []
+    let mut complete = true
     for fields = 0; ; fields = fields + 1 {
       let line = self.line(header=true) catch {
-        @io.ReaderClosed if profile != StrictProfile && code == 200 => break
+        @io.ReaderClosed if capture_header_eof => {
+          complete = false
+          break
+        }
         error => raise error
       }
       if line == "" {
@@ -205,11 +206,7 @@ async fn HttpWire::response(
       }
       let (name, value) = wire_field(line)
       response_fields.push(http_header(name, value))
-      if name.to_lower() == "set-cookie" {
-        if wire_cookie(value, profile) is Some(cookie) {
-          cookies.push(cookie)
-        }
-      } else {
+      if name.to_lower() != "set-cookie" {
         let key = @http.CaseInsensitiveString(name)
         headers[key] = match headers.get(key) {
           None => value
@@ -217,10 +214,9 @@ async fn HttpWire::response(
         }
       }
     }
-    if code >= 100 && code < 200 && code != 101 {
+    if complete && code >= 100 && code < 200 && code != 101 {
       continue
     }
-    let response : Response = { code, reason, headers, cookies, }
     if !response_has_body(code, request_method) {
       self.body = Finished
     } else if headers.get("Transfer-Encoding") is Some(encoding) {
@@ -234,28 +230,24 @@ async fn HttpWire::response(
     } else {
       self.body = UntilClose
     }
-    self.response_fields = response_fields
-    return response
+    let framing = match self.body {
+      Finished => Bodyless
+      Fixed(length) => FixedLength(length)
+      ChunkSize => Chunked
+      UntilClose => CloseDelimited
+      _ => abort("invalid initial response body state")
+    }
+    return { code, reason, fields: response_fields, framing, complete, }
   }
 }
 
 ///|
-async fn HttpWire::read_some(
-  self : HttpWire,
-  max_len~ : Int32,
-  profile~ : TransferProfile = StrictProfile,
-) -> Bytes? {
+async fn HttpWire::read_some(self : HttpWire, max_len~ : Int32) -> Bytes? {
   for ;; {
     match self.body {
       Finished | Fixed(0L) => return None
       Fixed(remaining) | ChunkData(remaining) => {
-        guard self.fill() else {
-          if profile == WgetProfile && self.body is ChunkData(_) {
-            self.body = Finished
-            return None
-          }
-          raise @io.ReaderClosed
-        }
+        guard self.fill() else { raise @io.ReaderClosed }
         let length = remaining
           .min(max_len.to_int64())
           .to_int()
@@ -320,13 +312,7 @@ async fn HttpWire::read_some(
       }
       Trailers =>
         for fields = 0; ; fields = fields + 1 {
-          let line = self.line() catch {
-            @io.ReaderClosed if profile == WgetProfile => {
-              self.body = Finished
-              return None
-            }
-            error => raise error
-          }
+          let line = self.line()
           if line == "" {
             self.body = Finished
             return None
@@ -344,4 +330,16 @@ async fn HttpWire::read_some(
         }
     }
   }
+}
+
+///|
+fn response_has_body(code : Int32, request_method : HttpMethod) -> Bool {
+  if request_method == Head ||
+    (code >= 100 && code < 200) ||
+    code == 204 ||
+    code == 205 ||
+    code == 304 {
+    return false
+  }
+  !(request_method == Connect && code >= 200 && code < 300)
 }

@@ -36,15 +36,10 @@ jobs:
       DOCKER_BUILD_RECORD_RETENTION_DAYS: 30
       CMD_RELEASE_MANIFEST: tests/release/${{ inputs.manifest }}.json
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
-      - uses: hustcer/setup-moonbit@v1.23
-        with:
-          version: latest
-          core-version: latest
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - uses: ./.github/actions/setup-moonbit
       - name: Toolchain and dependencies
         run: |
           mkdir -p test-reports
@@ -53,7 +48,7 @@ jobs:
       - name: Linux listener and socket fixture tools
         if: runner.os == 'Linux'
         run: (command -v lsof && test -x /usr/bin/nc) || (sudo apt-get update && sudo apt-get install --yes lsof netcat-openbsd)
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4.4.1
         if: runner.os == 'Linux'
         with:
           cache-binary: ${{ github.ref == 'refs/heads/main' }}
@@ -63,7 +58,7 @@ jobs:
       - name: Pinned upstream image
         id: oracle
         if: runner.os == 'Linux'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7.4.0
         with:
           context: tests/fixtures/oracle
           load: true
@@ -78,7 +73,7 @@ jobs:
       - name: Preserve acceptance results
         id: upload_results
         if: ${{ always() && !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: published-results-${{ matrix.os }}
           path: test-reports
@@ -86,7 +81,7 @@ jobs:
           if-no-files-found: error
       - name: Preserve logs when interrupted or full upload fails
         if: ${{ always() && (cancelled() || steps.upload_results.outcome == 'failure') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: published-diagnostics-${{ matrix.os }}
           path: |

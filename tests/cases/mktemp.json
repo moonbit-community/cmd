@@ -284,36 +284,17 @@
         "linux",
         "macos"
       ],
-      "timeout_ms": 60000,
-      "coverage": [
-        "tmpdir",
-        "suffix",
-        "directory"
-      ],
-      "source_version": "GNU coreutils 9.11 generated-name and private file/directory relations",
-      "oracle": false
-    },
-    {
-      "id": "mktemp-option-effects-oracle",
-      "command": "mktemp",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
       "timeout_ms": 120000,
       "coverage": [
         "tmpdir",
         "suffix",
         "directory"
       ],
-      "source_version": "GNU coreutils 9.11 immutable oracle generated-name/effect relations",
-      "oracle": false
+      "source_version": "GNU coreutils 9.11 generated-name and private file/directory relations",
+      "oracle": true,
+      "aliases": [
+        "mktemp-option-effects-oracle"
+      ]
     },
     {
       "id": "mktemp-option-effects-windows",

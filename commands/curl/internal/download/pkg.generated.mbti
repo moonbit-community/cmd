@@ -1,0 +1,100 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/curl/internal/download"
+
+import {
+  "cli/core/netops",
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn options(utf8_hosts? : Bool, request_method? : @netops.HttpMethod, headers? : Array[@netops.HttpHeader], body? : @netops.RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int32, idle_timeout_ms? : Int32, max_time_ms? : Int32, fail_on_http_error? : Bool, resume_from? : Int64, cookie_jar? : CookieJar, cookie_data? : String, basic_user? : String, basic_password? : String) -> Options
+
+pub fn proxy_bypassed(String, String?, utf8_hosts? : Bool) -> Bool
+
+pub fn remote_name(String) -> String raise @netops.TransferError
+
+pub async fn transfer(String, TransferOutput, Options, observer? : async (TransferEvent) -> Unit) -> TransferResult
+
+// Errors
+
+// Types and methods
+pub struct CookieJar {
+  // private fields
+}
+pub async fn CookieJar::load(Self, String) -> Unit
+pub fn CookieJar::load_netscape(Self, String) -> Unit
+pub fn CookieJar::new() -> Self
+pub async fn CookieJar::save(Self, String, include_session? : Bool) -> Unit
+
+pub(all) struct Options {
+  utf8_hosts : Bool
+  request_method : @netops.HttpMethod
+  headers : Array[@netops.HttpHeader]
+  body : @netops.RequestBody
+  redirects : RedirectPolicy
+  preserve_method_on_redirect : Bool
+  verify_tls : Bool
+  proxy_url : String?
+  connect_timeout_ms : Int32
+  idle_timeout_ms : Int32
+  max_time_ms : Int32?
+  fail_on_http_error : Bool
+  resume_from : Int64?
+  cookie_jar : CookieJar?
+  cookie_data : String?
+  basic_user : String?
+  basic_password : String?
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum RedirectPolicy {
+  NoRedirects
+  FollowRedirects(Int32)
+}
+pub fn RedirectPolicy::equal(Self, Self) -> Bool
+pub fn RedirectPolicy::not_equal(Self, Self) -> Bool
+pub fn RedirectPolicy::to_repr(Self) -> @debug.Repr
+
+type StoredCookie
+
+#derive(@debug.Debug)
+pub(all) enum TransferEvent {
+  ResponseStarted(url~ : String, status~ : Int32, reason~ : String, headers~ : Array[@netops.HttpHeader], content_length~ : Int64?)
+  Redirected(status~ : Int32, from~ : String, to~ : String)
+  OutputStarted(path~ : String?, response_offset~ : Int64)
+  Progress(received~ : Int64, content_length~ : Int64?)
+  Completed(received~ : Int64, content_length~ : Int64?)
+}
+pub fn TransferEvent::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug)
+pub(all) enum TransferFileMode {
+  Truncate
+  Append
+}
+pub fn TransferFileMode::equal(Self, Self) -> Bool
+pub fn TransferFileMode::not_equal(Self, Self) -> Bool
+pub fn TransferFileMode::to_repr(Self) -> @debug.Repr
+
+#derive(@debug.Debug)
+pub(all) enum TransferOutput {
+  StandardOutput
+  DiscardOutput
+  FileOutput(path~ : String, mode~ : TransferFileMode, content_disposition~ : Bool, remove_on_error~ : Bool)
+}
+pub fn TransferOutput::to_repr(Self) -> @debug.Repr
+
+pub(all) struct TransferResult {
+  requested_url : String
+  effective_url : String
+  status : Int32
+  reason : String
+  headers : Array[@netops.HttpHeader]
+  received : Int64
+  output_path : String?
+  redirects : Int32
+}
+
+// Type aliases
+
+// Traits

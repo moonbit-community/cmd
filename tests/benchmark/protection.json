@@ -447,16 +447,19 @@
     },
     {
       "sources": [
-        "core/netops"
+        "core/netops",
+        "commands/curl/internal/download",
+        "commands/wget/internal/download"
       ],
-      "retain": "Prepared header ownership and transfer-only execution; profile-specific authentication, framing, redirects, timeout and output cleanup"
+      "retain": "Scoped streaming response and prepared final headers; transport framing, upload/read phase context and cancellation cleanup. Each command retains authentication, redirects, retry/resume and output commitment."
     },
     {
       "sources": [
         "core/bytere/cache.mbt",
         "core/platform",
         "core/process",
-        "core/tabstops"
+        "commands/expand/tabs.mbt",
+        "commands/unexpand/tabs.mbt"
       ],
       "retain": "Explicit adaptive-cache failure state, required capability boundaries, launch policy and aligned/relative tab-stop overflow checks"
     }

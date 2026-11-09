@@ -107,21 +107,6 @@ fn round_ratio(
 }
 
 ///|
-fn round_dyadic(
-  negative : Bool,
-  coefficient : BigInt,
-  exponent : Int32,
-  profile : Profile,
-) -> Value {
-  let (numerator, denominator) = if exponent >= 0 {
-    (coefficient << exponent, BigInt::from_int(1))
-  } else {
-    (coefficient, BigInt::from_int(1) << -exponent)
-  }
-  round_ratio(negative, numerator, denominator, profile).0
-}
-
-///|
 fn word_at(chars : Array[Char], index : Int32, word : String) -> Bool {
   let wanted = word.iter().collect()
   if index + wanted.length() > chars.length() {
@@ -299,7 +284,7 @@ pub fn parse_prefix(text : String, profile : Profile) -> (Value, Int32, Bool) {
 }
 
 ///|
-pub fn compare(left : Value, right : Value) -> Int32 {
+fn compare(left : Value, right : Value) -> Int32 {
   match (left, right) {
     (NaN(_), _) | (_, NaN(_)) => 0
     (Infinity(a), Infinity(b)) => if a == b { 0 } else if a { -1 } else { 1 }
@@ -325,53 +310,5 @@ pub fn compare(left : Value, right : Value) -> Int32 {
         order
       }
     }
-  }
-}
-
-///|
-pub fn sequence_value(
-  first : Value,
-  step : Value,
-  index : BigInt,
-  profile : Profile,
-) -> Value {
-  let index = round_dyadic(false, index, 0, profile)
-  match (first, step, index) {
-    (
-      Finite(sign1, coefficient1, exponent1),
-      Finite(sign2, coefficient2, exponent2),
-      Finite(_, count, count_exponent),
-    ) => {
-      let product = round_dyadic(
-        sign2,
-        coefficient2 * count,
-        exponent2 + count_exponent,
-        profile,
-      )
-      guard product
-        is Finite(product_sign, product_coefficient, product_exponent) else {
-        return product
-      }
-      let exponent = Int32::min(exponent1, product_exponent)
-      let left = coefficient1 << (exponent1 - exponent)
-      let right = product_coefficient << (product_exponent - exponent)
-      let sum = (if sign1 { -left } else { left }) +
-        (if product_sign { -right } else { right })
-      let negative = sum.compare_int(0) < 0 ||
-        (sum.is_zero() && sign1 && product_sign)
-      round_dyadic(
-        negative,
-        if negative {
-          -sum
-        } else {
-          sum
-        },
-        exponent,
-        profile,
-      )
-    }
-    (Infinity(sign), _, _) => Infinity(sign)
-    (_, Infinity(sign), _) => Infinity(sign)
-    _ => NaN(false)
   }
 }

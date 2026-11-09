@@ -1040,19 +1040,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:network-auth-cookie-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/curl.json",
-      "case_id": "network-auth-cookie-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:phase2-curl-does-not-follow",
       "command": "curl",
       "status": "supported",
@@ -1204,9 +1191,12 @@
       "implementation": "json-case",
       "source": "tests/cases/curl.json",
       "case_id": "network-auth-cookie",
-      "aliases": [],
+      "aliases": [
+        "network-auth-cookie-oracle",
+        "case:network-auth-cookie-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:repair-final-curl-basic",
@@ -8788,21 +8778,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::network-auth-cookie",
       "case_id": "",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "scenario:network-auth-cookie-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::network-auth-cookie-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "scenario:network-auth-cookie-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -11475,21 +11454,11 @@
       "implementation": "json-case",
       "source": "tests/cases/curl.json",
       "case_id": "network-transfer-boundaries",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:network-transfer-boundaries-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/curl.json",
-      "case_id": "network-transfer-boundaries-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "network-transfer-boundaries-oracle",
+        "case:network-transfer-boundaries-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -11609,21 +11578,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::network-transfer-boundaries",
       "case_id": "",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "scenario:network-transfer-boundaries-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::network-transfer-boundaries-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "scenario:network-transfer-boundaries-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -22985,23 +22943,13 @@
       "implementation": "json-case",
       "source": "tests/cases/mktemp.json",
       "case_id": "mktemp-option-effects",
-      "aliases": [],
+      "aliases": [
+        "mktemp-option-effects-oracle",
+        "case:mktemp-option-effects-oracle"
+      ],
       "platforms": [
         "linux",
         "macos"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:mktemp-option-effects-oracle",
-      "command": "mktemp",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/mktemp.json",
-      "case_id": "mktemp-option-effects-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -23025,21 +22973,11 @@
       "implementation": "json-case",
       "source": "tests/cases/tee.json",
       "case_id": "tee-output-errors",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:tee-output-errors-oracle",
-      "command": "tee",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/tee.json",
-      "case_id": "tee-output-errors-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "tee-output-errors-oracle",
+        "case:tee-output-errors-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -23097,23 +23035,12 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::mktemp-option-effects",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:mktemp-option-effects-oracle"
+      ],
       "platforms": [
         "linux",
         "macos"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "scenario:mktemp-option-effects-oracle",
-      "command": "mktemp",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::mktemp-option-effects-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -23137,21 +23064,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::tee-output-errors",
       "case_id": "",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "scenario:tee-output-errors-oracle",
-      "command": "tee",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::tee-output-errors-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "scenario:tee-output-errors-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -26937,7 +26853,7 @@
       "case_id": "yes-stream-lifecycle",
       "aliases": [],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:yes-stream-lifecycle",
@@ -26948,7 +26864,7 @@
       "case_id": "",
       "aliases": [],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:coverage-test-equality-false",
@@ -28456,11 +28372,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "metadata-relations",
-      "aliases": [],
+      "aliases": [
+        "f29-metadata-selectors-oracle",
+        "case:f29-metadata-selectors-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:metadata-relations",
@@ -28469,11 +28388,13 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::metadata-relations",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-metadata-selectors-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:coverage-find-reject--newerBm",
@@ -33625,9 +33546,12 @@
       "implementation": "json-case",
       "source": "tests/cases/sh.json",
       "case_id": "f31-sh-printf-state",
-      "aliases": [],
+      "aliases": [
+        "f31-sh-printf-state-oracle",
+        "case:f31-sh-printf-state-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f31-sh-printf-state",
@@ -33636,34 +33560,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f31-sh-printf-state",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f31-sh-printf-state-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f31-sh-printf-state-oracle",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/sh.json",
-      "case_id": "f31-sh-printf-state-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f31-sh-printf-state-oracle",
-      "command": "sh",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f31-sh-printf-state-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -39258,32 +39158,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:f29-metadata-selectors-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-metadata-selectors-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-metadata-selectors-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-metadata-selectors-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:f29-test-invalid-path-0-e",
       "command": "test",
       "status": "supported",
@@ -42835,11 +42709,14 @@
       "implementation": "json-case",
       "source": "tests/cases/test.json",
       "case_id": "f29-test-size-unreadable",
-      "aliases": [],
+      "aliases": [
+        "f29-test-size-unreadable-oracle",
+        "case:f29-test-size-unreadable-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:f29-find-size-unreadable",
@@ -42848,11 +42725,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "f29-find-size-unreadable",
-      "aliases": [],
+      "aliases": [
+        "f29-find-size-unreadable-oracle",
+        "case:f29-find-size-unreadable-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:f29-find-xtype-file-link-positive",
@@ -43137,11 +43017,14 @@
       "implementation": "json-case",
       "source": "tests/cases/mkdir.json",
       "case_id": "f29-mkdir-umasks",
-      "aliases": [],
+      "aliases": [
+        "f29-mkdir-umasks-oracle",
+        "case:f29-mkdir-umasks-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-mkdir-umasks",
@@ -43150,35 +43033,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-mkdir-umasks",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-mkdir-umasks-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-mkdir-umasks-oracle",
-      "command": "mkdir",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/mkdir.json",
-      "case_id": "f29-mkdir-umasks-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-mkdir-umasks-oracle",
-      "command": "mkdir",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-mkdir-umasks-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43189,11 +43048,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "f29-sparse-size",
-      "aliases": [],
+      "aliases": [
+        "f29-sparse-size-oracle",
+        "case:f29-sparse-size-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-sparse-size",
@@ -43202,35 +43064,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-sparse-size",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-sparse-size-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-sparse-size-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-sparse-size-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-sparse-size-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-sparse-size-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43241,11 +43079,14 @@
       "implementation": "json-case",
       "source": "tests/cases/test.json",
       "case_id": "f29-special-kinds",
-      "aliases": [],
+      "aliases": [
+        "f29-special-kinds-oracle",
+        "case:f29-special-kinds-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-special-kinds",
@@ -43254,35 +43095,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-special-kinds",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-special-kinds-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-special-kinds-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/test.json",
-      "case_id": "f29-special-kinds-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-special-kinds-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-special-kinds-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43319,11 +43136,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "f29-time-references",
-      "aliases": [],
+      "aliases": [
+        "f29-time-references-oracle",
+        "case:f29-time-references-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-time-references",
@@ -43332,35 +43152,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-time-references",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-time-references-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-time-references-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-time-references-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-time-references-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-time-references-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43371,11 +43167,14 @@
       "implementation": "json-case",
       "source": "tests/cases/find.json",
       "case_id": "f29-predicate-errors",
-      "aliases": [],
+      "aliases": [
+        "f29-predicate-errors-oracle",
+        "case:f29-predicate-errors-oracle"
+      ],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-predicate-errors",
@@ -43384,35 +43183,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-predicate-errors",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-predicate-errors-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-predicate-errors-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-predicate-errors-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-predicate-errors-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-predicate-errors-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -43989,9 +43764,12 @@
       "implementation": "json-case",
       "source": "tests/cases/test.json",
       "case_id": "f29-subsecond-order",
-      "aliases": [],
+      "aliases": [
+        "f29-subsecond-order-oracle",
+        "case:f29-subsecond-order-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:f29-subsecond-order",
@@ -44000,9 +43778,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-subsecond-order",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-subsecond-order-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:f29-directory-size",
@@ -45221,32 +45001,6 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:f29-subsecond-order-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/test.json",
-      "case_id": "f29-subsecond-order-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-subsecond-order-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-subsecond-order-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
       "behavior_id": "case:f29-find-delete-preserves-enumeration-error",
       "command": "find",
       "status": "supported",
@@ -45279,35 +45033,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-find-size-unreadable",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-find-size-unreadable-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-find-size-unreadable-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/find.json",
-      "case_id": "f29-find-size-unreadable-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-find-size-unreadable-oracle",
-      "command": "find",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-find-size-unreadable-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -45318,35 +45048,11 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::f29-test-size-unreadable",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:f29-test-size-unreadable-oracle"
+      ],
       "platforms": [
         "posix"
-      ],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:f29-test-size-unreadable-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/test.json",
-      "case_id": "f29-test-size-unreadable-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:f29-test-size-unreadable-oracle",
-      "command": "test",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::f29-test-size-unreadable-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
       ],
       "oracle_profile": "pinned-oracle-v1"
     },
@@ -45685,21 +45391,11 @@
       "implementation": "json-case",
       "source": "tests/cases/curl.json",
       "case_id": "network-cookie-suffix",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:network-cookie-suffix-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/curl.json",
-      "case_id": "network-cookie-suffix-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "network-cookie-suffix-oracle",
+        "case:network-cookie-suffix-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -45709,21 +45405,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::network-cookie-suffix",
       "case_id": "",
-      "aliases": [],
-      "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "scenario:network-cookie-suffix-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::network-cookie-suffix-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
+      "aliases": [
+        "scenario:network-cookie-suffix-oracle"
       ],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -45733,9 +45418,12 @@
       "implementation": "json-case",
       "source": "tests/cases/curl.json",
       "case_id": "network-idna",
-      "aliases": [],
+      "aliases": [
+        "network-idna-oracle",
+        "case:network-idna-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-idna",
@@ -45744,34 +45432,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::network-idna",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:network-idna-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:network-idna-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/curl.json",
-      "case_id": "network-idna-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:network-idna-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::network-idna-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -45781,9 +45445,12 @@
       "implementation": "json-case",
       "source": "tests/cases/wget.json",
       "case_id": "network-wget-cookies",
-      "aliases": [],
+      "aliases": [
+        "network-wget-cookies-oracle",
+        "case:network-wget-cookies-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-wget-cookies",
@@ -45793,22 +45460,8 @@
       "source": "tests/scenarios/dispatch.mbt::network-wget-cookies",
       "case_id": "",
       "aliases": [
-        "scenario:network-wget-cookies-oracle",
-        "network-wget-cookies-oracle"
+        "scenario:network-wget-cookies-oracle"
       ],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:network-wget-cookies-oracle",
-      "command": "wget",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/wget.json",
-      "case_id": "network-wget-cookies-oracle",
-      "aliases": [],
       "platforms": [
         "linux"
       ],
@@ -45821,9 +45474,12 @@
       "implementation": "json-case",
       "source": "tests/cases/wget.json",
       "case_id": "network-wget-authentication",
-      "aliases": [],
+      "aliases": [
+        "network-wget-authentication-oracle",
+        "case:network-wget-authentication-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-wget-authentication",
@@ -45832,34 +45488,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::network-wget-authentication",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:network-wget-authentication-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:network-wget-authentication-oracle",
-      "command": "wget",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/wget.json",
-      "case_id": "network-wget-authentication-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:network-wget-authentication-oracle",
-      "command": "wget",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::network-wget-authentication-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -45869,9 +45501,12 @@
       "implementation": "json-case",
       "source": "tests/cases/wget.json",
       "case_id": "network-wget-cookie-expiry",
-      "aliases": [],
+      "aliases": [
+        "network-wget-cookie-expiry-oracle",
+        "case:network-wget-cookie-expiry-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-wget-cookie-expiry",
@@ -45881,22 +45516,8 @@
       "source": "tests/scenarios/dispatch.mbt::network-wget-cookie-expiry",
       "case_id": "",
       "aliases": [
-        "scenario:network-wget-cookie-expiry-oracle",
-        "network-wget-cookie-expiry-oracle"
+        "scenario:network-wget-cookie-expiry-oracle"
       ],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:network-wget-cookie-expiry-oracle",
-      "command": "wget",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/wget.json",
-      "case_id": "network-wget-cookie-expiry-oracle",
-      "aliases": [],
       "platforms": [
         "linux"
       ],
@@ -45909,9 +45530,12 @@
       "implementation": "json-case",
       "source": "tests/cases/wget.json",
       "case_id": "network-wget-cookie-dates",
-      "aliases": [],
+      "aliases": [
+        "network-wget-cookie-dates-oracle",
+        "case:network-wget-cookie-dates-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-wget-cookie-dates",
@@ -45921,22 +45545,8 @@
       "source": "tests/scenarios/dispatch.mbt::network-wget-cookie-dates",
       "case_id": "",
       "aliases": [
-        "scenario:network-wget-cookie-dates-oracle",
-        "network-wget-cookie-dates-oracle"
+        "scenario:network-wget-cookie-dates-oracle"
       ],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:network-wget-cookie-dates-oracle",
-      "command": "wget",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/wget.json",
-      "case_id": "network-wget-cookie-dates-oracle",
-      "aliases": [],
       "platforms": [
         "linux"
       ],
@@ -45949,9 +45559,12 @@
       "implementation": "json-case",
       "source": "tests/cases/curl.json",
       "case_id": "network-curl-cookie-domains",
-      "aliases": [],
+      "aliases": [
+        "network-curl-cookie-domains-oracle",
+        "case:network-curl-cookie-domains-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-curl-cookie-domains",
@@ -45961,22 +45574,8 @@
       "source": "tests/scenarios/dispatch.mbt::network-curl-cookie-domains",
       "case_id": "",
       "aliases": [
-        "scenario:network-curl-cookie-domains-oracle",
-        "network-curl-cookie-domains-oracle"
+        "scenario:network-curl-cookie-domains-oracle"
       ],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:network-curl-cookie-domains-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/curl.json",
-      "case_id": "network-curl-cookie-domains-oracle",
-      "aliases": [],
       "platforms": [
         "linux"
       ],
@@ -45989,9 +45588,12 @@
       "implementation": "json-case",
       "source": "tests/cases/wget.json",
       "case_id": "network-wget-cookie-domains",
-      "aliases": [],
+      "aliases": [
+        "network-wget-cookie-domains-oracle",
+        "case:network-wget-cookie-domains-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-wget-cookie-domains",
@@ -46001,22 +45603,8 @@
       "source": "tests/scenarios/dispatch.mbt::network-wget-cookie-domains",
       "case_id": "",
       "aliases": [
-        "scenario:network-wget-cookie-domains-oracle",
-        "network-wget-cookie-domains-oracle"
+        "scenario:network-wget-cookie-domains-oracle"
       ],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "case:network-wget-cookie-domains-oracle",
-      "command": "wget",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/wget.json",
-      "case_id": "network-wget-cookie-domains-oracle",
-      "aliases": [],
       "platforms": [
         "linux"
       ],
@@ -46029,9 +45617,12 @@
       "implementation": "json-case",
       "source": "tests/cases/curl.json",
       "case_id": "network-curl-cookie-lifecycle",
-      "aliases": [],
+      "aliases": [
+        "network-curl-cookie-lifecycle-oracle",
+        "case:network-curl-cookie-lifecycle-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-curl-cookie-lifecycle",
@@ -46040,34 +45631,10 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::network-curl-cookie-lifecycle",
       "case_id": "",
-      "aliases": [],
+      "aliases": [
+        "scenario:network-curl-cookie-lifecycle-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
-    },
-    {
-      "behavior_id": "case:network-curl-cookie-lifecycle-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/curl.json",
-      "case_id": "network-curl-cookie-lifecycle-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:network-curl-cookie-lifecycle-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::network-curl-cookie-lifecycle-oracle",
-      "case_id": "",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
       "oracle_profile": "pinned-oracle-v1"
     },
     {
@@ -46077,9 +45644,12 @@
       "implementation": "json-case",
       "source": "tests/cases/curl.json",
       "case_id": "network-curl-http-retry",
-      "aliases": [],
+      "aliases": [
+        "network-curl-http-retry-oracle",
+        "case:network-curl-http-retry-oracle"
+      ],
       "platforms": [],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "scenario:network-curl-http-retry",
@@ -46088,34 +45658,109 @@
       "implementation": "stateful-scenario",
       "source": "tests/scenarios/dispatch.mbt::network-curl-http-retry",
       "case_id": "",
+      "aliases": [
+        "scenario:network-curl-http-retry-oracle"
+      ],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:network-wget-authentication-session",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-authentication-session",
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
     },
     {
-      "behavior_id": "case:network-curl-http-retry-oracle",
-      "command": "curl",
-      "status": "supported",
-      "implementation": "json-case",
-      "source": "tests/cases/curl.json",
-      "case_id": "network-curl-http-retry-oracle",
-      "aliases": [],
-      "platforms": [
-        "linux"
-      ],
-      "oracle_profile": "pinned-oracle-v1"
-    },
-    {
-      "behavior_id": "scenario:network-curl-http-retry-oracle",
-      "command": "curl",
+      "behavior_id": "scenario:network-wget-authentication-session",
+      "command": "wget",
       "status": "supported",
       "implementation": "stateful-scenario",
-      "source": "tests/scenarios/dispatch.mbt::network-curl-http-retry-oracle",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-authentication-session",
       "case_id": "",
       "aliases": [],
-      "platforms": [
-        "linux"
-      ],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-wget-authentication-replay",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-authentication-replay",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-wget-authentication-replay",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-authentication-replay",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-wget-authentication-rejection",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-authentication-rejection",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-wget-authentication-rejection",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-authentication-rejection",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:network-wget-authentication-option-error",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-authentication-option-error",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:network-wget-authentication-option-error",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-authentication-option-error",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:date-tzdir-file-nanoseconds",
+      "command": "date",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/date.json",
+      "case_id": "date-tzdir-file-nanoseconds",
+      "aliases": [],
+      "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
     }
   ]

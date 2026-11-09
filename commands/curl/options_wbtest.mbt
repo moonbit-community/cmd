@@ -125,6 +125,7 @@ test "fixed-length diagnostics use the structured missing byte count" {
   let context : @netops.TransferFailureContext = {
     phase: @netops.ResponseBody,
     framing: Some(@netops.FixedLength(9L)),
+    sent_bytes: 0L,
     received_bytes: 5L,
     committed_bytes: 0L,
     write_outcome_uncertain: true,

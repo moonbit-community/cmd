@@ -12,22 +12,36 @@ consumers use `decode_reader`. These are intentional source API breaks for a
 future release, not changes to the immutable 0.9.5 coordinate. Publication and
 exact-coordinate acceptance remain separate steps.
 
-The second review folds `fsops/mode.parse_octal_mode` into
-`fsops.parse_octal_mode` and removes the `stream.count_byte` forwarding API;
+Command-owned copy, removal, permission-mode, jq, tab-grid, sequence-evaluation
+and tac extent-copy policies now live beside their commands. The `jq_filter`
+and `tabstops` packages and test-only backup-name wrapper are removed. Shared
+fsops keeps path relationships and filesystem mechanisms; numfmt keeps numeric
+parsing/formatting. The `stream.count_byte` forwarding API is also removed;
 call `bytesearch.count_byte` directly. Unused CLI error variants are removed.
 The immutable published interfaces remain unchanged.
-Chmod and mkdir will need the future core coordinate in their module
+Commands with changed core dependencies will need the future core coordinate in their module
 dependencies when preparing a release; workspace checks do not validate those
 unpublished interfaces against the current registry versions.
 
-The unpublished transfer profile adds fixed Unicode 15 URL-host conversion
-through released normalization/Punycode packages. `transfer_options` and
-`proxy_bypassed` accept the command's UTF-8 input profile, while the private
-connection owner preserves structured hosts across public TCP/TLS calls.
+The unpublished network API uses `with_response` for one scoped streaming
+request. Core keeps transport, URL, fixed Unicode 15 IDNA and public-suffix
+mechanisms. Curl and Wget own Cookie, authentication, redirects, retries, resume
+and output in their private download packages; shared transfer profiles/options
+and Cookie policies are removed. The connection owner preserves structured
+hosts across public TCP/TLS calls. See [netops](netops/README.md).
 Curl and Wget also require the future core coordinate before a release;
 workspace builds do not establish standalone published-consumer acceptance.
 See [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts) for input,
 cookie and proxy boundaries.
+
+`time_zone` delegates validated equivalent TZif conversion to the declared
+released x/time API, with explicit gap/fold rejection. TZ/TZDIR and
+file loading remain portable adapters. POSIX strings and incompatible legacy
+TZif inputs retain their existing behavior; see [ADR-0003](../docs/adr/0003-streams.md).
+The 2026-11-09 dependency refresh declares x 0.5.7 and punycode 0.7.1 explicitly.
+Standalone core builds therefore have the required TZif and DST rejection APIs,
+without relying on another workspace module's dependency resolution. Published
+coordinates and frozen acceptance expectations retain their recorded versions.
 
 ## 0.9.5 changes
 
@@ -133,7 +147,6 @@ matching, formatting, ordering and resource policies.
 | `stream.LineScanner` | An owned-record facade over the same parser, retaining 64 KiB reads. Use it when records survive the current batch. | sort, join, comm, head, jq, nl, paste and existing scanner clients. |
 | `stream.BlockWriter` | Fixed output capacity; private storage cannot be reused during an awaited write. Failure/cancellation consumes the pending queue and poisons further writes; a deferred flush cannot replay a partial prefix. | rg stdout, column snapshot streams, nl, paste and comm. |
 | `tempio.Directory` | Exclusive creation, invocation-owned cleanup, idempotent close after success. Close files before the directory. Cleanup failures propagate; each command chooses error precedence. | tac, column and sort. |
-| `tempio.copy_range` | Exact positional extent copy with caller-owned scratch storage, 64-bit file offsets and completion before buffer reuse. A short extent is an error. | tac reverse output. |
 
 `BlockWriter.write_slice` borrows a fixed-array span until the call returns;
 callers must not mutate it during that interval. Small writes are copied into

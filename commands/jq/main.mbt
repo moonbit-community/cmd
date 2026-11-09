@@ -79,7 +79,7 @@ fn compile_query(
   query : String,
   arguments : Map[String, String],
 ) -> @ast.Expr raise {
-  let mut expr = @jq_filter.parse(query)
+  let mut expr = parse_filter(query)
   for name, value in arguments {
     expr = @ast.Expr::As(@moonjq.parse(value).expr, name, expr)
   }

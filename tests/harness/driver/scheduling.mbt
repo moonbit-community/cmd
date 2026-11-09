@@ -2,7 +2,6 @@
 fn serial_fixture(fixture : @harness.Case) -> Bool {
   @harness.is_network_case(fixture) ||
   fixture.delay_ms.unwrap_or(0) > 0 ||
-  fixture.files.any(file => file.atime is Some(_) || file.mtime is Some(_)) ||
   fixture.observe
   .unwrap_or([])
   .any(kind => ["atime", "mtime", "ctime"].contains(kind))

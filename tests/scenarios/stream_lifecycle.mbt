@@ -1,5 +1,9 @@
 ///|
-async fn yes_stream_lifecycle_scenario(root : String, work : String) -> Unit {
+async fn yes_stream_lifecycle_scenario(
+  root : String,
+  work : String,
+  oracle_image? : String,
+) -> Unit {
   for
     (name, args, expected) in [
       ("default", [], "y\ny\n"),
@@ -14,7 +18,7 @@ async fn yes_stream_lifecycle_scenario(root : String, work : String) -> Unit {
       defer reader.close()
       let (diagnostic, stderr) = @process.read_from_process()
       defer diagnostic.close()
-      let child = @process.spawn(
+      let child = @harness.spawn(
         group,
         @harness.command_program(),
         @harness.command_args(root, "yes", args),
@@ -52,5 +56,21 @@ async fn yes_stream_lifecycle_scenario(root : String, work : String) -> Unit {
         { "prefix": expected, "status": 0, "stderr": "" },
       )
     })
+    if oracle_image is Some(image) {
+      let compared = @harness.run_oracle_with_deadline(
+        "docker",
+        [
+          "run", "--rm", "-i", "--network", "none", image, "/bin/sh", "-c", "yes \"$@\" | head -n 2",
+          "--", ..args,
+        ],
+        15000,
+        evidence_dir=work + "/yes-" + name + "-oracle",
+      )
+      assert_false(compared.timed_out)
+      assert_eq(compared.cleanup_error, None)
+      assert_eq(compared.output.status, 0)
+      assert_eq(compared.output.stdout, @utf8.encode(expected))
+      assert_eq(compared.output.stderr, b"")
+    }
   }
 }

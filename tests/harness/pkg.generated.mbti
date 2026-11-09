@@ -23,12 +23,6 @@ pub fn canonical_json(@json.Json) -> String
 
 pub fn case_directory_name(String) -> String
 
-pub fn case_quality_errors(Case, descriptor? : @json.Json, wired_observers? : Array[String]) -> Array[String]
-
-pub fn case_quality_kind(Case, descriptor? : @json.Json) -> String
-
-pub fn case_stimulus_digest(Case) -> String raise
-
 pub fn check_contract(Case, RunResult, String, http_base? : String) -> Array[String]
 
 pub async fn check_expected_files(Case, String, http_base? : String, baseline? : Array[SnapshotEntry]) -> Array[String]
@@ -85,6 +79,8 @@ pub fn is_network_case(Case) -> Bool
 
 pub fn json_digest(@json.Json) -> String
 
+pub fn launch_counts() -> @json.Json
+
 pub async fn load_cases(String) -> Array[Case]
 
 pub async fn metadata_contract_snapshot(Array[Case]) -> @json.Json
@@ -137,8 +133,6 @@ pub async fn run_oracle_with_deadline(String, Array[String], Int32, evidence_dir
 
 pub async fn run_with_deadline(String, Array[String], Int32, stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool, read_stream? : async (@process.ReadFromProcess) -> Bytes?) -> TimedRun
 
-pub fn runtime_contract_observers(Case) -> Array[String]
-
 pub fn safe_relative_path(String) -> Bool
 
 pub fn safe_symlink_target(String) -> Bool
@@ -163,6 +157,8 @@ pub fn snapshot_fingerprint(ArrayView[SnapshotEntry]) -> String
 
 pub fn snapshots_equal(ArrayView[SnapshotEntry], ArrayView[SnapshotEntry]) -> Bool
 
+pub async fn[T] spawn(@async.TaskGroup[T], StringView, ArrayView[String], extra_env? : Map[String, String], inherit_env? : Bool, stdin? : &@process.ProcessInput, stdout? : &@process.ProcessOutput, stderr? : &@process.ProcessOutput, cwd? : StringView, no_console_window? : Bool, cancel_handler? : @process.CancellationHandler, no_wait? : Bool) -> @process.Process
+
 pub async fn spawn_http_fixture_process(@async.TaskGroup[Unit], timeout_ms? : Int32) -> (@process.Process, @process.ReadFromProcess, String)
 
 pub async fn spawn_https_fixture_process(@async.TaskGroup[Unit], String, fixture_directory? : String, timeout_ms? : Int32) -> (@process.Process, String)
@@ -176,6 +172,8 @@ pub fn validate_local_assertions(Array[Case], Array[String]) -> Unit raise
 pub async fn verify_oracle_image(String, docker_path? : String, profile_path? : String, expected_profile_path? : String, required_profile_ids? : Array[String]) -> OracleIdentity
 
 pub fn wasm_path(String, String) -> String
+
+pub async fn with_oracle_workers(String, String, Int32, async () -> Unit) -> Unit
 
 pub async fn write_reports(String, ArrayView[CaseReport]) -> Unit
 
@@ -200,6 +198,8 @@ pub(all) struct Case {
   timeout_ms : Int32?
   comparison : String?
   oracle : Bool?
+  inputs : Array[String]?
+  isolated : Bool?
   expected_stdout_hex : String?
   expected_stdout_text : String?
   expected_stderr_hex : String?

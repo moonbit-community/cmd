@@ -110,17 +110,43 @@ execution or selection defect, not to reproduce assertions in another format.
 | --- | --- |
 | core/cli / tests/harness/catalog | Runtime argument parsing and diagnostics / validation-only command records, case index and release policy |
 | platform / process | Honest capability queries / execution context and direct-child lifetime |
-| fsops | Shared filesystem preflight and octal mode parsing; command-local ordered effects |
+| fsops | Shared path relationships, output handles, timestamps and backup mechanisms; command-local copy, removal and mode policies |
 | fswalk | Directory handles and requested observations; callers own sorting, pruning and links |
-| stream / tempio | Record and output ownership / exclusive temporary storage and range copying |
+| stream / tempio | Record and output ownership / exclusive temporary storage; tac owns positional range copying |
 | bytesearch / bytere | Reusable byte kernels / C-byte regex semantics and bounded accelerators |
 | checksum / checksum/cli | Incremental algorithms / command records, files and diagnostics |
 | gzipops / gzipops/cli | Codec state and history / command options and execution |
 | shell | Session and control-flow state; sh, make and split own orchestration |
-| netops | Request, response, redirect and output responsibilities within one transfer path |
+| netops / curl and wget internals | Scoped single-request transport, URL/IDNA/PSL mechanisms / command-owned Cookie, authentication, redirect, retry, resume and output policies |
 | numfmt / time_zone | Exact fixed-profile numeric formatting / checked timezone conversion |
-| jq_filter | Public-AST adaptation preserving lexical bindings and assignment paths |
-| quoting / tabstops | Byte quoting and parsed tab grids; callers retain their dialects |
+| jq / jqlog command internals | Local public-AST adaptations preserving lexical bindings and assignment paths, checked against shared independent inputs |
+| quoting / expand and unexpand internals | Shared byte quoting / command-local tab grids and dialects |
+
+The network boundary is command adaptation, private download policy and one
+shared transport exchange. `with_response` closes its streaming response on
+return, error and cancellation. Raw incomplete headers/body boundaries remain
+observations for each command to interpret. Upload/read counts survive transport
+errors; output owners retain commit counts and uncertain write effects. There
+is no shared command profile or aggregate policy-options switch. Keep Curl's
+4096-byte file commit path and Wget's immediate output/resume path explicit.
+The original 594 Cookie and 73 authentication records run beside their owning
+implementations; complete CLI differential and published routes remain intact.
+Reconsider shared policy only when real consumers require the same stable
+contract, without command-identity branching.
+
+Timezone conversion uses the declared released `x/time` public TZif loader and
+`ZonedDateTime::from_plain(..., disambiguation=Reject)` for validated equivalent
+inputs. The adapter retains TZ/TZDIR/path I/O and the existing rejection boundary
+for malformed and leap-bearing data. It keeps POSIX strings and compatibility
+conversion for literal nonstandard abbreviations, footer disagreement, deferred
+out-of-range offsets and unqualified recurring-rule forms. Compatible TZif zones
+retain only the upstream representation after admission; no duplicate transition
+lookup runs beside it. Existing gap/fold diagnostics and nanoseconds remain.
+Reopen the retained paths when released public APIs preserve those contracts;
+do not import x/internal, add FFI or use host local_zone on Wasm to force
+replacement. The separately authorized dependency refresh declares x 0.5.7
+explicitly and verifies standalone core, so another workspace module cannot
+silently supply the public API required by this adapter.
 
 The compatibility boundary for internal restructuring is `moonx cli/<command>`:
 accepted arguments, output/status, error ordering, filesystem effects and
@@ -135,6 +161,19 @@ private-state tests with their implementation, and keep generated tables and
 imported corpus records even when they have no runtime consumer. The catalog
 now belongs to `tests/harness/catalog`: its consumers are Native validation
 tools, so it no longer expands the published runtime module.
+
+The 2026-11-09 ownership migration moves recursive-copy traversal/preflight to
+cp, octal mode parsing to chmod, removal operand protection to rm, ancestor
+protection to rmdir, positional extent copying to tac, and binary sequence
+evaluation/comparison to seq. Core retains the cp/mv path relationship mechanism
+and private numeric rounding/comparison needed by its formatter. Seq keeps its
+own bounded arithmetic helpers rather than publishing an arithmetic API just to
+avoid duplication. The test-only backup-name wrapper is removed; its tests call
+the private selection directly. Jq and jqlog each own their small AST adaptation;
+their 28 original positive expectations share one fixture and error tests stay
+local. Expand and unexpand own their grids independently. Reconsider sharing
+only for an actual common mechanism and identical consumer contracts; consumer
+count alone does not establish that boundary.
 
 Validate stable arguments at their owning entry boundary. Inner loops use those
 established invariants; filesystem races, short reads, failed writes and
@@ -320,6 +359,38 @@ old/new windows before claiming performance acceptance. Existing wc/fmt
 calibration limitations retain their recorded scope in the benchmark guide.
 
 ## Verification and reconsideration
+
+Development correctness and fixed upstream comparison are distinct required
+checks. Existing case registrations own external fixture paths; command-local
+functional changes select consumers and shared/unknown execution changes select
+the full differential. Plain prose, license notices and document assets are
+outside these rules. Executable MoonBit documentation remains source; do not
+introduce a separate text-review or ownership system.
+Git rename/deletion inputs retain both sides, and missing baselines fail closed
+to full scope. The Linux required status also checks the comparison's execution
+outcome. Same-run artifacts bind source and toolchain without restoring the
+retired assertion-proof chain. See the [test guide](../../tests/README.md).
+
+The [dated CI measurements](../../tests/README.md#ci-timing-observations-2026-11-09)
+record three warm runs and one explicit cold run with identical execution code,
+full upstream scope, stage costs, launch counts and report sizes. The correctness
+critical path approaches ten minutes; full mandatory gates and cold image
+construction retain their separate costs. Revisit measured package, command-event
+and oracle execution costs when reducing latency further, while preserving full
+corpora and lifecycle observations. This is CI evidence, not product performance
+qualification.
+
+The oracle policy explicitly records unavailable profiles: serve has no matching
+upstream executable, jqlog's recorded source label has no runnable image binary,
+which has no checksum-qualified image executable, and timeout retains its
+local-only unsupported Wasm boundary. Reopen those omissions when a runnable,
+immutable applicable oracle profile exists. They are not parity claims.
+
+Reusable oracle workers preserve case directories, environment and temporary
+state, and verify process completion before reuse. Incompatible specialized
+mount layouts keep invocation-owned containers and are counted separately.
+Actual container/launch counts and complete-gate timings determine subsequent
+optimization, not the size of a split fast job.
 
 Use [architecture validation](../../tests/tools/architecture.mbtx), private ownership
 tests and independent CLI contracts. Strategy/source/test/workload bindings live

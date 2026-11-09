@@ -148,6 +148,29 @@ module and version before any release operation.
   than runtime command consumers. Preserve dialects, error ordering and fast
   loops instead of forcing them into a generic command framework.
 
+- Keep copy/removal/mode policies, tac range copying, seq arithmetic, jq AST
+  adapters and expand/unexpand grids in their owning commands. Do not import
+  another command's internal packages. Small identical adaptations may remain
+  local when their dialects evolve independently; share independent test inputs
+  rather than widening runtime APIs. The jq adapter corpus retains the original
+  28 positive expectations, including stable-order and deep-key records.
+
+- Keep curl/wget Cookie, authentication, redirect, retry, resume and output
+  policies in each command's `internal/download`. Core netops performs one
+  request through a scoped streaming response and owns transport/URL/IDNA/PSL
+  mechanisms. Do not restore profile switches or command-aware transfer options.
+  Preserve raw EOF observations, upload/read counts, output commit boundaries
+  and connection closure on return, error and cancellation. Complete original
+  Cookie and authentication corpora run beside their owners; real command events
+  and full required differential remain independent checks.
+- Use released public x/time APIs for equivalent TZif conversion and reject
+  ambiguous/nonexistent local times explicitly. Keep timezone file selection,
+  POSIX strings and documented legacy compatibility in `core/time_zone`; never
+  import x/internal or assume system local-zone APIs exist on Wasm. Declare the
+  required public API release in core/moon.mod; another workspace module must
+  not supply a newer dependency implicitly. Check standalone core when changing
+  that dependency boundary.
+
 - rg search policy and its concrete matcher adapter are private to `driver`.
   Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms
   in `core/bytesearch`; `matcher` and `searcher` must not import the driver.
@@ -169,6 +192,17 @@ module and version before any release operation.
 - Product delivery and required correctness acceptance target Wasm through MoonX.
   Development CI runs the complete applicable Wasm suite on Linux, macOS and
   Windows. Native is retained only for test tools and their own regressions.
+- Linux upstream comparison is a required separate job. Command and registered
+  fixture changes select their consumers; shared or unclassified execution inputs
+  and missing Git baselines select all. `ubuntu-24.04` aggregates correctness and
+  the required comparison, failing on missing, cancelled or unexpected skips.
+  Reuse only same-run source/toolchain-bound build artifacts, never dynamic
+  candidate observations. Fixture paths belong to existing case `inputs` fields;
+  unsupported oracle profiles require explicit policy boundaries.
+  Apply change-selection rules to functionality, dependencies, executable tests,
+  actual test inputs and CI execution configuration. Plain documentation, license
+  notices and document assets do not require upstream comparison. Do not add
+  parallel text-review rules or ownership records for ordinary prose.
 - Mainline changes use a PR and the required ubuntu-24.04, macos-15 and
   windows-2025 checks, followed by actual-main validation. Do not bypass branch
   protection. The former C1 coverage audit, change declaration, source/artifact

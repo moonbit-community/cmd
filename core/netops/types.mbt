@@ -35,56 +35,6 @@ pub(all) enum RequestBody {
 
 ///|
 #derive(Eq, Debug)
-pub(all) enum RedirectPolicy {
-  NoRedirects
-  FollowRedirects(Int32)
-}
-
-///|
-/// Scope of explicitly supplied Basic credentials, independent of custom headers.
-#derive(Eq, Debug)
-pub(all) enum BasicCredentialScope {
-  InitialOrigin
-  AllOrigins
-}
-
-///|
-#derive(Eq, Debug)
-pub(all) enum TransferFileMode {
-  Truncate
-  Append
-  Unique
-}
-
-///|
-#derive(Eq, Debug)
-pub(all) enum TransferProfile {
-  StrictProfile
-  CurlProfile
-  WgetProfile
-}
-
-///|
-pub extend TransferProfile with Eq::{equal, not_equal}
-
-///|
-pub extend TransferProfile with @debug.Debug::{to_repr}
-
-///|
-#derive(Debug)
-pub(all) enum TransferOutput {
-  StandardOutput
-  DiscardOutput
-  FileOutput(
-    path~ : String,
-    mode~ : TransferFileMode,
-    content_disposition~ : Bool,
-    remove_on_error~ : Bool
-  )
-}
-
-///|
-#derive(Eq, Debug)
 pub(all) enum TransferErrorKind {
   InvalidUrl
   UnsupportedProtocol
@@ -142,6 +92,7 @@ pub extend ResponseFraming with @debug.Debug::{to_repr}
 pub(all) struct TransferFailureContext {
   phase : TransferPhase
   framing : ResponseFraming?
+  sent_bytes : Int64
   received_bytes : Int64
   committed_bytes : Int64
   write_outcome_uncertain : Bool
@@ -187,153 +138,6 @@ pub fn parse_http_method(value : String) -> HttpMethod raise TransferError {
 }
 
 ///|
-/// How an explicit Cookie field interacts with cookies selected from the jar.
-pub(all) enum CustomCookieMode {
-  SeparateFields
-  ReplaceStored
-}
-
-///|
-pub(all) struct TransferOptions {
-  profile : TransferProfile
-  utf8_hosts : Bool
-  request_method : HttpMethod
-  headers : Array[HttpHeader]
-  body : RequestBody
-  redirects : RedirectPolicy
-  preserve_method_on_redirect : Bool
-  verify_tls : Bool
-  proxy_url : String?
-  connect_timeout_ms : Int32
-  idle_timeout_ms : Int32
-  max_time_ms : Int32?
-  fail_on_http_error : Bool
-  http_error_statuses : Array[Int32]
-  resume_from : Int64?
-  resume_skip_existing : Bool
-  keep_output_on_not_modified : Bool
-  cookie_jar : CookieJar?
-  cookie_data : String?
-  custom_cookie_mode : CustomCookieMode
-  custom_cookie_cross_origin : Bool
-  basic_user : String?
-  basic_password : String?
-  basic_preemptive : Bool
-  basic_credential_scope : BasicCredentialScope
-  basic_challenged_hosts : Map[String, Bool]
-}
-
-///|
-/// With `resume_skip_existing`, a full response to an ignored Range is consumed
-/// past the retained prefix before appending new bytes. File output must append.
-pub fn transfer_options(
-  profile~ : TransferProfile = StrictProfile,
-  utf8_hosts~ : Bool = true,
-  request_method~ : HttpMethod = Get,
-  headers~ : Array[HttpHeader] = [],
-  body~ : RequestBody = EmptyBody,
-  redirects~ : RedirectPolicy = NoRedirects,
-  preserve_method_on_redirect~ : Bool = false,
-  verify_tls~ : Bool = true,
-  proxy_url? : String,
-  connect_timeout_ms~ : Int32 = 30_000,
-  idle_timeout_ms~ : Int32 = 30_000,
-  max_time_ms? : Int32,
-  fail_on_http_error~ : Bool = false,
-  http_error_statuses~ : Array[Int32] = [],
-  resume_from? : Int64,
-  resume_skip_existing~ : Bool = false,
-  keep_output_on_not_modified~ : Bool = false,
-  cookie_jar? : CookieJar,
-  cookie_data? : String,
-  custom_cookie_mode~ : CustomCookieMode = SeparateFields,
-  custom_cookie_cross_origin~ : Bool = false,
-  basic_user? : String,
-  basic_password? : String,
-  basic_preemptive~ : Bool = true,
-  basic_credential_scope~ : BasicCredentialScope = InitialOrigin,
-  basic_challenged_hosts~ : Map[String, Bool] = Map([]),
-) -> TransferOptions {
-  {
-    profile,
-    utf8_hosts,
-    request_method,
-    headers,
-    body,
-    redirects,
-    preserve_method_on_redirect,
-    verify_tls,
-    proxy_url,
-    connect_timeout_ms,
-    idle_timeout_ms,
-    max_time_ms,
-    fail_on_http_error,
-    http_error_statuses,
-    resume_from,
-    resume_skip_existing,
-    keep_output_on_not_modified,
-    cookie_jar,
-    cookie_data,
-    custom_cookie_mode,
-    custom_cookie_cross_origin,
-    basic_user,
-    basic_password,
-    basic_preemptive,
-    basic_credential_scope,
-    basic_challenged_hosts,
-  }
-}
-
-///|
-#derive(Debug)
-pub(all) enum TransferEvent {
-  ResponseStarted(
-    url~ : String,
-    status~ : Int32,
-    reason~ : String,
-    headers~ : Array[HttpHeader],
-    content_length~ : Int64?
-  )
-  Redirected(status~ : Int32, from~ : String, to~ : String)
-  OutputStarted(path~ : String?, response_offset~ : Int64)
-  Progress(received~ : Int64, content_length~ : Int64?)
-  Completed(received~ : Int64, content_length~ : Int64?)
-}
-
-///|
-pub(all) struct TransferResult {
-  requested_url : String
-  effective_url : String
-  status : Int32
-  reason : String
-  headers : Array[HttpHeader]
-  received : Int64
-  output_path : String?
-  redirects : Int32
-}
-
-///|
-fn TransferResult::header(self : TransferResult, name : String) -> String? {
-  let normalized = name.to_lower()
-  for header in self.headers {
-    if header.name.to_lower() == normalized {
-      return Some(header.value)
-    }
-  }
-  None
-}
-
-///|
-pub fn TransferResult::content_disposition_filename(
-  self : TransferResult,
-) -> String? {
-  match self.header("Content-Disposition") {
-    Some(value) => content_disposition_filename(value).map(@fsops.basename)
-    None => None
-  }
-}
-
-///|
 pub extend HttpMethod with Eq::{not_equal, equal}
 
 ///|
@@ -349,27 +153,6 @@ pub extend HttpHeader with @debug.Debug::{to_repr}
 pub extend RequestBody with @debug.Debug::{to_repr}
 
 ///|
-pub extend RedirectPolicy with Eq::{not_equal, equal}
-
-///|
-pub extend RedirectPolicy with @debug.Debug::{to_repr}
-
-///|
-pub extend BasicCredentialScope with Eq::{not_equal, equal}
-
-///|
-pub extend BasicCredentialScope with @debug.Debug::{to_repr}
-
-///|
-pub extend TransferFileMode with Eq::{not_equal, equal}
-
-///|
-pub extend TransferFileMode with @debug.Debug::{to_repr}
-
-///|
-pub extend TransferOutput with @debug.Debug::{to_repr}
-
-///|
 pub extend TransferErrorKind with Eq::{not_equal, equal}
 
 ///|
@@ -380,6 +163,3 @@ pub extend TransferError with Eq::{not_equal, equal}
 
 ///|
 pub extend TransferError with @debug.Debug::{to_repr}
-
-///|
-pub extend TransferEvent with @debug.Debug::{to_repr}

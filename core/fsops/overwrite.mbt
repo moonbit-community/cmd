@@ -185,15 +185,6 @@ async fn select_backup(
 }
 
 ///|
-pub async fn select_backup_path(
-  path : String,
-  control : BackupControl,
-  suffix~ : String = "~",
-) -> String? {
-  select_backup(path, control, suffix~).map(backup => backup.path)
-}
-
-///|
 async fn rename_backup(
   source : String,
   destination : String,

@@ -77,7 +77,8 @@ pub async fn execute_scenario(
             report_dir + "/" + fixture.id + ".observations.json",
           )
         "f31-sh-test-size-posix" => shell_size_posix_scenario(root, work)
-        "f31-sh-printf-state" => printf_state_scenario(root, work)
+        "f31-sh-printf-state" =>
+          printf_state_scenario(root, work, oracle_image?)
         "f31-sh-printf-state-oracle" => {
           guard oracle_image is Some(image) else {
             fail("printf state oracle requires a sealed oracle")
@@ -104,25 +105,24 @@ pub async fn execute_scenario(
         "diff-directory-devices-boundary" =>
           diff_directory_devices_boundary_scenario(root, work)
         "process-lifecycle" => process_lifecycle_scenario(root, work)
-        "yes-stream-lifecycle" => yes_stream_lifecycle_scenario(root, work)
+        "yes-stream-lifecycle" =>
+          yes_stream_lifecycle_scenario(root, work, oracle_image?)
         "compression-selectors" => compression_selectors_scenario(root, work)
         "metadata-relations" =>
           metadata_scenario(
             root,
             work,
             report_dir + "/metadata-relations.observations.json",
+            oracle_image?,
           )
         "f29-mkdir-umasks" =>
-          mkdir_umask_scenario(
-            root,
-            work,
-            report_dir + "/f29-mkdir-umasks.observations.json",
-          )
+          mkdir_umask_event(root, work, report_dir, fixture.id, oracle_image?)
         "f29-sparse-size" =>
           filesystem_sparse_scenario(
             root,
             work,
             report_dir + "/f29-sparse-size.observations.json",
+            oracle_image?,
           )
         "f29-sparse-size-oracle" => {
           guard oracle_image is Some(image) else {
@@ -141,6 +141,7 @@ pub async fn execute_scenario(
             work,
             report_dir + "/" + fixture.id + ".observations.json",
             fixture.command,
+            oracle_image?,
           )
         "f29-find-size-unreadable-oracle" | "f29-test-size-unreadable-oracle" => {
           guard oracle_image is Some(image) else {
@@ -159,6 +160,7 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-special-kinds.observations.json",
+            oracle_image?,
           )
         "f29-windows-metadata" =>
           filesystem_windows_scenario(
@@ -171,6 +173,7 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-subsecond-order.observations.json",
+            oracle_image?,
           )
         "f29-subsecond-order-oracle" => {
           guard oracle_image is Some(image) else {
@@ -194,6 +197,7 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-time-references.observations.json",
+            oracle_image?,
           )
         "f29-time-references-oracle" => {
           guard oracle_image is Some(image) else {
@@ -211,6 +215,7 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-predicate-errors.observations.json",
+            oracle_image?,
           )
         "f29-predicate-errors-oracle" => {
           guard oracle_image is Some(image) else {
@@ -238,17 +243,11 @@ pub async fn execute_scenario(
           guard oracle_image is Some(image) else {
             fail("umask oracle requires a sealed oracle")
           }
-          @fs.mkdir(work + "/candidate")
-          @fs.mkdir(work + "/oracle")
-          mkdir_umask_scenario(
+          mkdir_umask_event(
             root,
-            work + "/candidate",
-            report_dir + "/f29-mkdir-umasks-oracle.candidate.json",
-          )
-          mkdir_umask_scenario(
-            root,
-            work + "/oracle",
-            report_dir + "/f29-mkdir-umasks-oracle.gnu.json",
+            work,
+            report_dir,
+            fixture.id,
             oracle_image=image,
           )
         }
@@ -277,12 +276,13 @@ pub async fn execute_scenario(
         "tail-follow-interval" => follow_interval_scenario(root, work)
         "stream-failure-prefixes" => failure_prefix_scenario(root, work)
         "ls-link-facets" => link_dereference_scenario(root, work)
-        "network-auth-cookie" => network_cli_scenario(root, work)
+        "network-auth-cookie" => network_cli_scenario(root, work, oracle_image?)
         "network-curl-cookie-lifecycle" =>
           network_curl_transfers_scenario(
             root,
             work,
             corpus="curl-cookie-lifecycle",
+            oracle_image?,
           )
         "network-curl-cookie-lifecycle-oracle" =>
           network_curl_transfers_scenario(
@@ -292,7 +292,12 @@ pub async fn execute_scenario(
             oracle_image?,
           )
         "network-curl-http-retry" =>
-          network_curl_transfers_scenario(root, work, corpus="curl-http-retry")
+          network_curl_transfers_scenario(
+            root,
+            work,
+            corpus="curl-http-retry",
+            oracle_image?,
+          )
         "network-curl-http-retry-oracle" =>
           network_curl_transfers_scenario(
             root,
@@ -328,7 +333,7 @@ pub async fn execute_scenario(
             tool="wget",
             oracle_image?,
           )
-        "network-idna" => network_idna_scenario(root, work)
+        "network-idna" => network_idna_scenario(root, work, oracle_image?)
         "network-wget-cookies" =>
           network_wget_cookies_scenario(root, work, oracle_image?)
         "network-wget-cookies-oracle" =>
@@ -362,17 +367,24 @@ pub async fn execute_scenario(
             corpus="wget-cookie-dates",
           )
         "network-wget-authentication" =>
-          network_wget_authentication_scenario(root, work)
+          network_wget_authentication_scenario(root, work, oracle_image?)
         "network-wget-authentication-oracle" =>
           network_wget_authentication_scenario(root, work, oracle_image?)
+        "network-wget-authentication-session"
+        | "network-wget-authentication-replay"
+        | "network-wget-authentication-rejection"
+        | "network-wget-authentication-option-error" =>
+          network_wget_authentication_scenario(root, work, id=fixture.id)
         "network-idna-oracle" =>
           network_idna_scenario(root, work, oracle_image?)
-        "network-cookie-suffix" => network_cookie_suffix_scenario(root, work)
+        "network-cookie-suffix" =>
+          network_cookie_suffix_scenario(root, work, oracle_image?)
         "network-cookie-suffix-oracle" =>
           network_cookie_suffix_scenario(root, work, oracle_image?)
         "network-auth-cookie-oracle" =>
           network_cli_scenario(root, work, oracle_image?)
-        "network-transfer-boundaries" => network_transfer_scenario(root, work)
+        "network-transfer-boundaries" =>
+          network_transfer_scenario(root, work, oracle_image?)
         "network-transfer-boundaries-oracle" =>
           network_transfer_scenario(root, work, oracle_image?)
         "mv-windows-wasm-links-boundary" =>

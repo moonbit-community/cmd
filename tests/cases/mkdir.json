@@ -1360,27 +1360,11 @@
         "posix"
       ],
       "timeout_ms": 180000,
-      "oracle": false,
-      "source_version": "Twelve actual umask invocations with independently expected original parent/leaf modes and partial effects; GNU boundary differences are explicit, never parity claims."
-    },
-    {
-      "id": "f29-mkdir-umasks-oracle",
-      "command": "mkdir",
-      "args": [],
-      "files": [],
-      "environment": {},
-      "normalizations": [],
-      "expected_status": 0,
-      "expected_stdout_text": "",
-      "expected_stderr_text": "",
-      "stdin_text": "",
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 180000,
-      "oracle": false,
-      "source_version": "Twelve actual umask invocations with independently expected original parent/leaf modes and partial effects; GNU boundary differences are explicit, never parity claims."
+      "oracle": true,
+      "source_version": "Twelve actual umask invocations with independently expected original parent/leaf modes and partial effects; GNU boundary differences are explicit, never parity claims.",
+      "aliases": [
+        "f29-mkdir-umasks-oracle"
+      ]
     }
   ]
 }

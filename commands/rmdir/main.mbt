@@ -110,7 +110,7 @@ async fn main {
       let parent = @fsops.dirname(current)
       keep_going = parent != current &&
         parent != "." &&
-        !@fsops.protects_working_directory(parent)
+        !protects_working_directory(parent)
       current = parent
     }
   }

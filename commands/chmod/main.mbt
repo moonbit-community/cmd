@@ -168,7 +168,7 @@ async fn main {
   }
   let (selected_mode, symbolic_mode) = match parsed.operands.get(0) {
     Some(value) => {
-      let numeric = try @fsops.parse_octal_mode(value) catch {
+      let numeric = try parse_octal_mode(value) catch {
         _ => None
       } noraise {
         mode => Some(mode)

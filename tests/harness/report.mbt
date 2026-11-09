@@ -67,6 +67,7 @@ pub async fn write_reports(
     },
     "commands": published_commands,
     "completed_at_ms": @async.now(),
+    "launches": launch_counts(),
     "results_sha256": sha256_bytes(@utf8.encode(results_text)),
     "passed": reports.filter(row => row.result == "pass").length(),
     "failed": reports

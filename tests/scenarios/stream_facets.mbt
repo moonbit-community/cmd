@@ -7,7 +7,7 @@ async fn follow_interval_scenario(root : String, work : String) -> Unit {
       let (reader, stdout) = @process.read_from_process()
       defer reader.close()
       let stderr_path = work + "/../tail-" + label + ".stderr"
-      let child = @process.spawn(
+      let child = @harness.spawn(
         group,
         @harness.command_program(),
         @harness.command_args(root, "tail", ["-f", "-s", interval, source]),

@@ -81,13 +81,9 @@ async fn network_wget_authentication_scenario(
   root : String,
   work : String,
   oracle_image? : String,
+  id~ : String = "network-wget-authentication",
 ) -> Unit {
-  @network.run(
-    "network-wget-authentication",
-    workspace_network_executor(root),
-    work,
-    oracle_image?,
-  )
+  @network.run(id, workspace_network_executor(root), work, oracle_image?)
 }
 
 ///|
