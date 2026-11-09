@@ -224,7 +224,7 @@ async fn observe_exit_with_open_stdin(
   let started = @async.now()
   let finished = @async.with_timeout_opt(timeout_ms, () => {
     @async.with_task_group(group => {
-      let child = @process.spawn(
+      let child = @harness.spawn(
         group,
         program,
         args,

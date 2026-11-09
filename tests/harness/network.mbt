@@ -418,7 +418,7 @@ pub async fn spawn_http_fixture_process(
   let handed_off = Ref(false)
   defer (if !handed_off.val { port_reader.close() })
   let program = @env.args()[0]
-  let process = @process.spawn(
+  let process = spawn(
     group,
     program,
     ["--http-fixture-server"],
@@ -457,7 +457,7 @@ pub async fn spawn_https_fixture_process(
   let fixture_root = @fs.realpath(fixture_directory)
   let log = @path.Path(root).join(Path("https.log")).to_string()
   let output = @process.redirect_to_file(log)
-  let process = @process.spawn(
+  let process = spawn(
     group,
     "openssl",
     ["s_server", "-accept", "127.0.0.1:0", "-cert", cert, "-key", key, "-WWW"],

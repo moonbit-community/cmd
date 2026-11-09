@@ -1,6 +1,7 @@
 import {
   "moonbitlang/core/debug",
   "moonbitlang/async",
+  "moonbitlang/async/cond_var",
   "moonbitlang/async/io",
   "moonbitlang/async/os_error",
   "moonbitlang/async/fs",

@@ -25,8 +25,9 @@ serially. Product acceptance targets Wasm; Native is only for test tools.
 Tools default to debug, products and package tests to release. Published tools
 use release. Standalone commands build their required tools. CI runs `prepare`
 first and sets `CMD_TEST_PREPARED=1` for later commands; missing artifacts fail.
-Choose a fresh absolute `CMD_TEST_REPORT_ROOT` for each execution. Linux currently
-prepares `oracle` in that root before the full functional run. Diagnostic subsets
+Choose a fresh absolute `CMD_TEST_REPORT_ROOT` for each execution. Linux correctness
+exports prepared Wasm and Native tools to the upstream job, bound to the commit,
+toolchain and complete artifact inventory. Diagnostic subsets
 do not qualify complete development or published acceptance.
 
 ## Ownership and assertions
@@ -81,10 +82,42 @@ Results are `pass`, `fail`, `skip` or `infra`. Availability, local contract,
 differential comparison and explicit boundary are separate verification kinds.
 Missing fixtures, empty required selections, deadlines, uncertain cleanup and
 report failures cannot pass. Original expected values never come from candidate
-output. Stateful scenarios remain serial; independent cases use at most four
-tasks. Partial child observations remain failures, not fabricated completion.
+output. Scenarios with shared or unreviewed state remain serial. The `isolated`
+case flag records reviewed private directories, servers and process state; those
+events use at most four tasks (two in differential runs). Their internal steps
+remain serial. Partial child observations remain failures, not fabricated completion.
 
 ## Oracle and delivery boundaries
+
+`functional` always runs complete applicable correctness. Linux upstream execution
+is a separate required job. `ci select BASE HEAD` uses both names of a rename,
+command source/test/dependency changes, command case files and the `inputs` paths
+on existing case registrations. Shared or unclassified execution inputs and a
+missing comparison baseline select all registered differential cases. Pure prose
+changes select none explicitly. An affected command without a differential case
+requires an explicit `oracle_boundary` in the existing release policy; an empty
+required selection fails. These boundaries do not establish parity.
+
+`ubuntu-24.04` aggregates Linux correctness and the required comparison. Missing,
+failed, cancelled or unexpectedly skipped dependencies cannot pass. Main pushes
+repeat selection and execution on the actual merged commit. macOS and Windows
+remain independent required checks. `ci import` rejects incomplete inventories,
+changed bytes and mismatched source/toolchain; it never rebuilds candidate tools.
+
+Within a differential run, at most two reusable containers own compatible mount
+and network configurations. Each invocation has a separate working directory,
+environment and temporary directory. The runner observes remaining processes
+before reuse; timeout, cancellation and uncertain cleanup destroy the owned
+container. Specialized incompatible container layouts retain the existing owned
+single-invocation path, counted separately in run metadata. Frozen published
+execution remains supported. No dynamic candidate observation is cached.
+
+Run metadata records driver-observed process starts and container starts;
+`ci metrics` records report file count and bytes. Compare these with Actions job
+and stage durations, including upstream and gate jobs, when measuring CI latency.
+The counters cover the runner's direct launch paths, not arbitrary descendants
+inside command oracles or the compiler. Three warm and one cold comparable runs
+are required before accepting the CI latency target.
 
 The oracle family remains `pinned-oracle-v1`, with reviewed profile version 2.
 It verifies image identity, tool inventory and source/distribution checksums.

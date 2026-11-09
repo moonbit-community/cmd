@@ -315,6 +315,26 @@ calibration limitations retain their recorded scope in the benchmark guide.
 
 ## Verification and reconsideration
 
+Development correctness and fixed upstream comparison are distinct required
+checks. Existing case registrations own external fixture paths; command-local
+changes select consumers and shared/unknown changes select the full differential.
+Git rename/deletion inputs retain both sides, and missing baselines fail closed
+to full scope. The Linux required status also checks the comparison's execution
+outcome. Same-run artifacts bind source and toolchain without restoring the
+retired assertion-proof chain. See the [test guide](../../tests/README.md).
+
+The oracle policy explicitly records unavailable profiles: serve has no matching
+upstream executable, jqlog's recorded source label has no runnable image binary,
+which has no checksum-qualified image executable, and timeout retains its
+local-only unsupported Wasm boundary. Reopen those omissions when a runnable,
+immutable applicable oracle profile exists. They are not parity claims.
+
+Reusable oracle workers preserve case directories, environment and temporary
+state, and verify process completion before reuse. Incompatible specialized
+mount layouts keep invocation-owned containers and are counted separately.
+Actual container/launch counts and complete-gate timings determine subsequent
+optimization, not the size of a split fast job.
+
 Use [architecture validation](../../tests/tools/architecture.mbtx), private ownership
 tests and independent CLI contracts. Strategy/source/test/workload bindings live
 in [protection.json](../../tests/benchmark/protection.json); measurement gates

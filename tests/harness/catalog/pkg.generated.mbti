@@ -111,6 +111,7 @@ pub(all) struct ReleaseCommandMetadata {
   policy_sensitive : Bool
   releasable : Bool
   case_ids : Array[String]?
+  oracle_boundary : String?
 }
 pub fn ReleaseCommandMetadata::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 pub fn ReleaseCommandMetadata::to_json(Self) -> @json.Json

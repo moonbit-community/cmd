@@ -104,7 +104,8 @@ pub async fn execute_scenario(
         "diff-directory-devices-boundary" =>
           diff_directory_devices_boundary_scenario(root, work)
         "process-lifecycle" => process_lifecycle_scenario(root, work)
-        "yes-stream-lifecycle" => yes_stream_lifecycle_scenario(root, work)
+        "yes-stream-lifecycle" =>
+          yes_stream_lifecycle_scenario(root, work, oracle_image?)
         "compression-selectors" => compression_selectors_scenario(root, work)
         "metadata-relations" =>
           metadata_scenario(
@@ -277,12 +278,13 @@ pub async fn execute_scenario(
         "tail-follow-interval" => follow_interval_scenario(root, work)
         "stream-failure-prefixes" => failure_prefix_scenario(root, work)
         "ls-link-facets" => link_dereference_scenario(root, work)
-        "network-auth-cookie" => network_cli_scenario(root, work)
+        "network-auth-cookie" => network_cli_scenario(root, work, oracle_image?)
         "network-curl-cookie-lifecycle" =>
           network_curl_transfers_scenario(
             root,
             work,
             corpus="curl-cookie-lifecycle",
+            oracle_image?,
           )
         "network-curl-cookie-lifecycle-oracle" =>
           network_curl_transfers_scenario(
@@ -292,7 +294,12 @@ pub async fn execute_scenario(
             oracle_image?,
           )
         "network-curl-http-retry" =>
-          network_curl_transfers_scenario(root, work, corpus="curl-http-retry")
+          network_curl_transfers_scenario(
+            root,
+            work,
+            corpus="curl-http-retry",
+            oracle_image?,
+          )
         "network-curl-http-retry-oracle" =>
           network_curl_transfers_scenario(
             root,
@@ -328,7 +335,7 @@ pub async fn execute_scenario(
             tool="wget",
             oracle_image?,
           )
-        "network-idna" => network_idna_scenario(root, work)
+        "network-idna" => network_idna_scenario(root, work, oracle_image?)
         "network-wget-cookies" =>
           network_wget_cookies_scenario(root, work, oracle_image?)
         "network-wget-cookies-oracle" =>
@@ -362,17 +369,19 @@ pub async fn execute_scenario(
             corpus="wget-cookie-dates",
           )
         "network-wget-authentication" =>
-          network_wget_authentication_scenario(root, work)
+          network_wget_authentication_scenario(root, work, oracle_image?)
         "network-wget-authentication-oracle" =>
           network_wget_authentication_scenario(root, work, oracle_image?)
         "network-idna-oracle" =>
           network_idna_scenario(root, work, oracle_image?)
-        "network-cookie-suffix" => network_cookie_suffix_scenario(root, work)
+        "network-cookie-suffix" =>
+          network_cookie_suffix_scenario(root, work, oracle_image?)
         "network-cookie-suffix-oracle" =>
           network_cookie_suffix_scenario(root, work, oracle_image?)
         "network-auth-cookie-oracle" =>
           network_cli_scenario(root, work, oracle_image?)
-        "network-transfer-boundaries" => network_transfer_scenario(root, work)
+        "network-transfer-boundaries" =>
+          network_transfer_scenario(root, work, oracle_image?)
         "network-transfer-boundaries-oracle" =>
           network_transfer_scenario(root, work, oracle_image?)
         "mv-windows-wasm-links-boundary" =>

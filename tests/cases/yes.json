@@ -53,7 +53,8 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "scenario",
-      "timeout_ms": 20000
+      "timeout_ms": 20000,
+      "oracle": true
     }
   ]
 }

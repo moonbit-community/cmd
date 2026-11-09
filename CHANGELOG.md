@@ -16,6 +16,12 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Separate Linux correctness from mandatory affected-command upstream comparison,
+  preserving the three required platform statuses. Reuse verified same-run build
+  inputs and compatible oracle workers, unify network scenario modes, and fail
+  closed on selection, artifact, process-lifecycle and required-gate failures.
+  Comparable CI latency qualification remains pending.
+
 - Replace the per-assertion proof and source-sealing chain with direct assertions
   and complete-result checks. Prepare CI products/tools once, compact successful
   network observations and retain failure diagnostics. Original corpora and

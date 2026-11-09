@@ -250,7 +250,7 @@ async fn filesystem_special_scenario(
   @async.with_task_group(group => {
     let stdout = @process.redirect_to_file(evidence + "/socket-setup.stdout")
     let stderr = @process.redirect_to_file(evidence + "/socket-setup.stderr")
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       "/usr/bin/nc",
       ["-d", "-l", "-U", socket_path],

@@ -439,6 +439,9 @@ async fn run_oracle_with_deadline_using(
     }
   }
   result_observed.val = Some(result)
+  if result.output.status != 125 && !result.timed_out {
+    container_starts.val += 1
+  }
   let evidence_errors : Array[String] = []
   record_oracle_file(
     owner,
@@ -512,6 +515,14 @@ pub async fn run_oracle_with_deadline(
   extra_env~ : Map[String, String] = Map([]),
   inherit_env~ : Bool = true,
 ) -> TimedRun {
+  if docker == "docker" &&
+    extra_env.is_empty() &&
+    inherit_env &&
+    oracle_pool.val is Some(pool) &&
+    oracle_exec_plan(args, pool.root, pool.image) is Some(plan) {
+    return run_in_oracle_worker(pool, plan, timeout_ms, evidence_dir, stdin)
+  }
+  owned_oracle_invocations.val += 1
   run_oracle_with_deadline_using(
     args,
     timeout_ms,

@@ -8,7 +8,7 @@ async fn shell_interactive_scenario(root : String, work : String) -> Unit {
     let (stdin, writer) = @process.write_to_process()
     let (stdout, output) = @process.read_from_process()
     let (stderr, error) = @process.read_from_process()
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       program,
       args,

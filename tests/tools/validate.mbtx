@@ -39,7 +39,7 @@ async fn main {
   }
   let arguments = [
     "--suite",
-    if @async.platform is Linux {
+    if published && @async.platform is Linux {
       "all"
     } else {
       "functional"
@@ -61,7 +61,7 @@ async fn main {
       ),
     ])
   }
-  if @async.platform is Linux {
+  if published && @async.platform is Linux {
     let image = @fs.read_file(report_root + "/oracle-image.txt")
       .text()
       .trim()

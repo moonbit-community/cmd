@@ -61,6 +61,8 @@ pub(all) struct Case {
   timeout_ms : Int32?
   comparison : String?
   oracle : Bool?
+  inputs : Array[String]?
+  isolated : Bool?
   expected_stdout_hex : String?
   expected_stdout_text : String?
   expected_stderr_hex : String?

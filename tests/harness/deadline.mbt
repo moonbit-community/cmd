@@ -35,7 +35,7 @@ pub async fn run_with_deadline(
   defer reader_err.close()
   let finished = @async.with_timeout_opt(timeout_ms, () => {
     @async.with_task_group(group => {
-      let child = @process.spawn(
+      let child = spawn(
         group,
         program,
         args,

@@ -15,7 +15,7 @@ async fn run_https_cases(bin_root : String, failures : Array[String]) -> Unit {
     defer cleanup_compat_fixture(output_root)
     let log = @path.Path(output_root).join(Path("server.log")).to_string()
     let program = @env.args()[0]
-    let server = @process.spawn(
+    let server = @harness.spawn(
       group,
       program,
       ["--https-server", cert, key, log],

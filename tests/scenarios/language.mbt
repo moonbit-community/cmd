@@ -4,7 +4,7 @@ async fn shell_language_session_scenario(root : String, work : String) -> Unit {
     let (stdin, writer) = @process.write_to_process()
     let (stdout, output) = @process.read_from_process()
     let (stderr, error) = @process.read_from_process()
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       @harness.command_program(),
       @harness.command_args(root, "sh", ["-i"]),
