@@ -268,8 +268,9 @@ async fn run_driver() -> Unit {
           }
         "compat" | "stress" | "policy" =>
           for fixture in selected.filter(item => item.comparison == Some(suite)) {
-            @harness.append_report(
+            append_scenario_reports(
               reports,
+              fixture,
               @scenarios.execute_cohort(
                 fixture, bin_root, backend, project_root, wasm_root,
               ),
