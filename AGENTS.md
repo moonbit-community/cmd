@@ -199,6 +199,10 @@ module and version before any release operation.
   Reuse only same-run source/toolchain-bound build artifacts, never dynamic
   candidate observations. Fixture paths belong to existing case `inputs` fields;
   unsupported oracle profiles require explicit policy boundaries.
+  Apply change-selection rules to functionality, dependencies, executable tests,
+  actual test inputs and CI execution configuration. Plain documentation, license
+  notices and document assets do not require upstream comparison. Do not add
+  parallel text-review rules or ownership records for ordinary prose.
 - Mainline changes use a PR and the required ubuntu-24.04, macos-15 and
   windows-2025 checks, followed by actual-main validation. Do not bypass branch
   protection. The former C1 coverage audit, change declaration, source/artifact
