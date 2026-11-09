@@ -1,0 +1,33 @@
+import {
+  "cli/core/netops",
+  "cli/core/fsops",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/http",
+  "moonbitlang/async/stdio",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/encoding/base64",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/string",
+  "moonbitlang/x/time",
+}
+
+supported_targets = "native+wasm"
+
+import {
+  "moonbitlang/core/json",
+  "moonbitlang/x/path",
+} for "wbtest"
+
+import {
+  "moonbitlang/async/socket",
+  "moonbitlang/async/cond_var",
+} for "wbtest"
+
+import {
+  "moonbitlang/async/os_error",
+}
+
+import {
+  "moonbitlang/x/fs" @sync_fs,
+} for "wbtest"

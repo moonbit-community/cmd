@@ -17,13 +17,7 @@ async test "wire chunk extensions preserve BWS quoted values and reject malforme
           extension +
           "\r\nhello\r\n0\r\n\r\n",
         )
-        let received = try
-          transfer(
-            "http://127.0.0.1:\{server.addr.port()}/",
-            DiscardOutput,
-            transfer_options(),
-          )
-        catch {
+        let received = try read_test_response(server.addr.port()) catch {
           TransferError(kind~, context~, ..) => {
             assert_eq(kind, ReceiveFailure)
             assert_eq(
@@ -34,7 +28,7 @@ async test "wire chunk extensions preserve BWS quoted values and reject malforme
           }
           error => raise error
         } noraise {
-          result => Some(result.received)
+          result => Some(result)
         }
         assert_eq(received, if valid { Some(5L) } else { None })
       }
@@ -51,13 +45,7 @@ async test "wire headers reject raw control bytes before trimming HTTP whitespac
           group,
           "HTTP/1.1 200 OK\r\nContent-Length:" + value + "\r\n\r\nabc",
         )
-        let received = try
-          transfer(
-            "http://127.0.0.1:\{server.addr.port()}/",
-            DiscardOutput,
-            transfer_options(),
-          )
-        catch {
+        let received = try read_test_response(server.addr.port()) catch {
           TransferError(kind~, context~, ..) => {
             assert_eq(kind, ReceiveFailure)
             assert_eq(context, Some(failure_context(ResponseHeaders)))
@@ -65,7 +53,7 @@ async test "wire headers reject raw control bytes before trimming HTTP whitespac
           }
           error => raise error
         } noraise {
-          result => Some(result.received)
+          result => Some(result)
         }
         assert_eq(received, if valid { Some(3L) } else { None })
       }
@@ -80,13 +68,7 @@ async test "wire Set-Cookie trailers fail after retaining the delivered payload"
       let server = serve_raw_response(
         group, "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\nSet-Cookie: late=1\r\n\r\n",
       )
-      try
-        transfer(
-          "http://127.0.0.1:\{server.addr.port()}/",
-          DiscardOutput,
-          transfer_options(),
-        )
-      catch {
+      try read_test_response(server.addr.port()) catch {
         TransferError(kind~, context~, ..) => {
           assert_eq(kind, ReceiveFailure)
           assert_eq(

@@ -91,6 +91,7 @@ async fn network_wget_authentication_scenario(
   executor : Executor,
   work : String,
   oracle_image? : String,
+  labels? : Array[String],
 ) -> Unit {
   let corpus = @json.parse(
     @fs.read_file(
@@ -102,10 +103,24 @@ async fn network_wget_authentication_scenario(
     fail("frozen Wget authentication corpus required")
   }
   assert_eq(cases.length(), 73)
+  let seen : Set[String] = Set([])
+  let fixtures : Array[AuthenticationCase] = @json.from_json(Json(cases))
+  for fixture in fixtures {
+    assert_true(fixture.label != "" && !seen.contains(fixture.label))
+    seen.add(fixture.label)
+  }
+  if labels is Some(labels) {
+    assert_true(!labels.is_empty())
+    for label in labels {
+      assert_true(seen.contains(label), msg=label)
+    }
+  }
   let file_body = Bytes::from_array([0, 1, 2, 65, 66, 67, 255, 13, 10])
   let failures : Array[String] = []
-  for value in cases {
-    let fixture : AuthenticationCase = @json.from_json(value)
+  for fixture in fixtures {
+    if labels is Some(labels) && !labels.contains(fixture.label) {
+      continue
+    }
     guard fixture.expected is { "requests": Array(expected_requests), .. } else {
       fail("frozen authentication observations required")
     }

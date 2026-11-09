@@ -293,7 +293,7 @@ pub fn commands() -> Array[CommandContract] {
     contract("chmod", Restricted, NoInput, LineStream, [PermissionMutation], [
       "recursive", "reference", "verbose", "symbolic-assignment",
     ]),
-    // Explicit Cookie follows the jar as a separate field. Candidate CurlProfile
+    // Explicit Cookie follows the jar as a separate field. Candidate curl policy
     // maps partial bodies/receive/empty replies to 18/56/52. Accepted 200 header
     // EOF retains known framing checks. Ordinary lazy file output buffers
     // 4096 bytes; an earlier body failure survives a secondary final-flush failure.
@@ -401,7 +401,7 @@ pub fn commands() -> Array[CommandContract] {
       ["duration"],
       exit_codes=[0, 124, 125, 126, 127],
     ),
-    // Explicit Cookie overrides jar fields across origins. Candidate WgetProfile
+    // Explicit Cookie overrides jar fields across origins. Candidate wget policy
     // accepts calibrated header/chunk-data/trailer EOF, but other exhausted
     // receive retries use 4. A 416 does not open transfer output and succeeds;
     // explicit -O initialization remains a prior command effect.

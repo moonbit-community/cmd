@@ -54,8 +54,14 @@ tests retain original IDs and expectations, use a fixed clock, and assert the
 request/save/reload state including row order. Missing or duplicate records
 fail. Their full CLI differential remains selectable on Linux under the same
 scenario ID; ordinary correctness uses the package tables and real session
-events. Authentication, retry and output events remain in command scenarios
-until their policy state has an independently testable owning boundary.
+events. These implementations and tests live in the commands' private download
+packages. Wget's 73 authentication records run through its private option parser
+and execution path with an injected environment and in-process loopback peer.
+Original status, response bytes and ordered credential/replay observations are
+preserved. Four separate CLI events retain host-scoped sessions, binary replay,
+refusal and option-error diagnostics. The full 73-case CLI route and its frozen
+published alias remain available. Retry, output failure and cleanup retain both
+private state regressions and real command events.
 
 | Location | Responsibility |
 | --- | --- |

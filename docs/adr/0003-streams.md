@@ -117,10 +117,22 @@ execution or selection defect, not to reproduce assertions in another format.
 | checksum / checksum/cli | Incremental algorithms / command records, files and diagnostics |
 | gzipops / gzipops/cli | Codec state and history / command options and execution |
 | shell | Session and control-flow state; sh, make and split own orchestration |
-| netops | Request, response, redirect and output responsibilities within one transfer path |
+| netops / curl and wget internals | Scoped single-request transport, URL/IDNA/PSL mechanisms / command-owned Cookie, authentication, redirect, retry, resume and output policies |
 | numfmt / time_zone | Exact fixed-profile numeric formatting / checked timezone conversion |
 | jq / jqlog command internals | Local public-AST adaptations preserving lexical bindings and assignment paths, checked against shared independent inputs |
 | quoting / expand and unexpand internals | Shared byte quoting / command-local tab grids and dialects |
+
+The network boundary is command adaptation, private download policy and one
+shared transport exchange. `with_response` closes its streaming response on
+return, error and cancellation. Raw incomplete headers/body boundaries remain
+observations for each command to interpret. Upload/read counts survive transport
+errors; output owners retain commit counts and uncertain write effects. There
+is no shared command profile or aggregate policy-options switch. Keep Curl's
+4096-byte file commit path and Wget's immediate output/resume path explicit.
+The original 594 Cookie and 73 authentication records run beside their owning
+implementations; complete CLI differential and published routes remain intact.
+Reconsider shared policy only when real consumers require the same stable
+contract, without command-identity branching.
 
 The compatibility boundary for internal restructuring is `moonx cli/<command>`:
 accepted arguments, output/status, error ordering, filesystem effects and

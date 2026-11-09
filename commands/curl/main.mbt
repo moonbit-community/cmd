@@ -117,12 +117,7 @@ fn proxy_for(options : Options, url : String) -> String? {
         None => @env.get_env_var("no_proxy")
       }
   }
-  if @netops.proxy_bypassed(
-      url,
-      no_proxy,
-      profile=@netops.CurlProfile,
-      utf8_hosts=utf8_hosts(),
-    ) {
+  if @download.proxy_bypassed(url, no_proxy, utf8_hosts=utf8_hosts()) {
     return None
   }
   if options.proxy_url is Some(value) {
@@ -157,15 +152,15 @@ fn output_for(
   options : Options,
   url : String,
   index : Int32,
-) -> @netops.TransferOutput raise @netops.TransferError {
+) -> @download.TransferOutput raise @netops.TransferError {
   if index < options.output_specs.length() {
     let path = options.output_specs[index]
     return if path == "-" {
-      @netops.StandardOutput
+      @download.StandardOutput
     } else {
-      @netops.FileOutput(
+      @download.FileOutput(
         path~,
-        mode=@netops.Truncate,
+        mode=@download.Truncate,
         content_disposition=false,
         remove_on_error=options.remove_on_error,
       )
@@ -188,15 +183,15 @@ fn output_for(
         context=None,
       )
     }
-    let path = @netops.remote_name(url)
-    return @netops.FileOutput(
+    let path = @download.remote_name(url)
+    return @download.FileOutput(
       path~,
-      mode=@netops.Truncate,
+      mode=@download.Truncate,
       content_disposition=options.remote_header_name,
       remove_on_error=options.remove_on_error,
     )
   }
-  @netops.StandardOutput
+  @download.StandardOutput
 }
 
 ///|
@@ -261,10 +256,10 @@ async fn observe_transfer(
   show_headers : Bool,
   show_progress : Bool,
   interactive : Bool,
-  event : @netops.TransferEvent,
+  event : @download.TransferEvent,
 ) -> Unit {
   match event {
-    @netops.ResponseStarted(status~, reason~, headers~, ..) => {
+    @download.ResponseStarted(status~, reason~, headers~, ..) => {
       if show_headers {
         write_headers(status, reason, headers)
       }
@@ -274,13 +269,13 @@ async fn observe_transfer(
         )
       }
     }
-    @netops.Progress(received~, content_length~) if show_progress => {
+    @download.Progress(received~, content_length~) if show_progress => {
       let text = progress_text(received, content_length, interactive, false)
       if text != "" {
         @stdio.stderr.write(text)
       }
     }
-    @netops.Completed(received~, content_length~) if show_progress =>
+    @download.Completed(received~, content_length~) if show_progress =>
       @stdio.stderr.write(
         progress_text(received, content_length, interactive, true),
       )
@@ -352,22 +347,24 @@ fn retry_delay(options : Options, attempt : Int32) -> Int32 {
 
 ///|
 priv struct TransferOutput {
-  original : @netops.TransferOutput
+  original : @download.TransferOutput
   mut opened_path : String?
 }
 
 ///|
-fn TransferOutput::for_attempt(self : TransferOutput) -> @netops.TransferOutput {
+fn TransferOutput::for_attempt(
+  self : TransferOutput,
+) -> @download.TransferOutput {
   match (self.original, self.opened_path) {
-    (@netops.FileOutput(..), Some(path)) =>
-      @netops.FileOutput(
+    (@download.FileOutput(..), Some(path)) =>
+      @download.FileOutput(
         path~,
-        mode=@netops.Append,
+        mode=@download.Append,
         content_disposition=false,
         remove_on_error=false,
       )
-    (@netops.FileOutput(path~, mode~, content_disposition~, ..), None) =>
-      @netops.FileOutput(
+    (@download.FileOutput(path~, mode~, content_disposition~, ..), None) =>
+      @download.FileOutput(
         path~,
         mode~,
         content_disposition~,
@@ -380,9 +377,9 @@ fn TransferOutput::for_attempt(self : TransferOutput) -> @netops.TransferOutput 
 ///|
 fn TransferOutput::observe(
   self : TransferOutput,
-  event : @netops.TransferEvent,
+  event : @download.TransferEvent,
 ) -> Unit {
-  if event is @netops.OutputStarted(path=Some(path), ..) {
+  if event is @download.OutputStarted(path=Some(path), ..) {
     self.opened_path = Some(path)
   }
 }
@@ -402,7 +399,7 @@ async fn TransferOutput::reset_for_retry(self : TransferOutput) -> Unit {
 
 ///|
 async fn TransferOutput::cleanup_after_failure(self : TransferOutput) -> Unit {
-  if self.original is @netops.FileOutput(remove_on_error=true, ..) &&
+  if self.original is @download.FileOutput(remove_on_error=true, ..) &&
     self.opened_path is Some(path) {
     let path = @platform.normalize_input_separators(path)
     try {
@@ -420,7 +417,7 @@ async fn transfer_one(
   options : Options,
   url : String,
   index : Int32,
-  jar : @netops.CookieJar?,
+  jar : @download.CookieJar?,
 ) -> Int32 {
   let body = request_body(options) catch {
     err => {
@@ -451,7 +448,7 @@ async fn transfer_one(
   }
   let output = try {
     if options.head {
-      @netops.DiscardOutput
+      @download.DiscardOutput
     } else {
       output_for(options, url, index)
     }
@@ -477,7 +474,7 @@ async fn transfer_one(
     @platform.Stderr,
   )
   let writes_stdout = match output {
-    @netops.StandardOutput => true
+    @download.StandardOutput => true
     _ => false
   }
   let show_progress = !options.silent && !(writes_stdout && stdout_terminal)
@@ -499,9 +496,9 @@ async fn transfer_one(
           continue
         }
         if source == "-" {
-          jar.load_netscape(@stdio.stdin.read_all().text(), profile=CurlProfile)
+          jar.load_netscape(@stdio.stdin.read_all().text())
         } else {
-          jar.load(source, profile=CurlProfile) catch {
+          jar.load(source) catch {
             _ => () // Curl treats unreadable cookie inputs as an empty source.
           }
         }
@@ -509,17 +506,16 @@ async fn transfer_one(
     }
     let proxy_url = proxy_for(options, url)
     let result = try
-      @netops.transfer(
+      @download.transfer(
         url,
         transfer_output.for_attempt(),
-        @netops.transfer_options(
-          profile=@netops.CurlProfile,
+        @download.options(
           utf8_hosts=utf8_hosts(),
           request_method=request_method(options),
           headers~,
           body~,
           redirects=if options.location {
-            @netops.FollowRedirects(
+            @download.FollowRedirects(
               if options.max_redirects == -1 {
                 2147483647
               } else {
@@ -527,7 +523,7 @@ async fn transfer_one(
               },
             )
           } else {
-            @netops.NoRedirects
+            @download.NoRedirects
           },
           preserve_method_on_redirect=options.request_method is Some(_),
           verify_tls=!options.insecure,
@@ -643,13 +639,13 @@ async fn run(options : Options) -> Int32 {
   let jar = if options.cookies.is_empty() && options.cookie_jar is None {
     None
   } else {
-    Some(@netops.CookieJar::new())
+    Some(@download.CookieJar::new())
   }
   let mut status = 0
   for index, url in options.urls {
     status = transfer_one(options, url, index, jar)
     if options.cookie_jar is Some(path) && jar is Some(jar) {
-      jar.save(path, profile=CurlProfile) catch {
+      jar.save(path) catch {
         // Like curl, cookie-jar persistence does not change transfer status.
         _ => ()
       }
