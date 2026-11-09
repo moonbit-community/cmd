@@ -1,7 +1,10 @@
 # Command validation
 
 Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- COMMAND`.
-Keep the current PATH toolchain. The entry discovers the workspace and resolves
+Keep the current PATH toolchain. CI installs MoonBit and its matching core through
+the official Unix/PowerShell installers in `.github/actions/setup-moonbit`, with
+bounded retries for installer and archive downloads. Setup does not require Nu or
+GitHub release assets. The entry discovers the workspace and resolves
 its arguments from that root. Moon commands sharing a build directory run
 serially. Product acceptance targets Wasm; Native is only for test tools.
 
