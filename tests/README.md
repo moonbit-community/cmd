@@ -99,6 +99,10 @@ Shared filesystem events register both find and test as consumers. Read-only
 scenario mounts remain read-only in each worker signature, including isolated
 metadata directories; incompatible mount layouts still use owned containers.
 
+Upstream selection covers executable source, dependencies, test inputs and CI
+execution configuration. Plain documentation and document assets are excluded.
+MoonBit `.mbt.md` files remain source because their code blocks are executable.
+
 Every selected case must produce
 exactly one terminal result, with explicit platform exclusions; missing,
 duplicate, unknown or substituted results cannot pass.

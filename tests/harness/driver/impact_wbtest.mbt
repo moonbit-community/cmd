@@ -122,10 +122,9 @@ test "impact selection keeps rename sources and destinations and fails closed" {
     ]).0,
     "none",
   )
-  assert_eq(
-    oracle_impact(Some(["commands/wget/moon.mod"]), commands, [fixture]).2,
-    ["wget"],
-  )
+  for path in ["commands/wget/moon.mod", "commands/wget/README.mbt.md"] {
+    assert_eq(oracle_impact(Some([path]), commands, [fixture]).2, ["wget"])
+  }
   assert_eq(
     oracle_impact(Some(["tests/cases/curl.json"]), commands, [fixture]).2,
     ["curl"],
