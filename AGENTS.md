@@ -264,7 +264,10 @@ module and version before any release operation.
 - Current registry baseline after the 2026-11-08 raw-path repair: core is 0.9.5.
   Published make 0.2.8, sh 0.2.9 and split 0.1.10; retained the other 77 coordinates,
   giving 80 published commands. The current workspace contains 82 local modules,
-  including the unpublished serve candidate and local-only timeout.
+  including the unpublished serve 0.1.2 candidate and local-only timeout.
+  Serve 0.1.1 was published separately and reports an incorrect 0.1.0 version;
+  it remains outside this 80-command published acceptance baseline until its
+  independent three-platform acceptance is complete.
   Published-command core dependencies are
   3 commands on 0.9.5, 25 on 0.9.1, 24 on 0.9.0 and 23 on 0.8.2;
   echo/false/sleep/true/typst do not depend on core.
