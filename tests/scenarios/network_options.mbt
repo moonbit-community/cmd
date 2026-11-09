@@ -1,9 +1,5 @@
 ///|
-async fn network_options_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn network_options_scenario(root : String, work : String) -> Unit {
   @async.with_task_group(group => {
     let server = @http.Server(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => server.close())
@@ -87,9 +83,8 @@ async fn network_options_scenario(
         "requests": [expected_request],
       }
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        proof.observe_equal("curl/" + label, "curl", actual, expected)
-      }
+
+      @harness.assert_observation("curl/" + label, "curl", actual, expected)
     }
     let header_server = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => header_server.close())
@@ -146,14 +141,13 @@ async fn network_options_scenario(
         "requests": 1,
       }
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        proof.observe_equal(
-          command + "/header-replacement",
-          command,
-          actual,
-          expected,
-        )
-      }
+
+      @harness.assert_observation(
+        command + "/header-replacement",
+        command,
+        actual,
+        expected,
+      )
     }
     for append in [false, true] {
       observed.clear()
@@ -196,27 +190,26 @@ async fn network_options_scenario(
         "requests": 1,
       }
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        let normalized_actual : Json = {
-          "status": result.status,
-          "stdout": @harness.scenario_text(result.stdout),
-          "stderr": @harness.scenario_text(result.stderr),
-          "log_exact": actual == expected,
-          "requests": observed.length(),
-        }
-        proof.observe_equal(
-          "wget/" + (if append { "append-output" } else { "output-file" }),
-          "wget",
-          normalized_actual,
-          {
-            "status": 8,
-            "stdout": "",
-            "stderr": "",
-            "log_exact": true,
-            "requests": 1,
-          },
-        )
+
+      let normalized_actual : Json = {
+        "status": result.status,
+        "stdout": @harness.scenario_text(result.stdout),
+        "stderr": @harness.scenario_text(result.stderr),
+        "log_exact": actual == expected,
+        "requests": observed.length(),
       }
+      @harness.assert_observation(
+        "wget/" + (if append { "append-output" } else { "output-file" }),
+        "wget",
+        normalized_actual,
+        {
+          "status": 8,
+          "stdout": "",
+          "stderr": "",
+          "log_exact": true,
+          "requests": 1,
+        },
+      )
     }
     for limit in [1, 2] {
       observed.clear()
@@ -269,14 +262,13 @@ async fn network_options_scenario(
         ),
       }
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        proof.observe_equal(
-          "wget/redirect-" + limit.to_string(),
-          "wget",
-          actual,
-          expected,
-        )
-      }
+
+      @harness.assert_observation(
+        "wget/redirect-" + limit.to_string(),
+        "wget",
+        actual,
+        expected,
+      )
     }
     let proxy = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
     group.add_defer(() => proxy.close())
@@ -334,14 +326,13 @@ async fn network_options_scenario(
         "origin_requests": 1,
       }
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        proof.observe_equal(
-          command + "/" + (if bypass { "no-proxy" } else { "proxy" }),
-          command,
-          actual,
-          expected,
-        )
-      }
+
+      @harness.assert_observation(
+        command + "/" + (if bypass { "no-proxy" } else { "proxy" }),
+        command,
+        actual,
+        expected,
+      )
     }
   })
 }

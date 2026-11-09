@@ -4,7 +4,6 @@ async fn filesystem_unreadable_scenario(
   work : String,
   observation_path : String,
   command : String,
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   guard !(@async.platform is Windows) &&
@@ -133,26 +132,25 @@ async fn filesystem_unreadable_scenario(
     })
     assert_eq(retained, contents)
   }
-  if proof is Some(proof) {
-    proof.observe_equal(
-      command + "/unreadable-size",
-      command,
-      {
-        "comparisons": comparisons,
-        "open_denied": true,
-        "original_metadata_preserved": true,
-        "content_preserved": true,
+
+  @harness.assert_observation(
+    command + "/unreadable-size",
+    command,
+    {
+      "comparisons": comparisons,
+      "open_denied": true,
+      "original_metadata_preserved": true,
+      "content_preserved": true,
+    },
+    {
+      "comparisons": if command == "find" {
+        4
+      } else {
+        2
       },
-      {
-        "comparisons": if command == "find" {
-          4
-        } else {
-          2
-        },
-        "open_denied": true,
-        "original_metadata_preserved": true,
-        "content_preserved": true,
-      },
-    )
-  }
+      "open_denied": true,
+      "original_metadata_preserved": true,
+      "content_preserved": true,
+    },
+  )
 }

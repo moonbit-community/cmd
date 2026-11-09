@@ -385,7 +385,6 @@ async fn network_curl_transfers_scenario(
           })
         })
         let observing : Executor = {
-          proof: executor.proof,
           invoke: invocation => {
             let execution = (executor.invoke)(invocation)
             returned.val = true
@@ -539,8 +538,8 @@ async fn network_curl_transfers_scenario(
         assert_eq(actual, frozen, msg=label)
       })
     }
-    if oracle_image is None && executor.proof is Some(proof) {
-      proof.observe_equal(
+    if oracle_image is None {
+      @harness.assert_observation(
         corpus + "/" + label,
         "curl",
         Json(observed),

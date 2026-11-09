@@ -352,7 +352,6 @@ async fn network_cookie_suffix_scenario(
           )
         })
         let observing : Executor = {
-          proof: executor.proof,
           invoke: invocation => {
             let execution = (executor.invoke)(invocation)
             candidate.append(requests)
@@ -443,8 +442,8 @@ async fn network_cookie_suffix_scenario(
             msg="oracle " + fixture.label,
           )
         }
-        if oracle_image is None && executor.proof is Some(proof) {
-          proof.observe_equal(
+        if oracle_image is None {
+          @harness.assert_observation(
             "cookie-suffix/" + command + "-" + fixture.label,
             command,
             {

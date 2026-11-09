@@ -34,7 +34,6 @@ async fn metadata_selector_matrix(
   work : String,
   observation_path : String,
   observations : Array[Json],
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   let oracle_user = if oracle_image is Some(_) {
@@ -291,9 +290,13 @@ async fn metadata_selector_matrix(
         Json(observations).stringify(indent=2) + "\n",
       )
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        proof.observe_equal("find/selectors-" + label, "find", actual, expected)
-      }
+
+      @harness.assert_observation(
+        "find/selectors-" + label,
+        "find",
+        actual,
+        expected,
+      )
     }
   }
   let after = save_metadata_observations(
@@ -317,20 +320,15 @@ async fn metadata_selector_matrix(
   for (name, _, _, _, _, _) in fixtures {
     assert_eq(@fs.read_file(work + "/" + name).text(), name)
   }
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "find/selectors-preserved",
-      "find",
-      {
-        "metadata_unchanged": preserved,
-        "entry_count": after.length(),
-        "content_preserved": true,
-      },
-      {
-        "metadata_unchanged": true,
-        "entry_count": 4,
-        "content_preserved": true,
-      },
-    )
-  }
+
+  @harness.assert_observation(
+    "find/selectors-preserved",
+    "find",
+    {
+      "metadata_unchanged": preserved,
+      "entry_count": after.length(),
+      "content_preserved": true,
+    },
+    { "metadata_unchanged": true, "entry_count": 4, "content_preserved": true },
+  )
 }

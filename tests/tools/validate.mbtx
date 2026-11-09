@@ -1,27 +1,10 @@
 ----
 import {
-  "moonbitlang/async@0.22.7",
-  "moonbitlang/async@0.22.7/fs",
-  "moonbitlang/async@0.22.7/shell",
-  "moonbitlang/core/env",
-  "moonbitlang/core/json",
-  "moonbitlang/x@0.5.5/crypto",
-  "moonbitlang/x@0.5.5/path",
+  "moonbitlang/async@0.22.7", "moonbitlang/async@0.22.7/fs",
+  "moonbitlang/async@0.22.7/shell", "moonbitlang/core/env",
+  "moonbitlang/core/json", "moonbitlang/x@0.5.5/path",
 }
 ----
-
-///|
-async fn hash_file(path : String) -> String {
-  let input = @fs.open(path, mode=ReadOnly)
-  defer input.close()
-  let digest = @crypto.SHA256::new()
-  let buffer = FixedArray::make(65536, b'\x00')
-  let bytes = buffer.unsafe_reinterpret_as_bytes()
-  while input.read(buffer) is count && count > 0 {
-    digest.update(bytes[:count])
-  }
-  @crypto.bytes_to_hex_string(digest.finalize())
-}
 
 ///|
 async fn main {
@@ -38,9 +21,9 @@ async fn main {
     fail("CMD_TEST_REPORT_ROOT must be absolute")
   }
   @fs.mkdir(report_root, recursive=true, allow_exist=true)
-  let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("release")
+  let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("debug")
   guard ["debug", "release"].contains(profile) else {
-    fail("unknown test-tool profile: " + profile)
+    fail("unknown test-tool profile")
   }
   let program = root +
     "/_build/native/" +
@@ -51,6 +34,9 @@ async fn main {
     } else {
       "harness/driver/driver.exe"
     })
+  guard @fs.exists(program) else {
+    fail("missing prepared test executable: " + program)
+  }
   let arguments = [
     "--suite",
     if @async.platform is Linux {
@@ -65,7 +51,7 @@ async fn main {
       "4"
     },
     "--report-dir",
-    report_root + "/" + (if published { "published" } else { "functional" }),
+    report_root + "/" + args[1],
   ]
   if published {
     arguments.append([
@@ -88,70 +74,6 @@ async fn main {
     ])
   }
   let started = @async.now()
-  let proof = root +
-    "/_build/native/" +
-    profile +
-    "/build/mooxCLI/cmd-tests/coverage/coverage.exe"
-  let build_path = report_root + "/driver-build.json"
-  if !published {
-    let bootstrap = [
-      "build", "--target", "native", "--deny-warn", "tests/coverage",
-    ]
-    if profile == "release" {
-      bootstrap.push("--release")
-    }
-    @shell.Cmd("moon", bootstrap, stdout=Inherit, stderr=Inherit).run()
-    @shell.Cmd(
-      proof,
-      ["--source-snapshot", report_root + "/assertions-before-build.json"],
-      stdout=Inherit,
-      stderr=Inherit,
-    ).run()
-    let build_args = [
-      "build", "--target", "native", "--deny-warn", "tests/harness/driver", "tests/coverage",
-    ]
-    if profile == "release" {
-      build_args.push("--release")
-    }
-    let status = @shell.Cmd("moon", build_args, stdout=Inherit, stderr=Inherit).status()
-    let built = @async.now()
-    guard status == 0 else { fail("current Native proof driver build failed") }
-    @shell.Cmd(
-      proof,
-      ["--source-snapshot", report_root + "/assertions-after-build.json"],
-      stdout=Inherit,
-      stderr=Inherit,
-    ).run()
-    let before = @json.parse(
-      @fs.read_file(report_root + "/assertions-before-build.json").text(),
-    )
-    let after = @json.parse(
-      @fs.read_file(report_root + "/assertions-after-build.json").text(),
-    )
-    assert_eq(before, after, msg="test assertion sources changed during build")
-    guard after is Object(fields) &&
-      fields.get("assertion_sources") is Some(sources) else {
-      fail("missing current assertion sources")
-    }
-    guard !@fs.exists(build_path) else {
-      fail("preserve previous driver build receipt")
-    }
-    @fs.write_file(
-      build_path,
-      (
-        {
-          "schema": 1,
-          "program": "moon",
-          "arguments": Json(build_args),
-          "status": status,
-          "started_at_ms": started,
-          "completed_at_ms": built,
-          "assertion_sources": sources,
-          "driver_sha256": hash_file(program),
-        } : Json).stringify(indent=2) +
-      "\n",
-    )
-  }
   let status = @shell.Cmd(program, arguments, stdout=Inherit, stderr=Inherit).status()
   let timing : Json = {
     "mode": args[1],
@@ -172,38 +94,5 @@ async fn main {
   }
   guard status == 0 else {
     fail("command validation failed with status \{status}")
-  }
-  if !published {
-    @shell.Cmd(
-      proof,
-      [
-        "--reports",
-        report_root + "/functional",
-        "--output",
-        report_root + "/proofs.json",
-        "--started-after-ms",
-        started.to_string(),
-        "--build-receipt",
-        build_path,
-      ],
-      stdout=Inherit,
-      stderr=Inherit,
-    ).run()
-    @shell.Cmd(
-      "moon",
-      [
-        "run",
-        "tests/tools/gaps.mbtx",
-        "--",
-        "--output",
-        report_root + "/coverage-gaps.json",
-        "--markdown",
-        report_root + "/coverage-gaps.md",
-        "--proof-report",
-        report_root + "/proofs.json",
-      ],
-      stdout=Inherit,
-      stderr=Inherit,
-    ).run()
   }
 }

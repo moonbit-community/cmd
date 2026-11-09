@@ -146,7 +146,6 @@ async test "cancelled transfer replay retains candidate wire after observers sto
   let executor_ready : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
   let hold : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
   let executor : Executor = {
-    proof: None,
     invoke: invocation => {
       let authority = invocation.environment["http_proxy"]
         .strip_prefix("http://")

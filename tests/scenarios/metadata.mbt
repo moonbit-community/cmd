@@ -6,7 +6,6 @@ async fn metadata_pair(
   positive : Array[String],
   negative : Array[String],
   selected : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   let yes = scenario_run(work, root, "find", positive, cwd=work)
   let no = scenario_run(work, root, "find", negative, cwd=work)
@@ -27,9 +26,8 @@ async fn metadata_pair(
     "stderr": ["", ""],
   }
   assert_eq(actual, expected)
-  if proof is Some(proof) {
-    proof.observe_equal("find/" + label, "find", actual, expected)
-  }
+
+  @harness.assert_observation("find/" + label, "find", actual, expected)
 }
 
 ///|
@@ -37,7 +35,6 @@ async fn metadata_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
   selectors_only~ : Bool = false,
   oracle_image? : String,
 ) -> Unit {
@@ -78,7 +75,6 @@ async fn metadata_scenario(
       isolated + "/work",
       observation_path,
       observations,
-      proof?,
       oracle_image?,
     )
   } else {
@@ -87,7 +83,6 @@ async fn metadata_scenario(
       isolated + "/work",
       observation_path,
       observations,
-      proof?,
     )
   }
 }
@@ -98,7 +93,6 @@ async fn metadata_observations(
   work : String,
   observation_path : String,
   observations : Array[Json],
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   // Native observation prepares timestamps; commands still execute as Wasm.
   for
@@ -182,7 +176,6 @@ async fn metadata_observations(
       ["old", "-" + label, "+1"],
       ["future", "-" + label, "+1"],
       "old",
-      proof?,
     )
   }
   for label in ["cmin", "ctime"] {
@@ -193,7 +186,6 @@ async fn metadata_observations(
       ["fresh", "-" + label, "-1"],
       ["fresh", "-" + label, "+1"],
       "fresh",
-      proof?,
     )
   }
   for label in ["anewer", "cnewer"] {
@@ -204,7 +196,6 @@ async fn metadata_observations(
       ["fresh", "-" + label, "old"],
       ["fresh", "-" + label, "future"],
       "fresh",
-      proof?,
     )
   }
   metadata_pair(
@@ -214,7 +205,6 @@ async fn metadata_observations(
     ["future", "-used", "+1"],
     ["old", "-used", "+1"],
     "future",
-    proof?,
   )
   for x in ["a", "c", "m"] {
     for y in ["a", "c", "m"] {
@@ -230,7 +220,6 @@ async fn metadata_observations(
         [positive, "-" + label, reference],
         [negative, "-" + label, negative_reference],
         positive,
-        proof?,
       )
     }
   }
@@ -243,7 +232,7 @@ async fn metadata_observations(
       work, observation_path, observations, "time-fixtures-after",
     ),
   )
-  metadata_selector_matrix(root, work, observation_path, observations, proof?)
+  metadata_selector_matrix(root, work, observation_path, observations)
   for
     (label, option, mode) in [
       ("readable", "-r", 0o400),
@@ -289,7 +278,6 @@ async fn metadata_observations(
       [label + "-yes", "-" + label],
       [label + "-no", "-" + label],
       label + "-yes",
-      proof?,
     )
     let yes = scenario_run(work, root, "test", [option, allowed], cwd=work)
     let no = scenario_run(work, root, "test", [option, denied], cwd=work)
@@ -310,9 +298,9 @@ async fn metadata_observations(
       "stderr": ["", ""],
     }
     assert_eq(actual, expected)
-    if proof is Some(proof) {
-      proof.observe_equal("test/" + label, "test", actual, expected)
-    }
+
+    @harness.assert_observation("test/" + label, "test", actual, expected)
+
     ignore(
       save_metadata_observations(
         work,

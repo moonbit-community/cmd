@@ -3,7 +3,6 @@ async fn serve_static_scenario(
   root : String,
   work : String,
   restricted : Bool,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   let public = work + "/public"
   @fs.mkdir(public + "/nested", recursive=true)
@@ -191,29 +190,28 @@ async fn serve_static_scenario(
       @fs.write_file(work + "/stderr", ready + reader_err.read_all().text())
     })
     @fs.write_file(work + "/requests.json", Json(trace).stringify(indent=2))
-    if proof is Some(proof) {
-      proof.observe_equal(
-        if restricted {
-          "serve/policy"
+
+    @harness.assert_observation(
+      if restricted {
+        "serve/policy"
+      } else {
+        "serve/static"
+      },
+      "serve",
+      {
+        "responses": trace[:15].to_owned(),
+        "denied_statuses": denied_statuses,
+        "child_reaped": true,
+      },
+      {
+        "responses": expected[:15].to_owned(),
+        "denied_statuses": if restricted {
+          [1, 1]
         } else {
-          "serve/static"
+          []
         },
-        "serve",
-        {
-          "responses": trace[:15].to_owned(),
-          "denied_statuses": denied_statuses,
-          "child_reaped": true,
-        },
-        {
-          "responses": expected[:15].to_owned(),
-          "denied_statuses": if restricted {
-            [1, 1]
-          } else {
-            []
-          },
-          "child_reaped": true,
-        },
-      )
-    }
+        "child_reaped": true,
+      },
+    )
   })
 }

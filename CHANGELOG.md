@@ -16,6 +16,11 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development only.
 
+- Replace the per-assertion proof and source-sealing chain with direct assertions
+  and complete-result checks. Prepare CI products/tools once, compact successful
+  network observations and retain failure diagnostics. Original corpora and
+  frozen published expectations are unchanged; CI timing remains unqualified.
+
 - Use the standard MoonBit argument parser for `serve`, including generated
   help, attached port values and usage diagnostics for invalid arguments.
 

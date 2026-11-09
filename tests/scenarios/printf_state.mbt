@@ -73,7 +73,6 @@ fn normalize_printf_warning(output : Bytes, prefix : String) -> String raise {
 async fn printf_state_scenario(
   root : String,
   work : String,
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   for (name, source, expected, expected_error) in printf_state_vectors() {
@@ -88,18 +87,18 @@ async fn printf_state_scenario(
     assert_eq(product.status, 1)
     assert_eq(normalized, expected)
     assert_eq(product.stderr, @utf8.encode(expected_error))
-    if proof is Some(proof) {
-      proof.observe_equal(
-        "sh/printf-state-" + name,
-        "sh",
-        {
-          "status": product.status,
-          "stdout": normalized,
-          "stderr": @harness.scenario_text(product.stderr),
-        },
-        { "status": 1, "stdout": expected, "stderr": expected_error },
-      )
-    }
+
+    @harness.assert_observation(
+      "sh/printf-state-" + name,
+      "sh",
+      {
+        "status": product.status,
+        "stdout": normalized,
+        "stderr": @harness.scenario_text(product.stderr),
+      },
+      { "status": 1, "stdout": expected, "stderr": expected_error },
+    )
+
     if oracle_image is Some(image) {
       let result = @harness.run_oracle_with_deadline(
         "docker",

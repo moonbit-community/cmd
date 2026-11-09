@@ -194,7 +194,6 @@ async fn filesystem_windows_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   guard @async.platform is Windows else {
     fail("Windows observation fixture required")
@@ -622,62 +621,61 @@ async fn filesystem_windows_scenario(
     @fs.read_file(times + "/directory/sentinel").text(),
     "directory retained",
   )
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "find/windows-age-controls",
-      "find",
-      {
-        "comparisons": age_checks,
-        "unix_epoch_validated": true,
-        "clock_margin_valid": true,
-        "metadata_preserved": true,
-      },
-      {
-        "comparisons": 24,
-        "unix_epoch_validated": true,
-        "clock_margin_valid": true,
-        "metadata_preserved": true,
-      },
-    )
-    proof.observe_equal(
-      "test/windows-metadata",
-      "test",
-      {
-        "time_comparisons": comparisons,
-        "identity_alias_equal": true,
-        "independent_identity_distinct": true,
-        "metadata_preserved": true,
-      },
-      {
-        "time_comparisons": 18,
-        "identity_alias_equal": true,
-        "independent_identity_distinct": true,
-        "metadata_preserved": true,
-      },
-    )
-    proof.observe_equal(
-      "find/windows-selectors",
-      "find",
-      { "comparisons": 144, "metadata_preserved": true },
-      { "comparisons": 144, "metadata_preserved": true },
-    )
-    proof.observe_equal(
-      "test/windows-link-kinds",
-      "test",
-      {
-        "kind_checks": kind_checks,
-        "file_link": true,
-        "directory_symlink": true,
-        "junction": true,
-        "targets_preserved": true,
-      },
-      {
-        "kind_checks": 14,
-        "file_link": true,
-        "directory_symlink": true,
-        "junction": true,
-        "targets_preserved": true,
-      },
-    )
-  }
+
+  @harness.assert_observation(
+    "find/windows-age-controls",
+    "find",
+    {
+      "comparisons": age_checks,
+      "unix_epoch_validated": true,
+      "clock_margin_valid": true,
+      "metadata_preserved": true,
+    },
+    {
+      "comparisons": 24,
+      "unix_epoch_validated": true,
+      "clock_margin_valid": true,
+      "metadata_preserved": true,
+    },
+  )
+  @harness.assert_observation(
+    "test/windows-metadata",
+    "test",
+    {
+      "time_comparisons": comparisons,
+      "identity_alias_equal": true,
+      "independent_identity_distinct": true,
+      "metadata_preserved": true,
+    },
+    {
+      "time_comparisons": 18,
+      "identity_alias_equal": true,
+      "independent_identity_distinct": true,
+      "metadata_preserved": true,
+    },
+  )
+  @harness.assert_observation(
+    "find/windows-selectors",
+    "find",
+    { "comparisons": 144, "metadata_preserved": true },
+    { "comparisons": 144, "metadata_preserved": true },
+  )
+  @harness.assert_observation(
+    "test/windows-link-kinds",
+    "test",
+    {
+      "kind_checks": kind_checks,
+      "file_link": true,
+      "directory_symlink": true,
+      "junction": true,
+      "targets_preserved": true,
+    },
+    {
+      "kind_checks": 14,
+      "file_link": true,
+      "directory_symlink": true,
+      "junction": true,
+      "targets_preserved": true,
+    },
+  )
 }

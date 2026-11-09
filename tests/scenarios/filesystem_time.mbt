@@ -3,7 +3,6 @@ async fn filesystem_time_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   guard !(@async.platform is Windows) else {
@@ -226,22 +225,17 @@ async fn filesystem_time_scenario(
       oracle_image?,
     )
   }
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "find/time-reference-controls",
-      "find",
-      {
-        "comparisons": comparisons,
-        "nofollow_references": 2,
-        "clock_margin_valid": true,
-      },
-      {
-        "comparisons": 122,
-        "nofollow_references": 2,
-        "clock_margin_valid": true,
-      },
-    )
-  }
+
+  @harness.assert_observation(
+    "find/time-reference-controls",
+    "find",
+    {
+      "comparisons": comparisons,
+      "nofollow_references": 2,
+      "clock_margin_valid": true,
+    },
+    { "comparisons": 122, "nofollow_references": 2, "clock_margin_valid": true },
+  )
 }
 
 ///|
@@ -249,7 +243,6 @@ async fn filesystem_error_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   guard !(@async.platform is Windows) else {
@@ -534,20 +527,19 @@ async fn filesystem_error_scenario(
   }
   assert_eq(@fs.read_file(work + "/victim").text(), "retained")
   assert_eq(@fs.read_file(work + "/locked/file").text(), "retained")
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "find/error-order-effects",
-      "find",
-      {
-        "comparisons": comparisons,
-        "victim_preserved": true,
-        "denied_child_preserved": true,
-      },
-      {
-        "comparisons": 33,
-        "victim_preserved": true,
-        "denied_child_preserved": true,
-      },
-    )
-  }
+
+  @harness.assert_observation(
+    "find/error-order-effects",
+    "find",
+    {
+      "comparisons": comparisons,
+      "victim_preserved": true,
+      "denied_child_preserved": true,
+    },
+    {
+      "comparisons": 33,
+      "victim_preserved": true,
+      "denied_child_preserved": true,
+    },
+  )
 }

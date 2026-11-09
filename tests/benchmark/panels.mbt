@@ -243,10 +243,7 @@ async fn run_panels(options : Map[String, String]) -> Bool {
     "commands": real_field(command_catalog, "commands"),
     "cases": Json(cases),
   })
-  for
-    path in [
-      "tests/cases/index.json", "tests/cases/generated/quality.json", "tests/benchmark/protection.json",
-    ] {
+  for path in ["tests/cases/index.json", "tests/benchmark/protection.json"] {
     fixed.push((path, benchmark_file_sha256(path)))
     fixed.push(
       (

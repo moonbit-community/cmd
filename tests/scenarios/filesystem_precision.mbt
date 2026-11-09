@@ -55,7 +55,6 @@ async fn filesystem_precision_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   guard !@fs.exists(observation_path) else {
@@ -161,40 +160,39 @@ async fn filesystem_precision_scenario(
   assert_true(@harness.snapshots_equal(before, after))
   assert_eq(@fs.read_file(work + "/early").text(), "early")
   assert_eq(@fs.read_file(work + "/late").text(), "late")
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "find/subsecond-order",
-      "find",
-      {
-        "comparisons": 2,
-        "same_second": early.0 == late.0,
-        "distinct_subseconds": early.1 < late.1,
-        "metadata_preserved": @harness.snapshots_equal(before, after),
-      },
-      {
-        "comparisons": 2,
-        "same_second": true,
-        "distinct_subseconds": true,
-        "metadata_preserved": true,
-      },
-    )
-    proof.observe_equal(
-      "test/subsecond-order",
-      "test",
-      {
-        "comparisons": checked,
-        "same_second": true,
-        "distinct_subseconds": true,
-        "metadata_preserved": true,
-      },
-      {
-        "comparisons": 6,
-        "same_second": true,
-        "distinct_subseconds": true,
-        "metadata_preserved": true,
-      },
-    )
-  }
+
+  @harness.assert_observation(
+    "find/subsecond-order",
+    "find",
+    {
+      "comparisons": 2,
+      "same_second": early.0 == late.0,
+      "distinct_subseconds": early.1 < late.1,
+      "metadata_preserved": @harness.snapshots_equal(before, after),
+    },
+    {
+      "comparisons": 2,
+      "same_second": true,
+      "distinct_subseconds": true,
+      "metadata_preserved": true,
+    },
+  )
+  @harness.assert_observation(
+    "test/subsecond-order",
+    "test",
+    {
+      "comparisons": checked,
+      "same_second": true,
+      "distinct_subseconds": true,
+      "metadata_preserved": true,
+    },
+    {
+      "comparisons": 6,
+      "same_second": true,
+      "distinct_subseconds": true,
+      "metadata_preserved": true,
+    },
+  )
 }
 
 ///|
@@ -202,7 +200,6 @@ async fn filesystem_directory_size_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   guard !@fs.exists(observation_path) else {
     fail("preserve previous directory-size observations")
@@ -282,20 +279,19 @@ async fn filesystem_directory_size_scenario(
     @fs.realpath(work + "/directory-link"),
     @fs.realpath(work + "/directory"),
   )
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "test/directory-size-capability",
-      "test",
-      {
-        "actual_wasm_calls": 3,
-        "native_capability_matched": true,
-        "directory_and_link_preserved": true,
-      },
-      {
-        "actual_wasm_calls": 3,
-        "native_capability_matched": true,
-        "directory_and_link_preserved": true,
-      },
-    )
-  }
+
+  @harness.assert_observation(
+    "test/directory-size-capability",
+    "test",
+    {
+      "actual_wasm_calls": 3,
+      "native_capability_matched": true,
+      "directory_and_link_preserved": true,
+    },
+    {
+      "actual_wasm_calls": 3,
+      "native_capability_matched": true,
+      "directory_and_link_preserved": true,
+    },
+  )
 }

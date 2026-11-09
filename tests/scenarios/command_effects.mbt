@@ -1,9 +1,5 @@
 ///|
-async fn type_listing_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn type_listing_scenario(root : String, work : String) -> Unit {
   let result = scenario_run(
     work,
     root,
@@ -67,17 +63,12 @@ async fn type_listing_scenario(
     "final_lf": true,
   }
   assert_eq(actual, expected)
-  if proof is Some(proof) {
-    proof.observe_equal("rg/type-list", "rg", actual, expected)
-  }
+
+  @harness.assert_observation("rg/type-list", "rg", actual, expected)
 }
 
 ///|
-async fn sort_spill_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn sort_spill_scenario(root : String, work : String) -> Unit {
   let temporary = work + "/selected"
   let fallback = work + "/fallback"
   @fs.mkdir(temporary)
@@ -142,18 +133,15 @@ async fn sort_spill_scenario(
       "fallback_clean": true,
     }
     assert_eq(actual, expected)
-    if proof is Some(proof) {
-      proof.observe_equal("sort/temporary-directory", "sort", actual, expected)
-    }
+
+    @harness.assert_observation(
+      "sort/temporary-directory", "sort", actual, expected,
+    )
   })
 }
 
 ///|
-async fn removal_guard_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn removal_guard_scenario(root : String, work : String) -> Unit {
   let policy = work + "/deny-all.json"
   @fs.write_file(policy, "{}\n")
   @fs.write_file(work + "/sentinel", "retained")
@@ -189,17 +177,12 @@ async fn removal_guard_scenario(
     "sentinel": "retained",
   }
   assert_eq(actual, expected)
-  if proof is Some(proof) {
-    proof.observe_equal("rm/preserve-root", "rm", actual, expected)
-  }
+
+  @harness.assert_observation("rm/preserve-root", "rm", actual, expected)
 }
 
 ///|
-async fn xargs_verbose_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn xargs_verbose_scenario(root : String, work : String) -> Unit {
   let helper = @harness.option_child_path()
   let result = scenario_run(
     work,
@@ -222,7 +205,6 @@ async fn xargs_verbose_scenario(
     "display": true,
   }
   assert_eq(actual, expected)
-  if proof is Some(proof) {
-    proof.observe_equal("xargs/verbose", "xargs", actual, expected)
-  }
+
+  @harness.assert_observation("xargs/verbose", "xargs", actual, expected)
 }

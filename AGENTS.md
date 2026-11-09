@@ -116,11 +116,13 @@ module and version before any release operation.
   Current cases and identity bindings belong to `tests/cases`, reusable
   infrastructure to `tests/harness`, and specialized assertions to
   `tests/scenarios`. Do not add retired-path wrappers or historical modes.
-- Maintain manual finite coverage in `tests/coverage/review`; use `index update`
-  then `index check` for derived quality, coverage, gaps and candidate files.
-  Generated definitions are not execution evidence. Keep actual receipts in
-  fresh report directories and never backfill old reports. Published coordinates
-  and expectations in `tests/release/latest*.json` remain independent inputs.
+- Keep direct assertions beside the behavior they verify. Preserve original
+  corpus records and expected values; use `index update` then `index check`
+  for the candidate and registry. The per-assertion review/descriptor/proof
+  chain and assertion-source sealing are retired. Validate complete selected
+  results, explicit platform skips, deadlines, cleanup and report writes.
+  Keep fresh execution reports without backfill. Published coordinates and
+  expectations in `tests/release/latest*.json` remain independent inputs.
 
 - Shared high-performance changes follow `tests/benchmark/PROTECTION.md` and
   the boundary/workload registry in `tests/benchmark/protection.json`. New

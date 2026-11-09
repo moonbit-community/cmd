@@ -13,6 +13,10 @@ import {
 // Values
 pub fn append_report(Array[CaseReport], CaseReport) -> Unit
 
+pub fn assert_mode_pair(String, String, String, String) -> Unit raise
+
+pub fn assert_observation(String, String, @json.Json, @json.Json) -> Unit raise
+
 pub fn bytes_equal(Bytes, Bytes) -> Bool
 
 pub fn canonical_json(@json.Json) -> String
@@ -43,9 +47,9 @@ pub fn command_program() -> String
 
 pub fn command_version(String) -> String?
 
-pub fn configure_commands(Map[String, String], String) -> Unit
+pub async fn compact_evidence(String) -> String
 
-pub async fn configure_local_quality(String, Array[Case], Array[String]) -> Unit
+pub fn configure_commands(Map[String, String], String) -> Unit
 
 pub fn contains_bytes(Bytes, String) -> Bool
 
@@ -73,8 +77,6 @@ pub fn expand_text(String, String, http_base? : String) -> String
 
 pub async fn file_digest(String) -> String
 
-pub async fn generate_local_quality_catalog(String) -> Unit
-
 pub fn host_platform() -> String
 
 pub fn input_bytes(String?, String?, String) -> Bytes raise Failure
@@ -84,8 +86,6 @@ pub fn is_network_case(Case) -> Bool
 pub fn json_digest(@json.Json) -> String
 
 pub async fn load_cases(String) -> Array[Case]
-
-pub fn local_quality_descriptor(String) -> @json.Json?
 
 pub async fn metadata_contract_snapshot(Array[Case]) -> @json.Json
 
@@ -121,6 +121,8 @@ pub async fn repository_root(start? : String) -> String
 
 pub async fn resolve_runtime_contract(Case, String, http_base? : String) -> Case
 
+pub fn result_integrity_errors(ArrayView[Case], ArrayView[CaseReport]) -> Array[String]
+
 pub async fn run(String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String], inherit_env? : Bool) -> RunResult
 
 pub async fn run_command(String, String, Array[String], stdin? : Bytes, cwd? : String, extra_env? : Map[String, String]) -> RunResult
@@ -140,16 +142,6 @@ pub fn runtime_contract_observers(Case) -> Array[String]
 pub fn safe_relative_path(String) -> Bool
 
 pub fn safe_symlink_target(String) -> Bool
-
-pub fn scenario_assertion_errors(@json.Json, @json.Json) -> Array[String]
-
-pub fn scenario_catalog_errors(@json.Json) -> Array[String]
-
-pub async fn scenario_contract_snapshot(Array[Case]) -> @json.Json
-
-pub fn scenario_definition(@json.Json, String) -> @json.Json?
-
-pub fn scenario_receipt_errors(@json.Json, @json.Json, required? : Array[String], command? : String) -> Array[String]
 
 pub fn scenario_text(Bytes) -> String raise
 
@@ -179,11 +171,13 @@ pub fn suite_report(String, String, Int64, Array[String]) -> CaseReport
 
 pub fn unordered_lines_equal(Bytes, Bytes) -> Bool
 
+pub fn validate_local_assertions(Array[Case], Array[String]) -> Unit raise
+
 pub async fn verify_oracle_image(String, docker_path? : String, profile_path? : String, expected_profile_path? : String, required_profile_ids? : Array[String]) -> OracleIdentity
 
 pub fn wasm_path(String, String) -> String
 
-pub async fn write_reports(String, ArrayView[CaseReport], case_definitions_sha256? : String, scenario_proofs_sha256? : String) -> Unit
+pub async fn write_reports(String, ArrayView[CaseReport]) -> Unit
 
 // Errors
 
@@ -357,19 +351,6 @@ pub(all) struct RunResult {
   stdout : Bytes
   stderr : Bytes
 }
-
-pub struct ScenarioProof {
-  case_id : String
-  definitions : Array[@json.Json]
-  records : Array[@json.Json]
-  definition_id : @json.Json
-}
-pub fn ScenarioProof::accepts(Self, String, String) -> Bool
-pub fn ScenarioProof::errors(Self) -> Array[String]
-pub fn ScenarioProof::new(String, @json.Json) -> Self
-pub fn ScenarioProof::observe_equal(Self, String, String, @json.Json, @json.Json) -> Unit
-pub fn ScenarioProof::observe_pair(Self, String, String, String, String) -> Unit
-pub fn ScenarioProof::receipt(Self) -> @json.Json
 
 #derive(@debug.Debug)
 pub(all) struct SnapshotEntry {

@@ -1,9 +1,5 @@
 ///|
-async fn shell_language_session_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn shell_language_session_scenario(root : String, work : String) -> Unit {
   @async.with_task_group(group => {
     let (stdin, writer) = @process.write_to_process()
     let (stdout, output) = @process.read_from_process()
@@ -40,7 +36,6 @@ async fn shell_language_session_scenario(
       stdout,
       out_trace,
       "<case-ok>",
-      proof?,
       assertion_id="sh/language-case-continuation",
     )
     scenario_read_exact(stderr, err_trace, "P> ")
@@ -53,7 +48,6 @@ async fn shell_language_session_scenario(
       stdout,
       out_trace,
       "5|ready\n",
-      proof?,
       assertion_id="sh/language-backtick-state",
     )
     scenario_read_exact(stderr, err_trace, "P> ")
@@ -68,7 +62,6 @@ async fn shell_language_session_scenario(
       stdout,
       out_trace,
       "5|body|6\n",
-      proof?,
       assertion_id="sh/language-heredoc-state",
     )
     scenario_read_exact(stderr, err_trace, "P> ")
@@ -77,14 +70,12 @@ async fn shell_language_session_scenario(
       stdout,
       out_trace,
       "before",
-      proof?,
       assertion_id="sh/language-prefix-before-failure",
     )
     scenario_read_exact(
       stderr,
       err_trace,
       "sh: arithmetic division by zero\nP> ",
-      proof?,
       assertion_id="sh/language-arithmetic-recovery",
     )
     writer.write("printf '%s|%s\\n' \"$?\" \"$a\"\n")
@@ -92,7 +83,6 @@ async fn shell_language_session_scenario(
       stdout,
       out_trace,
       "2|5\n",
-      proof?,
       assertion_id="sh/language-preserved-status",
     )
     scenario_read_exact(stderr, err_trace, "P> ")
@@ -103,7 +93,6 @@ async fn shell_language_session_scenario(
       stdout,
       out_trace,
       "parent\n",
-      proof?,
       assertion_id="sh/language-pipeline-scope",
     )
     scenario_read_exact(stderr, err_trace, "P> ")
@@ -114,7 +103,6 @@ async fn shell_language_session_scenario(
       stdout,
       out_trace,
       "recovered:2\n",
-      proof?,
       assertion_id="sh/language-test-recovery",
     )
     scenario_read_exact(stderr, err_trace, "P> ")
@@ -125,27 +113,22 @@ async fn shell_language_session_scenario(
     assert_eq(status, 0)
     assert_eq(trailing_output, b"")
     assert_eq(trailing_error, b"")
-    if proof is Some(proof) {
-      proof.observe_equal(
-        "sh/language-eof",
-        "sh",
-        {
-          "status": status,
-          "stdout": @harness.scenario_text(trailing_output),
-          "stderr": @harness.scenario_text(trailing_error),
-        },
-        { "status": 0, "stdout": "", "stderr": "" },
-      )
-    }
+
+    @harness.assert_observation(
+      "sh/language-eof",
+      "sh",
+      {
+        "status": status,
+        "stdout": @harness.scenario_text(trailing_output),
+        "stderr": @harness.scenario_text(trailing_error),
+      },
+      { "status": 0, "stdout": "", "stderr": "" },
+    )
   })
 }
 
 ///|
-async fn shell_merged_child_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn shell_merged_child_scenario(root : String, work : String) -> Unit {
   let helper = @fs.realpath(@env.args()[0])
   let expected = StringBuilder()
   for _ in 0..<64 {
@@ -165,18 +148,17 @@ async fn shell_merged_child_scenario(
     assert_eq(result.status, 7)
     assert_eq(result.stdout, @utf8.encode(expected.to_string()))
     assert_eq(result.stderr, b"")
-    if proof is Some(proof) {
-      proof.observe_equal(
-        "sh/merged-" + name,
-        "sh",
-        {
-          "status": result.status,
-          "stdout": @harness.scenario_text(result.stdout),
-          "stderr": @harness.scenario_text(result.stderr),
-        },
-        { "status": 7, "stdout": expected.to_string(), "stderr": "" },
-      )
-    }
+
+    @harness.assert_observation(
+      "sh/merged-" + name,
+      "sh",
+      {
+        "status": result.status,
+        "stdout": @harness.scenario_text(result.stdout),
+        "stderr": @harness.scenario_text(result.stderr),
+      },
+      { "status": 7, "stdout": expected.to_string(), "stderr": "" },
+    )
   }
   let result = scenario_run(
     work,
@@ -195,27 +177,22 @@ async fn shell_merged_child_scenario(
   assert_eq(result.stdout, b"|2")
   assert_eq(result.stderr, b"")
   assert_eq(actual, b"2\n")
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "sh/redirect-child-environment",
-      "sh",
-      {
-        "status": result.status,
-        "stdout": @harness.scenario_text(result.stdout),
-        "stderr": @harness.scenario_text(result.stderr),
-        "file": @harness.scenario_text(actual),
-      },
-      { "status": 0, "stdout": "|2", "stderr": "", "file": "2\n" },
-    )
-  }
+
+  @harness.assert_observation(
+    "sh/redirect-child-environment",
+    "sh",
+    {
+      "status": result.status,
+      "stdout": @harness.scenario_text(result.stdout),
+      "stderr": @harness.scenario_text(result.stderr),
+      "file": @harness.scenario_text(actual),
+    },
+    { "status": 0, "stdout": "|2", "stderr": "", "file": "2\n" },
+  )
 }
 
 ///|
-async fn make_recursive_language_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn make_recursive_language_scenario(root : String, work : String) -> Unit {
   @fs.write_file(work + "/Makefile", "all:\n\t@$(MAKE) -f Child.mk\n")
   @fs.write_file(
     work + "/Child.mk",
@@ -234,22 +211,21 @@ async fn make_recursive_language_scenario(
   assert_eq(result.stdout, b"1|2|<$MARK>|<two words>\n")
   assert_eq(result.stderr, b"")
   assert_eq(marker, "done")
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "make/recursive-language",
-      "make",
-      {
-        "status": result.status,
-        "stdout": @harness.scenario_text(result.stdout),
-        "stderr": @harness.scenario_text(result.stderr),
-        "marker": marker,
-      },
-      {
-        "status": 0,
-        "stdout": "1|2|<$MARK>|<two words>\n",
-        "stderr": "",
-        "marker": "done",
-      },
-    )
-  }
+
+  @harness.assert_observation(
+    "make/recursive-language",
+    "make",
+    {
+      "status": result.status,
+      "stdout": @harness.scenario_text(result.stdout),
+      "stderr": @harness.scenario_text(result.stderr),
+      "marker": marker,
+    },
+    {
+      "status": 0,
+      "stdout": "1|2|<$MARK>|<two words>\n",
+      "stderr": "",
+      "marker": "done",
+    },
+  )
 }
