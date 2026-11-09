@@ -45,6 +45,7 @@ fn oracle_exec_plan(
     root + ":" + root + ":rw",
   ]
   let environment : Array[String] = []
+  let readonly_roots : Array[String] = []
   let mut directory = None
   let mut index = 1
   while index < args.length() {
@@ -66,7 +67,7 @@ fn oracle_exec_plan(
       }
       "-w" | "--workdir" => {
         let value = args[index + 1]
-        if value != root && !value.has_prefix(root + "/") {
+        if value.split("/").any(part => part == "..") {
           return None
         }
         directory = Some(value)
@@ -80,24 +81,38 @@ fn oracle_exec_plan(
         guard parts is [source, target, mode] && source == target else {
           return None
         }
-        if source == root || source.has_prefix(root + "/") {
-          if mode != "rw" {
-            return None
-          }
-        } else if mode == "ro" {
+        if source.split("/").any(part => part == "..") {
+          return None
+        }
+        if mode == "ro" && source != root {
+          // Keep the read-only mount in the worker signature. Nested mounts
+          // override the report-root write mount; never broaden fixture access.
           configuration.append(["-v", args[index + 1]])
+          readonly_roots.push(source)
+        } else if mode == "rw" &&
+          (source == root || source.has_prefix(root + "/")) {
+          ()
         } else {
           return None
         }
         index += 2
       }
-      value if value == image =>
+      value if value == image => {
+        if directory is Some(path) &&
+          path != root &&
+          !path.has_prefix(root + "/") &&
+          !readonly_roots.any(source => {
+            path == source || path.has_prefix(source + "/")
+          }) {
+          return None
+        }
         return Some({
           configuration,
           environment,
           directory,
           command: args[index + 1:].to_owned(),
         })
+      }
       _ => return None
     }
   }

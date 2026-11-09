@@ -83,6 +83,7 @@ async fn metadata_scenario(
       isolated + "/work",
       observation_path,
       observations,
+      oracle_image?,
     )
   }
 }
@@ -93,6 +94,7 @@ async fn metadata_observations(
   work : String,
   observation_path : String,
   observations : Array[Json],
+  oracle_image? : String,
 ) -> Unit {
   // Native observation prepares timestamps; commands still execute as Wasm.
   for
@@ -232,7 +234,13 @@ async fn metadata_observations(
       work, observation_path, observations, "time-fixtures-after",
     ),
   )
-  metadata_selector_matrix(root, work, observation_path, observations)
+  metadata_selector_matrix(
+    root,
+    work,
+    observation_path,
+    observations,
+    oracle_image?,
+  )
   for
     (label, option, mode) in [
       ("readable", "-r", 0o400),

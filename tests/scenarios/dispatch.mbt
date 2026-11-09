@@ -77,7 +77,8 @@ pub async fn execute_scenario(
             report_dir + "/" + fixture.id + ".observations.json",
           )
         "f31-sh-test-size-posix" => shell_size_posix_scenario(root, work)
-        "f31-sh-printf-state" => printf_state_scenario(root, work)
+        "f31-sh-printf-state" =>
+          printf_state_scenario(root, work, oracle_image?)
         "f31-sh-printf-state-oracle" => {
           guard oracle_image is Some(image) else {
             fail("printf state oracle requires a sealed oracle")
@@ -112,18 +113,16 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/metadata-relations.observations.json",
+            oracle_image?,
           )
         "f29-mkdir-umasks" =>
-          mkdir_umask_scenario(
-            root,
-            work,
-            report_dir + "/f29-mkdir-umasks.observations.json",
-          )
+          mkdir_umask_event(root, work, report_dir, fixture.id, oracle_image?)
         "f29-sparse-size" =>
           filesystem_sparse_scenario(
             root,
             work,
             report_dir + "/f29-sparse-size.observations.json",
+            oracle_image?,
           )
         "f29-sparse-size-oracle" => {
           guard oracle_image is Some(image) else {
@@ -142,6 +141,7 @@ pub async fn execute_scenario(
             work,
             report_dir + "/" + fixture.id + ".observations.json",
             fixture.command,
+            oracle_image?,
           )
         "f29-find-size-unreadable-oracle" | "f29-test-size-unreadable-oracle" => {
           guard oracle_image is Some(image) else {
@@ -160,6 +160,7 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-special-kinds.observations.json",
+            oracle_image?,
           )
         "f29-windows-metadata" =>
           filesystem_windows_scenario(
@@ -172,6 +173,7 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-subsecond-order.observations.json",
+            oracle_image?,
           )
         "f29-subsecond-order-oracle" => {
           guard oracle_image is Some(image) else {
@@ -195,6 +197,7 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-time-references.observations.json",
+            oracle_image?,
           )
         "f29-time-references-oracle" => {
           guard oracle_image is Some(image) else {
@@ -212,6 +215,7 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-predicate-errors.observations.json",
+            oracle_image?,
           )
         "f29-predicate-errors-oracle" => {
           guard oracle_image is Some(image) else {
@@ -239,17 +243,11 @@ pub async fn execute_scenario(
           guard oracle_image is Some(image) else {
             fail("umask oracle requires a sealed oracle")
           }
-          @fs.mkdir(work + "/candidate")
-          @fs.mkdir(work + "/oracle")
-          mkdir_umask_scenario(
+          mkdir_umask_event(
             root,
-            work + "/candidate",
-            report_dir + "/f29-mkdir-umasks-oracle.candidate.json",
-          )
-          mkdir_umask_scenario(
-            root,
-            work + "/oracle",
-            report_dir + "/f29-mkdir-umasks-oracle.gnu.json",
+            work,
+            report_dir,
+            fixture.id,
             oracle_image=image,
           )
         }
