@@ -31,9 +31,12 @@ segments, malformed escapes, control bytes, backslashes, drive/stream colons
 and Windows device/alias names are rejected with 400 on all platforms. Canonical
 targets must remain under the canonical root, including symlink targets and
 `index.html`; forbidden/unreadable/nonregular targets return 404. Symlinks
-within the root are permitted. Open files stream through a 64 KiB buffer with
-at most 64 simultaneous connections. Files should remain stable while served;
-a shortened file aborts its response, and appended bytes are excluded.
+within the root are permitted. Open files stream through a 64 KiB buffer
+written directly to the socket, with at most 64 simultaneous connections.
+Successful GET/HEAD file responses send `Connection: close` and close the
+connection; redirects and error responses keep it open. Files should remain
+stable while served; a shortened file aborts its response, and appended bytes
+are excluded.
 
 Wasm policy adds process permissions; it is supplied by the launcher, not
 installed by this command. For example, save `serve-policy.json` beside `public`

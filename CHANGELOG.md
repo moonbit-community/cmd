@@ -26,6 +26,9 @@ Development only.
   full Linux CLI differential and a real seeded Cookie session; stop repeating
   dense grammar records as ordinary three-platform process scenarios.
 
+- Write successful `serve` file bodies directly to the socket instead of
+  through the 1 KiB HTTP send buffer; these responses now close the connection.
+
 - Use the standard MoonBit argument parser for `serve`, including generated
   help, attached port values and usage diagnostics for invalid arguments.
 

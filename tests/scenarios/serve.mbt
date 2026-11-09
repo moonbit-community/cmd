@@ -138,6 +138,7 @@ async fn serve_static_scenario(
             },
           ),
         )
+        assert_eq(response.headers.get("Connection"), Some("close"), msg=target)
       }
       trace.push({
         "target": target,
