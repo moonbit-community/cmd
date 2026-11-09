@@ -217,3 +217,12 @@ oracle image construction (6:53). Preserve event steps, complete corpora and
 cleanup observations when revisiting these costs. The fixture-owner query now
 starts `id` twice per differential run, down from 3,968 in the
 [preceding warm run](https://github.com/moonbit-community/cmd/actions/runs/42601971893).
+
+These timing samples precede the one-request HTTP fixture correction. The later
+[main run](https://github.com/moonbit-community/cmd/actions/runs/42610703482)
+passed all package/tool tests and 2,722 comparisons, but its Cookie scenario
+observed upstream Wget exit 4 after trying to reuse a connection that the fixture
+closed without declaring `Connection: close`. Cookie redirects and authentication
+challenge responses now declare closure explicitly; request counts, Cookie
+expectations, HEAD output and frozen published expectations remain unchanged.
+The failed main run is retained as a failure, not a passing timing sample.
