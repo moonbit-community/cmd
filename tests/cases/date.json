@@ -615,6 +615,34 @@
       "expected_stderr_text": "",
       "oracle": true,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
+    },
+    {
+      "id": "date-tzdir-file-nanoseconds",
+      "command": "date",
+      "args": [
+        "-d",
+        "@2147483648.123456789",
+        "+%F %T.%N %z %Z"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "zone.tzif",
+          "content_hex": "545a6966320000000000000000000000000000000000000000000000000000000000001d000000030000000c80000000a097a280a17904f0c8595e80c909f970c9d3bd00cb058af0cb7c4000d23b3ef0d38b7b80d442adf0d5452200d64cbff0d73cbf00d8066670d91df280d9417cf01eba52201f699b90207e84a021497d902267a12023295f902447832025127c102627652026f25e102807472028d240100201020102010201020102010201020102010201020102010201020102000071d7000000007e9001040000708000084c4d54004344540043535400545a6966320000000000000000000000000000000000000000000000000000000000001d000000030000000cffffffff7e364329ffffffffa097a280ffffffffa17904f0ffffffffc8595e80ffffffffc909f970ffffffffc9d3bd00ffffffffcb058af0ffffffffcb7c4000ffffffffd23b3ef0ffffffffd38b7b80ffffffffd442adf0ffffffffd5452200ffffffffd64cbff0ffffffffd73cbf00ffffffffd8066670ffffffffd91df280ffffffffd9417cf0000000001eba5220000000001f699b9000000000207e84a00000000021497d90000000002267a1200000000023295f9000000000244783200000000025127c1000000000262765200000000026f25e1000000000280747200000000028d240100201020102010201020102010201020102010201020102010201020102000071d7000000007e9001040000708000084c4d540043445400435354000a4353542d380a"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": ":zone.tzif",
+        "TZDIR": "${WORK}"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "2038-01-19 11:14:08.123456789 +0800 CST\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "source_version": "Retained Shanghai TZif; Unix timestamp with explicit nanoseconds and TZDIR file resolution.",
+      "oracle": true
     }
   ]
 }

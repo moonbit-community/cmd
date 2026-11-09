@@ -34,6 +34,12 @@ workspace builds do not establish standalone published-consumer acceptance.
 See [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts) for input,
 cookie and proxy boundaries.
 
+`time_zone` delegates validated equivalent TZif conversion to the currently
+resolved released x/time API, with explicit gap/fold rejection. TZ/TZDIR and
+file loading remain portable adapters. POSIX strings and incompatible legacy
+TZif inputs retain their existing behavior; see [ADR-0003](../docs/adr/0003-streams.md).
+No dependency version or published coordinate changes with this substitution.
+
 ## 0.9.5 changes
 
 Apply the POSIX trailing-slash directory requirement to every shell file
