@@ -1,5 +1,5 @@
 ///|
-const CommandVersion = "0.1.0"
+const CommandVersion = "0.1.2"
 
 ///|
 priv suberror UsageError {

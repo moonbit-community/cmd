@@ -1,12 +1,15 @@
 # serve
 
 Minimal static HTTP file server, implemented in pure MoonBit with
-`moonbitlang/async@0.22.7`. The local candidate is `cli/serve@0.1.0`; it is not
-published yet.
+`moonbitlang/async@0.22.7`. Run the latest published release with MoonX:
 
 ```sh
-MOON_HOME="$HOME/.moon-accounts/cli" moon run --target wasm --release commands/serve -- public
+moonx cli/serve@latest -- public
 ```
+
+The latest published package is `cli/serve@0.1.1`. That package incorrectly
+reports `serve 0.1.0` with `--version`. The unpublished workspace candidate,
+`cli/serve@0.1.2`, corrects the version output.
 
 Usage: `serve [--host ADDRESS] [-p PORT|--port PORT] [DIRECTORY]`.
 The directory defaults to `.`, the address to `127.0.0.1`, and the port to 8000.
@@ -49,10 +52,8 @@ and launch from that parent directory:
 }
 ```
 
-After building the workspace:
-
 ```sh
-moonrun --policy serve-policy.json _build/wasm/release/build/cli/serve/serve.wasm -- public
+moonx --experimental-policy serve-policy.json cli/serve@latest -- public
 ```
 
 Keep write/process/network-connect permissions absent. Neither path-based

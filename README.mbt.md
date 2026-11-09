@@ -26,7 +26,7 @@ acceptance have separate manual workflows; see [tests](tests/README.md).
   and `yes`.
 - [x] Typesetting: `typst`.
 - [x] Local static HTTP server: [`serve`](commands/serve/README.md)
-  (development candidate; not published).
+  (available through `moonx cli/serve@latest`).
 - [ ] Planned command modules: `awk`, `chgrp`, `chown`, `clear`, `df`, `du`,
   `free`, `groups`, `hostname`, `id`, `install`, `kill`, `link`, `nproc`,
   `ps`, `readlink`, `stat`, `stty`, `tar`, `truncate`, `tput`, `tty`, `uname`,

@@ -14,7 +14,7 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": false,
-      "expected_stdout_text": "serve 0.1.0\n",
+      "expected_stdout_text": "serve 0.1.2\n",
       "expected_stderr_text": ""
     },
     {
