@@ -79,7 +79,9 @@ and timestamp formatting. These are compatibility checks, not timing evidence.
 | `release/` | Candidate generation and independent published expectations |
 | `benchmark/`, `resources/` | Manual timing and resource programs |
 
-Assertions execute directly. The per-assertion review/descriptor/proof chain,
+Assertions execute directly. Registration checks inspect the case expectations
+and scenario dispatch without generating an intermediate descriptor. The
+per-assertion review/descriptor/proof chain,
 generated quality/coverage catalogs and assertion-source sealing are retired.
 Their historical content is preserved in Git at `aa65c57`. This does not retire
 original cases, corpus records, immutable oracle identity or performance baselines.
