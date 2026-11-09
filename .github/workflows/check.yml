@@ -293,6 +293,8 @@ jobs:
         with:
           name: cmd-linux-build
           path: ci-inputs
+      - name: Refresh script dependency registry
+        run: moon update
       - name: Verify prepared inputs and selection
         id: inputs
         run: moon run tests/run.mbtx -- ci import
@@ -349,6 +351,8 @@ jobs:
           core-version: latest
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - name: Refresh script dependency registry
+        run: moon update
       - name: Require correctness and selected upstream results
         env:
           LINUX_RESULT: ${{ needs.linux.result }}
