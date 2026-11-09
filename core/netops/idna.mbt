@@ -44,7 +44,7 @@ priv enum IdnaJoining {
 }
 
 ///|
-priv suberror HostNameError {
+pub(all) suberror HostNameError {
   InvalidName
 }
 
@@ -192,7 +192,7 @@ fn idna_convert_pass(
 }
 
 ///|
-fn idna_host(host : String) -> String raise HostNameError {
+pub fn idna_host(host : String) -> String raise HostNameError {
   idna_convert_pass(host, false) catch {
     _ => idna_convert_pass(host, true)
   }

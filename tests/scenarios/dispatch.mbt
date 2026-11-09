@@ -372,6 +372,11 @@ pub async fn execute_scenario(
           network_wget_authentication_scenario(root, work, oracle_image?)
         "network-wget-authentication-oracle" =>
           network_wget_authentication_scenario(root, work, oracle_image?)
+        "network-wget-authentication-session"
+        | "network-wget-authentication-replay"
+        | "network-wget-authentication-rejection"
+        | "network-wget-authentication-option-error" =>
+          network_wget_authentication_scenario(root, work, id=fixture.id)
         "network-idna-oracle" =>
           network_idna_scenario(root, work, oracle_image?)
         "network-cookie-suffix" =>

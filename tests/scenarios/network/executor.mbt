@@ -32,7 +32,9 @@ pub fn supports(id : String) -> Bool {
     "network-wget-cookie-expiry-oracle", "network-wget-cookie-dates", "network-wget-cookie-dates-oracle",
     "network-curl-cookie-domains", "network-curl-cookie-domains-oracle", "network-wget-cookie-domains",
     "network-wget-cookie-domains-oracle", "network-curl-cookie-lifecycle", "network-curl-cookie-lifecycle-oracle",
-    "network-curl-http-retry", "network-curl-http-retry-oracle",
+    "network-curl-http-retry", "network-curl-http-retry-oracle", "network-wget-authentication-session",
+    "network-wget-authentication-replay", "network-wget-authentication-rejection",
+    "network-wget-authentication-option-error",
   ].contains(id)
 }
 
@@ -103,6 +105,22 @@ pub async fn run(
       )
     "network-wget-authentication" | "network-wget-authentication-oracle" =>
       network_wget_authentication_scenario(executor, work, oracle_image?)
+    "network-wget-authentication-session" =>
+      network_wget_authentication_scenario(executor, work, labels=[
+        "options-other-host-not-cached",
+      ])
+    "network-wget-authentication-replay" =>
+      network_wget_authentication_scenario(executor, work, labels=[
+        "extra-option-body-file-replay",
+      ])
+    "network-wget-authentication-rejection" =>
+      network_wget_authentication_scenario(executor, work, labels=[
+        "url-rejection",
+      ])
+    "network-wget-authentication-option-error" =>
+      network_wget_authentication_scenario(executor, work, labels=[
+        "extra-boolean-rejection-invalid",
+      ])
     _ => fail("unknown shared network scenario: " + id)
   }
 }

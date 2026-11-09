@@ -1,6 +1,5 @@
 import {
   "moonbitlang/core/debug",
-  "cli/core/fsops",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/http",
@@ -8,20 +7,14 @@ import {
   "moonbitlang/async/socket",
   "moonbitlang/async/stdio",
   "moonbitlang/async/tls",
-  "moonbitlang/core/encoding/base64",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/string",
-  "moonbitlang/x/time",
   "moonbit-community/normalization",
   "moonbit-community/punycode",
 }
 
 import {
   "moonbitlang/async/cond_var",
-  "moonbitlang/async/process",
-  "moonbitlang/core/env",
-  "moonbitlang/core/json",
-  "moonbitlang/x/fs" @sync_fs,
   "moonbitlang/x/path",
   "moonbitlang/x/crypto",
 } for "wbtest"

@@ -17,7 +17,7 @@ fn cookie_suffix_contains(rules : FixedArray[String], value : String) -> Bool {
 }
 
 ///|
-fn cookie_public_suffix(domain : String) -> Bool {
+pub fn cookie_public_suffix(domain : String) -> Bool {
   // libpsl's cookie policy includes both sections and wildcard bases. Its
   // prevailing '*' also treats unknown single-label domains as suffixes.
   let domain = if domain.has_prefix(".") {
@@ -49,7 +49,7 @@ fn cookie_public_suffix(domain : String) -> Bool {
 }
 
 ///|
-fn cookie_longest_suffix(host : String) -> String {
+pub fn cookie_longest_suffix(host : String) -> String {
   // Match libpsl 0.21.2's bounded rightmost-nine-label search. Checking the
   // host from left to right is essential for non-contiguous listed suffixes
   // such as forgot.his.name and name, where his.name itself is not listed.
@@ -66,16 +66,6 @@ fn cookie_longest_suffix(host : String) -> String {
 }
 
 ///|
-fn cookie_suffix_allows(host : String, domain : String) -> Bool {
-  let domain = domain.trim_start(chars=".").to_owned()
-  host == domain ||
-  (
-    cookie_domain_matches(host, domain) &&
-    domain.length() > cookie_longest_suffix(host).length()
-  )
-}
-
-///|
 fn cookie_ipv4_spelling(domain : String) -> Bool {
   domain.split(".").count() == 4 &&
   domain
@@ -88,7 +78,7 @@ fn cookie_ipv4_spelling(domain : String) -> Bool {
 }
 
 ///|
-fn cookie_ip_literal(domain : String) -> Bool {
+pub fn cookie_ip_literal(domain : String) -> Bool {
   if domain.contains("%") || domain.has_prefix("[") || domain.has_suffix("]") {
     return false
   }
@@ -115,35 +105,4 @@ fn cookie_ip_literal(domain : String) -> Bool {
     _ => return false
   }
   true
-}
-
-///|
-fn curl_suffix_name(domain : String) -> String {
-  // The PSL view folds ASCII case and removes one trailing dot; storage keeps
-  // the received spelling, including its case and dots.
-  cookie_ascii_lower(
-    if domain.has_suffix(".") {
-      domain[:domain.length() - 1].to_owned()
-    } else {
-      domain
-    },
-  )
-}
-
-///|
-fn curl_suffix_admission(host : String?, domain : String) -> Bool {
-  if cookie_ip_literal(domain) {
-    return true
-  }
-  let domain = curl_suffix_name(domain)
-  if @utf8.encode(domain).length() >= 256 {
-    return false
-  }
-  match host {
-    Some(host) => {
-      let host = curl_suffix_name(host)
-      @utf8.encode(host).length() < 256 && cookie_suffix_allows(host, domain)
-    }
-    None => domain == "localhost" || !cookie_public_suffix(domain)
-  }
 }

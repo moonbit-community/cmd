@@ -1016,7 +1016,7 @@
       "isolated": true
     },
     {
-      "id": "network-wget-authentication",
+      "id": "network-wget-authentication-session",
       "command": "wget",
       "args": [],
       "files": [],
@@ -1030,8 +1030,89 @@
         "windows"
       ],
       "timeout_ms": 60000,
+      "source_version": "GNU Wget 1.25.0 challenge, shared-host credential cache and cross-host isolation",
+      "inputs": [
+        "tests/fixtures/network/wget-authentication.json"
+      ],
+      "isolated": true
+    },
+    {
+      "id": "network-wget-authentication-replay",
+      "command": "wget",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux",
+        "macos",
+        "windows"
+      ],
+      "timeout_ms": 60000,
+      "source_version": "GNU Wget 1.25.0 binary request body replay after a Basic challenge",
+      "inputs": [
+        "tests/fixtures/network/wget-authentication.json"
+      ],
+      "isolated": true
+    },
+    {
+      "id": "network-wget-authentication-rejection",
+      "command": "wget",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux",
+        "macos",
+        "windows"
+      ],
+      "timeout_ms": 60000,
+      "source_version": "GNU Wget 1.25.0 authentication refusal and final exit status",
+      "inputs": [
+        "tests/fixtures/network/wget-authentication.json"
+      ],
+      "isolated": true
+    },
+    {
+      "id": "network-wget-authentication-option-error",
+      "command": "wget",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux",
+        "macos",
+        "windows"
+      ],
+      "timeout_ms": 60000,
+      "source_version": "GNU Wget 1.25.0 invalid authentication option diagnostics before I/O",
+      "inputs": [
+        "tests/fixtures/network/wget-authentication.json"
+      ],
+      "isolated": true
+    },
+    {
+      "id": "network-wget-authentication",
+      "command": "wget",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "oracle-scenario",
+      "host_platforms": [
+        "linux"
+      ],
+      "timeout_ms": 600000,
       "source_version": "GNU Wget 1.25.0 credentials, Basic challenge/cache, 401 and binary replay controls",
-      "oracle": true,
       "inputs": [
         "tests/fixtures/network/wget-authentication.json"
       ],

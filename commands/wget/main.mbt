@@ -122,20 +122,20 @@ async fn timestamp_header(path : String) -> @netops.HttpHeader? {
 }
 
 ///|
-fn proxy_for(url : String, disabled : Bool, utf8_hosts : Bool) -> String? {
+fn proxy_for(
+  url : String,
+  disabled : Bool,
+  utf8_hosts : Bool,
+  lookup_env~ : (String) -> String? = @env.get_env_var,
+) -> String? {
   if disabled {
     return None
   }
-  let no_proxy = match @env.get_env_var("NO_PROXY") {
+  let no_proxy = match lookup_env("NO_PROXY") {
     Some(value) => Some(value)
-    None => @env.get_env_var("no_proxy")
+    None => lookup_env("no_proxy")
   }
-  if @netops.proxy_bypassed(
-      url,
-      no_proxy,
-      profile=@netops.WgetProfile,
-      utf8_hosts~,
-    ) {
+  if @download.proxy_bypassed(url, no_proxy, utf8_hosts~) {
     return None
   }
   let scheme_name = if url.to_lower().has_prefix("https://") {
@@ -143,12 +143,12 @@ fn proxy_for(url : String, disabled : Bool, utf8_hosts : Bool) -> String? {
   } else {
     "http_proxy"
   }
-  match @env.get_env_var(scheme_name) {
+  match lookup_env(scheme_name) {
     Some(value) => Some(value)
     None =>
-      match @env.get_env_var(scheme_name.to_upper()) {
+      match lookup_env(scheme_name.to_upper()) {
         Some(value) => Some(value)
-        None => @env.get_env_var("all_proxy")
+        None => lookup_env("all_proxy")
       }
   }
 }
@@ -186,7 +186,7 @@ fn can_retry(
   if retry_http {
     return true
   }
-  if !@netops.retryable_failure(kind, status) {
+  if !@download.retryable_failure(kind, status) {
     return false
   }
   kind != @netops.ConnectionFailure ||
@@ -200,14 +200,14 @@ async fn output_for(
   url : String,
   selected_name? : String,
   defer_resume~ : Bool = false,
-) -> (@netops.TransferOutput, String, Int64?) {
+) -> (@download.TransferOutput, String, Int64?) {
   match options.output_document {
-    Some("-") => (@netops.StandardOutput, "stdout", None)
+    Some("-") => (@download.StandardOutput, "stdout", None)
     Some(path) =>
       (
-        @netops.FileOutput(
+        @download.FileOutput(
           path~,
-          mode=@netops.Append,
+          mode=@download.Append,
           content_disposition=false,
           remove_on_error=false,
         ),
@@ -215,16 +215,16 @@ async fn output_for(
         None,
       )
     None => {
-      let path = selected_name.unwrap_or_else(() => @netops.remote_name(url))
+      let path = selected_name.unwrap_or_else(() => @download.remote_name(url))
       let disposition = options.content_disposition && selected_name is None
       if options.continue_download && !defer_resume && @fs.exists(path) {
         let file = @fs.open(path, mode=ReadOnly)
         defer file.close()
         let size = file.size()
         (
-          @netops.FileOutput(
+          @download.FileOutput(
             path~,
-            mode=@netops.Append,
+            mode=@download.Append,
             content_disposition=disposition,
             remove_on_error=false,
           ),
@@ -233,12 +233,12 @@ async fn output_for(
         )
       } else {
         (
-          @netops.FileOutput(
+          @download.FileOutput(
             path~,
             mode=if options.timestamping {
-              @netops.Truncate
+              @download.Truncate
             } else {
-              @netops.Unique
+              @download.Unique
             },
             content_disposition=disposition,
             remove_on_error=false,
@@ -253,7 +253,7 @@ async fn output_for(
 
 ///|
 priv struct DownloadProgress {
-  mut output : @netops.TransferOutput
+  mut output : @download.TransferOutput
   mut downloaded : Int64
   mut response_offset : Int64
 }
@@ -261,22 +261,22 @@ priv struct DownloadProgress {
 ///|
 fn DownloadProgress::observe(
   self : DownloadProgress,
-  event : @netops.TransferEvent,
+  event : @download.TransferEvent,
 ) -> Unit {
   match event {
-    @netops.OutputStarted(path~, response_offset~) => {
+    @download.OutputStarted(path~, response_offset~) => {
       self.response_offset = response_offset
       if path is Some(path) {
         // Retain the actual unique or Content-Disposition name across attempts.
-        self.output = @netops.FileOutput(
+        self.output = @download.FileOutput(
           path~,
-          mode=@netops.Append,
+          mode=@download.Append,
           content_disposition=false,
           remove_on_error=false,
         )
       }
     }
-    @netops.Progress(received~, ..) =>
+    @download.Progress(received~, ..) =>
       self.downloaded = self.downloaded.max(self.response_offset + received)
     _ => ()
   }
@@ -287,21 +287,21 @@ async fn observe_transfer(
   log : LogDestination,
   interactive : Bool,
   label : String,
-  event : @netops.TransferEvent,
+  event : @download.TransferEvent,
 ) -> Unit {
   match event {
-    @netops.Redirected(status~, to~, ..) =>
+    @download.Redirected(status~, to~, ..) =>
       log.write("Location: \{to} [following HTTP \{status}]\n")
-    @netops.ResponseStarted(status~, reason~, content_length~, ..) => {
+    @download.ResponseStarted(status~, reason~, content_length~, ..) => {
       log.write("HTTP request sent, awaiting response... \{status} \{reason}\n")
       match content_length {
         Some(length) => log.write("Length: \{length}\nSaving to: '\{label}'\n")
         None => log.write("Length: unspecified\nSaving to: '\{label}'\n")
       }
     }
-    @netops.Progress(received~, content_length~) if interactive =>
+    @download.Progress(received~, content_length~) if interactive =>
       log.write(progress_text(label, received, content_length))
-    @netops.Completed(received~, ..) => {
+    @download.Completed(received~, ..) => {
       if interactive {
         log.write("\n")
       }
@@ -334,8 +334,9 @@ async fn download_one(
   options : Options,
   log : LogDestination,
   url : String,
-  jar : @netops.CookieJar?,
+  jar : @download.CookieJar?,
   basic_hosts~ : Map[String, Bool] = Map([]),
+  lookup_env~ : (String) -> String? = @env.get_env_var,
 ) -> Int32 {
   let mut discover_name = options.continue_download &&
     options.content_disposition &&
@@ -377,15 +378,19 @@ async fn download_one(
   for ;; {
     attempt += 1
     log.write("--  \{url}\n")
-    let proxy_url = proxy_for(url, options.no_proxy, options.utf8_hosts)
+    let proxy_url = proxy_for(
+      url,
+      options.no_proxy,
+      options.utf8_hosts,
+      lookup_env~,
+    )
     try {
-      let mut request_options = @netops.transfer_options(
-        profile=@netops.WgetProfile,
+      let mut request_options = @download.options(
         utf8_hosts=options.utf8_hosts,
         request_method=options.request_method,
         headers~,
         body=options.body,
-        redirects=@netops.FollowRedirects(options.max_redirects),
+        redirects=@download.FollowRedirects(options.max_redirects),
         verify_tls=!options.no_check_certificate,
         proxy_url?,
         connect_timeout_ms=options.connect_timeout_ms,
@@ -397,19 +402,15 @@ async fn download_one(
         } else {
           None
         },
-        resume_skip_existing=true,
         keep_output_on_not_modified=options.timestamping,
         cookie_jar?=jar,
-        custom_cookie_mode=@netops.ReplaceStored,
-        custom_cookie_cross_origin=true,
         basic_user?=options.user,
         basic_password?=options.password,
         basic_preemptive=options.auth_no_challenge,
-        basic_credential_scope=@netops.AllOrigins,
         basic_challenged_hosts=basic_hosts,
       )
       if discover_name {
-        let discovery = @netops.transfer(url, @netops.DiscardOutput, {
+        let discovery = @download.transfer(url, @download.DiscardOutput, {
           ..request_options,
           request_method: @netops.Head,
           body: @netops.EmptyBody,
@@ -435,7 +436,7 @@ async fn download_one(
         request_options = { ..request_options, resume_from: selected_resume, }
         discover_name = false
       }
-      @netops.transfer(url, progress.output, request_options, observer=event => {
+      @download.transfer(url, progress.output, request_options, observer=event => {
         progress.observe(event)
         observe_transfer(log, interactive, label, event)
       })
@@ -465,7 +466,10 @@ async fn download_one(
 }
 
 ///|
-async fn run(options : Options) -> Int32 {
+async fn run(
+  options : Options,
+  lookup_env~ : (String) -> String? = @env.get_env_var,
+) -> Int32 {
   if options.help {
     @stdio.stdout.write(usage())
     return 0
@@ -522,16 +526,20 @@ async fn run(options : Options) -> Int32 {
     }
     file.close()
   }
-  let jar = if options.cookies { Some(@netops.CookieJar::new()) } else { None }
+  let jar = if options.cookies {
+    Some(@download.CookieJar::new())
+  } else {
+    None
+  }
   if jar is Some(jar) && options.load_cookies is Some(path) {
-    jar.load(path, profile=@netops.WgetProfile) catch {
+    jar.load(path) catch {
       err => log.write("wget: cannot read cookie jar '\{path}': \{err}\n")
     }
   }
   let mut result = 0
   let basic_hosts : Map[String, Bool] = Map([])
   for url in urls {
-    let status = download_one(options, log, url, jar, basic_hosts~)
+    let status = download_one(options, log, url, jar, basic_hosts~, lookup_env~)
     if status != 0 && (result == 0 || status < result) {
       result = status
     }

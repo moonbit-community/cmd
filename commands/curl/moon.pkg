@@ -1,4 +1,5 @@
 import {
+  "cli/curl/internal/download",
   "cli/core/cli",
   "cli/core/netops",
   "cli/core/platform",

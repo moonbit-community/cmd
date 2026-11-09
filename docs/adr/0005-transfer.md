@@ -9,8 +9,9 @@ Updated: 2026-11-09
 Use released public TCP/TLS readers and writers with a private connection owner
 for direct and proxy setup. Preserve the parsed canonical host without passing
 it through a second URL parser. HttpWire owns pure MoonBit HTTP/1 serialization,
-framing, request payloads, timeouts and write errors. The public default is
-StrictProfile; curl and wget explicitly select their distinct policies.
+framing, request payloads, timeouts and write errors. Core exposes one scoped
+streaming exchange; curl and wget own their policies in `internal/download`.
+The former default/profile switch and combined transfer options are retired.
 Do not delegate to host tools or add responsibility-free forwarding layers.
 
 The existing proxy connection emits a destination authority in the CONNECT
@@ -38,9 +39,9 @@ authentication, framing and failure effects before that transport gap closes.
   trailer rejection retains body prefixes.
 
 Empty reply, bodyless response and close-delimited body are distinct states.
-Both command profiles accept EOF after a complete 200 status line while
-collecting headers, subject to parsed framing. StrictProfile rejects incomplete
-headers and premature fixed/chunked EOF.
+Both commands accept EOF after a complete 200 status line while collecting
+headers, subject to parsed framing. Core reports incomplete headers and exact
+premature fixed/chunked EOF boundaries; each command decides acceptance.
 
 ## Command profiles
 
@@ -300,8 +301,8 @@ replay and full URL grammar remain #34 work. Absent schemes, empty/zero ports,
 signed ports, malformed IP literals and space-containing hosts need separate
 grammar controls; this batch does not establish full URL parsing parity.
 
-Private ordered request fields replace the lossy map in Curl's profile; Wget
-and StrictProfile retain same-name replacement. Generated jar Cookie fields
+Private ordered request fields replace the lossy map in Curl's policy; Wget
+retains same-name replacement. Generated jar Cookie fields
 still precede explicit fields. Multiple request Content-Length fields reject
 before request bytes, retaining the existing single-length upload invariant.
 Raw request/response tests assert order and repetition, actual authentication
@@ -411,7 +412,10 @@ tests under [ADR-0004](0004-filesystem.md). Published-coordinate acceptance
 remains separate from local parser and wire tests.
 
 Implementation: [wire](../../core/netops/http_wire.mbt),
-[serialization](../../core/netops/http_wire_request.mbt),
-[transfer](../../core/netops/transfer.mbt),
-[sink lifetime](../../core/netops/transfer_sink.mbt),
+[exchange scope](../../core/netops/exchange.mbt),
+[serialization](../../core/netops/exchange_request.mbt),
+[curl transfer](../../commands/curl/internal/download/transfer.mbt),
+[wget transfer](../../commands/wget/internal/download/transfer.mbt),
+[curl output](../../commands/curl/internal/download/transfer_sink.mbt),
+[wget output](../../commands/wget/internal/download/transfer_sink.mbt),
 [network scenarios](../../tests/scenarios/network/).

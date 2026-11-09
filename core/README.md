@@ -23,10 +23,12 @@ Commands with changed core dependencies will need the future core coordinate in 
 dependencies when preparing a release; workspace checks do not validate those
 unpublished interfaces against the current registry versions.
 
-The unpublished transfer profile adds fixed Unicode 15 URL-host conversion
-through released normalization/Punycode packages. `transfer_options` and
-`proxy_bypassed` accept the command's UTF-8 input profile, while the private
-connection owner preserves structured hosts across public TCP/TLS calls.
+The unpublished network API uses `with_response` for one scoped streaming
+request. Core keeps transport, URL, fixed Unicode 15 IDNA and public-suffix
+mechanisms. Curl and Wget own Cookie, authentication, redirects, retries, resume
+and output in their private download packages; shared transfer profiles/options
+and Cookie policies are removed. The connection owner preserves structured
+hosts across public TCP/TLS calls. See [netops](netops/README.md).
 Curl and Wget also require the future core coordinate before a release;
 workspace builds do not establish standalone published-consumer acceptance.
 See [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts) for input,

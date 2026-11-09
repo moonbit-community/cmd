@@ -11,8 +11,6 @@ pub async fn backup_destination(String, BackupControl, suffix? : String) -> Stri
 
 pub fn basename(String) -> String
 
-pub async fn cleanup_file_if_exists(String) -> Unit
-
 pub fn compare_timestamps(FileTimestamp, FileTimestamp) -> Int32
 
 pub fn current_timestamp() -> FileTimestamp
@@ -26,8 +24,6 @@ pub fn join(String, String) -> String
 pub async fn kind_if_exists(String) -> @fs.FileKind?
 
 pub async fn open_output(String, OutputMode, permission? : Int32) -> @fs.File
-
-pub async fn open_unique_numbered_output(String, permission? : Int32) -> (String, @fs.File)
 
 pub fn overwrite_decision(UpdateMode, FileTimestamp, FileTimestamp?) -> OverwriteDecision
 
