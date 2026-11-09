@@ -19,6 +19,7 @@ test "runtime index rejects duplicate identities and invalid release selections"
     policy_sensitive: false,
     releasable: true,
     case_ids: Some(["echo-value"]),
+    oracle_boundary: None,
   }
   let index : Registry = {
     schema: 3,

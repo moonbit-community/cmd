@@ -83,6 +83,15 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
     ignore(fixture.input()) catch {
       err => failures.push("\{err}")
     }
+    let inputs : Set[String] = Set([])
+    for path in fixture.inputs.unwrap_or([]) {
+      if !safe_relative_path(path) || inputs.contains(path) {
+        failures.push(
+          fixture.id + ": invalid or duplicate fixture input: " + path,
+        )
+      }
+      inputs.add(path)
+    }
     for file in fixture.files {
       if !safe_relative_path(file.path) {
         failures.push("\{fixture.id}: unsafe fixture path '\{file.path}'")

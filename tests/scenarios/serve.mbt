@@ -86,7 +86,7 @@ async fn serve_static_scenario(
   @async.with_task_group(group => {
     let out_task = group.spawn(() => reader_out.read_all().binary())
     let policy = if restricted { Some(policy_path) } else { None }
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       @harness.command_program(),
       @harness.command_args(

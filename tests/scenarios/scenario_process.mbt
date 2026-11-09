@@ -83,7 +83,7 @@ async fn process_lifecycle_scenario(root : String, work : String) -> Unit {
   @async.with_task_group(group => {
     let (reader, output) = @process.read_from_process()
     defer reader.close()
-    let child = @process.spawn(
+    let child = @harness.spawn(
       group,
       helper,
       ["--test-helper", "wait-ready"],

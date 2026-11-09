@@ -55,7 +55,7 @@ pub async fn check_tee_modes(
             "cwd": Json(cwd),
           }),
         )
-        let child = @process.spawn(
+        let child = @harness.spawn(
           group,
           program,
           args,
