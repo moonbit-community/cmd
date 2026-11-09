@@ -142,6 +142,9 @@ async test "cancelled transfer replay retains candidate wire after observers sto
   let work = @fs.tmpdir(prefix="mooncmd-replay-cancel-")
   defer @fs.rmdir(work, recursive=true)
   let entered = Ref(false)
+  let ready : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
+  let executor_ready : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
+  let hold : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
   let executor : Executor = {
     proof: None,
     invoke: invocation => {
@@ -161,14 +164,37 @@ async test "cancelled transfer replay retains candidate wire after observers sto
       assert_eq(connection.read_until("\r\n"), Some(""))
       connection.write("GET /retry HTTP/1.1\r\nHost: retry.example\r\n\r\n")
       entered.val = true
-      @async.sleep(10000)
+      executor_ready.put(())
+      hold.get()
       fail("cancelled test executor must never return")
     },
   }
-  let completed = @async.with_timeout_opt(500, () => {
-    network_curl_transfers_scenario(executor, work, corpus="curl-http-retry")
+  @async.with_timeout(10000, () => {
+    @async.with_task_group(group => {
+      let task = group.spawn(() => {
+        network_curl_transfers_scenario(
+          executor,
+          work,
+          corpus="curl-http-retry",
+          before_response=() => {
+            ready.put(())
+            hold.get()
+          },
+        )
+      })
+      // Wait for the server's request and file observations, then cancel while
+      // response delivery is explicitly held. Setup speed cannot trigger it.
+      ready.get()
+      executor_ready.get()
+      task.cancel()
+      try task.wait() catch {
+        @async.WaitedTaskAlreadyCancelled => ()
+        error => raise error
+      } noraise {
+        _ => fail("the observed transfer must be cancelled")
+      }
+    })
   })
-  assert_true(completed is None)
   assert_true(entered.val)
   let evidence = work + "/budget-expired-complete-503-without-fail.evidence"
   let path = evidence + "/phase-0.wire.json"

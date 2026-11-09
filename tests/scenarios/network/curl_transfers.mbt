@@ -194,6 +194,7 @@ async fn network_curl_transfers_scenario(
   work : String,
   corpus~ : String,
   oracle_image? : String,
+  before_response? : async () -> Unit,
 ) -> Unit {
   let count = match corpus {
     "curl-cookie-lifecycle" => 20
@@ -352,6 +353,9 @@ async fn network_curl_transfers_scenario(
                   )
                 }
                 checks.push(Json(actual))
+              }
+              if before_response is Some(ready) {
+                ready()
               }
               if exchange.get("delay_ms") is Some(value) {
                 let delay : Int32 = @json.from_json(value)
