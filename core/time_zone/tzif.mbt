@@ -50,7 +50,7 @@ fn header(data : Bytes, at : Int32, width : Int32) -> Header raise {
 
 ///|
 /// Decode TZif v1/v2/v3/v4 with bounds checks before every indexed read.
-fn decode(data : Bytes) -> Zone raise {
+fn decode_compatibility(data : Bytes) -> Compatibility raise {
   let first = header(data, 0, 4)
   let version = data[4]
   let block = if version == 0 {
@@ -112,4 +112,40 @@ fn decode(data : Bytes) -> Zone raise {
     }
   }
   { types, transitions, future, }
+}
+
+///|
+fn standard_rule(rule : Rule) -> Bool {
+  match rule {
+    Month(_, _, _, seconds) => seconds >= 0 && seconds <= 86400
+    Day(_, _, _) => false
+  }
+}
+
+///|
+fn decode(data : Bytes) -> Zone raise {
+  // Keep the existing acceptance boundary: leap-bearing input still rejects,
+  // UTF-8 designations remain literal, and malformed headers keep diagnostics.
+  let compatible = decode_compatibility(data)
+  let literal_names = compatible.types.all(offset => {
+    offset.name
+    .iter()
+    .all(c => c is ('A'..<='Z' | 'a'..<='z' | '0'..<='9' | '+' | '-'))
+  })
+  let supported_rules = match compatible.future {
+    Some({ start: Some(start), end: Some(end), .. }) =>
+      standard_rule(start) && standard_rule(end)
+    _ => true
+  }
+  if literal_names && supported_rules {
+    // The public loader is stricter about designation blocks, footer agreement
+    // and offset ranges. Retain the legacy path for inputs it cannot represent.
+    let upstream = Some(@time.Zone::from_tzif("TZ", data[:])) catch {
+      _ => None
+    }
+    if upstream is Some(zone) {
+      return { implementation: Tzif(zone), }
+    }
+  }
+  { implementation: Compatible(compatible), }
 }

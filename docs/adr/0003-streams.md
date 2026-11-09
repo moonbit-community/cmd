@@ -134,6 +134,18 @@ implementations; complete CLI differential and published routes remain intact.
 Reconsider shared policy only when real consumers require the same stable
 contract, without command-identity branching.
 
+Timezone conversion uses the resolved released `x/time` public TZif loader and
+`ZonedDateTime::from_plain(..., disambiguation=Reject)` for validated equivalent
+inputs. The adapter retains TZ/TZDIR/path I/O and the existing rejection boundary
+for malformed and leap-bearing data. It keeps POSIX strings and compatibility
+conversion for literal nonstandard abbreviations, footer disagreement, deferred
+out-of-range offsets and unqualified recurring-rule forms. Compatible TZif zones
+retain only the upstream representation after admission; no duplicate transition
+lookup runs beside it. Existing gap/fold diagnostics and nanoseconds remain.
+Reopen the retained paths when released public APIs preserve those contracts;
+do not import x/internal, add FFI, upgrade workspace dependencies or use host
+local_zone on Wasm to force replacement.
+
 The compatibility boundary for internal restructuring is `moonx cli/<command>`:
 accepted arguments, output/status, error ordering, filesystem effects and
 performance. Internal packages, public source declarations and test helpers may

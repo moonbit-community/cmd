@@ -63,6 +63,12 @@ refusal and option-error diagnostics. The full 73-case CLI route and its frozen
 published alias remain available. Retry, output failure and cleanup retain both
 private state regressions and real command events.
 
+Timezone package tests cover TZif v1-v4, literal zero-offset names, fractional
+offsets, post-2038 and far-future seasons, rejected DST gaps/folds, truncated
+files and retained legacy inputs. Date's TZDIR file case exercises the Wasm
+adapter with explicit nanoseconds; existing date/diff contracts retain output
+and timestamp formatting. These are compatibility checks, not timing evidence.
+
 | Location | Responsibility |
 | --- | --- |
 | `run.mbtx`, `tools/` | Public entry and internal MoonBit orchestration |

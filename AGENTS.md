@@ -163,6 +163,11 @@ module and version before any release operation.
   and connection closure on return, error and cancellation. Complete original
   Cookie and authentication corpora run beside their owners; real command events
   and full required differential remain independent checks.
+- Use released public x/time APIs for equivalent TZif conversion and reject
+  ambiguous/nonexistent local times explicitly. Keep timezone file selection,
+  POSIX strings and documented legacy compatibility in `core/time_zone`; never
+  import x/internal or assume system local-zone APIs exist on Wasm.
+
 - rg search policy and its concrete matcher adapter are private to `driver`.
   Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms
   in `core/bytesearch`; `matcher` and `searcher` must not import the driver.

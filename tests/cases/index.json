@@ -46003,6 +46003,17 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:date-tzdir-file-nanoseconds",
+      "command": "date",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/date.json",
+      "case_id": "date-tzdir-file-nanoseconds",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }
