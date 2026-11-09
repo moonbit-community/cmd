@@ -1012,7 +1012,8 @@
       ],
       "aliases": [
         "network-wget-cookies-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "network-wget-authentication",
@@ -1036,7 +1037,8 @@
       ],
       "aliases": [
         "network-wget-authentication-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "network-wget-cookie-expiry",
@@ -1057,7 +1059,8 @@
       ],
       "aliases": [
         "network-wget-cookie-expiry-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "network-wget-cookie-dates",
@@ -1078,7 +1081,8 @@
       ],
       "aliases": [
         "network-wget-cookie-dates-oracle"
-      ]
+      ],
+      "isolated": true
     },
     {
       "id": "network-wget-cookie-domains",
@@ -1099,7 +1103,8 @@
       ],
       "aliases": [
         "network-wget-cookie-domains-oracle"
-      ]
+      ],
+      "isolated": true
     }
   ]
 }

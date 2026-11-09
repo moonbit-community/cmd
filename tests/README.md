@@ -82,8 +82,10 @@ Results are `pass`, `fail`, `skip` or `infra`. Availability, local contract,
 differential comparison and explicit boundary are separate verification kinds.
 Missing fixtures, empty required selections, deadlines, uncertain cleanup and
 report failures cannot pass. Original expected values never come from candidate
-output. Stateful scenarios remain serial; independent cases use at most four
-tasks. Partial child observations remain failures, not fabricated completion.
+output. Scenarios with shared or unreviewed state remain serial. The `isolated`
+case flag records reviewed private directories, servers and process state; those
+events use at most four tasks (two in differential runs). Their internal steps
+remain serial. Partial child observations remain failures, not fabricated completion.
 
 ## Oracle and delivery boundaries
 
