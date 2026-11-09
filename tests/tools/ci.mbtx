@@ -63,7 +63,7 @@ fn selection_required(selection : Json, commit : String) -> Bool raise {
     seen.add(id)
   }
   guard scope != "none" ||
-    reason == "documentation-only change" ||
+    reason == "no functional changes" ||
     reason.has_prefix("explicit registered upstream boundaries: ") else {
     fail("undeclared differential omission")
   }

@@ -91,11 +91,21 @@ fn oracle_impact(
   }
   let selected : Set[String] = Set([])
   for path in paths {
-    if path.has_suffix(".md") &&
+    let source = [".mbt", ".mbti", ".mbtx", ".mbt.md"].any(suffix => {
+      path.has_suffix(suffix)
+    })
+    if !source &&
       (
         path.has_prefix("docs/") ||
-        path.has_prefix("commands/") ||
-        !path.contains("/")
+        path.contains("/docs/") ||
+        path.has_suffix("LICENSE") ||
+        path.has_suffix("LICENSE.txt") ||
+        path.has_suffix("README.md") ||
+        (
+          path.has_suffix(".md") &&
+          !path.contains("/fixtures/") &&
+          !path.contains("/testdata/")
+        )
       ) {
       continue
     }
@@ -125,12 +135,23 @@ fn oracle_impact(
       }
       continue
     }
-    return ("all", "shared or unclassified execution input: " + path, commands)
+    if source ||
+      path.has_prefix("core/") ||
+      path.has_prefix("tests/") ||
+      path.has_prefix(".github/workflows/") ||
+      path.has_prefix(".github/actions/") ||
+      ["moon.work", "moon.mod", "moon.pkg", ".gitmodules"].contains(path) {
+      return (
+        "all",
+        "shared or unclassified execution input: " + path,
+        commands,
+      )
+    }
   }
   let result = selected.iter().collect()
   result.sort()
   if result.is_empty() {
-    ("none", "documentation-only change", [])
+    ("none", "no functional changes", [])
   } else {
     ("commands", "registered command and fixture consumers", result)
   }
