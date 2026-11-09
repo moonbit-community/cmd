@@ -125,6 +125,12 @@ case flag records reviewed private directories, servers and process state; those
 events use at most four tasks (two in differential runs). Their internal steps
 remain serial. Partial child observations remain failures, not fabricated completion.
 
+Fixed timestamp declarations use each contract's private directory and can share
+the bounded execution queue. Network, delayed and explicit timestamp-observation
+contracts remain serial. The Windows mv link event and sort spill event also use
+private directories, streams and child environments, so they join the existing
+isolated scenario queue. Fixture-owner UID/GID is prepared once per runner process.
+
 ## Oracle and delivery boundaries
 
 `functional` always runs complete applicable correctness. Linux upstream execution
