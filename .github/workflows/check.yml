@@ -35,7 +35,7 @@ jobs:
       CMD_TEST_PROFILE: debug
       CMD_TEST_PREPARED: '1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
@@ -49,7 +49,7 @@ jobs:
         env:
           CACHE_PREFIX: wasm-ci-v6-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('test-reports/toolchain.log') }}-wasm-release-tools-debug-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg', '!**/.mooncakes/**', '!**/_build/**', '!**/target/**') }}
         run: echo "prefix=$CACHE_PREFIX" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v6.1.0
         id: compilation-cache
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.use_cache }}
         with:
@@ -101,7 +101,7 @@ jobs:
         run: moon run tests/run.mbtx -- ci export
       - name: Share prepared Linux inputs
         if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: cmd-linux-build
           path: ci-inputs
@@ -113,7 +113,7 @@ jobs:
       - name: Preserve results and failure diagnostics
         id: upload_results
         if: ${{ always() && !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: cmd-test-reports-ubuntu-24.04
           path: test-reports
@@ -121,7 +121,7 @@ jobs:
           if-no-files-found: error
       - name: Preserve logs when interrupted or full upload fails
         if: ${{ always() && (cancelled() || steps.upload_results.outcome == 'failure') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: cmd-test-diagnostics-ubuntu-24.04
           path: |
@@ -134,7 +134,7 @@ jobs:
           if-no-files-found: warn
       - name: Save dependency and compilation state
         if: ${{ success() && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && steps.compilation-cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6.1.0
         with:
           path: |
             ~/.moon/cache/deps
@@ -163,7 +163,7 @@ jobs:
       CMD_TEST_PROFILE: debug
       CMD_TEST_PREPARED: '1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
@@ -177,7 +177,7 @@ jobs:
         env:
           CACHE_PREFIX: wasm-ci-v6-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('test-reports/toolchain.log') }}-wasm-release-tools-debug-${{ hashFiles('moon.work', '**/moon.mod', '**/moon.pkg', '!**/.mooncakes/**', '!**/_build/**', '!**/target/**') }}
         run: echo "prefix=$CACHE_PREFIX" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@v6.1.0
         id: compilation-cache
         if: ${{ github.event_name != 'workflow_dispatch' || inputs.use_cache }}
         with:
@@ -216,7 +216,7 @@ jobs:
       - name: Preserve results and failure diagnostics
         id: upload_results
         if: ${{ always() && !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: cmd-test-reports-${{ matrix.os }}
           path: test-reports
@@ -224,7 +224,7 @@ jobs:
           if-no-files-found: error
       - name: Preserve logs when interrupted or full upload fails
         if: ${{ always() && (cancelled() || steps.upload_results.outcome == 'failure') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: cmd-test-diagnostics-${{ matrix.os }}
           path: |
@@ -237,7 +237,7 @@ jobs:
           if-no-files-found: warn
       - name: Save dependency and compilation state
         if: ${{ success() && github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && steps.compilation-cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6.1.0
         with:
           path: |
             ~/.moon/cache/deps
@@ -266,7 +266,7 @@ jobs:
       CMD_TEST_PREPARED: '1'
       DOCKER_BUILD_RECORD_RETENTION_DAYS: 7
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
       - uses: ./.github/actions/setup-moonbit
@@ -274,7 +274,7 @@ jobs:
         run: |
           mkdir -p test-reports
           moon version --all | tee test-reports/toolchain.log
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8.0.2
         with:
           name: cmd-linux-build
           path: ci-inputs
@@ -286,7 +286,7 @@ jobs:
       - name: Install loopback observation tools
         if: steps.inputs.outputs.required == 'true'
         run: (command -v lsof && test -x /usr/bin/nc) || (sudo apt-get update && sudo apt-get install --yes lsof netcat-openbsd)
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4.4.1
         if: steps.inputs.outputs.required == 'true'
         with:
           cache-binary: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) }}
@@ -296,7 +296,7 @@ jobs:
       - name: Pinned upstream image
         id: oracle
         if: steps.inputs.outputs.required == 'true'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7.4.0
         with:
           context: tests/fixtures/oracle
           load: true
@@ -315,7 +315,7 @@ jobs:
         run: moon run tests/run.mbtx -- ci metrics
       - name: Preserve differential results
         if: ${{ always() && !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: cmd-test-reports-upstream
           path: test-reports
@@ -329,7 +329,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup-moonbit
       - name: Refresh script dependency registry
         run: moon update
