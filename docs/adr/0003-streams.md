@@ -93,7 +93,18 @@ error. Local exact diagnostic assertions may use a documented narrower
 upstream category comparison for host messages or help trailers; neither
 generic text nor a nonzero status alone establishes correctness. The f17 cases
 exercise the actual aliases, empty/invalid input, literal operands and option
-values. Generated index/coverage records are definitions, not execution receipts.
+values. Registry entries are definitions, not execution evidence.
+
+The 2026-11-09 validation simplification retires per-assertion review files,
+proof receipts and assertion-source sealing. Direct assertions and original
+corpora retain their expectations. The runner requires exactly one terminal
+result per selected case and rejects missing results, undeclared skips,
+deadlines, cleanup failures and report failures. Build products and execution
+tools once per target/profile in CI; standalone entry commands prepare their
+own required artifacts. Keep immutable oracle identity and performance
+baselines independent from this retired correctness proof chain. Historical
+reviews remain in Git. Reconsider additional metadata only for a concrete
+execution or selection defect, not to reproduce assertions in another format.
 
 | Package | Responsibility |
 | --- | --- |

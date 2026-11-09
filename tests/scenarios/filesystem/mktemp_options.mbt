@@ -3,7 +3,6 @@ pub async fn check_mktemp_options(
   work : String,
   launch : async (Array[String], String, Map[String, String]) -> @harness.RunResult,
   check_mode~ : Bool,
-  proof? : @harness.ScenarioProof,
 ) -> Unit {
   let cases = [
     ([], "<WORK>/tmp/tmp.", 10, "", false),
@@ -116,39 +115,39 @@ pub async fn check_mktemp_options(
     if check_mode {
       receipt["mode"] = Json(entry.metadata.get("mode").unwrap())
     }
-    if proof is Some(proof) {
-      let actual = receipt.copy()
-      ignore(actual.remove("existing_type_and_metadata_unchanged"))
-      let expected : Map[String, Json] = {
-        "case": Json(index),
-        "args": Json(args),
-        "status": Json(0),
-        "stderr": Json(""),
-        "prefix": Json(
-          prefix.replace_all(
-            old=cwd.replace_all(old="\\", new="/"),
-            new="${WORK}",
-          ),
+
+    let actual = receipt.copy()
+    ignore(actual.remove("existing_type_and_metadata_unchanged"))
+    let expected : Map[String, Json] = {
+      "case": Json(index),
+      "args": Json(args),
+      "status": Json(0),
+      "stderr": Json(""),
+      "prefix": Json(
+        prefix.replace_all(
+          old=cwd.replace_all(old="\\", new="/"),
+          new="${WORK}",
         ),
-        "width": Json(width),
-        "suffix": Json(suffix),
-        "alphanumeric": Json(true),
-        "kind": Json(if directory { "directory" } else { "file" }),
-        "empty": Json(true),
-        "created_count": Json(1),
-        "reported_path_created": Json(true),
-        "stdout_newline": Json(true),
-      }
-      if check_mode {
-        expected["mode"] = Json(if directory { "700" } else { "600" })
-      }
-      proof.observe_equal(
-        "mktemp/" + index.to_string(),
-        "mktemp",
-        Json(actual),
-        Json(expected),
-      )
+      ),
+      "width": Json(width),
+      "suffix": Json(suffix),
+      "alphanumeric": Json(true),
+      "kind": Json(if directory { "directory" } else { "file" }),
+      "empty": Json(true),
+      "created_count": Json(1),
+      "reported_path_created": Json(true),
+      "stdout_newline": Json(true),
     }
+    if check_mode {
+      expected["mode"] = Json(if directory { "700" } else { "600" })
+    }
+    @harness.assert_observation(
+      "mktemp/" + index.to_string(),
+      "mktemp",
+      Json(actual),
+      Json(expected),
+    )
+
     receipts.push(Json(receipt))
   }
   @fs.write_file(

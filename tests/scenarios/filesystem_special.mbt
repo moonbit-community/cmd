@@ -89,7 +89,6 @@ async fn filesystem_sparse_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   guard !(@async.platform is Windows) else {
@@ -214,14 +213,13 @@ async fn filesystem_sparse_scenario(
     assert_eq(file.read_exactly_at(1, position=0L), b"\x00")
     assert_eq(file.read_exactly_at(1, position=size - 1L), b"x")
   }
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "find/sparse-size",
-      "find",
-      { "comparisons": checked, "sparse_files": 2, "sentinels_preserved": true },
-      { "comparisons": 20, "sparse_files": 2, "sentinels_preserved": true },
-    )
-  }
+
+  @harness.assert_observation(
+    "find/sparse-size",
+    "find",
+    { "comparisons": checked, "sparse_files": 2, "sentinels_preserved": true },
+    { "comparisons": 20, "sparse_files": 2, "sentinels_preserved": true },
+  )
 }
 
 ///|
@@ -229,7 +227,6 @@ async fn filesystem_special_scenario(
   root : String,
   work : String,
   observation_path : String,
-  proof? : @harness.ScenarioProof,
   oracle_image? : String,
 ) -> Unit {
   guard !(@async.platform is Windows) else {
@@ -430,14 +427,14 @@ async fn filesystem_special_scenario(
     assert_eq(filesystem_mode(path), metadata)
   }
   assert_eq(@fs.read_file(work + "/regular").text(), "retained")
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "test/special-kinds",
-      "test",
-      { "kind_checks": checked, "positive_kinds": 3, "regular_preserved": true },
-      { "kind_checks": 18, "positive_kinds": 3, "regular_preserved": true },
-    )
-  }
+
+  @harness.assert_observation(
+    "test/special-kinds",
+    "test",
+    { "kind_checks": checked, "positive_kinds": 3, "regular_preserved": true },
+    { "kind_checks": 18, "positive_kinds": 3, "regular_preserved": true },
+  )
+
   @fs.rmdir(isolated, recursive=true)
   filesystem_record(observation_path, observations, {
     "phase": "owned-fixture-cleaned",

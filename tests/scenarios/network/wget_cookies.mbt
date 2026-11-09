@@ -157,7 +157,6 @@ async fn network_wget_cookies_scenario(
           []
         }
         let observing : Executor = {
-          proof: executor.proof,
           invoke: invocation => {
             let before = @fs.readdir(directory)
             assert_false(before.contains(output_name))
@@ -301,8 +300,8 @@ async fn network_wget_cookies_scenario(
         fields["rows_by_phase"] = Json(rows_by_phase)
       }
       assert_eq(observed, fixture.expected, msg=fixture.label)
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           identity + "/" + fixture.label,
           "wget",
           observed,

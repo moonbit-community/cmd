@@ -1,9 +1,5 @@
 ///|
-async fn timeout_command_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn timeout_command_scenario(root : String, work : String) -> Unit {
   let helper = @harness.option_child_path()
   for
     (label, args, stdout, stderr, status) in [
@@ -62,9 +58,8 @@ async fn timeout_command_scenario(
       "stderr": stderr,
     }
     assert_eq(actual, expected)
-    if proof is Some(proof) {
-      proof.observe_equal("timeout/" + label, "timeout", actual, expected)
-    }
+
+    @harness.assert_observation("timeout/" + label, "timeout", actual, expected)
   }
   let missing = work + "/missing-program"
   let failed = scenario_run(work, root, "timeout", ["5s", missing], cwd=work)
@@ -79,11 +74,7 @@ async fn timeout_command_scenario(
 }
 
 ///|
-async fn csplit_retention_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn csplit_retention_scenario(root : String, work : String) -> Unit {
   for keep in [false, true] {
     let directory = work + (if keep { "/keep" } else { "/remove" })
     @fs.mkdir(directory)
@@ -127,13 +118,12 @@ async fn csplit_retention_scenario(
       "contents": Json(if keep { ["a\n", "b\n"] } else { [] }),
     }
     assert_eq(actual, expected)
-    if proof is Some(proof) {
-      proof.observe_equal(
-        "csplit/" + (if keep { "keep" } else { "remove" }),
-        "csplit",
-        actual,
-        expected,
-      )
-    }
+
+    @harness.assert_observation(
+      "csplit/" + (if keep { "keep" } else { "remove" }),
+      "csplit",
+      actual,
+      expected,
+    )
   }
 }

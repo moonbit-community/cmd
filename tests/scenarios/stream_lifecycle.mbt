@@ -1,9 +1,5 @@
 ///|
-async fn yes_stream_lifecycle_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn yes_stream_lifecycle_scenario(root : String, work : String) -> Unit {
   for
     (name, args, expected) in [
       ("default", [], "y\ny\n"),
@@ -44,18 +40,17 @@ async fn yes_stream_lifecycle_scenario(
       @fs.write_file(work + "/../yes-" + name + ".stderr", errors)
       assert_eq(status, 0)
       assert_eq(errors, b"")
-      if proof is Some(proof) {
-        proof.observe_equal(
-          "yes/" + name,
-          "yes",
-          {
-            "prefix": prefix.to_string(),
-            "status": status,
-            "stderr": @harness.scenario_text(errors),
-          },
-          { "prefix": expected, "status": 0, "stderr": "" },
-        )
-      }
+
+      @harness.assert_observation(
+        "yes/" + name,
+        "yes",
+        {
+          "prefix": prefix.to_string(),
+          "status": status,
+          "stderr": @harness.scenario_text(errors),
+        },
+        { "prefix": expected, "status": 0, "stderr": "" },
+      )
     })
   }
 }

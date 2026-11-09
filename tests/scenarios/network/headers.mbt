@@ -112,7 +112,6 @@ async fn network_header_fields_scenario(
       requests.clear()
       let candidate : Array[String] = []
       let observing : Executor = {
-        proof: executor.proof,
         invoke: invocation => {
           let execution = (executor.invoke)(invocation)
           candidate.append(requests)
@@ -166,8 +165,8 @@ async fn network_header_fields_scenario(
           indent=2,
         ),
       )
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           "headers/" + label,
           command,
           {

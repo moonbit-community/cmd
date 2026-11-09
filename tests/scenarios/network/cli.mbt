@@ -243,8 +243,8 @@ async fn network_cli_scenario(
         oracle_failures~,
       )
       check_network_response(result, expected)
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           "auth/" + index.to_string(),
           command,
           {
@@ -294,8 +294,8 @@ async fn network_cli_scenario(
         "auth=\ncookie=sid=fixture\n",
       )
       assert_true(@fs.read_file(jar).text().contains("\tsid\tfixture"))
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           "cookie/" + command + "/saved",
           command,
           Json(@fs.read_file(jar).text().contains("\tsid\tfixture")),
@@ -316,8 +316,8 @@ async fn network_cli_scenario(
         oracle_failures~,
       )
       check_network_response(loaded, "auth=\ncookie=sid=fixture\n")
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           "cookie/" + command + "/loaded",
           command,
           {
@@ -463,8 +463,8 @@ async fn network_cli_scenario(
         "auth=\ncookie=sid=fixture\n",
       )
       assert_false(@fs.exists(missing))
-      if oracle_image is None && executor.proof is Some(proof) {
-        proof.observe_equal(
+      if oracle_image is None {
+        @harness.assert_observation(
           "cookie/" + command + "/missing-parent",
           command,
           Json(@fs.exists(missing)),
@@ -485,8 +485,8 @@ async fn network_cli_scenario(
       "auth=\ncookie=sid=fixture\n",
     )
     assert_false(@fs.read_file(session_jar).text().contains("\tsid\tfixture"))
-    if oracle_image is None && executor.proof is Some(proof) {
-      proof.observe_equal(
+    if oracle_image is None {
+      @harness.assert_observation(
         "cookie/wget/session-excluded",
         "wget",
         Json(@fs.read_file(session_jar).text().contains("\tsid\tfixture")),

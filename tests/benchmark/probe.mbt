@@ -101,7 +101,6 @@ async fn freeze_functional_artifacts(
       real_registry_path(real_text(real_field(manifest, "coverage_registry"))),
       typed.case_corpus,
       "tests/cases/index.json",
-      "tests/cases/generated/quality.json",
       "tests/cases/manifest.json",
       "tests/benchmark/protection.json",
     ]

@@ -1,9 +1,5 @@
 ///|
-async fn network_deadlines_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn network_deadlines_scenario(root : String, work : String) -> Unit {
   for
     (command, label, flag, phase) in [
       ("curl", "connect-timeout", "--connect-timeout", "connect"),
@@ -120,9 +116,13 @@ async fn network_deadlines_scenario(
           } : Json).stringify(indent=2),
       )
       assert_eq(actual, expected)
-      if proof is Some(proof) {
-        proof.observe_equal(command + "/" + label, command, actual, expected)
-      }
+
+      @harness.assert_observation(
+        command + "/" + label,
+        command,
+        actual,
+        expected,
+      )
     })
   }
 }

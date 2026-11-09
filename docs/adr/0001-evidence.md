@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-03
+Updated: 2026-11-09
 
 ## Decision
 
@@ -24,26 +24,26 @@ stateful assertions to `tests/scenarios`, and current CLI data to `tests/cases`.
 Release policy belongs to `tests/release`, separately from executable identity
 bindings. Retire old paths and modes without forwarding wrappers.
 
-Maintain finite coverage reviews in `tests/coverage/review`. `index update`
-generates quality, obligation, gap and candidate definitions; `index check`
-rejects drift in CI. Generation completes into temporary outputs before any
-derived file is replaced. Checked-in gap indexes describe definitions only;
-actual passes require the fresh execution receipt and verifier. Published
-coordinates and frozen expected cases remain independent and unchanged by this
-process. Historical execution evidence remains in Git without replay adapters.
+Direct executable assertions and original corpus expectations are authoritative.
+Retire per-assertion reviews, descriptors, proofs and assertion-source sealing.
+`index check` validates current case bindings, executing assertion routes and the
+derived candidate; `index update` updates only that candidate after validation.
+Published coordinates and frozen cases remain independent inputs. Historical
+definitions and evidence remain in Git without replay adapters.
 
-Coverage qualification requires complete typed or exact-byte assertions and a
+Correctness qualification requires complete typed or exact-byte assertions and a
 completed execution/cleanup stage. Bind selectors to distinguishing positive
 and negative controls, and stateful behavior to observed requests, deadlines,
 file effects and owned-child lifecycle. Keep platform-specific qualification
-explicit. Index checks and functional acceptance reject unresolved finite
-obligations. Closing those gaps does not establish exhaustive semantics.
+explicit. Every selected case must produce exactly one terminal result; missing
+results, duplicate IDs and undeclared skips fail. A passing finite suite does
+not establish exhaustive semantics.
 
 ## Consequences and boundaries
 
 - Assert stdout, stderr, status and file effects independently. Availability,
   semantic success, expected rejection and upstream agreement are different
-  observations. Definition-bound receipts must reflect actual assertions.
+  observations. Reports must reflect actual assertions and complete execution.
 - Use verified immutable Linux oracle images, tool inventories and checksums.
   Mutable tags and host executable hashes alone cannot establish upstream parity.
 - Preserve original expectations and corpus bytes during migration. Keep aliases

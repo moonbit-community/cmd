@@ -1,9 +1,5 @@
 ///|
-async fn typst_artifacts_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn typst_artifacts_scenario(root : String, work : String) -> Unit {
   let source = @fs.read_file(
     @harness.repository_path("tests/fixtures/typst/rectangle.typ"),
   ).text()
@@ -98,46 +94,41 @@ async fn typst_artifacts_scenario(
   assert_eq(failure_status, 1)
   let failure_diagnostic = @fs.read_file(work + "/failed-output.stderr").text()
   assert_true(failure_diagnostic.contains("failed to write eval output"))
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "typst/exports",
-      "typst",
-      {
-        "pdf_stream_equals_file": streamed.stdout == pdf,
-        "deps": deps,
-        "ppi_dimensions": true,
-        "selected_page": 2,
-        "svg": @fs.read_file(work + "/page-2.svg").text(),
-        "source_retained": true,
-      },
-      {
-        "pdf_stream_equals_file": true,
-        "deps": { "inputs": ["main.typ"], "outputs": ["out.pdf"] },
-        "ppi_dimensions": true,
-        "selected_page": 2,
-        "svg": svg,
-        "source_retained": true,
-      },
-    )
-    proof.observe_equal(
-      "typst/output-failure",
-      "typst",
-      {
-        "status": failure_status,
-        "diagnostic": failure_diagnostic.contains("failed to write eval output"),
-        "child_reaped": true,
-      },
-      { "status": 1, "diagnostic": true, "child_reaped": true },
-    )
-  }
+
+  @harness.assert_observation(
+    "typst/exports",
+    "typst",
+    {
+      "pdf_stream_equals_file": streamed.stdout == pdf,
+      "deps": deps,
+      "ppi_dimensions": true,
+      "selected_page": 2,
+      "svg": @fs.read_file(work + "/page-2.svg").text(),
+      "source_retained": true,
+    },
+    {
+      "pdf_stream_equals_file": true,
+      "deps": { "inputs": ["main.typ"], "outputs": ["out.pdf"] },
+      "ppi_dimensions": true,
+      "selected_page": 2,
+      "svg": svg,
+      "source_retained": true,
+    },
+  )
+  @harness.assert_observation(
+    "typst/output-failure",
+    "typst",
+    {
+      "status": failure_status,
+      "diagnostic": failure_diagnostic.contains("failed to write eval output"),
+      "child_reaped": true,
+    },
+    { "status": 1, "diagnostic": true, "child_reaped": true },
+  )
 }
 
 ///|
-async fn typst_watch_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn typst_watch_scenario(root : String, work : String) -> Unit {
   let source = @fs.read_file(
     @harness.repository_path("tests/fixtures/typst/rectangle.typ"),
   ).text()
@@ -220,17 +211,16 @@ async fn typst_watch_scenario(
     }
     assert_eq(@fs.read_file(output).text(), changed)
     assert_eq(@fs.read_file(work + "/stdout").binary(), b"")
-    if proof is Some(proof) {
-      proof.observe_equal(
-        "typst/watch",
-        "typst",
-        {
-          "initial": svg,
-          "updated": @fs.read_file(output).text(),
-          "child_reaped": true,
-        },
-        { "initial": svg, "updated": changed, "child_reaped": true },
-      )
-    }
+
+    @harness.assert_observation(
+      "typst/watch",
+      "typst",
+      {
+        "initial": svg,
+        "updated": @fs.read_file(output).text(),
+        "child_reaped": true,
+      },
+      { "initial": svg, "updated": changed, "child_reaped": true },
+    )
   })
 }

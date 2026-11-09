@@ -70,8 +70,8 @@ platform contract, not POSIX symlink behavior. Verbose output records attempts
 before their effects. Echo honors POSIXLY_CORRECT's escape and initial -n rules,
 with the explicit standalone help/version metadata exception retained.
 
-The authoritative finite definitions are [tests/cases](../tests/cases), with
-reviewed facets in [tests/coverage/review](../tests/coverage/review). Additional
+The authoritative finite expectations are [tests/cases](../tests/cases),
+original corpora and direct assertions beside their owning implementations. Additional
 locale, filesystem metadata, grammar and HTTP behavior remain separate issues;
 this profile does not relabel those omissions as implemented.
 
@@ -984,7 +984,7 @@ facets retain explicit platform companion exclusions. Two independent reviewers
 verify the actual receipt identities and all twelve negative-pipeline rejections.
 This does not broaden the dated published acceptance above.
 
-The [remaining work index](../tests/coverage/generated/gaps.md) identifies 180
+The [historical remaining work index](https://github.com/moonbit-community/cmd/blob/aa65c572c1ad5ccd048352e4bcfaccc8f3836cd0/tests/coverage/generated/gaps.md) identified 180
 catalog labels needing new activated fixtures or observers, 33 needing stronger
 assertions on existing fixtures, and one supplemental `yes` stream-lifecycle
 feature. Each row states existing evidence and concrete work; these are label

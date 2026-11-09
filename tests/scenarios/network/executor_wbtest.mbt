@@ -6,7 +6,6 @@ async test "shared network executor retains exact identity and incomplete output
     let work = directory + "/" + index.to_string()
     @fs.mkdir(work)
     let executor : Executor = {
-      proof: None,
       invoke: invocation => {
         assert_eq(invocation.command, "curl")
         assert_eq(invocation.stdin, b"\x00\xff")
@@ -77,7 +76,6 @@ async test "outer cancellation retains invocation intent without fabricating exe
   defer (@fs.rmdir(work, recursive=true) catch { _ => () })
   let entered = Ref(false)
   let executor : Executor = {
-    proof: None,
     invoke: _ => {
       assert_true(@fs.exists(work + "/call-0.intent.json"))
       entered.val = true
@@ -120,7 +118,6 @@ async test "invocation intent does not appear among product-created files" {
   let work = @fs.tmpdir(prefix="mooncmd-network-effects-")
   defer (@fs.rmdir(work, recursive=true) catch { _ => () })
   let executor : Executor = {
-    proof: None,
     invoke: _ => {
       @fs.write_file(work + "/out.bin", b"body")
       {
@@ -162,7 +159,6 @@ async test "external invocation evidence never hides a same-named product file" 
     @fs.mkdir(work)
     @fs.mkdir(evidence)
     let executor : Executor = {
-      proof: None,
       invoke: _ => {
         @fs.write_file(work + "/call-0.intent.json", b"product")
         {
@@ -218,7 +214,6 @@ async test "before-response snapshots exclude exactly the current invocation int
     snapshots: [],
   }
   let executor : Executor = {
-    proof: None,
     invoke: _ => {
       observation.capture()
       @fs.write_file(work + "/out.bin", b"body")
@@ -264,7 +259,6 @@ async test "shared network observations preserve raw bytes across launch adapter
   let work = @fs.tmpdir(prefix="mooncmd-network-adapter-")
   defer (@fs.rmdir(work, recursive=true) catch { _ => () })
   let executor : Executor = {
-    proof: None,
     invoke: _ => {
       run: {
         output: { status: 0, stdout: b"ok", stderr: b"", },

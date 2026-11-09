@@ -45,8 +45,6 @@ pub fn append_report(reports : Array[CaseReport], report : CaseReport) -> Unit {
 pub async fn write_reports(
   directory : String,
   reports : ArrayView[CaseReport],
-  case_definitions_sha256? : String,
-  scenario_proofs_sha256? : String,
 ) -> Unit {
   guard !reports.is_empty() else { fail("required suite produced no results") }
   @fs.mkdir(directory, recursive=true, allow_exist=true)
@@ -76,18 +74,23 @@ pub async fn write_reports(
     .length(),
     "skipped": reports.filter(row => row.result == "skip").length(),
   }
-  if case_definitions_sha256 is Some(hash) && summary is Object(fields) {
-    fields["case_definitions_sha256"] = Json(hash)
-  }
-  if scenario_proofs_sha256 is Some(hash) && summary is Object(fields) {
-    fields["scenario_proofs_sha256"] = Json(hash)
-  }
   @fs.write_file(directory + "/run.json", summary.stringify(indent=2) + "\n")
   let lines = StringBuilder()
+  let passed = reports.filter(row => row.result == "pass").length()
+  let failed = reports
+    .filter(row => row.result == "fail" || row.result == "infra")
+    .length()
+  let skipped = reports.filter(row => row.result == "skip").length()
+  lines.write(
+    "Passed: \{passed}; failed: \{failed}; skipped: \{skipped}. Full results: summary.jsonl.\n\n",
+  )
   lines.write(
     "| Case | Result | Kind | ms | Detail |\n| --- | --- | --- | --- | --- |\n",
   )
   for row in reports {
+    if row.result == "pass" {
+      continue
+    }
     let detail = row.detail
       .replace_all(old="|", new="\\|")
       .replace_all(old="\n", new="<br>")

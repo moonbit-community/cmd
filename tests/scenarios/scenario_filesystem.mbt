@@ -104,11 +104,7 @@ async fn rejected_touch_timestamp_scenario(
 }
 
 ///|
-async fn filesystem_fidelity_scenario(
-  root : String,
-  work : String,
-  proof? : @harness.ScenarioProof,
-) -> Unit {
+async fn filesystem_fidelity_scenario(root : String, work : String) -> Unit {
   let source = work + "/source"
   let destination = work + "/destination"
   @fs.write_file(source, "preserve source", permission=0o640)
@@ -164,29 +160,29 @@ async fn filesystem_fidelity_scenario(
   assert_eq(copied.stdout, b"")
   assert_eq(copied.stderr, b"")
   assert_eq(@fs.read_file(work + "/new").text(), "preserve source")
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "cp/new-copy",
-      "cp",
-      {
-        "status": copied.status,
-        "stdout": @harness.scenario_text(copied.stdout),
-        "stderr": @harness.scenario_text(copied.stderr),
-        "content": @fs.read_file(work + "/new").text(),
-      },
-      { "status": 0, "stdout": "", "stderr": "", "content": "preserve source" },
-    )
-  }
+
+  @harness.assert_observation(
+    "cp/new-copy",
+    "cp",
+    {
+      "status": copied.status,
+      "stdout": @harness.scenario_text(copied.stdout),
+      "stderr": @harness.scenario_text(copied.stderr),
+      "content": @fs.read_file(work + "/new").text(),
+    },
+    { "status": 0, "stdout": "", "stderr": "", "content": "preserve source" },
+  )
+
   @fs.write_file(work + "/mode-reference", "", permission=0o666)
   let snapshot = @harness.snapshot(work, observe=["mode"])
-  if proof is Some(proof) {
-    proof.observe_pair(
-      "cp/new-mode",
-      "cp",
-      snapshot.iter().find_first(item => item.path == "new").unwrap().metadata["mode"],
-      snapshot.iter().find_first(item => item.path == "mode-reference").unwrap().metadata["mode"],
-    )
-  }
+
+  @harness.assert_mode_pair(
+    "cp/new-mode",
+    "cp",
+    snapshot.iter().find_first(item => item.path == "new").unwrap().metadata["mode"],
+    snapshot.iter().find_first(item => item.path == "mode-reference").unwrap().metadata["mode"],
+  )
+
   assert_eq(
     snapshot.iter().find_first(item => item.path == "new").unwrap().metadata["mode"],
     snapshot.iter().find_first(item => item.path == "mode-reference").unwrap().metadata["mode"],
@@ -233,19 +229,19 @@ async fn filesystem_fidelity_scenario(
   )
   assert_eq(made.status, 0)
   assert_eq(made.stdout, b"")
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "mkdir/parents",
-      "mkdir",
-      {
-        "status": made.status,
-        "stdout": @harness.scenario_text(made.stdout),
-        "parent": @fs.exists(work + "/parent"),
-        "leaf": @fs.exists(work + "/parent/leaf"),
-      },
-      { "status": 0, "stdout": "", "parent": true, "leaf": true },
-    )
-  }
+
+  @harness.assert_observation(
+    "mkdir/parents",
+    "mkdir",
+    {
+      "status": made.status,
+      "stdout": @harness.scenario_text(made.stdout),
+      "parent": @fs.exists(work + "/parent"),
+      "leaf": @fs.exists(work + "/parent/leaf"),
+    },
+    { "status": 0, "stdout": "", "parent": true, "leaf": true },
+  )
+
   @fs.mkdir(work + "/parent-reference", permission=0o777)
   let snapshot = @harness.snapshot(work, observe=["mode"])
   assert_eq(
@@ -256,25 +252,22 @@ async fn filesystem_fidelity_scenario(
     snapshot.iter().find_first(item => item.path == "parent/leaf").unwrap().metadata["mode"],
     "700",
   )
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "mkdir/leaf-mode",
-      "mkdir",
-      Json(
-        snapshot.iter().find_first(item => item.path == "parent/leaf").unwrap().metadata["mode"],
-      ),
-      Json("700"),
-    )
-    proof.observe_pair(
-      "mkdir/parent-mode",
-      "mkdir",
-      snapshot.iter().find_first(item => item.path == "parent").unwrap().metadata["mode"],
-      snapshot
-      .iter()
-      .find_first(item => item.path == "parent-reference")
-      .unwrap().metadata["mode"],
-    )
-  }
+
+  @harness.assert_observation(
+    "mkdir/leaf-mode",
+    "mkdir",
+    Json(
+      snapshot.iter().find_first(item => item.path == "parent/leaf").unwrap().metadata["mode"],
+    ),
+    Json("700"),
+  )
+  @harness.assert_mode_pair(
+    "mkdir/parent-mode",
+    "mkdir",
+    snapshot.iter().find_first(item => item.path == "parent").unwrap().metadata["mode"],
+    snapshot.iter().find_first(item => item.path == "parent-reference").unwrap().metadata["mode"],
+  )
+
   @fs.symlink(work + "/link", target=source)
   let changed = scenario_run(
     work,
@@ -305,20 +298,20 @@ async fn filesystem_fidelity_scenario(
     snapshot.iter().find_first(item => item.path == "source").unwrap().metadata["mode"],
     "600",
   )
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "chmod/recursive-link-skip",
-      "chmod",
-      {
-        "status": recursive.status,
-        "referent_mode": snapshot
-        .iter()
-        .find_first(item => item.path == "source")
-        .unwrap().metadata["mode"],
-      },
-      { "status": 0, "referent_mode": "600" },
-    )
-  }
+
+  @harness.assert_observation(
+    "chmod/recursive-link-skip",
+    "chmod",
+    {
+      "status": recursive.status,
+      "referent_mode": snapshot
+      .iter()
+      .find_first(item => item.path == "source")
+      .unwrap().metadata["mode"],
+    },
+    { "status": 0, "referent_mode": "600" },
+  )
+
   @fs.write_file(work + "/remove-me", "disposable")
   let removed = scenario_run(
     work,
@@ -331,17 +324,16 @@ async fn filesystem_fidelity_scenario(
   assert_eq(removed.stdout, b"")
   assert_eq(removed.stderr, b"")
   assert_false(@fs.exists(work + "/remove-me"))
-  if proof is Some(proof) {
-    proof.observe_equal(
-      "rm/ordinary-no-preserve-root",
-      "rm",
-      {
-        "status": removed.status,
-        "stdout": @harness.scenario_text(removed.stdout),
-        "stderr": @harness.scenario_text(removed.stderr),
-        "exists": @fs.exists(work + "/remove-me"),
-      },
-      { "status": 0, "stdout": "", "stderr": "", "exists": false },
-    )
-  }
+
+  @harness.assert_observation(
+    "rm/ordinary-no-preserve-root",
+    "rm",
+    {
+      "status": removed.status,
+      "stdout": @harness.scenario_text(removed.stdout),
+      "stderr": @harness.scenario_text(removed.stderr),
+      "exists": @fs.exists(work + "/remove-me"),
+    },
+    { "status": 0, "stdout": "", "stderr": "", "exists": false },
+  )
 }

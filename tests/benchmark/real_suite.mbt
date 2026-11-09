@@ -453,8 +453,7 @@ async fn validate_real_suite(
       )
     }
   }
-  @harness.configure_local_quality(
-    real_registry_path("tests/cases/generated/quality.json"),
+  @harness.validate_local_assertions(
     cases,
     index.entries
     .filter(row => row.implementation == "stateful-scenario")
@@ -477,7 +476,7 @@ async fn validate_real_suite(
           fixture.command == name ||
           fixture.related_commands.unwrap_or([]).contains(name)
         ) &&
-        @harness.local_quality_descriptor(fixture.id) is Some(_)) {
+        @harness.contract_errors(fixture).is_empty()) {
         errors.push(
           "real boundary needs an owned independent exact/typed local contract: " +
           name +

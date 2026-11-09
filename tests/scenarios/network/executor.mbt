@@ -20,7 +20,6 @@ pub(all) struct Execution {
 ///|
 pub(all) struct Executor {
   invoke : async (Invocation) -> Execution
-  proof : @harness.ScenarioProof?
 }
 
 ///|

@@ -5,8 +5,6 @@ pub async fn execute_scenario(
   report_dir : String,
   oracle_image? : String,
   retain_success~ : Bool = false,
-  proof_catalog? : Json,
-  proof_receipts? : Array[Json],
 ) -> @harness.CaseReport {
   let start = @async.now()
   // Network comparisons need the candidate and oracle wire/stream receipts
@@ -49,13 +47,6 @@ pub async fn execute_scenario(
     (if @async.platform is MacOS { "/work.noindex" } else { "/work" })
   @fs.mkdir(work, recursive=true)
   let failures : Array[String] = []
-  let proof = match proof_catalog {
-    Some(catalog) =>
-      @harness.scenario_definition(catalog, fixture.id).map(definition => {
-        @harness.ScenarioProof::new(fixture.id, definition)
-      })
-    None => None
-  }
   let completed = @async.with_timeout_opt(
     fixture.timeout_ms.unwrap_or(
       if oracle_image is Some(_) {
@@ -66,31 +57,27 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
-        "serve-static" => serve_static_scenario(root, work, false, proof?)
-        "serve-policy" => serve_static_scenario(root, work, true, proof?)
-        "typst-artifacts" => typst_artifacts_scenario(root, work, proof?)
-        "typst-watch" => typst_watch_scenario(root, work, proof?)
+        "serve-static" => serve_static_scenario(root, work, false)
+        "serve-policy" => serve_static_scenario(root, work, true)
+        "typst-artifacts" => typst_artifacts_scenario(root, work)
+        "typst-watch" => typst_watch_scenario(root, work)
         "tee-output-errors" =>
           tee_modes_scenario(root, work, tee_boundary, oracle_image?)
         "tee-output-errors-oracle" =>
           tee_modes_scenario(root, work, tee_boundary, oracle_image?)
         "tee-default-pipe-boundary" =>
           tee_modes_scenario(root, work, tee_boundary, oracle_image?)
-        "sh-interactive-session" =>
-          shell_interactive_scenario(root, work, proof?)
-        "f31-sh-language-session" =>
-          shell_language_session_scenario(root, work, proof?)
-        "f31-sh-merged-child" => shell_merged_child_scenario(root, work, proof?)
+        "sh-interactive-session" => shell_interactive_scenario(root, work)
+        "f31-sh-language-session" => shell_language_session_scenario(root, work)
+        "f31-sh-merged-child" => shell_merged_child_scenario(root, work)
         "f31-sh-test-size-platform" =>
           shell_size_platform_scenario(
             root,
             work,
             report_dir + "/" + fixture.id + ".observations.json",
-            proof?,
           )
-        "f31-sh-test-size-posix" =>
-          shell_size_posix_scenario(root, work, proof?)
-        "f31-sh-printf-state" => printf_state_scenario(root, work, proof?)
+        "f31-sh-test-size-posix" => shell_size_posix_scenario(root, work)
+        "f31-sh-printf-state" => printf_state_scenario(root, work)
         "f31-sh-printf-state-oracle" => {
           guard oracle_image is Some(image) else {
             fail("printf state oracle requires a sealed oracle")
@@ -98,50 +85,44 @@ pub async fn execute_scenario(
           printf_state_scenario(root, work, oracle_image=image)
         }
         "f31-make-recursive-language" =>
-          make_recursive_language_scenario(root, work, proof?)
-        "f31-make-fifo" => make_fifo_scenario(root, work, proof?)
+          make_recursive_language_scenario(root, work)
+        "f31-make-fifo" => make_fifo_scenario(root, work)
         "f31-make-gnu-jobserver" => {
           guard oracle_image is Some(image) else {
             fail("GNU jobserver scenario requires a sealed oracle")
           }
           make_gnu_jobserver_scenario(root, work, image)
         }
-        "make-ready-ack" => make_concurrency_scenario(root, work, proof?)
-        "filesystem-fidelity" =>
-          filesystem_fidelity_scenario(root, work, proof?)
+        "make-ready-ack" => make_concurrency_scenario(root, work)
+        "filesystem-fidelity" => filesystem_fidelity_scenario(root, work)
         "mktemp-option-effects" =>
-          mktemp_options_scenario(root, work, true, oracle_image?, proof?)
+          mktemp_options_scenario(root, work, true, oracle_image?)
         "mktemp-option-effects-oracle" =>
           mktemp_options_scenario(root, work, true, oracle_image?)
         "mktemp-option-effects-windows" =>
-          mktemp_options_scenario(root, work, false, oracle_image?, proof?)
+          mktemp_options_scenario(root, work, false, oracle_image?)
         "diff-directory-devices-boundary" =>
           diff_directory_devices_boundary_scenario(root, work)
         "process-lifecycle" => process_lifecycle_scenario(root, work)
-        "yes-stream-lifecycle" =>
-          yes_stream_lifecycle_scenario(root, work, proof?)
-        "compression-selectors" =>
-          compression_selectors_scenario(root, work, proof?)
+        "yes-stream-lifecycle" => yes_stream_lifecycle_scenario(root, work)
+        "compression-selectors" => compression_selectors_scenario(root, work)
         "metadata-relations" =>
           metadata_scenario(
             root,
             work,
             report_dir + "/metadata-relations.observations.json",
-            proof?,
           )
         "f29-mkdir-umasks" =>
           mkdir_umask_scenario(
             root,
             work,
             report_dir + "/f29-mkdir-umasks.observations.json",
-            proof?,
           )
         "f29-sparse-size" =>
           filesystem_sparse_scenario(
             root,
             work,
             report_dir + "/f29-sparse-size.observations.json",
-            proof?,
           )
         "f29-sparse-size-oracle" => {
           guard oracle_image is Some(image) else {
@@ -160,7 +141,6 @@ pub async fn execute_scenario(
             work,
             report_dir + "/" + fixture.id + ".observations.json",
             fixture.command,
-            proof?,
           )
         "f29-find-size-unreadable-oracle" | "f29-test-size-unreadable-oracle" => {
           guard oracle_image is Some(image) else {
@@ -179,21 +159,18 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-special-kinds.observations.json",
-            proof?,
           )
         "f29-windows-metadata" =>
           filesystem_windows_scenario(
             root,
             work,
             report_dir + "/f29-windows-metadata.observations.json",
-            proof?,
           )
         "f29-subsecond-order" =>
           filesystem_precision_scenario(
             root,
             work,
             report_dir + "/f29-subsecond-order.observations.json",
-            proof?,
           )
         "f29-subsecond-order-oracle" => {
           guard oracle_image is Some(image) else {
@@ -211,14 +188,12 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-directory-size.observations.json",
-            proof?,
           )
         "f29-time-references" =>
           filesystem_time_scenario(
             root,
             work,
             report_dir + "/f29-time-references.observations.json",
-            proof?,
           )
         "f29-time-references-oracle" => {
           guard oracle_image is Some(image) else {
@@ -236,7 +211,6 @@ pub async fn execute_scenario(
             root,
             work,
             report_dir + "/f29-predicate-errors.observations.json",
-            proof?,
           )
         "f29-predicate-errors-oracle" => {
           guard oracle_image is Some(image) else {
@@ -290,29 +264,25 @@ pub async fn execute_scenario(
             oracle_image=image,
           )
         }
-        "rg-type-listing" => type_listing_scenario(root, work, proof?)
-        "sort-live-spill" => sort_spill_scenario(root, work, proof?)
-        "rm-root-guard" => removal_guard_scenario(root, work, proof?)
-        "xargs-verbose-argv" => xargs_verbose_scenario(root, work, proof?)
-        "timeout-child-lifecycle" =>
-          timeout_command_scenario(root, work, proof?)
-        "csplit-fragment-retention" =>
-          csplit_retention_scenario(root, work, proof?)
-        "network-deadline-effects" =>
-          network_deadlines_scenario(root, work, proof?)
-        "network-retry-effects" => network_retries_scenario(root, work, proof?)
-        "network-refusal-recovery" => refused_retry_scenario(root, work, proof?)
-        "network-option-effects" => network_options_scenario(root, work, proof?)
-        "tail-follow-interval" => follow_interval_scenario(root, work, proof?)
-        "stream-failure-prefixes" => failure_prefix_scenario(root, work, proof?)
-        "ls-link-facets" => link_dereference_scenario(root, work, proof?)
-        "network-auth-cookie" => network_cli_scenario(root, work, proof?)
+        "rg-type-listing" => type_listing_scenario(root, work)
+        "sort-live-spill" => sort_spill_scenario(root, work)
+        "rm-root-guard" => removal_guard_scenario(root, work)
+        "xargs-verbose-argv" => xargs_verbose_scenario(root, work)
+        "timeout-child-lifecycle" => timeout_command_scenario(root, work)
+        "csplit-fragment-retention" => csplit_retention_scenario(root, work)
+        "network-deadline-effects" => network_deadlines_scenario(root, work)
+        "network-retry-effects" => network_retries_scenario(root, work)
+        "network-refusal-recovery" => refused_retry_scenario(root, work)
+        "network-option-effects" => network_options_scenario(root, work)
+        "tail-follow-interval" => follow_interval_scenario(root, work)
+        "stream-failure-prefixes" => failure_prefix_scenario(root, work)
+        "ls-link-facets" => link_dereference_scenario(root, work)
+        "network-auth-cookie" => network_cli_scenario(root, work)
         "network-curl-cookie-lifecycle" =>
           network_curl_transfers_scenario(
             root,
             work,
             corpus="curl-cookie-lifecycle",
-            proof?,
           )
         "network-curl-cookie-lifecycle-oracle" =>
           network_curl_transfers_scenario(
@@ -322,12 +292,7 @@ pub async fn execute_scenario(
             oracle_image?,
           )
         "network-curl-http-retry" =>
-          network_curl_transfers_scenario(
-            root,
-            work,
-            corpus="curl-http-retry",
-            proof?,
-          )
+          network_curl_transfers_scenario(root, work, corpus="curl-http-retry")
         "network-curl-http-retry-oracle" =>
           network_curl_transfers_scenario(
             root,
@@ -336,7 +301,7 @@ pub async fn execute_scenario(
             oracle_image?,
           )
         "network-curl-cookie-domains" =>
-          network_cookie_domains_scenario(root, work, tool="curl", proof?)
+          network_cookie_domains_scenario(root, work, tool="curl")
         "network-curl-cookie-domains-oracle" =>
           network_cookie_domains_scenario(
             root,
@@ -345,7 +310,7 @@ pub async fn execute_scenario(
             oracle_image?,
           )
         "network-wget-cookie-domains" =>
-          network_cookie_domains_scenario(root, work, tool="wget", proof?)
+          network_cookie_domains_scenario(root, work, tool="wget")
         "network-wget-cookie-domains-oracle" =>
           network_cookie_domains_scenario(
             root,
@@ -353,18 +318,12 @@ pub async fn execute_scenario(
             tool="wget",
             oracle_image?,
           )
-        "network-idna" => network_idna_scenario(root, work, proof?)
-        "network-wget-cookies" =>
-          network_wget_cookies_scenario(root, work, proof?)
+        "network-idna" => network_idna_scenario(root, work)
+        "network-wget-cookies" => network_wget_cookies_scenario(root, work)
         "network-wget-cookies-oracle" =>
           network_wget_cookies_scenario(root, work, oracle_image?)
         "network-wget-cookie-expiry" =>
-          network_wget_cookies_scenario(
-            root,
-            work,
-            proof?,
-            corpus="wget-cookie-expiry",
-          )
+          network_wget_cookies_scenario(root, work, corpus="wget-cookie-expiry")
         "network-wget-cookie-expiry-oracle" =>
           network_wget_cookies_scenario(
             root,
@@ -373,12 +332,7 @@ pub async fn execute_scenario(
             corpus="wget-cookie-expiry",
           )
         "network-wget-cookie-dates" =>
-          network_wget_cookies_scenario(
-            root,
-            work,
-            proof?,
-            corpus="wget-cookie-dates",
-          )
+          network_wget_cookies_scenario(root, work, corpus="wget-cookie-dates")
         "network-wget-cookie-dates-oracle" =>
           network_wget_cookies_scenario(
             root,
@@ -387,19 +341,17 @@ pub async fn execute_scenario(
             corpus="wget-cookie-dates",
           )
         "network-wget-authentication" =>
-          network_wget_authentication_scenario(root, work, proof?)
+          network_wget_authentication_scenario(root, work)
         "network-wget-authentication-oracle" =>
           network_wget_authentication_scenario(root, work, oracle_image?)
         "network-idna-oracle" =>
           network_idna_scenario(root, work, oracle_image?)
-        "network-cookie-suffix" =>
-          network_cookie_suffix_scenario(root, work, proof?)
+        "network-cookie-suffix" => network_cookie_suffix_scenario(root, work)
         "network-cookie-suffix-oracle" =>
           network_cookie_suffix_scenario(root, work, oracle_image?)
         "network-auth-cookie-oracle" =>
           network_cli_scenario(root, work, oracle_image?)
-        "network-transfer-boundaries" =>
-          network_transfer_scenario(root, work, proof?)
+        "network-transfer-boundaries" => network_transfer_scenario(root, work)
         "network-transfer-boundaries-oracle" =>
           network_transfer_scenario(root, work, oracle_image?)
         "mv-windows-wasm-links-boundary" =>
@@ -416,16 +368,18 @@ pub async fn execute_scenario(
   if completed is None {
     failures.push("scenario deadline expired")
   }
-  if proof is Some(proof) {
-    failures.append(proof.errors())
-    if proof_receipts is Some(receipts) {
-      receipts.push(proof.receipt())
-    }
-  }
   let report = @harness.suite_report(report_id, "wasm", start, failures)
   let mut cleanup_error = false
-  if failures.is_empty() && !retain_success {
-    @async.protect_from_cancel(() => @fs.rmdir(evidence, recursive=true)) catch {
+  let mut retained = Some(evidence)
+  if failures.is_empty() {
+    @async.protect_from_cancel(() => {
+      if retain_success {
+        retained = Some(@harness.compact_evidence(evidence))
+      } else {
+        @fs.rmdir(evidence, recursive=true)
+        retained = None
+      }
+    }) catch {
       error => {
         cleanup_error = true
         failures.push(error.to_string())
@@ -482,10 +436,6 @@ pub async fn execute_scenario(
     } else {
       "assertion"
     },
-    evidence: if failures.is_empty() && !retain_success {
-      None
-    } else {
-      Some(evidence)
-    },
+    evidence: retained,
   }
 }

@@ -237,7 +237,6 @@ async fn network_idna_scenario(
           )
         })
         let observing : Executor = {
-          proof: executor.proof,
           invoke: invocation => {
             let execution = (executor.invoke)(invocation)
             candidate.append(requests)
@@ -328,7 +327,7 @@ async fn network_idna_scenario(
         } else {
           []
         }
-        if oracle_image is None && executor.proof is Some(proof) {
+        if oracle_image is None {
           let expected : Array[Json] = []
           for index, host in fixture.hosts {
             expected.push({
@@ -349,7 +348,7 @@ async fn network_idna_scenario(
             })
           }
           if fixture.label == "mapped-bracket-cookie" {
-            proof.observe_equal(
+            @harness.assert_observation(
               "idna/curl-mapped-bracket-cookie",
               command,
               {
@@ -368,7 +367,7 @@ async fn network_idna_scenario(
               },
             )
           } else {
-            proof.observe_equal(
+            @harness.assert_observation(
               "idna/" + command + "-" + fixture.label,
               command,
               {

@@ -216,7 +216,6 @@ async fn network_wget_authentication_scenario(
         })
       })
       let observing : Executor = {
-        proof: executor.proof,
         invoke: invocation => {
           let before = @fs.readdir(directory, sort=true, include_hidden=true)
           let execution = (executor.invoke)(invocation)
@@ -284,14 +283,13 @@ async fn network_wget_authentication_scenario(
         )
       } else {
         assert_true(requests.is_empty())
-        if executor.proof is Some(proof) {
-          proof.observe_equal(
-            "wget-authentication/" + fixture.label,
-            "wget",
-            observed,
-            fixture.expected,
-          )
-        }
+
+        @harness.assert_observation(
+          "wget-authentication/" + fixture.label,
+          "wget",
+          observed,
+          fixture.expected,
+        )
       }
     })
   }
