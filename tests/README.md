@@ -175,3 +175,54 @@ use a PR and actual-main validation. Resource observations and exact published
 acceptance remain separate manual workflows. Historical run claims remain
 dated in CHANGELOG and Git; this restructuring does not establish full upstream
 parity or formal product performance acceptance.
+
+## CI timing observations (2026-11-09)
+
+The comparable runs below use Moon 0.1.20261104, moonc v0.10.20+65efd5b93,
+the refreshed dependencies and identical execution code. The main synchronization
+between `08155c7` and `c061759` changes ancestry only. Every run includes 2,129
+Wasm package tests, 230 Native tool regressions and all 2,723 registered Linux
+upstream comparisons. Functional results are 3,874 passes/37 platform skips
+on Linux, 3,871/40 on macOS and 3,253/658 on Windows, with zero failures.
+
+Warm samples verify restored compilation caches on all three platforms and
+cached Docker layers. The cold sample explicitly sets `use_cache=false`, skipping
+compilation and Docker caches. Times include job setup and reporting; all-gate
+time spans the first job start through the last required completion. Runner
+minutes sum job elapsed time without billing multipliers. Process counts cover
+the harness's direct launches; report sizes exclude the shared build artifact.
+
+| Run | Linux | macOS | Windows | Upstream | All gates | Runner minutes |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| [Warm 1](https://github.com/moonbit-community/cmd/actions/runs/42605039964) | 6:55 | 9:00 | 8:19 | 11:16 | 18:35 | 35.8 |
+| [Warm 2](https://github.com/moonbit-community/cmd/actions/runs/42605199782) | 5:55 | 10:06 | 11:14 | 9:24 | 15:41 | 36.9 |
+| [Warm 3](https://github.com/moonbit-community/cmd/actions/runs/42607771426) | 8:23 | 8:31 | 11:18 | 11:29 | 20:12 | 39.9 |
+| [Cold](https://github.com/moonbit-community/cmd/actions/runs/42605197381) | 8:15 | 9:12 | 11:27 | 18:30 | 27:09 | 47.7 |
+
+| Run | Direct process starts | Containers | Reports MiB | Uploaded MiB |
+| --- | ---: | ---: | ---: | ---: |
+| Warm 1 | 39,656 | 58 | 61.1 | 3.5 |
+| Warm 2 | 39,684 | 62 | 61.2 | 3.6 |
+| Warm 3 | 39,684 | 62 | 61.2 | 3.6 |
+| Cold | 39,670 | 60 | 61.2 | 3.5 |
+
+The three-platform correctness critical paths are 9:00, 11:14 and 11:18
+(mean 10:31), approaching the daily ten-minute target with visible variation.
+Full required gates for shared changes remain 15:41–20:12 warm and 27:09 cold;
+a uniform ten-minute gate is not established. Affected-command selection reduces
+comparison scope, but these measurements deliberately retain the full workload.
+The remaining measured costs include Windows functional execution (3:38–5:27),
+Windows package tests (2:02–2:43), full comparison (8:27–10:24 warm), and cold
+oracle image construction (6:53). Preserve event steps, complete corpora and
+cleanup observations when revisiting these costs. The fixture-owner query now
+starts `id` twice per differential run, down from 3,968 in the
+[preceding warm run](https://github.com/moonbit-community/cmd/actions/runs/42601971893).
+
+These timing samples precede the one-request HTTP fixture correction. The later
+[main run](https://github.com/moonbit-community/cmd/actions/runs/42610703482)
+passed all package/tool tests and 2,722 comparisons, but its Cookie scenario
+observed upstream Wget exit 4 after trying to reuse a connection that the fixture
+closed without declaring `Connection: close`. Cookie redirects and authentication
+challenge responses now declare closure explicitly; request counts, Cookie
+expectations, HEAD output and frozen published expectations remain unchanged.
+The failed main run is retained as a failure, not a passing timing sample.

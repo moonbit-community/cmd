@@ -143,8 +143,10 @@ out-of-range offsets and unqualified recurring-rule forms. Compatible TZif zones
 retain only the upstream representation after admission; no duplicate transition
 lookup runs beside it. Existing gap/fold diagnostics and nanoseconds remain.
 Reopen the retained paths when released public APIs preserve those contracts;
-do not import x/internal, add FFI, upgrade workspace dependencies or use host
-local_zone on Wasm to force replacement.
+do not import x/internal, add FFI or use host local_zone on Wasm to force
+replacement. The separately authorized dependency refresh declares x 0.5.7
+explicitly and verifies standalone core, so another workspace module cannot
+silently supply the public API required by this adapter.
 
 The compatibility boundary for internal restructuring is `moonx cli/<command>`:
 accepted arguments, output/status, error ordering, filesystem effects and
@@ -354,11 +356,23 @@ calibration limitations retain their recorded scope in the benchmark guide.
 
 Development correctness and fixed upstream comparison are distinct required
 checks. Existing case registrations own external fixture paths; command-local
-changes select consumers and shared/unknown changes select the full differential.
+functional changes select consumers and shared/unknown execution changes select
+the full differential. Plain prose, license notices and document assets are
+outside these rules. Executable MoonBit documentation remains source; do not
+introduce a separate text-review or ownership system.
 Git rename/deletion inputs retain both sides, and missing baselines fail closed
 to full scope. The Linux required status also checks the comparison's execution
 outcome. Same-run artifacts bind source and toolchain without restoring the
 retired assertion-proof chain. See the [test guide](../../tests/README.md).
+
+The [dated CI measurements](../../tests/README.md#ci-timing-observations-2026-11-09)
+record three warm runs and one explicit cold run with identical execution code,
+full upstream scope, stage costs, launch counts and report sizes. The correctness
+critical path approaches ten minutes; full mandatory gates and cold image
+construction retain their separate costs. Revisit measured package, command-event
+and oracle execution costs when reducing latency further, while preserving full
+corpora and lifecycle observations. This is CI evidence, not product performance
+qualification.
 
 The oracle policy explicitly records unavailable profiles: serve has no matching
 upstream executable, jqlog's recorded source label has no runnable image binary,

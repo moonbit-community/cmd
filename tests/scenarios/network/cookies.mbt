@@ -283,12 +283,13 @@ async fn network_cookie_security_scenario(
             target.val +
             "\r\n" +
             fields.val.map(field => "Set-Cookie: " + field + "\r\n").join("") +
-            "Content-Length: 0\r\n\r\n",
+            "Content-Length: 0\r\nConnection: close\r\n\r\n",
           )
         } else {
           let body = "cookie=" + cookies.join("; ") + "\n"
           connection.write(
-            "HTTP/1.1 200 OK\r\nContent-Length: \{body.length()}\r\n\r\n" + body,
+            "HTTP/1.1 200 OK\r\nContent-Length: \{body.length()}\r\nConnection: close\r\n\r\n" +
+            body,
           )
         }
       })
