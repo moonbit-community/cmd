@@ -11,8 +11,11 @@ MOON_HOME="$HOME/.moon-accounts/cli" moon run --target wasm --release commands/s
 Usage: `serve [--host ADDRESS] [-p PORT|--port PORT] [DIRECTORY]`.
 The directory defaults to `.`, the address to `127.0.0.1`, and the port to 8000.
 Use a numeric IPv4/IPv6 address; port 0 selects an available port. The actual
-address is printed to stderr. `--` ends option parsing. Standalone `--help` and
-`--version` print metadata without reading stdin or starting a listener.
+address is printed to stderr. `--port=8000` and `-p8000` are also accepted,
+each option may be supplied once, and `--` ends option parsing. Use `-h` or
+`--help` for usage and `-V` or `--version` for version information. Metadata
+requests exit without reading stdin or starting a listener. Argument syntax
+errors print the standard parser diagnostic with usage to stderr and exit 1.
 
 GET streams regular files with Content-Length and an extension-based MIME type;
 HEAD sends the same headers without a body. Unknown extensions use

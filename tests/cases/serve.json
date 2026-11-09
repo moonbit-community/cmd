@@ -48,7 +48,11 @@
       "comparison": "contract",
       "oracle": false,
       "expected_stdout_text": "",
-      "expected_stderr_text": "serve: unknown option: --spa\n"
+      "expected_stderr_contains_all": [
+        "error: unexpected argument '--spa' found",
+        "Usage: serve"
+      ],
+      "diagnostic_reason": "Require the unknown argument and usage heading while allowing changes to the standard help layout."
     },
     {
       "id": "serve-reject-extra-root",
@@ -65,7 +69,11 @@
       "comparison": "contract",
       "oracle": false,
       "expected_stdout_text": "",
-      "expected_stderr_text": "serve: expected at most one directory\n"
+      "expected_stderr_contains_all": [
+        "error: unexpected value 'two' for '<directory>' found",
+        "Usage: serve"
+      ],
+      "diagnostic_reason": "Require the rejected directory operand and usage heading while allowing changes to the standard help layout."
     },
     {
       "id": "serve-reject-missing-port",
@@ -81,7 +89,11 @@
       "comparison": "contract",
       "oracle": false,
       "expected_stdout_text": "",
-      "expected_stderr_text": "serve: missing value for -p\n"
+      "expected_stderr_contains_all": [
+        "error: a value is required for '-p' but none was supplied",
+        "Usage: serve"
+      ],
+      "diagnostic_reason": "Require the missing port value and usage heading while allowing changes to the standard help layout."
     },
     {
       "id": "serve-static",

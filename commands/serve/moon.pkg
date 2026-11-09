@@ -4,6 +4,7 @@ import {
   "moonbitlang/async/http",
   "moonbitlang/async/socket",
   "moonbitlang/async/stdio",
+  "moonbitlang/core/argparse",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
