@@ -811,7 +811,7 @@ execution inputs.
 `ProcessGroupCancellation` is unavailable:
 
 ```sh
-MOON_HOME="$HOME/.moon-accounts/cli" moon run --target wasm --release commands/timeout -- 1s printf ok
+moon run --target wasm --release commands/timeout -- 1s printf ok
 ```
 
 is a local-only diagnostic invocation, while `moonx cli/timeout` is not a supported
