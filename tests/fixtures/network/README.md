@@ -1,5 +1,12 @@
 # Fixed network expectations
 
+Current package tests execute all Cookie/date/expiry/Domain records beside each
+command's private implementation and all 73 authentication records through
+Wget's private execution path. Ordinary CLI runs retain complete usage events;
+the full corpus CLI routes below remain required differential and frozen
+published-acceptance capabilities. Original records and expected values are
+unchanged; absent, duplicate or malformed records fail.
+
 `wget-authentication.json` retains 73 independently observed Wget 1.25.0
 credential/challenge/cache controls. The original 47-case baseline and 26-case
 supplement are hash-bound in the file. Expectations use actual oracle results;

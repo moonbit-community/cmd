@@ -1,4 +1,5 @@
 import {
+  "cli/wget/internal/download",
   "cli/core/cli",
   "cli/core/netops",
   "cli/core/platform",
@@ -14,6 +15,9 @@ import {
 
 import {
   "moonbitlang/async/socket",
+  "moonbitlang/core/json",
+  "moonbitlang/x/crypto",
+  "moonbitlang/x/path",
 } for "wbtest"
 
 supported_targets = "native+wasm"

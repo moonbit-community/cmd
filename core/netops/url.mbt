@@ -1,5 +1,5 @@
 ///|
-priv struct ParsedUrl {
+pub(all) struct ParsedUrl {
   scheme : String
   authority : String
   endpoint : String
@@ -117,7 +117,7 @@ fn parse_host_port(value : String) -> (String, Int32?) raise TransferError {
 }
 
 ///|
-fn parse_absolute_url(value : String) -> ParsedUrl raise TransferError {
+pub fn parse_absolute_url(value : String) -> ParsedUrl raise TransferError {
   let value = split_fragment(value)
   guard value.find(":") is Some(colon) else {
     raise invalid_url("URL is missing a scheme")
@@ -170,18 +170,18 @@ fn parse_absolute_url(value : String) -> ParsedUrl raise TransferError {
 }
 
 ///|
-fn ParsedUrl::origin(self : ParsedUrl) -> String {
+pub fn ParsedUrl::origin(self : ParsedUrl) -> String {
   self.scheme + "://" + self.endpoint
 }
 
 ///|
-fn ParsedUrl::origin_key(self : ParsedUrl) -> String {
+pub fn ParsedUrl::origin_key(self : ParsedUrl) -> String {
   let port = self.port.unwrap_or(if self.scheme == "https" { 443 } else { 80 })
   self.scheme + "://" + self.host.to_lower() + ":" + port.to_string()
 }
 
 ///|
-fn ParsedUrl::request_target(self : ParsedUrl) -> String {
+pub fn ParsedUrl::request_target(self : ParsedUrl) -> String {
   match self.query {
     Some(query) => self.path + "?" + query
     None => self.path
@@ -189,7 +189,7 @@ fn ParsedUrl::request_target(self : ParsedUrl) -> String {
 }
 
 ///|
-fn ParsedUrl::to_url(self : ParsedUrl) -> String {
+pub fn ParsedUrl::to_url(self : ParsedUrl) -> String {
   self.scheme + "://" + self.authority + self.request_target()
 }
 
@@ -245,7 +245,7 @@ fn reference_has_scheme(value : String) -> Bool {
 }
 
 ///|
-fn resolve_location(
+pub fn resolve_location(
   base : ParsedUrl,
   location : String,
 ) -> ParsedUrl raise TransferError {
@@ -277,7 +277,7 @@ fn resolve_location(
 }
 
 ///|
-fn hex_value(char : Char) -> Int32? {
+pub fn hex_value(char : Char) -> Int32? {
   match char {
     '0'..<='9' => Some(char.to_int() - '0'.to_int())
     'a'..<='f' => Some(char.to_int() - 'a'.to_int() + 10)
@@ -287,7 +287,7 @@ fn hex_value(char : Char) -> Int32? {
 }
 
 ///|
-fn percent_decode(value : String) -> String {
+pub fn percent_decode(value : String) -> String {
   let bytes : Array[Byte] = []
   let encoded = @utf8.encode(value)
   let mut index = 0
@@ -311,71 +311,4 @@ fn percent_decode(value : String) -> String {
   @utf8.decode(Bytes::from_array(bytes)) catch {
     _ => value
   }
-}
-
-///|
-pub fn remote_name(url : String) -> String raise TransferError {
-  let parsed = parse_absolute_url(url)
-  let path = parsed.path.trim_end(chars="/").to_owned()
-  if path == "" {
-    return "index.html"
-  }
-  let name = match path.rev_find("/") {
-    Some(index) => path[index + 1:].to_owned()
-    None => path
-  }
-  let decoded = percent_decode(name)
-  if decoded == "" || decoded == "." || decoded == ".." {
-    "index.html"
-  } else {
-    decoded.replace_all(old="/", new="_").replace_all(old="\\", new="_")
-  }
-}
-
-///|
-pub fn proxy_bypassed(
-  url : String,
-  no_proxy : String?,
-  profile~ : TransferProfile = StrictProfile,
-  utf8_hosts~ : Bool = true,
-) -> Bool {
-  guard no_proxy is Some(list) else { return false }
-  let host = try
-    parse_absolute_url(url).for_transfer(profile, utf8_hosts~).socket_host()
-  catch {
-    _ => return false
-  } noraise {
-    value => value.to_lower()
-  }
-  for part in list.split(",") {
-    let raw = part.trim().to_owned().to_lower()
-    if raw == "" {
-      continue
-    }
-    if raw == "*" {
-      return true
-    }
-    let candidate = if raw.has_prefix("[") {
-      match raw.find("]") {
-        Some(index) => raw[1:index].to_owned()
-        None => raw
-      }
-    } else {
-      match raw.rev_find(":") {
-        Some(index) if !raw[:index].to_owned().contains(":") =>
-          raw[:index].to_owned()
-        _ => raw
-      }
-    }
-    let candidate = if candidate.has_prefix(".") {
-      candidate[1:].to_owned()
-    } else {
-      candidate
-    }
-    let suffix = "." + candidate
-    if host == candidate || host.has_suffix(suffix) {
-      return true
-    }
-  }
-  false
 }

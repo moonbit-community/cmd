@@ -58,7 +58,7 @@ async fn Connection::secure(
 }
 
 ///|
-fn ParsedUrl::socket_host(self : ParsedUrl) -> String raise TransferError {
+pub fn ParsedUrl::socket_host(self : ParsedUrl) -> String raise TransferError {
   if self.ip_literal {
     let address = self.host[1:self.host.length() - 1].to_owned()
     guard address.contains(":") && !address.contains("%") else {
@@ -71,7 +71,7 @@ fn ParsedUrl::socket_host(self : ParsedUrl) -> String raise TransferError {
 }
 
 ///|
-fn ParsedUrl::socket_port(self : ParsedUrl) -> Int32 {
+pub fn ParsedUrl::socket_port(self : ParsedUrl) -> Int32 {
   self.port.unwrap_or(if self.scheme == "https" { 443 } else { 80 })
 }
 

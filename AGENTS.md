@@ -155,6 +155,14 @@ module and version before any release operation.
   rather than widening runtime APIs. The jq adapter corpus retains the original
   28 positive expectations, including stable-order and deep-key records.
 
+- Keep curl/wget Cookie, authentication, redirect, retry, resume and output
+  policies in each command's `internal/download`. Core netops performs one
+  request through a scoped streaming response and owns transport/URL/IDNA/PSL
+  mechanisms. Do not restore profile switches or command-aware transfer options.
+  Preserve raw EOF observations, upload/read counts, output commit boundaries
+  and connection closure on return, error and cancellation. Complete original
+  Cookie and authentication corpora run beside their owners; real command events
+  and full required differential remain independent checks.
 - rg search policy and its concrete matcher adapter are private to `driver`.
   Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms
   in `core/bytesearch`; `matcher` and `searcher` must not import the driver.

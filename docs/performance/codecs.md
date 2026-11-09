@@ -112,7 +112,7 @@ rejections means the current ready-span decoder is unadopted.
 
 Added 2026-11-09; correctness work, without performance qualification.
 `transfer -> ParsedUrl::for_transfer -> transfer_host -> idna_host` in
-[url_wire.mbt](../../core/netops/url_wire.mbt) and
+[url_wire.mbt](../../commands/curl/internal/download/url_wire.mbt) and
 [idna.mbt](../../core/netops/idna.mbt) decodes host escapes, applies the selected
 input profile, and then converts Unicode hosts. ASCII input takes the command's
 bypass path. Unicode properties use binary searches over immutable sorted
@@ -170,7 +170,7 @@ the frozen corpus in [network fixtures](../../tests/fixtures/network/README.md).
 Date profiles and Domain-normalization limits remain in ADR-0005.
 
 Domain admission keeps an independent view of the stored key. The private
-[`wget_cookie_domain_allows`](../../core/netops/wget_cookie_domain.mbt) uses
+[`wget_cookie_domain_allows`](../../commands/wget/internal/download/wget_cookie_domain.mbt) uses
 ASCII case-folded, leading-dot-stripped PSL lookup for ASCII inputs and the
 fixed non-NLS Wget fallback for non-ASCII inputs. The latter counts labels
 and UTF-8 bytes without IDNA or Unicode normalization. Actual URL conversion
@@ -178,8 +178,7 @@ occurs earlier and can select a different admission path. Both scans are
 linear in their input lengths; splitting labels allocates linear storage.
 
 Curl's stored creation order stays in the existing array. Saving selects Curl
-entries through a backwards cursor while leaving other profiles' ordering
-intact, using linear time and constant extra cursor storage. A private live
+entries through a backwards cursor, using linear time and constant extra cursor storage. A private live
 marker distinguishes response cookies from file imports; reloading a file
 cannot overwrite a response key. Loading before each URL/retry preserves real
 file changes and deletion/refill behavior, with file I/O and parsing costs on
@@ -193,7 +192,7 @@ can discard body bytes or replace the terminal status of a declined retry.
 The [Domain scenario](../../tests/scenarios/network/cookie_domains.mbt) checks
 two processes, raw Host/targets, unchanged inputs and original saved row order.
 
-Numeric expiry uses the private [prefix parser](../../core/netops/wget_cookie_number.mbt).
+Numeric expiry uses the private [prefix parser](../../commands/wget/internal/download/wget_cookie_number.mbt).
 It scans the C-locale prefix, delegates a valid decimal substring to the released
 binary64 parser, and converts hexadecimal digits directly. The hexadecimal path
 retains at most 53 significant bits plus guard/sticky state, rounds ties to even
@@ -211,7 +210,7 @@ and preserving the oracle's rounded digits near 2^63. Fixed-clock tests own time
 boundaries; [frozen CLI inputs](../../tests/fixtures/network/wget-cookie-expiry.json)
 own real storage/reload expectations. This adds no performance acceptance claim.
 
-Wget [date parsing](../../core/netops/wget_cookie_date.mbt) keeps four explicit
+Wget [date parsing](../../commands/wget/internal/download/wget_cookie_date.mbt) keeps four explicit
 layouts in upstream order. A shared cursor scans English names, bounded decimal
 fields and exact punctuation; format spaces consume zero or more ASCII spaces.
 The numeric scanner preserves the range-dependent stopping rule, since adjacent
