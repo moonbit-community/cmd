@@ -258,7 +258,7 @@
         "version"
       ],
       "source_version": "workspace cli/fold@0.1.4 metadata contract",
-      "expected_stdout_text": "fold 0.1.4\n",
+      "expected_stdout_text": "fold 0.1.5\n",
       "expected_stderr_text": ""
     },
     {

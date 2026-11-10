@@ -117,7 +117,7 @@
         "version"
       ],
       "source_version": "workspace cli/nl@0.2.6 metadata contract",
-      "expected_stdout_text": "nl 0.2.6\n",
+      "expected_stdout_text": "nl 0.2.7\n",
       "expected_stderr_text": ""
     },
     {

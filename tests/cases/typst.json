@@ -14,7 +14,7 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": false,
-      "expected_stdout_text": "typst 0.1.0\n",
+      "expected_stdout_text": "typst 0.1.1\n",
       "expected_stderr_text": "",
       "timeout_ms": 120000
     },
@@ -31,7 +31,7 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": false,
-      "expected_stdout_text": "typst 0.1.0\n",
+      "expected_stdout_text": "typst 0.1.1\n",
       "expected_stderr_text": "",
       "timeout_ms": 120000
     },

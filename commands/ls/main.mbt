@@ -516,7 +516,7 @@ fn ls_options(parsed : @cli.ParsedArgs) -> Options raise @cli.CliError {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("ls 0.2.5\n")
+    @stdio.stdout.write("ls 0.2.6\n")
     return
   }
   let parsed = parse_arguments(@env.args()[1:]) catch {

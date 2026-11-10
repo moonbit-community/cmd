@@ -1,12 +1,12 @@
 # fmt
 
-Development candidate: `cli/fmt@0.1.5`. Publication is separate;
+Published version: `cli/fmt@0.1.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Reformat text paragraphs for MoonX.
 
 ```sh
-moonx cli/fmt@0.1.5 [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]
+moonx cli/fmt@0.1.6 [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]
 ```
 
 ## Supported scope
@@ -40,8 +40,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/fmt@0.1.5 -w 60 notes.txt
-moonx cli/fmt@0.1.5 -s -w 40 notes.txt
+moonx cli/fmt@0.1.6 -w 60 notes.txt
+moonx cli/fmt@0.1.6 -s -w 40 notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

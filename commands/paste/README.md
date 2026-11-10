@@ -1,12 +1,12 @@
 # paste
 
-Development candidate: `cli/paste@0.2.5`. Publication is separate;
+Published version: `cli/paste@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Merge input lines for MoonX.
 
 ```sh
-moonx cli/paste@0.2.5 [-s] [-d LIST] [-z] [FILE...]
+moonx cli/paste@0.2.6 [-s] [-d LIST] [-z] [FILE...]
 ```
 
 ## Supported scope
@@ -35,8 +35,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/paste@0.2.5 first.txt second.txt
-moonx cli/paste@0.2.5 -s -d, input.txt
+moonx cli/paste@0.2.6 first.txt second.txt
+moonx cli/paste@0.2.6 -s -d, input.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

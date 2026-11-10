@@ -2,12 +2,12 @@
 
 Search files recursively for MoonX.
 
-Version: `cli/rg@0.1.1`, using `cli/core@0.9.1`. The repository's
+Version: `cli/rg@0.1.2`, using `cli/core@0.10.0`. The repository's
 [release inventory](../../tests/release_runner/current/latest.json) records
 accepted coordinates and their independent expected cases.
 
 ```sh
-moonx cli/rg@0.1.1 [OPTIONS] PATTERN PATH...
+moonx cli/rg@0.1.2 [OPTIONS] PATTERN PATH...
 ```
 
 ## Supported scope
@@ -54,10 +54,10 @@ Search explicit paths or stdin (`-`) with regex/Unicode matching, glob/ignore ru
 ## Examples
 
 ```sh
-moonx cli/rg@0.1.1 -n 'pattern' notes.txt
-moonx cli/rg@0.1.1 --hidden -g '*.mbt' 'pattern' .
-printf 'one\ntwo\n' | moonx cli/rg@0.1.1 -i 'ONE' -
-moonx cli/rg@0.1.1 --files --sort path
+moonx cli/rg@0.1.2 -n 'pattern' notes.txt
+moonx cli/rg@0.1.2 --hidden -g '*.mbt' 'pattern' .
+printf 'one\ntwo\n' | moonx cli/rg@0.1.2 -i 'ONE' -
+moonx cli/rg@0.1.2 --files --sort path
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

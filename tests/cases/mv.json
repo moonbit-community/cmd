@@ -1032,7 +1032,7 @@
         "version"
       ],
       "source_version": "workspace cli/mv@0.2.7 metadata contract",
-      "expected_stdout_text": "mv 0.2.7\n",
+      "expected_stdout_text": "mv 0.2.8\n",
       "expected_stderr_text": ""
     },
     {

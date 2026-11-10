@@ -1376,7 +1376,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "rg 0.1.1\n",
+      "expected_stdout_text": "rg 0.1.2\n",
       "expected_stderr_text": ""
     },
     {

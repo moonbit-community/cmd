@@ -1,12 +1,12 @@
 # realpath
 
-Development candidate: `cli/realpath@0.1.5`. Publication is separate;
+Published version: `cli/realpath@0.1.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Canonicalize paths for MoonX.
 
 ```sh
-moonx cli/realpath@0.1.5 [OPTION]... NAME...
+moonx cli/realpath@0.1.6 [OPTION]... NAME...
 ```
 
 ## Supported scope
@@ -40,8 +40,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/realpath@0.1.5 -e input.txt
-moonx cli/realpath@0.1.5 -ms path/../new.txt
+moonx cli/realpath@0.1.6 -e input.txt
+moonx cli/realpath@0.1.6 -ms path/../new.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

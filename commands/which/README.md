@@ -1,12 +1,12 @@
 # which
 
-Development candidate: `cli/which@0.1.5`. Publication is separate;
+Published version: `cli/which@0.1.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Find executables for MoonX.
 
 ```sh
-moonx cli/which@0.1.5 [-as] NAME...
+moonx cli/which@0.1.6 [-as] NAME...
 ```
 
 ## Supported scope
@@ -35,8 +35,8 @@ See [the finite option and diagnostic profile](../../docs/compatibility.md#exten
 ## Examples
 
 ```sh
-moonx cli/which@0.1.5 moonx
-moonx cli/which@0.1.5 -a moonx
+moonx cli/which@0.1.6 moonx
+moonx cli/which@0.1.6 -a moonx
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

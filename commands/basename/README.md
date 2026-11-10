@@ -1,12 +1,12 @@
 # basename
 
-Development candidate: `cli/basename@0.2.4`. Publication is separate;
+Published version: `cli/basename@0.2.5`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Extract path names for MoonX.
 
 ```sh
-moonx cli/basename@0.2.4 [-a] [-s SUFFIX] [-z] NAME [SUFFIX]
+moonx cli/basename@0.2.5 [-a] [-s SUFFIX] [-z] NAME [SUFFIX]
 ```
 
 ## Supported scope
@@ -35,8 +35,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/basename@0.2.4 /tmp/report.txt
-moonx cli/basename@0.2.4 -s .txt report.txt notes.txt
+moonx cli/basename@0.2.5 /tmp/report.txt
+moonx cli/basename@0.2.5 -s .txt report.txt notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

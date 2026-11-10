@@ -1,12 +1,12 @@
 # head
 
-Development candidate: `cli/head@0.2.5`. Publication is separate;
+Published version: `cli/head@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Print the beginning of inputs for MoonX.
 
 ```sh
-moonx cli/head@0.2.5 [-qvz] [-n NUM|-c NUM] [FILE...]
+moonx cli/head@0.2.6 [-qvz] [-n NUM|-c NUM] [FILE...]
 ```
 
 ## Supported scope
@@ -37,8 +37,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/head@0.2.5 -n 5 notes.txt
-moonx cli/head@0.2.5 -c 16 data.bin
+moonx cli/head@0.2.6 -n 5 notes.txt
+moonx cli/head@0.2.6 -c 16 data.bin
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

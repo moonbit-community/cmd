@@ -3,7 +3,7 @@
 Pause execution for MoonX.
 
 ```sh
-moonx cli/sleep@0.2.3 NUMBER[SUFFIX]...
+moonx cli/sleep@0.2.4 NUMBER[SUFFIX]...
 ```
 
 ## Supported scope
@@ -24,8 +24,8 @@ Wait for the sum of all nonnegative duration operands; plain numbers mean second
 ## Examples
 
 ```sh
-moonx cli/sleep@0.2.3 0.1
-moonx cli/sleep@0.2.3 1s
+moonx cli/sleep@0.2.4 0.1
+moonx cli/sleep@0.2.4 1s
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

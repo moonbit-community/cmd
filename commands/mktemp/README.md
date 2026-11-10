@@ -3,7 +3,7 @@
 Create unique temporary paths for MoonX.
 
 ```sh
-moonx cli/mktemp@0.1.4 [OPTION]... [TEMPLATE]
+moonx cli/mktemp@0.1.5 [OPTION]... [TEMPLATE]
 ```
 
 ## Supported scope
@@ -29,8 +29,8 @@ Create a file or directory without overwriting existing entries. The final X run
 ## Examples
 
 ```sh
-moonx cli/mktemp@0.1.4 -p . sample.XXXXXX
-moonx cli/mktemp@0.1.4 -d -p . sample.XXXXXX
+moonx cli/mktemp@0.1.5 -p . sample.XXXXXX
+moonx cli/mktemp@0.1.5 -d -p . sample.XXXXXX
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

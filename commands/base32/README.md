@@ -1,15 +1,15 @@
 # base32
 
-Development candidate: `cli/base32@0.1.6`. Publication is separate;
+Published version: `cli/base32@0.1.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Encode and decode Base32 for MoonX.
 
-Version: `cli/base32@0.1.6`. Published coordinates
+Version: `cli/base32@0.1.7`. Published coordinates
 remain recorded in the [release inventory](../../tests/release/latest.json).
 
 ```sh
-moonx cli/base32@0.1.6 [-d] [-i] [-w COLS] [FILE]
+moonx cli/base32@0.1.7 [-d] [-i] [-w COLS] [FILE]
 ```
 
 ## Supported scope
@@ -52,8 +52,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-printf 'hello' | moonx cli/base32@0.1.6
-printf 'NBSWY3DP' | moonx cli/base32@0.1.6 -d
+printf 'hello' | moonx cli/base32@0.1.7
+printf 'NBSWY3DP' | moonx cli/base32@0.1.7 -d
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

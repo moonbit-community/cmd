@@ -141,7 +141,7 @@
         "version"
       ],
       "source_version": "workspace cli/printf@0.2.3 metadata contract",
-      "expected_stdout_text": "printf 0.2.3\n",
+      "expected_stdout_text": "printf 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

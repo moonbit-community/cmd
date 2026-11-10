@@ -98,7 +98,7 @@
         "version"
       ],
       "source_version": "workspace cli/printenv@0.2.3 metadata contract",
-      "expected_stdout_text": "printenv 0.2.3\n",
+      "expected_stdout_text": "printenv 0.2.4\n",
       "expected_stderr_text": ""
     },
     {

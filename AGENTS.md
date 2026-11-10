@@ -261,29 +261,30 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-11-08 raw-path repair: core is 0.9.5.
-  Published make 0.2.8, sh 0.2.9 and split 0.1.10; retained the other 77 coordinates,
-  giving 80 published commands. The current workspace contains 82 local modules,
-  including the unpublished serve 0.1.2 candidate and local-only timeout.
-  Serve 0.1.1 was published separately and reports an incorrect 0.1.0 version;
-  it remains outside this 80-command published acceptance baseline until its
-  independent three-platform acceptance is complete.
-  Published-command core dependencies are
-  3 commands on 0.9.5, 25 on 0.9.1, 24 on 0.9.0 and 23 on 0.8.2;
-  echo/false/sleep/true/typst do not depend on core.
-  serve does not depend on core. Exact published coordinates and independent
+- Current registry baseline after the 2026-11-10 dependency-refresh release:
+  core is 0.10.0, with 80 updated command coordinates and unchanged echo 0.2.4.
+  The accepted inventory contains 81 published commands, including serve 0.1.2;
+  timeout remains local-only among 82 command modules.
+  All 74 published core consumers select 0.10.0. Echo, false, jqlog, serve,
+  sleep, true and typst do not depend on core. Exact coordinates and independent
   expectations are in tests/release/latest.json and latest-cases.json.
-  Source commit 273ea9f passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42425407212).
-  All four uploads, registry builds and package checksums were verified.
-  Local exact-version MoonX and
-  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42426809418)
-  passed all 80 coordinates with zero failures, including pinned Linux comparison.
-  Counts and exclusions are in CHANGELOG.md under 2026-11-08. This does not
-  establish full upstream parity or formal performance acceptance.
-  The independently audited 2,850 frozen definitions include 380 F31 cases and
-  retain all 2,802 previous IDs, with six metadata output updates and 48 additions.
-  All four uploads succeeded once; earlier release failures retain their dated
-  scope. General GNU/POSIX grammar limits remain in ADR-0007.
+  Source commit dec64de7 passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42752161098).
+  All 81 uploads, registry builds and archive checksums were verified. Five
+  transient upload failures were confirmed absent before retrying; the failed
+  attempts remain recorded separately.
+  Local exact-version MoonX passed 3,517 semantic checks. The
+  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42758620841)
+  passed all 81 coordinates with zero failures: Linux 3,532, macOS 3,517 and
+  Windows 2,954 semantic checks, plus 2,667 pinned Linux differential checks.
+  The 3,828 frozen definitions retain all 2,850 earlier IDs, add 978 existing
+  independent regressions and update 98 version/HTML metadata or help expectations.
+  The first acceptance run's eight stale help expectations were reconciled
+  against pre-existing tests before the complete rerun. Local Typst download
+  recovery used only the official checksum-verified prebuild.
+  Counts, declared platform exclusions and failed attempts are recorded in
+  CHANGELOG.md under 2026-11-10. This does not establish full upstream parity
+  or formal performance acceptance. General GNU/POSIX grammar limits remain
+  in ADR-0007.
   Current latest/candidate snapshots remain independent. Retired published and
   historical archives are preserved in Git at 234f960, rather than duplicated
   in the active checkout. Prior acceptance results retain their dated scope

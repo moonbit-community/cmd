@@ -2,12 +2,12 @@
 
 Compile and inspect Typst documents for MoonX.
 
-Version: `cli/typst@0.1.0`, using `moonbitlang/typst@0.1.10`.
+Version: `cli/typst@0.1.1`, using `moonbitlang/typst@0.1.10`.
 The repository's [release inventory](../../tests/release/latest.json) records
 accepted coordinates and their independent expected cases.
 
 ```sh
-moonx cli/typst@0.1.0 COMMAND [OPTIONS]
+moonx cli/typst@0.1.1 COMMAND [OPTIONS]
 ```
 
 ## Supported scope
@@ -59,10 +59,10 @@ Use `help COMMAND` for the complete options of each subcommand.
 ## Examples
 
 ```sh
-moonx cli/typst@0.1.0 compile input.typ output.pdf
-moonx cli/typst@0.1.0 compile --ignore-system-fonts --pages=1 input.typ output.svg
-moonx cli/typst@0.1.0 watch input.typ output.pdf
-moonx cli/typst@0.1.0 eval '1 + 2'
+moonx cli/typst@0.1.1 compile input.typ output.pdf
+moonx cli/typst@0.1.1 compile --ignore-system-fonts --pages=1 input.typ output.svg
+moonx cli/typst@0.1.1 watch input.typ output.pdf
+moonx cli/typst@0.1.1 eval '1 + 2'
 ```
 
 The CLI and private kit adaptation derive from `moonbitlang/typst.mbt` at

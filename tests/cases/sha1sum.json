@@ -136,7 +136,7 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "sha1sum 0.1.4\n",
+      "expected_stdout_text": "sha1sum 0.1.5\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "source_version": "workspace cli/sha1sum@0.1.4 metadata contract",

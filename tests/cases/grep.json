@@ -446,7 +446,7 @@
         "version"
       ],
       "source_version": "workspace cli/grep@0.3.3 metadata contract",
-      "expected_stdout_text": "grep 0.3.3\n",
+      "expected_stdout_text": "grep 0.3.4\n",
       "expected_stderr_text": ""
     },
     {

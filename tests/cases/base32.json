@@ -150,7 +150,7 @@
         "version"
       ],
       "source_version": "workspace cli/base32@0.1.6 metadata contract",
-      "expected_stdout_text": "base32 0.1.6\n",
+      "expected_stdout_text": "base32 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
