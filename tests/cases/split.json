@@ -161,7 +161,7 @@
         "version"
       ],
       "source_version": "workspace cli/split@0.1.6 metadata contract",
-      "expected_stdout_text": "split 0.1.10\n",
+      "expected_stdout_text": "split 0.1.11\n",
       "expected_stderr_text": ""
     },
     {

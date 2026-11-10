@@ -1,12 +1,12 @@
 # tee
 
-Development candidate: `cli/tee@0.2.4`. Publication is separate;
+Development candidate: `cli/tee@0.2.5`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Copy stdin to files and stdout for MoonX.
 
 ```sh
-moonx cli/tee@0.2.4 [-ap] [--output-error[=MODE]] [FILE...]
+moonx cli/tee@0.2.5 [-ap] [--output-error[=MODE]] [FILE...]
 ```
 
 ## Supported scope
@@ -35,8 +35,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-printf 'hello\n' | moonx cli/tee@0.2.4 output.txt
-moonx cli/tee@0.2.4 -a output.txt < extra.txt
+printf 'hello\n' | moonx cli/tee@0.2.5 output.txt
+moonx cli/tee@0.2.5 -a output.txt < extra.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

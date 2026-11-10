@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "timeout command for MoonX."
 
 import {
-  "cli/core@0.9.5",
+  "cli/core@0.10.0",
   "moonbitlang/async@0.22.7",
   "moonbitlang/x@0.5.7",
 }

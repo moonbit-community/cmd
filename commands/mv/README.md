@@ -1,12 +1,12 @@
 # mv
 
-Development candidate: `cli/mv@0.2.7`. Publication is separate;
+Development candidate: `cli/mv@0.2.8`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Move files and directories for MoonX.
 
 ```sh
-moonx cli/mv@0.2.7 [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
+moonx cli/mv@0.2.8 [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
 ```
 
 ## Supported scope
@@ -55,9 +55,9 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/mv@0.2.7 old.txt new.txt
-moonx cli/mv@0.2.7 -n report.txt archive/
-moonx cli/mv@0.2.7 --backup=simple report.txt archive/
+moonx cli/mv@0.2.8 old.txt new.txt
+moonx cli/mv@0.2.8 -n report.txt archive/
+moonx cli/mv@0.2.8 --backup=simple report.txt archive/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

@@ -1,12 +1,12 @@
 # rmdir
 
-Development candidate: `cli/rmdir@0.2.4`. Publication is separate;
+Development candidate: `cli/rmdir@0.2.5`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Remove empty directories for MoonX.
 
 ```sh
-moonx cli/rmdir@0.2.4 [-p] [-I] [-v] DIRECTORY...
+moonx cli/rmdir@0.2.5 [-p] [-I] [-v] DIRECTORY...
 ```
 
 ## Supported scope
@@ -49,8 +49,8 @@ separately from the GNU/POSIX link contract.
 ## Examples
 
 ```sh
-moonx cli/rmdir@0.2.4 empty-dir
-moonx cli/rmdir@0.2.4 -p empty-parent/empty-child
+moonx cli/rmdir@0.2.5 empty-dir
+moonx cli/rmdir@0.2.5 -p empty-parent/empty-child
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

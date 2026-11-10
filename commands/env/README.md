@@ -3,7 +3,7 @@
 Inspect environments and launch commands for MoonX.
 
 ```sh
-moonx cli/env@0.2.3 [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]
+moonx cli/env@0.2.4 [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]
 ```
 
 ## Supported scope
@@ -34,8 +34,8 @@ normalization. This repair is not yet published.
 ## Examples
 
 ```sh
-moonx cli/env@0.2.3
-moonx cli/env@0.2.3 MODE=test moonx cli/printenv@0.2.3 MODE
+moonx cli/env@0.2.4
+moonx cli/env@0.2.4 MODE=test moonx cli/printenv@0.2.3 MODE
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

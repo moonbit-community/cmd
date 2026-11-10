@@ -1,12 +1,12 @@
 # expand
 
-Development candidate: `cli/expand@0.1.5`. Publication is separate;
+Development candidate: `cli/expand@0.1.6`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Convert tabs to spaces for MoonX.
 
 ```sh
-moonx cli/expand@0.1.5 [OPTION]... [FILE]...
+moonx cli/expand@0.1.6 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -34,8 +34,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/expand@0.1.5 -t 4 notes.txt
-printf 'a	b\n' | moonx cli/expand@0.1.5
+moonx cli/expand@0.1.6 -t 4 notes.txt
+printf 'a	b\n' | moonx cli/expand@0.1.6
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

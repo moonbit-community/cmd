@@ -1,12 +1,12 @@
 # xxd
 
-Development candidate: `cli/xxd@0.2.5`. Publication is separate;
+Development candidate: `cli/xxd@0.2.6`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Create and reverse hex dumps for MoonX.
 
 ```sh
-moonx cli/xxd@0.2.5 [OPTION]... [INFILE [OUTFILE]]
+moonx cli/xxd@0.2.6 [OPTION]... [INFILE [OUTFILE]]
 ```
 
 ## Supported scope
@@ -59,8 +59,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/xxd@0.2.5 -p data.bin
-printf '68690a' | moonx cli/xxd@0.2.5 -r -p
+moonx cli/xxd@0.2.6 -p data.bin
+printf '68690a' | moonx cli/xxd@0.2.6 -r -p
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

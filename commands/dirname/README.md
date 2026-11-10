@@ -1,12 +1,12 @@
 # dirname
 
-Development candidate: `cli/dirname@0.2.4`. Publication is separate;
+Development candidate: `cli/dirname@0.2.5`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Extract parent paths for MoonX.
 
 ```sh
-moonx cli/dirname@0.2.4 [-z] NAME...
+moonx cli/dirname@0.2.5 [-z] NAME...
 ```
 
 ## Supported scope
@@ -33,8 +33,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/dirname@0.2.4 /tmp/report.txt
-moonx cli/dirname@0.2.4 first/file second/file
+moonx cli/dirname@0.2.5 /tmp/report.txt
+moonx cli/dirname@0.2.5 first/file second/file
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

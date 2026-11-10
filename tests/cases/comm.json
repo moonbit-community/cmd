@@ -295,7 +295,7 @@
         "version"
       ],
       "source_version": "workspace cli/comm@0.2.6 metadata contract",
-      "expected_stdout_text": "comm 0.2.6\n",
+      "expected_stdout_text": "comm 0.2.7\n",
       "expected_stderr_text": ""
     },
     {

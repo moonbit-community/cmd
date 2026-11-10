@@ -3,7 +3,7 @@
 Repeat text for MoonX.
 
 ```sh
-moonx cli/yes@0.1.4 [STRING]...
+moonx cli/yes@0.1.5 [STRING]...
 ```
 
 ## Supported scope
@@ -24,7 +24,7 @@ Write operands joined by spaces and a newline repeatedly. With no operands, repe
 ## Examples
 
 ```sh
-moonx cli/yes@0.1.4 hello | moonx cli/head@0.2.3 -n 2
+moonx cli/yes@0.1.5 hello | moonx cli/head@0.2.3 -n 2
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

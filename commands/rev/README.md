@@ -1,12 +1,12 @@
 # rev
 
-Development candidate: `cli/rev@0.1.7`. Publication is separate;
+Development candidate: `cli/rev@0.1.8`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Reverse each input record for MoonX.
 
 ```sh
-moonx cli/rev@0.1.7 [OPTION]... [FILE]...
+moonx cli/rev@0.1.8 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -35,8 +35,8 @@ The local development candidate batches ASCII validation and reversal into a fix
 ## Examples
 
 ```sh
-printf 'abc\n' | moonx cli/rev@0.1.7
-moonx cli/rev@0.1.7 notes.txt
+printf 'abc\n' | moonx cli/rev@0.1.8
+moonx cli/rev@0.1.8 notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

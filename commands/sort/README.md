@@ -1,12 +1,12 @@
 # sort
 
-Development candidate: `cli/sort@0.2.7`. Publication is separate;
+Development candidate: `cli/sort@0.2.8`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Sort and merge records for MoonX.
 
 ```sh
-moonx cli/sort@0.2.7 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]
+moonx cli/sort@0.2.8 [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]
 ```
 
 ## Supported scope
@@ -58,8 +58,8 @@ unowned files. Output writes themselves remain cancellable.
 ## Examples
 
 ```sh
-moonx cli/sort@0.2.7 names.txt
-moonx cli/sort@0.2.7 -t, -k 2 -u data.csv
+moonx cli/sort@0.2.8 names.txt
+moonx cli/sort@0.2.8 -t, -k 2 -u data.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -1,6 +1,6 @@
 name = "cli/od"
 
-version = "0.1.4"
+version = "0.1.5"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "od command for MoonX."
 
 import {
-  "cli/core@0.9.5",
+  "cli/core@0.10.0",
   "moonbitlang/async@0.22.7",
   "moonbitlang/x@0.5.7",
 }

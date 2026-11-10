@@ -1,12 +1,12 @@
 # touch
 
-Development candidate: `cli/touch@0.2.4`. Publication is separate;
+Development candidate: `cli/touch@0.2.5`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Create missing files for MoonX.
 
 ```sh
-moonx cli/touch@0.2.4 [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...
+moonx cli/touch@0.2.5 [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...
 ```
 
 ## Supported scope
@@ -41,8 +41,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/touch@0.2.4 new-file.txt
-moonx cli/touch@0.2.4 -c missing-file.txt
+moonx cli/touch@0.2.5 new-file.txt
+moonx cli/touch@0.2.5 -c missing-file.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

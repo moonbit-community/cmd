@@ -1,12 +1,12 @@
 # pwd
 
-Development candidate: `cli/pwd@0.2.4`. Publication is separate;
+Development candidate: `cli/pwd@0.2.5`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Print the working directory for MoonX.
 
 ```sh
-moonx cli/pwd@0.2.4 [-L|-P]
+moonx cli/pwd@0.2.5 [-L|-P]
 ```
 
 ## Supported scope
@@ -34,8 +34,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/pwd@0.2.4
-moonx cli/pwd@0.2.4 -P
+moonx cli/pwd@0.2.5
+moonx cli/pwd@0.2.5 -P
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

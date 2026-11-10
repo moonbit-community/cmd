@@ -261,6 +261,10 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
+- The 2026-11-10 release candidate selects core 0.10.0 and 80 updated command
+  coordinates. Echo 0.2.4 is retained and timeout stays local-only. The 81-command
+  candidate is not a published acceptance record; promote the published baseline
+  only after uploads, registry builds and exact-version MoonX acceptance succeed.
 - Current registry baseline after the 2026-11-08 raw-path repair: core is 0.9.5.
   Published make 0.2.8, sh 0.2.9 and split 0.1.10; retained the other 77 coordinates,
   giving 80 published commands. The current workspace contains 82 local modules,

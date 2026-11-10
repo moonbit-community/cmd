@@ -1,12 +1,12 @@
 # cut
 
-Development candidate: `cli/cut@0.2.6`. Publication is separate;
+Development candidate: `cli/cut@0.2.7`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Select fields and byte positions for MoonX.
 
 ```sh
-moonx cli/cut@0.2.6 (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]
+moonx cli/cut@0.2.7 (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]
 ```
 
 ## Supported scope
@@ -43,8 +43,8 @@ The local development candidate uses delimiter searches and bounded contiguous p
 ## Examples
 
 ```sh
-printf 'x,y,z\n' | moonx cli/cut@0.2.6 -d, -f1,3
-moonx cli/cut@0.2.6 -b 1-4 fixed.txt
+printf 'x,y,z\n' | moonx cli/cut@0.2.7 -d, -f1,3
+moonx cli/cut@0.2.7 -b 1-4 fixed.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

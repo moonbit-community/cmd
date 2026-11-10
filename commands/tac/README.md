@@ -1,12 +1,12 @@
 # tac
 
-Development candidate: `cli/tac@0.1.7`. Publication is separate;
+Development candidate: `cli/tac@0.1.8`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Reverse record order for MoonX.
 
 ```sh
-moonx cli/tac@0.1.7 [OPTION]... [FILE]...
+moonx cli/tac@0.1.8 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -45,8 +45,8 @@ The local development candidate batches fixed-separator ranges within each 64 Ki
 ## Examples
 
 ```sh
-printf 'one\ntwo\n' | moonx cli/tac@0.1.7
-moonx cli/tac@0.1.7 -s '--' records.txt
+printf 'one\ntwo\n' | moonx cli/tac@0.1.8
+moonx cli/tac@0.1.8 -s '--' records.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

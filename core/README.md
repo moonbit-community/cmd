@@ -2,14 +2,14 @@
 
 Shared runtime packages used by the independently published command modules.
 
-## Unreleased internal simplification
+## 0.10.0 release candidate
 
 The workspace uses the CLI compatibility boundary in
 [ADR-0003](../docs/adr/0003-streams.md#package-ownership). The command catalog
 has moved to `tests/harness/catalog`. Unused platform, fsops and shell source
 APIs have been removed; implementation-only helpers are private, and gzip
 consumers use `decode_reader`. These are intentional source API breaks for a
-future release, not changes to the immutable 0.9.5 coordinate. Publication and
+0.10.0 release, not changes to the immutable 0.9.5 coordinate. Publication and
 exact-coordinate acceptance remain separate steps.
 
 Command-owned copy, removal, permission-mode, jq, tab-grid, sequence-evaluation
@@ -19,17 +19,16 @@ fsops keeps path relationships and filesystem mechanisms; numfmt keeps numeric
 parsing/formatting. The `stream.count_byte` forwarding API is also removed;
 call `bytesearch.count_byte` directly. Unused CLI error variants are removed.
 The immutable published interfaces remain unchanged.
-Commands with changed core dependencies will need the future core coordinate in their module
-dependencies when preparing a release; workspace checks do not validate those
-unpublished interfaces against the current registry versions.
+The changed command modules select core 0.10.0 explicitly. Workspace checks
+do not replace standalone registry builds and exact-version MoonX acceptance.
 
-The unpublished network API uses `with_response` for one scoped streaming
+The 0.10.0 network API uses `with_response` for one scoped streaming
 request. Core keeps transport, URL, fixed Unicode 15 IDNA and public-suffix
 mechanisms. Curl and Wget own Cookie, authentication, redirects, retries, resume
 and output in their private download packages; shared transfer profiles/options
 and Cookie policies are removed. The connection owner preserves structured
 hosts across public TCP/TLS calls. See [netops](netops/README.md).
-Curl and Wget also require the future core coordinate before a release;
+Curl and Wget require core 0.10.0 for this release;
 workspace builds do not establish standalone published-consumer acceptance.
 See [ADR-0005](../docs/adr/0005-transfer.md#international-url-hosts) for input,
 cookie and proxy boundaries.

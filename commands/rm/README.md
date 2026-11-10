@@ -1,12 +1,12 @@
 # rm
 
-Development candidate: `cli/rm@0.2.5`. Publication is separate;
+Development candidate: `cli/rm@0.2.6`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Remove files and directory trees for MoonX.
 
 ```sh
-moonx cli/rm@0.2.5 [OPTION]... FILE...
+moonx cli/rm@0.2.6 [OPTION]... FILE...
 ```
 
 ## Supported scope
@@ -43,8 +43,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/rm@0.2.5 temporary.txt
-moonx cli/rm@0.2.5 -i unwanted.txt
+moonx cli/rm@0.2.6 temporary.txt
+moonx cli/rm@0.2.6 -i unwanted.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

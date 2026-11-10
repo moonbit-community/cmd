@@ -1,12 +1,12 @@
 # nl
 
-Development candidate: `cli/nl@0.2.6`. Publication is separate;
+Development candidate: `cli/nl@0.2.7`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Number input lines for MoonX.
 
 ```sh
-moonx cli/nl@0.2.6 [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]
+moonx cli/nl@0.2.7 [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]
 ```
 
 ## Supported scope
@@ -43,8 +43,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/nl@0.2.6 notes.txt
-moonx cli/nl@0.2.6 -b a -w 3 -s ' ' notes.txt
+moonx cli/nl@0.2.7 notes.txt
+moonx cli/nl@0.2.7 -b a -w 3 -s ' ' notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

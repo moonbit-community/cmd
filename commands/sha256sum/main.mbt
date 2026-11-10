@@ -1,6 +1,6 @@
 ///|
 async fn main {
-  let status = @checksum.run(Sha256, @env.args()[1:], "0.2.4")
+  let status = @checksum.run(Sha256, @env.args()[1:], "0.2.5")
   if status != 0 {
     @sys.exit(status)
   }

@@ -1,12 +1,12 @@
 # strings
 
-Development candidate: `cli/strings@0.1.5`. Publication is separate;
+Development candidate: `cli/strings@0.1.6`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Extract printable byte sequences for MoonX.
 
 ```sh
-moonx cli/strings@0.1.5 [OPTION]... [FILE]...
+moonx cli/strings@0.1.6 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -45,8 +45,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/strings@0.1.5 -n 6 -t d data.bin
-printf 'hello\000world\n' | moonx cli/strings@0.1.5
+moonx cli/strings@0.1.6 -n 6 -t d data.bin
+printf 'hello\000world\n' | moonx cli/strings@0.1.6
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

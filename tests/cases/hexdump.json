@@ -327,7 +327,7 @@
         "version"
       ],
       "source_version": "workspace cli/hexdump@0.1.4 metadata contract",
-      "expected_stdout_text": "hexdump 0.1.4\n",
+      "expected_stdout_text": "hexdump 0.1.5\n",
       "expected_stderr_text": ""
     },
     {

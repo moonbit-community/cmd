@@ -1,12 +1,12 @@
 # hexdump
 
-Development candidate: `cli/hexdump@0.1.4`. Publication is separate;
+Development candidate: `cli/hexdump@0.1.5`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Display binary data for MoonX.
 
 ```sh
-moonx cli/hexdump@0.1.4 [OPTION]... [FILE]...
+moonx cli/hexdump@0.1.5 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -47,8 +47,8 @@ See [the finite option and diagnostic profile](../../docs/compatibility.md#exten
 ## Examples
 
 ```sh
-moonx cli/hexdump@0.1.4 -C data.bin
-moonx cli/hexdump@0.1.4 -s16 -n32 -v data.bin
+moonx cli/hexdump@0.1.5 -C data.bin
+moonx cli/hexdump@0.1.5 -s16 -n32 -v data.bin
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

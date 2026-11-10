@@ -1,12 +1,12 @@
 # uniq
 
-Development candidate: `cli/uniq@0.2.6`. Publication is separate;
+Development candidate: `cli/uniq@0.2.7`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Filter adjacent duplicate records for MoonX.
 
 ```sh
-moonx cli/uniq@0.2.6 [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]
+moonx cli/uniq@0.2.7 [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]
 ```
 
 ## Supported scope
@@ -40,8 +40,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-printf 'a\na\nb\n' | moonx cli/uniq@0.2.6 -c
-moonx cli/uniq@0.2.6 -d sorted.txt
+printf 'a\na\nb\n' | moonx cli/uniq@0.2.7 -c
+moonx cli/uniq@0.2.7 -d sorted.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

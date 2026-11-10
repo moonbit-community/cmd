@@ -194,6 +194,13 @@ The inherited relative-link watcher fixture is Unix-only because the public
 filesystem API cannot create that fixture on Windows. Ordinary file-watch
 recompilation has a registered CLI assertion on all three platforms.
 
+The 2026-11-10 release candidate uses core 0.10.0 and includes 80 command
+updates for the dependency refresh and accumulated fixes. Echo 0.2.4 remains
+unchanged; timeout stays local-only. Exact candidate coordinates are recorded
+in [candidate.json](../tests/release/candidate.json). Publication and complete
+exact-version MoonX acceptance are pending; the published baseline below is
+independent.
+
 The current workspace has 82 command modules, including serve and local-only
 timeout. `cli/serve@0.1.1` is published and selected by `moonx cli/serve@latest`,
 but incorrectly reports `serve 0.1.0` with `--version`. The unpublished

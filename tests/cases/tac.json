@@ -49,7 +49,7 @@
         "version"
       ],
       "source_version": "workspace cli/tac@0.1.7 metadata contract",
-      "expected_stdout_text": "tac 0.1.7\n",
+      "expected_stdout_text": "tac 0.1.8\n",
       "expected_stderr_text": ""
     },
     {

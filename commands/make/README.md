@@ -2,12 +2,12 @@
 
 Run a Make language subset for MoonX.
 
-Published: `cli/make@0.2.8`, using `cli/core@0.9.5`.
+Published: `cli/make@0.2.9`, using `cli/core@0.9.5`.
 Three-platform exact-coordinate acceptance and earlier release evidence are recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 ```sh
-moonx cli/make@0.2.8 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
+moonx cli/make@0.2.9 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
 ```
 
 ## Supported scope
@@ -125,8 +125,8 @@ their ordinary behavior. See [sh](../sh/README.md) for size-capability boundarie
 ## Examples
 
 ```sh
-moonx cli/make@0.2.8 -n
-moonx cli/make@0.2.8 -f build.mk -j 2 all
+moonx cli/make@0.2.9 -n
+moonx cli/make@0.2.9 -f build.mk -j 2 all
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

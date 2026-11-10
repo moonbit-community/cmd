@@ -3,7 +3,7 @@
 Print numeric sequences for MoonX.
 
 ```sh
-moonx cli/seq@0.2.5 [-w] [-f FORMAT] [-s STRING] [FIRST [INCREMENT]] LAST
+moonx cli/seq@0.2.6 [-w] [-f FORMAT] [-s STRING] [FIRST [INCREMENT]] LAST
 ```
 
 ## Supported scope
@@ -27,8 +27,8 @@ Accept LAST, FIRST LAST or FIRST INCREMENT LAST. Default increment is +1; use a 
 ## Examples
 
 ```sh
-moonx cli/seq@0.2.5 1 5
-moonx cli/seq@0.2.5 3 -1 1
+moonx cli/seq@0.2.6 1 5
+moonx cli/seq@0.2.6 3 -1 1
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

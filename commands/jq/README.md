@@ -1,12 +1,12 @@
 # jq
 
-Development candidate: `cli/jq@0.2.7`. Publication is separate;
+Development candidate: `cli/jq@0.2.8`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Filter JSON for MoonX.
 
 ```sh
-moonx cli/jq@0.2.7 [OPTION]... [FILTER] [FILE...]
+moonx cli/jq@0.2.8 [OPTION]... [FILTER] [FILE...]
 ```
 
 ## Supported scope
@@ -57,8 +57,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.7 -r '.name'
-moonx cli/jq@0.2.7 -n -c '{ok: true, values: [1, 2]}'
+printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.8 -r '.name'
+moonx cli/jq@0.2.8 -n -c '{ok: true, values: [1, 2]}'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

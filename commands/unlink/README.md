@@ -3,7 +3,7 @@
 Remove one file name for MoonX.
 
 ```sh
-moonx cli/unlink@0.1.5 FILE
+moonx cli/unlink@0.1.6 FILE
 ```
 
 ## Supported scope
@@ -24,7 +24,7 @@ Remove exactly one non-directory entry. A symbolic link is removed without follo
 ## Examples
 
 ```sh
-moonx cli/unlink@0.1.5 temporary.txt
+moonx cli/unlink@0.1.6 temporary.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

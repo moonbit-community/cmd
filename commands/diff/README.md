@@ -1,12 +1,12 @@
 # diff
 
-Development candidate: `cli/diff@0.2.5`. Publication is separate;
+Development candidate: `cli/diff@0.2.6`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Compare files and directories for MoonX.
 
 ```sh
-moonx cli/diff@0.2.5 [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2
+moonx cli/diff@0.2.6 [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2
 ```
 
 ## Supported scope
@@ -45,8 +45,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/diff@0.2.5 -u old.txt new.txt
-moonx cli/diff@0.2.5 -r old-dir new-dir
+moonx cli/diff@0.2.6 -u old.txt new.txt
+moonx cli/diff@0.2.6 -r old-dir new-dir
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

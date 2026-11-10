@@ -1,12 +1,12 @@
 # sed
 
-Development candidate: `cli/sed@0.2.4`. Publication is separate;
+Development candidate: `cli/sed@0.2.5`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Edit text streams for MoonX.
 
 ```sh
-moonx cli/sed@0.2.4 [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]
+moonx cli/sed@0.2.5 [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]
 ```
 
 ## Supported scope
@@ -37,8 +37,8 @@ See [the finite option and diagnostic profile](../../docs/compatibility.md#exten
 ## Examples
 
 ```sh
-moonx cli/sed@0.2.4 's/old/new/g' file.txt
-moonx cli/sed@0.2.4 -n '2,5p' file.txt
+moonx cli/sed@0.2.5 's/old/new/g' file.txt
+moonx cli/sed@0.2.5 -n '2,5p' file.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

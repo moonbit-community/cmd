@@ -1,13 +1,13 @@
 # split
 
-Published: `cli/split@0.1.10`, using `cli/core@0.9.5`.
+Published: `cli/split@0.1.11`, using `cli/core@0.9.5`.
 Three-platform exact-coordinate acceptance and earlier release evidence are recorded in the
 [changelog](../../CHANGELOG.md#2026-11-08).
 
 Split input into pieces for MoonX.
 
 ```sh
-moonx cli/split@0.1.10 [OPTION]... [FILE [PREFIX]]
+moonx cli/split@0.1.11 [OPTION]... [FILE [PREFIX]]
 ```
 
 ## Supported scope
@@ -63,8 +63,8 @@ A complete filter ending in backslash-LF executes at EOF; genuinely unfinished
 syntax still fails.
 
 ```sh
-moonx cli/split@0.1.10 -l 100 input.txt part-
-moonx cli/split@0.1.10 -b 64K -d input.bin chunk-
+moonx cli/split@0.1.11 -l 100 input.txt part-
+moonx cli/split@0.1.11 -b 64K -d input.bin chunk-
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

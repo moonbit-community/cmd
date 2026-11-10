@@ -3,7 +3,7 @@
 Filter JSON log lines for MoonX.
 
 ```sh
-moonx cli/jqlog@0.2.5 [options] <query> [input]
+moonx cli/jqlog@0.2.6 [options] <query> [input]
 ```
 
 ## Supported scope
@@ -28,8 +28,8 @@ Apply a jq-compatible filter to each valid JSON line and emit compact JSON. Read
 ## Examples
 
 ```sh
-moonx cli/jqlog@0.2.5 -f logs.ndjson '.message'
-printf '%s\n' '{"level":"info"}' | moonx cli/jqlog@0.2.5 '.level'
+moonx cli/jqlog@0.2.6 -f logs.ndjson '.message'
+printf '%s\n' '{"level":"info"}' | moonx cli/jqlog@0.2.6 '.level'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

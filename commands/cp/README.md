@@ -1,12 +1,12 @@
 # cp
 
-Development candidate: `cli/cp@0.2.5`. Publication is separate;
+Development candidate: `cli/cp@0.2.6`. Publication is separate;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Copy files and directories for MoonX.
 
 ```sh
-moonx cli/cp@0.2.5 [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
+moonx cli/cp@0.2.6 [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST
 ```
 
 ## Supported scope
@@ -52,8 +52,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/cp@0.2.5 --no-preserve=mode source.txt new.txt
-moonx cli/cp@0.2.5 --no-preserve=mode -R source-dir new-dir
+moonx cli/cp@0.2.6 --no-preserve=mode source.txt new.txt
+moonx cli/cp@0.2.6 --no-preserve=mode -R source-dir new-dir
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

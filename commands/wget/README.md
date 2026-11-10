@@ -3,7 +3,7 @@
 Download HTTP and HTTPS resources for MoonX.
 
 ```sh
-moonx cli/wget@0.2.5 [OPTION]... [URL]...
+moonx cli/wget@0.2.6 [OPTION]... [URL]...
 ```
 
 ## Supported scope
@@ -155,8 +155,8 @@ Cookie Domain normalization remains separate work.
 ## Examples
 
 ```sh
-moonx cli/wget@0.2.5 -O page.html https://example.com/
-moonx cli/wget@0.2.5 -q -O - https://example.com/
+moonx cli/wget@0.2.6 -O page.html https://example.com/
+moonx cli/wget@0.2.6 -q -O - https://example.com/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0005-transfer.md)

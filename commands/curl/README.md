@@ -3,7 +3,7 @@
 Transfer HTTP and HTTPS data for MoonX.
 
 ```sh
-moonx cli/curl@0.2.5 [options...] <url>
+moonx cli/curl@0.2.6 [options...] <url>
 ```
 
 ## Supported scope
@@ -104,8 +104,8 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
 ## Examples
 
 ```sh
-moonx cli/curl@0.2.5 https://example.com/
-moonx cli/curl@0.2.5 -L -o page.html https://example.com/
+moonx cli/curl@0.2.6 https://example.com/
+moonx cli/curl@0.2.6 -L -o page.html https://example.com/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0005-transfer.md)

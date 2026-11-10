@@ -3,7 +3,7 @@
 Print environment values for MoonX.
 
 ```sh
-moonx cli/printenv@0.2.3 [-0] [NAME...]
+moonx cli/printenv@0.2.4 [-0] [NAME...]
 ```
 
 ## Supported scope
@@ -25,8 +25,8 @@ Print all environment entries, or values for the named variables in operand orde
 ## Examples
 
 ```sh
-moonx cli/printenv@0.2.3 PATH
-moonx cli/printenv@0.2.3 HOME PATH
+moonx cli/printenv@0.2.4 PATH
+moonx cli/printenv@0.2.4 HOME PATH
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

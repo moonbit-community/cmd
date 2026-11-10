@@ -12,6 +12,18 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-10
+
+Release preparation; uploads and exact-coordinate acceptance pending.
+
+- Prepare core 0.10.0 for the command-owned policy and transport API changes,
+  and 80 command updates for the refreshed dependencies and accumulated fixes.
+  Keep echo 0.2.4 unchanged and timeout local-only. The candidate contains 81
+  releasable commands, including serve 0.1.2.
+- Align module dependencies, version output, command examples and current
+  metadata expectations. Retain the independent published coordinates and
+  frozen cases until publication and exact-version MoonX acceptance succeed.
+
 ## 2026-11-09
 
 Development only.

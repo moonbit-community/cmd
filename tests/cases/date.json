@@ -79,7 +79,7 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "date 0.1.5\n",
+      "expected_stdout_text": "date 0.1.6\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
