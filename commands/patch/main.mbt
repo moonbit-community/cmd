@@ -62,7 +62,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("patch \{command_version}\n")
+    @stdio.stdout.write("patch \{MODULE_VERSION}\n")
     return 0
   }
   if parsed.operands.length() > 2 {
@@ -368,7 +368,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("patch \{command_version}\n")
+    @stdio.stdout.write("patch \{MODULE_VERSION}\n")
     return
   }
   let status = run(@env.args()[1:]) catch {

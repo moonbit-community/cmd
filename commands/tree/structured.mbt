@@ -151,7 +151,7 @@ fn url_path(value : String) -> String {
 ///|
 fn html_intro(title : String) -> String {
   "<!DOCTYPE html>\n<html>\n<head>\n <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n <meta name=\"Author\" content=\"Made by 'tree'\">\n <meta name=\"GENERATOR\" content=\"cli/tree " +
-  command_version +
+  MODULE_VERSION +
   "\">\n <title>" +
   html_escape(title) +
   "</title>\n" +
@@ -262,7 +262,7 @@ async fn render_html(
   }
   out.write_string(
     "\t<hr>\n\t<p class=\"VERSION\">cli/tree " +
-    command_version +
+    MODULE_VERSION +
     "</p>\n</body>\n</html>\n",
   )
   output.write(out.to_string())

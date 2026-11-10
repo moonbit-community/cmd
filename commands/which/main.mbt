@@ -73,7 +73,7 @@ async fn candidates(name : String) -> Array[String] {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("which 0.1.6\n")
+    @stdio.stdout.write("which \{MODULE_VERSION}\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -95,7 +95,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("which \{command_version}\n")
+    @stdio.stdout.write("which \{MODULE_VERSION}\n")
     return
   }
   if parsed.operands.is_empty() {

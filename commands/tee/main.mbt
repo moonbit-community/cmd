@@ -210,7 +210,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("tee 0.2.5\n")
+    @stdio.stdout.write("tee \{MODULE_VERSION}\n")
     return
   }
   let mut mode = Traditional

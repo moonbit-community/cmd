@@ -206,7 +206,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("realpath \{command_version}\n")
+    @stdio.stdout.write("realpath \{MODULE_VERSION}\n")
     return
   }
   if parsed.operands.is_empty() {

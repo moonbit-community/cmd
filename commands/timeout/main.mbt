@@ -30,7 +30,7 @@ fn parse_duration(value : String) -> Int32 raise {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("timeout 0.2.1\n")
+    @stdio.stdout.write("timeout \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]

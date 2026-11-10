@@ -115,7 +115,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("column 0.1.7\n")
+    @stdio.stdout.write("column \{MODULE_VERSION}\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -138,7 +138,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("column \{command_version}\n")
+    @stdio.stdout.write("column \{MODULE_VERSION}\n")
     return
   }
   let separator = parsed.last_value("separator")

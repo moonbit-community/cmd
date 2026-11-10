@@ -17,3 +17,10 @@ pkgtype(kind: "executable")
 import {
   "moonbitlang/async/pipe",
 } for "wbtest"
+
+rule(
+  name: "gen_version",
+  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
+)
+
+dev_build(rule: "gen_version", input: "moon.mod", output: "version.mbt")

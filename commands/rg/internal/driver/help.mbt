@@ -1,10 +1,6 @@
 ///|
-/// The cli/rg package version used by every version spelling.
-let rg_version : String = "0.1.2"
-
-///|
 fn generate_version_digits() -> String {
-  rg_version
+  MODULE_VERSION
 }
 
 ///|

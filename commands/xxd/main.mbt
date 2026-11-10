@@ -113,7 +113,7 @@ fn parse_args(args : ArrayView[String]) -> @cli.ParsedArgs raise @cli.CliError {
 async fn main {
   let args = @env.args()[1:]
   if args is ["--version"] {
-    @stdio.stdout.write("xxd 0.2.6\n")
+    @stdio.stdout.write("xxd \{MODULE_VERSION}\n")
     return
   }
   let parsed = parse_args(args) catch {

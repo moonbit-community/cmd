@@ -10,6 +10,13 @@ Development acceptance runs current Wasm commands on Linux, macOS and Windows.
 Native is used for test tools. Resource observations and exact-version MoonX
 acceptance have separate manual workflows; see [tests](tests/README.md).
 
+Each command's `moon.mod` is the source of its package version. A `dev_build`
+pre-build rule runs the pinned `moonbit-community/gen_version@0.0.2` tool through
+MoonX to regenerate `version.mbt` and its `MODULE_VERSION` constant. The rule
+lives in the package that renders version metadata (`internal/driver` for `rg`
+and `typst`, the root package for other commands). Keep the generated source in
+Git so published dependencies can build without running development rules.
+
 ## Features
 
 - [x] Text, data and archives: `base32`, `base64`, `cat`, `cksum`, `cmp`,

@@ -52,7 +52,7 @@ fn parse_duration(text : String) -> Double raise CliError {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("sleep 0.2.4\n")
+    @stdio.stdout.write("sleep \{MODULE_VERSION}\n")
     return
   }
   let raw_args = @env.args()[1:]
@@ -66,7 +66,7 @@ async fn main {
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("sleep \{command_version}\n")
+    @stdio.stdout.write("sleep \{MODULE_VERSION}\n")
     return
   }
   if args.is_empty() {

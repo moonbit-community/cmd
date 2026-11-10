@@ -16,7 +16,7 @@ fn help_message() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("fold 0.1.5\n")
+    @stdio.stdout.write("fold \{MODULE_VERSION}\n")
     return
   }
   let args : Array[String] = []
@@ -53,7 +53,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("fold \{command_version}\n")
+    @stdio.stdout.write("fold \{MODULE_VERSION}\n")
     return
   }
   let width = @string.parse_int(parsed.last_value("width").unwrap_or("80")) catch {

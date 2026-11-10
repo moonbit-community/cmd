@@ -31,7 +31,7 @@ pub async fn run_main(argv : Array[String]) -> Int32 {
 ///|
 async fn run(argv : Array[String]) -> Int32 {
   if argv == ["--version"] {
-    @platform.print_stdout("typst 0.1.1\n")
+    @platform.print_stdout("typst \{MODULE_VERSION}\n")
     return 0
   }
   if argv == ["--help"] {

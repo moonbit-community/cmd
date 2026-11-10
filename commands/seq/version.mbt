@@ -1,2 +1,1 @@
-///|
-let command_version = "0.2.6"
+const MODULE_VERSION = "0.2.6"

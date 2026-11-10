@@ -88,7 +88,7 @@ async fn process(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("split 0.1.11\n")
+    @stdio.stdout.write("split \{MODULE_VERSION}\n")
     return
   }
   let parsed = parse_args(@env.args()[1:]) catch {
@@ -103,7 +103,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("split 0.1.11\n")
+    @stdio.stdout.write("split \{MODULE_VERSION}\n")
     return
   }
   try {

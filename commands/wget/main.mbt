@@ -556,7 +556,7 @@ async fn run(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("wget 0.2.6\n")
+    @stdio.stdout.write("wget \{MODULE_VERSION}\n")
     return
   }
   let options = parse_options(@env.args()[1:]) catch {

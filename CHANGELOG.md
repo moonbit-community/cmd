@@ -14,6 +14,13 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-10
 
+Development only.
+
+- Generate package version constants for all 82 command modules from their
+  `moon.mod` files with pinned `gen_version@0.0.2` pre-build rules. Use those
+  constants for version output and generated metadata, preserving package
+  versions and the independent published expectations.
+
 Published and accepted through exact-version MoonX.
 
 - Publish core 0.10.0 and 80 command updates in serial order from source
