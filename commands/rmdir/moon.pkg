@@ -1,7 +1,7 @@
 import {
   "moonbitlang/x/path",
   "cli/core/platform",
-  "cli/core/cli",
+  "moonbitlang/core/argparse",
   "cli/core/fsops",
   "moonbitlang/async",
   "moonbitlang/async/fs",

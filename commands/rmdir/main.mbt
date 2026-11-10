@@ -1,4 +1,21 @@
 ///|
+let command : @argparse.Command = @argparse.Command(
+  "rmdir",
+  flags=[
+    @argparse.FlagArg("parents", short='p'),
+    @argparse.FlagArg("ignore-fail-on-non-empty", short='I'),
+    @argparse.FlagArg("verbose", short='v'),
+    @argparse.FlagArg("help"),
+  ],
+  positionals=[
+    @argparse.PositionArg("operands", num_args=@argparse.ValueRange()),
+  ],
+  disable_help_flag=true,
+  disable_version_flag=true,
+  disable_help_subcommand=true,
+)
+
+///|
 fn directory_not_empty(error : @os_error.OSError) -> Bool {
   let @os_error.OSError(code, ..) = error
   // Public OSError carries the host error number: ENOTEMPTY on POSIX,
@@ -65,28 +82,50 @@ async fn main {
     return
   }
   let args = @env.args()[1:]
-  let parsed = @cli.parse(args, [
-    @cli.flag("parents", short='p'),
-    @cli.flag("ignore-fail-on-non-empty", short='I'),
-    @cli.flag("verbose", short='v'),
-    @cli.flag("help"),
-  ]) catch {
-    @cli.CliError(option~, message~, ..) => {
+  let parsed = command.parse(argv=args, env=Map([])) catch {
+    error => {
+      let text = error.to_string()
+      let line = match text.rev_find("' found") {
+        Some(end) => text[:end + 7]
+        None => text.split("\n").next().unwrap_or(text[:])
+      }
+      let (message, option) = match line {
+        [.. "error: unexpected argument '--", .. rest] => {
+          let spelling = rest.strip_suffix("' found").unwrap_or(rest)
+          let name = spelling.split("=").next().unwrap_or(spelling).to_owned()
+          let message = if spelling.contains("=") &&
+            ["parents", "ignore-fail-on-non-empty", "verbose", "help"].contains(
+              name,
+            ) {
+            "flag does not accept a value"
+          } else {
+            "unknown option"
+          }
+          (message, name)
+        }
+        [.. "error: unexpected argument '-", .. rest] =>
+          (
+            "unknown short option",
+            rest.strip_suffix("' found").unwrap_or(rest).to_owned(),
+          )
+        _ => (text, "")
+      }
       @stdio.stderr.write("rmdir: \{message}: '\{option}'\n")
       @sys.exit(1)
       return
     }
   }
-  if parsed.contains("help") {
+  let operands = parsed.values.get("operands").unwrap_or([])
+  if parsed.flags.contains("help") {
     @stdio.stdout.write(
       "Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\n  -p, --parents                  remove empty parents, stopping at the first failure\n  -v, --verbose                  report each removal attempt before it runs\n      --ignore-fail-on-non-empty  suppress only failures attributable to nonemptiness\n  -I is a project short alias of --ignore-fail-on-non-empty, not a GNU option.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
-  let directories = parsed.operands
-  let parents = parsed.contains("parents")
-  let ignore_non_empty = parsed.contains("ignore-fail-on-non-empty")
-  let verbose = parsed.contains("verbose")
+  let directories = operands
+  let parents = parsed.flags.contains("parents")
+  let ignore_non_empty = parsed.flags.contains("ignore-fail-on-non-empty")
+  let verbose = parsed.flags.contains("verbose")
   if directories.is_empty() {
     @stdio.stderr.write("rmdir: missing operand\n")
     @sys.exit(1)
