@@ -138,7 +138,6 @@ async fn serve_static_scenario(
             },
           ),
         )
-        assert_eq(response.headers.get("Connection"), Some("close"), msg=target)
       }
       trace.push({
         "target": target,
@@ -207,10 +206,20 @@ async fn serve_static_scenario(
         }
         assert_true(headers.contains("content-length: " + length))
         if status == "200 OK" {
-          assert_true(headers.contains("connection: close"))
+          assert_false(headers.contains("connection: close"))
         }
       }
-      assert_eq(connection.read_all().binary(), b"")
+      // The 200 HEAD response must leave the connection reusable.
+      connection.write("GET /missing HTTP/1.1\r\nHost: \{address}\r\n\r\n")
+      assert_eq(connection.read_until("\r\n"), Some("HTTP/1.1 404 Not Found"))
+      for ;; {
+        guard connection.read_until("\r\n") is Some(line) else {
+          fail("serve closed before completing the reused response headers")
+        }
+        if line == "" {
+          break
+        }
+      }
     })
     child.cancel()
     @async.with_timeout(5000, () => {

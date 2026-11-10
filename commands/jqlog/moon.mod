@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "jqlog command for MoonX."
 
 import {
-  "moonbitlang/async@0.22.7",
+  "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.7",
   "bobzhang/moonjq@0.2.0",
 }

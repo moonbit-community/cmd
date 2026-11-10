@@ -9,7 +9,7 @@ Updated: 2026-11-08
 Implement each operation's correct subset through released public MoonBit APIs.
 Do not infer inode identity from paths, timestamps or content, use rename as
 inode-preserving overwrite, or rewrite content to simulate touch. Public async
-0.22.7 lacks the identity, raw mode, handle truncation, timestamp-setting,
+0.22.9 lacks the identity, raw mode, handle truncation, timestamp-setting,
 hard-link and readlink operations required by the boundaries below. Host
 observers, private APIs and FFI do not expand the product's capabilities.
 
@@ -21,7 +21,7 @@ must remain inside the canonical service root with a component boundary;
 only regular files are opened. Launcher-supplied Wasm policy can separately
 grant root-only reads and loopback bind, without writes or outbound connections.
 It does not replace URL containment checks when the caller grants broader reads.
-Path canonicalization and open remain separate operations: released async 0.22.7
+Path canonicalization and open remain separate operations: released async 0.22.9
 does not provide descriptor-relative confined opening on Wasm, and the current
 host policy does not establish race-free filesystem isolation. Hostile concurrent
 replacement is an explicit unsupported boundary. Reopen this decision when a
@@ -157,7 +157,7 @@ Tree's name-only link profile resolves issue #74 without fabricating readlink
 text or replacing it with realpath. Dangling and cyclic links remain displayable.
 Size requests reject selected links before querying their referents, and
 `ln=target` color requests reject instead of following the target. Reopen target
-display only with public readlink support. Async 0.22.7 already exposes no-follow
+display only with public readlink support. Async 0.22.9 already exposes no-follow
 entry sizes; extending tree's selected-link-size profile is a separate decision
 requiring exact link, dangling-target and no-follow tests. The CLI contracts in `tests/cases/tree.json`
 and private traversal tests in `commands/tree/symlink_wbtest.mbt` own this scope.
@@ -195,7 +195,7 @@ attributes/ACLs without calling them POSIX permission bits. Missing required
 host setup or observation fails infrastructure; host utilities never implement
 the product predicates.
 
-The async 0.22.7 Native Windows observer returns FILETIME seconds since 1601;
+The async 0.22.9 Native Windows observer returns FILETIME seconds since 1601;
 its records retain that raw pair and subtract 11,644,473,600 seconds only in the
 test observer. The pinned Wasm host already converts to Unix time in
 [`windows_timestamp`](https://github.com/moonbitlang/moon/blob/940aa18df6db921386e87e16fa94b84fa267864b/crates/moonrun/src/filesystem/job/stat.rs#L246).

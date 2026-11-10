@@ -62,7 +62,7 @@ async fn filesystem_windows_id(
 
 ///|
 fn filesystem_native_unix_time(value : (Int64, Int32)) -> (Int64, Int32) {
-  // async 0.22.7 Native returns Windows FILETIME seconds since 1601. The
+  // async 0.22.9 Native returns Windows FILETIME seconds since 1601. The
   // pinned Wasm host already returns Unix time; this is an observer-only fix.
   let (seconds, nanos) = value
   (

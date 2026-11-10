@@ -39,8 +39,10 @@ Development only.
   [Counts, cost boundaries and runs](tests/README.md#ci-timing-observations-2026-11-09)
   remain explicit. No package is published; frozen acceptance coordinates are unchanged.
 
-- Write successful `serve` file bodies directly to the socket instead of
-  through the 1 KiB HTTP send buffer; these responses now close the connection.
+- Upgrade workspace modules and test tools to `moonbitlang/async@0.22.9`,
+  keeping one async baseline. In `serve`, stream file bodies through the HTTP
+  fixed-length path; large chunks avoid the per-KiB send-buffer copy without
+  passthrough, so successful responses keep the connection open.
 
 - Use the standard MoonBit argument parser for `serve`, including generated
   help, attached port values and usage diagnostics for invalid arguments.
