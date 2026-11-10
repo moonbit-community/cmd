@@ -1,7 +1,7 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-11-08
+Updated: 2026-11-10
 
 ## Extensions and diagnostics
 
@@ -195,7 +195,10 @@ recompilation has a registered CLI assertion on all three platforms.
 The 2026-11-10 release uses core 0.10.0 and includes 80 command
 updates for the dependency refresh and accumulated fixes. Echo 0.2.4 remains
 unchanged; timeout stays local-only. All 81 uploads, registry builds and archive
-checksums were verified. Exact coordinates and independently frozen expectations
+checksums were verified. Local and
+[three-platform exact-version MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42758620841)
+passed all 81 coordinates, including the pinned Linux differential profile.
+Exact coordinates and independently frozen expectations
 are recorded in [latest.json](../tests/release/latest.json) and
 [latest-cases.json](../tests/release/latest-cases.json). The
 [release record](../CHANGELOG.md#2026-11-10) records exact-version acceptance.

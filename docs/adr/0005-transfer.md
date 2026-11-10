@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-09
+Updated: 2026-11-10
 
 ## Decision
 
@@ -60,7 +60,7 @@ Cookie domain/path/Secure/expiry, update order and malformed/overflow Max-Age
 policies remain profile-specific. Exact wire tests own the detailed cases;
 this does not establish browser policy or full jar serialization.
 
-The unpublished Curl profile checks case-sensitive `__Secure-` and `__Host-`
+The Curl 0.2.6 profile checks case-sensitive `__Secure-` and `__Host-`
 prefixes before mutating storage, including Netscape imports. Header cookie
 names, values and attributes trim ASCII SP/HTAB before identity, prefix and
 overlay decisions. Empty Domain, Max-Age and Expires attributes retain earlier
@@ -260,8 +260,8 @@ success does not clear an earlier failure. The previous implementation retained
 the last failure, so network error 4 followed by HTTP error 8 incorrectly exited
 8. `wget-exit-network-before-http` and `wget-exit-http-before-network` in the
 [CLI cases](../../tests/cases/wget.json) assert both orders and a later successful
-body, with the pinned Linux oracle route registered in the case index. This is
-an unpublished workspace correction; the frozen 0.2.5 coordinate is unchanged.
+body, with the pinned Linux oracle route registered in the case index. This
+correction ships in Wget 0.2.6; the immutable 0.2.5 coordinate is unchanged.
 
 Wget classifies every HTTP 401 as authentication failure and maps it to 6,
 including absent credentials and missing or unsupported challenges. Other HTTP
@@ -276,7 +276,7 @@ cases cover statuses and later successful output. Wget's private wire test
 checks both challenge-based and preemptive credentials, exact Authorization
 bytes, request counts, challenge-free 401 controls and unopened file contents.
 The existing successful Basic case and Curl rejection cases remain controls.
-The unpublished header repair recognizes Basic among repeated WWW-Authenticate
+The Wget 0.2.6 header repair recognizes Basic among repeated WWW-Authenticate
 fields and comma-separated challenges, respecting quoted commas and escaped
 quotes. A Basic-named auth parameter or a longer scheme token does not qualify.
 It does not implement non-Basic authentication.
@@ -325,7 +325,7 @@ not establish full curl/Wget parity or performance qualification.
 
 ## International URL hosts
 
-The unpublished converter pins Unicode 15.0.0 mapping, derived IDNA categories,
+The core 0.10.0 converter pins Unicode 15.0.0 mapping, derived IDNA categories,
 canonical combining classes, general categories, bidi and joining properties
 to the complete original inputs in `tests/fixtures/idna`. The pure MoonBit
 generator verifies every input hash and full mapping coverage. The published

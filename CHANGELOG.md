@@ -14,7 +14,7 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-10
 
-Publication complete; exact-coordinate acceptance pending before merge.
+Published and accepted through exact-version MoonX.
 
 - Publish core 0.10.0 and 80 command updates in serial order from source
   `dec64de7`, after [three-platform development checks and Linux comparison](https://github.com/moonbit-community/cmd/actions/runs/42752161098).
@@ -24,12 +24,17 @@ Publication complete; exact-coordinate acceptance pending before merge.
   original failure logs are retained.
 - Preserve all 2,850 earlier frozen definitions, add 978 independently specified
   regressions, and update 98 version/HTML metadata or help expectations.
-  The proposed published baseline contains 3,828 definitions. Local and
-  three-platform exact-version MoonX acceptance must pass before this change
-  becomes the mainline baseline. No performance qualification is claimed.
-- The first published acceptance run exposed eight stale help expectations.
-  Reconcile them with the pre-existing independent command tests and reviewed
-  help changes; retain the failed run and require a complete acceptance rerun.
+  The published baseline contains 3,828 definitions. Local acceptance passes
+  3,517 semantic checks. [Three-platform exact-version MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42758620841)
+  passes all 81 coordinates: Linux 3,532, macOS 3,517 and Windows 2,954 semantic
+  checks, plus 2,667 pinned Linux differential checks, with zero failures.
+  Declared platform exclusions remain explicit in each run's results.
+- Retain the [first acceptance failure](https://github.com/moonbit-community/cmd/actions/runs/42756840161):
+  eight stale help expectations were reconciled with the pre-existing independent
+  tests and reviewed help changes before the complete rerun. Local Typst startup
+  initially hit official prebuild download timeouts; download and verify the
+  official SHA-256 before caching it, then rerun complete local acceptance in a
+  fresh report directory. No performance qualification is claimed.
 
 ## 2026-11-09
 

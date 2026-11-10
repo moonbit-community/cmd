@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-08
+Updated: 2026-11-10
 
 ## Decision
 
@@ -65,7 +65,7 @@ paths and continues remaining operands. No-clobber/update skips are successful
 no-ops. The last ln -f/-i selector wins. Mv timestamp decisions do not follow
 symlinks, including dangling entries.
 
-The unpublished ln/mv backup repair scans sibling names once and chooses the
+The ln 0.2.6 and mv 0.2.8 backup repair scans sibling names once and chooses the
 version after the highest valid `NAME.~N~`, where N is positive decimal without
 leading zeroes. Compare and increment digits as strings to avoid machine-integer
 overflow. Existing mode uses a simple suffix only when no valid numbered name
@@ -106,7 +106,7 @@ and after mutation, and exact diagnostics. Rollback stays cancellable because
 cancellation may follow a committed creation; an acknowledged-commit test checks
 that the new entry and backup survive. POSIX checks a real symlink; Windows uses
 an injected file commit to test cancellation ownership and makes no link-support
-claim. This is an unpublished diagnostic repair, not a stronger filesystem
+claim. This diagnostic repair ships in ln 0.2.6 and does not strengthen the filesystem
 transaction guarantee. Reconsider cancellation rollback only with a public API
 that establishes commit state and handle-relative identity.
 
