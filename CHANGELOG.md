@@ -14,15 +14,19 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-10
 
-Release preparation; uploads and exact-coordinate acceptance pending.
+Publication complete; exact-coordinate acceptance pending before merge.
 
-- Prepare core 0.10.0 for the command-owned policy and transport API changes,
-  and 80 command updates for the refreshed dependencies and accumulated fixes.
-  Keep echo 0.2.4 unchanged and timeout local-only. The candidate contains 81
-  releasable commands, including serve 0.1.2.
-- Align module dependencies, version output, command examples and current
-  metadata expectations. Retain the independent published coordinates and
-  frozen cases until publication and exact-version MoonX acceptance succeed.
+- Publish core 0.10.0 and 80 command updates in serial order from source
+  `dec64de7`, after [three-platform development checks and Linux comparison](https://github.com/moonbit-community/cmd/actions/runs/42752161098).
+  Verify all 81 uploads, registry builds and archive checksums. Keep echo 0.2.4
+  unchanged and timeout local-only; the released inventory contains 81 commands.
+  Five transient upload failures were confirmed absent before retrying; their
+  original failure logs are retained.
+- Preserve all 2,850 earlier frozen definitions, add 978 independently specified
+  regressions, and update 90 version/HTML metadata or env help expectations.
+  The proposed published baseline contains 3,828 definitions. Local and
+  three-platform exact-version MoonX acceptance must pass before this change
+  becomes the mainline baseline. No performance qualification is claimed.
 
 ## 2026-11-09
 
