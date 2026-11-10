@@ -10,7 +10,7 @@ moonx cli/wget@0.2.6 [OPTION]... [URL]...
 
 Download URLs or URL lists with resume, conditional requests, headers/bodies, retries, redirects, Basic authentication and cookies.
 
-Unreleased workspace correction: multiple URL failures retain the lowest
+Version 0.2.6: multiple URL failures retain the lowest
 nonzero transfer exit code, regardless of operand order. A later success keeps
 that failure status and still writes its response body. HTTP 401 returns 6,
 including absent credentials and missing or unsupported challenges; other HTTP
@@ -19,7 +19,7 @@ failure 4 takes precedence over authentication failure 6, which takes precedence
 over HTTP failure 8. The published 0.2.5
 coordinate is unchanged; see [ADR-0005](../../docs/adr/0005-transfer.md).
 
-The workspace recognizes Basic challenges in repeated WWW-Authenticate fields
+The command recognizes Basic challenges in repeated WWW-Authenticate fields
 and comma-separated challenge lists, preserving quoted commas and escapes.
 Final response fields retain their order, casing and repetition after
 optional-whitespace normalization. Same-name request headers still use the last
@@ -44,12 +44,12 @@ Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
 sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
 rules do not apply to Wget. Cookie dates follow the finite C-locale profile
 below; remaining malformed jar grammar stays open under issue #34.
-The workspace applies the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
+The command applies the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
 to ASCII response cookie domains and hosts, including wildcard and exception rules. Exact public-suffix
 domains keep Wget's domain scope; imported files retain Wget's separate policy.
-Published coordinates retain their recorded profile.
+Earlier coordinates retain their recorded profile.
 
-The unpublished `--local-encoding=UTF-8` option enables the pinned
+The `--local-encoding=UTF-8` option enables the pinned
 [Unicode 15 IDNA profile](../../tests/fixtures/idna/README.md) for URL hosts,
 including whole-host transitional retry. Like the fixed oracle build, default
 raw non-ASCII input retains its spelling; percent-encoded UTF-8 hosts are
@@ -65,7 +65,7 @@ Outgoing Host fields bracket mapped colons and omit the scheme's default port.
 | Option | Description |
 | --- | --- |
 | `-q, --quiet` | quiet (no output) |
-| `--local-encoding=ENC` | Select UTF-8 or ASCII URL-host input in the unpublished workspace. |
+| `--local-encoding=ENC` | Select UTF-8 or ASCII URL-host input. |
 | `-O, --output-document=FILE` | write documents to FILE |
 | `-o, --output-file=FILE` | log messages to FILE |
 | `-a, --append-output=FILE` | append messages to FILE |
@@ -101,7 +101,7 @@ Outgoing Host fields bracket mapped colons and omit the scheme's default port.
 
 ## Limitations
 
-The workspace checks ASCII response cookie domains using the complete pinned PSL.
+The command checks ASCII response cookie domains using the complete pinned PSL.
 Admission folds ASCII case and strips leading dots without rewriting the
 stored key. The fixed Linux Wget build disables NLS: a non-ASCII host or Domain
 uses its older label heuristic instead of Unicode normalization. Exact matches

@@ -1,6 +1,6 @@
 # wc
 
-Development candidate: `cli/wc@0.2.7`. Publication is separate;
+Published version: `cli/wc@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Count input records and bytes for MoonX.

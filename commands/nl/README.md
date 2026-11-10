@@ -1,6 +1,6 @@
 # nl
 
-Development candidate: `cli/nl@0.2.7`. Publication is separate;
+Published version: `cli/nl@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Number input lines for MoonX.

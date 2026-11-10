@@ -1,6 +1,6 @@
 # mv
 
-Development candidate: `cli/mv@0.2.8`. Publication is separate;
+Published version: `cli/mv@0.2.8`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Move files and directories for MoonX.
@@ -13,7 +13,7 @@ moonx cli/mv@0.2.8 [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUF
 
 Rename or move into directories, with overwrite selection, update modes and backups.
 
-In the unpublished development candidate, numbered backups use one more than
+In version 0.2.8, numbered backups use one more than
 the highest existing positive, unpadded decimal version, retaining gaps and all
 older backups. Existing mode uses the same numbering when such a backup exists,
 and the simple suffix otherwise. Directory scan failures remain errors.

@@ -1,6 +1,6 @@
 # cat
 
-Development candidate: `cli/cat@0.2.6`. Publication is separate;
+Published version: `cli/cat@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Concatenate files and stdin for MoonX.

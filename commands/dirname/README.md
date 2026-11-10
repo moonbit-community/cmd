@@ -1,6 +1,6 @@
 # dirname
 
-Development candidate: `cli/dirname@0.2.5`. Publication is separate;
+Published version: `cli/dirname@0.2.5`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Extract parent paths for MoonX.

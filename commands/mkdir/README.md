@@ -1,9 +1,9 @@
 # mkdir
 
-Development candidate: `cli/mkdir@0.2.7`. Publication is separate;
+Published version: `cli/mkdir@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
-The candidate builds independently against its declared `cli/core@0.9.1`.
+The published module builds independently against its declared `cli/core@0.10.0`.
 Octal mode validation belongs to this command's input boundary and uses the
 public integer parser; it does not require an unpublished core export.
 

@@ -23,10 +23,13 @@ Publication complete; exact-coordinate acceptance pending before merge.
   Five transient upload failures were confirmed absent before retrying; their
   original failure logs are retained.
 - Preserve all 2,850 earlier frozen definitions, add 978 independently specified
-  regressions, and update 90 version/HTML metadata or env help expectations.
+  regressions, and update 98 version/HTML metadata or help expectations.
   The proposed published baseline contains 3,828 definitions. Local and
   three-platform exact-version MoonX acceptance must pass before this change
   becomes the mainline baseline. No performance qualification is claimed.
+- The first published acceptance run exposed eight stale help expectations.
+  Reconcile them with the pre-existing independent command tests and reviewed
+  help changes; retain the failed run and require a complete acceptance rerun.
 
 ## 2026-11-09
 

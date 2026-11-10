@@ -2,9 +2,9 @@
 
 Run shell scripts and sessions for MoonX.
 
-Published: `cli/sh@0.2.10`, using `cli/core@0.9.5`.
+Published: `cli/sh@0.2.10`, using `cli/core@0.10.0`.
 Three-platform exact-coordinate acceptance and earlier release evidence are recorded in the
-[changelog](../../CHANGELOG.md#2026-11-08).
+[changelog](../../CHANGELOG.md#2026-11-10).
 
 ```sh
 moonx cli/sh@0.2.10 [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]

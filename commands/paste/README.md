@@ -1,6 +1,6 @@
 # paste
 
-Development candidate: `cli/paste@0.2.6`. Publication is separate;
+Published version: `cli/paste@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Merge input lines for MoonX.

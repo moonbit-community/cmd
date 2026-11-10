@@ -1,6 +1,6 @@
 # fmt
 
-Development candidate: `cli/fmt@0.1.6`. Publication is separate;
+Published version: `cli/fmt@0.1.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Reformat text paragraphs for MoonX.

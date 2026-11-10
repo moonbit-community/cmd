@@ -1,6 +1,6 @@
 # touch
 
-Development candidate: `cli/touch@0.2.5`. Publication is separate;
+Published version: `cli/touch@0.2.5`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Create missing files for MoonX.

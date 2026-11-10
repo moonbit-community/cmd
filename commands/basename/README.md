@@ -1,6 +1,6 @@
 # basename
 
-Development candidate: `cli/basename@0.2.5`. Publication is separate;
+Published version: `cli/basename@0.2.5`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Extract path names for MoonX.

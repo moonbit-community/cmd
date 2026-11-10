@@ -1,6 +1,6 @@
 # tree
 
-Development candidate: `cli/tree@0.1.7`. Publication is separate;
+Published version: `cli/tree@0.1.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Display directory trees for MoonX.

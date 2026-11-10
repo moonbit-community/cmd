@@ -1,6 +1,6 @@
 # base32
 
-Development candidate: `cli/base32@0.1.7`. Publication is separate;
+Published version: `cli/base32@0.1.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Encode and decode Base32 for MoonX.

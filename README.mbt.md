@@ -37,7 +37,7 @@ The `timeout` package is local-only while a portable public process-group
 interface is unavailable. Its status is recorded in the support record and it
 is not a published MoonX feature.
 
-The [Typst command](commands/typst/README.md) is published as `cli/typst@0.1.0`.
+The [Typst command](commands/typst/README.md) is published as `cli/typst@0.1.1`.
 It migrates the CLI and platform adaptation while depending on the
 external MoonBit typesetting engine; PDF/PNG/SVG compilation and watch run as
 Wasm. It does not invoke an installed Typst executable.

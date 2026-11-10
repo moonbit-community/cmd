@@ -1,6 +1,6 @@
 # sed
 
-Development candidate: `cli/sed@0.2.5`. Publication is separate;
+Published version: `cli/sed@0.2.5`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Edit text streams for MoonX.

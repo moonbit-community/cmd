@@ -1,6 +1,6 @@
 # pwd
 
-Development candidate: `cli/pwd@0.2.5`. Publication is separate;
+Published version: `cli/pwd@0.2.5`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Print the working directory for MoonX.

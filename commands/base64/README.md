@@ -1,6 +1,6 @@
 # base64
 
-Development candidate: `cli/base64@0.2.7`. Publication is separate;
+Published version: `cli/base64@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Encode and decode Base64 for MoonX.

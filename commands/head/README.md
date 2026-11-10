@@ -1,6 +1,6 @@
 # head
 
-Development candidate: `cli/head@0.2.6`. Publication is separate;
+Published version: `cli/head@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Print the beginning of inputs for MoonX.

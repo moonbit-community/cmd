@@ -10,13 +10,13 @@ moonx cli/curl@0.2.6 [options...] <url>
 
 Send requests, upload files, follow redirects, manage cookies, retry failures and write responses to stdout or files.
 
-Unreleased workspace correction: repeated custom request fields retain their
+Version 0.2.6: repeated custom request fields retain their
 argument order, including an interleaved User-Agent. Final response fields keep
 their order, casing and repetition after optional-whitespace normalization.
 Interim fields are excluded. Request Content-Length must be singular; framing
-and generated-header validation still apply. The published coordinate is unchanged.
+and generated-header validation still apply.
 
-The workspace also validates `__Secure-` and `__Host-` cookies before storage
+The command also validates `__Secure-` and `__Host-` cookies before storage
 or jar import, after curl path normalization. Receiving and sending Secure
 cookies requires HTTPS or
 the exact localhost, 127.0.0.1 or ::1 exception; other HTTP origins cannot
@@ -68,7 +68,7 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
 
 - Only HTTP/HTTPS and GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE and PATCH are supported.
 - Header removal, semicolon empty-field syntax and header files are not yet supported; Host and Transfer-Encoding remain transport-managed.
-- The workspace uses the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
+- The command uses the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
   for response and imported cookies. Accepted exact public-suffix response
   domains become host-only before prefix checks; file imports retain curl's
   localhost exception. Stored domain spellings retain their ASCII case;
@@ -83,8 +83,8 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
   rows to stdout after each operand. Stdin is consumed, not cached for replay.
   Inputs remain unchanged unless also selected as the output jar.
   Cookie Domain normalization and complete jar grammar and
-  serialization remain unfinished. Published coordinates retain their recorded profile.
-- The unpublished workspace converts Unicode URL hosts with the pinned
+  serialization remain unfinished. Earlier coordinates retain their recorded profile.
+- The command converts Unicode URL hosts with the pinned
   [Unicode 15 IDNA profile](../../tests/fixtures/idna/README.md) for UTF-8 environment spellings.
   `LC_ALL`, then `LC_CTYPE`, then `LANG` selects the input encoding. This checks
   the UTF-8 suffix, not whether the host has installed that locale. Differential

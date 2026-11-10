@@ -30,7 +30,7 @@ Search files or stdin with basic/extended regular expressions or fixed strings, 
 
 ## Limitations
 
-The local development candidate halves the literal automaton's maximum integer table payload to 1,052,672 bytes. Eligible assertion-free regex searches can also skip proven DFA self-loop bytes in records of at least 256 bytes, with at most eight state-specific SIMD tables per matcher. Short records and expressions with a mandatory literal keep the scalar path. These are algorithmic limits, not a process-memory bound.
+The published command halves the literal automaton's maximum integer table payload to 1,052,672 bytes. Eligible assertion-free regex searches can also skip proven DFA self-loop bytes in records of at least 256 bytes, with at most eight state-specific SIMD tables per matcher. Short records and expressions with a mandatory literal keep the scalar path. These are algorithmic limits, not a process-memory bound.
 
 Eligible single-pattern regex counts aggregate complete records within each input block. Word/whole-record filters and unsupported expressions retain ordinary matching; DFA exhaustion reprocesses the entire block before any count is committed. Unterminated tails and binary handling keep their existing paths.
 

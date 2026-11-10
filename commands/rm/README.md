@@ -1,6 +1,6 @@
 # rm
 
-Development candidate: `cli/rm@0.2.6`. Publication is separate;
+Published version: `cli/rm@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Remove files and directory trees for MoonX.

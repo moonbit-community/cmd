@@ -2,9 +2,9 @@
 
 Run a Make language subset for MoonX.
 
-Published: `cli/make@0.2.9`, using `cli/core@0.9.5`.
+Published: `cli/make@0.2.9`, using `cli/core@0.10.0`.
 Three-platform exact-coordinate acceptance and earlier release evidence are recorded in the
-[changelog](../../CHANGELOG.md#2026-11-08).
+[changelog](../../CHANGELOG.md#2026-11-10).
 
 ```sh
 moonx cli/make@0.2.9 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]
@@ -14,11 +14,10 @@ moonx cli/make@0.2.9 [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [
 
 Build targets with dependencies, variables, includes, conditionals, patterns, automatic variables, exports and parallel recipe chains.
 
-The development candidate preserves filesystem traversal in makefile, include,
+Version 0.2.9 preserves filesystem traversal in makefile, include,
 target and prerequisite paths. After option parsing, requested `-C` directories
 resolve in order. On POSIX, missing components fail and `link/..` uses the link
-target's parent; Windows retains its native normalization. This repair is not
-yet published.
+target's parent; Windows retains its native normalization.
 
 Recipe `test -s` uses the final target's metadata, including through symlinks,
 without opening it. Missing/cyclic targets are false; unavailable sizes such as

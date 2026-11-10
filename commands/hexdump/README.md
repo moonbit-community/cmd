@@ -1,6 +1,6 @@
 # hexdump
 
-Development candidate: `cli/hexdump@0.1.5`. Publication is separate;
+Published version: `cli/hexdump@0.1.5`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Display binary data for MoonX.

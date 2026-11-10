@@ -10,10 +10,10 @@ moonx cli/env@0.2.4 [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [CO
 
 Print the environment or apply assignments/unsets and run one executable with separate arguments. The first assignment ends option scanning.
 
-The development candidate preserves filesystem traversal in every `-C`/`--chdir`
+Version 0.2.4 preserves filesystem traversal in every `-C`/`--chdir`
 spelling. On POSIX, missing components fail before child launch, and `link/..`
 follows the link before selecting its parent. Windows retains its native path
-normalization. This repair is not yet published.
+normalization.
 
 ## Options
 

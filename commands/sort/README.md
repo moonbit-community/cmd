@@ -1,6 +1,6 @@
 # sort
 
-Development candidate: `cli/sort@0.2.8`. Publication is separate;
+Published version: `cli/sort@0.2.8`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Sort and merge records for MoonX.

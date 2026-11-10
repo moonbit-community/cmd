@@ -1,6 +1,6 @@
 # diff
 
-Development candidate: `cli/diff@0.2.6`. Publication is separate;
+Published version: `cli/diff@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Compare files and directories for MoonX.

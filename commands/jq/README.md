@@ -1,6 +1,6 @@
 # jq
 
-Development candidate: `cli/jq@0.2.8`. Publication is separate;
+Published version: `cli/jq@0.2.8`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Filter JSON for MoonX.

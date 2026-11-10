@@ -2,7 +2,7 @@
 
 Search files recursively for MoonX.
 
-Version: `cli/rg@0.1.2`, using `cli/core@0.9.1`. The repository's
+Version: `cli/rg@0.1.2`, using `cli/core@0.10.0`. The repository's
 [release inventory](../../tests/release_runner/current/latest.json) records
 accepted coordinates and their independent expected cases.
 

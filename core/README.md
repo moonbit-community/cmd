@@ -2,15 +2,14 @@
 
 Shared runtime packages used by the independently published command modules.
 
-## 0.10.0 release candidate
+## 0.10.0 changes
 
 The workspace uses the CLI compatibility boundary in
 [ADR-0003](../docs/adr/0003-streams.md#package-ownership). The command catalog
 has moved to `tests/harness/catalog`. Unused platform, fsops and shell source
 APIs have been removed; implementation-only helpers are private, and gzip
 consumers use `decode_reader`. These are intentional source API breaks for a
-0.10.0 release, not changes to the immutable 0.9.5 coordinate. Publication and
-exact-coordinate acceptance remain separate steps.
+0.10.0 release. Earlier registry coordinates retain their original interfaces.
 
 Command-owned copy, removal, permission-mode, jq, tab-grid, sequence-evaluation
 and tac extent-copy policies now live beside their commands. The `jq_filter`
@@ -18,7 +17,7 @@ and `tabstops` packages and test-only backup-name wrapper are removed. Shared
 fsops keeps path relationships and filesystem mechanisms; numfmt keeps numeric
 parsing/formatting. The `stream.count_byte` forwarding API is also removed;
 call `bytesearch.count_byte` directly. Unused CLI error variants are removed.
-The immutable published interfaces remain unchanged.
+Earlier published interfaces remain unchanged.
 The changed command modules select core 0.10.0 explicitly. Workspace checks
 do not replace standalone registry builds and exact-version MoonX acceptance.
 
@@ -39,8 +38,9 @@ file loading remain portable adapters. POSIX strings and incompatible legacy
 TZif inputs retain their existing behavior; see [ADR-0003](../docs/adr/0003-streams.md).
 The 2026-11-09 dependency refresh declares x 0.5.7 and punycode 0.7.1 explicitly.
 Standalone core builds therefore have the required TZif and DST rejection APIs,
-without relying on another workspace module's dependency resolution. Published
-coordinates and frozen acceptance expectations retain their recorded versions.
+without relying on another workspace module's dependency resolution. The
+[release record](../CHANGELOG.md#2026-11-10) distinguishes source checks,
+registry builds and exact-coordinate acceptance.
 
 ## 0.9.5 changes
 

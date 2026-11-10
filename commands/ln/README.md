@@ -1,6 +1,6 @@
 # ln
 
-Development candidate: `cli/ln@0.2.6`. Publication is separate;
+Published version: `cli/ln@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Create symbolic links for MoonX.
@@ -13,7 +13,7 @@ moonx cli/ln@0.2.6 -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX]
 
 Create POSIX symbolic links with explicit destinations or target directories, replacement, relative targets and backups.
 
-In the unpublished development candidate, numbered backups use one more than
+In version 0.2.6, numbered backups use one more than
 the highest existing positive, unpadded decimal version, retaining gaps and all
 older backups. Existing mode uses the same numbering when such a backup exists,
 and the simple suffix otherwise. Directory scan failures remain errors.

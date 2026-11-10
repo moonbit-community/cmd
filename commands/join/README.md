@@ -1,6 +1,6 @@
 # join
 
-Development candidate: `cli/join@0.2.7`. Publication is separate;
+Published version: `cli/join@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Join sorted text files for MoonX.

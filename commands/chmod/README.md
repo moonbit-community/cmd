@@ -1,6 +1,6 @@
 # chmod
 
-Development candidate: `cli/chmod@0.2.6`. Publication is separate;
+Published version: `cli/chmod@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Change file permissions for MoonX.

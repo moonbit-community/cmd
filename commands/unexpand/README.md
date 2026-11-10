@@ -1,6 +1,6 @@
 # unexpand
 
-Development candidate: `cli/unexpand@0.1.6`. Publication is separate;
+Published version: `cli/unexpand@0.1.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Convert spaces to tabs for MoonX.

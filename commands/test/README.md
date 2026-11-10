@@ -1,6 +1,6 @@
 # test
 
-Development candidate: `cli/test@0.2.4`. Publication is separate;
+Published version: `cli/test@0.2.4`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Evaluate conditions for MoonX.

@@ -1,6 +1,6 @@
 # uniq
 
-Development candidate: `cli/uniq@0.2.7`. Publication is separate;
+Published version: `cli/uniq@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Filter adjacent duplicate records for MoonX.

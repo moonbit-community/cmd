@@ -1,6 +1,6 @@
 # csplit
 
-Development candidate: `cli/csplit@0.2.6`. Publication is separate;
+Published version: `cli/csplit@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Split files at line or pattern boundaries for MoonX.

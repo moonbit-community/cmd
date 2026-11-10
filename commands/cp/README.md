@@ -1,6 +1,6 @@
 # cp
 
-Development candidate: `cli/cp@0.2.6`. Publication is separate;
+Published version: `cli/cp@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Copy files and directories for MoonX.

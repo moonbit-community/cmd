@@ -1,6 +1,6 @@
 # strings
 
-Development candidate: `cli/strings@0.1.6`. Publication is separate;
+Published version: `cli/strings@0.1.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Extract printable byte sequences for MoonX.
