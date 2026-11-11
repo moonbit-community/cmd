@@ -150,17 +150,17 @@ boundary. The 2026-11-10 find, mkdir and test releases depend on core 0.10.0.
 Independent registry builds resolve that coordinate outside `moon.work`;
 workspace overrides alone do not establish published-consumer buildability.
 
-Workspace development uses `moonbitlang/async@0.22.7` across modules and
-standalone test tools. CI follows the official `latest` toolchain and core and
-records the resolved versions. Async 0.22.7's shared core runtime requires the
-Moonrun acquired-handle file-kind fix
+Workspace development uses `moonbitlang/async@0.22.9` across modules and
+standalone test tools. CI follows the official `latest` toolchain and core
+and records the resolved versions. Async 0.22.9's
+shared core runtime requires the Moonrun acquired-handle file-kind fix
 [`c5ec2b5d`](https://github.com/moonbitlang/moon/commit/c5ec2b5db294aae518e635bd77d8fdb7cc3049ae)
 for restricted-policy standard-stream initialization. The earlier fixed
 `0.10.19+bee578715` host fails these policies; the currently verified official
 latest Moonrun is `0.1.20261104 (940aa18)`.
 This dependency upgrade does not enable new command
 features or lift existing filesystem/process boundaries. In particular,
-`Directory::open` and `Directory::remove` in async 0.22.7 do not support Wasm.
+`Directory::open` and `Directory::remove` in async 0.22.9 do not support Wasm.
 The 2026-11-06 dependency update alone created no releases. The 46 command
 versions published on 2026-11-07 used the dependency declarations from source
 `847e66a`; the other 34 coordinates retained their earlier builds at that release.
@@ -210,8 +210,9 @@ version output and joins the 81-command release inventory.
 The published `cli/serve@0.1.2` serves regular files and index.html over
 HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
 return 400; missing, unreadable, outside-root and nonregular targets return 404.
-Successful file responses are written directly to the socket and close the
-connection with `Connection: close`.
+Its successful file responses are written directly to the socket and close
+the connection with `Connection: close`. The unpublished workspace development
+uses async 0.22.9's fixed-length `@http` body path and keeps the connection open.
 The CLI follows standard `argparse` syntax, including `--port=8000`, `-p8000`
 and short help/version aliases. Syntax errors report usage and exit 1.
 There is no listing, SPA fallback or upload. Wasm policy separately limits

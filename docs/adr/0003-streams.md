@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-10
+Updated: 2026-11-11
 
 ## Decision
 
@@ -240,15 +240,14 @@ baseline containing all current command artifacts.
 `commands/serve` declares its CLI with `moonbitlang/core/argparse`, which owns
 option syntax, help and syntax diagnostics. The command validates the listen
 address and owns URL-to-file mapping, MIME types and the bounded file-copy loop.
-Use released `moonbitlang/async@0.22.7` HTTP and filesystem
+Use released `moonbitlang/async@0.22.9` HTTP and filesystem
 APIs without another server framework or shared core mechanism. GET/HEAD,
 index.html and explicit error responses are the complete initial scope.
-Successful file responses enter passthrough mode and write the header and each
-64 KiB chunk directly: the `@http` fixed-length body path copies through a
-1 KiB send buffer, one socket write per KiB. Passthrough cannot return to HTTP
-framing, so these responses close the connection; redirects and errors leave
-keep-alive intact. Reopen this when released `@http` writes large
-fixed-length chunks without the per-KiB copy.
+Successful file responses use `send_response` and stream each 64 KiB chunk
+through the HTTP connection. `@http` 0.22.9 writes large fixed-length chunks
+directly to the socket instead of copying through its send buffer, and
+accounts for the actual bytes written, so the response keeps the connection
+open. Redirects and errors also leave keep-alive intact.
 The module is independent of cli/core and has an untimed disposition in the
 [real workload registry](../../tests/benchmark/real-coverage.json); registered
 request/policy scenarios establish correctness only. Add a genuine HTTP workload

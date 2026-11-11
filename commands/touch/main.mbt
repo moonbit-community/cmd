@@ -143,7 +143,7 @@ async fn main {
       file.close()
     } else {
       @stdio.stderr.write(
-        "touch: cannot update '\{path}': timestamp setters are unavailable in moonbitlang/async 0.22.7\n",
+        "touch: cannot update '\{path}': timestamp setters are unavailable in moonbitlang/async 0.22.9\n",
       )
       failed = true
     }
