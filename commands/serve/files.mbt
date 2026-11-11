@@ -161,14 +161,11 @@ async fn serve_file(
   }
   let size = file.size()
   let mime = mime_type(if index { "index.html" } else { relative })
-  // A fixed-length @http body goes through a 1 KiB send buffer, one socket
-  // write per KiB. Passthrough writes each 64 KiB chunk directly; the
-  // connection cannot return to HTTP framing afterwards, so it closes.
-  connection.enter_passthrough_mode()
-  defer connection.close()
-  connection.write(
-    "HTTP/1.1 200 OK\r\nContent-Length: \{size}\r\nContent-Type: \{mime}\r\nX-Content-Type-Options: nosniff\r\nConnection: close\r\n\r\n",
-  )
+  connection.send_response(200, "OK", extra_headers={
+    "Content-Length": size.to_string(),
+    "Content-Type": mime,
+    "X-Content-Type-Options": "nosniff",
+  })
   if request.meth is Head {
     return
   }

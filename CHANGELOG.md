@@ -12,6 +12,16 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-11
+
+Development only.
+
+- Upgrade workspace modules and test tools to `moonbitlang/async@0.22.9`,
+  keeping one async baseline. In `serve`, stream file bodies through the HTTP
+  fixed-length path; large chunks avoid the send-buffer copy without
+  passthrough, so successful responses keep the connection open. Published
+  coordinates and their independent expectations remain unchanged.
+
 ## 2026-11-10
 
 Published and accepted through exact-version MoonX.

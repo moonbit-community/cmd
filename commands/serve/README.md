@@ -1,7 +1,8 @@
 # serve
 
-Minimal static HTTP file server, implemented in pure MoonBit with
-`moonbitlang/async@0.22.7`. Run the latest published release with MoonX:
+Minimal static HTTP file server, implemented in pure MoonBit. Workspace
+development uses `moonbitlang/async@0.22.9`. Run the latest published release
+with MoonX:
 
 ```sh
 moonx cli/serve@latest -- public
@@ -9,6 +10,8 @@ moonx cli/serve@latest -- public
 
 The latest published package is `cli/serve@0.1.2`, which reports `serve 0.1.2`
 with `--version`. The earlier immutable 0.1.1 package incorrectly reports 0.1.0.
+The published 0.1.2 release closes successful file responses. The connection
+reuse described below is an unpublished workspace change.
 
 Usage: `serve [--host ADDRESS] [-p PORT|--port PORT] [DIRECTORY]`.
 The directory defaults to `.`, the address to `127.0.0.1`, and the port to 8000.
@@ -33,12 +36,13 @@ segments, malformed escapes, control bytes, backslashes, drive/stream colons
 and Windows device/alias names are rejected with 400 on all platforms. Canonical
 targets must remain under the canonical root, including symlink targets and
 `index.html`; forbidden/unreadable/nonregular targets return 404. Symlinks
-within the root are permitted. Open files stream through a 64 KiB buffer
-written directly to the socket, with at most 64 simultaneous connections.
-Successful GET/HEAD file responses send `Connection: close` and close the
-connection; redirects and error responses keep it open. Files should remain
-stable while served; a shortened file aborts its response, and appended bytes
-are excluded.
+within the root are permitted. Open files stream through `@http`'s
+fixed-length body path in 64 KiB chunks, with at most 64 simultaneous
+connections. `moonbitlang/async@0.22.9` writes large fixed-length chunks
+directly to the socket, so successful GET/HEAD file responses keep the
+connection open; redirects and error responses also keep it open. Files
+should remain stable while served; a shortened file aborts its response, and
+appended bytes are excluded.
 
 Wasm policy adds process permissions; it is supplied by the launcher, not
 installed by this command. For example, save `serve-policy.json` beside `public`

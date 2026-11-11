@@ -91,7 +91,7 @@ async test "workspace dependency manifests keep one async baseline and the selec
     let imports = dependency_manifest_imports(text)
     assert_eq(
       imports.filter(coordinate => coordinate.has_prefix("moonbitlang/async@")),
-      ["moonbitlang/async@0.22.7"],
+      ["moonbitlang/async@0.22.9"],
     )
     let needs_core = directory == "tests" ||
       (

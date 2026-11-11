@@ -1,7 +1,7 @@
 ----
 import {
-  "moonbitlang/async@0.22.7", "moonbitlang/async@0.22.7/fs",
-  "moonbitlang/async@0.22.7/process", "moonbitlang/core/env",
+  "moonbitlang/async@0.22.9", "moonbitlang/async@0.22.9/fs",
+  "moonbitlang/async@0.22.9/process", "moonbitlang/core/env",
   "moonbitlang/core/json", "moonbitlang/x@0.5.7/crypto", "moonbitlang/x@0.5.7/path",
 }
 ----
