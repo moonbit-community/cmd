@@ -72,7 +72,7 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "column 0.1.6\n",
+      "expected_stdout_text": "column 0.1.7\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],

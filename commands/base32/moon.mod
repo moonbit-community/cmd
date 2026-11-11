@@ -1,6 +1,6 @@
 name = "cli/base32"
 
-version = "0.1.6"
+version = "0.1.7"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "base32 command for MoonX."
 
 import {
-  "cli/core@0.9.5",
+  "cli/core@0.10.0",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.7",
 }

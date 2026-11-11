@@ -1,12 +1,12 @@
 # tr
 
-Development candidate: `cli/tr@0.2.5`. Publication is separate;
+Published version: `cli/tr@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Translate and delete bytes for MoonX.
 
 ```sh
-moonx cli/tr@0.2.5 [-dscCt] SET1 [SET2]
+moonx cli/tr@0.2.6 [-dscCt] SET1 [SET2]
 ```
 
 ## Supported scope
@@ -36,8 +36,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-printf 'hello' | moonx cli/tr@0.2.5 'a-z' 'A-Z'
-printf 'a  b' | moonx cli/tr@0.2.5 -s ' '
+printf 'hello' | moonx cli/tr@0.2.6 'a-z' 'A-Z'
+printf 'a  b' | moonx cli/tr@0.2.6 -s ' '
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

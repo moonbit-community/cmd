@@ -150,7 +150,7 @@
         "version"
       ],
       "source_version": "workspace cli/dirname@0.2.4 metadata contract",
-      "expected_stdout_text": "dirname 0.2.4\n",
+      "expected_stdout_text": "dirname 0.2.5\n",
       "expected_stderr_text": ""
     },
     {

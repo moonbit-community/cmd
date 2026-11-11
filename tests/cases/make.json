@@ -239,7 +239,7 @@
         "version"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "make 0.2.8\n",
+      "expected_stdout_text": "make 0.2.9\n",
       "expected_stderr_text": ""
     },
     {

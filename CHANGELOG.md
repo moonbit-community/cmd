@@ -12,6 +12,40 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-11
+
+Development only.
+
+- Upgrade workspace modules and test tools to `moonbitlang/async@0.22.9`,
+  keeping one async baseline. In `serve`, stream file bodies through the HTTP
+  fixed-length path; large chunks avoid the send-buffer copy without
+  passthrough, so successful responses keep the connection open. Published
+  coordinates and their independent expectations remain unchanged.
+
+## 2026-11-10
+
+Published and accepted through exact-version MoonX.
+
+- Publish core 0.10.0 and 80 command updates in serial order from source
+  `dec64de7`, after [three-platform development checks and Linux comparison](https://github.com/moonbit-community/cmd/actions/runs/42752161098).
+  Verify all 81 uploads, registry builds and archive checksums. Keep echo 0.2.4
+  unchanged and timeout local-only; the released inventory contains 81 commands.
+  Five transient upload failures were confirmed absent before retrying; their
+  original failure logs are retained.
+- Preserve all 2,850 earlier frozen definitions, add 978 independently specified
+  regressions, and update 98 version/HTML metadata or help expectations.
+  The published baseline contains 3,828 definitions. Local acceptance passes
+  3,517 semantic checks. [Three-platform exact-version MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42758620841)
+  passes all 81 coordinates: Linux 3,532, macOS 3,517 and Windows 2,954 semantic
+  checks, plus 2,667 pinned Linux differential checks, with zero failures.
+  Declared platform exclusions remain explicit in each run's results.
+- Retain the [first acceptance failure](https://github.com/moonbit-community/cmd/actions/runs/42756840161):
+  eight stale help expectations were reconciled with the pre-existing independent
+  tests and reviewed help changes before the complete rerun. Local Typst startup
+  initially hit official prebuild download timeouts; download and verify the
+  official SHA-256 before caching it, then rerun complete local acceptance in a
+  fresh report directory. No performance qualification is claimed.
+
 ## 2026-11-09
 
 Development only.
@@ -39,10 +73,8 @@ Development only.
   [Counts, cost boundaries and runs](tests/README.md#ci-timing-observations-2026-11-09)
   remain explicit. No package is published; frozen acceptance coordinates are unchanged.
 
-- Upgrade workspace modules and test tools to `moonbitlang/async@0.22.9`,
-  keeping one async baseline. In `serve`, stream file bodies through the HTTP
-  fixed-length path; large chunks avoid the per-KiB send-buffer copy without
-  passthrough, so successful responses keep the connection open.
+- Write successful `serve` file bodies directly to the socket instead of
+  through the 1 KiB HTTP send buffer; these responses now close the connection.
 
 - Use the standard MoonBit argument parser for `serve`, including generated
   help, attached port values and usage diagnostics for invalid arguments.

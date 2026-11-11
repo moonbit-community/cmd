@@ -458,7 +458,7 @@
         "version"
       ],
       "source_version": "workspace cli/sh@0.2.5 metadata contract",
-      "expected_stdout_text": "sh 0.2.9\n",
+      "expected_stdout_text": "sh 0.2.10\n",
       "expected_stderr_text": ""
     },
     {

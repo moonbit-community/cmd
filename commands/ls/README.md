@@ -1,12 +1,12 @@
 # ls
 
-Development candidate: `cli/ls@0.2.5`. Publication is separate;
+Published version: `cli/ls@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 List files and directories for MoonX.
 
 ```sh
-moonx cli/ls@0.2.5 [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]
+moonx cli/ls@0.2.6 [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]
 ```
 
 ## Supported scope
@@ -54,8 +54,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/ls@0.2.5 -A
-moonx cli/ls@0.2.5 -R -1 src
+moonx cli/ls@0.2.6 -A
+moonx cli/ls@0.2.6 -R -1 src
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

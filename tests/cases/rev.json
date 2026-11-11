@@ -49,7 +49,7 @@
         "version"
       ],
       "source_version": "workspace cli/rev@0.1.7 metadata contract",
-      "expected_stdout_text": "rev 0.1.7\n",
+      "expected_stdout_text": "rev 0.1.8\n",
       "expected_stderr_text": ""
     },
     {

@@ -1,12 +1,12 @@
 # od
 
-Development candidate: `cli/od@0.1.4`. Publication is separate;
+Published version: `cli/od@0.1.5`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Display numeric and character data for MoonX.
 
 ```sh
-moonx cli/od@0.1.4 [OPTION]... [FILE]...
+moonx cli/od@0.1.5 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -46,8 +46,8 @@ See [the finite option and diagnostic profile](../../docs/compatibility.md#exten
 ## Examples
 
 ```sh
-moonx cli/od@0.1.4 -Ax -tx1 data.bin
-moonx cli/od@0.1.4 -j4 -N8 --endian=big -tx2 data.bin
+moonx cli/od@0.1.5 -Ax -tx1 data.bin
+moonx cli/od@0.1.5 -j4 -N8 --endian=big -tx2 data.bin
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

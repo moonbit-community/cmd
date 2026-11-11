@@ -3,7 +3,7 @@
 Print formatted values for MoonX.
 
 ```sh
-moonx cli/printf@0.2.3 FORMAT [ARGUMENT...]
+moonx cli/printf@0.2.4 FORMAT [ARGUMENT...]
 ```
 
 ## Supported scope
@@ -26,8 +26,8 @@ Reuse FORMAT until arguments are consumed. Supports strings, characters, escaped
 ## Examples
 
 ```sh
-moonx cli/printf@0.2.3 '%s=%d\n' answer 42
-moonx cli/printf@0.2.3 '%s\n' one two three
+moonx cli/printf@0.2.4 '%s=%d\n' answer 42
+moonx cli/printf@0.2.4 '%s\n' one two three
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

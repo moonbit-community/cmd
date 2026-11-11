@@ -1,12 +1,12 @@
 # base64
 
-Development candidate: `cli/base64@0.2.6`. Publication is separate;
+Published version: `cli/base64@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Encode and decode Base64 for MoonX.
 
 ```sh
-moonx cli/base64@0.2.6 [-d|-D] [-i] [-w COLS] [FILE]
+moonx cli/base64@0.2.7 [-d|-D] [-i] [-w COLS] [FILE]
 ```
 
 ## Supported scope
@@ -43,8 +43,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-printf 'hello' | moonx cli/base64@0.2.6
-moonx cli/base64@0.2.6 -d encoded.txt
+printf 'hello' | moonx cli/base64@0.2.7
+moonx cli/base64@0.2.7 -d encoded.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

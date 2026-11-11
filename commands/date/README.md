@@ -1,12 +1,12 @@
 # date
 
-Development candidate: `cli/date@0.1.5`. Publication is separate;
+Published version: `cli/date@0.1.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Display dates and times for MoonX.
 
 ```sh
-moonx cli/date@0.1.5 [OPTION]... [+FORMAT]
+moonx cli/date@0.1.6 [OPTION]... [+FORMAT]
 ```
 
 ## Supported scope
@@ -37,8 +37,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/date@0.1.5 -u +%FT%TZ
-moonx cli/date@0.1.5 -u -d @0 +%F
+moonx cli/date@0.1.6 -u +%FT%TZ
+moonx cli/date@0.1.6 -u -d @0 +%F
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

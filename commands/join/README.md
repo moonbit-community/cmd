@@ -1,12 +1,12 @@
 # join
 
-Development candidate: `cli/join@0.2.6`. Publication is separate;
+Published version: `cli/join@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Join sorted text files for MoonX.
 
 ```sh
-moonx cli/join@0.2.6 [options] FILE1 FILE2
+moonx cli/join@0.2.7 [options] FILE1 FILE2
 ```
 
 ## Supported scope
@@ -48,8 +48,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/join@0.2.6 people.txt colors.txt
-moonx cli/join@0.2.6 -t, -1 2 -2 1 a.csv b.csv
+moonx cli/join@0.2.7 people.txt colors.txt
+moonx cli/join@0.2.7 -t, -1 2 -2 1 a.csv b.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

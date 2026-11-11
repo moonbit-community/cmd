@@ -1,12 +1,12 @@
 # wc
 
-Development candidate: `cli/wc@0.2.6`. Publication is separate;
+Published version: `cli/wc@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Count input records and bytes for MoonX.
 
 ```sh
-moonx cli/wc@0.2.6 [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]
+moonx cli/wc@0.2.7 [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]
 ```
 
 ## Supported scope
@@ -48,8 +48,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/wc@0.2.6 -l notes.txt
-printf 'one two\nthree\n' | moonx cli/wc@0.2.6
+moonx cli/wc@0.2.7 -l notes.txt
+printf 'one two\nthree\n' | moonx cli/wc@0.2.7
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -3,7 +3,7 @@
 Arrange text into columns for MoonX.
 
 ```sh
-moonx cli/column@0.1.6 [OPTION]... [FILE]...
+moonx cli/column@0.1.7 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -23,7 +23,7 @@ Arrange files or stdin in a grid, or align delimited fields as a table. Default 
 
 ## Limitations
 
-The local development candidate batches snapshot data/index writes and expanded table output; a wide table does not require a complete padded output row in memory. Input uses immutable chunks up to 1 MiB, with separate 64 KiB pending data/index buffers and at most one deferred encoded record. The complete input snapshot and C-locale display rules are retained.
+The published command batches snapshot data/index writes and expanded table output; a wide table does not require a complete padded output row in memory. Input uses immutable chunks up to 1 MiB, with separate 64 KiB pending data/index buffers and at most one deferred encoded record. The complete input snapshot and C-locale display rules are retained.
 
 Table rendering now borrows normalized byte fields. Field splitting and width collection share one ingestion pass. Optional field metadata is limited to 128 large rows and 64 KiB of encoded entries, with no extra snapshot-disk format. These limits exclude the current row, global column widths and runtime overhead; they are not a process-memory cap.
 
@@ -33,8 +33,8 @@ Table rendering now borrows normalized byte fields. Field splitting and width co
 ## Examples
 
 ```sh
-moonx cli/column@0.1.6 -t table.txt
-moonx cli/column@0.1.6 -t -s , -o ' | ' data.csv
+moonx cli/column@0.1.7 -t table.txt
+moonx cli/column@0.1.7 -t -s , -o ' | ' data.csv
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

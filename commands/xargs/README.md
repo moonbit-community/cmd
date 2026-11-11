@@ -3,7 +3,7 @@
 Build and execute argument batches for MoonX.
 
 ```sh
-moonx cli/xargs@0.2.4 [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]
+moonx cli/xargs@0.2.5 [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]
 ```
 
 ## Supported scope
@@ -45,8 +45,8 @@ does not consume stdin. Interactive confirmations remain serialized.
 ## Examples
 
 ```sh
-printf 'one\ntwo\n' | moonx cli/xargs@0.2.4 -n 1 moonx cli/echo@0.2.3
-printf 'one\000two\000' | moonx cli/xargs@0.2.4 -0 moonx cli/echo@0.2.3
+printf 'one\ntwo\n' | moonx cli/xargs@0.2.5 -n 1 moonx cli/echo@0.2.3
+printf 'one\000two\000' | moonx cli/xargs@0.2.5 -0 moonx cli/echo@0.2.3
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

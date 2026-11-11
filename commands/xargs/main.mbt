@@ -174,7 +174,7 @@ fn combine_status(current : Int32, child : ChildOutcome) -> Int32 {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("xargs 0.2.4\n")
+    @stdio.stdout.write("xargs 0.2.5\n")
     return
   }
   let mut args = @env.args()[1:].to_owned()

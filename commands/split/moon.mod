@@ -1,6 +1,6 @@
 name = "cli/split"
 
-version = "0.1.10"
+version = "0.1.11"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "split command for MoonX."
 
 import {
-  "cli/core@0.9.5",
+  "cli/core@0.10.0",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.7",
 }

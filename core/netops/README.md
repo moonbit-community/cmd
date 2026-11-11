@@ -4,8 +4,8 @@ The workspace API performs one HTTP exchange through `with_response`.
 `Request` contains the resolved target, Host field, method, final headers and
 body. `Transport` contains only proxy/TLS settings, connection and inactivity
 limits, and an optional absolute monotonic deadline. Commands own preparation
-and subsequent requests. This intentional source API change is unpublished;
-the immutable registry coordinates retain their original interfaces.
+and subsequent requests. This intentional source API change ships in core 0.10.0;
+earlier registry coordinates retain their original interfaces.
 
 `ResponseScope` exposes the final status and ordered fields and reads bounded
 body chunks. It closes the connection on normal return, error and observable

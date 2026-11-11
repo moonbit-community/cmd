@@ -1,12 +1,12 @@
 # comm
 
-Development candidate: `cli/comm@0.2.6`. Publication is separate;
+Published version: `cli/comm@0.2.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Compare sorted text files for MoonX.
 
 ```sh
-moonx cli/comm@0.2.6 [-123] [-z] FILE1 FILE2
+moonx cli/comm@0.2.7 [-123] [-z] FILE1 FILE2
 ```
 
 ## Supported scope
@@ -48,8 +48,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/comm@0.2.6 left.txt right.txt
-moonx cli/comm@0.2.6 -12 left.txt right.txt
+moonx cli/comm@0.2.7 left.txt right.txt
+moonx cli/comm@0.2.7 -12 left.txt right.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

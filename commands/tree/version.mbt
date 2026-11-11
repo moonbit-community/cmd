@@ -1,2 +1,2 @@
 ///|
-let command_version = "0.1.6"
+let command_version = "0.1.7"

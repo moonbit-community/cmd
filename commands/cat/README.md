@@ -1,12 +1,12 @@
 # cat
 
-Development candidate: `cli/cat@0.2.5`. Publication is separate;
+Published version: `cli/cat@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Concatenate files and stdin for MoonX.
 
 ```sh
-moonx cli/cat@0.2.5 [OPTION]... [FILE]...
+moonx cli/cat@0.2.6 [OPTION]... [FILE]...
 ```
 
 ## Supported scope
@@ -48,8 +48,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/cat@0.2.5 first.txt second.txt
-moonx cli/cat@0.2.5 -n notes.txt
+moonx cli/cat@0.2.6 first.txt second.txt
+moonx cli/cat@0.2.6 -n notes.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

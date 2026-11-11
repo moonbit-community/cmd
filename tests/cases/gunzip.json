@@ -204,7 +204,7 @@
         "version"
       ],
       "source_version": "workspace cli/gunzip@0.1.5 metadata contract",
-      "expected_stdout_text": "gunzip 0.1.5\n",
+      "expected_stdout_text": "gunzip 0.1.6\n",
       "expected_stderr_text": ""
     },
     {

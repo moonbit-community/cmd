@@ -3,7 +3,7 @@
 Return failure for MoonX.
 
 ```sh
-moonx cli/false@0.2.3 [ignored command line arguments]
+moonx cli/false@0.2.4 [ignored command line arguments]
 ```
 
 ## Supported scope
@@ -23,7 +23,7 @@ Produce no output and exit 1. Other arguments are ignored, except standalone met
 ## Examples
 
 ```sh
-moonx cli/false@0.2.3
+moonx cli/false@0.2.4
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0006-process.md)

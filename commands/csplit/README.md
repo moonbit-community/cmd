@@ -1,12 +1,12 @@
 # csplit
 
-Development candidate: `cli/csplit@0.2.5`. Publication is separate;
+Published version: `cli/csplit@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Split files at line or pattern boundaries for MoonX.
 
 ```sh
-moonx cli/csplit@0.2.5 [OPTION]... FILE PATTERN...
+moonx cli/csplit@0.2.6 [OPTION]... FILE PATTERN...
 ```
 
 ## Supported scope
@@ -41,8 +41,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/csplit@0.2.5 input.txt 10
-moonx cli/csplit@0.2.5 -f part- input.txt '/^SECTION/' '{*}'
+moonx cli/csplit@0.2.6 input.txt 10
+moonx cli/csplit@0.2.6 -f part- input.txt '/^SECTION/' '{*}'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0003-streams.md)

@@ -1,12 +1,12 @@
 # tree
 
-Development candidate: `cli/tree@0.1.6`. Publication is separate;
+Published version: `cli/tree@0.1.7`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Display directory trees for MoonX.
 
 ```sh
-moonx cli/tree@0.1.6 [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]
+moonx cli/tree@0.1.7 [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]
 ```
 
 ## Supported scope
@@ -55,8 +55,8 @@ See [the finite option and diagnostic profile](../../docs/compatibility.md#exten
 ## Examples
 
 ```sh
-moonx cli/tree@0.1.6 -L 2 --noreport project/
-moonx cli/tree@0.1.6 -J --noreport project/
+moonx cli/tree@0.1.7 -L 2 --noreport project/
+moonx cli/tree@0.1.7 -J --noreport project/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

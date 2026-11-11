@@ -16,5 +16,5 @@ test "help describes the MoonX implementation rather than upstream capabilities"
     assert_true(!help.contains("choose the thread count using"))
     assert_true(!help.contains("search using memory maps when possible"))
   }
-  assert_eq(generate_version_short(), "rg 0.1.1")
+  assert_eq(generate_version_short(), "rg 0.1.2")
 }

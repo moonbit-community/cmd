@@ -1,6 +1,6 @@
 # echo
 
-Development candidate: `cli/echo@0.2.4`. Publication is separate;
+Published version: `cli/echo@0.2.4`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Print argument text for MoonX.

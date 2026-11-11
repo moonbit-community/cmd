@@ -1,12 +1,12 @@
 # tail
 
-Development candidate: `cli/tail@0.2.5`. Publication is separate;
+Published version: `cli/tail@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Print and follow input endings for MoonX.
 
 ```sh
-moonx cli/tail@0.2.5 [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]
+moonx cli/tail@0.2.6 [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]
 ```
 
 ## Supported scope
@@ -44,8 +44,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/tail@0.2.5 -n 20 app.log
-moonx cli/tail@0.2.5 -f app.log
+moonx cli/tail@0.2.6 -n 20 app.log
+moonx cli/tail@0.2.6 -f app.log
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)

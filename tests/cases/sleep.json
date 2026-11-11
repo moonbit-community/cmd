@@ -49,7 +49,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "sleep 0.2.3\n",
+      "expected_stdout_text": "sleep 0.2.4\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-736",

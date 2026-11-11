@@ -1,6 +1,6 @@
 name = "cli/base64"
 
-version = "0.2.6"
+version = "0.2.7"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "base64 command for MoonX."
 
 import {
-  "cli/core@0.9.5",
+  "cli/core@0.10.0",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.7",
 }

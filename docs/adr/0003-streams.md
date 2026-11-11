@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-09
+Updated: 2026-11-11
 
 ## Decision
 
@@ -47,6 +47,13 @@ writer, then requires owned directories absent and unowned files preserved.
 Only cleanup is shielded; output backpressure remains cancellable.
 
 ## Package ownership
+
+The 2026-11-10 release candidate assigns the incompatible internal source API
+changes to core 0.10.0. All current command consumers declare that coordinate;
+the independently accepted older coordinates remain immutable. Command version
+output and dependency declarations advance together. Development CI, registry
+builds and exact-version MoonX acceptance remain separate release gates; this
+release does not add formal performance qualification.
 
 Find's expression optimizer, action evaluator, stat cache and time windows stay
 private to `commands/find`; standalone test's argc and file-predicate rules stay

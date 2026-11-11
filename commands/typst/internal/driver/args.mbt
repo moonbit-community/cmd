@@ -25,7 +25,7 @@ let upstream_commit : String = "e58a63af09032a486b12241d08ebd04131483221"
 ///|
 /// `typst --version`.
 fn version_line() -> String {
-  "typst 0.1.0"
+  "typst 0.1.1"
 }
 
 ///|

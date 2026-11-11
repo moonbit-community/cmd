@@ -1,12 +1,12 @@
 # chmod
 
-Development candidate: `cli/chmod@0.2.5`. Publication is separate;
+Published version: `cli/chmod@0.2.6`. See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Change file permissions for MoonX.
 
 ```sh
-moonx cli/chmod@0.2.5 [-R] [-v] MODE FILE...
+moonx cli/chmod@0.2.6 [-R] [-v] MODE FILE...
 ```
 
 ## Supported scope
@@ -37,8 +37,8 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
 ## Examples
 
 ```sh
-moonx cli/chmod@0.2.5 644 report.txt
-moonx cli/chmod@0.2.5 u=rw,g=r,o= report.txt
+moonx cli/chmod@0.2.6 644 report.txt
+moonx cli/chmod@0.2.6 u=rw,g=r,o= report.txt
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0004-filesystem.md)
