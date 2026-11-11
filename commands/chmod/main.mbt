@@ -1,4 +1,23 @@
 ///|
+let command : @argparse.Command = @argparse.Command(
+  "chmod",
+  flags=[
+    @argparse.FlagArg("recursive", short='R'),
+    @argparse.FlagArg("verbose", short='v'),
+    @argparse.FlagArg("help"),
+  ],
+  options=[
+    @argparse.OptionArg("reference", action=Append, allow_hyphen_values=true),
+  ],
+  positionals=[
+    @argparse.PositionArg("operands", num_args=@argparse.ValueRange()),
+  ],
+  disable_help_flag=true,
+  disable_version_flag=true,
+  disable_help_subcommand=true,
+)
+
+///|
 fn mode_text(mode : Int32) -> String {
   let digits = "01234567"
   let out = StringBuilder()
@@ -136,26 +155,53 @@ async fn main {
     return
   }
   let args = @env.args()[1:]
-  let parsed = @cli.parse(args, [
-    @cli.flag("recursive", short='R'),
-    @cli.flag("verbose", short='v'),
-    @cli.option("reference"),
-    @cli.flag("help"),
-  ]) catch {
-    @cli.CliError(option~, message~, ..) => {
+  let parsed = command.parse(argv=args, env=Map([])) catch {
+    error => {
+      let text = error.to_string()
+      let line = match text.rev_find("' found") {
+        Some(end) => text[:end + 7]
+        None => text.split("\n").next().unwrap_or(text[:])
+      }
+      let (message, option) = match line {
+        [.. "error: unexpected argument '--", .. rest] => {
+          let spelling = rest.strip_suffix("' found").unwrap_or(rest)
+          let name = spelling.split("=").next().unwrap_or(spelling).to_owned()
+          let message = if spelling.contains("=") &&
+            ["recursive", "verbose", "help"].contains(name) {
+            "flag does not accept a value"
+          } else {
+            "unknown option"
+          }
+          (message, name)
+        }
+        [.. "error: unexpected argument '-", .. rest] =>
+          (
+            "unknown short option",
+            rest.strip_suffix("' found").unwrap_or(rest).to_owned(),
+          )
+        [.. "error: a value is required for '", .. rest] => {
+          let spelling = rest
+            .strip_suffix("' but none was supplied")
+            .unwrap_or(rest)
+          let name = spelling.strip_prefix("--").unwrap_or(spelling).to_owned()
+          ("option requires a value", name)
+        }
+        _ => (text, "")
+      }
       @stdio.stderr.write("chmod: \{message}: '\{option}'\n")
       @sys.exit(1)
       return
     }
   }
-  if parsed.contains("help") {
+  let operands = parsed.values.get("operands").unwrap_or([])
+  if parsed.flags.contains("help") {
     @stdio.stdout.write(
       "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Symbolic assignments must cover u/g/o explicitly and apply only to regular files.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
-  if parsed.contains("reference") {
-    if parsed.operands.is_empty() {
+  if parsed.values.contains("reference") {
+    if operands.is_empty() {
       @stdio.stderr.write("chmod: missing operand\n")
       @sys.exit(1)
       return
@@ -166,7 +212,7 @@ async fn main {
     @sys.exit(1)
     return
   }
-  let (selected_mode, symbolic_mode) = match parsed.operands.get(0) {
+  let (selected_mode, symbolic_mode) = match operands.get(0) {
     Some(value) => {
       let numeric = try parse_octal_mode(value) catch {
         _ => None
@@ -196,7 +242,7 @@ async fn main {
       return
     }
   }
-  let operands = parsed.operands[1:]
+  let operands = operands[1:]
   if operands.is_empty() {
     @stdio.stderr.write("chmod: missing operand\n")
     @sys.exit(1)
@@ -207,7 +253,7 @@ async fn main {
     @sys.exit(1)
     return
   }
-  let verbose = parsed.contains("verbose")
+  let verbose = parsed.flags.contains("verbose")
   let mut failed = false
   if symbolic_mode {
     for path in operands {
@@ -247,7 +293,7 @@ async fn main {
       chmod_numeric_path(
         path,
         selected_mode,
-        parsed.contains("recursive"),
+        parsed.flags.contains("recursive"),
         verbose,
       ) catch {
         err => {

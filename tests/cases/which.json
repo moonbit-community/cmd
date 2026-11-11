@@ -469,6 +469,58 @@
       "source_version": "workspace cli/which@0.1.5 metadata contract",
       "expected_stdout_text": "Usage: which [-as] NAME...\nFind executable regular files in PATH. Windows uses PATHEXT.\n  -a, --all     print all matches\n  -s, --silent  return status without output\n      --help    display this help and exit\n      --version display version and exit\n-s/--silent follows this project's explicit quiet-status profile; it does not\nclaim the option surface of every GNU/BSD which implementation.\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "which-help-rejects-attached-value",
+      "command": "which",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "which: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "which-unknown-option-retains-newline",
+      "command": "which",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "which: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "which-help-does-not-hide-invalid-option",
+      "command": "which",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "which: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
     }
   ]
 }

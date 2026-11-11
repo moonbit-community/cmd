@@ -290,6 +290,58 @@
       ],
       "expected_stderr_contains": "option",
       "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "chmod-help-rejects-attached-value",
+      "command": "chmod",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "chmod: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "chmod-unknown-option-retains-newline",
+      "command": "chmod",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "chmod: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "chmod-help-does-not-hide-invalid-option",
+      "command": "chmod",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "chmod: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
     }
   ]
 }

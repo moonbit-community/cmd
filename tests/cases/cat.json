@@ -472,6 +472,58 @@
       "expected_stderr_text": "",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
+    },
+    {
+      "id": "cat-help-rejects-attached-value",
+      "command": "cat",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cat: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "cat-unknown-option-retains-newline",
+      "command": "cat",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cat: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "cat-help-does-not-hide-invalid-option",
+      "command": "cat",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cat: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
     }
   ]
 }

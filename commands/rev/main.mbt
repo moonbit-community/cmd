@@ -1,4 +1,16 @@
 ///|
+let command : @argparse.Command = @argparse.Command(
+  "rev",
+  flags=[@argparse.FlagArg("help")],
+  positionals=[
+    @argparse.PositionArg("operands", num_args=@argparse.ValueRange()),
+  ],
+  disable_help_flag=true,
+  disable_version_flag=true,
+  disable_help_subcommand=true,
+)
+
+///|
 priv suberror InvalidCRecord {
   InvalidCRecord
 }
@@ -105,18 +117,42 @@ async fn main {
     @stdio.stdout.write("rev \{MODULE_VERSION}\n")
     return
   }
-  let parsed = @cli.parse(@env.args()[1:], [@cli.flag("help")]) catch {
-    @cli.CliError(option~, message~, ..) => {
+  let parsed = command.parse(argv=@env.args()[1:], env=Map([])) catch {
+    error => {
+      let text = error.to_string()
+      let line = match text.rev_find("' found") {
+        Some(end) => text[:end + 7]
+        None => text.split("\n").next().unwrap_or(text[:])
+      }
+      let (message, option) = match line {
+        [.. "error: unexpected argument '--", .. rest] => {
+          let spelling = rest.strip_suffix("' found").unwrap_or(rest)
+          let name = spelling.split("=").next().unwrap_or(spelling).to_owned()
+          let message = if spelling.contains("=") && ["help"].contains(name) {
+            "flag does not accept a value"
+          } else {
+            "unknown option"
+          }
+          (message, name)
+        }
+        [.. "error: unexpected argument '-", .. rest] =>
+          (
+            "unknown short option",
+            rest.strip_suffix("' found").unwrap_or(rest).to_owned(),
+          )
+        _ => (text, "")
+      }
       @stdio.stderr.write("rev: \{message}: '\{option}'\n")
       @sys.exit(1)
       return
     }
   }
-  if parsed.contains("help") {
+  let operands = parsed.values.get("operands").unwrap_or([])
+  if parsed.flags.contains("help") {
     @stdio.stdout.write(help_message() + "\n")
     return
   }
-  if parsed.operands.is_empty() {
+  if operands.is_empty() {
     let lines = Ref(0L)
     reverse_reader(@stdio.stdin, lines) catch {
       error => {
@@ -133,7 +169,7 @@ async fn main {
     return
   }
   let mut status = 0
-  for path in parsed.operands {
+  for path in operands {
     let mut opened = false
     let lines = Ref(0L)
     try {

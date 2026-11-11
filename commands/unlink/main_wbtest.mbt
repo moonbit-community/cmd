@@ -1,8 +1,8 @@
 ///|
 test "unlink accepts multiple ordinary operands" {
-  let parsed = @cli.parse(["a", "b"], [@cli.flag("help"), @cli.flag("version")])
-  assert_eq(parsed.operands, ["a", "b"])
-  assert_false(parsed.contains("help"))
+  let parsed = command.parse(argv=["a", "b"], env=Map([]))
+  assert_eq(parsed.values.get("operands"), Some(["a", "b"]))
+  assert_false(parsed.flags.get("help").unwrap_or(false))
 }
 
 ///|

@@ -1,4 +1,27 @@
 ///|
+let command : @argparse.Command = @argparse.Command(
+  "wc",
+  flags=[
+    @argparse.FlagArg("lines", short='l'),
+    @argparse.FlagArg("words", short='w'),
+    @argparse.FlagArg("bytes", short='c'),
+    @argparse.FlagArg("chars", short='m'),
+    @argparse.FlagArg("max-line-length", short='L'),
+    @argparse.FlagArg("help"),
+  ],
+  options=[
+    @argparse.OptionArg("files0-from", action=Append, allow_hyphen_values=true),
+    @argparse.OptionArg("total", action=Append, allow_hyphen_values=true),
+  ],
+  positionals=[
+    @argparse.PositionArg("operands", num_args=@argparse.ValueRange()),
+  ],
+  disable_help_flag=true,
+  disable_version_flag=true,
+  disable_help_subcommand=true,
+)
+
+///|
 priv suberror CliError {
   CliError(String)
 }
@@ -363,17 +386,41 @@ async fn main {
     return
   }
   let args = @env.args()[1:]
-  let parsed = @cli.parse(args, [
-    @cli.flag("lines", short='l'),
-    @cli.flag("words", short='w'),
-    @cli.flag("bytes", short='c'),
-    @cli.flag("chars", short='m'),
-    @cli.flag("max-line-length", short='L'),
-    @cli.option("files0-from"),
-    @cli.option("total"),
-    @cli.flag("help"),
-  ]) catch {
-    @cli.CliError(option~, message~, ..) => {
+  let parsed = command.parse(argv=args, env=Map([])) catch {
+    error => {
+      let text = error.to_string()
+      let line = match text.rev_find("' found") {
+        Some(end) => text[:end + 7]
+        None => text.split("\n").next().unwrap_or(text[:])
+      }
+      let (message, option) = match line {
+        [.. "error: unexpected argument '--", .. rest] => {
+          let spelling = rest.strip_suffix("' found").unwrap_or(rest)
+          let name = spelling.split("=").next().unwrap_or(spelling).to_owned()
+          let message = if spelling.contains("=") &&
+            ["lines", "words", "bytes", "chars", "max-line-length", "help"].contains(
+              name,
+            ) {
+            "flag does not accept a value"
+          } else {
+            "unknown option"
+          }
+          (message, name)
+        }
+        [.. "error: unexpected argument '-", .. rest] =>
+          (
+            "unknown short option",
+            rest.strip_suffix("' found").unwrap_or(rest).to_owned(),
+          )
+        [.. "error: a value is required for '", .. rest] => {
+          let spelling = rest
+            .strip_suffix("' but none was supplied")
+            .unwrap_or(rest)
+          let name = spelling.strip_prefix("--").unwrap_or(spelling).to_owned()
+          ("option requires a value", name)
+        }
+        _ => (text, "")
+      }
       if option == "total" {
         @stdio.stderr.write(
           "wc: option '--total' requires an argument\nTry 'wc --help' for more information.\n",
@@ -386,24 +433,27 @@ async fn main {
       return
     }
   }
-  if parsed.contains("help") {
+  let operands = parsed.values.get("operands").unwrap_or([])
+  if parsed.flags.contains("help") {
     @stdio.stdout.write(
       "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nCounting uses the fixed C byte profile; -m counts every byte.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
-  let mode = parse_total_mode(parsed.last_value("total").unwrap_or("auto")) catch {
+  let mode = parse_total_mode(
+    parsed.values.get("total").unwrap_or([]).last().unwrap_or("auto"),
+  ) catch {
     CliError(message) => {
       @stdio.stderr.write(message + "\n")
       @sys.exit(1)
       return
     }
   }
-  let lines = parsed.contains("lines")
-  let words = parsed.contains("words")
-  let chars = parsed.contains("chars")
-  let bytes = parsed.contains("bytes")
-  let max_line_length = parsed.contains("max-line-length")
+  let lines = parsed.flags.contains("lines")
+  let words = parsed.flags.contains("words")
+  let chars = parsed.flags.contains("chars")
+  let bytes = parsed.flags.contains("bytes")
+  let max_line_length = parsed.flags.contains("max-line-length")
   let selection : Selection = if lines ||
     words ||
     chars ||
@@ -419,12 +469,12 @@ async fn main {
       max_line_length: false,
     }
   }
-  if parsed.contains("files0-from") && !parsed.operands.is_empty() {
+  if parsed.values.contains("files0-from") && !operands.is_empty() {
     @stdio.stderr.write("wc: extra operand with --files0-from\n")
     @sys.exit(1)
     return
   }
-  let files = match parsed.last_value("files0-from") {
+  let files = match parsed.values.get("files0-from").unwrap_or([]).last() {
     Some(path) =>
       read_file_list(path) catch {
         err => {
@@ -433,16 +483,17 @@ async fn main {
           return
         }
       }
-    None => parsed.operands
+    None => operands
   }
-  let implicit_stdin = files.is_empty() && !parsed.contains("files0-from")
+  let implicit_stdin = files.is_empty() &&
+    !parsed.values.contains("files0-from")
   let sources = if implicit_stdin { ["-"] } else { files }
   let width = if mode is Only { 1 } else { count_width(sources, selection) }
   let total = Counts::new()
   let mut failed = false
   for index, path in sources {
     if path == "" {
-      let prefix = match parsed.last_value("files0-from") {
+      let prefix = match parsed.values.get("files0-from").unwrap_or([]).last() {
         Some(list) => quoted_name(list) + ":" + (index + 1).to_string() + ": "
         None => ""
       }
@@ -450,7 +501,8 @@ async fn main {
       failed = true
       continue
     }
-    if path == "-" && parsed.last_value("files0-from") == Some("-") {
+    if path == "-" &&
+      parsed.values.get("files0-from").unwrap_or([]).last() == Some("-") {
       @stdio.stderr.write(
         "wc: when reading file names from standard input, no file name of '-' allowed\n",
       )

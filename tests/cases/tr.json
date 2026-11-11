@@ -487,6 +487,93 @@
       ],
       "expected_stderr_contains": "option",
       "diagnostic_reason": "Local diagnostic bytes are exact. The pinned upstream comparison asserts the error category, status, empty stdout and unchanged sentinel; getopt punctuation/help trailers are not claimed identical."
+    },
+    {
+      "id": "tr-help-rejects-attached-value",
+      "command": "tr",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tr: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "tr-unknown-option-retains-newline",
+      "command": "tr",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tr: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "tr-help-does-not-hide-invalid-option",
+      "command": "tr",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tr: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "tr-complement-short-alias-cluster",
+      "command": "tr",
+      "args": [
+        "-dcC",
+        "a"
+      ],
+      "stdin_text": "ab\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "a",
+      "expected_stderr_text": "",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "tr-short-alias-has-no-long-spelling",
+      "command": "tr",
+      "args": [
+        "--complement-short"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tr: unknown option: 'complement-short'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
     }
   ]
 }

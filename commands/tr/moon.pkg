@@ -1,5 +1,5 @@
 import {
-  "cli/core/cli",
+  "moonbitlang/core/argparse",
   "cli/core/stream",
   "moonbitlang/async",
   "moonbitlang/async/stdio",

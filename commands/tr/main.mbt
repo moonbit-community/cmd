@@ -1,4 +1,23 @@
 ///|
+let command : @argparse.Command = @argparse.Command(
+  "tr",
+  flags=[
+    @argparse.FlagArg("delete", short='d'),
+    @argparse.FlagArg("squeeze-repeats", short='s'),
+    @argparse.FlagArg("complement", short='c'),
+    @argparse.FlagArg("complement-short", short='C', long=""),
+    @argparse.FlagArg("truncate-set1", short='t'),
+    @argparse.FlagArg("help"),
+  ],
+  positionals=[
+    @argparse.PositionArg("operands", num_args=@argparse.ValueRange()),
+  ],
+  disable_help_flag=true,
+  disable_version_flag=true,
+  disable_help_subcommand=true,
+)
+
+///|
 priv suberror CliError {
   CliError(String)
 }
@@ -447,31 +466,52 @@ async fn main {
     return
   }
   let args = @env.args()[1:]
-  let parsed = @cli.parse(args, [
-    @cli.flag("delete", short='d'),
-    @cli.flag("squeeze-repeats", short='s'),
-    @cli.flag("complement", short='c'),
-    @cli.flag("complement", short='C'),
-    @cli.flag("truncate-set1", short='t'),
-    @cli.flag("help"),
-  ]) catch {
-    @cli.CliError(option~, message~, ..) => {
+  let parsed = command.parse(argv=args, env=Map([])) catch {
+    error => {
+      let text = error.to_string()
+      let line = match text.rev_find("' found") {
+        Some(end) => text[:end + 7]
+        None => text.split("\n").next().unwrap_or(text[:])
+      }
+      let (message, option) = match line {
+        [.. "error: unexpected argument '--", .. rest] => {
+          let spelling = rest.strip_suffix("' found").unwrap_or(rest)
+          let name = spelling.split("=").next().unwrap_or(spelling).to_owned()
+          let message = if spelling.contains("=") &&
+            ["delete", "squeeze-repeats", "complement", "truncate-set1", "help"].contains(
+              name,
+            ) {
+            "flag does not accept a value"
+          } else {
+            "unknown option"
+          }
+          (message, name)
+        }
+        [.. "error: unexpected argument '-", .. rest] =>
+          (
+            "unknown short option",
+            rest.strip_suffix("' found").unwrap_or(rest).to_owned(),
+          )
+        _ => (text, "")
+      }
       @stdio.stderr.write("tr: \{message}: '\{option}'\n")
       @sys.exit(1)
       return
     }
   }
-  if parsed.contains("help") {
+  let operands = parsed.values.get("operands").unwrap_or([])
+  if parsed.flags.contains("help") {
     @stdio.stdout.write(
       "Usage: tr [-dscCt] SET1 [SET2]\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
     )
     return
   }
-  let delete = parsed.contains("delete")
-  let squeeze_repeats = parsed.contains("squeeze-repeats")
-  let complement = parsed.contains("complement")
-  let truncate_set1 = parsed.contains("truncate-set1")
-  let sets = parsed.operands
+  let delete = parsed.flags.contains("delete")
+  let squeeze_repeats = parsed.flags.contains("squeeze-repeats")
+  let complement = parsed.flags.contains("complement") ||
+    parsed.flags.contains("complement-short")
+  let truncate_set1 = parsed.flags.contains("truncate-set1")
+  let sets = operands
   if sets.is_empty() {
     @stdio.stderr.write("tr: missing operand\n")
     @sys.exit(1)

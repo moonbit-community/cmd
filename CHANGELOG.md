@@ -26,6 +26,15 @@ Development only.
 
 Development only.
 
+- Switch cat, chmod, dirname, printenv, rev, rmdir, touch, tr, unlink, wc and
+  which directly to standard-library argparse, preserving their command-owned
+  metadata, diagnostics and exit statuses. Add 36 argument regressions without
+  replacing existing or published expectations. Defer consumers needing option
+  occurrence order or syntax the public API cannot express; see ADR-0003.
+  Local Wasm and Native tool tests pass, as do all 36 new contracts. Full local
+  functional acceptance retains a touch observation failure reproduced on
+  unmodified HEAD and a block-device fixture blocked by local sudo permissions;
+  the Docker oracle is unavailable in this environment.
 - Generate package version constants for all 82 command modules from their
   `moon.mod` files with pinned `gen_version@0.0.2` pre-build rules. Use those
   constants for version output and generated metadata, preserving package

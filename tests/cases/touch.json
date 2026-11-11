@@ -678,6 +678,58 @@
         }
       ],
       "expected_rejection": "selecting or setting timestamps is unavailable"
+    },
+    {
+      "id": "touch-help-rejects-attached-value",
+      "command": "touch",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "touch: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "touch-unknown-option-retains-newline",
+      "command": "touch",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "touch: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "touch-help-does-not-hide-invalid-option",
+      "command": "touch",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "touch: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
     }
   ]
 }

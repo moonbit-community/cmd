@@ -1,6 +1,6 @@
 import {
   "cli/core/bytesearch",
-  "cli/core/cli",
+  "moonbitlang/core/argparse",
   "moonbitlang/async",
   "moonbitlang/async/fs" @async_fs,
   "moonbitlang/async/io",

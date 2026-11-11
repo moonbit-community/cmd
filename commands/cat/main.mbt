@@ -1,4 +1,28 @@
 ///|
+let command : @argparse.Command = @argparse.Command(
+  "cat",
+  flags=[
+    @argparse.FlagArg("number", short='n'),
+    @argparse.FlagArg("number-nonblank", short='b'),
+    @argparse.FlagArg("squeeze-blank", short='s'),
+    @argparse.FlagArg("show-tabs", short='T'),
+    @argparse.FlagArg("show-ends", short='E'),
+    @argparse.FlagArg("show-nonprinting", short='v'),
+    @argparse.FlagArg("show-all", short='A'),
+    @argparse.FlagArg("show-ends-nonprinting", short='e'),
+    @argparse.FlagArg("show-tabs-nonprinting", short='t'),
+    @argparse.FlagArg("unbuffered", short='u'),
+    @argparse.FlagArg("help", short='h'),
+  ],
+  positionals=[
+    @argparse.PositionArg("operands", num_args=@argparse.ValueRange()),
+  ],
+  disable_help_flag=true,
+  disable_version_flag=true,
+  disable_help_subcommand=true,
+)
+
+///|
 fn help_message() -> String {
   let message =
     #|Usage: cat [OPTION]... [FILE]...
@@ -120,21 +144,21 @@ priv struct CatRenderer {
 }
 
 ///|
-fn CatRenderer::new(options : @cli.ParsedArgs) -> CatRenderer {
+fn CatRenderer::new(options : @argparse.Matches) -> CatRenderer {
   {
-    number: options.contains("number"),
-    number_nonblank: options.contains("number-nonblank"),
-    squeeze: options.contains("squeeze-blank"),
-    show_ends: options.contains("show-ends") ||
-    options.contains("show-all") ||
-    options.contains("show-ends-nonprinting"),
-    show_nonprinting: options.contains("show-nonprinting") ||
-    options.contains("show-all") ||
-    options.contains("show-ends-nonprinting") ||
-    options.contains("show-tabs-nonprinting"),
-    show_tabs: options.contains("show-tabs") ||
-    options.contains("show-all") ||
-    options.contains("show-tabs-nonprinting"),
+    number: options.flags.contains("number"),
+    number_nonblank: options.flags.contains("number-nonblank"),
+    squeeze: options.flags.contains("squeeze-blank"),
+    show_ends: options.flags.contains("show-ends") ||
+    options.flags.contains("show-all") ||
+    options.flags.contains("show-ends-nonprinting"),
+    show_nonprinting: options.flags.contains("show-nonprinting") ||
+    options.flags.contains("show-all") ||
+    options.flags.contains("show-ends-nonprinting") ||
+    options.flags.contains("show-tabs-nonprinting"),
+    show_tabs: options.flags.contains("show-tabs") ||
+    options.flags.contains("show-all") ||
+    options.flags.contains("show-tabs-nonprinting"),
     line: [],
     line_number: 1,
     previous_blank: false,
@@ -204,40 +228,56 @@ async fn main {
     return
   }
   let args = @env.args()[1:]
-  let parsed = @cli.parse(args, [
-    @cli.flag("number", short='n'),
-    @cli.flag("number-nonblank", short='b'),
-    @cli.flag("squeeze-blank", short='s'),
-    @cli.flag("show-tabs", short='T'),
-    @cli.flag("show-ends", short='E'),
-    @cli.flag("show-nonprinting", short='v'),
-    @cli.flag("show-all", short='A'),
-    @cli.flag("show-ends-nonprinting", short='e'),
-    @cli.flag("show-tabs-nonprinting", short='t'),
-    @cli.flag("unbuffered", short='u'),
-    @cli.flag("help", short='h'),
-  ]) catch {
-    @cli.CliError(option~, message~, ..) => {
+  let parsed = command.parse(argv=args, env=Map([])) catch {
+    error => {
+      let text = error.to_string()
+      let line = match text.rev_find("' found") {
+        Some(end) => text[:end + 7]
+        None => text.split("\n").next().unwrap_or(text[:])
+      }
+      let (message, option) = match line {
+        [.. "error: unexpected argument '--", .. rest] => {
+          let spelling = rest.strip_suffix("' found").unwrap_or(rest)
+          let name = spelling.split("=").next().unwrap_or(spelling).to_owned()
+          let message = if spelling.contains("=") &&
+            [
+              "number", "number-nonblank", "squeeze-blank", "show-tabs", "show-ends",
+              "show-nonprinting", "show-all", "show-ends-nonprinting", "show-tabs-nonprinting",
+              "unbuffered", "help",
+            ].contains(name) {
+            "flag does not accept a value"
+          } else {
+            "unknown option"
+          }
+          (message, name)
+        }
+        [.. "error: unexpected argument '-", .. rest] =>
+          (
+            "unknown short option",
+            rest.strip_suffix("' found").unwrap_or(rest).to_owned(),
+          )
+        _ => (text, "")
+      }
       @stdio.stderr.write("cat: \{message}: '\{option}'\n")
       @sys.exit(1)
       return
     }
   }
-  if parsed.contains("help") {
+  if parsed.flags.contains("help") {
     @stdio.stdout.write(help_message() + "\n")
     return
   }
-  let operands = parsed.operands
+  let operands = parsed.values.get("operands").unwrap_or([])
   let sources = if operands.is_empty() { ["-"][:] } else { operands }
-  let formatted = parsed.contains("number") ||
-    parsed.contains("number-nonblank") ||
-    parsed.contains("squeeze-blank") ||
-    parsed.contains("show-tabs") ||
-    parsed.contains("show-ends") ||
-    parsed.contains("show-nonprinting") ||
-    parsed.contains("show-all") ||
-    parsed.contains("show-ends-nonprinting") ||
-    parsed.contains("show-tabs-nonprinting")
+  let formatted = parsed.flags.contains("number") ||
+    parsed.flags.contains("number-nonblank") ||
+    parsed.flags.contains("squeeze-blank") ||
+    parsed.flags.contains("show-tabs") ||
+    parsed.flags.contains("show-ends") ||
+    parsed.flags.contains("show-nonprinting") ||
+    parsed.flags.contains("show-all") ||
+    parsed.flags.contains("show-ends-nonprinting") ||
+    parsed.flags.contains("show-tabs-nonprinting")
   let mut failed = false
   let renderer = CatRenderer::new(parsed)
   let copy_buffer = FixedArray::make(
