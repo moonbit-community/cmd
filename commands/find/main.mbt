@@ -629,7 +629,7 @@ async fn main {
   let now = @fsops.current_timestamp()
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("find 0.2.6\n")
+    @stdio.stdout.write("find \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]

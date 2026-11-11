@@ -145,7 +145,7 @@ async fn emit_stream(
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("strings 0.1.6\n")
+    @stdio.stdout.write("strings \{MODULE_VERSION}\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], [
@@ -170,7 +170,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("strings \{command_version}\n")
+    @stdio.stdout.write("strings \{MODULE_VERSION}\n")
     return
   }
   let minimum = @string.parse_int(parsed.last_value("bytes").unwrap_or("4")) catch {

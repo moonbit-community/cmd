@@ -26,7 +26,7 @@ async fn unlink_one(path : String) -> Unit raise UnlinkError {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("unlink 0.1.6\n")
+    @stdio.stdout.write("unlink \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -44,7 +44,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("unlink \{command_version}\n")
+    @stdio.stdout.write("unlink \{MODULE_VERSION}\n")
     return
   }
   if parsed.operands.is_empty() {

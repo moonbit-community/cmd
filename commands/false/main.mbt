@@ -9,7 +9,7 @@ async fn main {
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("false \{command_version}\n")
+    @stdio.stdout.write("false \{MODULE_VERSION}\n")
     return
   }
   @sys.exit(1)

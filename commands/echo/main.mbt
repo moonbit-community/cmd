@@ -86,7 +86,7 @@ fn decode_escapes(text : String) -> (Bytes, Bool) {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("echo 0.2.4\n")
+    @stdio.stdout.write("echo \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -97,7 +97,7 @@ async fn main {
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("echo \{command_version}\n")
+    @stdio.stdout.write("echo \{MODULE_VERSION}\n")
     return
   }
   let mut newline = true

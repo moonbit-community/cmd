@@ -177,7 +177,7 @@ async fn main {
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("mktemp 0.1.5\n")
+    @stdio.stdout.write("mktemp \{MODULE_VERSION}\n")
     return
   }
   if parsed.operands.length() > 1 {

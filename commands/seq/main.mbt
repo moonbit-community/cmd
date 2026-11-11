@@ -174,7 +174,7 @@ fn zero_pad(text : String, width : Int32) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("seq 0.2.6\n")
+    @stdio.stdout.write("seq \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -222,7 +222,7 @@ async fn main {
       )
       return
     } else if options && arg == "--version" {
-      @stdio.stdout.write("seq \{command_version}\n")
+      @stdio.stdout.write("seq \{MODULE_VERSION}\n")
       return
     } else if options &&
       arg.has_prefix("-") &&

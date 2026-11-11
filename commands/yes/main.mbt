@@ -11,7 +11,7 @@ fn output_line(args : ArrayView[String]) -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("yes 0.1.5\n")
+    @stdio.stdout.write("yes \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -22,7 +22,7 @@ async fn main {
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("yes \{command_version}\n")
+    @stdio.stdout.write("yes \{MODULE_VERSION}\n")
     return
   }
   let line = output_line(args)

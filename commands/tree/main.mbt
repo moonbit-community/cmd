@@ -584,7 +584,7 @@ fn usage() -> String {
 async fn main {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tree 0.1.7\n")
+    @stdio.stdout.write("tree \{MODULE_VERSION}\n")
     return
   }
   let invocation = parse_arguments(@env.args()[1:].to_owned()) catch {
@@ -599,7 +599,7 @@ async fn main {
     return
   }
   if invocation.options.version {
-    @stdio.stdout.write("tree \{command_version}\n")
+    @stdio.stdout.write("tree \{MODULE_VERSION}\n")
     return
   }
   let roots : Array[TreeNode] = []

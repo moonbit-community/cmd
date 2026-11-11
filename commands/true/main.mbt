@@ -7,6 +7,6 @@ async fn main {
       "Usage: true [ignored command line arguments]\n      --help      display this help and exit\n      --version   display version and exit\n",
     )
   } else if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("true \{command_version}\n")
+    @stdio.stdout.write("true \{MODULE_VERSION}\n")
   }
 }

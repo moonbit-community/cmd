@@ -1,7 +1,4 @@
 ///|
-const CommandVersion = "0.1.2"
-
-///|
 priv suberror UsageError {
   UsageError(String)
 }
@@ -10,7 +7,7 @@ priv suberror UsageError {
 let command : @argparse.Command = Command(
   "serve",
   about="Serve regular files and directory index.html documents over HTTP.",
-  version="serve " + CommandVersion,
+  version="serve " + MODULE_VERSION,
   options=[
     OptionArg(
       "host",
