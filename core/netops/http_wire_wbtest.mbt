@@ -1,4 +1,57 @@
 ///|
+test "outgoing headers validate serialized bytes and their readable projection" {
+  for
+    header in [
+      http_header_bytes("Cookie", b"sid=one\nInjected: yes"),
+      HttpHeader::{
+        name: "Cookie",
+        value: "safe",
+        octets: Some(b"safe\r\nInjected: yes"),
+      },
+      HttpHeader::{ name: "Content-Length", value: "1", octets: Some(b"2"), },
+    ] {
+    try validate_headers([header]) catch {
+      TransferError(kind~, ..) => assert_eq(kind, ProtocolFailure)
+    } noraise {
+      _ => fail("inconsistent or line-injected header accepted")
+    }
+  }
+  validate_headers([
+    http_header_bytes("Cookie", b"sid=\xff"),
+    http_header_bytes("Cookie", b"sid=one\rtwo"),
+  ])
+}
+
+///|
+async test "response header limit counts fields rather than the terminating blank line" {
+  @async.with_timeout(10000, () => {
+    @async.with_task_group(group => {
+      for count in [1024, 1025] {
+        let response = "HTTP/1.1 204 No Content\r\n" +
+          Array::make(count, "X-Field: value\r\n").join("") +
+          "\r\n"
+        let server = serve_raw_response(group, response)
+        try
+          with_response(
+            exchange_test_request(server.addr.port()),
+            exchange_test_transport(),
+            scope => assert_eq(scope.head().fields.length(), 1024),
+          )
+        catch {
+          TransferError(kind~, ..) => {
+            assert_eq(count, 1025)
+            assert_eq(kind, ReceiveFailure)
+          }
+          error => raise error
+        } noraise {
+          _ => assert_eq(count, 1024)
+        }
+      }
+    })
+  })
+}
+
+///|
 async test "wire chunked framing overrides Content-Length and accepts extensions and trailers" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
@@ -69,6 +122,7 @@ async test "wire unknown length uploads stream independent chunks and a final te
           request_method: Post,
           headers: [],
           body: StdinBody,
+          chunked: true,
         },
         transport,
       )

@@ -1,0 +1,125 @@
+///|
+// Adapted from MoonJQ 0.2.0 for local ownership and current syntax.
+// See ../../THIRD_PARTY_NOTICES.md for source and license information.
+
+///|
+/// Parse object constructor
+fn Parser::parse_object(self : Parser) -> @ast.Expr raise ParseError {
+  if self.consume(TRBrace) {
+    return ObjectConstruct([])
+  }
+  let pairs : Array[(@ast.Expr, @ast.Expr?)] = []
+  while true {
+    let key : @ast.Expr = match self.current() {
+      Some(TIdentifier(name)) => {
+        self.advance()
+        Literal(String(name))
+      }
+      Some(TString(name)) => {
+        self.advance()
+        Literal(String(name))
+      }
+      Some(TLParen) => {
+        self.advance()
+        let expr = self.parse_pipe()
+        self.expect(TRParen)
+        expr
+      }
+      _ => raise InvalidSyntax("Expected object key")
+    }
+    let value = if self.consume(TColon) {
+      Some(self.parse_assignment())
+    } else {
+      None
+    }
+    pairs.push((key, value))
+    if !self.consume(TComma) || self.check(TRBrace) {
+      break
+    }
+  }
+  self.expect(TRBrace)
+  ObjectConstruct(pairs)
+}
+
+///|
+/// Parse if-then-else
+fn Parser::parse_if(self : Parser) -> @ast.Expr raise ParseError {
+  self.advance()
+  let cond = self.parse_pipe()
+  self.expect(TThen)
+  let then_expr = self.parse_pipe()
+  let else_expr = if self.current() == Some(TElif) {
+    self.parse_if()
+  } else if self.consume(TElse) {
+    let otherwise = self.parse_pipe()
+    self.expect(TEnd)
+    otherwise
+  } else {
+    self.expect(TEnd)
+    @ast.Expr::Identity
+  }
+  IfThenElse(cond, then_expr, else_expr)
+}
+
+///|
+/// Parse try-catch
+fn Parser::parse_try(self : Parser) -> @ast.Expr raise ParseError {
+  self.advance()
+  let expr = self.parse_postfix()
+  let handler = if self.consume(TCatch) {
+    Some(self.parse_postfix())
+  } else {
+    None
+  }
+  TryCatch(expr, handler)
+}
+
+///|
+/// Parse reduce: reduce EXPR as $VAR (INIT; UPDATE)
+fn Parser::parse_reduce(self : Parser) -> @ast.Expr raise ParseError {
+  self.advance() // consume 'reduce'
+  let gen_expr = self.parse_postfix() // generator expression
+  // Expect 'as $var'
+  guard self.consume(TAs) else {
+    raise InvalidSyntax("reduce expects 'as' after expression")
+  }
+  guard self.current() is Some(TVariable(var_name)) else {
+    raise InvalidSyntax("reduce expects variable after as")
+  }
+  self.advance()
+  // Expect (INIT; UPDATE)
+  self.expect(TLParen)
+  let init_expr = self.parse_pipe()
+  self.expect(TSemicolon)
+  let update_expr = self.parse_pipe()
+  self.expect(TRParen)
+  Reduce(gen_expr, var_name, init_expr, update_expr)
+}
+
+///|
+/// Parse foreach: foreach EXPR as $VAR (INIT; UPDATE) or (INIT; UPDATE; EXTRACT)
+fn Parser::parse_foreach(self : Parser) -> @ast.Expr raise ParseError {
+  self.advance() // consume 'foreach'
+  let gen_expr = self.parse_postfix() // generator expression
+  // Expect 'as $var'
+  guard self.consume(TAs) else {
+    raise InvalidSyntax("foreach expects 'as' after expression")
+  }
+  guard self.current() is Some(TVariable(var_name)) else {
+    raise InvalidSyntax("foreach expects variable after as")
+  }
+  self.advance()
+  // Expect (INIT; UPDATE) or (INIT; UPDATE; EXTRACT)
+  self.expect(TLParen)
+  let init_expr = self.parse_pipe()
+  self.expect(TSemicolon)
+  let update_expr = self.parse_pipe()
+  // Check for optional extract expression
+  let extract_expr = if self.consume(TSemicolon) {
+    Some(self.parse_pipe())
+  } else {
+    None
+  }
+  self.expect(TRParen)
+  Foreach(gen_expr, var_name, init_expr, update_expr, extract_expr)
+}

@@ -7,7 +7,7 @@ import {
 }
 
 // Values
-pub fn options(utf8_hosts? : Bool, request_method? : @netops.HttpMethod, headers? : Array[@netops.HttpHeader], body? : @netops.RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int32, idle_timeout_ms? : Int32, max_time_ms? : Int32, fail_on_http_error? : Bool, resume_from? : Int64, cookie_jar? : CookieJar, cookie_data? : String, basic_user? : String, basic_password? : String) -> Options
+pub fn options(utf8_hosts? : Bool, request_method? : @netops.HttpMethod, headers? : Array[@netops.HttpHeader], suppressed_headers? : Array[String], body? : @netops.RequestBody, redirects? : RedirectPolicy, preserve_method_on_redirect? : Bool, verify_tls? : Bool, proxy_url? : String, connect_timeout_ms? : Int32, idle_timeout_ms? : Int32, max_time_ms? : Int32, fail_on_http_error? : Bool, resume_from? : Int64, cookie_jar? : CookieJar, cookie_data? : String, basic_user? : String, basic_password? : String) -> Options
 
 pub fn proxy_bypassed(String, String?, utf8_hosts? : Bool) -> Bool
 
@@ -21,8 +21,8 @@ pub async fn transfer(String, TransferOutput, Options, observer? : async (Transf
 pub struct CookieJar {
   // private fields
 }
-pub async fn CookieJar::load(Self, String) -> Unit
-pub fn CookieJar::load_netscape(Self, String) -> Unit
+pub async fn CookieJar::load(Self, String) -> Bool
+pub fn CookieJar::load_bytes(Self, Bytes) -> Bool
 pub fn CookieJar::new() -> Self
 pub async fn CookieJar::save(Self, String, include_session? : Bool) -> Unit
 
@@ -30,6 +30,7 @@ pub(all) struct Options {
   utf8_hosts : Bool
   request_method : @netops.HttpMethod
   headers : Array[@netops.HttpHeader]
+  suppressed_headers : Array[String]
   body : @netops.RequestBody
   redirects : RedirectPolicy
   preserve_method_on_redirect : Bool
@@ -59,6 +60,7 @@ type StoredCookie
 
 #derive(@debug.Debug)
 pub(all) enum TransferEvent {
+  ResponseHeader(Bytes)
   ResponseStarted(url~ : String, status~ : Int32, reason~ : String, headers~ : Array[@netops.HttpHeader], content_length~ : Int64?)
   Redirected(status~ : Int32, from~ : String, to~ : String)
   OutputStarted(path~ : String?, response_offset~ : Int64)

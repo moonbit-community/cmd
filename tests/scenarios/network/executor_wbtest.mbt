@@ -2,7 +2,7 @@
 async test "shared network executor retains exact identity and incomplete output evidence" {
   let directory = @fs.tmpdir(prefix="mooncmd-shared-network-")
   defer (@fs.rmdir(directory, recursive=true) catch { _ => () })
-  for index in 0..<3 {
+  for index in 0..<4 {
     let work = directory + "/" + index.to_string()
     @fs.mkdir(work)
     let executor : Executor = {
@@ -28,7 +28,11 @@ async test "shared network executor retains exact identity and incomplete output
           source_version: "cli/curl@0.2.3",
           program: "selected-moonx",
           args: ["cli/curl@0.2.3", "--", "--", "operand"],
-          infrastructure_error: None,
+          infrastructure_error: if index == 3 {
+            Some("launcher failed")
+          } else {
+            None
+          },
           retain_identity: true,
         }
       },
@@ -66,6 +70,95 @@ async test "shared network executor retains exact identity and incomplete output
       @fs.read_file(work + "/call-0.request.json")
       .text()
       .contains("cli/curl@0.2.3"),
+    )
+  }
+}
+
+///|
+async test "returned execution survives observer failure cancellation and missing work directory" {
+  for mode in ["failure", "cancel", "files"] {
+    let root = @fs.tmpdir(prefix="mooncmd-returned-observer-")
+    defer @fs.rmdir(root, recursive=true)
+    let work = root + "/work"
+    let evidence = root + "/evidence"
+    @fs.mkdir(work)
+    @fs.mkdir(evidence)
+    let ready : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
+    let hold : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
+    let executor : Executor = {
+      invoke: _ => {
+        if mode == "files" {
+          @fs.rmdir(work)
+        }
+        {
+          run: {
+            output: {
+              status: 18,
+              stdout: b"returned\x00\xff",
+              stderr: b"diagnostic\n",
+            },
+            timed_out: false,
+            cleanup_error: None,
+          },
+          source_version: "returned-fixture",
+          program: "returned-fixture",
+          args: ["url"],
+          infrastructure_error: None,
+          retain_identity: true,
+        }
+      },
+    }
+    @async.with_timeout(10000, () => {
+      @async.with_task_group(group => {
+        let task = group.spawn(allow_failure=true, () => {
+          network_request(
+            executor,
+            work,
+            "curl",
+            ["url"],
+            evidence_work=evidence,
+            expected_files=[],
+            after_candidate=() => {
+              assert_true(@fs.exists(evidence + "/call-0.execution.json"))
+              if mode == "failure" {
+                fail("observer failed")
+              }
+              ready.put(())
+              hold.get()
+            },
+          )
+        })
+        if mode == "cancel" {
+          ready.get()
+          task.cancel()
+        }
+        let failed = try {
+          ignore(task.wait())
+          false
+        } catch {
+          _ => true
+        }
+        assert_true(failed)
+      })
+    })
+    assert_eq(
+      @fs.read_file(evidence + "/call-0.stdout.bin").binary(),
+      b"returned\x00\xff",
+    )
+    assert_eq(
+      @fs.read_file(evidence + "/call-0.stderr.bin").binary(),
+      b"diagnostic\n",
+    )
+    assert_eq(@fs.read_file(evidence + "/call-0.status.txt").text(), "18")
+    assert_true(
+      @json.parse(@fs.read_file(evidence + "/call-0.execution.json").text())
+      is { "program": "returned-fixture", .. },
+    )
+    assert_true(
+      @json.parse(
+        @fs.read_file(evidence + "/call-0.invocation-end.json").text(),
+      )
+      is { "returned": true, .. },
     )
   }
 }

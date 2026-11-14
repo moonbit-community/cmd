@@ -1,0 +1,35 @@
+///|
+// Adapted from MoonJQ 0.2.0 for local ownership and current syntax.
+// See ../../THIRD_PARTY_NOTICES.md for source and license information.
+
+///|
+test "coverage: map and min/max edge cases" {
+  assert_coverage_eval_error("map(.)", "1")
+  json_inspect(coverage_eval("min", "[]"), content=[null])
+  json_inspect(coverage_eval("max", "[]"), content=[null])
+}
+
+///|
+test "coverage: control flow fallbacks" {
+  json_inspect(coverage_eval("if empty then 1 else 2 end", "null"), content=[])
+  json_inspect(coverage_eval("try (1 / 0)", "null"), content=[])
+  json_inspect(coverage_eval("empty // 2", "null"), content=[2])
+}
+
+///|
+test "coverage: undefined variable" {
+  assert_coverage_eval_error("$missing", "null")
+}
+
+///|
+test "coverage: function argument handling" {
+  assert_coverage_eval_error("def f(x; y): $x + $y; f(1)", "null")
+  assert_coverage_eval_error("def id(x): $x; id(empty)", "null")
+  json_inspect(coverage_eval("def id($x): $x; id(empty)", "null"), content=[])
+}
+
+///|
+test "coverage: reduce and assignment edges" {
+  json_inspect(coverage_eval("reduce .[] as $x (empty; . + $x)", "[1, 2]"), content=[])
+  json_inspect(coverage_eval(".a = empty", "{\"a\": 1}"), content=[])
+}

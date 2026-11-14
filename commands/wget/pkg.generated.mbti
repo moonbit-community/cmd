@@ -4,6 +4,8 @@ package "cli/wget"
 // Values
 
 // Errors
+type ConfigError
+
 type UsageError
 
 // Types and methods

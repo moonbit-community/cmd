@@ -44,7 +44,7 @@ async test "repeated request lengths reject without writing or opening output" {
 }
 
 ///|
-async test "generated Cookie fields reject line injection before writing request bytes" {
+async test "literal Cookie fields reject injection and jar CR terminates its value" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="netops-generated-header-")
@@ -59,6 +59,14 @@ async test "generated Cookie fields reject line injection before writing request
         let observed = group.spawn(() => {
           let (connection, _) = server.accept()
           defer connection.close()
+          if variant >= 3 {
+            let request = StringBuilder()
+            while connection.read_until("\r\n") is Some(line) && line != "" {
+              request.write_string(line + "\r\n")
+            }
+            connection.write("HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok")
+            return @utf8.encode(request.to_string())
+          }
           connection.read_all().binary()
         })
         let jar = CookieJar::new()
@@ -100,10 +108,18 @@ async test "generated Cookie fields reject line injection before writing request
           }
           error => raise error
         } noraise {
-          _ => fail("generated request fields must reject CR/LF")
+          _ => assert_true(variant >= 3)
         }
-        assert_eq(observed.wait(), b"")
-        assert_eq(@fs.read_file(output_path).binary(), b"preserve")
+        if variant < 3 {
+          assert_eq(observed.wait(), b"")
+          assert_eq(@fs.read_file(output_path).binary(), b"preserve")
+        } else {
+          let request = @utf8.decode(observed.wait())
+          assert_true(request.contains("Cookie: sid=one\r\n"))
+          assert_false(request.contains("X-Injected"))
+          assert_eq(request.contains("Cookie: explicit=safe\r\n"), variant == 4)
+          assert_eq(@fs.read_file(output_path).binary(), b"ok")
+        }
       }
     })
   })

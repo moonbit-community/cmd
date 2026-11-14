@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-10
+Updated: 2026-11-14
 
 ## Decision
 
@@ -25,10 +25,13 @@ authentication, framing and failure effects before that transport gap closes.
 - Complete origin request headers, payload and framing before reading the
   response; proxy CONNECT remains connection setup. Distinguish request-write,
   response-header and response-body errors.
-- Validate final names and CR/LF-free values, including generated cookies.
-  Preserve ordered, repeated final response fields, including interleaved
-  Set-Cookie fields, after optional-whitespace normalization. Ignore interim
-  fields. Keep the separate semantic framing map and its existing validation.
+- Validate final field names and actual wire value bytes, rejecting LF and
+  inconsistent readable projections. Text-only values also reject CR; admitted
+  byte fields retain Wget jar CR and Curl header-file CR. The transport does not
+  generate User-Agent. Each command supplies its own default or suppression.
+  Request chunking is explicit, independent of Content-Length omission: Curl
+  can suppress the field for a known-length body without changing its bytes.
+  Keep the separate semantic framing map and its existing validation.
 - Default Accept-Encoding to identity and preserve content-coded bytes.
   Lengths and Range offsets describe those bytes; no implicit decompression.
 - Preserve delivered prefixes. A failed Writer call has unknown partial extent,
@@ -42,6 +45,38 @@ Empty reply, bodyless response and close-delimited body are distinct states.
 Both commands accept EOF after a complete 200 status line while collecting
 headers, subject to parsed framing. Core reports incomplete headers and exact
 premature fixed/chunked EOF boundaries; each command decides acceptance.
+
+## Octet admission and command configuration
+
+Core exposes physical response lines, informational statuses, block endings
+and EOF through a scoped callback. Curl and Wget own folding, NUL/control-byte
+admission and incomplete-block effects. Curl admits informational cookies and
+exposes admitted raw HEAD lines plus its cleanup tail; Wget retains its final
+block policy. An unterminated status line is an empty reply for Curl and may be
+accepted by Wget. Raw values survive cookie storage, save/reload and later
+requests without a UTF-8 replacement round trip. Wget owns its GNU-compatible
+domain table iteration; Curl owns its jar line/chunk limits and prefix retention.
+
+Configuration remains command-specific. Curl expands supported options at
+their source position, validates before later reads, limits nested includes to
+five and preserves the accepted default-file prefix on failure. Header-file
+provenance remains typed metadata, so its raw CR policy does not weaken text
+argument validation. Wget applies startup selectors, normalized setting names,
+booleans and execute directives using its separate grammar. Distribution
+startup files may set `passive_ftp`: validate that boolean without changing
+HTTP behavior. This does not enable FTP transfers. Host and
+Transfer-Encoding customization, non-UTF-8 configuration, OS account-database
+discovery and the full Windows default-file search remain outside this profile.
+Reopen those boundaries with fixed-version wire and filesystem evidence.
+
+`tests/fixtures/network/http-*.json` contains newly captured immutable-image
+observations, including complete second-process jar reloads. These are a fresh
+baseline, not a reconstruction of the missing historical 157/8-case captures.
+`tests/scenarios/network/http_cookie.mbt` checks process streams/status, request
+fields and body, response writes, request-time files and final files. Observer
+receipts precede cancellable quiescence hooks; hook/report/cleanup failures
+cannot pass. Local fixture replay is separate from required Linux differential,
+three-platform development CI and exact-coordinate publication acceptance.
 
 ## Command profiles
 

@@ -2,6 +2,16 @@
 
 Shared runtime packages used by the independently published command modules.
 
+## 0.11.0 changes
+
+HTTP fields retain original value octets alongside their readable projection.
+`with_response` exposes physical status/header lines, block endings and EOF to
+command-owned admission callbacks; request and body framing remain in netops.
+The request field list is complete: callers supply their own User-Agent.
+Curl and Wget own their defaults, folding, incomplete-header and Cookie rules.
+The new interfaces intentionally change source APIs. Publication and exact
+MoonX acceptance are separate from workspace validation.
+
 ## 0.10.0 changes
 
 The workspace uses the CLI compatibility boundary in

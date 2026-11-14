@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-11
+Updated: 2026-11-14
 
 ## Decision
 
@@ -48,9 +48,31 @@ Only cleanup is shielded; output backpressure remains cancellable.
 
 ## Package ownership
 
-The 2026-11-10 release candidate assigns the incompatible internal source API
-changes to core 0.10.0. All current command consumers declare that coordinate;
-the independently accepted older coordinates remain immutable. Command version
+The issue #34 release assigns byte-preserving HTTP headers,
+physical response-line callbacks and explicit payload chunking to core 0.11.0.
+Curl and Wget are its two real consumers. Header admission, Cookie storage,
+configuration and generated request-field defaults stay with each command;
+core owns transport and framing. Jq's incremental event parser and decimal
+literal spelling stay in jq and use its existing core dependency. Unchanged
+commands keep their published coordinates. These correctness changes have no
+formal timing acceptance; the existing protection registry remains authoritative.
+
+Jq follows rg's private-package ownership: its thin executable calls
+`internal/driver`, which owns argument mapping, input/output and existing AST
+adaptations. `internal/parser` depends on `internal/ast`; the evaluator and
+parser never depend on the driver. Import the required MoonJQ 0.2.0 language
+implementation and original tests with source/license attribution, excluding
+upstream command programs and Query convenience wrappers. Internal APIs serve
+these concrete consumers and need no compatibility forwarding layer. This
+removes jq's dependency-release boundary. Jq now owns resumable evaluation,
+lexical function scopes, module linking and shared-input continuation; jqlog
+retains its independent JSONL language profile. The same command ownership
+layout applies to both, as recorded in ADR-0008.
+
+The 2026-11-10 release assigned the incompatible internal source API
+changes to core 0.10.0. Its 74 published command consumers selected that coordinate;
+the issue #34 release moves Curl/Wget to 0.11.0 and retains the other 72 bindings.
+The independently accepted older coordinates remain immutable. Command version
 output and dependency declarations advance together. Development CI, registry
 builds and exact-version MoonX acceptance remain separate release gates; this
 release does not add formal performance qualification.
@@ -126,7 +148,8 @@ execution or selection defect, not to reproduce assertions in another format.
 | shell | Session and control-flow state; sh, make and split own orchestration |
 | netops / curl and wget internals | Scoped single-request transport, URL/IDNA/PSL mechanisms / command-owned Cookie, authentication, redirect, retry, resume and output policies |
 | numfmt / time_zone | Exact fixed-profile numeric formatting / checked timezone conversion |
-| jq / jqlog command internals | Local public-AST adaptations preserving lexical bindings and assignment paths, checked against shared independent inputs |
+| jq command internals | Owned parser/evaluator beneath a private driver; preserve lexical bindings, assignment paths and original shared expectations |
+| jqlog command internals | Owned parser/evaluator under internal, with a private JSONL driver and AST adaptations checked against shared independent inputs |
 | quoting / expand and unexpand internals | Shared byte quoting / command-local tab grids and dialects |
 
 The network boundary is command adaptation, private download policy and one
@@ -236,6 +259,12 @@ future performance work requires genuine document/font workloads and a fresh
 baseline containing all current command artifacts.
 
 ## Static HTTP serving
+
+Assign the connection-reuse implementation to serve 0.1.3. The immutable
+0.1.2 coordinate retains its close-after-file-response behavior; never replace
+that package or treat current-workspace connection assertions as its contract.
+The new coordinate must pass the existing static-file and policy scenarios
+through exact-version MoonX before its release is accepted.
 
 `commands/serve` declares its CLI with `moonbitlang/core/argparse`, which owns
 option syntax, help and syntax diagnostics. The command validates the listen

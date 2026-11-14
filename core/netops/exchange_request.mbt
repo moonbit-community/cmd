@@ -76,27 +76,31 @@ async fn HttpWire::start_exchange(
           raise transfer_error(InputFailure, "invalid request Content-Length")
       }
   }
-  self.request_chunked = self.request_remaining is None &&
-    !(request.body is EmptyBody)
-  let text = StringBuilder()
-  text.write_string(
-    request.request_method.wire_name() +
-    " " +
-    request.target.request_target() +
-    " HTTP/1.1\r\n",
+  self.request_chunked = self.request_remaining is None && request.chunked
+  let text = Buffer()
+  text.write_bytes(
+    @utf8.encode(
+      request.request_method.wire_name() +
+      " " +
+      request.target.request_target() +
+      " HTTP/1.1\r\n",
+    ),
   )
-  text.write_string("Host: " + request.host + "\r\n")
-  if !headers.contains("User-Agent") {
-    text.write_string("User-Agent: moonbit-http-client/1.1\r\n")
-  }
+  text.write_bytes(@utf8.encode("Host: " + request.host + "\r\n"))
   for field in fields {
-    text.write_string(field.name + ": " + field.value + "\r\n")
+    text.write_bytes(
+      @utf8.encode(
+        field.name + (if field.bytes().is_empty() { ":" } else { ": " }),
+      ),
+    )
+    text.write_bytes(field.bytes())
+    text.write_bytes(b"\r\n")
   }
   if self.request_chunked {
-    text.write_string("Transfer-Encoding: chunked\r\n")
+    text.write_bytes(b"Transfer-Encoding: chunked\r\n")
   }
-  text.write_string("\r\n")
-  self.write_transport(@utf8.encode(text.to_string()), transport)
+  text.write_bytes(b"\r\n")
+  self.write_transport(text.to_bytes(), transport)
 }
 
 ///|
@@ -203,6 +207,7 @@ async fn exchange_request(
   wire : HttpWire,
   request : Request,
   transport : Transport,
+  receive_header? : async (ResponseLine) -> HttpHeader?,
 ) -> ResponseHead {
   try {
     wire.start_exchange(request, transport)
@@ -228,7 +233,11 @@ async fn exchange_request(
       )
   }
   let result = @async.with_timeout_opt(timeout, () => {
-    wire.response(request.request_method, capture_header_eof=true)
+    wire.response(
+      request.request_method,
+      capture_header_eof=true,
+      receive_header?,
+    )
   }) catch {
     @io.ReaderClosed =>
       raise transfer_error(

@@ -2,13 +2,34 @@
 
 Download HTTP and HTTPS resources for MoonX.
 
+Version: `cli/wget@0.2.7`.
+
 ```sh
-moonx cli/wget@0.2.6 [OPTION]... [URL]...
+moonx cli/wget@0.2.7 [OPTION]... [URL]...
 ```
 
 ## Supported scope
 
 Download URLs or URL lists with resume, conditional requests, headers/bodies, retries, redirects, Basic authentication and cookies.
+
+Retains Cookie octets through response admission, jar saving,
+reload and subsequent requests. Wget's physical-line NUL handling, header
+folding, tab/CR jar values and domain-table iteration are separate from Curl's
+rules. Fixed request/response bytes and both process phases are frozen in
+`tests/fixtures/network/http-*.json`.
+
+`--config=FILE` selects startup settings; `--no-config` suppresses discovery.
+The first selector wins during startup scanning. Otherwise the command reads
+SYSTEM_WGETRC (default `/etc/wgetrc`) followed by WGETRC or HOME/.wgetrc.
+An unreadable or non-file SYSTEM_WGETRC override falls back to `/etc/wgetrc`;
+an empty readable file suppresses that fallback, and parse errors remain fatal.
+`-e`/`--execute` applies a setting at its CLI position. Supported setting names
+ignore case, underscores and hyphens; values remain unquoted text. Boolean
+settings accept on/off, yes/no and 1/0. This profile covers supported command
+options, not every GNU Wget configuration directive.
+The `passive_ftp` boolean is accepted in startup files and execute directives;
+it has no effect on HTTP/HTTPS, so distribution startup defaults remain usable.
+Invalid values still fail, and FTP transfers remain unsupported.
 
 Version 0.2.6: multiple URL failures retain the lowest
 nonzero transfer exit code, regardless of operand order. A later success keeps
@@ -38,7 +59,7 @@ consume that cache. Explicit Authorization fields remain intact on retry.
 `--auth-no-challenge` enables preemptive Basic; attached on/off, yes/no and 1/0
 values are case-insensitive, with the last occurrence winning. Binary named-file
 request bodies replay unchanged. This finite profile does not add Digest/NTLM,
-netrc, configuration loading, password prompts or arbitrary stdin replay.
+netrc, password prompts or arbitrary stdin replay.
 
 Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
 sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
@@ -65,6 +86,9 @@ Outgoing Host fields bracket mapped colons and omit the scheme's default port.
 | Option | Description |
 | --- | --- |
 | `-q, --quiet` | quiet (no output) |
+| `--config=FILE` | read startup settings from FILE |
+| `--no-config` | suppress startup configuration discovery |
+| `-e, --execute=SETTING` | apply a supported configuration setting |
 | `--local-encoding=ENC` | Select UTF-8 or ASCII URL-host input. |
 | `-O, --output-document=FILE` | write documents to FILE |
 | `-o, --output-file=FILE` | log messages to FILE |
@@ -146,17 +170,17 @@ timezone offsets are ignored. Other suffixes reject the date, leaving previous
 expiry operations intact. The timestamp -1 is rejected; zero parses as a valid
 past date and requests deletion. This follows the fixed Linux/glibc oracle, including
 ASCII spacing and field-width behavior; it does not claim every libc dialect.
-Cookie Domain normalization remains separate work.
+Unicode normalization of Cookie Domain attributes remains outside this non-NLS profile.
 
 - Recursive mirroring, FTP, non-Basic authentication, HSTS and timestamp restoration are unsupported.
 - Content-encoded bodies remain encoded. Consumed stdin request bodies cannot be replayed.
-- Resume retains prior bytes without proving the server's earlier prefix is unchanged. Cookie Domain normalization and complete legacy input encodings remain unsupported.
+- Resume retains prior bytes without proving the server's earlier prefix is unchanged. Complete legacy input encodings remain unsupported.
 
 ## Examples
 
 ```sh
-moonx cli/wget@0.2.6 -O page.html https://example.com/
-moonx cli/wget@0.2.6 -q -O - https://example.com/
+moonx cli/wget@0.2.7 -O page.html https://example.com/
+moonx cli/wget@0.2.7 -q -O - https://example.com/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0005-transfer.md)

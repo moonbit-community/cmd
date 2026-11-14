@@ -258,6 +258,10 @@ fn invalid_driver_dependency(name : String, dependency : String) -> Bool {
       return true
     }
   }
+  ["cli/jq", "cli/jqlog"].any(owner => {
+    [owner + "/internal/parser", owner + "/internal/ast"].contains(name) &&
+    dependency == owner + "/internal/driver"
+  }) ||
   (
     ["cli/rg/internal/matcher", "cli/rg/internal/searcher"].contains(name) &&
     dependency == "cli/rg/internal/driver"
@@ -393,6 +397,12 @@ async fn main {
     assert_false(invalid_driver_dependency(name, "cli/core/bytesearch"))
   }
   assert_false(invalid_driver_dependency("cli/rg", "cli/rg/internal/driver"))
+  for owner in ["cli/jq", "cli/jqlog"] {
+    for name in [owner + "/internal/parser", owner + "/internal/ast"] {
+      assert_true(invalid_driver_dependency(name, owner + "/internal/driver"))
+    }
+    assert_false(invalid_driver_dependency(owner, owner + "/internal/driver"))
+  }
   assert_true(
     invalid_driver_dependency("cli/curl", "cli/wget/internal/download"),
   )

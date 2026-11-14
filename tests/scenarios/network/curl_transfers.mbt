@@ -388,20 +388,6 @@ async fn network_curl_transfers_scenario(
           invoke: invocation => {
             let execution = (executor.invoke)(invocation)
             returned.val = true
-            try {
-              @async.with_timeout(5000, () => {
-                while pending.val > 0 {
-                  @async.sleep(5)
-                }
-              })
-              candidate_files.val = transfer_file_state(
-                directory,
-                oracle_child=oracle_image is Some(_),
-              )
-            } catch {
-              error => observer_errors.push(error.to_string())
-            }
-            current_work.val = directory + "/oracle"
             execution
           },
         }
@@ -448,6 +434,18 @@ async fn network_curl_transfers_scenario(
           oracle_image?,
           oracle_args=original,
           oracle_failures=failures,
+          after_candidate=() => {
+            @async.with_timeout(5000, () => {
+              while pending.val > 0 {
+                @async.sleep(5)
+              }
+            })
+            candidate_files.val = transfer_file_state(
+              directory,
+              oracle_child=oracle_image is Some(_),
+            )
+            current_work.val = directory + "/oracle"
+          },
         )
         @async.with_timeout(5000, () => {
           while pending.val > 0 {

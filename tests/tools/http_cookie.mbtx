@@ -1,0 +1,1160 @@
+----
+import {
+  "moonbitlang/async@0.22.9",
+  "moonbitlang/async@0.22.9/fs",
+  "moonbitlang/async@0.22.9/process",
+  "moonbitlang/async@0.22.9/socket",
+  "moonbitlang/core/env",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.7/crypto",
+}
+----
+
+///|
+struct Input {
+  label : String
+  response : Bytes
+  jar : Bytes
+}
+
+///|
+struct Configuration {
+  label : String
+  arguments : Array[String]
+  files : Array[(String, String)]
+  defaults : Bool
+}
+
+///|
+fn configurations(command : String) -> Array[Configuration] {
+  if command == "curl" {
+    [
+      {
+        label: "config-quoted",
+        arguments: ["-K", "config"],
+        files: [
+          (
+            "config", "header=\"X-Config: one\\ttwo\"\nuser=\"account:secret\"\n",
+          ),
+        ],
+        defaults: false,
+      },
+      {
+        label: "config-nested",
+        arguments: ["-Kconfig", "-H", "X-Repeat: last"],
+        files: [
+          (
+            "config", "header=\"X-Repeat: first\"\nconfig=inner\nurl=http://octets.example/use\n",
+          ),
+          ("inner", "header: \"X-Repeat: second\"\n"),
+        ],
+        defaults: false,
+      },
+      {
+        label: "config-default",
+        arguments: [],
+        files: [(".curlrc", "header=\"X-Config: automatic\"\n")],
+        defaults: true,
+      },
+      {
+        label: "config-disabled",
+        arguments: [],
+        files: [(".curlrc", "header=\"X-Config: forbidden\"\n")],
+        defaults: false,
+      },
+      {
+        label: "config-toggle",
+        arguments: ["-K", "config", "--no-head"],
+        files: [("config", "head\nheader=\"X-Config: enabled\"\n")],
+        defaults: false,
+      },
+    ]
+  } else {
+    [
+      {
+        label: "config-values",
+        arguments: ["--config=config"],
+        files: [
+          (
+            "config", "header = X-Config: one two # literal\nhttp_user=account\nHTTP-PASSWORD=secret\nauth_no_challenge=on\n",
+          ),
+        ],
+        defaults: false,
+      },
+      {
+        label: "config-execute",
+        arguments: [
+          "--config=config", "-e", "header=X-Config: last", "-e", "cookies=off",
+        ],
+        files: [("config", "header=X-Config: first\ncookies=on\n")],
+        defaults: false,
+      },
+      {
+        label: "config-default",
+        arguments: [],
+        files: [("wgetrc", "header=X-Config: automatic\n")],
+        defaults: true,
+      },
+      {
+        label: "config-disabled",
+        arguments: [],
+        files: [("wgetrc", "header=X-Config: forbidden\n")],
+        defaults: false,
+      },
+      {
+        label: "config-first-selector",
+        arguments: ["--no-config", "--config=config"],
+        files: [("config", "header=X-Config: forbidden\n")],
+        defaults: false,
+      },
+    ]
+  }
+}
+
+///|
+fn configuration_validation(command : String) -> Array[Configuration] {
+  if command == "curl" {
+    [
+      {
+        label: "config-invalid-number",
+        arguments: ["-K", "config", "--retry", "0"],
+        files: [("config", "retry=invalid\n")],
+        defaults: false,
+      },
+      {
+        label: "config-default-invalid-number",
+        arguments: ["--retry", "0"],
+        files: [
+          (
+            ".curlrc", "header=\"X-Config: prefix\"\nretry=invalid\nheader=\"X-Config: forbidden\"\n",
+          ),
+        ],
+        defaults: true,
+      },
+    ]
+  } else {
+    [
+      {
+        label: "config-invalid-number",
+        arguments: ["--config=config", "--tries", "1"],
+        files: [("config", "tries=invalid\n")],
+        defaults: false,
+      },
+      {
+        label: "config-default-invalid-number",
+        arguments: ["--tries", "1"],
+        files: [
+          (
+            "wgetrc", "header=X-Config: prefix\ntries=invalid\nheader=X-Config: forbidden\n",
+          ),
+        ],
+        defaults: true,
+      },
+    ]
+  }
+}
+
+///|
+fn header_configuration(command : String) -> Array[Configuration] {
+  if command != "curl" {
+    return []
+  }
+  [
+    {
+      label: "header-empty",
+      arguments: ["-H", "X-Empty;", "-H", "X-Removed:"],
+      files: [],
+      defaults: false,
+    },
+    {
+      label: "header-remove-cookie",
+      arguments: ["-b", "sid=one", "-H", "Cookie:"],
+      files: [],
+      defaults: false,
+    },
+    {
+      label: "header-remove-auth",
+      arguments: ["-u", "account:secret", "-H", "Authorization:"],
+      files: [],
+      defaults: false,
+    },
+    {
+      label: "header-file",
+      arguments: ["-H", "@headers"],
+      files: [("headers", "X-Config: one\r\nX-Config: two\nX-Empty;\n")],
+      defaults: false,
+    },
+    {
+      label: "header-file-missing",
+      arguments: ["-H", "@missing"],
+      files: [],
+      defaults: false,
+    },
+    {
+      label: "header-remove-duplicates",
+      arguments: ["-H", "X-Test: first", "-H", "X-Test:", "-H", "X-Test: last"],
+      files: [],
+      defaults: false,
+    },
+    {
+      label: "post-header-remove-length",
+      arguments: ["-d", "abc", "-H", "Content-Length:"],
+      files: [],
+      defaults: false,
+    },
+  ]
+}
+
+///|
+fn configuration_failures(command : String) -> Array[Configuration] {
+  if command == "curl" {
+    let chain = Array::makei(6, index => {
+      (
+        "config" + index.to_string(),
+        if index == 5 {
+          "header=\"X-Config: deepest\"\n"
+        } else {
+          "config=config" + (index + 1).to_string() + "\n"
+        },
+      )
+    })
+    [
+      {
+        label: "config-depth-five",
+        arguments: ["-K", "config1"],
+        files: chain,
+        defaults: false,
+      },
+      {
+        label: "config-depth-six",
+        arguments: ["-K", "config0"],
+        files: chain,
+        defaults: false,
+      },
+      {
+        label: "config-default-missing",
+        arguments: [],
+        files: [
+          (
+            ".curlrc", "header=\"X-Config: prefix\"\nconfig=missing\nheader=\"X-Config: forbidden\"\n",
+          ),
+        ],
+        defaults: true,
+      },
+      {
+        label: "config-explicit-missing",
+        arguments: ["-K", "missing"],
+        files: [],
+        defaults: false,
+      },
+    ]
+  } else {
+    [
+      {
+        label: "config-no-config-invalid",
+        arguments: ["--no-config=invalid"],
+        files: [],
+        defaults: false,
+      },
+      {
+        label: "config-no-config-off",
+        arguments: ["--no-config=off"],
+        files: [("wgetrc", "header=X-Config: forbidden\n")],
+        defaults: true,
+      },
+      {
+        label: "config-negative-number",
+        arguments: ["--config=config", "--tries", "1"],
+        files: [("config", "tries=-1\n")],
+        defaults: false,
+      },
+    ]
+  }
+}
+
+///|
+fn configuration_edges(command : String) -> Array[Configuration] {
+  if command == "curl" {
+    [
+      {
+        label: "config-empty-flag",
+        arguments: ["-K", "config"],
+        files: [("config", "silent=\"\"\nheader=\"X-Config: accepted\"\n")],
+        defaults: false,
+      },
+      {
+        label: "config-default-error",
+        arguments: [],
+        files: [
+          (
+            ".curlrc", "header=\"X-Config: prefix\"\nmissing_option=value\nheader=\"X-Config: forbidden\"\n",
+          ),
+        ],
+        defaults: true,
+      },
+      {
+        label: "config-explicit-error",
+        arguments: ["-K", "config"],
+        files: [
+          (
+            "config", "header=\"X-Config: prefix\"\nmissing_option=value\nheader=\"X-Config: forbidden\"\n",
+          ),
+        ],
+        defaults: false,
+      },
+      {
+        label: "config-xdg",
+        arguments: [],
+        files: [(".config/curlrc", "header=\"X-Config: forbidden\"\n")],
+        defaults: true,
+      },
+    ]
+  } else {
+    [
+      {
+        label: "config-execute-empty",
+        arguments: ["--no-config", "-e", ""],
+        files: [],
+        defaults: false,
+      },
+      {
+        label: "config-execute-comment",
+        arguments: ["--no-config", "-e", "# comment"],
+        files: [],
+        defaults: false,
+      },
+    ]
+  }
+}
+
+///|
+fn join(parts : Array[Bytes]) -> Bytes {
+  let bytes : Array[Byte] = []
+  for part in parts {
+    for byte in part {
+      bytes.push(byte)
+    }
+  }
+  Bytes::from_array(bytes)
+}
+
+///|
+fn response(fields : Bytes, status~ : Bytes = b"HTTP/1.1 200 OK") -> Bytes {
+  join([
+    status, b"\r\n", fields, b"Content-Length: 4\r\nConnection: close\r\n\r\nset\n",
+  ])
+}
+
+///|
+fn inputs() -> Array[Input] {
+  let empty = b"# Netscape HTTP Cookie File\n"
+  let controls : Array[(String, Bytes)] = [
+    ("plain", b"sid=keep; Path=/"),
+    ("unknown-name-01", b"sid=keep; Path=/; X\x01=clean"),
+    ("unknown-value-01", b"sid=keep; Path=/; X=\x01"),
+    ("unknown-name-del", b"sid=keep; Path=/; X\x7f=clean"),
+    ("unknown-value-del", b"sid=keep; Path=/; X=\x7f"),
+    ("unknown-flag-vt", b"sid=keep; Path=/; \x0bUnknown"),
+    ("unknown-flag-ff", b"sid=keep; Path=/; \x0cUnknown"),
+    ("secure-value-01", b"sid=keep; Path=/; Secure=\x01"),
+    ("unknown-edge-tab", b"sid=keep; Path=/; \tX\t=\tclean\t"),
+    ("name-ff", b"na\xffme=value; Path=/"),
+    ("value-ff", b"sid=val\xffue; Path=/"),
+    ("name-utf8", b"na\xc3\xa9me=value; Path=/"),
+    ("value-utf8", b"sid=val\xc3\xa9ue; Path=/"),
+    ("name-nul", b"na\x00me=value; Path=/"),
+    ("value-nul", b"sid=val\x00ue; Path=/"),
+    ("name-tab", b"na\tme=value; Path=/"),
+    ("value-tab", b"sid=val\tue; Path=/"),
+    ("name-cr", b"na\rme=value; Path=/"),
+    ("value-cr", b"sid=val\rue; Path=/"),
+    ("path-ff", b"sid=value; Path=/\xff"),
+    ("domain-ff", b"sid=value; Domain=octets.\xff; Path=/"),
+    ("empty-name", b"=value; Path=/"),
+    ("empty-value", b"sid=; Path=/"),
+    ("quote-tail", b"sid=\"value\"junk; Path=/"),
+  ]
+  let result : Array[Input] = []
+  for (label, value) in controls {
+    result.push({
+      label: "response-" + label,
+      response: response(
+        join([
+          b"Set-Cookie: before=keep; Path=/\r\nSet-Cookie: ", value, b"\r\nSet-Cookie: after=keep; Path=/\r\n",
+        ]),
+      ),
+      jar: empty,
+    })
+  }
+  for
+    (label, field) in [
+      ("unrelated-ff", b"X-Test: \xff\r\n"),
+      ("unrelated-01", b"X-Test: \x01\r\n"),
+      ("unrelated-nul", b"X-Test: \x00\r\n"),
+      ("unrelated-del", b"X-Test: \x7f\r\n"),
+      ("malformed-field", b"Malformed\r\n"),
+      ("folded-field", b"X-Test: abc\r\n def\r\n"),
+    ] {
+    result.push({
+      label,
+      response: response(
+        join([
+          b"Set-Cookie: before=keep; Path=/\r\n", field, b"Set-Cookie: after=keep; Path=/\r\n",
+        ]),
+      ),
+      jar: empty,
+    })
+  }
+  result.push({
+    label: "status-reason-ff",
+    response: response(
+      b"Set-Cookie: sid=keep; Path=/\r\n",
+      status=b"HTTP/1.1 200 O\xffK",
+    ),
+    jar: empty,
+  })
+  result.push({
+    label: "interim-cookie",
+    response: join([
+      b"HTTP/1.1 103 Early Hints\r\nSet-Cookie: early=keep; Path=/\r\n\r\n",
+      response(b"Set-Cookie: final=keep; Path=/\r\n"),
+    ]),
+    jar: empty,
+  })
+  result.push({
+    label: "truncated-headers",
+    response: b"HTTP/1.1 200 OK\r\nSet-Cookie: sid=keep; Path=/\r\n",
+    jar: empty,
+  })
+  for
+    (label, name, value) in [
+      ("name-01", b"na\x01me", b"value"),
+      ("value-01", b"sid", b"val\x01ue"),
+      ("name-del", b"na\x7fme", b"value"),
+      ("value-del", b"sid", b"val\x7fue"),
+      ("name-ff", b"na\xffme", b"value"),
+      ("value-ff", b"sid", b"val\xffue"),
+      ("name-nul", b"na\x00me", b"value"),
+      ("value-nul", b"sid", b"val\x00ue"),
+      ("name-cr", b"na\rme", b"value"),
+      ("value-cr", b"sid", b"val\rue"),
+    ] {
+    result.push({
+      label: "jar-" + label,
+      response: response(b""),
+      jar: join([
+        empty, b"octets.example\tFALSE\t/\tFALSE\t0\tbefore\tkeep\noctets.example\tFALSE\t/\tFALSE\t0\t",
+        name, b"\t", value, b"\noctets.example\tFALSE\t/\tFALSE\t0\tafter\tkeep\n",
+      ]),
+    })
+  }
+  for length in [4095, 4096, 4999, 5000] {
+    result.push({
+      label: "cookie-size-" + length.to_string(),
+      response: response(
+        join([
+          b"Set-Cookie: sid=",
+          Bytes::make(length - 4, b'x'),
+          b"; Path=/\r\n",
+        ]),
+      ),
+      jar: empty,
+    })
+  }
+  result
+}
+
+///|
+fn supplement() -> Array[Input] {
+  let empty = b"# Netscape HTTP Cookie File\n"
+  let result : Array[Input] = []
+  for length in [4998, 4999, 5000, 5001] {
+    let prefix = b"octets.example\tFALSE\t/\tFALSE\t0\tsid\t"
+    result.push({
+      label: "jar-line-" + length.to_string(),
+      response: response(b""),
+      jar: join([
+        empty,
+        b"octets.example\tFALSE\t/\tFALSE\t0\tbefore\tkeep\n",
+        prefix,
+        Bytes::make(length - prefix.length() - 1, b'x'),
+        b"\noctets.example\tFALSE\t/\tFALSE\t0\tafter\tkeep\n",
+      ]),
+    })
+  }
+  for location in [0, 100, 126, 127, 128, 254] {
+    result.push({
+      label: "jar-nul-chunk-" + location.to_string(),
+      response: response(b""),
+      jar: join([
+        empty,
+        b"octets.example\tFALSE\t/\tFALSE\t0\tbefore\tkeep\n",
+        Bytes::make(location, b'x'),
+        b"\x00tail\noctets.example\tFALSE\t/\tFALSE\t0\tafter\tkeep\noctets.example\tFALSE\t/\tFALSE\t0\tlast\tkeep\n",
+      ]),
+    })
+  }
+  for count in [2, 3, 7, 17, 28, 29, 30, 40] {
+    for reverse in [false, true] {
+      let rows = Buffer()
+      rows.write_bytes(empty)
+      for index in 0..<count {
+        let number = if reverse { count - index - 1 } else { index }
+        rows.write_bytes(
+          @utf8.encode(
+            "d\{number}.example\tFALSE\t/\tFALSE\t0\ta\t\{number}\nd\{number}.example\tFALSE\t/\tFALSE\t0\tb\t\{number}\n",
+          ),
+        )
+      }
+      result.push({
+        label: "domain-order-\{count}-\{reverse}",
+        response: response(b""),
+        jar: rows.to_bytes(),
+      })
+    }
+  }
+  for
+    (label, wire) in [
+      (
+        "bare-lf", b"HTTP/1.1 200 OK\nSet-Cookie: sid=keep; Path=/\nContent-Length: 4\n\nset\n",
+      ),
+      (
+        "head-bare-lf", b"HTTP/1.1 200 OK\nSet-Cookie: sid=keep; Path=/\nContent-Length: 4\n\nset\n",
+      ),
+      (
+        "head-status-ff",
+        response(
+          b"Set-Cookie: sid=keep; Path=/\r\n",
+          status=b"HTTP/1.0 200 O\xffK",
+        ),
+      ),
+      (
+        "head-interim",
+        join([
+          b"HTTP/1.1 103 Early Hints\r\nSet-Cookie: early=keep; Path=/\r\n\r\n",
+          response(b"Set-Cookie: final=keep; Path=/\r\n"),
+        ]),
+      ),
+      (
+        "space-field-name",
+        response(b"Bad Header: value\r\nSet-Cookie: sid=keep; Path=/\r\n"),
+      ),
+      (
+        "empty-field-name",
+        response(b": value\r\nSet-Cookie: sid=keep; Path=/\r\n"),
+      ),
+      ("folded-cookie", response(b"Set-Cookie: sid=keep;\r\n Path=/\r\n")),
+      (
+        "folded-content-length", b"HTTP/1.1 200 OK\r\nContent-Length:\r\n 4\r\n\r\nset\n",
+      ),
+    ] {
+    result.push({ label, response: wire, jar: empty, })
+  }
+  result
+}
+
+///|
+fn header_edges() -> Array[Input] {
+  let empty = b"# Netscape HTTP Cookie File\n"
+  [
+    ("head-folded-cookie", response(b"Set-Cookie: sid=one\r\n two; Path=/\r\n")),
+    (
+      "head-no-colon",
+      response(
+        b"X-Before: yes\r\nMalformed\r\nSet-Cookie: sid=keep; Path=/\r\n",
+      ),
+    ),
+    (
+      "head-truncated-cookie", b"HTTP/1.1 200 OK\r\nSet-Cookie: sid=keep; Path=/\r\n",
+    ),
+    (
+      "head-truncated-unknown", b"HTTP/1.1 200 OK\r\nX-Before: yes\r\nX-Last: pending\r\n",
+    ),
+    ("folded-value", response(b"Set-Cookie: sid=one\r\n two; Path=/\r\n")),
+    (
+      "folded-whitespace",
+      response(b"Set-Cookie: sid=one \t \r\n \t two; Path=/\r\n"),
+    ),
+    (
+      "header-name-ff",
+      response(b"X-\xff: value\r\nSet-Cookie: sid=keep; Path=/\r\n"),
+    ),
+    (
+      "head-name-ff",
+      response(b"X-\xff: value\r\nSet-Cookie: sid=keep; Path=/\r\n"),
+    ),
+  ].map(pair => { label: pair.0, response: pair.1, jar: empty, })
+}
+
+///|
+fn terminal_headers() -> Array[Input] {
+  ["status-eof", "head-status-eof"].map(label => {
+    label,
+    response: b"HTTP/1.1 200 OK",
+    jar: b"# Netscape HTTP Cookie File\n",
+  })
+}
+
+///|
+async fn files(work : String) -> Json {
+  let names = @fs.readdir(work)
+  names.sort_by((left, right) => left.lexical_compare(right))
+  let entries : Array[Json] = []
+  for name in names {
+    if @fs.kind(work + "/" + name, follow_symlink=false) is Directory {
+      entries.push({
+        "name": name,
+        "kind": "directory",
+        "entries": files(work + "/" + name),
+      })
+    } else {
+      assert_true(@fs.kind(work + "/" + name, follow_symlink=false) is Regular)
+      entries.push({
+        "name": name,
+        "hex": @crypto.bytes_to_hex_string(
+          @fs.read_file(work + "/" + name).binary(),
+        ),
+      })
+    }
+  }
+  Json(entries)
+}
+
+///|
+async fn read_head(connection : @socket.Tcp) -> Bytes {
+  let bytes : Array[Byte] = []
+  for ;; {
+    let byte = connection.read_exactly(1)[0]
+    bytes.push(byte)
+    let n = bytes.length()
+    if n >= 4 &&
+      bytes[n - 4] == b'\r' &&
+      bytes[n - 3] == b'\n' &&
+      bytes[n - 2] == b'\r' &&
+      byte == b'\n' {
+      return Bytes::from_array(bytes)
+    }
+    assert_true(n <= 65536)
+  }
+}
+
+///|
+async fn docker(
+  args : Array[String],
+  stdin? : &@process.ProcessInput,
+) -> (Int32, Bytes, Bytes) {
+  let (code, stdout, stderr) = @async.with_timeout(15000, () => {
+    @process.collect_output("docker", args, stdin?)
+  })
+  (code, stdout.binary(), stderr.binary())
+}
+
+///|
+async fn cleanup_container(prefix : String, name : String) -> String? {
+  let (record, failure) = try {
+    let removed = docker(["rm", "--force", name])
+    let failed = removed.0 != 0 &&
+      !@utf8.decode_lossy(removed.2).contains("No such container")
+    (
+      (
+        {
+          "status": removed.0,
+          "stdout_hex": @crypto.bytes_to_hex_string(removed.1),
+          "stderr_hex": @crypto.bytes_to_hex_string(removed.2),
+        } : Json),
+      if failed {
+        Some("container cleanup failed")
+      } else {
+        None
+      },
+    )
+  } catch {
+    error => (({ "error": error.to_string() } : Json), Some(error.to_string()))
+  }
+  @fs.write_file(prefix + ".cleanup.json", record.stringify(indent=2)) catch {
+    error => {
+      let message = "cleanup report failed: " + error.to_string()
+      println(message)
+      return Some(message)
+    }
+  }
+  failure
+}
+
+///|
+async fn observed_docker(
+  root : String,
+  label : String,
+  args : Array[String],
+  stdin? : &@process.ProcessInput,
+) -> (Int32, Bytes, Bytes) {
+  assert_eq(args.get(0), Some("run"))
+  assert_eq(args.get(1), Some("--rm"))
+  let prefix = root + "/" + label
+  let name = "cmd-http-" +
+    @crypto.bytes_to_hex_string(@crypto.sha256(@utf8.encode(prefix)))
+  @fs.write_file(
+    prefix + ".intent.json",
+    ({ "container_name": name, "args": args } : Json).stringify(indent=2),
+  )
+  let completed = Ref(false)
+  defer @async.protect_from_cancel(() => {
+    if cleanup_container(prefix, name) is Some(message) && completed.val {
+      fail(message)
+    }
+  })
+  let created = docker(["create", "--name", name, ..args[2:]])
+  assert_eq(created.0, 0, msg=@utf8.decode_lossy(created.2))
+  @fs.write_file(prefix + ".container.txt", created.1)
+  let result = docker(
+    [
+      "start",
+      "--attach",
+      ..if stdin is Some(_) {
+        ["--interactive"]
+      } else {
+        []
+      },
+      name,
+    ],
+    stdin?,
+  )
+  @fs.write_file(prefix + ".stdout.bin", result.1)
+  @fs.write_file(prefix + ".stderr.bin", result.2)
+  @fs.write_file(prefix + ".status.txt", result.0.to_string())
+  completed.val = true
+  result
+}
+
+///|
+async fn collect(
+  input : Input,
+  command : String,
+  root : String,
+  image : String,
+  host : String,
+  configuration? : Configuration,
+) -> Json {
+  let label = command + "-" + input.label
+  let work = root + "/" + label
+  let evidence = work + ".evidence"
+  @fs.mkdir(work)
+  @fs.mkdir(evidence)
+  @fs.write_file(work + "/input.cookies", input.jar)
+  @fs.write_file(work + "/sentinel", b"unchanged\x00\xff\n")
+  if configuration is Some(config) {
+    for (name, content) in config.files {
+      if name.find("/") is Some(separator) {
+        @fs.mkdir(
+          work + "/" + name[:separator].to_owned(),
+          recursive=true,
+          allow_exist=true,
+        )
+      }
+      @fs.write_file(work + "/" + name, content)
+    }
+  }
+  let initial = files(work)
+  let phases : Array[Json] = []
+  for phase in 0..<2 {
+    let prefix = evidence + "/phase-" + phase.to_string()
+    let requests : Array[Json] = []
+    let writes : Array[Json] = []
+    let errors : Array[String] = []
+    let pending = Ref(0)
+    @async.with_task_group(group => {
+      let server = @socket.TcpServer(@socket.Addr::parse("0.0.0.0:0"))
+      group.add_defer(() => server.close())
+      group.spawn_bg(no_wait=true, () => {
+        server.run_forever((connection, _) => {
+          pending.val += 1
+          defer {
+            pending.val -= 1
+          }
+          let outcome = try {
+            let mut request = read_head(connection)
+            let end = request.to_array().search(b'\r').unwrap()
+            let line = @utf8.decode(request[:end].to_owned())
+            let request_method = if input.label.has_prefix("post-") {
+              "POST"
+            } else if input.label.has_prefix("head-") {
+              "HEAD"
+            } else {
+              "GET"
+            }
+            assert_true(
+              [
+                request_method + " http://octets.example/set HTTP/1.1",
+                request_method + " http://octets.example/use HTTP/1.1",
+                request_method + " http://octets.example/reload HTTP/1.1",
+              ].contains(line),
+            )
+            if input.label.has_prefix("post-") {
+              request = request + connection.read_exactly(3)
+            }
+            let is_set = line ==
+              request_method + " http://octets.example/set HTTP/1.1"
+            let wire = if is_set {
+              input.response
+            } else {
+              b"HTTP/1.1 200 OK\r\nContent-Length: 4\r\nConnection: close\r\n\r\nuse\n"
+            }
+            let index = requests.length()
+            requests.push({
+              "request_hex": @crypto.bytes_to_hex_string(request),
+              "response_hex": @crypto.bytes_to_hex_string(wire),
+              "files_before": files(work),
+            })
+            connection.write(wire)
+            writes.push(Json(index))
+            Ok(())
+          } catch {
+            error => Err(error)
+          }
+          match outcome {
+            Ok(_) => ()
+            Err(error) => {
+              errors.push(error.to_string())
+              raise error
+            }
+          }
+        })
+      })
+      let jar = if phase == 0 { "input.cookies" } else { "saved.cookies" }
+      let saved = if phase == 0 { "saved.cookies" } else { "reloaded.cookies" }
+      let urls = if phase == 0 {
+        if input.label.contains("status-eof") {
+          ["http://octets.example/set"]
+        } else {
+          ["http://octets.example/set", "http://octets.example/use"]
+        }
+      } else {
+        ["http://octets.example/reload"]
+      }
+      let defaults = configuration
+        .map(config => config.defaults)
+        .unwrap_or(false)
+      let extra = configuration.map(config => config.arguments).unwrap_or([])
+      let args = if command == "curl" {
+        [
+          ..if defaults {
+            []
+          } else {
+            ["-q"]
+          },
+          "-s",
+          "--max-time",
+          "3",
+          "-b",
+          jar,
+          "-c",
+          saved,
+          ..extra,
+          ..if input.label.has_prefix("head-") {
+            ["-I"]
+          } else {
+            []
+          },
+          ..urls,
+        ]
+      } else {
+        [
+          ..extra,
+          ..if defaults {
+            []
+          } else {
+            ["--no-config"]
+          },
+          "-q",
+          "-t",
+          "1",
+          "--timeout=3",
+          "--load-cookies=" + jar,
+          "--save-cookies=" + saved,
+          "--keep-session-cookies",
+          "-O",
+          "-",
+          ..urls,
+        ]
+      }
+      let proxy = "http://" + host + ":" + server.addr.port().to_string()
+      let container = "cmd-http-" +
+        @crypto.bytes_to_hex_string(@crypto.sha256(@utf8.encode(prefix)))
+      @fs.write_file(
+        prefix + ".create-intent.json",
+        (
+          {
+            "image": image,
+            "container_name": container,
+            "command": command,
+            "args": args,
+          } : Json).stringify(indent=2),
+      )
+      let completed = Ref(false)
+      defer @async.protect_from_cancel(() => {
+        if cleanup_container(prefix, container) is Some(message) &&
+          completed.val {
+          fail(message)
+        }
+      })
+      let create = docker(
+        [
+          "create",
+          "--name",
+          container,
+          "--platform",
+          "linux/amd64",
+          "--network",
+          "host",
+          "-v",
+          work + ":" + work + ":rw",
+          "-w",
+          work,
+          "-e",
+          "LC_ALL=C",
+          "-e",
+          "TZ=UTC",
+          "-e",
+          "CURL_HOME=.",
+          "-e",
+          "WGETRC=./wgetrc",
+          "-e",
+          "HOME=",
+          "-e",
+          "XDG_CONFIG_HOME=" +
+          (if input.label == "config-xdg" { "missing" } else { "" }),
+          "-e",
+          "http_proxy=" + proxy,
+          "-e",
+          "HTTP_PROXY=",
+          "-e",
+          "NO_PROXY=",
+          "-e",
+          "no_proxy=",
+          image,
+          command,
+          ..args,
+        ],
+      )
+      assert_eq(create.0, 0, msg=@utf8.decode(create.2))
+      let container_id = @utf8.decode(create.1).trim().to_owned()
+      assert_true(container_id.length() == 64)
+      @fs.write_file(prefix + ".container.txt", container_id)
+      @fs.write_file(
+        prefix + ".intent.json",
+        (
+          {
+            "image": image,
+            "container": container,
+            "command": command,
+            "args": args,
+            "cwd": work,
+            "proxy": proxy,
+          } : Json).stringify(indent=2),
+      )
+      let result = @async.with_timeout(15000, () => {
+        docker(["start", "--attach", container])
+      })
+      @fs.write_file(prefix + ".stdout.bin", result.1)
+      @fs.write_file(prefix + ".stderr.bin", result.2)
+      @fs.write_file(prefix + ".status.txt", result.0.to_string())
+      @async.with_timeout(2000, () => {
+        while pending.val > 0 {
+          @async.sleep(5)
+        }
+      })
+      assert_true(errors.is_empty(), msg=errors.join("\n"))
+      assert_eq(requests.length(), writes.length())
+      let observed : Json = {
+        "args": args,
+        "status": result.0,
+        "stdout_hex": @crypto.bytes_to_hex_string(result.1),
+        "stderr_hex": @crypto.bytes_to_hex_string(result.2),
+        "exchanges": requests,
+        "writes": writes,
+        "files_after": files(work),
+      }
+      @fs.write_file(
+        prefix + ".observed.json",
+        observed.stringify(indent=2) + "\n",
+      )
+      phases.push(observed)
+      completed.val = true
+    })
+  }
+  let record : Json = {
+    "label": label,
+    "command": command,
+    "first_response_hex": @crypto.bytes_to_hex_string(input.response),
+    "initial_files": initial,
+    "phases": phases,
+  }
+  @fs.write_file(evidence + "/record.json", record.stringify(indent=2) + "\n")
+  println(label)
+  record
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard (
+      args.length() == 4 ||
+      (
+        args.length() == 5 &&
+        [
+          "supplement", "headers", "config", "config-edges", "config-validation",
+          "config-failures", "config-headers", "terminal",
+        ].contains(args[4])
+      )
+    ) &&
+    args[1].has_prefix("/") &&
+    args[2].has_prefix("sha256:") else {
+    fail(
+      "Usage: http_cookie.mbtx FRESH_ABSOLUTE_ROOT IMMUTABLE_IMAGE ORACLE_HOST [supplement|headers|config|config-edges|config-validation|terminal]",
+    )
+  }
+  let root = args[1]
+  let image = args[2]
+  @fs.mkdir(root, recursive=true, allow_exist=false)
+  let inspected = docker(["image", "inspect", "--format={{.Id}}", image])
+  assert_eq(inspected.0, 0)
+  assert_eq(@utf8.decode(inspected.1).trim().to_owned(), image)
+  let probe = b"host-container-shared-directory\x00\xff\n"
+  @fs.write_file(root + "/mount-input.bin", probe)
+  let mounted = observed_docker(root, "mount-read", [
+    "run",
+    "--rm",
+    "--platform",
+    "linux/amd64",
+    "-v",
+    root + ":" + root + ":rw",
+    image,
+    "cat",
+    root + "/mount-input.bin",
+  ])
+  assert_eq(mounted.0, 0, msg="oracle must read the actual host input")
+  assert_eq(mounted.1, probe)
+  let input = @process.redirect_from_file(root + "/mount-input.bin")
+  let copied = observed_docker(
+    root,
+    "mount-write",
+    [
+      "run",
+      "--rm",
+      "--platform",
+      "linux/amd64",
+      "-i",
+      "-v",
+      root + ":" + root + ":rw",
+      image,
+      "tee",
+      root + "/mount-output.bin",
+    ],
+    stdin=input,
+  )
+  assert_eq(copied.0, 0)
+  assert_eq(copied.1, probe)
+  assert_eq(
+    @fs.read_file(root + "/mount-output.bin").binary(),
+    probe,
+    msg="observer must read actual oracle writes",
+  )
+  let versions = observed_docker(root, "versions", [
+    "run", "--rm", "--platform", "linux/amd64", image, "/usr/local/bin/versions.sh",
+  ])
+  assert_eq(versions.0, 0)
+  let history = docker([
+    "history", "--no-trunc", "--format={{.CreatedBy}}", image,
+  ])
+  assert_eq(history.0, 0)
+  let history_text = @utf8.decode(history.1)
+  let source_builds = history_text
+    .split("\n")
+    .filter(line => {
+      line.contains("./configure") &&
+      (
+        line.contains("cd \"curl-${CURL_VERSION}\"") ||
+        line.contains("cd \"wget-${WGET_VERSION}\"")
+      )
+    })
+    .map(StringView::to_owned)
+    .to_array()
+  assert_eq(source_builds.length(), 2)
+  for
+    source in [
+      "CURL_SHA256=f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7",
+      "WGET_SHA256=766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784",
+    ] {
+    assert_true(history_text.contains(source))
+  }
+  let binaries = observed_docker(root, "binaries", [
+    "run", "--rm", "--platform", "linux/amd64", image, "sha256sum", "/oracle/bin/curl",
+    "/oracle/bin/wget", "/usr/local/bin/versions.sh",
+  ])
+  assert_eq(binaries.0, 0)
+  @fs.write_file(root + "/versions.txt", versions.1)
+  @fs.write_file(root + "/history.txt", history.1)
+  @fs.write_file(root + "/binaries.sha256", binaries.1)
+  let records : Array[Json] = []
+  for command in ["curl", "wget"] {
+    if args.get(4).map(mode => mode.has_prefix("config")).unwrap_or(false) {
+      for
+        config in (if args.get(4) == Some("config-headers") {
+          header_configuration(command)
+        } else if args.get(4) == Some("config-failures") {
+          configuration_failures(command)
+        } else if args.get(4) == Some("config-validation") {
+          configuration_validation(command)
+        } else if args.get(4) == Some("config-edges") {
+          configuration_edges(command)
+        } else {
+          configurations(command)
+        }) {
+        records.push(
+          collect(
+            {
+              label: config.label,
+              response: response(b""),
+              jar: b"# Netscape HTTP Cookie File\n",
+            },
+            command,
+            root,
+            image,
+            args[3],
+            configuration=config,
+          ),
+        )
+      }
+      continue
+    }
+    for
+      input in (if args.get(4) == Some("terminal") {
+        terminal_headers()
+      } else if args.get(4) == Some("headers") {
+        header_edges()
+      } else if args.length() == 5 {
+        supplement()
+      } else {
+        inputs()
+      }) {
+      if command == "wget" && input.label.has_prefix("head-") {
+        continue
+      }
+      records.push(collect(input, command, root, image, args[3]))
+    }
+  }
+  let fixture : Json = {
+    "schema": 1,
+    "baseline": "fresh upstream observations; not a reconstruction of the lost 2026-11-09 corpus",
+    "image": image,
+    "versions": @utf8.decode(versions.1),
+    "history_sha256": @crypto.bytes_to_hex_string(@crypto.sha256(history.1)),
+    "source_builds": source_builds,
+    "binaries": @utf8.decode(binaries.1),
+    "case_count": records.length(),
+    "cases": records,
+  }
+  @fs.write_file(root + "/http-cookie.json", fixture.stringify(indent=2) + "\n")
+  println("Captured " + records.length().to_string() + " independent cases")
+}

@@ -23,14 +23,14 @@ fn wget_cookie_domain_fallback(host : String, domain : String) -> Bool {
     ![".com", ".edu", ".net", ".org", ".gov", ".mil", ".int"]
     .iter()
     .any(suffix => domain.has_suffix(suffix)) &&
-    @utf8.encode(labels[0]).length() <= 3 {
+    labels[0].length() <= 3 {
     return false
   }
   domain.has_prefix(".") || host.has_suffix("." + domain)
 }
 
 ///|
-fn wget_cookie_domain_allows(host : String, domain : String) -> Bool {
+fn wget_cookie_domain_allows_octets(host : String, domain : String) -> Bool {
   // The fixed Linux Wget build disables NLS, so LC_CTYPE remains C. libpsl's
   // ASCII shortcut succeeds; non-ASCII conversion fails into Wget's heuristic.
   if !host.iter().all(character => character.to_int() < 128) ||

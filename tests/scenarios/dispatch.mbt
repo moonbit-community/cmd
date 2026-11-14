@@ -277,6 +277,34 @@ pub async fn execute_scenario(
         "stream-failure-prefixes" => failure_prefix_scenario(root, work)
         "ls-link-facets" => link_dereference_scenario(root, work)
         "network-auth-cookie" => network_cli_scenario(root, work, oracle_image?)
+        "network-curl-http-cookie" =>
+          @network.run(
+            fixture.id,
+            workspace_network_executor(root),
+            work,
+            oracle_image?,
+          )
+        "network-curl-http-cookie-oracle" =>
+          @network.run(
+            fixture.id,
+            workspace_network_executor(root),
+            work,
+            oracle_image?,
+          )
+        "network-wget-http-cookie" =>
+          @network.run(
+            fixture.id,
+            workspace_network_executor(root),
+            work,
+            oracle_image?,
+          )
+        "network-wget-http-cookie-oracle" =>
+          @network.run(
+            fixture.id,
+            workspace_network_executor(root),
+            work,
+            oracle_image?,
+          )
         "network-curl-cookie-lifecycle" =>
           network_curl_transfers_scenario(
             root,

@@ -238,7 +238,7 @@ async test "bodyless resumed responses never require replayed prefix bytes" {
 }
 
 ///|
-async test "response header failures precede output creation and differ from body EOF" {
+async test "empty replies preserve output and an unterminated success status commits it" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="netops-header-eof-")
@@ -269,17 +269,14 @@ async test "response header failures precede output creation and differ from bod
         } noraise {
           _ => None
         }
-        assert_eq(
-          failure,
-          Some(
-            if response == "" {
-              EmptyReplyFailure
-            } else {
-              @netops.ReceiveFailure
-            },
-          ),
-        )
-        assert_eq(@fs.read_file(path).text(), "preserve")
+        if response == "" {
+          assert_eq(failure, Some(EmptyReplyFailure))
+          assert_eq(@fs.read_file(path).text(), "preserve")
+        } else {
+          // The independent terminal HTTP fixture records Wget's EOF policy.
+          assert_eq(failure, None)
+          assert_eq(@fs.read_file(path).text(), "")
+        }
       }
     })
   })

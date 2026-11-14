@@ -16,9 +16,13 @@ pub fn hex_value(Char) -> Int32?
 
 pub fn http_header(String, String) -> HttpHeader
 
+pub fn http_header_bytes(String, Bytes) -> HttpHeader
+
 pub fn idna_host(String) -> String raise HostNameError
 
 pub fn parse_absolute_url(String) -> ParsedUrl raise TransferError
+
+pub fn parse_header_line(Bytes) -> HttpHeader?
 
 pub fn parse_http_method(String) -> HttpMethod raise TransferError
 
@@ -28,7 +32,7 @@ pub fn resolve_location(ParsedUrl, String) -> ParsedUrl raise TransferError
 
 pub fn validate_headers(ArrayView[HttpHeader]) -> Unit raise TransferError
 
-pub async fn[T] with_response(Request, Transport, async (ResponseScope) -> T) -> T
+pub async fn[T] with_response(Request, Transport, async (ResponseScope) -> T, receive_header? : async (ResponseLine) -> HttpHeader?) -> T
 
 // Errors
 pub(all) suberror HostNameError {
@@ -58,14 +62,17 @@ pub(all) enum BodyRead {
   Incomplete(BodyBoundary)
 }
 
-#derive(Eq, @debug.Debug)
+#derive(@debug.Debug)
 pub(all) struct HttpHeader {
   name : String
   value : String
+  octets : Bytes?
 }
+pub fn HttpHeader::bytes(Self) -> Bytes
 pub fn HttpHeader::equal(Self, Self) -> Bool
 pub fn HttpHeader::not_equal(Self, Self) -> Bool
 pub fn HttpHeader::to_repr(Self) -> @debug.Repr
+pub impl Eq for HttpHeader
 
 #derive(Eq, @debug.Debug)
 pub(all) enum HttpMethod {
@@ -108,6 +115,7 @@ pub(all) struct Request {
   request_method : HttpMethod
   headers : Array[HttpHeader]
   body : RequestBody
+  chunked : Bool
 }
 
 #derive(@debug.Debug)
@@ -138,6 +146,13 @@ pub(all) struct ResponseHead {
   complete : Bool
 }
 
+pub(all) enum ResponseLine {
+  Status(Int32, Bytes)
+  Field(Bytes)
+  End(Bytes)
+  Eof
+}
+
 pub struct ResponseScope {
   // private fields
 }
@@ -154,6 +169,7 @@ pub(all) enum TransferErrorKind {
   ConnectionFailure
   EmptyReplyFailure
   ReceiveFailure
+  MalformedReplyFailure
   PartialBodyFailure
   TlsFailure
   ProxyFailure

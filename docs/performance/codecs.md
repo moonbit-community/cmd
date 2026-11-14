@@ -1,5 +1,69 @@
 # Codecs and Checksums
 
+## Jq stream events
+
+`Evaluation::emit -> InputCursor::request -> StreamInput::next_event` in
+[evaluation.mbt](../../commands/jq/internal/driver/evaluation.mbt),
+[cursor.mbt](../../commands/jq/internal/driver/cursor.mbt) and
+[stream_input.mbt](../../commands/jq/internal/driver/stream_input.mbt) pulls from a
+64 KiB input buffer with an explicit container stack and current path. A pending scalar is
+committed only when its delimiter admits it; a completed root string has its
+own earlier commit point. Empty containers are leaves, while nonempty endings
+emit paths. Adjacent input files feed one reader without inserting bytes.
+Reader failures preserve completed output; output failure stops evaluation
+without replay. `--stream-errors` discards the remaining fixed jq CLI input
+buffer after an error, then clears the parse stack and resumes. File EOF ends
+that recovery buffer even when a successful token continues into the next file.
+
+Parsing is linear in input plus emitted path bytes. The live parser retains
+one chunk, one scalar and nesting/path state; a single huge string or deep path
+can grow. Events copy their paths and the evaluator owns each result.
+`--slurp` explicitly retains the complete event sequence. Decimal spelling in
+[stream_number.mbt](../../commands/jq/internal/driver/stream_number.mbt) preserves coefficient
+digits and bounded exponents without routing them through Double; arithmetic
+still follows the existing evaluator. Whole-document parsing was rejected for
+this mode because it loses early events and read/error ordering. The independent
+[jq fixture](../../tests/fixtures/jq/stream.json), fragmented-reader and injected
+failure tests govern this path; no timing or RSS acceptance is claimed.
+
+Normal JSON input uses the same parser with a container-opening callback to
+replace repeated object keys before collecting their new children. Rebuilding
+documents from leaf events alone was rejected: repeated objects would merge,
+and repeated shorter arrays would retain old elements. Only normal JSON mode
+retains a complete current value. Raw mode concatenates operand bytes before
+line splitting; it does not manufacture a newline at file boundaries.
+The project's `--logs` mode retains its separate per-file final records and
+strict UTF-8 validation. Input line metadata counts newline-containing parser
+buffers, so an unterminated final line does not increment that counter.
+
+The [evaluator](../../commands/jq/internal/ast/evaluator.mbt) returns resumable
+steps for values, input requests, failures and continuations. The driver writes
+one result before advancing its continuation, so output failures and consumers
+such as `first`, `limit`, `any` and `all` stop future input requests. Implicit
+input and filter-driven `input`/`inputs` share one cursor, including stream and
+slurp modes. Named files close on completion, failure and cancellation.
+
+Bindings carry lexical scopes; filter parameters retain caller expressions,
+while value parameters evaluate once per argument result. Reduction drains each
+update before advancing its source, retaining the last update as the next
+accumulator; `foreach` may emit each update through its extractor. A known-empty
+tail lets a single-result bind transfer directly to the next computation rather
+than accumulate empty continuations. The 10,000-step tail-recursion and generator
+tests check that invariant; they do not establish arbitrary recursion bounds.
+Arrays, sorting, grouping and slurp still retain their required results.
+
+[Module linking](../../commands/jq/internal/driver/modules.mbt) resolves ordered
+search paths, caches resolved files and checks loading cycles. Definitions retain
+their module scope; imported dependencies are not implicitly re-exported.
+Source positions drive undefined-name validation before input consumption.
+Metadata inspection parses dependencies without linking them. Static
+metadata admission rejects effects and generators before evaluation;
+invalid library syntax is reported and produces null during metadata inspection.
+The independent
+[runtime](../../tests/fixtures/jq/runtime.json) and
+[evaluation](../../tests/fixtures/jq/evaluation.json) corpora govern these rules.
+The separate jqlog module keeps its own bounded JSONL language profile.
+
 ## Base32 and base64 encoding
 
 Base32 follows `main -> convert -> encode_stream -> Base32Encoder::encode/finish`
@@ -143,6 +207,23 @@ establish different layers of correctness. [ADR-0005](../adr/0005-transfer.md#in
 owns input, proxy and cookie boundaries.
 
 ## Wget cookie selection and persistence
+
+Physical response callbacks in `core/netops` carry bytes through the command's
+`http_headers.mbt` admission state before `http_wire_cookie` extraction. The
+private one-byte projection used for Cookie grammar retains all octets; readable
+header strings are never used to reconstruct wire bytes. Curl folds admitted
+continuations and observes informational cookies; Wget keeps its distinct
+control-byte and final-block rules. Both preserve admitted prefixes at EOF.
+Configuration parsing stays at the CLI boundary, including Curl's typed
+header-file provenance and Wget's distinct setting normalization.
+
+Wget's domain table reproduces the fixed GNU hash-table slot iteration, growth
+and deletion behavior. Jar saving groups records once, then walks domain slots
+and each chain, using linear extra storage. Replacement, selected-cookie sorting
+and duplicate scans retain their existing costs below. The fresh
+[HTTP corpus](../../tests/scenarios/network/http_cookie.mbt) checks exact jar
+bytes, second-process reloads, raw request fields and response effects. Neither
+the table layout nor byte preservation establishes timing acceptance.
 
 `HttpWire::response -> wget_wire_cookie -> CookieJar::receive` separates
 field extraction from domain/path admission. The extractor scans quoted and

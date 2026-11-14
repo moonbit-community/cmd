@@ -67,5 +67,22 @@ async fn run() -> Unit {
   } else {
     arguments.append(["--suite", suite])
   }
-  @shell.Cmd(driver, arguments, stdout=Inherit, stderr=Inherit).run()
+  // Fixture HOME belongs to the command under test, not MoonX's registry cache.
+  let moon_home = @fs.realpath(
+    published_moon_home(
+      {
+        "MOON_HOME": @env.get_env_var("MOON_HOME").unwrap_or(""),
+        "HOME": @env.get_env_var("HOME").unwrap_or(""),
+        "USERPROFILE": @env.get_env_var("USERPROFILE").unwrap_or(""),
+      },
+      windows=@async.platform is Windows,
+    ),
+  )
+  @shell.Cmd(
+    driver,
+    arguments,
+    env={ "MOON_HOME": moon_home },
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
 }

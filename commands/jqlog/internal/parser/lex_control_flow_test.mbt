@@ -1,0 +1,39 @@
+///|
+// Adapted from MoonJQ 0.2.0 for local ownership and current syntax.
+// See ../../THIRD_PARTY_NOTICES.md for source and license information.
+
+///|
+/// Lexing control flow expressions
+test "lex: if-then-else" {
+  let tokens = @parser.lex("if .x > 0 then .x else 0 end")
+  debug_inspect(
+    tokens,
+    content=(
+      #|[
+      #|  TIf,
+      #|  TDot,
+      #|  TIdentifier("x"),
+      #|  TGt,
+      #|  TNumber(0),
+      #|  TThen,
+      #|  TDot,
+      #|  TIdentifier("x"),
+      #|  TElse,
+      #|  TNumber(0),
+      #|  TEnd,
+      #|  TEof,
+      #|]
+    ),
+  )
+}
+
+///|
+test "lex: try-catch" {
+  let tokens = @parser.lex("try .foo catch \"error\"")
+  debug_inspect(
+    tokens,
+    content=(
+      #|[TTry, TDot, TIdentifier("foo"), TCatch, TString("error"), TEof]
+    ),
+  )
+}

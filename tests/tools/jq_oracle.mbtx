@@ -1,0 +1,1069 @@
+----
+import {
+  "moonbitlang/async@0.22.9",
+  "moonbitlang/async@0.22.9/fs",
+  "moonbitlang/async@0.22.9/io",
+  "moonbitlang/async@0.22.9/process",
+  "moonbitlang/core/env",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.7/crypto",
+}
+----
+
+///|
+async fn cleanup_container(prefix : String, name : String) -> String? {
+  let (record, failure) = try {
+    let removed = @async.with_timeout(15000, () => {
+      @process.collect_output("docker", ["rm", "--force", name])
+    })
+    let failed = removed.0 != 0 &&
+      !removed.2.text().contains("No such container")
+    (
+      (
+        {
+          "status": removed.0,
+          "stdout_text": removed.1.text(),
+          "stderr_text": removed.2.text(),
+        } : Json),
+      if failed {
+        Some("container cleanup failed")
+      } else {
+        None
+      },
+    )
+  } catch {
+    error => (({ "error": error.to_string() } : Json), Some(error.to_string()))
+  }
+  @fs.write_file(prefix + ".cleanup.json", record.stringify(indent=2)) catch {
+    error => {
+      let message = "cleanup report failed: " + error.to_string()
+      println(message)
+      return Some(message)
+    }
+  }
+  failure
+}
+
+///|
+async fn observed_docker(
+  root : String,
+  label : String,
+  args : Array[String],
+  stdin? : &@process.ProcessInput,
+) -> (Int32, &@io.Data, &@io.Data) {
+  if args.get(0) != Some("run") {
+    return @async.with_timeout(15000, () => {
+      @process.collect_output("docker", args, stdin?)
+    })
+  }
+  assert_eq(args.get(1), Some("--rm"))
+  let prefix = root + "/" + label
+  let name = "cmd-jq-" +
+    @crypto.bytes_to_hex_string(@crypto.sha256(@utf8.encode(prefix)))
+  @fs.write_file(
+    prefix + ".intent.json",
+    ({ "container_name": name, "args": args } : Json).stringify(indent=2),
+  )
+  let completed = Ref(false)
+  defer @async.protect_from_cancel(() => {
+    if cleanup_container(prefix, name) is Some(message) && completed.val {
+      fail(message)
+    }
+  })
+  let created = @async.with_timeout(15000, () => {
+    @process.collect_output("docker", ["create", "--name", name, ..args[2:]])
+  })
+  assert_eq(created.0, 0, msg=created.2.text())
+  @fs.write_file(prefix + ".container.txt", created.1.text())
+  let result = @async.with_timeout(15000, () => {
+    @process.collect_output(
+      "docker",
+      [
+        "start",
+        "--attach",
+        ..if stdin is Some(_) {
+          ["--interactive"]
+        } else {
+          []
+        },
+        name,
+      ],
+      stdin?,
+    )
+  })
+  @fs.write_file(prefix + ".stdout.bin", result.1.binary())
+  @fs.write_file(prefix + ".stderr.bin", result.2.binary())
+  @fs.write_file(prefix + ".status.txt", result.0.to_string())
+  completed.val = true
+  result
+}
+
+///|
+struct RuntimeCase {
+  label : String
+  args : Array[String]
+  input : String
+  files : Array[(String, String)]
+}
+
+///|
+fn runtime_case(
+  label : String,
+  query : String,
+  input~ : String = "",
+  flags~ : Array[String] = ["-nc"],
+  operands~ : Array[String] = [],
+  files~ : Array[(String, String)] = [],
+) -> RuntimeCase {
+  { label, args: [..flags, query, ..operands], input, files, }
+}
+
+///|
+fn runtime_cases() -> Array[RuntimeCase] {
+  let cases = [
+    runtime_case(
+      "input-line-unterminated",
+      "input,input_line_number",
+      input="1",
+    ),
+    runtime_case(
+      "input-line-raw-unterminated",
+      "input,input_line_number",
+      flags=["-Rnc"],
+      input="1",
+    ),
+    runtime_case(
+      "input-line-long",
+      "input,input_line_number",
+      input="1" + " ".repeat(5000) + "\n",
+    ),
+    runtime_case(
+      "module-search-null-entry",
+      "import \"value\" as v {search:[null,\"lib\"]};v::get",
+      files=[("lib/value.jq", "def get:42;")],
+    ),
+    runtime_case(
+      "module-leading-slash",
+      "import \"/value\" as v;v::get",
+      flags=["-nc", "-L", "lib"],
+      files=[("lib/value.jq", "def get:42;")],
+    ),
+    runtime_case("module-nul-path", "import \"value\\u0000junk\" as v;1"),
+    runtime_case("input-missing-eof-status", "input", operands=["missing.json"]),
+    runtime_case(
+      "input-missing-parse-status",
+      "inputs",
+      operands=["missing.json", "bad.json"],
+      files=[("bad.json", "[1,\n")],
+    ),
+    runtime_case(
+      "input-duplicate-containers",
+      "inputs",
+      input="{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+    ),
+    runtime_case(
+      "implicit-duplicate-containers",
+      ".",
+      flags=["-c"],
+      input="{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+    ),
+    runtime_case(
+      "slurp-duplicate-containers",
+      ".",
+      flags=["-sc"],
+      input="{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+    ),
+    runtime_case(
+      "module-data-duplicate-containers",
+      "import \"data\" as $data; $data",
+      flags=["-nc", "-L", "."],
+      files=[
+        (
+          "data.json", "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+        ),
+      ],
+    ),
+    runtime_case(
+      "input-metadata-before-read",
+      "[input_filename,input_line_number], input, [input_filename,input_line_number]",
+      input="1\n",
+    ),
+    runtime_case("input-null", "input", input="1\n2\n"),
+    runtime_case(
+      "input-implicit",
+      "[.,input]",
+      flags=["-c"],
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case("inputs-null", "inputs", input="1\n2\n3\n"),
+    runtime_case(
+      "inputs-implicit",
+      "[.,inputs]",
+      flags=["-c"],
+      input="1\n2\n3\n",
+    ),
+    runtime_case("input-eof", "input"),
+    runtime_case("input-eof-catch", "try input catch ."),
+    runtime_case("inputs-empty", "inputs"),
+    runtime_case(
+      "inputs-reduce",
+      "reduce inputs as $n (0; . + $n)",
+      input="1\n2\n3\n",
+    ),
+    runtime_case(
+      "inputs-foreach",
+      "foreach inputs as $n (0; . + $n; [.,$n])",
+      input="1\n2\n3\n",
+    ),
+    runtime_case("inputs-first", "first(inputs), input", input="1\n2\n3\n"),
+    runtime_case(
+      "inputs-limit",
+      "[limit(2; inputs)], input",
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case("inputs-zero-limit", "limit(0; inputs), input", input="1\n2\n"),
+    runtime_case("inputs-any", "any(inputs; . == 2), input", input="1\n2\n3\n"),
+    runtime_case("inputs-all", "all(inputs; . < 2), input", input="1\n2\n3\n"),
+    runtime_case(
+      "inputs-repeat",
+      "[limit(3; repeat(input))]",
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case("input-late-error", "\"before\", input", input="[1,\n"),
+    runtime_case("input-parse-catch", "try input catch .", input="[1,\n"),
+    runtime_case("inputs-parse-catch", "try inputs catch .", input="1\n[2,\n"),
+    runtime_case("inputs-prefix-error", "inputs", input="1\n[2,\n"),
+    runtime_case(
+      "input-raw",
+      "[input,inputs]",
+      flags=["-Rnc"],
+      input="first\r\nsecond\n",
+    ),
+    runtime_case("input-slurp", "input,inputs", flags=["-nsc"], input="1\n2\n"),
+    runtime_case(
+      "input-raw-slurp",
+      "input,inputs",
+      flags=["-Rnsc"],
+      input="a\nb\n",
+    ),
+    runtime_case(
+      "input-stream",
+      "[inputs]",
+      flags=["--stream", "-nc"],
+      input="[1,2]\n",
+    ),
+    runtime_case(
+      "input-stream-errors",
+      "[inputs]",
+      flags=["--stream-errors", "-nc"],
+      input="[1,]\n2\n",
+    ),
+    runtime_case(
+      "input-files",
+      "[input,inputs]",
+      operands=["a.json", "b.json"],
+      files=[("a.json", "1\n2\n"), ("b.json", "3\n")],
+    ),
+    runtime_case(
+      "input-lazy-missing-file",
+      "first(inputs)",
+      operands=["a.json", "missing.json"],
+      files=[("a.json", "1\n2\n")],
+    ),
+    runtime_case(
+      "input-missing-file",
+      "inputs",
+      operands=["a.json", "missing.json", "b.json"],
+      files=[("a.json", "1\n"), ("b.json", "2\n")],
+    ),
+    runtime_case(
+      "input-metadata",
+      "inputs | [input_filename,input_line_number,.]",
+      operands=["a.json", "b.json"],
+      files=[("a.json", "1\n2\n"), ("b.json", "3\n")],
+    ),
+    runtime_case(
+      "filter-arguments",
+      "def twice(f): f,f; twice(input)",
+      input="1\n2\n3\n",
+    ),
+    runtime_case(
+      "filter-value-arguments",
+      "def twice($v): $v,$v; twice(input)",
+      input="1\n2\n3\n",
+    ),
+    runtime_case("filter-argument-input", "def apply(f): .+10|f; 1|apply(.+1)"),
+    runtime_case("filter-argument-stream", "def twice($v): [$v,$v]; twice(1,2)"),
+    runtime_case("filter-lexical-variable", "1 as $x | def f: $x; 2 as $x | f"),
+    runtime_case(
+      "filter-lexical-function", "def f: 1; def g: f; def f: 2; [g,f]",
+    ),
+    runtime_case(
+      "filter-closure-argument", "def apply(f): 2 as $x|f; 1 as $x|apply($x)",
+    ),
+    runtime_case("filter-overloads", "def f:1; def f($x):$x; [f,f(2)]"),
+    runtime_case(
+      "filter-recursion", "def down: ., (if . > 0 then .-1 | down else empty end); 3|[down]",
+    ),
+    runtime_case(
+      "filter-nested-definition", "def outer($x): def inner: $x; inner; outer(7)",
+    ),
+    runtime_case("filter-builtin-shadow", "def length: 9; []|length"),
+    runtime_case("filter-builtin-arity", "def add($x): .+$x; 2|add(3)"),
+    runtime_case("filter-unbound-lexical", "def f: $x; 1 as $x|f"),
+    runtime_case("input-binary-order", "input + input", input="1\n2\n"),
+    runtime_case("input-object-order", "{a:input,b:input}", input="1\n2\n"),
+    runtime_case(
+      "input-conditional",
+      "if input then input else inputs end",
+      input="true\n2\n3\n",
+    ),
+    runtime_case(
+      "input-alternative",
+      "(input // input), input",
+      input="false\n2\n3\n",
+    ),
+    runtime_case("input-map", "[10,20]|map(.+input)", input="1\n2\n"),
+    runtime_case("input-assignment", "{a:0}|.a=input", input="1\n2\n"),
+  ]
+  let modules = ["-L", "lib", "-nc"]
+  cases.append([
+    runtime_case(
+      "module-import",
+      "import \"value\" as v; v::get",
+      flags=modules,
+      files=[("lib/value.jq", "def get: 42;\n")],
+    ),
+    runtime_case("module-include", "include \"value\"; get", flags=modules, files=[
+      ("lib/value.jq", "def get: 42;\n"),
+    ]),
+    runtime_case(
+      "module-private-functions",
+      "import \"a\" as a; import \"b\" as b; [a::get,b::get]",
+      flags=modules,
+      files=[
+        ("lib/a.jq", "def helper: 1; def get: helper;\n"),
+        ("lib/b.jq", "def helper: 2; def get: helper;\n"),
+      ],
+    ),
+    runtime_case(
+      "module-nested-import",
+      "import \"a\" as a; a::get",
+      flags=modules,
+      files=[
+        ("lib/a.jq", "import \"b\" as b; def get: b::get+1;\n"),
+        ("lib/b.jq", "def get: 2;\n"),
+      ],
+    ),
+    runtime_case(
+      "module-relative-search",
+      "import \"nested/a\" as a; a::get",
+      flags=modules,
+      files=[
+        (
+          "lib/nested/a.jq", "import \"b\" as b {search:\".\"}; def get:b::get;\n",
+        ),
+        ("lib/nested/b.jq", "def get:3;\n"),
+      ],
+    ),
+    runtime_case(
+      "module-directory-layout",
+      "import \"value\" as v; v::get",
+      flags=modules,
+      files=[("lib/value/value.jq", "def get:4;\n")],
+    ),
+    runtime_case(
+      "module-search-order",
+      "import \"value\" as v; v::get",
+      flags=["-L", "first", "-L", "second", "-nc"],
+      files=[
+        ("first/value.jq", "def get:1;\n"),
+        ("second/value.jq", "def get:2;\n"),
+      ],
+    ),
+    runtime_case(
+      "module-search-metadata",
+      "import \"value\" as v {search:[\"preferred\"]}; v::get",
+      flags=modules,
+      files=[
+        ("preferred/value.jq", "def get:1;\n"),
+        ("lib/value.jq", "def get:2;\n"),
+      ],
+    ),
+    runtime_case(
+      "module-data-import",
+      "import \"data\" as $v; [$v,$v::v]",
+      flags=modules,
+      files=[("lib/data.json", "1\n{\"x\":2}\n")],
+    ),
+    runtime_case(
+      "module-data-empty",
+      "import \"data\" as $v; $v",
+      flags=modules,
+      files=[("lib/data.json", "")],
+    ),
+    runtime_case(
+      "module-function-input",
+      "import \"value\" as v; v::get",
+      flags=modules,
+      input="1\n2\n",
+      files=[("lib/value.jq", "def get: [input,inputs];\n")],
+    ),
+    runtime_case(
+      "module-filter-argument",
+      "import \"value\" as v; v::twice(input)",
+      flags=modules,
+      input="1\n2\n3\n",
+      files=[("lib/value.jq", "def twice(f): f,f;\n")],
+    ),
+    runtime_case(
+      "module-globals",
+      "import \"value\" as v; v::get",
+      flags=[..modules, "--argjson", "x", "7"],
+      files=[("lib/value.jq", "def get:$x;\n")],
+    ),
+    runtime_case("module-metadata", "\"value\"|modulemeta", flags=modules, files=[
+      (
+        "lib/value.jq", "module {homepage:\"example\"}; def get:1; def f($x):$x;\n",
+      ),
+    ]),
+    runtime_case("module-metadata-deps", "\"a\"|modulemeta", flags=modules, files=[
+      (
+        "lib/a.jq", "module {name:\"a\"}; import \"b\" as b {search:\"lib\"}; def get:b::get;\n",
+      ),
+      ("lib/b.jq", "def get:2;\n"),
+    ]),
+    runtime_case(
+      "module-header-main",
+      "module {name:\"main\"}; 1",
+      flags=modules,
+    ),
+    runtime_case(
+      "module-missing",
+      "import \"missing\" as m; m::get",
+      flags=modules,
+    ),
+    runtime_case("module-cycle", "import \"a\" as a; a::get", flags=modules, files=[
+      ("lib/a.jq", "import \"b\" as b; def get:1;\n"),
+      ("lib/b.jq", "import \"a\" as a; def get:2;\n"),
+    ]),
+    runtime_case(
+      "module-data-invalid",
+      "import \"data\" as $v; $v",
+      flags=modules,
+      files=[("lib/data.json", "[1,\n")],
+    ),
+    runtime_case(
+      "module-namespace-isolation",
+      "import \"value\" as v; get",
+      flags=modules,
+      files=[("lib/value.jq", "def get:1;\n")],
+    ),
+    runtime_case("module-default-home", "import \"value\" as v; v::get", files=[
+      ("home/.jq/value.jq", "def get:8;\n"),
+    ]),
+    runtime_case("module-home-prelude", "get", files=[
+      ("home/.jq", "def get:9;\n"),
+    ]),
+  ])
+  cases.append([
+    runtime_case("input-subtraction-order", "input - input", input="1\n2\n"),
+    runtime_case(
+      "input-binary-generators",
+      "[[(input,input)-input],input]",
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case(
+      "input-value-argument-order",
+      "def f($a;$b):[$a,$b]; f(input;input)",
+      input="1\n2\n",
+    ),
+    runtime_case("input-stop-before-invalid", "first(inputs)", input="1\n[2,\n"),
+    runtime_case(
+      "input-zero-before-invalid",
+      "[limit(0;inputs)]",
+      input="[1,\n",
+    ),
+    runtime_case(
+      "input-catch-then-continue",
+      "(try input catch .), input",
+      input="[1,]\n2\n",
+    ),
+    runtime_case(
+      "input-reduce-multiple-update",
+      "reduce inputs as $x ([]; .+[$x], .+[input])",
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case(
+      "input-foreach-multiple-update",
+      "[foreach inputs as $x ([]; .+[$x], .+[input])]",
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case(
+      "input-path-filter",
+      "{a:1,b:2}|path(.[]|select(.==input))",
+      input="1\n2\n",
+    ),
+    runtime_case(
+      "input-update-first",
+      "{a:0,b:0}|(.a,.b)|=(input,input)",
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case(
+      "input-raw-files",
+      "[inputs]",
+      flags=["-Rnc"],
+      operands=["a", "b"],
+      files=[("a", "one"), ("b", "two\n")],
+    ),
+    runtime_case(
+      "input-raw-stop-missing",
+      "first(inputs)",
+      flags=["-Rnc"],
+      operands=["a", "missing"],
+      files=[("a", "one")],
+    ),
+    runtime_case(
+      "module-relative-dot-slash",
+      "import \"nested/a\" as a; a::get",
+      flags=modules,
+      files=[
+        (
+          "lib/nested/a.jq", "import \"b\" as b {search:\"./\"}; def get:b::get;\n",
+        ),
+        ("lib/nested/b.jq", "def get:3;\n"),
+      ],
+    ),
+    runtime_case(
+      "module-layout-priority",
+      "import \"value\" as v; v::get",
+      flags=modules,
+      files=[
+        ("lib/value.jq", "def get:1;"),
+        ("lib/value/jq/main.jq", "def get:2;"),
+        ("lib/value/value.jq", "def get:3;"),
+      ],
+    ),
+    runtime_case(
+      "module-main-layout",
+      "import \"value\" as v; v::get",
+      flags=modules,
+      files=[
+        ("lib/value/jq/main.jq", "def get:2;"),
+        ("lib/value/value.jq", "def get:3;"),
+      ],
+    ),
+    runtime_case(
+      "module-explicit-search-only",
+      "import \"value\" as v {search:[\"absent\"]}; v::get",
+      flags=modules,
+      files=[("lib/value.jq", "def get:1;")],
+    ),
+    runtime_case(
+      "module-include-closure",
+      "include \"a\"; def helper:9; [get,helper]",
+      flags=modules,
+      files=[("lib/a.jq", "def helper:1; def get:helper;")],
+    ),
+    runtime_case(
+      "module-transitive-private",
+      "import \"a\" as a; [a::get,a::b::get]",
+      flags=modules,
+      files=[
+        ("lib/a.jq", "import \"b\" as b; def get:b::get;"),
+        ("lib/b.jq", "def get:2;"),
+      ],
+    ),
+    runtime_case(
+      "module-lexical-global",
+      "import \"value\" as v; 99 as $x|v::get",
+      flags=[..modules, "--argjson", "x", "7"],
+      files=[("lib/value.jq", "def get:$x;")],
+    ),
+    runtime_case(
+      "module-disable-home-path",
+      "import \"value\" as v; v::get",
+      flags=["-L", "absent", "-nc"],
+      files=[("home/.jq/value.jq", "def get:8;")],
+    ),
+    runtime_case(
+      "module-prelude-explicit-path",
+      "get",
+      flags=["-L", "absent", "-nc"],
+      files=[("home/.jq", "def get:9;")],
+    ),
+    runtime_case("module-metadata-cycle", "\"a\"|modulemeta", flags=modules, files=[
+      ("lib/a.jq", "import \"b\" as b; def get:1;"),
+      ("lib/b.jq", "import \"a\" as a; def get:2;"),
+    ]),
+    runtime_case(
+      "module-include-builtin",
+      "include \"value\"; [length,add(2)]",
+      flags=modules,
+      files=[("lib/value.jq", "def length:9; def add($x):$x+1;")],
+    ),
+    runtime_case("filter-unused-undefined", "def f: missing; 1"),
+    runtime_case(
+      "filter-unreachable-undefined", "if false then missing else 1 end",
+    ),
+    runtime_case(
+      "input-repeat-empty-iteration",
+      "[limit(1;repeat(input|select(.==2)))],input",
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case(
+      "input-foreach-stop-update",
+      "first(foreach inputs as $x ([]; .+[$x], .+[input])),input",
+      input="1\n2\n3\n4\n",
+    ),
+    runtime_case(
+      "module-raw-data",
+      "import \"data\" as $v {raw:true}; $v",
+      flags=modules,
+      files=[("lib/data.json", "[1,\n")],
+    ),
+    runtime_case(
+      "module-optional-data",
+      "import \"data\" as $v {optional:true}; 1",
+      flags=modules,
+      files=[("lib/data.json", "[1,\n")],
+    ),
+    runtime_case(
+      "module-optional-data-unbound",
+      "import \"data\" as $v {optional:true}; $v",
+      flags=modules,
+      files=[("lib/data.json", "[1,\n")],
+    ),
+    runtime_case(
+      "module-optional-missing",
+      "import \"missing\" as m {optional:true}; 1",
+      flags=modules,
+    ),
+    runtime_case(
+      "module-inner-include",
+      "import \"a\" as a; a::get",
+      flags=modules,
+      files=[
+        ("lib/a.jq", "include \"b\"; def get:bfun;"),
+        ("lib/b.jq", "def bfun:2;"),
+      ],
+    ),
+    runtime_case(
+      "module-inner-include-private",
+      "import \"a\" as a; a::bfun",
+      flags=modules,
+      files=[
+        ("lib/a.jq", "include \"b\"; def get:bfun;"),
+        ("lib/b.jq", "def bfun:2;"),
+      ],
+    ),
+  ])
+  return cases
+}
+
+///|
+fn evaluation_cases() -> Array[RuntimeCase] {
+  let cases = [
+    ("filter-shadowed-by-definition", "def f(g):def g:2;g;f(1)", "null"),
+    (
+      "filter-captured-before-shadow", "def f(g):def inner:g;def g:2;inner;f(1)",
+      "null",
+    ),
+    (
+      "filter-overload-coexists", "def f(g):def g($x):$x+1;[g,g(3)];f(1)", "null",
+    ),
+    ("metadata-arithmetic", "module {x:(1+2),y:(0-2)};1", "null"),
+    ("metadata-comparison", "module {x:(1==1),y:(1<2)};1", "null"),
+    ("metadata-array", "module {x:[1,2],y:{}};1", "null"),
+    ("metadata-key", "module {(\"a\"+\"b\"):3};1", "null"),
+    ("metadata-repeat", "module {x:(repeat(1))};1", "null"),
+    ("metadata-while", "module {x:(while(true;.))};1", "null"),
+    ("metadata-length", "module {x:([1,2]|length)};1", "null"),
+    ("metadata-if", "module {x:(if true then 1 else 2 end)};1", "null"),
+    ("metadata-alternative", "module {x:(.//1)};1", "null"),
+    ("metadata-range", "module {x:[range(0;3)]};1", "null"),
+    ("metadata-boolean", "module {x:(true and false)};1", "null"),
+    ("metadata-comma", "module {x:(1,2)};1", "null"),
+    ("metadata-interpolation", "module {x:\"a\\(1+2)\"};1", "null"),
+    ("metadata-negative", "module {x:-2};1", "null"),
+    ("metadata-division-zero", "module {x:(1/0)};1", "null"),
+    ("binary-cartesian", "[(\"L1\",\"L2\")+(\"R1\",\"R2\")]", "null"),
+    ("value-cartesian", "def f($a;$b):[$a,$b]; f((1,2);(10,20))", "null"),
+    ("walk-empty-array", "walk(empty)", "[1,2]"),
+    ("walk-empty-object", "walk(empty)", "{\"a\":1}"),
+    ("walk-empty-scalar", "walk(empty)", "1"),
+    ("all-empty-condition", "all(.[];empty)", "[1,3]"),
+    ("getpath-empty", "getpath(empty)", "{\"a\":1}"),
+    ("setpath-empty-path", "setpath(empty;1)", "{\"a\":1}"),
+    ("setpath-empty-value", "setpath([\"a\"];empty)", "{\"a\":1}"),
+    ("delpaths-empty", "delpaths(empty)", "{\"a\":1}"),
+    ("until-empty-condition", "until(empty;.+1)", "1"),
+    ("until-empty-update", "until(.>0;empty)", "0"),
+    ("pow-empty", "pow(.;empty)", "2"),
+    ("min-empty-key", "min_by(empty)", "[1,2]"),
+    ("max-empty-key", "max_by(empty)", "[1,2]"),
+    ("object-empty-key", "{(empty):1,a:2}", "null"),
+    ("object-empty-value", "{a:empty}", "null"),
+    ("indices-empty", "indices(empty)", "[1,2]"),
+    ("index-empty", "index(empty)", "[1,2]"),
+    ("rindex-empty", "rindex(empty)", "[1]"),
+    ("contains-empty", "contains(empty)", "\"abc\""),
+    ("inside-empty", "inside(empty)", "\"a\""),
+    ("in-empty", "in(empty)", "\"a\""),
+    ("foreach-empty-extract", "foreach .[] as $x (0;.+$x;empty)", "[1,2]"),
+    ("and-true", "1 and 2", "null"),
+    ("or-false", "false or 2", "null"),
+    ("or-null", "null or 2", "null"),
+    ("or-true", "1 or 2", "null"),
+    ("reduce-empty-init", "reduce .[] as $x (empty;.+$x)", "[1,2]"),
+    ("reduce-multiple-update", "reduce (1,2) as $x (0; .+$x, .+$x+10)", "null"),
+    (
+      "foreach-multiple-update", "[foreach (1,2) as $x (0; .+$x, .+$x+10)]", "null",
+    ),
+    ("reduce-empty-update", "reduce (1,2) as $x (0;empty)", "null"),
+    ("foreach-empty-update", "[foreach (1,2) as $x (0;empty)]", "null"),
+    (
+      "lexical-undefined", "def f:$x; 10 as $x|foreach .[] as $y (0;.+$y+f)", "[1,2]",
+    ),
+    ("filter-variable-missing", "def id(x):$x; id(empty)", "null"),
+    ("filter-multiple-params", "def multiply(x;y):x*y; multiply(4;6)", "null"),
+    (
+      "filter-calls", "def square(x):x*x; def sum_of_squares(a;b):square(a)+square(b); sum_of_squares(3;4)",
+      "null",
+    ),
+    (
+      "elif", "if .>0 then \"positive\" elif .<0 then \"negative\" else \"zero\" end",
+      "5",
+    ),
+    ("recurse-condition", "recurse(.a; . != null)", "{\"a\":{\"a\":null}}"),
+  ]
+  cases.map(entry => {
+    runtime_case(entry.0, entry.1, input=entry.2 + "\n", flags=["-c"])
+  })
+}
+
+///|
+async fn collect_runtime(
+  root : String,
+  image : String,
+  cases : Array[RuntimeCase],
+) -> Array[Json] {
+  let records : Array[Json] = []
+  for case in cases {
+    let work = root + "/" + case.label
+    @fs.mkdir(work + "/home", recursive=true)
+    for (path, content) in case.files {
+      let parts = path.split("/").to_array()
+      if parts.length() > 1 {
+        @fs.mkdir(
+          work +
+          "/" +
+          parts[:parts.length() - 1].map(StringView::to_owned).join("/"),
+          recursive=true,
+          allow_exist=true,
+        )
+      }
+      @fs.write_file(work + "/" + path, content)
+    }
+    let stdin_path = root + "/" + case.label + ".stdin"
+    @fs.write_file(stdin_path, case.input)
+    let result = observed_docker(
+      root,
+      case.label,
+      [
+        "run",
+        "--rm",
+        "--platform",
+        "linux/amd64",
+        "-i",
+        "--network",
+        "none",
+        "-v",
+        work + ":/work:ro",
+        "-w",
+        "/work",
+        "-e",
+        "LC_ALL=C",
+        "-e",
+        "HOME=/work/home",
+        image,
+        "jq",
+        ..case.args,
+      ],
+      stdin=@process.redirect_from_file(stdin_path),
+    )
+    let record : Json = {
+      "label": case.label,
+      "args": case.args,
+      "stdin_text": case.input,
+      "files": case.files.map(pair => {
+        ({ "path": pair.0, "content_text": pair.1 } : Json)
+      }),
+      "environment": { "HOME": "${WORK}/home" },
+      "status": result.0,
+      "stdout_text": result.1.text(),
+      "stderr_text": result.2.text(),
+    }
+    @fs.write_file(
+      root + "/" + case.label + ".json",
+      record.stringify(indent=2) + "\n",
+    )
+    records.push(record)
+    println(case.label + " status " + result.0.to_string())
+  }
+  records
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard (
+      args.length() == 3 ||
+      (args.length() == 4 && ["runtime", "evaluation"].contains(args[3]))
+    ) &&
+    args[1].has_prefix("/") &&
+    args[2].has_prefix("sha256:") else {
+    fail(
+      "Usage: jq_oracle.mbtx FRESH_ABSOLUTE_ROOT IMMUTABLE_IMAGE [runtime|evaluation]",
+    )
+  }
+  let root = args[1]
+  let image = args[2]
+  @fs.mkdir(root, recursive=true, allow_exist=false)
+  let inspected = observed_docker(root, "image", [
+    "image", "inspect", "--format={{.Id}}", image,
+  ])
+  assert_eq(inspected.0, 0)
+  assert_eq(inspected.1.text().trim().to_owned(), image)
+  let history = observed_docker(root, "history", [
+    "history", "--no-trunc", "--format={{.CreatedBy}}", image,
+  ])
+  assert_eq(history.0, 0)
+  assert_true(
+    history.1
+    .text()
+    .contains(
+      "JQ_SHA256=b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f",
+    ),
+  )
+  let versions = observed_docker(root, "versions", [
+    "run", "--rm", "--platform", "linux/amd64", image, "/usr/local/bin/versions.sh",
+  ])
+  assert_eq(versions.0, 0)
+  let records : Array[Json] = []
+  if args.get(3) == Some("runtime") {
+    records.append(collect_runtime(root, image, runtime_cases()))
+  } else if args.get(3) == Some("evaluation") {
+    records.append(collect_runtime(root, image, evaluation_cases()))
+  } else {
+    let inputs = [
+      ("empty-input", ""),
+      ("scalar", "1"),
+      ("adjacent", "1{}[]\"x\" false null"),
+      ("empty-array", "[]"),
+      ("empty-object", "{}"),
+      ("array", "[1,2]"),
+      ("nested", "{\"a\":[1,{\"b\":2}],\"c\":[],\"d\":{}}"),
+      ("duplicate-key", "{\"a\":1,\"a\":2}"),
+      ("escaped-key", "{\"界\\n\\\"\\\\\":[\"尾\",true,false,null,-1.5e2]}"),
+      ("consecutive", "[1]\n{\"x\":2}\n3"),
+      ("late-eof", "[1,2"),
+      ("trailing-array-comma", "[1,]"),
+      ("trailing-object-comma", "{\"a\":1,}"),
+      ("missing-colon", "{\"a\" 1}"),
+      ("invalid-number", "[1,01]"),
+      ("invalid-literal", "[true,falsee]"),
+      ("invalid-string", "[1,\"bad\\q\"]"),
+      ("missing-comma", "[1 2]"),
+      (
+        "numbers", "[9007199254740993,1.2300,1e400,1e9999999999,-01,NaN,Infinity,-Infinity]",
+      ),
+      (
+        "decimal-exponents", "[1.2300e2,1e0,1.0e0,0e0,0.00e2,1e-7,1e-6,1e+0002,1e2147483648,1e-2147483649]",
+      ),
+      (
+        "decimal-underflow", "[5e-1147483647,9e-1147483647,15e-1147483647,25e-1147483647,1e-1147483646]",
+      ),
+      ("number-grammar", "[1.,.5,-.5,+1,-0,-0.0]"),
+      ("bom", "\uFEFF[1]"),
+      ("root-number-bad-end", "1]"),
+      ("root-literal-bad-end", "true,"),
+      ("root-string-bad-end", "\"x\"]"),
+      ("object-number-key-end", "{2}"),
+      ("object-number-key-colon", "{2:"),
+      ("object-string-key-end", "{\"a\"}"),
+      ("object-number-key-eof", "{2"),
+      (
+        "stream-errors-lines", "[1,\"bad\\q\",2]\n[3,]\n{\"a\":4,\"b\":oops}\n5\n",
+      ),
+      ("stream-errors-same-line", "[1,\"bad\\q\",2] 7 [8]\n9\n"),
+      ("stream-errors-eof", "[1,2"),
+      ("stream-errors-key", "{2}\n{2:\n{\"a\"}\n{2"),
+      (
+        "decimal-int64-edges", "[1.0e-9223372036854775808,99e9223372036854775807,1e-9223372036854775808,inf,-inf,nan,-nan]",
+      ),
+      ("stream-errors-buffer-before", String::make(4092, ' ') + "1]1\n2\n"),
+      ("stream-errors-buffer-at", String::make(4093, ' ') + "1]1\n2\n"),
+      ("stream-errors-buffer-after", String::make(4094, ' ') + "1]1\n2\n"),
+      ("stream-errors-fgets-before", String::make(4088, ' ') + "1]1\n2\n"),
+      ("stream-errors-fgets-at", String::make(4089, ' ') + "1]1\n2\n"),
+      ("stream-errors-fgets-after", String::make(4090, ' ') + "1]1\n2\n"),
+      ("stream-errors-utf8-tail", String::make(4089, ' ') + "\"界\"]1\n2\n"),
+      (
+        "stream-errors-utf8-recovery",
+        "1]" + String::make(4088, ' ') + "界1\n2\n",
+      ),
+    ]
+    inputs.append([
+      ("raw-token", ""),
+      ("stream-errors-raw-token", ""),
+      ("stream-errors-raw-array", ""),
+    ])
+    for (label, input) in inputs {
+      let path = root + "/" + label + ".stdin"
+      let raw = match label {
+        "raw-token" | "stream-errors-raw-token" => Some(b"\xff\n1\n")
+        "stream-errors-raw-array" => Some(b"[1,\xff,2]\n3\n")
+        _ => None
+      }
+      @fs.write_file(path, raw.unwrap_or_else(() => @utf8.encode(input)))
+      let options = [
+        if label.has_prefix("stream-errors-") {
+          "--stream-errors"
+        } else {
+          "--stream"
+        },
+        "-c",
+        ".",
+      ]
+      let process = observed_docker(
+        root,
+        label,
+        [
+          "run", "--rm", "--platform", "linux/amd64", "-i", "-e", "LC_ALL=C", image,
+          "jq", ..options,
+        ],
+        stdin=@process.redirect_from_file(path),
+      )
+      let record : Json = {
+        "label": label,
+        "args": options,
+        "status": process.0,
+        "stdout_text": process.1.text(),
+        "stderr_text": process.2.text(),
+      }
+      match record {
+        Object(fields) =>
+          match raw {
+            Some(bytes) =>
+              fields["stdin_hex"] = Json(@crypto.bytes_to_hex_string(bytes))
+            None => fields["stdin_text"] = Json(input)
+          }
+        _ => fail("invalid capture record")
+      }
+      @fs.write_file(
+        root + "/" + label + ".json",
+        record.stringify(indent=2) + "\n",
+      )
+      records.push(record)
+    }
+    for
+      (label, first, second) in [
+        ("files-array", "[1,", "2]"),
+        ("files-number", "1", "2"),
+        ("files-string", "\"first", "second\""),
+        ("files-error-recovery", "1]", "1"),
+      ] {
+      let work = root + "/" + label
+      @fs.mkdir(work)
+      @fs.write_file(work + "/first.json", first)
+      @fs.write_file(work + "/second.json", second)
+      let options = [
+        if label == "files-error-recovery" {
+          "--stream-errors"
+        } else {
+          "--stream"
+        },
+        "-c",
+        ".",
+        "first.json",
+        "second.json",
+      ]
+      let process = observed_docker(
+        root,
+        label,
+        [
+          "run",
+          "--rm",
+          "--platform",
+          "linux/amd64",
+          "-v",
+          work + ":" + work + ":ro",
+          "-w",
+          work,
+          "-e",
+          "LC_ALL=C",
+          image,
+          "jq",
+          ..options,
+        ],
+      )
+      let record : Json = {
+        "label": label,
+        "args": options,
+        "stdin_text": "",
+        "files": [
+          { "path": "first.json", "text": first },
+          { "path": "second.json", "text": second },
+        ],
+        "status": process.0,
+        "stdout_text": process.1.text(),
+        "stderr_text": process.2.text(),
+      }
+      @fs.write_file(
+        root + "/" + label + ".json",
+        record.stringify(indent=2) + "\n",
+      )
+      records.push(record)
+    }
+  }
+  let distribution = history.1
+    .text()
+    .split("\n")
+    .filter(line => line.contains("--output /oracle/bin/jq"))
+    .map(StringView::to_owned)
+    .to_array()
+  assert_eq(distribution.length(), 1)
+  let binary = observed_docker(root, "binary", [
+    "run", "--rm", "--platform", "linux/amd64", image, "sha256sum", "/oracle/bin/jq",
+  ])
+  assert_eq(binary.0, 0)
+  assert_true(
+    binary.1
+    .text()
+    .has_prefix(
+      "b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f ",
+    ),
+  )
+  @fs.write_file(
+    root +
+    (match args.get(3) {
+      Some(mode) => "/" + mode + ".json"
+      None => "/stream.json"
+    }),
+    (
+      {
+        "image": image,
+        "history_sha256": @crypto.bytes_to_hex_string(
+          @crypto.sha256(history.1.binary()),
+        ),
+        "distribution": distribution,
+        "binary_sha256": binary.1.text(),
+        "versions": versions.1.text(),
+        "cases": records,
+      } : Json).stringify(indent=2) +
+    "\n",
+  )
+  println("Captured " + records.length().to_string() + " jq cases")
+}

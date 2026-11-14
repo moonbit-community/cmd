@@ -1,0 +1,27 @@
+///|
+// Adapted from MoonJQ 0.2.0 for local ownership and current syntax.
+// See ../../THIRD_PARTY_NOTICES.md for source and license information.
+
+///|
+/// Evaluate string interpolation expressions
+fn eval_string_interpolation(
+  parts : Array[(String, Expr?)],
+  input : Json,
+  env : Env,
+) -> Iter[Json] raise InterpreterError {
+  let buf = StringBuilder()
+  for pair in parts {
+    let (text, expr_opt) = pair
+    buf.write_string(text)
+    match expr_opt {
+      Some(expr) =>
+        match eval_with_env(expr, input, env).collect() {
+          [String(s), ..] => buf.write_string(s)
+          [other, ..] => buf.write_string(json_to_display_string(other))
+          [] => ()
+        }
+      None => ()
+    }
+  }
+  Iter::singleton(Json::string(buf.to_string()))
+}

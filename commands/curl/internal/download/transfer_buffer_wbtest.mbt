@@ -95,12 +95,7 @@ async test "curl file buffering distinguishes the flush threshold and preserves 
   defer @async.protect_from_cancel(() => @fs.rmdir(directory, recursive=true))
   let path = directory + "/readonly"
   @fs.write_file(path, "preserve")
-  let response : Response = {
-    code: 200,
-    reason: "OK",
-    headers: {},
-    cookies: [],
-  }
+  let response : Response = { code: 200, reason: "OK", headers: {}, }
   for length in [4095, 4096] {
     let file = @fs.open(path, mode=ReadOnly)
     let sink = TransferSink::new(

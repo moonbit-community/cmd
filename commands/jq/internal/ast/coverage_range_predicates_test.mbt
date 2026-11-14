@@ -1,0 +1,27 @@
+///|
+// Adapted from MoonJQ 0.2.0 for local ownership and current syntax.
+// See ../../THIRD_PARTY_NOTICES.md for source and license information.
+
+///|
+test "coverage: range variants" {
+  json_inspect(coverage_eval("range(1; 4)", "null"), content=[1, 2, 3])
+  json_inspect(coverage_eval("range(0; 5; 2)", "null"), content=[0, 2, 4])
+  json_inspect(coverage_eval("range(5; 0; -2)", "null"), content=[5, 3, 1])
+  assert_coverage_eval_error("range(\"a\"; 4)", "null")
+}
+
+///|
+test "coverage: first/last with generator" {
+  json_inspect(coverage_eval("first(.[])", "[1, 2, 3]"), content=[1])
+  json_inspect(coverage_eval("last(.[])", "[1, 2, 3]"), content=[3])
+  json_inspect(coverage_eval("first(empty)", "null"), content=[])
+  json_inspect(coverage_eval("last(empty)", "null"), content=[])
+}
+
+///|
+test "coverage: any/all generator variants" {
+  json_inspect(coverage_eval("any(.[]; . > 2)", "[1, 3]"), content=[true])
+  json_inspect(coverage_eval("all(.[]; . > 2)", "[1, 3]"), content=[false])
+  json_inspect(coverage_eval("any(.[]; empty)", "[1, 3]"), content=[false])
+  json_inspect(coverage_eval("all(.[]; empty)", "[1, 3]"), content=[true])
+}

@@ -4,6 +4,12 @@ package "cli/curl"
 // Values
 
 // Errors
+type ConfigLineError
+
+type ConfigOptionError
+
+type OptionConflict
+
 type UsageError
 
 // Types and methods

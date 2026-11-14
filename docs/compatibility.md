@@ -1,7 +1,51 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-11-10
+Updated: 2026-11-14
+
+## Issue #34 release profile
+
+Core 0.11.0, curl/wget/jqlog 0.2.7, jq 0.2.9 and serve 0.1.3 are published;
+all six upload acknowledgements, registry builds and source archive checksums
+are verified. The independent `tests/release/latest*.json` inputs retain all
+previous case IDs and the other 76 command coordinates. Local exact-version
+MoonX acceptance passes 3,709 semantic checks. The
+[three-platform publication gate](https://github.com/moonbit-community/cmd/actions/runs/43609556174)
+uses those same frozen inputs for all 81 coordinates and pinned Linux comparison;
+it must pass before merge. Earlier profiles retain their dated scope.
+
+Curl and Wget preserve admitted HTTP and Cookie octets through saved jars,
+second-process reloads and outgoing fields. Each command owns response folding,
+control-byte admission, interim/EOF effects and jar grammar. Curl supports
+header removal, semicolon empty fields, header files and ordered `-K` expansion;
+Wget supports startup configuration and `-e` with its separate grammar,
+including the `passive_ftp` boolean without effects on HTTP/HTTPS. The
+207 fresh fixed-image HTTP controls cover these finite behaviors, not every
+upstream configuration directive or malformed input. They do not reconstruct
+the missing historical captures. Host/Transfer-Encoding customization,
+non-UTF-8 configuration, account-database discovery, full Windows discovery,
+non-Basic authentication and consumed-stdin challenge replay remain outside
+this profile. See [ADR-0005](adr/0005-transfer.md).
+
+Jq supports incremental `--stream` and `--stream-errors` events, including
+duplicate keys, scalar precision, partial output, recovery and input spanning
+files. Fifty independent jq 1.8.2 observations cover the finite CLI
+profile. Its parser/evaluator and existing command adaptations are maintained
+under `commands/jq/internal`, removing jq's MoonJQ dependency. It also
+implements shared `input`/`inputs`, lexical filter/value parameters, imports,
+includes, namespaces, data/raw/optional imports, module metadata and search.
+An additional 115 immutable CLI observations and 57 evaluator observations
+cover input consumption, short-circuiting, closure and module behavior. The
+original 50 stream records remain unchanged. Remaining builtin, numeric and
+diagnostic limits are recorded in [ADR-0008](adr/0008-data.md).
+Issue closure applies to this finite support profile; the listed limitations
+remain explicit follow-up boundaries. Local checks, required CI,
+exact-coordinate publication acceptance and performance qualification remain
+separate outcomes.
+
+Jqlog also owns its parser, evaluator and JSONL command logic under
+`commands/jqlog/internal`, with no MoonJQ dependency. Its original filtering,
+line admission and output/error ordering remain separate from jq's input modes.
 
 ## Extensions and diagnostics
 
@@ -77,7 +121,7 @@ this profile does not relabel those omissions as implemented.
 
 ## Current delivery and historical acceptance
 
-The current 2026-11-08 release publishes core 0.9.5 with make 0.2.8, sh 0.2.9
+The 2026-11-08 release published core 0.9.5 with make 0.2.8, sh 0.2.9
 and split 0.1.10 from `273ea9f`, retaining the other 77 command coordinates. It
 extends the POSIX trailing-slash directory check to all shell file predicates
 and both timestamp-comparison operands. A later independent audit found that
@@ -198,21 +242,21 @@ unchanged; timeout stays local-only. All 81 uploads, registry builds and archive
 checksums were verified. Local and
 [three-platform exact-version MoonX acceptance](https://github.com/moonbit-community/cmd/actions/runs/42758620841)
 passed all 81 coordinates, including the pinned Linux differential profile.
-Exact coordinates and independently frozen expectations
-are recorded in [latest.json](../tests/release/latest.json) and
-[latest-cases.json](../tests/release/latest-cases.json). The
+That release's exact coordinates and independently frozen expectations remain
+in the [historical manifest](https://github.com/moonbit-community/cmd/blob/79e488ffe6654662b864e31487142302edc5afc8/tests/release/latest.json)
+and [historical cases](https://github.com/moonbit-community/cmd/blob/79e488ffe6654662b864e31487142302edc5afc8/tests/release/latest-cases.json). The
 [release record](../CHANGELOG.md#2026-11-10) records exact-version acceptance.
 
 The current workspace has 82 command modules, including serve and local-only
-timeout. `cli/serve@0.1.2` is published and selected by `moonx cli/serve@latest`.
-It corrects the earlier immutable 0.1.1 package's incorrect `serve 0.1.0`
-version output and joins the 81-command release inventory.
-The published `cli/serve@0.1.2` serves regular files and index.html over
+timeout. `cli/serve@0.1.3` is published and selected by `moonx cli/serve@latest`.
+Version 0.1.2 corrected the earlier immutable 0.1.1 package's incorrect
+`serve 0.1.0` version output and joined the 81-command release inventory.
+Serve provides regular files and index.html over
 HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
 return 400; missing, unreadable, outside-root and nonregular targets return 404.
-Its successful file responses are written directly to the socket and close
-the connection with `Connection: close`. The unpublished workspace development
-uses async 0.22.9's fixed-length `@http` body path and keeps the connection open.
+Immutable 0.1.2 writes successful file responses directly to the socket and
+closes the connection with `Connection: close`. Version 0.1.3 uses async 0.22.9's
+fixed-length `@http` body path and keeps the connection open.
 The CLI follows standard `argparse` syntax, including `--port=8000`, `-p8000`
 and short help/version aliases. Syntax errors report usage and exit 1.
 There is no listing, SPA fallback or upload. Wasm policy separately limits
@@ -889,7 +933,7 @@ Full shell compatibility is not claimed. See
 | `rg` | published subset | Fixed rg.mbt 0.2.0 algorithms and Unicode data; asynchronous explicit-file/directory/stdin search, glob/ignore, output modes and user preprocessing | [rg profile](#rg-candidate); effective `-z` rejects; no-path search needs explicit input; public system API and inherited engine limits remain |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | Field/unpaired/empty output, `-z`, ASCII ignore-case, headers, automatic or accumulated explicit output fields, last order policy | Locale behavior beyond the fixed C profile not claimed |
-| `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices | Released moonjq 0.2.0 plus public-AST adapter; full evaluator/modules/streaming/diagnostics and automatic TTY color are not claimed |
+| `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, partial output, colors and Unicode slices; published 0.2.9 adds streaming events, shared input/inputs, lexical functions and module loading | Owned parser/evaluator and driver; fixed module/input controls cover the supported language. Full builtin/diagnostic parity, exact large-number arithmetic and automatic TTY color remain outside the finite profile; complete published acceptance remains a merge gate |
 | `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF; numbered backups advance after the highest valid decimal version; failed recovery reports both errors and destination/backup paths | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain; a recovery error does not determine the final path state |
 | `ls` | subset verified | Existing traversal/sort/link profile plus C quoting, columns/across/commas, width/tab stops and explicit type/suffix/link colors | `-P` is a project extension; enabled raw-mode/capability/link-count predicates and automatic color reject. Long/ownership/inode/block formats remain outside scope |

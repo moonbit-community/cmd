@@ -13,15 +13,34 @@ pub(all) enum HttpMethod {
 }
 
 ///|
-#derive(Eq, Debug)
+#derive(Debug)
 pub(all) struct HttpHeader {
   name : String
   value : String
+  octets : Bytes?
 }
 
 ///|
 pub fn http_header(name : String, value : String) -> HttpHeader {
-  { name, value, }
+  { name, value, octets: None, }
+}
+
+///|
+/// Keep policy-admitted field octets independently of their readable UTF-8
+/// projection. Unlike text fields, raw fields can contain a carriage return;
+/// the owning HTTP dialect admits it. A line feed is never admitted for output.
+pub fn http_header_bytes(name : String, value : Bytes) -> HttpHeader {
+  { name, value: @utf8.decode_lossy(value), octets: Some(value), }
+}
+
+///|
+pub fn HttpHeader::bytes(self : HttpHeader) -> Bytes {
+  self.octets.unwrap_or_else(() => @utf8.encode(self.value))
+}
+
+///|
+pub impl Eq for HttpHeader with fn equal(self, other) {
+  self.name == other.name && self.bytes() == other.bytes()
 }
 
 ///|
@@ -42,6 +61,7 @@ pub(all) enum TransferErrorKind {
   ConnectionFailure
   EmptyReplyFailure
   ReceiveFailure
+  MalformedReplyFailure
   PartialBodyFailure
   TlsFailure
   ProxyFailure

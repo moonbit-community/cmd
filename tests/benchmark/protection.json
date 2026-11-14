@@ -1836,15 +1836,17 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/jq/input.mbt"
+        "commands/jq/internal/driver/cursor.mbt",
+        "commands/jq/internal/driver/stream_input.mbt",
+        "commands/jq/internal/driver/evaluation.mbt"
       ],
       "tests": [
         {
-          "file": "commands/jq/input_wbtest.mbt",
+          "file": "commands/jq/internal/driver/input_wbtest.mbt",
           "name": "jq chunk scanning preserves every JSON framing boundary"
         },
         {
-          "file": "commands/jq/input_wbtest.mbt",
+          "file": "commands/jq/internal/driver/input_wbtest.mbt",
           "name": "jq completed frame is returned before later input is requested"
         }
       ],
