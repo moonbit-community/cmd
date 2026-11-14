@@ -46729,6 +46729,39 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-raw-token",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-raw-token",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-raw-token",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-raw-token",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-raw-array",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-raw-array",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

@@ -187,9 +187,19 @@ async fn main {
       "1]" + String::make(4088, ' ') + "界1\n2\n",
     ),
   ]
+  inputs.append([
+    ("raw-token", ""),
+    ("stream-errors-raw-token", ""),
+    ("stream-errors-raw-array", ""),
+  ])
   for (label, input) in inputs {
     let path = root + "/" + label + ".stdin"
-    @fs.write_file(path, input)
+    let raw = match label {
+      "raw-token" | "stream-errors-raw-token" => Some(b"\xff\n1\n")
+      "stream-errors-raw-array" => Some(b"[1,\xff,2]\n3\n")
+      _ => None
+    }
+    @fs.write_file(path, raw.unwrap_or_else(() => @utf8.encode(input)))
     let options = [
       if label.has_prefix("stream-errors-") {
         "--stream-errors"
@@ -211,10 +221,18 @@ async fn main {
     let record : Json = {
       "label": label,
       "args": options,
-      "stdin_text": input,
       "status": process.0,
       "stdout_text": process.1.text(),
       "stderr_text": process.2.text(),
+    }
+    match record {
+      Object(fields) =>
+        match raw {
+          Some(bytes) =>
+            fields["stdin_hex"] = Json(@crypto.bytes_to_hex_string(bytes))
+          None => fields["stdin_text"] = Json(input)
+        }
+      _ => fail("invalid capture record")
     }
     @fs.write_file(
       root + "/" + label + ".json",

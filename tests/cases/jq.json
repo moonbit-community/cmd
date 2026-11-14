@@ -3001,6 +3001,69 @@
       "oracle": true,
       "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 2\",[]]\n[[],1]\n[[],2]\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-raw-token",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Invalid numeric literal at line 2, column 0\n",
+      "stdin_hex": "ff0a310a"
+    },
+    {
+      "id": "jq-stream-stream-errors-raw-token",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Invalid numeric literal at line 2, column 0\",[]]\n[[],1]\n",
+      "expected_stderr_text": "",
+      "stdin_hex": "ff0a310a"
+    },
+    {
+      "id": "jq-stream-stream-errors-raw-array",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[\"Invalid numeric literal at line 1, column 5\",[1]]\n[[],3]\n",
+      "expected_stderr_text": "",
+      "stdin_hex": "5b312cff2c325d0a330a"
     }
   ]
 }

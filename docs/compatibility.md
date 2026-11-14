@@ -23,7 +23,7 @@ this profile. See [ADR-0005](adr/0005-transfer.md).
 
 Jq supports incremental `--stream` and `--stream-errors` events, including
 duplicate keys, scalar precision, partial output, recovery and input spanning
-files. Forty-seven independent jq 1.8.2 observations cover the finite CLI
+files. Fifty independent jq 1.8.2 observations cover the finite CLI
 profile. Its parser/evaluator and existing command adaptations are maintained
 under `commands/jq/internal`, removing jq's MoonJQ dependency. Shared
 filter-driven input continuation, module namespaces and filter-argument closures

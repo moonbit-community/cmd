@@ -173,7 +173,7 @@ async fn StreamInput::scalar(self : StreamInput) -> Json {
           ![b'[', b']', b'{', b'}', b':', b',', b'"'].contains(byte) {
       token.push(self.take().unwrap())
     }
-    let text = @utf8.decode(Bytes::from_array(token))
+    let text = @utf8.decode_lossy(Bytes::from_array(token))
     if ["true", "false", "null"].contains(text) {
       return @json.parse(text)
     }

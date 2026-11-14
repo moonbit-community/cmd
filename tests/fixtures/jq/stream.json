@@ -14,10 +14,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "",
       "status": 0,
       "stdout_text": "",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": ""
     },
     {
       "label": "scalar",
@@ -26,10 +26,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "1",
       "status": 0,
       "stdout_text": "[[],1]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "1"
     },
     {
       "label": "adjacent",
@@ -38,10 +38,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "1{}[]\"x\" false null",
       "status": 0,
       "stdout_text": "[[],1]\n[[],{}]\n[[],[]]\n[[],\"x\"]\n[[],false]\n[[],null]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "1{}[]\"x\" false null"
     },
     {
       "label": "empty-array",
@@ -50,10 +50,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[]",
       "status": 0,
       "stdout_text": "[[],[]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[]"
     },
     {
       "label": "empty-object",
@@ -62,10 +62,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{}",
       "status": 0,
       "stdout_text": "[[],{}]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "{}"
     },
     {
       "label": "array",
@@ -74,10 +74,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1,2]",
       "status": 0,
       "stdout_text": "[[0],1]\n[[1],2]\n[[1]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1,2]"
     },
     {
       "label": "nested",
@@ -86,10 +86,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{\"a\":[1,{\"b\":2}],\"c\":[],\"d\":{}}",
       "status": 0,
       "stdout_text": "[[\"a\",0],1]\n[[\"a\",1,\"b\"],2]\n[[\"a\",1,\"b\"]]\n[[\"a\",1]]\n[[\"c\"],[]]\n[[\"d\"],{}]\n[[\"d\"]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "{\"a\":[1,{\"b\":2}],\"c\":[],\"d\":{}}"
     },
     {
       "label": "duplicate-key",
@@ -98,10 +98,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{\"a\":1,\"a\":2}",
       "status": 0,
       "stdout_text": "[[\"a\"],1]\n[[\"a\"],2]\n[[\"a\"]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "{\"a\":1,\"a\":2}"
     },
     {
       "label": "escaped-key",
@@ -110,10 +110,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{\"界\\n\\\"\\\\\":[\"尾\",true,false,null,-1.5e2]}",
       "status": 0,
       "stdout_text": "[[\"界\\n\\\"\\\\\",0],\"尾\"]\n[[\"界\\n\\\"\\\\\",1],true]\n[[\"界\\n\\\"\\\\\",2],false]\n[[\"界\\n\\\"\\\\\",3],null]\n[[\"界\\n\\\"\\\\\",4],-1.5E+2]\n[[\"界\\n\\\"\\\\\",4]]\n[[\"界\\n\\\"\\\\\"]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "{\"界\\n\\\"\\\\\":[\"尾\",true,false,null,-1.5e2]}"
     },
     {
       "label": "consecutive",
@@ -122,10 +122,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1]\n{\"x\":2}\n3",
       "status": 0,
       "stdout_text": "[[0],1]\n[[0]]\n[[\"x\"],2]\n[[\"x\"]]\n[[],3]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1]\n{\"x\":2}\n3"
     },
     {
       "label": "late-eof",
@@ -134,10 +134,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1,2",
       "status": 5,
       "stdout_text": "[[0],1]\n",
-      "stderr_text": "jq: parse error: Unfinished JSON term at EOF at line 1, column 4\n"
+      "stderr_text": "jq: parse error: Unfinished JSON term at EOF at line 1, column 4\n",
+      "stdin_text": "[1,2"
     },
     {
       "label": "trailing-array-comma",
@@ -146,10 +146,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1,]",
       "status": 5,
       "stdout_text": "[[0],1]\n",
-      "stderr_text": "jq: parse error: Expected another array element at line 1, column 4\n"
+      "stderr_text": "jq: parse error: Expected another array element at line 1, column 4\n",
+      "stdin_text": "[1,]"
     },
     {
       "label": "trailing-object-comma",
@@ -158,10 +158,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{\"a\":1,}",
       "status": 5,
       "stdout_text": "[[\"a\"],1]\n",
-      "stderr_text": "jq: parse error: Expected another key:value pair at line 1, column 8\n"
+      "stderr_text": "jq: parse error: Expected another key:value pair at line 1, column 8\n",
+      "stdin_text": "{\"a\":1,}"
     },
     {
       "label": "missing-colon",
@@ -170,10 +170,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{\"a\" 1}",
       "status": 5,
       "stdout_text": "",
-      "stderr_text": "jq: parse error: Expected separator between values at line 1, column 7\n"
+      "stderr_text": "jq: parse error: Expected separator between values at line 1, column 7\n",
+      "stdin_text": "{\"a\" 1}"
     },
     {
       "label": "invalid-number",
@@ -182,10 +182,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1,01]",
       "status": 0,
       "stdout_text": "[[0],1]\n[[1],1]\n[[1]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1,01]"
     },
     {
       "label": "invalid-literal",
@@ -194,10 +194,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[true,falsee]",
       "status": 5,
       "stdout_text": "[[0],true]\n",
-      "stderr_text": "jq: parse error: Invalid literal at line 1, column 13\n"
+      "stderr_text": "jq: parse error: Invalid literal at line 1, column 13\n",
+      "stdin_text": "[true,falsee]"
     },
     {
       "label": "invalid-string",
@@ -206,10 +206,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1,\"bad\\q\"]",
       "status": 5,
       "stdout_text": "[[0],1]\n",
-      "stderr_text": "jq: parse error: Invalid escape at line 1, column 10\n"
+      "stderr_text": "jq: parse error: Invalid escape at line 1, column 10\n",
+      "stdin_text": "[1,\"bad\\q\"]"
     },
     {
       "label": "missing-comma",
@@ -218,10 +218,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1 2]",
       "status": 5,
       "stdout_text": "",
-      "stderr_text": "jq: parse error: Expected separator between values at line 1, column 5\n"
+      "stderr_text": "jq: parse error: Expected separator between values at line 1, column 5\n",
+      "stdin_text": "[1 2]"
     },
     {
       "label": "numbers",
@@ -230,10 +230,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[9007199254740993,1.2300,1e400,1e9999999999,-01,NaN,Infinity,-Infinity]",
       "status": 0,
       "stdout_text": "[[0],9007199254740993]\n[[1],1.2300]\n[[2],1E+400]\n[[3],1.7976931348623157e+308]\n[[4],-1]\n[[5],null]\n[[6],1.7976931348623157e+308]\n[[7],-1.7976931348623157e+308]\n[[7]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[9007199254740993,1.2300,1e400,1e9999999999,-01,NaN,Infinity,-Infinity]"
     },
     {
       "label": "decimal-exponents",
@@ -242,10 +242,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1.2300e2,1e0,1.0e0,0e0,0.00e2,1e-7,1e-6,1e+0002,1e2147483648,1e-2147483649]",
       "status": 0,
       "stdout_text": "[[0],123.00]\n[[1],1]\n[[2],1.0]\n[[3],0]\n[[4],0]\n[[5],1E-7]\n[[6],0.000001]\n[[7],1E+2]\n[[8],1.7976931348623157e+308]\n[[9],0E-1147483646]\n[[9]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1.2300e2,1e0,1.0e0,0e0,0.00e2,1e-7,1e-6,1e+0002,1e2147483648,1e-2147483649]"
     },
     {
       "label": "decimal-underflow",
@@ -254,10 +254,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[5e-1147483647,9e-1147483647,15e-1147483647,25e-1147483647,1e-1147483646]",
       "status": 0,
       "stdout_text": "[[0],1E-1147483646]\n[[1],1E-1147483646]\n[[2],2E-1147483646]\n[[3],3E-1147483646]\n[[4],1E-1147483646]\n[[4]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[5e-1147483647,9e-1147483647,15e-1147483647,25e-1147483647,1e-1147483646]"
     },
     {
       "label": "number-grammar",
@@ -266,10 +266,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1.,.5,-.5,+1,-0,-0.0]",
       "status": 0,
       "stdout_text": "[[0],1]\n[[1],0.5]\n[[2],-0.5]\n[[3],1]\n[[4],-0]\n[[5],-0.0]\n[[5]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1.,.5,-.5,+1,-0,-0.0]"
     },
     {
       "label": "bom",
@@ -278,10 +278,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "﻿[1]",
       "status": 0,
       "stdout_text": "[[0],1]\n[[0]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "﻿[1]"
     },
     {
       "label": "root-number-bad-end",
@@ -290,10 +290,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "1]",
       "status": 5,
       "stdout_text": "",
-      "stderr_text": "jq: parse error: Unmatched ']' at the top-level at line 1, column 2\n"
+      "stderr_text": "jq: parse error: Unmatched ']' at the top-level at line 1, column 2\n",
+      "stdin_text": "1]"
     },
     {
       "label": "root-literal-bad-end",
@@ -302,10 +302,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "true,",
       "status": 5,
       "stdout_text": "",
-      "stderr_text": "jq: parse error: Expected value before ',' at line 1, column 5\n"
+      "stderr_text": "jq: parse error: Expected value before ',' at line 1, column 5\n",
+      "stdin_text": "true,"
     },
     {
       "label": "root-string-bad-end",
@@ -314,10 +314,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "\"x\"]",
       "status": 5,
       "stdout_text": "[[],\"x\"]\n",
-      "stderr_text": "jq: parse error: Unmatched ']' at the top-level at line 1, column 4\n"
+      "stderr_text": "jq: parse error: Unmatched ']' at the top-level at line 1, column 4\n",
+      "stdin_text": "\"x\"]"
     },
     {
       "label": "object-number-key-end",
@@ -326,10 +326,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{2}",
       "status": 5,
       "stdout_text": "",
-      "stderr_text": "jq: parse error: Objects must consist of key:value pairs at line 1, column 3\n"
+      "stderr_text": "jq: parse error: Objects must consist of key:value pairs at line 1, column 3\n",
+      "stdin_text": "{2}"
     },
     {
       "label": "object-number-key-colon",
@@ -338,10 +338,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{2:",
       "status": 5,
       "stdout_text": "",
-      "stderr_text": "jq: parse error: Object keys must be strings at line 1, column 3\n"
+      "stderr_text": "jq: parse error: Object keys must be strings at line 1, column 3\n",
+      "stdin_text": "{2:"
     },
     {
       "label": "object-string-key-end",
@@ -350,10 +350,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{\"a\"}",
       "status": 5,
       "stdout_text": "",
-      "stderr_text": "jq: parse error: Objects must consist of key:value pairs at line 1, column 5\n"
+      "stderr_text": "jq: parse error: Objects must consist of key:value pairs at line 1, column 5\n",
+      "stdin_text": "{\"a\"}"
     },
     {
       "label": "object-number-key-eof",
@@ -362,10 +362,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{2",
       "status": 5,
       "stdout_text": "",
-      "stderr_text": "jq: parse error: Unfinished JSON term at EOF at line 1, column 2\n"
+      "stderr_text": "jq: parse error: Unfinished JSON term at EOF at line 1, column 2\n",
+      "stdin_text": "{2"
     },
     {
       "label": "stream-errors-lines",
@@ -374,10 +374,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1,\"bad\\q\",2]\n[3,]\n{\"a\":4,\"b\":oops}\n5\n",
       "status": 0,
       "stdout_text": "[[0],1]\n[\"Invalid escape at line 1, column 10\",[1]]\n[[0],3]\n[\"Expected another array element at line 1, column 14\",[1]]\n[[\"a\"],4]\n[\"Invalid numeric literal at line 1, column 30\",[\"b\"]]\n[[],5]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1,\"bad\\q\",2]\n[3,]\n{\"a\":4,\"b\":oops}\n5\n"
     },
     {
       "label": "stream-errors-same-line",
@@ -386,10 +386,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1,\"bad\\q\",2] 7 [8]\n9\n",
       "status": 0,
       "stdout_text": "[[0],1]\n[\"Invalid escape at line 1, column 10\",[1]]\n[[],9]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1,\"bad\\q\",2] 7 [8]\n9\n"
     },
     {
       "label": "stream-errors-eof",
@@ -398,10 +398,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1,2",
       "status": 0,
       "stdout_text": "[[0],1]\n[\"Unfinished JSON term at EOF at line 1, column 4\",[1]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1,2"
     },
     {
       "label": "stream-errors-key",
@@ -410,10 +410,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "{2}\n{2:\n{\"a\"}\n{2",
       "status": 0,
       "stdout_text": "[\"Objects must consist of key:value pairs at line 1, column 3\",[null]]\n[\"Object keys must be strings at line 1, column 6\",[null]]\n[\"Objects must consist of key:value pairs at line 1, column 11\",[null]]\n[\"Unfinished JSON term at EOF at line 1, column 13\",[null]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "{2}\n{2:\n{\"a\"}\n{2"
     },
     {
       "label": "decimal-int64-edges",
@@ -422,10 +422,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "[1.0e-9223372036854775808,99e9223372036854775807,1e-9223372036854775808,inf,-inf,nan,-nan]",
       "status": 0,
       "stdout_text": "[[0],0E-1147483646]\n[[1],1.7976931348623157e+308]\n[[2],0E-1147483646]\n[[3],1.7976931348623157e+308]\n[[4],-1.7976931348623157e+308]\n[[5],null]\n[[6],null]\n[[6]]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "[1.0e-9223372036854775808,99e9223372036854775807,1e-9223372036854775808,inf,-inf,nan,-nan]"
     },
     {
       "label": "stream-errors-buffer-before",
@@ -434,10 +434,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            1]1\n2\n",
       "status": 0,
       "stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4094\",[]]\n[[],2]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            1]1\n2\n"
     },
     {
       "label": "stream-errors-buffer-at",
@@ -446,10 +446,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             1]1\n2\n",
       "status": 0,
       "stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4095\",[]]\n[[],2]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             1]1\n2\n"
     },
     {
       "label": "stream-errors-buffer-after",
@@ -458,10 +458,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              1]1\n2\n",
       "status": 0,
       "stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4096\",[]]\n[[],2]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              1]1\n2\n"
     },
     {
       "label": "stream-errors-fgets-before",
@@ -470,10 +470,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        1]1\n2\n",
       "status": 0,
       "stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4090\",[]]\n[[],2]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        1]1\n2\n"
     },
     {
       "label": "stream-errors-fgets-at",
@@ -482,10 +482,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         1]1\n2\n",
       "status": 0,
       "stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4091\",[]]\n[[],1]\n[[],2]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         1]1\n2\n"
     },
     {
       "label": "stream-errors-fgets-after",
@@ -494,10 +494,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          1]1\n2\n",
       "status": 0,
       "stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4092\",[]]\n[[],2]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          1]1\n2\n"
     },
     {
       "label": "stream-errors-utf8-tail",
@@ -506,10 +506,10 @@
         "-c",
         "."
       ],
-      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         \"界\"]1\n2\n",
       "status": 0,
       "stdout_text": "[[],\"界\"]\n[\"Unmatched ']' at the top-level at line 1, column 4095\",[]]\n[[],2]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         \"界\"]1\n2\n"
     },
     {
       "label": "stream-errors-utf8-recovery",
@@ -518,10 +518,46 @@
         "-c",
         "."
       ],
-      "stdin_text": "1]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        界1\n2\n",
       "status": 0,
       "stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 2\",[]]\n[[],1]\n[[],2]\n",
-      "stderr_text": ""
+      "stderr_text": "",
+      "stdin_text": "1]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        界1\n2\n"
+    },
+    {
+      "label": "raw-token",
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "status": 5,
+      "stdout_text": "",
+      "stderr_text": "jq: parse error: Invalid numeric literal at line 2, column 0\n",
+      "stdin_hex": "ff0a310a"
+    },
+    {
+      "label": "stream-errors-raw-token",
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "status": 0,
+      "stdout_text": "[\"Invalid numeric literal at line 2, column 0\",[]]\n[[],1]\n",
+      "stderr_text": "",
+      "stdin_hex": "ff0a310a"
+    },
+    {
+      "label": "stream-errors-raw-array",
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "status": 0,
+      "stdout_text": "[[0],1]\n[\"Invalid numeric literal at line 1, column 5\",[1]]\n[[],3]\n",
+      "stderr_text": "",
+      "stdin_hex": "5b312cff2c325d0a330a"
     },
     {
       "label": "files-array",

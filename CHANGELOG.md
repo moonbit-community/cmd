@@ -27,11 +27,12 @@ Development only.
   Modules and filter-driven input remain explicit local implementation gaps;
   issue #34 remains open.
 - Establish a fresh immutable-oracle baseline of 207 two-process HTTP controls
-  and 47 jq controls. The missing historical captures remain historical claims.
+  and 50 jq controls. The missing historical captures remain historical claims.
   Candidate definitions and published expectations stay independent. No package
   publication or performance acceptance is claimed.
 - Local validation passes 2,688 Wasm package tests, 231 Native tool tests and
-  3,956 command checks with 40 declared platform skips. Check, format, interface,
+  complete command checks with 40 declared platform skips. The final raw-byte
+  error-recovery repair passes all 132 jq command contracts. Check, format, interface,
   registry and architecture validation pass; an isolated jq module also checks
   without MoonJQ. Required CI and publication acceptance remain separate gates.
 

@@ -12,12 +12,11 @@ async test "stream events retain frozen jq paths and prefixes across chunk bound
     is { "cases": Array(cases), .. } else {
     fail("missing stream cases")
   }
-  assert_eq(cases.length(), 47)
+  assert_eq(cases.length(), 50)
   for record in cases {
     guard record
       is {
         "label": String(label),
-        "stdin_text": String(text),
         "status": Number(status, ..),
         "stdout_text": String(stdout),
         "stderr_text": String(stderr),
@@ -35,7 +34,20 @@ async test "stream events retain frozen jq paths and prefixes across chunk bound
         expected.push(@json.parse(line))
       }
     }
-    let source = @utf8.encode(text)
+    let source = match record {
+      { "stdin_text": String(text), .. } => @utf8.encode(text)
+      { "stdin_hex": String(hex), .. } => {
+        assert_eq(hex.length() % 2, 0)
+        let bytes : Array[Byte] = []
+        for offset = 0; offset < hex.length(); offset = offset + 2 {
+          bytes.push(
+            @string.parse_int(hex[offset:offset + 2], base=16).to_byte(),
+          )
+        }
+        Bytes::from_array(bytes)
+      }
+      _ => fail("missing frozen input")
+    }
     for chunk in [1, 2, 3, 7, 65536] {
       let reader = @io.MemoryReader(writer => {
         for offset = 0; offset < source.length(); offset = offset + chunk {
