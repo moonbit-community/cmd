@@ -38,7 +38,7 @@ Published coordinates; exact-version acceptance is a required merge gate.
   inputs contain 3,999 definitions and select 3,754 IDs, including three retained
   independent Linux oracle scenarios for unchanged commands. Local full exact
   MoonX acceptance passes 3,709 semantic checks with zero failures and 40 declared
-  platform skips. [Three-platform exact-version acceptance](https://github.com/moonbit-community/cmd/actions/runs/43607893212)
+  platform skips. [Three-platform exact-version acceptance](https://github.com/moonbit-community/cmd/actions/workflows/release-acceptance.yml)
   uses these same frozen inputs for all 81 coordinates and pinned Linux comparison;
   the complete result is a merge gate, separate from development CI.
 - Preserve the first local acceptance failure: two serve 0.1.2 scenarios expected
@@ -53,6 +53,9 @@ Published coordinates; exact-version acceptance is a required merge gate.
   retained three Windows Wget authentication failures with no proxy requests.
   Align the fixture's case-insensitive proxy environment with the other network
   scenarios, preserving all authentication expectations for the complete rerun.
+  Linux also exposed MoonX cache files under fixture-owned `HOME` directories in
+  115 jq comparisons. Anchor the launcher's `MOON_HOME` before fixture overrides;
+  preserve all command filesystem observations and rerun complete acceptance.
 
 ## 2026-11-11
 
