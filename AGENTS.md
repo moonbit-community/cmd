@@ -276,7 +276,7 @@ module and version before any release operation.
   builds and source archive checksums were verified.
   Local complete exact-version MoonX passes 3,709 semantic checks, with zero
   failures and 40 declared platform skips. The
-  [three-platform publication gate](https://github.com/moonbit-community/cmd/actions/runs/43605884116)
+  [three-platform publication gate](https://github.com/moonbit-community/cmd/actions/workflows/release-acceptance.yml)
   exercises all 81 coordinates and pinned Linux comparisons; merge requires its
   complete success. The frozen baseline has 3,999 definitions and 3,754 selected
   IDs, retaining all 3,828 previous IDs, adding 171 and updating 18 specified

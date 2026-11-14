@@ -10,7 +10,7 @@ all six upload acknowledgements, registry builds and source archive checksums
 are verified. The independent `tests/release/latest*.json` inputs retain all
 previous case IDs and the other 76 command coordinates. Local exact-version
 MoonX acceptance passes 3,709 semantic checks. The
-[three-platform publication gate](https://github.com/moonbit-community/cmd/actions/runs/43605884116)
+[three-platform publication gate](https://github.com/moonbit-community/cmd/actions/workflows/release-acceptance.yml)
 uses those same frozen inputs for all 81 coordinates and pinned Linux comparison;
 it must pass before merge. Earlier profiles retain their dated scope.
 

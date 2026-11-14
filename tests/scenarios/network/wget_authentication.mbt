@@ -248,6 +248,7 @@ async fn network_wget_authentication_scenario(
         },
       }
       let args = ["-qO-", "-t1", ..fixture.args, ..fixture.urls]
+      let proxy = "http://127.0.0.1:" + server.addr.port().to_string()
       let result = network_request(
         observing,
         directory,
@@ -260,8 +261,12 @@ async fn network_wget_authentication_scenario(
           "LC_ALL": "C",
           "NO_PROXY": "",
           "no_proxy": "",
-          "http_proxy": "http://127.0.0.1:" + server.addr.port().to_string(),
-          "HTTP_PROXY": "",
+          "http_proxy": proxy,
+          "HTTP_PROXY": if @async.platform is Windows {
+            proxy
+          } else {
+            ""
+          },
           "https_proxy": "",
           "HTTPS_PROXY": "",
           "all_proxy": "",
