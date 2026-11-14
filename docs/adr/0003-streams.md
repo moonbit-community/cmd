@@ -48,7 +48,7 @@ Only cleanup is shielded; output backpressure remains cancellable.
 
 ## Package ownership
 
-The issue #34 development candidate assigns byte-preserving HTTP headers,
+The issue #34 release assigns byte-preserving HTTP headers,
 physical response-line callbacks and explicit payload chunking to core 0.11.0.
 Curl and Wget are its two real consumers. Header admission, Cookie storage,
 configuration and generated request-field defaults stay with each command;
@@ -69,9 +69,10 @@ lexical function scopes, module linking and shared-input continuation; jqlog
 retains its independent JSONL language profile. The same command ownership
 layout applies to both, as recorded in ADR-0008.
 
-The 2026-11-10 release candidate assigns the incompatible internal source API
-changes to core 0.10.0. All current command consumers declare that coordinate;
-the independently accepted older coordinates remain immutable. Command version
+The 2026-11-10 release assigned the incompatible internal source API
+changes to core 0.10.0. Its 74 published command consumers selected that coordinate;
+the issue #34 release moves Curl/Wget to 0.11.0 and retains the other 72 bindings.
+The independently accepted older coordinates remain immutable. Command version
 output and dependency declarations advance together. Development CI, registry
 builds and exact-version MoonX acceptance remain separate release gates; this
 release does not add formal performance qualification.

@@ -261,30 +261,33 @@ module and version before any release operation.
   Update the published manifest and CHANGELOG.md with those results, then
   commit and push the documentation. Do not publish from a failing or
   unverified candidate.
-- Current registry baseline after the 2026-11-10 dependency-refresh release:
-  core is 0.10.0, with 80 updated command coordinates and unchanged echo 0.2.4.
-  The accepted inventory contains 81 published commands, including serve 0.1.2;
-  timeout remains local-only among 82 command modules.
-  All 74 published core consumers select 0.10.0. Echo, false, jqlog, serve,
-  sleep, true and typst do not depend on core. Exact coordinates and independent
-  expectations are in tests/release/latest.json and latest-cases.json.
-  Source commit dec64de7 passed [three-platform development CI](https://github.com/moonbit-community/cmd/actions/runs/42752161098).
-  All 81 uploads, registry builds and archive checksums were verified. Five
-  transient upload failures were confirmed absent before retrying; the failed
-  attempts remain recorded separately.
-  Local exact-version MoonX passed 3,517 semantic checks. The
-  [three-platform published acceptance](https://github.com/moonbit-community/cmd/actions/runs/42758620841)
-  passed all 81 coordinates with zero failures: Linux 3,532, macOS 3,517 and
-  Windows 2,954 semantic checks, plus 2,667 pinned Linux differential checks.
-  The 3,828 frozen definitions retain all 2,850 earlier IDs, add 978 existing
-  independent regressions and update 98 version/HTML metadata or help expectations.
-  The first acceptance run's eight stale help expectations were reconciled
-  against pre-existing tests before the complete rerun. Local Typst download
-  recovery used only the official checksum-verified prebuild.
-  Counts, declared platform exclusions and failed attempts are recorded in
-  CHANGELOG.md under 2026-11-10. This does not establish full upstream parity
-  or formal performance acceptance. General GNU/POSIX grammar limits remain
-  in ADR-0007.
+- Current registry baseline after the 2026-11-14 issue #34 release:
+  core is 0.11.0; curl, jqlog and wget are 0.2.7, jq is 0.2.9 and serve is 0.1.3.
+  The other 76 command coordinates are unchanged. The inventory contains 81
+  published commands; timeout remains local-only among 82 command modules.
+  Curl/Wget select core 0.11.0; the other 72 published core consumers retain
+  0.10.0. Echo, false, jqlog, serve, sleep, true and typst do not depend on core.
+  Exact coordinates and independent expectations are in tests/release/latest.json
+  and latest-cases.json. Source `88ae2f4` passed
+  [required development CI](https://github.com/moonbit-community/cmd/actions/runs/43600816824)
+  before the first five uploads; serve source `af26ce8` passed
+  [required development CI](https://github.com/moonbit-community/cmd/actions/runs/43603224438)
+  before its upload. All six uploads succeeded without retries, and registry
+  builds and source archive checksums were verified.
+  Local complete exact-version MoonX passes 3,709 semantic checks, with zero
+  failures and 40 declared platform skips. The
+  [three-platform publication gate](https://github.com/moonbit-community/cmd/actions/runs/43605884116)
+  exercises all 81 coordinates and pinned Linux comparisons; merge requires its
+  complete success. The frozen baseline has 3,999 definitions and 3,754 selected
+  IDs, retaining all 3,828 previous IDs, adding 171 and updating 18 specified
+  expectations or fixture bindings. Unchanged commands retain their original
+  expectations, including three independent Linux oracle scenarios.
+  The first local acceptance failure against serve 0.1.2 is preserved; the
+  separately authorized 0.1.3 publication releases connection reuse, followed
+  by a fresh complete rerun. Historical release counts and failure scopes remain
+  in CHANGELOG.md under their original dates. This does not establish full
+  upstream parity or formal performance acceptance; general GNU/POSIX grammar
+  limits remain in ADR-0007.
   Current latest/candidate snapshots remain independent. Retired published and
   historical archives are preserved in Git at 234f960, rather than duplicated
   in the active checkout. Prior acceptance results retain their dated scope

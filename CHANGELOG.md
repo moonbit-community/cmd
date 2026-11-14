@@ -14,41 +14,38 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-14
 
-Publication in progress; complete exact-coordinate acceptance is pending.
+Published coordinates; exact-version acceptance is a required merge gate.
 
-- Prepare serve 0.1.3 for the already implemented async 0.22.9 connection-reuse
-  behavior. Preserve immutable 0.1.2, which closes successful file responses;
-  its two failures against the newer scenario remain recorded in the first
-  local issue #34 publication acceptance attempt. Release this command
-  separately before rerunning the complete frozen MoonX acceptance.
 - Publish core 0.11.0, curl/wget/jqlog 0.2.7 and jq 0.2.9 from `88ae2f4`
-  after [required development CI](https://github.com/moonbit-community/cmd/actions/runs/43600816824).
-  Verify all five upload acknowledgements, registry builds and source archive
-  checksums without retries. Keep HTTP and Cookie
-  octets through command-owned admission, jar save/reload and request output;
-  add supported Curl/Wget configuration dialects and Curl header files/removal.
-  Accept distribution `passive_ftp` startup defaults without changing HTTP.
-  Preserve observer receipts before cancellable post-process work.
-- Add incremental jq `--stream` and `--stream-errors`, decimal literal
-  preservation and cross-file input/recovery. Maintain the minimal parser,
-  AST/evaluator and existing command logic under `jq/internal`, retaining
-  upstream tests and attribution while removing jq's MoonJQ dependency.
-  Apply the same ownership layout to jqlog 0.2.7, preserving its JSONL driver
-  and independent adapter expectations.
-  Add jq module loading, namespaces, data/raw/optional imports, module metadata,
-  lexical filter/value parameters and shared `input`/`inputs`. Preserve lazy
-  input consumption, short-circuiting and output before later failures.
-- Establish a fresh immutable-oracle baseline of 207 two-process HTTP controls
-  and 50 jq stream controls, followed by 115 module/input CLI controls and
-  57 evaluation controls. The missing historical captures remain historical claims.
-  Candidate definitions and published expectations stay independent. These
-  observations do not establish full upstream parity or performance acceptance.
-- The preceding HTTP/stream batch passed [required CI](https://github.com/moonbit-community/cmd/actions/runs/43584693515).
-  The expanded candidate passes 3,247 Wasm package tests, 231 Native tool tests
-  and 4,078 local command checks with zero failures and 40 declared platform
-  skips. Check, format, interfaces, registry and architecture validation pass.
-  Jq and jqlog also check outside the workspace without MoonJQ. Required CI and
-  exact-coordinate publication acceptance remain separate gates.
+  after [required CI](https://github.com/moonbit-community/cmd/actions/runs/43600816824),
+  then serve 0.1.3 from `af26ce8` after its
+  [required CI](https://github.com/moonbit-community/cmd/actions/runs/43603224438).
+  All six uploads succeed on their first attempt; registry builds and source
+  archive checksums are verified. Keep the other 76 command coordinates unchanged
+  and timeout local-only. Serve 0.1.3 releases the existing async 0.22.9
+  connection-reuse behavior without replacing immutable 0.1.2.
+- Preserve HTTP/Cookie octets through command-owned admission, jar save/reload
+  and request output; add supported Curl/Wget configuration dialects and Curl
+  header files/removal. Own jq and jqlog parser/evaluator code under their
+  separate internal packages, retaining attribution and removing MoonJQ.
+  Jq adds incremental stream events, module linking, lexical parameters and
+  shared resumable `input`/`inputs`, preserving short-circuiting and partial output.
+  Fresh fixed-oracle controls cover 207 two-process HTTP cases, 50 stream cases,
+  115 module/input CLI cases and 57 evaluator cases. Development CI passes
+  3,247 Wasm package tests, 231 Native tool tests and 2,894 Linux comparisons.
+- Retain all 3,828 earlier frozen case IDs, add 171 definitions and update 18
+  independently specified metadata/diagnostic or fixture bindings. The published
+  inputs contain 3,999 definitions and select 3,754 IDs, including three retained
+  independent Linux oracle scenarios for unchanged commands. Local full exact
+  MoonX acceptance passes 3,709 semantic checks with zero failures and 40 declared
+  platform skips. [Three-platform exact-version acceptance](https://github.com/moonbit-community/cmd/actions/runs/43605884116)
+  uses these same frozen inputs for all 81 coordinates and pinned Linux comparison;
+  the complete result is a merge gate, separate from development CI.
+- Preserve the first local acceptance failure: two serve 0.1.2 scenarios expected
+  the newer workspace's connection reuse. The maintainer authorized serve 0.1.3,
+  followed by a fresh complete rerun; no assertion was weakened. Missing historical
+  captures remain historical claims. This release does not establish full upstream
+  parity or formal performance acceptance.
 
 ## 2026-11-11
 
