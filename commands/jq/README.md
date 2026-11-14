@@ -1,13 +1,11 @@
 # jq
 
-Development candidate: `cli/jq@0.2.9`; published version remains `cli/jq@0.2.8`.
-See the release inventory;
-[latest.json](../../tests/release/latest.json) records the uploaded coordinates.
+Version: `cli/jq@0.2.9`.
 
 Filter JSON for MoonX.
 
 ```sh
-moonx cli/jq@0.2.8 [OPTION]... [FILTER] [FILE...]
+moonx cli/jq@0.2.9 [OPTION]... [FILTER] [FILE...]
 ```
 
 ## Supported scope
@@ -112,8 +110,8 @@ On Windows, an absent `HOME` falls back to `USERPROFILE`, then to
 ## Examples
 
 ```sh
-printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.8 -r '.name'
-moonx cli/jq@0.2.8 -n -c '{ok: true, values: [1, 2]}'
+printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.9 -r '.name'
+moonx cli/jq@0.2.9 -n -c '{ok: true, values: [1, 2]}'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

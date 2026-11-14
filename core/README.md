@@ -2,7 +2,7 @@
 
 Shared runtime packages used by the independently published command modules.
 
-## 0.11.0 development candidate
+## 0.11.0 changes
 
 HTTP fields retain original value octets alongside their readable projection.
 `with_response` exposes physical status/header lines, block endings and EOF to

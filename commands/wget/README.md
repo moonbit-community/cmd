@@ -2,18 +2,17 @@
 
 Download HTTP and HTTPS resources for MoonX.
 
-Development candidate: `cli/wget@0.2.7` with `cli/core@0.11.0`.
-The published coordinate remains `cli/wget@0.2.6` until a separate release.
+Version: `cli/wget@0.2.7`.
 
 ```sh
-moonx cli/wget@0.2.6 [OPTION]... [URL]...
+moonx cli/wget@0.2.7 [OPTION]... [URL]...
 ```
 
 ## Supported scope
 
 Download URLs or URL lists with resume, conditional requests, headers/bodies, retries, redirects, Basic authentication and cookies.
 
-The candidate retains Cookie octets through response admission, jar saving,
+Retains Cookie octets through response admission, jar saving,
 reload and subsequent requests. Wget's physical-line NUL handling, header
 folding, tab/CR jar values and domain-table iteration are separate from Curl's
 rules. Fixed request/response bytes and both process phases are frozen in
@@ -171,17 +170,17 @@ timezone offsets are ignored. Other suffixes reject the date, leaving previous
 expiry operations intact. The timestamp -1 is rejected; zero parses as a valid
 past date and requests deletion. This follows the fixed Linux/glibc oracle, including
 ASCII spacing and field-width behavior; it does not claim every libc dialect.
-Cookie Domain normalization remains separate work.
+Unicode normalization of Cookie Domain attributes remains outside this non-NLS profile.
 
 - Recursive mirroring, FTP, non-Basic authentication, HSTS and timestamp restoration are unsupported.
 - Content-encoded bodies remain encoded. Consumed stdin request bodies cannot be replayed.
-- Resume retains prior bytes without proving the server's earlier prefix is unchanged. Cookie Domain normalization and complete legacy input encodings remain unsupported.
+- Resume retains prior bytes without proving the server's earlier prefix is unchanged. Complete legacy input encodings remain unsupported.
 
 ## Examples
 
 ```sh
-moonx cli/wget@0.2.6 -O page.html https://example.com/
-moonx cli/wget@0.2.6 -q -O - https://example.com/
+moonx cli/wget@0.2.7 -O page.html https://example.com/
+moonx cli/wget@0.2.7 -q -O - https://example.com/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0005-transfer.md)

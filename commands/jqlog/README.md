@@ -2,11 +2,10 @@
 
 Filter JSON log lines for MoonX.
 
-Development candidate: `cli/jqlog@0.2.7`. The published coordinate remains
-`cli/jqlog@0.2.6` until a separate release.
+Version: `cli/jqlog@0.2.7`.
 
 ```sh
-moonx cli/jqlog@0.2.6 [options] <query> [input]
+moonx cli/jqlog@0.2.7 [options] <query> [input]
 ```
 
 ## Supported scope
@@ -37,8 +36,8 @@ the command no longer depends on MoonJQ. See
 ## Examples
 
 ```sh
-moonx cli/jqlog@0.2.6 -f logs.ndjson '.message'
-printf '%s\n' '{"level":"info"}' | moonx cli/jqlog@0.2.6 '.level'
+moonx cli/jqlog@0.2.7 -f logs.ndjson '.message'
+printf '%s\n' '{"level":"info"}' | moonx cli/jqlog@0.2.7 '.level'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0007-language.md)

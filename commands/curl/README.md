@@ -2,18 +2,17 @@
 
 Transfer HTTP and HTTPS data for MoonX.
 
-Development candidate: `cli/curl@0.2.7` with `cli/core@0.11.0`.
-The published coordinate remains `cli/curl@0.2.6` until a separate release.
+Version: `cli/curl@0.2.7`.
 
 ```sh
-moonx cli/curl@0.2.6 [options...] <url>
+moonx cli/curl@0.2.7 [options...] <url>
 ```
 
 ## Supported scope
 
 Send requests, upload files, follow redirects, manage cookies, retry failures and write responses to stdout or files.
 
-The candidate preserves response and cookie-jar octets, including malformed
+Preserves response and cookie-jar octets, including malformed
 UTF-8, and follows the fixed Curl 8.22.0 line, folding, NUL, control-byte and
 jar-length rules exercised by the HTTP fixtures. HEAD writes admitted raw
 header lines and its buffered cleanup tail; an unterminated status line is an
@@ -130,8 +129,8 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
 ## Examples
 
 ```sh
-moonx cli/curl@0.2.6 https://example.com/
-moonx cli/curl@0.2.6 -L -o page.html https://example.com/
+moonx cli/curl@0.2.7 https://example.com/
+moonx cli/curl@0.2.7 -L -o page.html https://example.com/
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0005-transfer.md)
