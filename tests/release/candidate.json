@@ -460,7 +460,7 @@
     {
       "name": "jqlog",
       "package_name": "cli/jqlog",
-      "version": "0.2.6",
+      "version": "0.2.7",
       "published": false,
       "compare_profile": "jqlog",
       "supported_options": [

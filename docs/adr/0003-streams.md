@@ -146,7 +146,7 @@ execution or selection defect, not to reproduce assertions in another format.
 | netops / curl and wget internals | Scoped single-request transport, URL/IDNA/PSL mechanisms / command-owned Cookie, authentication, redirect, retry, resume and output policies |
 | numfmt / time_zone | Exact fixed-profile numeric formatting / checked timezone conversion |
 | jq command internals | Owned parser/evaluator beneath a private driver; preserve lexical bindings, assignment paths and original shared expectations |
-| jqlog command internals | Local public-AST adaptations preserving lexical bindings and assignment paths, checked against shared independent inputs |
+| jqlog command internals | Owned parser/evaluator under internal, with a private JSONL driver and AST adaptations checked against shared independent inputs |
 | quoting / expand and unexpand internals | Shared byte quoting / command-local tab grids and dialects |
 
 The network boundary is command adaptation, private download policy and one

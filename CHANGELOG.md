@@ -25,6 +25,8 @@ Development only.
   preservation and cross-file input/recovery. Maintain the minimal parser,
   AST/evaluator and existing command logic under `jq/internal`, retaining
   upstream tests and attribution while removing jq's MoonJQ dependency.
+  Apply the same ownership layout to jqlog 0.2.7, preserving its JSONL driver
+  and independent adapter expectations.
   Modules and filter-driven input remain explicit local implementation gaps;
   issue #34 remains open.
 - Establish a fresh immutable-oracle baseline of 207 two-process HTTP controls

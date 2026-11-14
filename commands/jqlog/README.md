@@ -2,6 +2,9 @@
 
 Filter JSON log lines for MoonX.
 
+Development candidate: `cli/jqlog@0.2.7`. The published coordinate remains
+`cli/jqlog@0.2.6` until a separate release.
+
 ```sh
 moonx cli/jqlog@0.2.6 [options] <query> [input]
 ```
@@ -9,6 +12,10 @@ moonx cli/jqlog@0.2.6 [options] <query> [input]
 ## Supported scope
 
 Apply a jq-compatible filter to each valid JSON line and emit compact JSON. Read stdin by default, or pass raw input as the second operand.
+
+The parser, AST, evaluator and command logic are maintained under `internal`;
+the command no longer depends on MoonJQ. See
+[third-party notices](THIRD_PARTY_NOTICES.md) for source and license details.
 
 ## Options
 

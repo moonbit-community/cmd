@@ -5,7 +5,7 @@ Updated: 2026-11-14
 
 ## Issue #34 development candidate
 
-The unpublished candidate is core 0.11.0, curl/wget 0.2.7 and jq 0.2.9.
+The unpublished candidate is core 0.11.0, curl/wget/jqlog 0.2.7 and jq 0.2.9.
 The published coordinates and independent expectations in `tests/release/latest*.json`
 remain unchanged. Earlier versioned profiles below retain their dated scope.
 
@@ -34,6 +34,10 @@ rejected. Required regressions and reopening conditions are in
 These remaining boundaries keep issue #34 open. Local checks, required CI,
 exact-coordinate publication acceptance and performance qualification are
 separate outcomes.
+
+Jqlog also owns its parser, evaluator and JSONL command logic under
+`commands/jqlog/internal`, with no MoonJQ dependency. Its original filtering,
+line admission and output/error ordering remain separate from jq's input modes.
 
 ## Extensions and diagnostics
 

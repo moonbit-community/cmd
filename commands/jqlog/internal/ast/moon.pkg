@@ -1,0 +1,12 @@
+import {
+  "moonbitlang/core/cmp",
+  "moonbitlang/core/encoding/utf8" @encoding/utf8,
+  "moonbitlang/core/json",
+  "moonbitlang/core/math",
+  "moonbitlang/core/string",
+  "moonbitlang/core/debug",
+}
+
+import {
+  "cli/jqlog/internal/parser",
+} for "test"

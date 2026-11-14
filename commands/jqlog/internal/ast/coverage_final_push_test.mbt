@@ -1,0 +1,55 @@
+///|
+// Adapted from MoonJQ 0.2.0 for local ownership and current syntax.
+// See ../../THIRD_PARTY_NOTICES.md for source and license information.
+
+///|
+test "coverage: foreach extract empty falls back to accumulator" {
+  json_inspect(
+    coverage_eval("foreach .[] as $x (0; . + $x; empty)", "[1, 2]"),
+    content=[1, 3],
+  )
+}
+
+///|
+test "coverage: scan has misses and type mismatch" {
+  json_inspect(coverage_eval("scan(\"aa\")", "\"abaaa\""), content=["aa"])
+  assert_coverage_eval_error("scan(\"a\")", "1")
+}
+
+///|
+test "coverage: scan skips invalid slice boundaries" {
+  let emoji = @encoding/utf8.decode([0xf0, 0x9f, 0x98, 0x80])
+  let input = "\"\{emoji}a\""
+  json_inspect(coverage_eval("scan(\"a\")", input), content=["a"])
+}
+
+///|
+test "coverage: compare_json remaining base cases" {
+  json_inspect(coverage_eval("1 > null", "null"), content=[true])
+  json_inspect(coverage_eval("false < false", "null"), content=[false])
+  json_inspect(coverage_eval("true < true", "null"), content=[false])
+}
+
+///|
+test "coverage: and/or truthiness behavior" {
+  json_inspect(coverage_eval("false and 1", "null"), content=[false])
+  json_inspect(coverage_eval("null and 1", "null"), content=[false])
+  json_inspect(coverage_eval("1 and 2", "null"), content=[2])
+  json_inspect(coverage_eval("false or 2", "null"), content=[2])
+  json_inspect(coverage_eval("null or 2", "null"), content=[2])
+  json_inspect(coverage_eval("1 or 2", "null"), content=[1])
+}
+
+///|
+test "coverage: delpaths and setpath edge cases" {
+  json_inspect(coverage_eval("delpaths([[]])", "[1]"), content=[null])
+  json_inspect(coverage_eval("delpaths([[\"a\"]])", "[1]"), content=[[1]])
+  json_inspect(coverage_eval("delpaths([[10]])", "[1]"), content=[[1]])
+  json_inspect(coverage_eval("delpaths([[1, 0]])", "[1]"), content=[[1]])
+  json_inspect(coverage_eval("setpath([\"a\"]; 1)", "[0]"), content=[[0]])
+}
+
+///|
+test "coverage: modulo rejects non-numbers" {
+  assert_coverage_eval_error("null % 2", "null")
+}

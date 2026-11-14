@@ -1,25 +1,8 @@
 import {
-  "bobzhang/moonjq",
-  "bobzhang/moonjq/ast",
-  "moonbitlang/core/json",
+  "cli/jqlog/internal/driver",
   "moonbitlang/async",
-  "moonbitlang/async/stdio",
-  "moonbitlang/core/env",
-  "moonbitlang/x/fs",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "native+wasm"
 
 pkgtype(kind: "executable")
-
-import {
-  "moonbitlang/async/fs" @fixture_fs,
-} for "wbtest"
-
-rule(
-  name: "gen_version",
-  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
-)
-
-dev_build(rule: "gen_version", input: "moon.mod", output: "version.mbt")
