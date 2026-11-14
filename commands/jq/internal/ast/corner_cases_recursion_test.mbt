@@ -25,7 +25,7 @@ test "corner: mutually recursive functions" {
       "6",
     ),
     content=(
-      #|"ParseError: UnexpectedToken(\"TElif\", \"TElse\")"
+      #|"True"
     ),
   )
 }

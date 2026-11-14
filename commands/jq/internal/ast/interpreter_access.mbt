@@ -85,11 +85,3 @@ fn eval_slice_access(start : Int32?, end : Int32?, input : Json) -> Iter[Json] {
   }
   Iter::singleton(Json::array(sliced))
 }
-
-///|
-/// Evaluate optional expression, suppressing errors
-fn eval_optional(inner : Expr, input : Json, env : Env) -> Iter[Json] {
-  eval_with_env(inner, input, env) catch {
-    _ => Iter::empty()
-  }
-}

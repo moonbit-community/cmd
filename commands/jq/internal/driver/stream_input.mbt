@@ -10,7 +10,7 @@ priv suberror StreamError {
 // Retains one input chunk, one scalar token and the current nesting path.
 // Container values are never materialized; empty containers are leaf events.
 priv struct StreamInput {
-  reader : &@io.Reader
+  read_chunk : async () -> Bytes?
   file_boundaries : Set[Int64]
   mut offset : Int64
   mut chunk : Bytes
@@ -21,6 +21,12 @@ priv struct StreamInput {
   mut buffer_limit : Int32
   mut utf8_remaining : Int32
   mut buffer_end : Bool
+  frames : Array[StreamFrame]
+  path : Array[Json]
+  ready : Array[Json]
+  mut pending : Json?
+  mut initialized : Bool
+  mut finished : Bool
 }
 
 ///|
@@ -28,8 +34,16 @@ fn StreamInput::new(
   reader : &@io.Reader,
   file_boundaries~ : Set[Int64] = Set([]),
 ) -> StreamInput {
+  StreamInput::pull(() => reader.read_some(max_len=65536), file_boundaries)
+}
+
+///|
+fn StreamInput::pull(
+  read_chunk : async () -> Bytes?,
+  file_boundaries : Set[Int64],
+) -> StreamInput {
   {
-    reader,
+    read_chunk,
     file_boundaries,
     offset: 0L,
     chunk: b"",
@@ -40,13 +54,19 @@ fn StreamInput::new(
     buffer_limit: StreamParserBufferBytes,
     utf8_remaining: 0,
     buffer_end: false,
+    frames: [],
+    path: [],
+    ready: [],
+    pending: None,
+    initialized: false,
+    finished: false,
   }
 }
 
 ///|
 async fn StreamInput::peek(self : StreamInput) -> Byte? {
   while self.position == self.chunk.length() {
-    match self.reader.read_some(max_len=65536) {
+    match (self.read_chunk)() {
       None => return None
       Some(chunk) => {
         self.chunk = chunk
@@ -213,21 +233,27 @@ priv struct StreamFrame {
 }
 
 ///|
-async fn StreamInput::read(
+async fn StreamInput::next_event(
   self : StreamInput,
-  emit : async (Json) -> Unit,
   errors~ : Bool = false,
-) -> Unit {
-  if self.peek() == Some(b'\xef') {
+  open_container~ : ((ArrayView[Json], Bool) -> Unit)? = None,
+) -> Json? {
+  if !self.ready.is_empty() {
+    return Some(self.ready.remove(0))
+  }
+  if self.finished {
+    return None
+  }
+  if !self.initialized && self.peek() == Some(b'\xef') {
     ignore(self.take())
     guard self.take() == Some(b'\xbb') && self.take() == Some(b'\xbf') else {
       self.error("Malformed BOM")
     }
     self.column = 0
   }
-  let frames : Array[StreamFrame] = []
-  let path : Array[Json] = []
-  let mut pending : Json? = None
+  self.initialized = true
+  let frames = self.frames
+  let path = self.path
   while self.space() is Some(byte) {
     let current = frames.last()
     let failure = try {
@@ -242,6 +268,9 @@ async fn StreamInput::read(
             frame.phase = Done
           }
           let object = byte == b'{'
+          if open_container is Some(open) {
+            open(path[:], object)
+          }
           frames.push({ object, phase: First, index: 0, })
           path.push(if object { Json::null() } else { Json(0) })
         }
@@ -250,11 +279,11 @@ async fn StreamInput::read(
           guard current is Some(frame) && frame.object && frame.phase is Colon else {
             self.error("':' not as part of an object")
           }
-          guard pending is Some(String(_) as key) else {
+          guard self.pending is Some(String(_) as key) else {
             self.error("Object keys must be strings")
           }
           path[path.length() - 1] = key
-          pending = None
+          self.pending = None
           frame.phase = Value
         }
         b',' => {
@@ -262,9 +291,9 @@ async fn StreamInput::read(
           guard current is Some(frame) && frame.phase is Done else {
             self.error("Expected value before ','")
           }
-          if pending is Some(value) {
-            emit(Json::array([Json::array([..path]), value]))
-            pending = None
+          if self.pending is Some(value) {
+            self.ready.push(Json::array([Json::array([..path]), value]))
+            self.pending = None
           }
           frame.index += 1
           frame.phase = Next
@@ -302,17 +331,17 @@ async fn StreamInput::read(
             self.error("Missing value in key:value pair")
           }
           let empty = frame.phase is First
-          if pending is Some(value) {
-            emit(Json::array([Json::array([..path]), value]))
-            pending = None
+          if self.pending is Some(value) {
+            self.ready.push(Json::array([Json::array([..path]), value]))
+            self.pending = None
           }
           if !empty {
-            emit(Json::array([Json::array([..path])]))
+            self.ready.push(Json::array([Json::array([..path])]))
           }
           ignore(frames.pop())
           ignore(path.pop())
           if empty {
-            emit(
+            self.ready.push(
               Json::array([
                 Json::array([..path]),
                 if frame.object {
@@ -341,18 +370,18 @@ async fn StreamInput::read(
                   next=true,
                 )
               }
-              emit(Json::array([Json::array([]), value]))
+              self.ready.push(Json::array([Json::array([]), value]))
             }
             Some(frame) =>
               if frame.object && frame.phase is (First | Next) {
-                pending = Some(value)
+                self.pending = Some(value)
                 frame.phase = Colon
               } else {
                 guard (!frame.object && frame.phase is (First | Next)) ||
                   (frame.object && frame.phase is Value) else {
                   self.error("Expected separator between values", next=true)
                 }
-                pending = Some(value)
+                self.pending = Some(value)
                 frame.phase = Done
               }
           }
@@ -364,15 +393,12 @@ async fn StreamInput::read(
       error => raise error
     }
     if failure is Some(StreamError(message, line, column) as error) {
-      if !errors {
-        raise error
-      }
       if line > self.line || (line == self.line && column > self.column) {
         ignore(self.take())
       }
       self.line = line
       self.column = column
-      emit(
+      self.ready.push(
         Json::array([
           Json::string(
             message +
@@ -384,15 +410,23 @@ async fn StreamInput::read(
           Json::array([..path]),
         ]),
       )
-      pending = None
+      self.pending = None
       frames.clear()
       path.clear()
       self.discard_buffer()
+      if !errors {
+        self.ready.clear()
+        raise error
+      }
+    }
+    if !self.ready.is_empty() {
+      return Some(self.ready.remove(0))
     }
   }
+  self.finished = true
   if !frames.is_empty() {
     if errors {
-      emit(
+      self.ready.push(
         Json::array([
           Json::string(
             "Unfinished JSON term at EOF at line " +
@@ -406,5 +440,10 @@ async fn StreamInput::read(
     } else {
       self.error("Unfinished JSON term at EOF")
     }
+  }
+  if self.ready.is_empty() {
+    None
+  } else {
+    Some(self.ready.remove(0))
   }
 }

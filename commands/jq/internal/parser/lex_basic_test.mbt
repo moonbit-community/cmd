@@ -54,7 +54,15 @@ test "lex: numbers" {
   debug_inspect(
     tokens,
     content=(
-      #|[TNumber(123), TNumber(45.67), TNumber(-89), TNumber(-0.5), TEof]
+      #|[
+      #|  TNumber(123),
+      #|  TNumber(45.67),
+      #|  TMinus,
+      #|  TNumber(89),
+      #|  TMinus,
+      #|  TNumber(0.5),
+      #|  TEof,
+      #|]
     ),
   )
 }

@@ -8,12 +8,22 @@ priv struct Lexer {
   input : String
   mut pos : Int32
   tokens : Array[Token]
+  positions : Array[Int32]
+  mut start : Int32
+  interpolations : Map[Int32, Array[Int32]]
 }
 
 ///|
 /// Create a new lexer
 fn Lexer::new(input : String) -> Lexer {
-  { input, pos: 0, tokens: [], }
+  {
+    input,
+    pos: 0,
+    tokens: [],
+    positions: [],
+    start: 0,
+    interpolations: Map([]),
+  }
 }
 
 ///|
@@ -50,6 +60,7 @@ fn Lexer::advance(self : Lexer) -> Unit {
 /// Add a token
 fn Lexer::add_token(self : Lexer, token : Token) -> Unit {
   self.tokens.push(token)
+  self.positions.push(self.start)
 }
 
 ///|

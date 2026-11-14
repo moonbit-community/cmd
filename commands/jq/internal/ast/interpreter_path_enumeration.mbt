@@ -51,22 +51,6 @@ fn eval_leaf_paths(input : Json) -> Iter[Json] {
 }
 
 ///|
-/// Evaluate PathsWithFilter, following jq 1.7's definition
-/// `def paths(f): path(.. | select(f)) | select(length > 0);`: `f` runs on
-/// every value (the root included), errors from it propagate, and the
-/// root path itself is not produced.
-fn eval_paths_with_filter(
-  filter_expr : Expr,
-  input : Json,
-  env : Env,
-) -> Iter[Json] raise InterpreterError {
-  path_values(Pipe(Recurse, Select(filter_expr)), input, env)
-  .filter(pair => pair.0.length() > 0)
-  .map(pair => Json::array(pair.0))
-  .iter()
-}
-
-///|
 fn iter_paths(
   input : Json,
   leaf_only : Bool,

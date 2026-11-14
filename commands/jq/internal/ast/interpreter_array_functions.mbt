@@ -3,50 +3,6 @@
 // See ../../THIRD_PARTY_NOTICES.md for source and license information.
 
 ///|
-/// Evaluate map over array elements
-fn eval_map(
-  inner : Expr,
-  input : Json,
-  env : Env,
-) -> Iter[Json] raise InterpreterError {
-  // jq defines `map(f)` as `[.[] | f]`, so objects map over their values.
-  let arr : Array[Json] = match input {
-    Array(arr) => arr
-    Object(obj) => obj.values().collect()
-    _ => raise TypeMismatch("array", json_type_name(input))
-  }
-  let results : Array[Json] = arr.fold(init=[], fn(
-    acc,
-    elem,
-  ) raise InterpreterError {
-    let mapped = eval_with_env(inner, elem, env).collect()
-    for v in mapped {
-      acc.push(v)
-    }
-    acc
-  })
-  Iter::singleton(Json::array(results))
-}
-
-///|
-/// Evaluate select filter
-fn eval_select(
-  condition : Expr,
-  input : Json,
-  env : Env,
-) -> Iter[Json] raise InterpreterError {
-  // jq: `def select(f): if f then . else empty end;` -- one output of `.`
-  // per truthy output of `f`.
-  let outputs : Array[Json] = []
-  for c in eval_with_env(condition, input, env).collect() {
-    if is_truthy(c) {
-      outputs.push(input)
-    }
-  }
-  outputs.iter()
-}
-
-///|
 /// Evaluate array sort
 fn eval_sort(input : Json) -> Iter[Json] raise InterpreterError {
   guard input is Array(arr) else {

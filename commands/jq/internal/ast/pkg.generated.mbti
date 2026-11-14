@@ -4,12 +4,19 @@ package "cli/jq/internal/ast"
 import {
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
+  "moonbitlang/core/ref",
 }
 
 // Values
 pub fn eval(Expr, @json.Json) -> Iter[@json.Json] raise
 
+pub fn evaluate(Expr, @json.Json, Env) -> Stream
+
 // Errors
+pub(all) suberror CompileError {
+  Undefined(String, String, Int32, String)
+}
+
 #derive(Eq, @debug.Debug)
 pub(all) suberror InterpreterError {
   TypeMismatch(String, String)
@@ -19,8 +26,10 @@ pub(all) suberror InterpreterError {
   DivisionByZero
   TypeError(String)
   EvalError(String)
+  InputError(String)
 }
 pub fn InterpreterError::equal(Self, Self) -> Bool
+pub fn InterpreterError::message(Self) -> String
 pub fn InterpreterError::not_equal(Self, Self) -> Bool
 pub fn InterpreterError::output(Self, &Logger) -> Unit
 pub fn InterpreterError::to_repr(Self) -> @debug.Repr
@@ -52,10 +61,36 @@ pub fn BinaryOp::to_repr(Self) -> @debug.Repr
 pub fn BinaryOp::to_string(Self) -> String
 pub impl Show for BinaryOp
 
+pub struct Closure {
+  name : String
+  body : Expr
+  params : Array[String]
+  scope : Env
+  checking : @ref.Ref[Bool]
+}
+
+pub struct Env {
+  bindings : Map[String, @json.Json]
+  functions : Map[String, Closure]
+  filters : Map[String, (Expr, Env)]
+  source : String
+}
+pub fn Env::get(Self, String) -> @json.Json?
+pub fn Env::has_function(Self, String, Int32) -> Bool
+pub fn Env::import_functions(Self, Self, Array[(String, Int32)], String?) -> Self
+pub fn Env::new() -> Self
+pub fn Env::set(Self, String, @json.Json) -> Self
+pub fn Env::set_function(Self, String, Expr, Array[String]) -> Self
+pub fn Env::validate(Self, Expr) -> Unit raise CompileError
+pub fn Env::with_source(Self, String) -> Self
+
 #derive(Eq, @debug.Debug, @json.ToJson)
 pub(all) enum Expr {
   Identity
   Literal(Literal)
+  Constant(@json.Json)
+  At(Expr, Int32)
+  BuiltinCall(String, Array[Expr], Expr)
   Pipe(Expr, Expr)
   Comma(Expr, Expr)
   Key(String)
@@ -199,6 +234,27 @@ pub fn Literal::to_json(Self) -> @json.Json
 pub fn Literal::to_repr(Self) -> @debug.Repr
 pub fn Literal::to_string(Self) -> String
 pub impl Show for Literal
+
+pub(all) enum Request {
+  Input
+  InputFilename
+  InputLineNumber
+  ModuleMetadata(String)
+}
+
+pub(all) enum Step {
+  Done
+  Yield(@json.Json, Stream)
+  Request(Request, (Result[@json.Json?, InterpreterError]) -> Stream)
+  Failed(InterpreterError)
+  Continue(Stream)
+}
+
+pub struct Stream {
+  advance : () -> Step
+  empty : Bool
+}
+pub fn Stream::step(Self) -> Step
 
 // Type aliases
 

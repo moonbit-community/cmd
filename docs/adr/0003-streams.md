@@ -64,8 +64,10 @@ parser never depend on the driver. Import the required MoonJQ 0.2.0 language
 implementation and original tests with source/license attribution, excluding
 upstream command programs and Query convenience wrappers. Internal APIs serve
 these concrete consumers and need no compatibility forwarding layer. This
-removes jq's dependency-release boundary; missing language behavior is now
-project implementation work, as recorded in ADR-0008.
+removes jq's dependency-release boundary. Jq now owns resumable evaluation,
+lexical function scopes, module linking and shared-input continuation; jqlog
+retains its independent JSONL language profile. The same command ownership
+layout applies to both, as recorded in ADR-0008.
 
 The 2026-11-10 release candidate assigns the incompatible internal source API
 changes to core 0.10.0. All current command consumers declare that coordinate;

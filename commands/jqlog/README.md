@@ -29,8 +29,10 @@ the command no longer depends on MoonJQ. See
 ## Limitations
 
 - Invalid JSON lines are skipped. Filter errors return failure and preserve earlier results.
-- Supports the same bounded filter language as jq; not the full jq CLI.
-- The shared adapter preserves complete grouping/sorting key streams and stable ties. Exact numeric ordering at or above 2^53 remains outside the verified key domain.
+- Retains its imported bounded filter language. Jq's new module loader,
+  lexical filter closures and shared `input`/`inputs` cursor are separate
+  command features and are not enabled by this ownership migration.
+- The command's adapter preserves complete grouping/sorting key streams and stable ties. Exact numeric ordering at or above 2^53 remains outside the verified key domain.
 
 ## Examples
 

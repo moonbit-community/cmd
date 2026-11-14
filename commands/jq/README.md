@@ -27,7 +27,7 @@ see [third-party notices](THIRD_PARTY_NOTICES.md).
 | `-c, --compact-output` | print compact JSON |
 | `-r, --raw-output` | print strings without JSON quotes |
 | `-j, --join-output` | raw output without result separators |
-| `-n, --null-input` | evaluate once with null; do not read inputs |
+| `-n, --null-input` | evaluate once with null; `input`/`inputs` can still read |
 | `-s, --slurp` | collect input values in an array |
 | `-R, --raw-input` | read text lines; -Rs reads all text |
 | `-l, --logs` | skip non-JSON lines (project extension) |
@@ -38,6 +38,7 @@ see [third-party notices](THIRD_PARTY_NOTICES.md).
 | `-f, --from-file` | read the first positional argument as a filter file |
 | `--arg NAME VALUE` | bind a string variable |
 | `--argjson NAME JSON` | bind a JSON variable |
+| `-L DIRECTORY` | replace default module paths; repeated paths are searched in order |
 | `--indent N` | indentation -1 (tabs) through 7 |
 | `--tab` | indent with tabs |
 | `-C, --color-output` | emit ANSI colors (JQ_COLORS customizes the palette) |
@@ -70,12 +71,41 @@ See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-d
   decimal precision and exponent formatting are retained independently of the
   evaluator's existing floating-point arithmetic limits.
 
+## Functions, modules and shared input
+
+`input` consumes the next value and raises a catchable `break` error at EOF;
+`inputs` produces the remaining values. Both share the outer input loop's
+cursor, including files, raw/slurp modes and stream events. `first`, `limit`,
+`any` and `all` stop reading when their result is decided. Files open on demand;
+missing operands report an error, allow later files, and retain exit status 2.
+`input_filename` and `input_line_number` describe the current input source.
+
+Functions capture their definition's lexical scope. Filter parameters run on
+each invocation with the caller's bindings and the current input; `$value`
+parameters evaluate once per argument result. Functions overload by arity.
+
+`import "name" as prefix;` exposes `prefix::function`; `include "name";`
+exposes functions without a prefix. Dependencies and helper bindings remain
+private to their defining module. `import "name" as $data;` reads JSON values
+into an array; `{raw:true}` reads text and `{optional:true}` permits missing or
+unreadable data without defining a binding. Invalid library syntax still fails.
+`module {...};` and `modulemeta` expose metadata, dependencies and definitions.
+Metadata permits finite constant-folding expressions; effects and generators
+are rejected before evaluation. Invalid library syntax during `modulemeta`
+prints a diagnostic and returns null.
+Search checks `name.jq`, `name/jq/main.jq`, then `name/name.jq`. Import metadata
+`search` replaces that import's search list; `"."` names the working directory,
+while `"./"` is relative to the importing file. Defaults include `~/.jq` and
+paths relative to the executable argument (`$ORIGIN`); a regular `~/.jq` file
+is loaded as a prelude independently of `-L`.
+On Windows, an absent `HOME` falls back to `USERPROFILE`, then to
+`HOMEDRIVE` plus `HOMEPATH`.
+
 ## Limitations
 
-- Full modules, filter-driven `input`/`inputs` and full jq compatibility remain
-  unsupported. Shared input continuation, module namespaces and complete
-  filter-argument closures are local implementation gaps. See ADR-0008 for
-  the required behavior and independent validation before enabling them.
+- Module and input support applies to the owned filter language. Full jq
+  compatibility, all builtin signatures and complete upstream diagnostics
+  remain outside the verified profile. See ADR-0008 for validation boundaries.
 - Color requires explicit -C; automatic terminal color is unavailable. -l/--logs skips invalid lines and conflicts with -n/-R.
 - The adapter preserves complete `group_by`/`sort_by` key streams and stable ties. Grouping canonicalizes object key order and safe numeric representations; numeric ordering at or above 2^53 still follows the imported floating-point comparison and is not claimed exact.
 

@@ -8,6 +8,30 @@ fn Parser::parse_builtin(
   self : Parser,
   name : String,
 ) -> @ast.Expr raise ParseError {
+  if !self.positions.is_empty() {
+    let start = self.pos
+    let args = self.parse_arguments()
+    let end = self.pos
+    if self.functions.contains("\{name}/\{args.length()}") {
+      return FunctionCall(name, args)
+    }
+    self.pos = start
+    let builtin = self.parse_builtin_by_name(name) catch { _ => None }
+    let consumed = self.pos == end
+    self.pos = end
+    return match builtin {
+      Some(body) if consumed => BuiltinCall(name, args, body)
+      _ => FunctionCall(name, args)
+    }
+  }
+  if self.functions.iter().any(key => key.has_prefix(name + "/")) {
+    let saved = self.pos
+    let args = self.parse_arguments()
+    if self.functions.contains("\{name}/\{args.length()}") {
+      return FunctionCall(name, args)
+    }
+    self.pos = saved
+  }
   match self.parse_builtin_by_name(name) {
     Some(expr) => expr
     None =>
@@ -27,6 +51,21 @@ fn Parser::parse_builtin(
         FunctionCall(name, [])
       }
   }
+}
+
+///|
+fn Parser::parse_arguments(self : Parser) -> Array[@ast.Expr] raise ParseError {
+  let args : Array[@ast.Expr] = []
+  if self.consume(TLParen) {
+    if self.current() != Some(TRParen) {
+      args.push(self.parse_pipe())
+      while self.consume(TSemicolon) {
+        args.push(self.parse_pipe())
+      }
+    }
+    self.expect(TRParen)
+  }
+  args
 }
 
 ///|

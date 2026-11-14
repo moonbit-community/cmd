@@ -3,10 +3,10 @@
 // See ../../THIRD_PARTY_NOTICES.md for source and license information.
 
 ///|
-test "coverage: foreach extract empty falls back to accumulator" {
+test "foreach empty extract suppresses output without changing accumulation" {
   json_inspect(
     coverage_eval("foreach .[] as $x (0; . + $x; empty)", "[1, 2]"),
-    content=[1, 3],
+    content=[],
   )
 }
 
@@ -34,10 +34,10 @@ test "coverage: compare_json remaining base cases" {
 test "coverage: and/or truthiness behavior" {
   json_inspect(coverage_eval("false and 1", "null"), content=[false])
   json_inspect(coverage_eval("null and 1", "null"), content=[false])
-  json_inspect(coverage_eval("1 and 2", "null"), content=[2])
-  json_inspect(coverage_eval("false or 2", "null"), content=[2])
-  json_inspect(coverage_eval("null or 2", "null"), content=[2])
-  json_inspect(coverage_eval("1 or 2", "null"), content=[1])
+  json_inspect(coverage_eval("1 and 2", "null"), content=[true])
+  json_inspect(coverage_eval("false or 2", "null"), content=[true])
+  json_inspect(coverage_eval("null or 2", "null"), content=[true])
+  json_inspect(coverage_eval("1 or 2", "null"), content=[true])
 }
 
 ///|

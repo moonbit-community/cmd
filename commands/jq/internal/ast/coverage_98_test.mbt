@@ -25,11 +25,11 @@ test "coverage: update operator deep branches" {
 ///|
 test "coverage: contains, inside, has, in fallbacks" {
   json_inspect(coverage_eval("contains(\"a\")", "1"), content=[false])
-  json_inspect(coverage_eval("inside(empty)", "\"a\""), content=[false])
+  json_inspect(coverage_eval("inside(empty)", "\"a\""), content=[])
   json_inspect(coverage_eval("inside(\"abc\")", "\"b\""), content=[true])
   json_inspect(coverage_eval("inside(\"abc\")", "1"), content=[false])
   json_inspect(coverage_eval("has(\"a\")", "1"), content=[false])
-  json_inspect(coverage_eval("in(empty)", "\"a\""), content=[false])
+  json_inspect(coverage_eval("in(empty)", "\"a\""), content=[])
   json_inspect(coverage_eval("in({\"a\":1})", "1"), content=[false])
   json_inspect(coverage_eval("in([1,2])", "\"a\""), content=[false])
   json_inspect(coverage_eval("in(1)", "\"a\""), content=[false])

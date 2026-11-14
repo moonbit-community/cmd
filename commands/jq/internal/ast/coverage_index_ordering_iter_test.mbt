@@ -10,16 +10,16 @@ test "coverage: ordering helper mismatches" {
 
 ///|
 test "coverage: index helpers edge cases" {
-  json_inspect(coverage_eval("indices(empty)", "[1, 2]"), content=[[]])
+  json_inspect(coverage_eval("indices(empty)", "[1, 2]"), content=[])
   json_inspect(coverage_eval("indices(1)", "\"abc\""), content=[[]])
   assert_coverage_eval_error("indices(1)", "{}")
-  json_inspect(coverage_eval("index(empty)", "[1, 2]"), content=[null])
+  json_inspect(coverage_eval("index(empty)", "[1, 2]"), content=[])
   json_inspect(coverage_eval("index(\"z\")", "\"abc\""), content=[null])
   json_inspect(coverage_eval("index(1)", "\"abc\""), content=[null])
   assert_coverage_eval_error("index(1)", "{}")
   json_inspect(coverage_eval("nth(5)", "[1]"), content=[])
   assert_coverage_eval_error("nth(1)", "1")
-  json_inspect(coverage_eval("rindex(empty)", "[1]"), content=[null])
+  json_inspect(coverage_eval("rindex(empty)", "[1]"), content=[])
   json_inspect(coverage_eval("rindex(9)", "[1, 2]"), content=[null])
   json_inspect(coverage_eval("rindex(\"z\")", "\"abc\""), content=[null])
   json_inspect(coverage_eval("rindex(1)", "\"abc\""), content=[null])

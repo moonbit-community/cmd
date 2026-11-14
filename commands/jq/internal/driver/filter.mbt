@@ -1,13 +1,9 @@
 ///|
-/// Compile a jq filter through command-owned AST adaptations for string
-/// slicing and stable grouping of complete key streams.
-fn parse_filter(source : String) -> @ast.Expr raise {
-  lower(@parser.parse(source))
-}
-
-///|
 fn lower(expr : @ast.Expr) -> @ast.Expr {
   match expr {
+    At(inner, position) => At(lower(inner), position)
+    BuiltinCall(name, args, body) =>
+      BuiltinCall(name, args.map(lower), lower(body))
     Slice(start, end) => {
       let string_type : @ast.Expr = Operation(
         Type,

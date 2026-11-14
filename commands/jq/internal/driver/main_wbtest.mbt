@@ -24,6 +24,20 @@ test "jq file mode selects the first positional without consuming options" {
 }
 
 ///|
+test "jq library paths retain literal option-looking values" {
+  for flag in ["-L", "--library-path"] {
+    for value in ["--arg", "--argjson", "--", "-n"] {
+      guard parse_cli([flag, value, "-n", "1"]) is Run(options) else {
+        fail("literal library path rejected")
+      }
+      assert_eq(options.library_paths, [value])
+      assert_true(options.null_input)
+      assert_true(options.query is Inline("1"))
+    }
+  }
+}
+
+///|
 test "jq sort and output modes are deterministic" {
   let value = @json.parse("{\"z\":1,\"a\":2}")
   assert_eq(
@@ -38,18 +52,15 @@ test "jq sort and output modes are deterministic" {
 ///|
 async test "jq raw input framing omits terminal empty records" {
   guard parse_cli(["-R", "."]) is Run(options) else { fail("raw options") }
-  let state : Evaluation = {
-    query: compile_query(".", {}),
-    options,
-    colors: None,
-    last: None,
-    values: [],
-    raw: [],
-  }
   let input = @io.MemoryReader(writer => writer.write("one\ntwo\n"))
   defer input.close()
-  state.read(input)
-  assert_eq(state.last, Some(Json::string("two")))
+  let cursor = InputCursor::new(options, input, _ => {
+    fail("unexpected file error")
+  })
+  defer cursor.sources.close()
+  assert_eq(cursor.next(), Some(Json::string("one")))
+  assert_eq(cursor.next(), Some(Json::string("two")))
+  assert_eq(cursor.next(), None)
 }
 
 ///|

@@ -48,9 +48,16 @@ fn Parser::parse_if(self : Parser) -> @ast.Expr raise ParseError {
   let cond = self.parse_pipe()
   self.expect(TThen)
   let then_expr = self.parse_pipe()
-  self.expect(TElse)
-  let else_expr = self.parse_pipe()
-  self.expect(TEnd)
+  let else_expr = if self.current() == Some(TElif) {
+    self.parse_if()
+  } else if self.consume(TElse) {
+    let otherwise = self.parse_pipe()
+    self.expect(TEnd)
+    otherwise
+  } else {
+    self.expect(TEnd)
+    @ast.Expr::Identity
+  }
   IfThenElse(cond, then_expr, else_expr)
 }
 

@@ -1,0 +1,2146 @@
+{
+  "image": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+  "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+  "distribution": [
+    "RUN |29 DEBIAN_FRONTEND=noninteractive COREUTILS_VERSION=9.11 COREUTILS_SHA256=394024eda0a5955217ceda9cd1201e65dc8fa3aa29c2951135a49521d57c3cc3 DIFFUTILS_VERSION=3.12 DIFFUTILS_SHA256=7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd FINDUTILS_VERSION=4.10.0 FINDUTILS_SHA256=1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5 GREP_VERSION=3.12 GREP_SHA256=2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9 WGET_VERSION=1.25.0 WGET_SHA256=766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784 MAKE_VERSION=4.4.1 MAKE_SHA256=8814ba072182b605d156d7589c19a43b89fc58ea479b9355146160946f8cf6e9 CURL_VERSION=8.22.0 CURL_SHA256=f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7 DASH_VERSION=0.5.12 DASH_SHA256=0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154 JQ_VERSION=1.8.2 JQ_SHA256=b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f VIM_VERSION=9.1.0000 VIM_SHA256=8d2a74e358be9cf260174e15e2e29dba4773f2670718b5bf728db6f54b90e25d SED_VERSION=4.9 SED_SHA256=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181 PATCH_VERSION=2.8 PATCH_SHA256=f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3 GZIP_VERSION=1.14 GZIP_SHA256=01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6 UTIL_LINUX_VERSION=2.40 UTIL_LINUX_SHA256=d57a626081f9ead02fa44c63a6af162ec19c58f53e993f206ab7c3a6641c2cd7 /bin/sh -c curl --fail --location --retry 5       \"https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64\"       --output /oracle/bin/jq   && echo \"${JQ_SHA256}  /oracle/bin/jq\" | sha256sum --check --strict   && chmod 0755 /oracle/bin/jq # buildkit"
+  ],
+  "binary_sha256": "b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f  /oracle/bin/jq\n",
+  "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+  "cases": [
+    {
+      "label": "input-line-unterminated",
+      "args": [
+        "-nc",
+        "input,input_line_number"
+      ],
+      "stdin_text": "1",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n0\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-line-raw-unterminated",
+      "args": [
+        "-Rnc",
+        "input,input_line_number"
+      ],
+      "stdin_text": "1",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "\"1\"\n0\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-line-long",
+      "args": [
+        "-nc",
+        "input,input_line_number"
+      ],
+      "stdin_text": "1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        \n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n0\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-search-null-entry",
+      "args": [
+        "-nc",
+        "import \"value\" as v {search:[null,\"lib\"]};v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:42;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "42\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-leading-slash",
+      "args": [
+        "-nc",
+        "-L",
+        "lib",
+        "import \"/value\" as v;v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:42;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "42\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-nul-path",
+      "args": [
+        "-nc",
+        "import \"value\\u0000junk\" as v;1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module path contains a NUL byte\n\njq: 1 compile error\n"
+    },
+    {
+      "label": "input-missing-eof-status",
+      "args": [
+        "-nc",
+        "input",
+        "missing.json"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 2,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Could not open file missing.json: No such file or directory\njq: error (at missing.json:0): break\n"
+    },
+    {
+      "label": "input-missing-parse-status",
+      "args": [
+        "-nc",
+        "inputs",
+        "missing.json",
+        "bad.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "bad.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 2,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Could not open file missing.json: No such file or directory\njq: error (at bad.json:1): Unfinished JSON term at EOF at line 2, column 0\n"
+    },
+    {
+      "label": "input-duplicate-containers",
+      "args": [
+        "-nc",
+        "inputs"
+      ],
+      "stdin_text": "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"a\":{\"y\":2}}\n{\"a\":[3]}\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "implicit-duplicate-containers",
+      "args": [
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"a\":{\"y\":2}}\n{\"a\":[3]}\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "slurp-duplicate-containers",
+      "args": [
+        "-sc",
+        "."
+      ],
+      "stdin_text": "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[{\"a\":{\"y\":2}},{\"a\":[3]}]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-data-duplicate-containers",
+      "args": [
+        "-nc",
+        "-L",
+        ".",
+        "import \"data\" as $data; $data"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "data.json",
+          "content_text": "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[{\"a\":{\"y\":2}},{\"a\":[3]}]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-metadata-before-read",
+      "args": [
+        "-nc",
+        "[input_filename,input_line_number], input, [input_filename,input_line_number]"
+      ],
+      "stdin_text": "1\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[null,0]\n1\n[\"<stdin>\",1]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-null",
+      "args": [
+        "-nc",
+        "input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-implicit",
+      "args": [
+        "-c",
+        "[.,input]"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2]\n[3,4]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-null",
+      "args": [
+        "-nc",
+        "inputs"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n2\n3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-implicit",
+      "args": [
+        "-c",
+        "[.,inputs]"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2,3]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-eof",
+      "args": [
+        "-nc",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 5,
+      "stdout_text": "",
+      "stderr_text": "jq: error (at <stdin>:0): break\n"
+    },
+    {
+      "label": "input-eof-catch",
+      "args": [
+        "-nc",
+        "try input catch ."
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "\"break\"\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-empty",
+      "args": [
+        "-nc",
+        "inputs"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-reduce",
+      "args": [
+        "-nc",
+        "reduce inputs as $n (0; . + $n)"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "6\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-foreach",
+      "args": [
+        "-nc",
+        "foreach inputs as $n (0; . + $n; [.,$n])"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,1]\n[3,2]\n[6,3]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-first",
+      "args": [
+        "-nc",
+        "first(inputs), input"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-limit",
+      "args": [
+        "-nc",
+        "[limit(2; inputs)], input"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2]\n3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-zero-limit",
+      "args": [
+        "-nc",
+        "limit(0; inputs), input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-any",
+      "args": [
+        "-nc",
+        "any(inputs; . == 2), input"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "true\n3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-all",
+      "args": [
+        "-nc",
+        "all(inputs; . < 2), input"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "false\n3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-repeat",
+      "args": [
+        "-nc",
+        "[limit(3; repeat(input))]"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2,3]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-late-error",
+      "args": [
+        "-nc",
+        "\"before\", input"
+      ],
+      "stdin_text": "[1,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 5,
+      "stdout_text": "\"before\"\n",
+      "stderr_text": "jq: error (at <stdin>:1): Unfinished JSON term at EOF at line 2, column 0\n"
+    },
+    {
+      "label": "input-parse-catch",
+      "args": [
+        "-nc",
+        "try input catch ."
+      ],
+      "stdin_text": "[1,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "\"Unfinished JSON term at EOF at line 2, column 0\"\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-parse-catch",
+      "args": [
+        "-nc",
+        "try inputs catch ."
+      ],
+      "stdin_text": "1\n[2,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n\"Unfinished JSON term at EOF at line 3, column 0\"\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "inputs-prefix-error",
+      "args": [
+        "-nc",
+        "inputs"
+      ],
+      "stdin_text": "1\n[2,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 5,
+      "stdout_text": "1\n",
+      "stderr_text": "jq: error (at <stdin>:2): Unfinished JSON term at EOF at line 3, column 0\n"
+    },
+    {
+      "label": "input-raw",
+      "args": [
+        "-Rnc",
+        "[input,inputs]"
+      ],
+      "stdin_text": "first\r\nsecond\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[\"first\\r\",\"second\"]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-slurp",
+      "args": [
+        "-nsc",
+        "input,inputs"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-raw-slurp",
+      "args": [
+        "-Rnsc",
+        "input,inputs"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "\"a\\nb\\n\"\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-stream",
+      "args": [
+        "--stream",
+        "-nc",
+        "[inputs]"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[[[0],1],[[1],2],[[1]]]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-stream-errors",
+      "args": [
+        "--stream-errors",
+        "-nc",
+        "[inputs]"
+      ],
+      "stdin_text": "[1,]\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[[[0],1],[\"Expected another array element at line 1, column 4\",[1]],[[],2]]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-files",
+      "args": [
+        "-nc",
+        "[input,inputs]",
+        "a.json",
+        "b.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a.json",
+          "content_text": "1\n2\n"
+        },
+        {
+          "path": "b.json",
+          "content_text": "3\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2,3]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-lazy-missing-file",
+      "args": [
+        "-nc",
+        "first(inputs)",
+        "a.json",
+        "missing.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a.json",
+          "content_text": "1\n2\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-missing-file",
+      "args": [
+        "-nc",
+        "inputs",
+        "a.json",
+        "missing.json",
+        "b.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a.json",
+          "content_text": "1\n"
+        },
+        {
+          "path": "b.json",
+          "content_text": "2\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 2,
+      "stdout_text": "1\n2\n",
+      "stderr_text": "jq: error: Could not open file missing.json: No such file or directory\n"
+    },
+    {
+      "label": "input-metadata",
+      "args": [
+        "-nc",
+        "inputs | [input_filename,input_line_number,.]",
+        "a.json",
+        "b.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a.json",
+          "content_text": "1\n2\n"
+        },
+        {
+          "path": "b.json",
+          "content_text": "3\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[\"a.json\",1,1]\n[\"a.json\",2,2]\n[\"b.json\",1,3]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-arguments",
+      "args": [
+        "-nc",
+        "def twice(f): f,f; twice(input)"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-value-arguments",
+      "args": [
+        "-nc",
+        "def twice($v): $v,$v; twice(input)"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-argument-input",
+      "args": [
+        "-nc",
+        "def apply(f): .+10|f; 1|apply(.+1)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "12\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-argument-stream",
+      "args": [
+        "-nc",
+        "def twice($v): [$v,$v]; twice(1,2)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,1]\n[2,2]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-lexical-variable",
+      "args": [
+        "-nc",
+        "1 as $x | def f: $x; 2 as $x | f"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-lexical-function",
+      "args": [
+        "-nc",
+        "def f: 1; def g: f; def f: 2; [g,f]"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-closure-argument",
+      "args": [
+        "-nc",
+        "def apply(f): 2 as $x|f; 1 as $x|apply($x)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-overloads",
+      "args": [
+        "-nc",
+        "def f:1; def f($x):$x; [f,f(2)]"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-recursion",
+      "args": [
+        "-nc",
+        "def down: ., (if . > 0 then .-1 | down else empty end); 3|[down]"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[3,2,1,0]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-nested-definition",
+      "args": [
+        "-nc",
+        "def outer($x): def inner: $x; inner; outer(7)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "7\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-builtin-shadow",
+      "args": [
+        "-nc",
+        "def length: 9; []|length"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "9\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-builtin-arity",
+      "args": [
+        "-nc",
+        "def add($x): .+$x; 2|add(3)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "5\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-unbound-lexical",
+      "args": [
+        "-nc",
+        "def f: $x; 1 as $x|f"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: $x is not defined at <top-level>, line 1, column 8:\n    def f: $x; 1 as $x|f\n           ^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "input-binary-order",
+      "args": [
+        "-nc",
+        "input + input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-object-order",
+      "args": [
+        "-nc",
+        "{a:input,b:input}"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"a\":1,\"b\":2}\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-conditional",
+      "args": [
+        "-nc",
+        "if input then input else inputs end"
+      ],
+      "stdin_text": "true\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-alternative",
+      "args": [
+        "-nc",
+        "(input // input), input"
+      ],
+      "stdin_text": "false\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "2\n3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-map",
+      "args": [
+        "-nc",
+        "[10,20]|map(.+input)"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[11,22]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-assignment",
+      "args": [
+        "-nc",
+        "{a:0}|.a=input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"a\":1}\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-import",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get: 42;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "42\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-include",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "include \"value\"; get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get: 42;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "42\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-private-functions",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; import \"b\" as b; [a::get,b::get]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "def helper: 1; def get: helper;\n"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def helper: 2; def get: helper;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-nested-import",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "import \"b\" as b; def get: b::get+1;\n"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def get: 2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-relative-search",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"nested/a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/nested/a.jq",
+          "content_text": "import \"b\" as b {search:\".\"}; def get:b::get;\n"
+        },
+        {
+          "path": "lib/nested/b.jq",
+          "content_text": "def get:3;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: module not found: b\n\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-directory-layout",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value/value.jq",
+          "content_text": "def get:4;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "4\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-search-order",
+      "args": [
+        "-L",
+        "first",
+        "-L",
+        "second",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "first/value.jq",
+          "content_text": "def get:1;\n"
+        },
+        {
+          "path": "second/value.jq",
+          "content_text": "def get:2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-search-metadata",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v {search:[\"preferred\"]}; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "preferred/value.jq",
+          "content_text": "def get:1;\n"
+        },
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-data-import",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v; [$v,$v::v]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "1\n{\"x\":2}\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[[1,{\"x\":2}],[1,{\"x\":2}]]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-data-empty",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v; $v"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-function-input",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get: [input,inputs];\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-filter-argument",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::twice(input)"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def twice(f): f,f;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-globals",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "--argjson",
+        "x",
+        "7",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:$x;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "7\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-metadata",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "\"value\"|modulemeta"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "module {homepage:\"example\"}; def get:1; def f($x):$x;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"homepage\":\"example\",\"deps\":[],\"defs\":[\"get/0\",\"f/1\"]}\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-metadata-deps",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "\"a\"|modulemeta"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "module {name:\"a\"}; import \"b\" as b {search:\"lib\"}; def get:b::get;\n"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def get:2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"name\":\"a\",\"deps\":[{\"search\":\"lib\",\"as\":\"b\",\"is_data\":false,\"relpath\":\"b\"}],\"defs\":[\"get/0\"]}\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-header-main",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "module {name:\"main\"}; 1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-missing",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"missing\" as m; m::get"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: module not found: missing\n\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-cycle",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "import \"b\" as b; def get:1;\n"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "import \"a\" as a; def get:2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: circular import of /work/lib/a.jq\n\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-data-invalid",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v; $v"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error loading data file /work/lib/data.json: Unfinished JSON term at EOF at line 2, column 0\n\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-namespace-isolation",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:1;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: get/0 is not defined at <top-level>, line 1, column 22:\n    import \"value\" as v; get\n                         ^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-default-home",
+      "args": [
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "home/.jq/value.jq",
+          "content_text": "def get:8;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "8\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-home-prelude",
+      "args": [
+        "-nc",
+        "get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "home/.jq",
+          "content_text": "def get:9;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "9\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-subtraction-order",
+      "args": [
+        "-nc",
+        "input - input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-binary-generators",
+      "args": [
+        "-nc",
+        "[[(input,input)-input],input]"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[[1,2],4]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-value-argument-order",
+      "args": [
+        "-nc",
+        "def f($a;$b):[$a,$b]; f(input;input)"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,2]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-stop-before-invalid",
+      "args": [
+        "-nc",
+        "first(inputs)"
+      ],
+      "stdin_text": "1\n[2,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-zero-before-invalid",
+      "args": [
+        "-nc",
+        "[limit(0;inputs)]"
+      ],
+      "stdin_text": "[1,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-catch-then-continue",
+      "args": [
+        "-nc",
+        "(try input catch .), input"
+      ],
+      "stdin_text": "[1,]\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "\"Expected another array element at line 1, column 4\"\n2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-reduce-multiple-update",
+      "args": [
+        "-nc",
+        "reduce inputs as $x ([]; .+[$x], .+[input])"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[2,4]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-foreach-multiple-update",
+      "args": [
+        "-nc",
+        "[foreach inputs as $x ([]; .+[$x], .+[input])]"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[[1],[2],[2,3],[2,4]]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-path-filter",
+      "args": [
+        "-nc",
+        "{a:1,b:2}|path(.[]|select(.==input))"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[\"a\"]\n[\"b\"]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-update-first",
+      "args": [
+        "-nc",
+        "{a:0,b:0}|(.a,.b)|=(input,input)"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"a\":1,\"b\":2}\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-raw-files",
+      "args": [
+        "-Rnc",
+        "[inputs]",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "one"
+        },
+        {
+          "path": "b",
+          "content_text": "two\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[\"onetwo\"]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-raw-stop-missing",
+      "args": [
+        "-Rnc",
+        "first(inputs)",
+        "a",
+        "missing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "one"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 2,
+      "stdout_text": "\"one\"\n",
+      "stderr_text": "jq: error: Could not open file missing: No such file or directory\n"
+    },
+    {
+      "label": "module-relative-dot-slash",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"nested/a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/nested/a.jq",
+          "content_text": "import \"b\" as b {search:\"./\"}; def get:b::get;\n"
+        },
+        {
+          "path": "lib/nested/b.jq",
+          "content_text": "def get:3;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-layout-priority",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:1;"
+        },
+        {
+          "path": "lib/value/jq/main.jq",
+          "content_text": "def get:2;"
+        },
+        {
+          "path": "lib/value/value.jq",
+          "content_text": "def get:3;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-main-layout",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value/jq/main.jq",
+          "content_text": "def get:2;"
+        },
+        {
+          "path": "lib/value/value.jq",
+          "content_text": "def get:3;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-explicit-search-only",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v {search:[\"absent\"]}; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:1;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: module not found: value\n\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-include-closure",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "include \"a\"; def helper:9; [get,helper]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "def helper:1; def get:helper;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,9]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-transitive-private",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; [a::get,a::b::get]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "import \"b\" as b; def get:b::get;"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def get:2;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: a::b::get/0 is not defined at <top-level>, line 1, column 26:\n    import \"a\" as a; [a::get,a::b::get]\n                             ^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-lexical-global",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "--argjson",
+        "x",
+        "7",
+        "import \"value\" as v; 99 as $x|v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:$x;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "7\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-disable-home-path",
+      "args": [
+        "-L",
+        "absent",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "home/.jq/value.jq",
+          "content_text": "def get:8;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: module not found: value\n\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-prelude-explicit-path",
+      "args": [
+        "-L",
+        "absent",
+        "-nc",
+        "get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "home/.jq",
+          "content_text": "def get:9;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "9\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-metadata-cycle",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "\"a\"|modulemeta"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "import \"b\" as b; def get:1;"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "import \"a\" as a; def get:2;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"deps\":[{\"as\":\"b\",\"is_data\":false,\"relpath\":\"b\"}],\"defs\":[\"get/0\"]}\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-include-builtin",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "include \"value\"; [length,add(2)]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def length:9; def add($x):$x+1;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[9,3]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-unused-undefined",
+      "args": [
+        "-nc",
+        "def f: missing; 1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-unreachable-undefined",
+      "args": [
+        "-nc",
+        "if false then missing else 1 end"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: missing/0 is not defined at <top-level>, line 1, column 15:\n    if false then missing else 1 end\n                  ^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "input-repeat-empty-iteration",
+      "args": [
+        "-nc",
+        "[limit(1;repeat(input|select(.==2)))],input"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[2]\n3\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "input-foreach-stop-update",
+      "args": [
+        "-nc",
+        "first(foreach inputs as $x ([]; .+[$x], .+[input])),input"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1]\n2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-raw-data",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v {raw:true}; $v"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "\"[1,\\n\"\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-optional-data",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v {optional:true}; 1"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-optional-data-unbound",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v {optional:true}; $v"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: $v is not defined at <top-level>, line 1, column 38:\n    import \"data\" as $v {optional:true}; $v\n                                         ^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "module-optional-missing",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"missing\" as m {optional:true}; 1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-inner-include",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "include \"b\"; def get:bfun;"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def bfun:2;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "module-inner-include-private",
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; a::bfun"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "include \"b\"; def get:bfun;"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def bfun:2;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: a::bfun/0 is not defined at <top-level>, line 1, column 18:\n    import \"a\" as a; a::bfun\n                     ^^^^^^^\njq: 1 compile error\n"
+    }
+  ]
+}

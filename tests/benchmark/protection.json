@@ -1836,7 +1836,9 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/jq/internal/driver/input.mbt"
+        "commands/jq/internal/driver/cursor.mbt",
+        "commands/jq/internal/driver/stream_input.mbt",
+        "commands/jq/internal/driver/evaluation.mbt"
       ],
       "tests": [
         {

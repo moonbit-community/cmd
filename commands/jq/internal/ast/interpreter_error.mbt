@@ -13,6 +13,7 @@ pub(all) suberror InterpreterError {
   DivisionByZero
   TypeError(String)
   EvalError(String)
+  InputError(String)
 }
 
 ///|
@@ -31,3 +32,14 @@ pub impl Show for InterpreterError with fn output(self, logger) {
 ///|
 /// Preserve method-style access to display operations.
 pub extend InterpreterError with Show::{to_string, output}
+
+///|
+pub fn InterpreterError::message(self : InterpreterError) -> String {
+  match self {
+    InputError(message)
+    | EvalError(message)
+    | TypeError(message)
+    | InvalidOperation(message) => message
+    _ => self.to_string()
+  }
+}

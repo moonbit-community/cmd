@@ -55,7 +55,6 @@ test "coverage: recurse(f; cond) applies f transitively" {
   json_inspect(coverage_eval("recurse(.a; . != null)", input), content=[
     { "a": { "a": null } },
     { "a": null },
-    null,
   ])
 }
 

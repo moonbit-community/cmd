@@ -13,21 +13,33 @@ fn Parser::parse_function_def(self : Parser) -> @ast.Expr raise ParseError {
   let params : Array[String] = []
   // Optional parameters
   if self.consume(TLParen) {
-    if self.current() is Some(TIdentifier(p)) {
-      self.advance()
-      params.push(p)
-      while self.consume(TSemicolon) {
-        guard self.current() is Some(TIdentifier(p2)) else {
-          raise UnexpectedToken("identifier", "parameter")
+    if self.current() != Some(TRParen) {
+      while true {
+        let param = match self.current() {
+          Some(TIdentifier(name)) => name
+          Some(TVariable(name)) => "$" + name
+          _ => raise InvalidSyntax("Expected a filter or value parameter")
         }
         self.advance()
-        params.push(p2)
+        params.push(param)
+        if !self.consume(TSemicolon) {
+          break
+        }
       }
     }
     self.expect(TRParen)
   }
   self.expect(TColon)
+  let visible = self.functions.copy()
+  visible.add("\{name}/\{params.length()}")
+  self.functions = visible.copy()
+  for param in params {
+    if !param.has_prefix("$") {
+      self.functions.add(param + "/0")
+    }
+  }
   let body = self.parse_pipe()
+  self.functions = visible
   self.expect(TSemicolon)
   FunctionDef(name, params, body)
 }

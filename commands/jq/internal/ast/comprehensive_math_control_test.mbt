@@ -111,7 +111,7 @@ test "if-then-elif-else: multiple conditions" {
       "5",
     ),
     content=(
-      #|"ParseError: UnexpectedToken(\"TElif\", \"TElse\")"
+      #|"String(\"positive\")"
     ),
   )
 }

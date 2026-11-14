@@ -27,17 +27,32 @@ fn Parser::parse_primary(self : Parser) -> @ast.Expr raise ParseError {
       Literal(String(s))
     }
     Some(TStringInterpolation(parts)) => {
+      let offsets = self.interpolations.get(self.pos).unwrap_or([])
+      let mut expression_index = 0
       self.advance()
       let parsed_parts : Array[(String, @ast.Expr?)] = []
       for pair in parts {
         let (text, expr_opt) = pair
         match expr_opt {
           Some(expr_str) => {
-            let expr_tokens = lex(expr_str) catch {
+            let (expr_tokens, positions, nested) = lex_positions(expr_str) catch {
               _ => raise InvalidExpression("Failed to parse interpolation")
             }
             let expr_parser = Parser::new(expr_tokens)
+            expr_parser.functions = self.functions.copy()
+            if offsets.get(expression_index) is Some(offset) {
+              expr_parser.positions = positions.map(position => {
+                position + offset
+              })
+              for token, positions in nested {
+                expr_parser.interpolations[token] = positions.map(position => {
+                  position + offset
+                })
+              }
+            }
+            expression_index += 1
             let expr = expr_parser.parse_pipe()
+            expr_parser.expect(TEof)
             parsed_parts.push((text, Some(expr)))
           }
           None => parsed_parts.push((text, None))
@@ -69,8 +84,12 @@ fn Parser::parse_primary(self : Parser) -> @ast.Expr raise ParseError {
       }
     }
     Some(TVariable(name)) => {
+      let position = self.positions.get(self.pos)
       self.advance()
-      Variable(name)
+      match position {
+        Some(position) => At(Variable(name), position)
+        None => Variable(name)
+      }
     }
     Some(TFormat(name)) => {
       self.advance()
@@ -101,8 +120,13 @@ fn Parser::parse_primary(self : Parser) -> @ast.Expr raise ParseError {
     Some(TReduce) => self.parse_reduce()
     Some(TForeach) => self.parse_foreach()
     Some(TIdentifier(name)) => {
+      let position = self.positions.get(self.pos)
       self.advance()
-      self.parse_builtin(name)
+      let expr = self.parse_builtin(name)
+      match position {
+        Some(position) => At(expr, position)
+        None => expr
+      }
     }
     Some(t) => raise UnexpectedToken(t.to_string(), "expression")
     None => raise UnexpectedEnd("expression")

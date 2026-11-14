@@ -9,6 +9,9 @@ pub(all) enum Expr {
   // Core
   Identity // .
   Literal(Literal) // null, true, 123, "str"
+  Constant(Json) // linked data and already evaluated values
+  At(Expr, Int32) // source position for linked-program diagnostics
+  BuiltinCall(String, Array[Expr], Expr) // a lexical override or its builtin body
   Pipe(Expr, Expr) // expr | expr
   Comma(Expr, Expr) // expr, expr
   // Access

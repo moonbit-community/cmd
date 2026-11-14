@@ -7,12 +7,21 @@
 priv struct Parser {
   tokens : Array[Token]
   mut pos : Int32
+  mut functions : Set[String]
+  mut positions : Array[Int32]
+  mut interpolations : Map[Int32, Array[Int32]]
 }
 
 ///|
 /// Create a new parser from tokens
 fn Parser::new(tokens : Array[Token]) -> Parser {
-  { tokens, pos: 0, }
+  {
+    tokens,
+    pos: 0,
+    functions: Set([]),
+    positions: [],
+    interpolations: Map([]),
+  }
 }
 
 ///|

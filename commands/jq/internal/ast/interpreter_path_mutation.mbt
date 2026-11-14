@@ -56,47 +56,6 @@ fn set_at_path(
 }
 
 ///|
-/// Evaluate SetPath
-fn eval_set_path(
-  path_expr : Expr,
-  value_expr : Expr,
-  input : Json,
-  env : Env,
-) -> Iter[Json] raise InterpreterError {
-  let path_results = eval_with_env(path_expr, input, env).collect()
-  let value_results = eval_with_env(value_expr, input, env).collect()
-  match (path_results, value_results) {
-    ([Array(path_arr), ..], [value, ..]) =>
-      match path_arr {
-        [] => Iter::singleton(value)
-        _ => Iter::singleton(set_at_path(input, path_arr, value))
-      }
-    _ => Iter::singleton(input)
-  }
-}
-
-///|
-/// Evaluate DelPaths
-fn eval_del_paths(
-  paths_expr : Expr,
-  input : Json,
-  env : Env,
-) -> Iter[Json] raise InterpreterError {
-  match eval_with_env(paths_expr, input, env).collect() {
-    [Array(paths_arr), ..] => {
-      let paths : Array[Array[Json]] = []
-      for path_json in paths_arr {
-        if path_json is Array(path) {
-          paths.push(path)
-        }
-      }
-      Iter::singleton(delete_paths(input, paths.map(p => p)))
-    }
-    _ => Iter::singleton(input)
-  }
-}
-
-///|
 /// Delete several paths at once, as jq's `delpaths` does: every path
 /// addresses the original value, so deleting an array element does not
 /// shift the others, a path listed twice deletes its element once, and

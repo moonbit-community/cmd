@@ -11,7 +11,7 @@ test "coverage: numeric builtins mismatches" {
 
 ///|
 test "coverage: math and range edges" {
-  json_inspect(coverage_eval("pow(empty)", "2"), content=[null])
+  json_inspect(coverage_eval("pow(empty)", "2"), content=[])
   assert_coverage_eval_error("pow(2)", "\"x\"")
   assert_coverage_eval_error("log", "\"x\"")
   assert_coverage_eval_error("exp", "\"x\"")

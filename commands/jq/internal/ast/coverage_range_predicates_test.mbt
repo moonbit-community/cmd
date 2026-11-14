@@ -23,5 +23,5 @@ test "coverage: any/all generator variants" {
   json_inspect(coverage_eval("any(.[]; . > 2)", "[1, 3]"), content=[true])
   json_inspect(coverage_eval("all(.[]; . > 2)", "[1, 3]"), content=[false])
   json_inspect(coverage_eval("any(.[]; empty)", "[1, 3]"), content=[false])
-  json_inspect(coverage_eval("all(.[]; empty)", "[1, 3]"), content=[false])
+  json_inspect(coverage_eval("all(.[]; empty)", "[1, 3]"), content=[true])
 }

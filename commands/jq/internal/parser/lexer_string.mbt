@@ -8,6 +8,7 @@ fn Lexer::lex_string(self : Lexer) -> Unit raise LexError {
   let start = self.pos
   self.advance()
   let parts : Array[(String, String?)] = []
+  let positions : Array[Int32] = []
   let buf = StringBuilder()
   while true {
     match self.current() {
@@ -27,6 +28,7 @@ fn Lexer::lex_string(self : Lexer) -> Unit raise LexError {
             buf.reset()
             // Find the matching closing paren
             let expr_start = self.pos
+            positions.push(expr_start)
             let mut paren_depth = 1
             while true {
               match self.current() {
@@ -137,7 +139,10 @@ fn Lexer::lex_string(self : Lexer) -> Unit raise LexError {
   parts.push((buf.to_string(), None))
   match parts {
     [(s, None)] => self.add_token(TString(s))
-    _ => self.add_token(TStringInterpolation(parts))
+    _ => {
+      self.interpolations[self.tokens.length()] = positions
+      self.add_token(TStringInterpolation(parts))
+    }
   }
 }
 

@@ -27,17 +27,20 @@ Development only.
   upstream tests and attribution while removing jq's MoonJQ dependency.
   Apply the same ownership layout to jqlog 0.2.7, preserving its JSONL driver
   and independent adapter expectations.
-  Modules and filter-driven input remain explicit local implementation gaps;
-  issue #34 remains open.
+  Add jq module loading, namespaces, data/raw/optional imports, module metadata,
+  lexical filter/value parameters and shared `input`/`inputs`. Preserve lazy
+  input consumption, short-circuiting and output before later failures.
 - Establish a fresh immutable-oracle baseline of 207 two-process HTTP controls
-  and 50 jq controls. The missing historical captures remain historical claims.
+  and 50 jq stream controls, followed by 115 module/input CLI controls and
+  57 evaluation controls. The missing historical captures remain historical claims.
   Candidate definitions and published expectations stay independent. No package
   publication or performance acceptance is claimed.
-- Local validation passes 2,688 Wasm package tests, 231 Native tool tests and
-  3,963 command checks with 40 declared platform skips. Final targeted checks
-  pass 22 Wget package tests and all 132 jq command contracts. Check, format, interface,
-  registry and architecture validation pass; an isolated jq module also checks
-  without MoonJQ. Required CI and publication acceptance remain separate gates.
+- The preceding HTTP/stream batch passed [required CI](https://github.com/moonbit-community/cmd/actions/runs/43584693515).
+  The expanded candidate passes 3,247 Wasm package tests, 231 Native tool tests
+  and 4,078 local command checks with zero failures and 40 declared platform
+  skips. Check, format, interfaces, registry and architecture validation pass.
+  Jq and jqlog also check outside the workspace without MoonJQ. Required CI and
+  exact-coordinate publication acceptance remain separate gates.
 
 ## 2026-11-11
 

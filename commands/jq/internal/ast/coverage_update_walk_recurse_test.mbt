@@ -26,9 +26,9 @@ test "coverage: update operator branches" {
 
 ///|
 test "coverage: walk empty results and recurse safety" {
-  json_inspect(coverage_eval("walk(empty)", "[1, 2]"), content=[[1, 2]])
-  json_inspect(coverage_eval("walk(empty)", "{\"a\": 1}"), content=[{ "a": 1 }])
-  json_inspect(coverage_eval("walk(empty)", "1"), content=[1])
+  json_inspect(coverage_eval("walk(empty)", "[1, 2]"), content=[])
+  json_inspect(coverage_eval("walk(empty)", "{\"a\": 1}"), content=[])
+  json_inspect(coverage_eval("walk(empty)", "1"), content=[])
   let nums : Array[String] = []
   for i in 0..<101 {
     nums.push(i.to_string())

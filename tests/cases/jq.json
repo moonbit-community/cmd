@@ -1025,7 +1025,7 @@
         "help"
       ],
       "source_version": "workspace cli/jq@0.2.7 metadata contract",
-      "expected_stdout_text": "Usage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stdout_text": "Usage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; input/inputs may still read\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n  -L DIRECTORY           search modules here; replaces the default paths\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "expected_stderr_text": ""
     },
     {
@@ -1477,7 +1477,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; input/inputs may still read\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n  -L DIRECTORY           search modules here; replaces the default paths\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1496,7 +1496,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; input/inputs may still read\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n  -L DIRECTORY           search modules here; replaces the default paths\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1515,7 +1515,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; input/inputs may still read\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n  -L DIRECTORY           search modules here; replaces the default paths\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1534,7 +1534,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; input/inputs may still read\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n  -L DIRECTORY           search modules here; replaces the default paths\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1918,7 +1918,7 @@
       "comparison": "contract",
       "expected_status": 2,
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: --from-file requires a filter file\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: --from-file requires a filter file\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; input/inputs may still read\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n  -L DIRECTORY           search modules here; replaces the default paths\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": true,
       "coverage": [
         "from-file"
@@ -1962,7 +1962,7 @@
       "comparison": "contract",
       "expected_status": 2,
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: flag does not accept a value: 'from-file'\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: flag does not accept a value: 'from-file'\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; input/inputs may still read\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n  -L DIRECTORY           search modules here; replaces the default paths\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": true,
       "coverage": [
         "from-file"
@@ -3064,6 +3064,3646 @@
       "expected_stdout_text": "[[0],1]\n[\"Invalid numeric literal at line 1, column 5\",[1]]\n[[],3]\n",
       "expected_stderr_text": "",
       "stdin_hex": "5b312cff2c325d0a330a"
+    },
+    {
+      "id": "jq-runtime-input-null",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-implicit",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-c",
+        "[.,input]"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2]\n[3,4]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-null",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "inputs"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n2\n3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-implicit",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-c",
+        "[.,inputs]"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2,3]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-eof",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "input"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 5,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error (at <stdin>:0): break\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-eof-catch",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "try input catch ."
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\"break\"\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-empty",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "inputs"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-reduce",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "reduce inputs as $n (0; . + $n)"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "6\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-foreach",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "foreach inputs as $n (0; . + $n; [.,$n])"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,1]\n[3,2]\n[6,3]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-first",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "first(inputs), input"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-limit",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[limit(2; inputs)], input"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2]\n3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-zero-limit",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "limit(0; inputs), input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-any",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "any(inputs; . == 2), input"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "true\n3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-all",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "all(inputs; . < 2), input"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "false\n3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-repeat",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[limit(3; repeat(input))]"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2,3]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-late-error",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "\"before\", input"
+      ],
+      "stdin_text": "[1,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 5,
+      "expected_stdout_text": "\"before\"\n",
+      "expected_stderr_text": "jq: error (at <stdin>:1): Unfinished JSON term at EOF at line 2, column 0\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-parse-catch",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "try input catch ."
+      ],
+      "stdin_text": "[1,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\"Unfinished JSON term at EOF at line 2, column 0\"\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-parse-catch",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "try inputs catch ."
+      ],
+      "stdin_text": "1\n[2,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n\"Unfinished JSON term at EOF at line 3, column 0\"\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-inputs-prefix-error",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "inputs"
+      ],
+      "stdin_text": "1\n[2,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 5,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "jq: error (at <stdin>:2): Unfinished JSON term at EOF at line 3, column 0\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-raw",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-Rnc",
+        "[input,inputs]"
+      ],
+      "stdin_text": "first\r\nsecond\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[\"first\\r\",\"second\"]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-slurp",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nsc",
+        "input,inputs"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-raw-slurp",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-Rnsc",
+        "input,inputs"
+      ],
+      "stdin_text": "a\nb\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\"a\\nb\\n\"\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-stream",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "--stream",
+        "-nc",
+        "[inputs]"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[[[0],1],[[1],2],[[1]]]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-stream-errors",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-nc",
+        "[inputs]"
+      ],
+      "stdin_text": "[1,]\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[[[0],1],[\"Expected another array element at line 1, column 4\",[1]],[[],2]]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-files",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[input,inputs]",
+        "a.json",
+        "b.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a.json",
+          "content_text": "1\n2\n"
+        },
+        {
+          "path": "b.json",
+          "content_text": "3\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2,3]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-lazy-missing-file",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "first(inputs)",
+        "a.json",
+        "missing.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a.json",
+          "content_text": "1\n2\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-missing-file",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "inputs",
+        "a.json",
+        "missing.json",
+        "b.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a.json",
+          "content_text": "1\n"
+        },
+        {
+          "path": "b.json",
+          "content_text": "2\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "1\n2\n",
+      "expected_stderr_text": "jq: error: Could not open file missing.json: No such file or directory\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-metadata",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "inputs | [input_filename,input_line_number,.]",
+        "a.json",
+        "b.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a.json",
+          "content_text": "1\n2\n"
+        },
+        {
+          "path": "b.json",
+          "content_text": "3\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[\"a.json\",1,1]\n[\"a.json\",2,2]\n[\"b.json\",1,3]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-arguments",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def twice(f): f,f; twice(input)"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-value-arguments",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def twice($v): $v,$v; twice(input)"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-argument-input",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def apply(f): .+10|f; 1|apply(.+1)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "12\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-argument-stream",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def twice($v): [$v,$v]; twice(1,2)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,1]\n[2,2]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-lexical-variable",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "1 as $x | def f: $x; 2 as $x | f"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-lexical-function",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def f: 1; def g: f; def f: 2; [g,f]"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-closure-argument",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def apply(f): 2 as $x|f; 1 as $x|apply($x)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-overloads",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def f:1; def f($x):$x; [f,f(2)]"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-recursion",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def down: ., (if . > 0 then .-1 | down else empty end); 3|[down]"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[3,2,1,0]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-nested-definition",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def outer($x): def inner: $x; inner; outer(7)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "7\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-builtin-shadow",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def length: 9; []|length"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "9\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-builtin-arity",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def add($x): .+$x; 2|add(3)"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "5\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-unbound-lexical",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def f: $x; 1 as $x|f"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: $x is not defined at <top-level>, line 1, column 8:\n    def f: $x; 1 as $x|f\n           ^^\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-binary-order",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "input + input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-object-order",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "{a:input,b:input}"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"a\":1,\"b\":2}\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-conditional",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "if input then input else inputs end"
+      ],
+      "stdin_text": "true\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-alternative",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "(input // input), input"
+      ],
+      "stdin_text": "false\n2\n3\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "2\n3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-map",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[10,20]|map(.+input)"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[11,22]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-assignment",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "{a:0}|.a=input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"a\":1}\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-import",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get: 42;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "42\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-include",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "include \"value\"; get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get: 42;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "42\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-private-functions",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; import \"b\" as b; [a::get,b::get]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "def helper: 1; def get: helper;\n"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def helper: 2; def get: helper;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-nested-import",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "import \"b\" as b; def get: b::get+1;\n"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def get: 2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-relative-search",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"nested/a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/nested/a.jq",
+          "content_text": "import \"b\" as b {search:\".\"}; def get:b::get;\n"
+        },
+        {
+          "path": "lib/nested/b.jq",
+          "content_text": "def get:3;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: module not found: b\n\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-directory-layout",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value/value.jq",
+          "content_text": "def get:4;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "4\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-search-order",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "first",
+        "-L",
+        "second",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "first/value.jq",
+          "content_text": "def get:1;\n"
+        },
+        {
+          "path": "second/value.jq",
+          "content_text": "def get:2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-search-metadata",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v {search:[\"preferred\"]}; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "preferred/value.jq",
+          "content_text": "def get:1;\n"
+        },
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-data-import",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v; [$v,$v::v]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "1\n{\"x\":2}\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[[1,{\"x\":2}],[1,{\"x\":2}]]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-data-empty",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v; $v"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-function-input",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get: [input,inputs];\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-filter-argument",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::twice(input)"
+      ],
+      "stdin_text": "1\n2\n3\n",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def twice(f): f,f;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-globals",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "--argjson",
+        "x",
+        "7",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:$x;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "7\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-metadata",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "\"value\"|modulemeta"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "module {homepage:\"example\"}; def get:1; def f($x):$x;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"homepage\":\"example\",\"deps\":[],\"defs\":[\"get/0\",\"f/1\"]}\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-metadata-deps",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "\"a\"|modulemeta"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "module {name:\"a\"}; import \"b\" as b {search:\"lib\"}; def get:b::get;\n"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def get:2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"name\":\"a\",\"deps\":[{\"search\":\"lib\",\"as\":\"b\",\"is_data\":false,\"relpath\":\"b\"}],\"defs\":[\"get/0\"]}\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-header-main",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "module {name:\"main\"}; 1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-missing",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"missing\" as m; m::get"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: module not found: missing\n\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-cycle",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "import \"b\" as b; def get:1;\n"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "import \"a\" as a; def get:2;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: circular import of /work/lib/a.jq\n\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        },
+        {
+          "field": "stderr",
+          "rule": "path-separator",
+          "comment": "Module diagnostics contain resolved filesystem paths on each platform."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-data-invalid",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v; $v"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error loading data file /work/lib/data.json: Unfinished JSON term at EOF at line 2, column 0\n\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        },
+        {
+          "field": "stderr",
+          "rule": "path-separator",
+          "comment": "Module diagnostics contain resolved filesystem paths on each platform."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-namespace-isolation",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:1;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: get/0 is not defined at <top-level>, line 1, column 22:\n    import \"value\" as v; get\n                         ^^^\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-default-home",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "home/.jq/value.jq",
+          "content_text": "def get:8;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "8\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-home-prelude",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "home/.jq",
+          "content_text": "def get:9;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "9\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-subtraction-order",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "input - input"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-binary-generators",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[[(input,input)-input],input]"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[[1,2],4]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-value-argument-order",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def f($a;$b):[$a,$b]; f(input;input)"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,2]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-stop-before-invalid",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "first(inputs)"
+      ],
+      "stdin_text": "1\n[2,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-zero-before-invalid",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[limit(0;inputs)]"
+      ],
+      "stdin_text": "[1,\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-catch-then-continue",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "(try input catch .), input"
+      ],
+      "stdin_text": "[1,]\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\"Expected another array element at line 1, column 4\"\n2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-reduce-multiple-update",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "reduce inputs as $x ([]; .+[$x], .+[input])"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[2,4]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-foreach-multiple-update",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[foreach inputs as $x ([]; .+[$x], .+[input])]"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[[1],[2],[2,3],[2,4]]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-path-filter",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "{a:1,b:2}|path(.[]|select(.==input))"
+      ],
+      "stdin_text": "1\n2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[\"a\"]\n[\"b\"]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-update-first",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "{a:0,b:0}|(.a,.b)|=(input,input)"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"a\":1,\"b\":2}\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-raw-files",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-Rnc",
+        "[inputs]",
+        "a",
+        "b"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "one"
+        },
+        {
+          "path": "b",
+          "content_text": "two\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[\"onetwo\"]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-raw-stop-missing",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-Rnc",
+        "first(inputs)",
+        "a",
+        "missing"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "a",
+          "content_text": "one"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "\"one\"\n",
+      "expected_stderr_text": "jq: error: Could not open file missing: No such file or directory\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-relative-dot-slash",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"nested/a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/nested/a.jq",
+          "content_text": "import \"b\" as b {search:\"./\"}; def get:b::get;\n"
+        },
+        {
+          "path": "lib/nested/b.jq",
+          "content_text": "def get:3;\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-layout-priority",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:1;"
+        },
+        {
+          "path": "lib/value/jq/main.jq",
+          "content_text": "def get:2;"
+        },
+        {
+          "path": "lib/value/value.jq",
+          "content_text": "def get:3;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-main-layout",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value/jq/main.jq",
+          "content_text": "def get:2;"
+        },
+        {
+          "path": "lib/value/value.jq",
+          "content_text": "def get:3;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-explicit-search-only",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"value\" as v {search:[\"absent\"]}; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:1;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: module not found: value\n\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-include-closure",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "include \"a\"; def helper:9; [get,helper]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "def helper:1; def get:helper;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1,9]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-transitive-private",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; [a::get,a::b::get]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "import \"b\" as b; def get:b::get;"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def get:2;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: a::b::get/0 is not defined at <top-level>, line 1, column 26:\n    import \"a\" as a; [a::get,a::b::get]\n                             ^^^^^^^^^\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-lexical-global",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "--argjson",
+        "x",
+        "7",
+        "import \"value\" as v; 99 as $x|v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:$x;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "7\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-disable-home-path",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "absent",
+        "-nc",
+        "import \"value\" as v; v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "home/.jq/value.jq",
+          "content_text": "def get:8;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: module not found: value\n\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-prelude-explicit-path",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "absent",
+        "-nc",
+        "get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "home/.jq",
+          "content_text": "def get:9;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "9\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-metadata-cycle",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "\"a\"|modulemeta"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "import \"b\" as b; def get:1;"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "import \"a\" as a; def get:2;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"deps\":[{\"as\":\"b\",\"is_data\":false,\"relpath\":\"b\"}],\"defs\":[\"get/0\"]}\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-include-builtin",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "include \"value\"; [length,add(2)]"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def length:9; def add($x):$x+1;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[9,3]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-unused-undefined",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "def f: missing; 1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-filter-unreachable-undefined",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "if false then missing else 1 end"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: missing/0 is not defined at <top-level>, line 1, column 15:\n    if false then missing else 1 end\n                  ^^^^^^^\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-repeat-empty-iteration",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[limit(1;repeat(input|select(.==2)))],input"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[2]\n3\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-foreach-stop-update",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "first(foreach inputs as $x ([]; .+[$x], .+[input])),input"
+      ],
+      "stdin_text": "1\n2\n3\n4\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[1]\n2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-raw-data",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v {raw:true}; $v"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\"[1,\\n\"\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-optional-data",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v {optional:true}; 1"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-optional-data-unbound",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"data\" as $v {optional:true}; $v"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/data.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: $v is not defined at <top-level>, line 1, column 38:\n    import \"data\" as $v {optional:true}; $v\n                                         ^^\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-optional-missing",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"missing\" as m {optional:true}; 1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-inner-include",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; a::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "include \"b\"; def get:bfun;"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def bfun:2;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-inner-include-private",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-L",
+        "lib",
+        "-nc",
+        "import \"a\" as a; a::bfun"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/a.jq",
+          "content_text": "include \"b\"; def get:bfun;"
+        },
+        {
+          "path": "lib/b.jq",
+          "content_text": "def bfun:2;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: a::bfun/0 is not defined at <top-level>, line 1, column 18:\n    import \"a\" as a; a::bfun\n                     ^^^^^^^\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-search-null-entry",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "import \"value\" as v {search:[null,\"lib\"]};v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:42;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "42\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-leading-slash",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "-L",
+        "lib",
+        "import \"/value\" as v;v::get"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "lib/value.jq",
+          "content_text": "def get:42;"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "42\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-nul-path",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "import \"value\\u0000junk\" as v;1"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 3,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: Module path contains a NUL byte\n\njq: 1 compile error\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-missing-eof-status",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "input",
+        "missing.json"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: Could not open file missing.json: No such file or directory\njq: error (at missing.json:0): break\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-missing-parse-status",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "inputs",
+        "missing.json",
+        "bad.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "bad.json",
+          "content_text": "[1,\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: error: Could not open file missing.json: No such file or directory\njq: error (at bad.json:1): Unfinished JSON term at EOF at line 2, column 0\n",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-duplicate-containers",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "inputs"
+      ],
+      "stdin_text": "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"a\":{\"y\":2}}\n{\"a\":[3]}\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-implicit-duplicate-containers",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "{\"a\":{\"y\":2}}\n{\"a\":[3]}\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-slurp-duplicate-containers",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-sc",
+        "."
+      ],
+      "stdin_text": "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[{\"a\":{\"y\":2}},{\"a\":[3]}]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-module-data-duplicate-containers",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "-L",
+        ".",
+        "import \"data\" as $data; $data"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "data.json",
+          "content_text": "{\"a\":{\"x\":1},\"a\":{\"y\":2}}\n{\"a\":[1,2],\"a\":[3]}\n"
+        }
+      ],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[{\"a\":{\"y\":2}},{\"a\":[3]}]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-metadata-before-read",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "[input_filename,input_line_number], input, [input_filename,input_line_number]"
+      ],
+      "stdin_text": "1\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "[null,0]\n1\n[\"<stdin>\",1]\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-line-unterminated",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "input,input_line_number"
+      ],
+      "stdin_text": "1",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n0\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-line-raw-unterminated",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-Rnc",
+        "input,input_line_number"
+      ],
+      "stdin_text": "1",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "\"1\"\n0\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
+    },
+    {
+      "id": "jq-runtime-input-line-long",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/runtime.json"
+      ],
+      "args": [
+        "-nc",
+        "input,input_line_number"
+      ],
+      "stdin_text": "1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        \n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "expected_status": 0,
+      "expected_stdout_text": "1\n0\n",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "comparison": "contract",
+      "normalizations": [
+        {
+          "field": "stderr",
+          "rule": "working-directory",
+          "comment": "Normalize the immutable oracle working directory and isolated candidate directory."
+        }
+      ]
     }
   ]
 }

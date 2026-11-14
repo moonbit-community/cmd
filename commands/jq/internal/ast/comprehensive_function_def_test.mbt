@@ -24,7 +24,7 @@ test "def: function with parameter" {
   debug_inspect(
     test_query("def add(x): . + x; add(10)", "5"),
     content=(
-      #|"ParseError: UnexpectedToken(\"TLParen\", \"end of query\")"
+      #|"Number(15)"
     ),
   )
 }
@@ -34,7 +34,7 @@ test "def: multiple parameters" {
   debug_inspect(
     test_query("def multiply(x; y): . * x * y; multiply(3; 4)", "2"),
     content=(
-      #|"EvalError: EvalError(\"Undefined function: x\")"
+      #|"Number(24)"
     ),
   )
 }
@@ -73,7 +73,7 @@ test "def: function calling another function" {
       "3",
     ),
     content=(
-      #|"EvalError: EvalError(\"Undefined function: x\")"
+      #|"Number(25)"
     ),
   )
 }
@@ -100,7 +100,7 @@ test "complex: nested function with interpolation" {
       "25",
     ),
     content=(
-      #|"EvalError: EvalError(\"Undefined function: name\")"
+      #|"String(\"Hello Alice, you are 25 years old!\")"
     ),
   )
 }
@@ -123,7 +123,7 @@ test "complex: recursive tree walk" {
       "[1,[2,3],[4,[5,6]]]",
     ),
     content=(
-      #|"ParseError: UnexpectedToken(\"TElif\", \"TElse\")"
+      #|"Number(21)"
     ),
   )
 }

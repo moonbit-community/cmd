@@ -1,0 +1,866 @@
+{
+  "image": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+  "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+  "distribution": [
+    "RUN |29 DEBIAN_FRONTEND=noninteractive COREUTILS_VERSION=9.11 COREUTILS_SHA256=394024eda0a5955217ceda9cd1201e65dc8fa3aa29c2951135a49521d57c3cc3 DIFFUTILS_VERSION=3.12 DIFFUTILS_SHA256=7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd FINDUTILS_VERSION=4.10.0 FINDUTILS_SHA256=1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5 GREP_VERSION=3.12 GREP_SHA256=2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9 WGET_VERSION=1.25.0 WGET_SHA256=766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784 MAKE_VERSION=4.4.1 MAKE_SHA256=8814ba072182b605d156d7589c19a43b89fc58ea479b9355146160946f8cf6e9 CURL_VERSION=8.22.0 CURL_SHA256=f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7 DASH_VERSION=0.5.12 DASH_SHA256=0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154 JQ_VERSION=1.8.2 JQ_SHA256=b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f VIM_VERSION=9.1.0000 VIM_SHA256=8d2a74e358be9cf260174e15e2e29dba4773f2670718b5bf728db6f54b90e25d SED_VERSION=4.9 SED_SHA256=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181 PATCH_VERSION=2.8 PATCH_SHA256=f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3 GZIP_VERSION=1.14 GZIP_SHA256=01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6 UTIL_LINUX_VERSION=2.40 UTIL_LINUX_SHA256=d57a626081f9ead02fa44c63a6af162ec19c58f53e993f206ab7c3a6641c2cd7 /bin/sh -c curl --fail --location --retry 5       \"https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64\"       --output /oracle/bin/jq   && echo \"${JQ_SHA256}  /oracle/bin/jq\" | sha256sum --check --strict   && chmod 0755 /oracle/bin/jq # buildkit"
+  ],
+  "binary_sha256": "b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f  /oracle/bin/jq\n",
+  "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+  "cases": [
+    {
+      "label": "filter-shadowed-by-definition",
+      "args": [
+        "-c",
+        "def f(g):def g:2;g;f(1)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-captured-before-shadow",
+      "args": [
+        "-c",
+        "def f(g):def inner:g;def g:2;inner;f(1)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-overload-coexists",
+      "args": [
+        "-c",
+        "def f(g):def g($x):$x+1;[g,g(3)];f(1)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,4]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "metadata-arithmetic",
+      "args": [
+        "-c",
+        "module {x:(1+2),y:(0-2)};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "metadata-comparison",
+      "args": [
+        "-c",
+        "module {x:(1==1),y:(1<2)};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "metadata-array",
+      "args": [
+        "-c",
+        "module {x:[1,2],y:{}};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "metadata-key",
+      "args": [
+        "-c",
+        "module {(\"a\"+\"b\"):3};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "metadata-repeat",
+      "args": [
+        "-c",
+        "module {x:(repeat(1))};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:(repeat(1))};1\n           ^^^^^^^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-while",
+      "args": [
+        "-c",
+        "module {x:(while(true;.))};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:(while(true;.))};1\n           ^^^^^^^^^^^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-length",
+      "args": [
+        "-c",
+        "module {x:([1,2]|length)};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:([1,2]|length)};1\n           ^^^^^^^^^^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-if",
+      "args": [
+        "-c",
+        "module {x:(if true then 1 else 2 end)};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:(if true then 1 else 2 end)};1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-alternative",
+      "args": [
+        "-c",
+        "module {x:(.//1)};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:(.//1)};1\n           ^^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-range",
+      "args": [
+        "-c",
+        "module {x:[range(0;3)]};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:[range(0;3)]};1\n           ^^^^^^^^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-boolean",
+      "args": [
+        "-c",
+        "module {x:(true and false)};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:(true and false)};1\n           ^^^^^^^^^^^^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-comma",
+      "args": [
+        "-c",
+        "module {x:(1,2)};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:(1,2)};1\n           ^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-interpolation",
+      "args": [
+        "-c",
+        "module {x:\"a\\(1+2)\"};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:\"a\\(1+2)\"};1\n           ^^^^^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-negative",
+      "args": [
+        "-c",
+        "module {x:-2};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:-2};1\n           ^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "metadata-division-zero",
+      "args": [
+        "-c",
+        "module {x:(1/0)};1"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: Module metadata must be constant at <top-level>, line 1, column 8:\n    module {x:(1/0)};1\n           ^^^^^^^^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "binary-cartesian",
+      "args": [
+        "-c",
+        "[(\"L1\",\"L2\")+(\"R1\",\"R2\")]"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[\"L1R1\",\"L2R1\",\"L1R2\",\"L2R2\"]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "value-cartesian",
+      "args": [
+        "-c",
+        "def f($a;$b):[$a,$b]; f((1,2);(10,20))"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,10]\n[1,20]\n[2,10]\n[2,20]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "walk-empty-array",
+      "args": [
+        "-c",
+        "walk(empty)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "walk-empty-object",
+      "args": [
+        "-c",
+        "walk(empty)"
+      ],
+      "stdin_text": "{\"a\":1}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "walk-empty-scalar",
+      "args": [
+        "-c",
+        "walk(empty)"
+      ],
+      "stdin_text": "1\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "all-empty-condition",
+      "args": [
+        "-c",
+        "all(.[];empty)"
+      ],
+      "stdin_text": "[1,3]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "true\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "getpath-empty",
+      "args": [
+        "-c",
+        "getpath(empty)"
+      ],
+      "stdin_text": "{\"a\":1}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "setpath-empty-path",
+      "args": [
+        "-c",
+        "setpath(empty;1)"
+      ],
+      "stdin_text": "{\"a\":1}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "setpath-empty-value",
+      "args": [
+        "-c",
+        "setpath([\"a\"];empty)"
+      ],
+      "stdin_text": "{\"a\":1}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "delpaths-empty",
+      "args": [
+        "-c",
+        "delpaths(empty)"
+      ],
+      "stdin_text": "{\"a\":1}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "until-empty-condition",
+      "args": [
+        "-c",
+        "until(empty;.+1)"
+      ],
+      "stdin_text": "1\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "until-empty-update",
+      "args": [
+        "-c",
+        "until(.>0;empty)"
+      ],
+      "stdin_text": "0\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "pow-empty",
+      "args": [
+        "-c",
+        "pow(.;empty)"
+      ],
+      "stdin_text": "2\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "min-empty-key",
+      "args": [
+        "-c",
+        "min_by(empty)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "1\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "max-empty-key",
+      "args": [
+        "-c",
+        "max_by(empty)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "2\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "object-empty-key",
+      "args": [
+        "-c",
+        "{(empty):1,a:2}"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "object-empty-value",
+      "args": [
+        "-c",
+        "{a:empty}"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "indices-empty",
+      "args": [
+        "-c",
+        "indices(empty)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "index-empty",
+      "args": [
+        "-c",
+        "index(empty)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "rindex-empty",
+      "args": [
+        "-c",
+        "rindex(empty)"
+      ],
+      "stdin_text": "[1]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "contains-empty",
+      "args": [
+        "-c",
+        "contains(empty)"
+      ],
+      "stdin_text": "\"abc\"\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "inside-empty",
+      "args": [
+        "-c",
+        "inside(empty)"
+      ],
+      "stdin_text": "\"a\"\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "in-empty",
+      "args": [
+        "-c",
+        "in(empty)"
+      ],
+      "stdin_text": "\"a\"\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "foreach-empty-extract",
+      "args": [
+        "-c",
+        "foreach .[] as $x (0;.+$x;empty)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "and-true",
+      "args": [
+        "-c",
+        "1 and 2"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "true\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "or-false",
+      "args": [
+        "-c",
+        "false or 2"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "true\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "or-null",
+      "args": [
+        "-c",
+        "null or 2"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "true\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "or-true",
+      "args": [
+        "-c",
+        "1 or 2"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "true\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "reduce-empty-init",
+      "args": [
+        "-c",
+        "reduce .[] as $x (empty;.+$x)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "",
+      "stderr_text": ""
+    },
+    {
+      "label": "reduce-multiple-update",
+      "args": [
+        "-c",
+        "reduce (1,2) as $x (0; .+$x, .+$x+10)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "23\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "foreach-multiple-update",
+      "args": [
+        "-c",
+        "[foreach (1,2) as $x (0; .+$x, .+$x+10)]"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[1,11,13,23]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "reduce-empty-update",
+      "args": [
+        "-c",
+        "reduce (1,2) as $x (0;empty)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "null\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "foreach-empty-update",
+      "args": [
+        "-c",
+        "[foreach (1,2) as $x (0;empty)]"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "[]\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "lexical-undefined",
+      "args": [
+        "-c",
+        "def f:$x; 10 as $x|foreach .[] as $y (0;.+$y+f)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: $x is not defined at <top-level>, line 1, column 7:\n    def f:$x; 10 as $x|foreach .[] as $y (0;.+$y+f)\n          ^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "filter-variable-missing",
+      "args": [
+        "-c",
+        "def id(x):$x; id(empty)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 3,
+      "stdout_text": "",
+      "stderr_text": "jq: error: $x is not defined at <top-level>, line 1, column 11:\n    def id(x):$x; id(empty)\n              ^^\njq: 1 compile error\n"
+    },
+    {
+      "label": "filter-multiple-params",
+      "args": [
+        "-c",
+        "def multiply(x;y):x*y; multiply(4;6)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "24\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "filter-calls",
+      "args": [
+        "-c",
+        "def square(x):x*x; def sum_of_squares(a;b):square(a)+square(b); sum_of_squares(3;4)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "25\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "elif",
+      "args": [
+        "-c",
+        "if .>0 then \"positive\" elif .<0 then \"negative\" else \"zero\" end"
+      ],
+      "stdin_text": "5\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "\"positive\"\n",
+      "stderr_text": ""
+    },
+    {
+      "label": "recurse-condition",
+      "args": [
+        "-c",
+        "recurse(.a; . != null)"
+      ],
+      "stdin_text": "{\"a\":{\"a\":null}}\n",
+      "files": [],
+      "environment": {
+        "HOME": "${WORK}/home"
+      },
+      "status": 0,
+      "stdout_text": "{\"a\":{\"a\":null}}\n{\"a\":null}\n",
+      "stderr_text": ""
+    }
+  ]
+}

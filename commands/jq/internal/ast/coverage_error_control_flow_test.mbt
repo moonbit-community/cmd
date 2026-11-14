@@ -24,13 +24,12 @@ test "coverage: undefined variable" {
 ///|
 test "coverage: function argument handling" {
   assert_coverage_eval_error("def f(x; y): $x + $y; f(1)", "null")
-  json_inspect(coverage_eval("def id(x): $x; id(empty)", "null"), content=[null])
+  assert_coverage_eval_error("def id(x): $x; id(empty)", "null")
+  json_inspect(coverage_eval("def id($x): $x; id(empty)", "null"), content=[])
 }
 
 ///|
 test "coverage: reduce and assignment edges" {
-  json_inspect(coverage_eval("reduce .[] as $x (empty; . + $x)", "[1, 2]"), content=[
-    null,
-  ])
+  json_inspect(coverage_eval("reduce .[] as $x (empty; . + $x)", "[1, 2]"), content=[])
   json_inspect(coverage_eval(".a = empty", "{\"a\": 1}"), content=[])
 }

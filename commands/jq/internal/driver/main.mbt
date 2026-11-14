@@ -29,6 +29,7 @@ priv struct CliOptions {
   indent : Int32?
   tab : Bool
   arguments : Map[String, String]
+  library_paths : Array[String]
 }
 
 ///|
@@ -52,7 +53,7 @@ fn help_message() -> String {
     #|  -c, --compact-output    print compact JSON
     #|  -r, --raw-output        print strings without JSON quotes
     #|  -j, --join-output       raw output without result separators
-    #|  -n, --null-input        evaluate once with null; do not read inputs
+    #|  -n, --null-input        evaluate once with null; input/inputs may still read
     #|  -s, --slurp             collect input values in an array
     #|  -R, --raw-input         read text lines; -Rs reads all text
     #|  -l, --logs              skip non-JSON lines (project extension)
@@ -63,6 +64,7 @@ fn help_message() -> String {
     #|  -f, --from-file         read the first positional argument as a filter file
     #|      --arg NAME VALUE   bind a string variable
     #|      --argjson NAME JSON bind a JSON variable
+    #|  -L DIRECTORY           search modules here; replaces the default paths
     #|      --indent N         indentation -1 (tabs) through 7
     #|      --tab              indent with tabs
     #|  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)
@@ -76,18 +78,6 @@ fn help_message() -> String {
 ///|
 fn json_string_literal(value : String) -> String {
   Json::string(value).stringify()
-}
-
-///|
-fn compile_query(
-  query : String,
-  arguments : Map[String, String],
-) -> @ast.Expr raise {
-  let mut expr = parse_filter(query)
-  for name, value in arguments {
-    expr = @ast.Expr::As(@parser.parse(value), name, expr)
-  }
-  expr
 }
 
 ///|
@@ -135,7 +125,7 @@ fn prepare_args(args : ArrayView[String]) -> Array[String] raise ArgError {
       prepared.push(arg)
       index += 1
       if options {
-        value_next = arg == "--indent"
+        value_next = arg == "--indent" || arg == "-L" || arg == "--library-path"
       }
     }
   }
@@ -167,6 +157,7 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
     @cli.flag("tab"),
     @cli.option("arg"),
     @cli.option("argjson"),
+    @cli.option("library-path", short='L'),
     @cli.flag("help"),
   ]) catch {
     @cli.CliError(option~, message~, ..) =>
@@ -272,7 +263,7 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
       inputs.push(File(path))
     }
   }
-  if inputs.is_empty() && !parsed.contains("null-input") {
+  if inputs.is_empty() {
     inputs.push(Stdin)
   }
   Run({
@@ -294,6 +285,7 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
     indent: Some(indent),
     tab,
     arguments,
+    library_paths: parsed.values("library-path"),
   })
 }
 
@@ -398,16 +390,59 @@ pub async fn run_main() -> Unit {
           return
         }
       }
-      let query = compile_query(query_text, options.arguments) catch {
-        err => {
-          @stdio.stderr.write("moonjq: \{err}\n")
+      let (modules, linked) = try {
+        let modules = Modules::new(options)
+        modules.sources["<top-level>"] = query_text
+        let program = @parser.parse_program(query_text)
+        let directory = match options.query {
+          Inline(_) => Some(@fs.realpath("."))
+          File(path) =>
+            Some(@path.Path(@fs.realpath(path)).dirname().to_string())
+        }
+        let linked = modules.link(program, directory, modules.main_scope())
+        linked.scope.validate(linked.body) catch {
+          @ast.Undefined(message, symbol, position, source) => {
+            @stdio.stderr.write(
+              compile_diagnostic(
+                message,
+                symbol,
+                position,
+                source,
+                modules.sources.get(source).unwrap_or(query_text),
+              ),
+            )
+            @sys.exit(3)
+            return
+          }
+        }
+        (modules, linked)
+      } catch {
+        ModuleError(message) => {
+          let prefix = if message.has_prefix("error loading data file") {
+            "jq: "
+          } else {
+            "jq: error: "
+          }
+          @stdio.stderr.write(prefix + message + "\n\njq: 1 compile error\n")
+          @sys.exit(3)
+          return
+        }
+        error => {
+          @stdio.stderr.write("moonjq: \{error}\n")
           @sys.exit(3)
           return
         }
       }
+      let cursor = InputCursor::new(options, @stdio.stdin, message => {
+        @stdio.stderr.write(message)
+      })
+      defer cursor.sources.close()
       try {
         let state : Evaluation = {
-          query,
+          query: linked.body,
+          scope: linked.scope,
+          cursor,
+          modules,
           options,
           colors: if options.color_output {
             Some(palette)
@@ -415,57 +450,17 @@ pub async fn run_main() -> Unit {
             None
           },
           last: None,
-          values: [],
-          raw: [],
         }
         if options.null_input {
           state.emit(Json::null())
         } else {
-          if options.stream && !options.raw_input && !options.logs {
-            let file_boundaries : Set[Int64] = Set([])
-            let input = @io.MemoryReader(writer => {
-              let offset = Ref(0L)
-              let copy : async (&@io.Reader) -> Unit = reader => {
-                while reader.read_some(max_len=65536) is Some(chunk) {
-                  writer.write(chunk)
-                  offset.val += chunk.length().to_int64()
-                }
-                file_boundaries.add(offset.val)
-              }
-              for source in options.inputs {
-                match source {
-                  Stdin => copy(@stdio.stdin)
-                  File(path) => {
-                    let file = @fs.open(path, mode=ReadOnly)
-                    defer file.close()
-                    copy(file)
-                  }
-                }
-              }
-            })
-            defer input.close()
-            state.read(input, file_boundaries~)
-          } else {
-            for source in options.inputs {
-              match source {
-                Stdin => state.read(@stdio.stdin)
-                File(path) => {
-                  let file = @fs.open(path, mode=ReadOnly)
-                  defer file.close()
-                  state.read(file)
-                }
-              }
-            }
+          while cursor.next() is Some(value) {
+            state.emit(value)
           }
-          if options.slurp {
-            state.emit(
-              if options.raw_input {
-                Json::string(@utf8.decode(Bytes::from_array(state.raw)))
-              } else {
-                Json::array(state.values)
-              },
-            )
-          }
+        }
+        if cursor.sources.status != 0 {
+          @sys.exit(cursor.sources.status)
+          return
         }
         if options.exit_status {
           @sys.exit(
@@ -478,6 +473,22 @@ pub async fn run_main() -> Unit {
           )
         }
       } catch {
+        @ast.InputError(message) => {
+          let filename = cursor.sources.filename.unwrap_or("<stdin>")
+          @stdio.stderr.write(
+            "jq: error (at \{filename}:\{cursor.sources.line}): " +
+            message +
+            "\n",
+          )
+          @sys.exit(
+            if cursor.sources.status != 0 {
+              cursor.sources.status
+            } else {
+              5
+            },
+          )
+          return
+        }
         StreamError(message, line, column) => {
           @stdio.stderr.write(
             "jq: parse error: " +
@@ -488,20 +499,32 @@ pub async fn run_main() -> Unit {
             column.to_string() +
             "\n",
           )
-          @sys.exit(5)
+          @sys.exit(
+            if cursor.sources.status != 0 {
+              cursor.sources.status
+            } else if options.stream {
+              5
+            } else {
+              4
+            },
+          )
           return
         }
         err => {
           @stdio.stderr.write("moonjq: \{err}\n")
           @sys.exit(
-            match err {
-              @json.InvalidChar(_, _)
-              | @json.InvalidEof
-              | @json.InvalidNumber(_, _)
-              | @json.InvalidIdentEscape(_)
-              | @json.DepthLimitExceeded
-              | @utf8.Malformed(_) => 4
-              _ => 5
+            if cursor.sources.status != 0 {
+              cursor.sources.status
+            } else {
+              match err {
+                @json.InvalidChar(_, _)
+                | @json.InvalidEof
+                | @json.InvalidNumber(_, _)
+                | @json.InvalidIdentEscape(_)
+                | @json.DepthLimitExceeded
+                | @utf8.Malformed(_) => 4
+                _ => 5
+              }
             },
           )
           return

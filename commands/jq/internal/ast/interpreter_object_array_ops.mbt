@@ -101,24 +101,3 @@ fn entry_to_pair(entry : Json) -> (String, Json)? {
       }
   }
 }
-
-///|
-/// Evaluate with_entries
-fn eval_with_entries(
-  expr : Expr,
-  input : Json,
-  env : Env,
-) -> Iter[Json] raise InterpreterError {
-  match input {
-    Object(_) | Array(_) =>
-      match eval_with_env(ToEntries, input, env).collect() {
-        [entries_array, ..] =>
-          match eval_with_env(Map(expr), entries_array, env).collect() {
-            [mapped, ..] => eval_with_env(FromEntries, mapped, env)
-            [] => Iter::empty()
-          }
-        [] => Iter::empty()
-      }
-    _ => raise TypeMismatch("object/array", json_type_name(input))
-  }
-}

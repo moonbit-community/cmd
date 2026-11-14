@@ -96,7 +96,7 @@ pub fn commands() -> Array[CommandContract] {
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
       "color-output", "monochrome-output", "compact-output", "exit-status", "from-file",
       "indent", "join-output", "logs", "null-input", "raw-input", "sort-keys", "slurp",
-      "tab", "raw-output", "arg", "argjson", "stream", "stream-errors",
+      "tab", "raw-output", "arg", "argjson", "stream", "stream-errors", "library-path",
     ]),
     contract("jqlog", Core, StructuredInput, StructuredOutput, [FileRead], [
       "file", "help",

@@ -2,7 +2,7 @@ import {
   "cli/jq/internal/parser",
   "cli/jq/internal/ast",
   "cli/core/cli",
-  "cli/core/stream",
+  "cli/core/platform",
   "moonbitlang/async/fs",
   "moonbitlang/async/io",
   "moonbitlang/async/stdio",
@@ -11,12 +11,14 @@ import {
   "moonbitlang/core/json",
   "moonbitlang/core/string",
   "moonbitlang/x/sys",
+  "moonbitlang/x/path",
 }
 
 supported_targets = "native+wasm"
 
 import {
   "moonbitlang/async",
+  "cli/core/tempio",
 } for "wbtest"
 
 rule(

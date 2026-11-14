@@ -49,12 +49,9 @@ test "coverage: comparisons across JSON types" {
 }
 
 ///|
-test "coverage: foreach copies env bindings and functions" {
-  json_inspect(
-    coverage_eval(
-      "def f: $x; 10 as $x | foreach .[] as $y (0; . + $y + f)", "[1, 2]",
-    ),
-    content=[11, 23],
+test "function definitions cannot capture later caller bindings" {
+  assert_coverage_eval_error(
+    "def f: $x; 10 as $x | foreach .[] as $y (0; . + $y + f)", "[1, 2]",
   )
 }
 

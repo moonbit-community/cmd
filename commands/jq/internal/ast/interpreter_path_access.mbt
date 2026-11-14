@@ -3,23 +3,6 @@
 // See ../../THIRD_PARTY_NOTICES.md for source and license information.
 
 ///|
-/// Evaluate GetPath
-fn eval_get_path(
-  path_expr : Expr,
-  input : Json,
-  env : Env,
-) -> Iter[Json] raise InterpreterError {
-  match eval_with_env(path_expr, input, env).collect() {
-    [Array(path_arr), ..] =>
-      match get_at_path(input, path_arr) {
-        Some(value) => Iter::singleton(value)
-        None => Iter::singleton(null)
-      }
-    _ => Iter::singleton(null)
-  }
-}
-
-///|
 fn get_at_path(current : Json, path : ArrayView[Json]) -> Json? {
   match path {
     [] => Some(current)
