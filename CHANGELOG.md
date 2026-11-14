@@ -14,9 +14,17 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-14
 
-Development only.
+Publication in progress; complete exact-coordinate acceptance is pending.
 
-- Prepare core 0.11.0, curl/wget 0.2.7 and jq 0.2.9. Keep HTTP and Cookie
+- Prepare serve 0.1.3 for the already implemented async 0.22.9 connection-reuse
+  behavior. Preserve immutable 0.1.2, which closes successful file responses;
+  its two failures against the newer scenario remain recorded in the first
+  local issue #34 publication acceptance attempt. Release this command
+  separately before rerunning the complete frozen MoonX acceptance.
+- Publish core 0.11.0, curl/wget/jqlog 0.2.7 and jq 0.2.9 from `88ae2f4`
+  after [required development CI](https://github.com/moonbit-community/cmd/actions/runs/43600816824).
+  Verify all five upload acknowledgements, registry builds and source archive
+  checksums without retries. Keep HTTP and Cookie
   octets through command-owned admission, jar save/reload and request output;
   add supported Curl/Wget configuration dialects and Curl header files/removal.
   Accept distribution `passive_ftp` startup defaults without changing HTTP.
@@ -33,8 +41,8 @@ Development only.
 - Establish a fresh immutable-oracle baseline of 207 two-process HTTP controls
   and 50 jq stream controls, followed by 115 module/input CLI controls and
   57 evaluation controls. The missing historical captures remain historical claims.
-  Candidate definitions and published expectations stay independent. No package
-  publication or performance acceptance is claimed.
+  Candidate definitions and published expectations stay independent. These
+  observations do not establish full upstream parity or performance acceptance.
 - The preceding HTTP/stream batch passed [required CI](https://github.com/moonbit-community/cmd/actions/runs/43584693515).
   The expanded candidate passes 3,247 Wasm package tests, 231 Native tool tests
   and 4,078 local command checks with zero failures and 40 declared platform

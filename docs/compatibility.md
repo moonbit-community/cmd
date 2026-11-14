@@ -3,11 +3,13 @@
 Date: 2026-09-05
 Updated: 2026-11-14
 
-## Issue #34 development candidate
+## Issue #34 release profile
 
-The unpublished candidate is core 0.11.0, curl/wget/jqlog 0.2.7 and jq 0.2.9.
-The published coordinates and independent expectations in `tests/release/latest*.json`
-remain unchanged. Earlier versioned profiles below retain their dated scope.
+Core 0.11.0, curl/wget/jqlog 0.2.7 and jq 0.2.9 have been uploaded and their
+registry builds and archive checksums verified. Complete exact-coordinate
+acceptance remains pending, including the separately prepared serve 0.1.3.
+The accepted baseline and independent expectations in `tests/release/latest*.json`
+remain unchanged until that gate passes. Earlier profiles retain their dated scope.
 
 Curl and Wget preserve admitted HTTP and Cookie octets through saved jars,
 second-process reloads and outgoing fields. Each command owns response folding,
@@ -243,15 +245,16 @@ are recorded in [latest.json](../tests/release/latest.json) and
 [release record](../CHANGELOG.md#2026-11-10) records exact-version acceptance.
 
 The current workspace has 82 command modules, including serve and local-only
-timeout. `cli/serve@0.1.2` is published and selected by `moonx cli/serve@latest`.
-It corrects the earlier immutable 0.1.1 package's incorrect `serve 0.1.0`
-version output and joins the 81-command release inventory.
+timeout. The current serve candidate is `cli/serve@0.1.3`; `cli/serve@0.1.2`
+remains published until its replacement passes the separate release gates.
+Version 0.1.2 corrects the earlier immutable 0.1.1 package's incorrect
+`serve 0.1.0` version output and joins the 81-command release inventory.
 The published `cli/serve@0.1.2` serves regular files and index.html over
 HTTP with GET/HEAD, MIME types and canonical root checks. Invalid URL paths
 return 400; missing, unreadable, outside-root and nonregular targets return 404.
 Its successful file responses are written directly to the socket and close
-the connection with `Connection: close`. The unpublished workspace development
-uses async 0.22.9's fixed-length `@http` body path and keeps the connection open.
+the connection with `Connection: close`. The 0.1.3 candidate uses async 0.22.9's
+fixed-length `@http` body path and keeps the connection open.
 The CLI follows standard `argparse` syntax, including `--port=8000`, `-p8000`
 and short help/version aliases. Syntax errors report usage and exit 1.
 There is no listing, SPA fallback or upload. Wasm policy separately limits

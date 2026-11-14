@@ -259,6 +259,12 @@ baseline containing all current command artifacts.
 
 ## Static HTTP serving
 
+Assign the connection-reuse implementation to serve 0.1.3. The immutable
+0.1.2 coordinate retains its close-after-file-response behavior; never replace
+that package or treat current-workspace connection assertions as its contract.
+The new coordinate must pass the existing static-file and policy scenarios
+through exact-version MoonX before its release is accepted.
+
 `commands/serve` declares its CLI with `moonbitlang/core/argparse`, which owns
 option syntax, help and syntax diagnostics. The command validates the listen
 address and owns URL-to-file mapping, MIME types and the bounded file-copy loop.

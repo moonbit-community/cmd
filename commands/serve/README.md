@@ -1,17 +1,17 @@
 # serve
 
-Minimal static HTTP file server, implemented in pure MoonBit. Workspace
-development uses `moonbitlang/async@0.22.9`. Run the latest published release
+Minimal static HTTP file server, implemented in pure MoonBit with
+`moonbitlang/async@0.22.9`. Run the latest published release
 with MoonX:
 
 ```sh
 moonx cli/serve@latest -- public
 ```
 
-The latest published package is `cli/serve@0.1.2`, which reports `serve 0.1.2`
-with `--version`. The earlier immutable 0.1.1 package incorrectly reports 0.1.0.
-The published 0.1.2 release closes successful file responses. The connection
-reuse described below is an unpublished workspace change.
+Version: `cli/serve@0.1.3`, reporting `serve 0.1.3` with `--version`.
+This version keeps successful file-response connections available for reuse.
+The immutable 0.1.2 release closes those connections; the earlier 0.1.1 package
+incorrectly reports version 0.1.0.
 
 Usage: `serve [--host ADDRESS] [-p PORT|--port PORT] [DIRECTORY]`.
 The directory defaults to `.`, the address to `127.0.0.1`, and the port to 8000.
