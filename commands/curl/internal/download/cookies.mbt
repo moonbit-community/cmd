@@ -53,7 +53,7 @@ fn cookie_stored_domain(value : String) -> String {
 
 ///|
 fn ParsedUrl::cookie_host(self : ParsedUrl) -> String {
-  let host = self.host
+  let host = cookie_text(@utf8.encode(self.host))
   if self.ip_literal {
     cookie_ascii_lower(host[1:host.length() - 1].to_owned())
   } else {
@@ -337,11 +337,11 @@ fn CookieJar::receive(
       (
         cookie_ascii_lower(host) == cookie_ascii_lower(domain) &&
         !@netops.cookie_ip_literal(domain) &&
-        @netops.cookie_public_suffix(curl_suffix_name(domain))
+        @netops.cookie_public_suffix(cookie_utf8(curl_suffix_name(domain)))
       )
     let path = match cookie.path {
       Some(path) if path != "" => curl_cookie_path(path)
-      _ => default_cookie_path(url.path)
+      _ => default_cookie_path(cookie_text(@utf8.encode(url.path)))
     }
     let expires = match cookie.max_age {
       Some(age) if age <= 0L => Some(0L)
@@ -389,18 +389,18 @@ fn CookieJar::receive(
 
 ///|
 fn cookie_sorts_before(left : StoredCookie, right : StoredCookie) -> Bool {
-  let left_path = @utf8.encode(left.path).length()
-  let right_path = @utf8.encode(right.path).length()
-  let left_domain = @utf8.encode(left.domain).length()
-  let right_domain = @utf8.encode(right.domain).length()
+  let left_path = left.path.length()
+  let right_path = right.path.length()
+  let left_domain = left.domain.length()
+  let right_domain = right.domain.length()
   if left_path != right_path {
     return left_path > right_path
   }
   if left_domain != right_domain {
     return left_domain > right_domain
   }
-  let left_name = @utf8.encode(left.name).length()
-  let right_name = @utf8.encode(right.name).length()
+  let left_name = left.name.length()
+  let right_name = right.name.length()
   if left_name != right_name {
     return left_name > right_name
   }
@@ -410,7 +410,7 @@ fn cookie_sorts_before(left : StoredCookie, right : StoredCookie) -> Bool {
 }
 
 ///|
-fn CookieJar::header_for(
+fn CookieJar::header_octets(
   self : CookieJar,
   url : ParsedUrl,
   now : Int64,
@@ -423,6 +423,7 @@ fn CookieJar::header_for(
   })
   let host = url.cookie_host()
   let secure_context = cookie_secure_context(url)
+  let request_path = cookie_text(@utf8.encode(url.path))
   let selected = self.entries.filter(cookie => {
     !cookie.expired(now) &&
     (if cookie.host_only {
@@ -430,7 +431,7 @@ fn CookieJar::header_for(
     } else {
       cookie_domain_matches(host, cookie.domain)
     }) &&
-    cookie_path_matches(url.path, cookie.path) &&
+    cookie_path_matches(request_path, cookie.path) &&
     (!cookie.secure || secure_context)
   })
   // Retain the pinned domain/path/name ordering without changing stored order.
@@ -451,24 +452,29 @@ fn CookieJar::header_for(
 }
 
 ///|
-pub fn CookieJar::load_netscape(self : CookieJar, text : String) -> Unit {
-  self.load_netscape_at(text, @fsops.current_timestamp().seconds)
+pub fn CookieJar::load_bytes(self : CookieJar, bytes : Bytes) -> Bool {
+  self.load_octets_at(cookie_text(bytes), @fsops.current_timestamp().seconds)
 }
 
 ///|
-fn CookieJar::load_netscape_at(
+fn CookieJar::load_octets_at(
   self : CookieJar,
   text : String,
   now : Int64,
-) -> Unit {
-  for line in text.split("\n") {
-    let line = line.trim_end(chars="\r").to_owned()
+) -> Bool {
+  let (lines, complete) = cookie_file_lines(text)
+  for line in lines {
+    let end = line.find("\r").unwrap_or(line.length())
+    let line = line[:end].to_owned()
     let http_only = line.has_prefix("#HttpOnly_")
     let line = if http_only { line[10:].to_owned() } else { line }
     if line == "" || line.has_prefix("#") {
       continue
     }
     let fields = line.split("\t").map(field => field.to_owned()).collect()
+    if fields.length() == 6 {
+      fields.push("")
+    }
     if fields.length() != 7 {
       continue
     }
@@ -487,6 +493,9 @@ fn CookieJar::load_netscape_at(
     }
     let domain = cookie_stored_domain(fields[0])
     if domain == "" || fields[5] == "" {
+      continue
+    }
+    if cookie_control(fields[5]) || cookie_control(fields[6]) {
       continue
     }
     if !curl_suffix_admission(None, domain) {
@@ -509,10 +518,11 @@ fn CookieJar::load_netscape_at(
     self.replace(cookie)
   }
   self.entries = self.entries.filter(cookie => !cookie.expired(now))
+  complete
 }
 
 ///|
-fn CookieJar::netscape(
+fn CookieJar::netscape_octets(
   self : CookieJar,
   include_session~ : Bool = true,
   now~ : Int64 = @fsops.current_timestamp().seconds,
@@ -555,8 +565,8 @@ fn CookieJar::netscape(
 }
 
 ///|
-pub async fn CookieJar::load(self : CookieJar, path : String) -> Unit {
-  self.load_netscape(@fs.read_file(path).text())
+pub async fn CookieJar::load(self : CookieJar, path : String) -> Bool {
+  self.load_bytes(@fs.read_file(path).binary())
 }
 
 ///|
@@ -565,7 +575,7 @@ pub async fn CookieJar::save(
   path : String,
   include_session~ : Bool = true,
 ) -> Unit {
-  let text = self.netscape(include_session~)
+  let text = cookie_bytes(self.netscape_octets(include_session~))
   if path == "-" {
     @stdio.stdout.write(text)
   } else {

@@ -222,3 +222,86 @@ async test "cancelled transfer replay retains candidate wire after observers sto
   @async.sleep(50)
   assert_eq(@fs.read_file(path).binary(), bytes)
 }
+
+///|
+async test "cancellation after transfer return preserves execution before quiescence" {
+  let work = @fs.tmpdir(prefix="mooncmd-returned-replay-")
+  defer @fs.rmdir(work, recursive=true)
+  let connections : Array[@socket.Tcp] = []
+  defer (for connection in connections {
+    connection.close()
+  })
+  let ready : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
+  let executor : Executor = {
+    invoke: invocation => {
+      let authority = invocation.environment["http_proxy"]
+        .strip_prefix("http://")
+        .unwrap()
+        .to_owned()
+      let connection = @socket.Tcp::connect(@socket.Addr::parse(authority))
+      connections.push(connection)
+      connection.write(
+        "CONNECT retry.example:80 HTTP/1.1\r\nHost: " + authority + "\r\n\r\n",
+      )
+      assert_eq(
+        connection.read_until("\r\n"),
+        Some("HTTP/1.1 200 Connection Established"),
+      )
+      assert_eq(connection.read_until("\r\n"), Some(""))
+      // Keep the tunnel open without a request, so the observer cannot finish.
+      ready.put(())
+      {
+        run: {
+          output: {
+            status: 18,
+            stdout: b"returned\x00\xff",
+            stderr: b"diagnostic\n",
+          },
+          timed_out: false,
+          cleanup_error: None,
+        },
+        source_version: "returned-fixture",
+        program: "returned-fixture",
+        args: ["url"],
+        infrastructure_error: None,
+        retain_identity: true,
+      }
+    },
+  }
+  let evidence = work + "/budget-expired-complete-503-without-fail.evidence"
+  @async.with_timeout(10000, () => {
+    @async.with_task_group(group => {
+      let task = group.spawn(() => {
+        network_curl_transfers_scenario(
+          executor,
+          work,
+          corpus="curl-http-retry",
+        )
+      })
+      ready.get()
+      while !@fs.exists(evidence + "/call-1.execution.json") {
+        @async.sleep(5)
+      }
+      task.cancel()
+      try task.wait() catch {
+        @async.WaitedTaskAlreadyCancelled => ()
+        error => raise error
+      } noraise {
+        _ => fail("the transfer observer must be cancelled")
+      }
+    })
+  })
+  let wire = @json.parse(@fs.read_file(evidence + "/phase-0.wire.json").text())
+  assert_true(
+    wire is { "candidate_returned": true, "observer_quiesced": true, .. },
+  )
+  assert_true(
+    @json.parse(@fs.read_file(evidence + "/call-1.invocation-end.json").text())
+    is { "returned": true, .. },
+  )
+  assert_eq(
+    @fs.read_file(evidence + "/call-1.stdout.bin").binary(),
+    b"returned\x00\xff",
+  )
+  assert_eq(@fs.read_file(evidence + "/call-1.status.txt").text(), "18")
+}

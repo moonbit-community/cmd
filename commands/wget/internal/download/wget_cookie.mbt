@@ -126,7 +126,7 @@ fn wget_cookie_fields(text : String) -> Array[WgetCookieField]? {
 }
 
 ///|
-fn wire_cookie(text : String) -> Cookie? {
+fn parse_cookie_octets(text : String) -> Cookie? {
   guard wget_cookie_fields(text) is Some(fields) &&
     fields.get(0) is Some(first) &&
     first.value is Some(_) else {
@@ -147,9 +147,7 @@ fn wire_cookie(text : String) -> Cookie? {
         path = Some(value)
       }
       "expires" => {
-        guard field.value is Some(value) &&
-          value != "" &&
-          @utf8.encode(value).length() < 128 else {
+        guard field.value is Some(value) && value != "" && value.length() < 128 else {
           return None
         }
         if wget_cookie_date(value) is Some(date) {
@@ -157,9 +155,7 @@ fn wire_cookie(text : String) -> Cookie? {
         }
       }
       "max-age" => {
-        guard field.value is Some(value) &&
-          value != "" &&
-          @utf8.encode(value).length() < 32 else {
+        guard field.value is Some(value) && value != "" && value.length() < 32 else {
           return None
         }
         guard wget_cookie_number(value) is Some(age) && age != -1.0 else {

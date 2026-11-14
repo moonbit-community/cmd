@@ -22,11 +22,12 @@ fn StoredCookie::expired(self : StoredCookie, now : Int64) -> Bool {
 /// A cookie store shared by transfers. Persistence uses the Netscape jar format.
 pub struct CookieJar {
   priv mut entries : Array[StoredCookie]
+  priv domains : CookieDomains
 }
 
 ///|
 pub fn CookieJar::new() -> CookieJar {
-  { entries: [], }
+  { entries: [], domains: CookieDomains::new(), }
 }
 
 ///|
@@ -52,7 +53,7 @@ fn cookie_stored_domain(value : String) -> String {
 
 ///|
 fn ParsedUrl::cookie_host(self : ParsedUrl) -> String {
-  let host = self.host.to_lower()
+  let host = cookie_text(@utf8.encode(self.host.to_lower()))
   host
 }
 
@@ -101,15 +102,15 @@ fn CookieJar::replace(
     }
     { ..cookie, domain: spelling, }
   }
-  for old in self.entries {
-    if cookie_same_key(old, cookie) {
-      // File reloads must not overwrite a cookie received from a response.
-      break
-    }
-  }
   if discard {
     self.entries = self.entries.filter(old => !cookie_same_key(old, cookie))
+    if !self.entries.any(old => {
+        cookie_ascii_lower(old.domain) == cookie_ascii_lower(cookie.domain)
+      }) {
+      self.domains.remove(cookie.domain)
+    }
   } else {
+    self.domains.insert(cookie.domain)
     self.entries = [
       cookie,
       ..self.entries.filter(old => !cookie_same_key(old, cookie)),
@@ -125,11 +126,10 @@ fn CookieJar::receive(
   now : Int64,
 ) -> Unit {
   let host = url.cookie_host()
+  let request_path = cookie_text(@utf8.encode(url.path))
   for cookie in cookies {
     let mut discard = false
-    if cookie.name == "" ||
-      cookie.name.contains("\t") ||
-      cookie.value.contains("\t") {
+    if cookie.name == "" || cookie.name.contains("\t") {
       continue
     }
     if cookie.domain == Some("") || cookie.path == Some("") {
@@ -145,19 +145,19 @@ fn CookieJar::receive(
       }
       _ => (host, true)
     }
-    if !wget_cookie_domain_allows(host, domain) {
+    if !wget_cookie_domain_allows_octets(host, domain) {
       discard = true
     }
     let path = match cookie.path {
       Some(path) => {
-        if !url.path.has_prefix(path) {
+        if !request_path.has_prefix(path) {
           continue
         }
         path
       }
       None =>
-        match url.path.rev_find("/") {
-          Some(index) => url.path[:index + 1].to_owned()
+        match request_path.rev_find("/") {
+          Some(index) => request_path[:index + 1].to_owned()
           None => "/"
         }
     }
@@ -199,30 +199,31 @@ fn CookieJar::receive(
 
 ///|
 fn cookie_sorts_before(left : StoredCookie, right : StoredCookie) -> Bool {
-  let left_path = @utf8.encode(left.path).length()
-  let right_path = @utf8.encode(right.path).length()
-  let left_domain = @utf8.encode(left.domain).length()
-  let right_domain = @utf8.encode(right.domain).length()
+  let left_path = left.path.length()
+  let right_path = right.path.length()
+  let left_domain = left.domain.length()
+  let right_domain = right.domain.length()
   if left_domain != right_domain {
     return left_domain > right_domain
   }
   if left_path != right_path {
     return left_path > right_path
   }
-  let names = @utf8.encode(left.name).lexical_compare(@utf8.encode(right.name))
+  let names = left.name.lexical_compare(right.name)
   if names != 0 {
     return names < 0
   }
-  @utf8.encode(left.value).lexical_compare(@utf8.encode(right.value)) < 0
+  left.value.lexical_compare(right.value) < 0
 }
 
 ///|
-fn CookieJar::header_for(
+fn CookieJar::header_octets(
   self : CookieJar,
   url : ParsedUrl,
   now : Int64,
 ) -> String? {
   let host = url.cookie_host()
+  let request_path = cookie_text(@utf8.encode(url.path))
   if !wget_cookie_host_allowed(host) {
     return None
   }
@@ -242,7 +243,7 @@ fn CookieJar::header_for(
         cookie.domain.contains(".")
       )
     }) &&
-    url.path.has_prefix(cookie.path) &&
+    request_path.has_prefix(cookie.path) &&
     (!cookie.secure || cookie_secure_context(url))
   })
   // The pinned Wget walks more-specific domain chains first, newest cookie
@@ -253,8 +254,7 @@ fn CookieJar::header_for(
       let cookie = selected[index]
       let mut position = index
       while position > 0 &&
-            @utf8.encode(cookie.domain).length() >
-            @utf8.encode(selected[position - 1].domain).length() {
+            cookie.domain.length() > selected[position - 1].domain.length() {
         selected[position] = selected[position - 1]
         position -= 1
       }
@@ -293,17 +293,18 @@ fn CookieJar::header_for(
 }
 
 ///|
-fn CookieJar::load_netscape(self : CookieJar, text : String) -> Unit {
-  self.load_netscape_at(text, @fsops.current_timestamp().seconds)
+fn CookieJar::load_bytes(self : CookieJar, bytes : Bytes) -> Unit {
+  self.load_octets_at(cookie_text(bytes), @fsops.current_timestamp().seconds)
 }
 
 ///|
-fn CookieJar::load_netscape_at(
+fn CookieJar::load_octets_at(
   self : CookieJar,
   text : String,
   now : Int64,
 ) -> Unit {
   for line in text.split("\n") {
+    let line = line[:line.find("\u0000").unwrap_or(line.length())]
     let line = {
       let line = line.trim_start(chars=" \t\r\n\u{000b}\u{000c}")
       if line.has_suffix("\r") {
@@ -357,40 +358,51 @@ fn CookieJar::load_netscape_at(
 }
 
 ///|
-fn CookieJar::netscape(
+fn CookieJar::netscape_octets(
   self : CookieJar,
   include_session~ : Bool = true,
   now~ : Int64 = @fsops.current_timestamp().seconds,
 ) -> String {
   let out = StringBuilder()
   out.write_string("# Netscape HTTP Cookie File\n# Generated by cli/core\n\n")
+  let chains : Map[String, Array[StoredCookie]] = Map([])
   for cookie in self.entries {
-    if cookie.expired(now) {
-      continue
+    let domain = cookie_ascii_lower(cookie.domain)
+    match chains.get(domain) {
+      Some(chain) => chain.push(cookie)
+      None => chains[domain] = [cookie]
     }
-    if !include_session && cookie.expires is None {
-      continue
+  }
+  for domain in self.domains.cells {
+    guard domain is Some(domain) else { continue }
+    for cookie in chains[cookie_ascii_lower(domain)] {
+      if cookie.expired(now) {
+        continue
+      }
+      if !include_session && cookie.expires is None {
+        continue
+      }
+      if !cookie.host_only {
+        out.write_string(".")
+      }
+      out.write_string(cookie.domain)
+      if cookie.port is Some(port) {
+        out.write_string(":" + port.to_string())
+      }
+      out.write_string(if cookie.host_only { "\tFALSE\t" } else { "\tTRUE\t" })
+      out.write_string(cookie.path)
+      out.write_string(if cookie.secure { "\tTRUE\t" } else { "\tFALSE\t" })
+      let expiry = cookie.expires.unwrap_or(0L)
+      out.write_string(wget_cookie_saved_time(expiry))
+      out.write_string("\t" + cookie.name + "\t" + cookie.value + "\n")
     }
-    if !cookie.host_only {
-      out.write_string(".")
-    }
-    out.write_string(cookie.domain)
-    if cookie.port is Some(port) {
-      out.write_string(":" + port.to_string())
-    }
-    out.write_string(if cookie.host_only { "\tFALSE\t" } else { "\tTRUE\t" })
-    out.write_string(cookie.path)
-    out.write_string(if cookie.secure { "\tTRUE\t" } else { "\tFALSE\t" })
-    let expiry = cookie.expires.unwrap_or(0L)
-    out.write_string(wget_cookie_saved_time(expiry))
-    out.write_string("\t" + cookie.name + "\t" + cookie.value + "\n")
   }
   out.to_string()
 }
 
 ///|
 pub async fn CookieJar::load(self : CookieJar, path : String) -> Unit {
-  self.load_netscape(@fs.read_file(path).text())
+  self.load_bytes(@fs.read_file(path).binary())
 }
 
 ///|
@@ -399,7 +411,7 @@ pub async fn CookieJar::save(
   path : String,
   include_session~ : Bool = true,
 ) -> Unit {
-  let text = self.netscape(include_session~)
+  let text = cookie_bytes(self.netscape_octets(include_session~))
   if path == "-" {
     @stdio.stdout.write(text)
   } else {

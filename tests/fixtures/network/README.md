@@ -1,5 +1,17 @@
 # Fixed network expectations
 
+The `http-cookie*.json`, `http-config*.json` and `http-header-config.json`
+fixtures are a fresh 207-case baseline (113 Curl, 94 Wget), captured from the
+immutable diagnostic Linux image and source-build checksums recorded inside
+each file. They retain 414 actual process phases, raw request/response bytes,
+stdout/stderr/status and complete request-time/final file inventories. These
+captures do not reconstruct the missing historical 157/8-case artifacts.
+`tests/tools/http_cookie.mbtx` creates new captures only in a fresh directory;
+its named containers, execution deadlines and protected bounded cleanup retain
+failure evidence. The existing replay checks the complete record and only
+normalizes the explicitly validated generated Wget jar preamble. Fixed Linux
+CI comparison validates its own oracle identity separately.
+
 Current package tests execute all Cookie/date/expiry/Domain records beside each
 command's private implementation and all 73 authentication records through
 Wget's private execution path. Ordinary CLI runs retain complete usage events;

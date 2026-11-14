@@ -7,6 +7,7 @@ pub(all) struct Request {
   request_method : HttpMethod
   headers : Array[HttpHeader]
   body : RequestBody
+  chunked : Bool
 }
 
 ///|
@@ -26,6 +27,18 @@ pub(all) struct ResponseHead {
   fields : Array[HttpHeader]
   framing : ResponseFraming
   complete : Bool
+}
+
+///|
+/// Raw response metadata in arrival order, including informational blocks.
+/// Bytes retain the line terminator. A callback may delay a field until the
+/// next field or block end to unfold it. Eof permits command-specific admission
+/// of incomplete blocks. Request and body framing stay in the transport.
+pub(all) enum ResponseLine {
+  Status(Int32, Bytes)
+  Field(Bytes)
+  End(Bytes)
+  Eof
 }
 
 ///|
@@ -169,6 +182,7 @@ pub async fn[T] with_response(
   request : Request,
   transport : Transport,
   consume : async (ResponseScope) -> T,
+  receive_header? : async (ResponseLine) -> HttpHeader?,
 ) -> T {
   guard transport.connect_timeout_ms > 0 && transport.idle_timeout_ms > 0 else {
     raise transfer_error(TimeoutFailure, "timeouts must be greater than zero")
@@ -180,7 +194,7 @@ pub async fn[T] with_response(
   }
   let closed = Ref(false)
   defer (if !closed.val { wire.close() })
-  let response = exchange_request(wire, request, transport)
+  let response = exchange_request(wire, request, transport, receive_header?)
   let scope = {
     wire,
     head: response,

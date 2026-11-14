@@ -60,6 +60,9 @@ fn usage() -> String {
     #|      --max-redirect=NUMBER       maximum redirects (default 20)
     #|      --content-disposition       honor Content-Disposition filenames
     #|      --header=STRING             set a request header; last same-name value wins
+    #|      --config=FILE               use this configuration file
+    #|      --no-config                 skip startup configuration
+    #|  -e, --execute=COMMAND           apply a configuration setting
     #|      --user=USER                 HTTP Basic user name
     #|      --password=PASSWORD         HTTP Basic password
     #|      --http-user=USER            HTTP-specific user, before --user fallback
@@ -201,8 +204,11 @@ fn parse_statuses(value : String) -> Array[Int32] raise UsageError {
 }
 
 ///|
-fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
+fn option_specs() -> Array[@cli.OptionSpec] {
   let specs = [
+    @cli.option("config"),
+    @cli.flag("no-config"),
+    @cli.option("execute", short='e'),
     @cli.flag("quiet", short='q'),
     @cli.option("output-document", short='O'),
     @cli.option("output-file", short='o'),
@@ -238,6 +244,29 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
     @cli.option("idle-timeout"),
     @cli.flag("help"),
   ]
+  for
+    name in [
+      "quiet", "continue", "timestamping", "retry-connrefused", "content-disposition",
+      "keep-session-cookies",
+    ] {
+    specs.push(@cli.flag("no-" + name))
+  }
+  specs.append([
+    @cli.flag("cookies"),
+    @cli.flag("check-certificate"),
+    @cli.flag("proxy"),
+  ])
+  specs
+}
+
+///|
+fn enabled(parsed : @cli.ParsedArgs, name : String) -> Bool {
+  parsed.last_occurrence([name, "no-" + name]) == Some(name)
+}
+
+///|
+fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
+  let specs = option_specs()
   let parsed = @cli.parse(auth_arguments(args, specs), specs) catch {
     @cli.CliError(option~, message~, ..) =>
       raise UsageError("\{message}: '\{option}'")
@@ -246,14 +275,18 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
   options.urls.append(parsed.operands)
   options.input_files.append(parsed.values("input-file"))
   options.help = parsed.contains("help")
-  options.quiet = parsed.contains("quiet")
+  options.quiet = enabled(parsed, "quiet")
   options.output_document = parsed.last_value("output-document")
-  options.continue_download = parsed.contains("continue")
-  options.timestamping = parsed.contains("timestamping")
-  options.retry_connection_refused = parsed.contains("retry-connrefused")
-  options.content_disposition = parsed.contains("content-disposition")
-  options.no_check_certificate = parsed.contains("no-check-certificate")
-  options.no_proxy = parsed.contains("no-proxy")
+  options.continue_download = enabled(parsed, "continue")
+  options.timestamping = enabled(parsed, "timestamping")
+  options.retry_connection_refused = enabled(parsed, "retry-connrefused")
+  options.content_disposition = enabled(parsed, "content-disposition")
+  options.no_check_certificate = parsed.last_occurrence([
+      "check-certificate", "no-check-certificate",
+    ]) ==
+    Some("no-check-certificate")
+  options.no_proxy = parsed.last_occurrence(["proxy", "no-proxy"]) ==
+    Some("no-proxy")
   if parsed.last_value("local-encoding") is Some(value) {
     options.utf8_hosts = match value.to_lower().replace_all(old="-", new="") {
       "utf8" => true
@@ -284,10 +317,11 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
         )
     }
   }
-  options.cookies = !parsed.contains("no-cookies")
+  options.cookies = parsed.last_occurrence(["cookies", "no-cookies"]) !=
+    Some("no-cookies")
   options.load_cookies = parsed.last_value("load-cookies")
   options.save_cookies = parsed.last_value("save-cookies")
-  options.keep_session_cookies = parsed.contains("keep-session-cookies")
+  options.keep_session_cookies = enabled(parsed, "keep-session-cookies")
   match parsed.last_occurrence(["output-file", "append-output"]) {
     Some("output-file") => {
       options.log_file = parsed.last_value("output-file")
@@ -312,7 +346,11 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
     options.retry_http_statuses.append(parse_statuses(value))
   }
   for value in parsed.values("header") {
-    options.headers.push(parse_header(value))
+    if value == "" {
+      options.headers.clear()
+    } else {
+      options.headers.push(parse_header(value))
+    }
   }
   if parsed.last_value("method") is Some(value) {
     options.request_method = @netops.parse_http_method(value) catch {
@@ -337,18 +375,16 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
     }
     _ => ()
   }
-  if parsed.last_value("timeout") is Some(value) {
-    let timeout = parse_seconds(value, "--timeout")
-    options.connect_timeout_ms = timeout
-    options.read_timeout_ms = timeout
+  if parsed.last_occurrence(["timeout", "connect-timeout"]) is Some(name) {
+    options.connect_timeout_ms = parse_seconds(
+      parsed.last_value(name).unwrap(),
+      "--" + name,
+    )
   }
-  if parsed.last_value("connect-timeout") is Some(value) {
-    options.connect_timeout_ms = parse_seconds(value, "--connect-timeout")
-  }
-  match parsed.last_occurrence(["read-timeout", "idle-timeout"]) {
+  match parsed.last_occurrence(["timeout", "read-timeout", "idle-timeout"]) {
     Some(name) => {
       let value = parsed.last_value(name).unwrap()
-      options.read_timeout_ms = parse_seconds(value, "--read-timeout")
+      options.read_timeout_ms = parse_seconds(value, "--" + name)
     }
     None => ()
   }

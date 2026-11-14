@@ -36,6 +36,7 @@ async fn network_request(
   oracle_image? : String,
   oracle_args? : Array[String],
   oracle_failures? : Array[String],
+  after_candidate? : async () -> Unit,
   transfer_requests? : Array[@harness.TransferFixtureRequest],
   request_wires? : Array[Bytes],
   expected_paths? : Array[String],
@@ -122,50 +123,26 @@ async fn network_request(
   returned_at.val = @async.now()
   returned.val = true
   let result = execution.run.output
-  // Exclude only the invocation intent owned by this call from product effects.
-  let output_names = if expected_files is Some(_) {
-    let names = @fs.readdir(work).filter(file => {
-      evidence != work || file != name + ".intent.json"
+  let output_names = {
+    // Persist even when file observation raises or the caller is cancelled.
+    // Capture names before these writes so evidence cannot hide product files.
+    defer @async.protect_from_cancel(() => {
+      network_record_execution(prefix, command, args, stdin, execution)
     })
-    let names = if oracle_image is Some(_) {
-      names.filter(name => name != "oracle")
+    if expected_files is Some(_) {
+      let names = @fs.readdir(work).filter(file => {
+        evidence != work || file != name + ".intent.json"
+      })
+      let names = if oracle_image is Some(_) {
+        names.filter(name => name != "oracle")
+      } else {
+        names
+      }
+      names.sort()
+      Some(names)
     } else {
-      names
+      None
     }
-    names.sort()
-    Some(names)
-  } else {
-    None
-  }
-  @fs.write_file(prefix + ".stdout.bin", result.stdout)
-  @fs.write_file(prefix + ".stderr.bin", result.stderr)
-  @fs.write_file(prefix + ".status.txt", result.status.to_string())
-  if !stdin.is_empty() {
-    @fs.write_file(prefix + ".stdin.bin", stdin)
-  }
-  let request : Json = if execution.retain_identity {
-    {
-      "command": Json(command),
-      "args": Json(args),
-      "source_version": Json(execution.source_version),
-    }
-  } else {
-    { "command": Json(command), "args": Json(args) }
-  }
-  @fs.write_file(prefix + ".request.json", request.stringify(indent=2))
-  if execution.retain_identity {
-    @fs.write_file(
-      prefix + ".execution.json",
-      @harness.canonical_json({
-        "command": Json(command),
-        "source_version": Json(execution.source_version),
-        "program": Json(execution.program),
-        "args": Json(execution.args),
-        "timed_out": Json(execution.run.timed_out),
-        "cleanup_error": @json.to_json(execution.run.cleanup_error),
-        "infrastructure_error": @json.to_json(execution.infrastructure_error),
-      }),
-    )
   }
   if execution.run.timed_out {
     fail("candidate infrastructure deadline expired; streams are partial")
@@ -175,6 +152,9 @@ async fn network_request(
   }
   if execution.infrastructure_error is Some(error) {
     fail("candidate infrastructure failure: " + error)
+  }
+  if after_candidate is Some(observe) {
+    observe()
   }
   let actual_requests = transfer_requests.map(requests => requests.copy())
   if request_wires is Some(wires) {
@@ -227,7 +207,13 @@ async fn network_request(
     let environment_names = environment.keys().to_array()
     environment_names.sort_by((left, right) => left.lexical_compare(right))
     for name in environment_names {
-      oracle_environment.append(["-e", name + "=" + environment[name]])
+      let value = environment[name]
+      let value = if value == work || value.has_prefix(work + "/") {
+        oracle_work + value[work.length():].to_owned()
+      } else {
+        value
+      }
+      oracle_environment.append(["-e", name + "=" + value])
     }
     let trace_path = oracle_work + "/psl.trace"
     let observer = if trace_suffix {
@@ -434,4 +420,45 @@ async fn network_request(
     }
   }
   result
+}
+
+///|
+async fn network_record_execution(
+  prefix : String,
+  command : String,
+  args : Array[String],
+  stdin : Bytes,
+  execution : Execution,
+) -> Unit {
+  let result = execution.run.output
+  @fs.write_file(prefix + ".stdout.bin", result.stdout)
+  @fs.write_file(prefix + ".stderr.bin", result.stderr)
+  @fs.write_file(prefix + ".status.txt", result.status.to_string())
+  if !stdin.is_empty() {
+    @fs.write_file(prefix + ".stdin.bin", stdin)
+  }
+  let request : Json = if execution.retain_identity {
+    {
+      "command": Json(command),
+      "args": Json(args),
+      "source_version": Json(execution.source_version),
+    }
+  } else {
+    { "command": Json(command), "args": Json(args) }
+  }
+  @fs.write_file(prefix + ".request.json", request.stringify(indent=2))
+  if execution.retain_identity {
+    @fs.write_file(
+      prefix + ".execution.json",
+      @harness.canonical_json({
+        "command": Json(command),
+        "source_version": Json(execution.source_version),
+        "program": Json(execution.program),
+        "args": Json(execution.args),
+        "timed_out": Json(execution.run.timed_out),
+        "cleanup_error": @json.to_json(execution.run.cleanup_error),
+        "infrastructure_error": @json.to_json(execution.infrastructure_error),
+      }),
+    )
+  }
 }

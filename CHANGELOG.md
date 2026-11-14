@@ -12,6 +12,29 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-14
+
+Development only.
+
+- Prepare core 0.11.0, curl/wget 0.2.7 and jq 0.2.9. Keep HTTP and Cookie
+  octets through command-owned admission, jar save/reload and request output;
+  add supported Curl/Wget configuration dialects and Curl header files/removal.
+  Preserve observer receipts before cancellable post-process work.
+- Add incremental jq `--stream` and `--stream-errors`, decimal literal
+  preservation and cross-file input/recovery. Maintain the minimal parser,
+  AST/evaluator and existing command logic under `jq/internal`, retaining
+  upstream tests and attribution while removing jq's MoonJQ dependency.
+  Modules and filter-driven input remain explicit local implementation gaps;
+  issue #34 remains open.
+- Establish a fresh immutable-oracle baseline of 207 two-process HTTP controls
+  and 47 jq controls. The missing historical captures remain historical claims.
+  Candidate definitions and published expectations stay independent. No package
+  publication or performance acceptance is claimed.
+- Local validation passes 2,688 Wasm package tests, 231 Native tool tests and
+  3,956 command checks with 40 declared platform skips. Check, format, interface,
+  registry and architecture validation pass; an isolated jq module also checks
+  without MoonJQ. Required CI and publication acceptance remain separate gates.
+
 ## 2026-11-11
 
 Development only.

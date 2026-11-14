@@ -30,6 +30,7 @@ pub(all) struct Options {
   utf8_hosts : Bool
   request_method : HttpMethod
   headers : Array[HttpHeader]
+  suppressed_headers : Array[String]
   body : RequestBody
   redirects : RedirectPolicy
   preserve_method_on_redirect : Bool
@@ -51,6 +52,7 @@ pub fn options(
   utf8_hosts~ : Bool = true,
   request_method~ : HttpMethod = Get,
   headers~ : Array[HttpHeader] = [],
+  suppressed_headers~ : Array[String] = [],
   body~ : RequestBody = EmptyBody,
   redirects~ : RedirectPolicy = NoRedirects,
   preserve_method_on_redirect~ : Bool = false,
@@ -70,6 +72,7 @@ pub fn options(
     utf8_hosts,
     request_method,
     headers,
+    suppressed_headers,
     body,
     redirects,
     preserve_method_on_redirect,
@@ -90,6 +93,7 @@ pub fn options(
 ///|
 #derive(Debug)
 pub(all) enum TransferEvent {
+  ResponseHeader(Bytes)
   ResponseStarted(
     url~ : String,
     status~ : Int32,

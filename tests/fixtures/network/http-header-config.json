@@ -1,0 +1,1023 @@
+{
+  "schema": 1,
+  "baseline": "fresh upstream observations; not a reconstruction of the lost 2026-11-09 corpus",
+  "image": "sha256:b223c9c29d016930b72385395d6a801959a503b81eb292c64d42a0cc1158966d",
+  "versions": "base64 (GNU coreutils) 9.11\ncmp (GNU diffutils) 3.12\n/oracle/bin/sed (GNU sed) 4.9\nGNU patch 2.8\ngzip 1.14\nhexdump from util-linux 2.40\ncolumn from util-linux 2.40\nGNU strings (GNU Binutils) 2.44\ntree v2.2.1 (c) 1996 - 2024 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro\nfind (GNU findutils) 4.10.0\nxargs (GNU findutils) 4.10.0\ngrep (GNU grep) 3.12\nGNU Wget 1.25.0 built on linux-gnu.\ncurl 8.22.0 (x86_64-pc-linux-gnu) libcurl/8.22.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 nghttp2/1.59.0\nGNU Make 4.4.1\njq-1.8.2\nxxd 2023-10-25 by Juergen Weigert et al.\nsh oracle: POSIX.1-2024 via dash 0.5.12 (source sha256 0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154)\njqlog oracle: bobzhang/jqlog@0.1.0 06a529211343c773d30d2c3aa0231a2456665b7a\n",
+  "history_sha256": "29aa72a4420aa4e7a86eb5fbbdfa3809e3c8750ecf9c6ecdd0cf53d654c4e8a4",
+  "source_builds": [
+    "RUN |29 DEBIAN_FRONTEND=noninteractive COREUTILS_VERSION=9.11 COREUTILS_SHA256=394024eda0a5955217ceda9cd1201e65dc8fa3aa29c2951135a49521d57c3cc3 DIFFUTILS_VERSION=3.12 DIFFUTILS_SHA256=7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd FINDUTILS_VERSION=4.10.0 FINDUTILS_SHA256=1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5 GREP_VERSION=3.12 GREP_SHA256=2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9 WGET_VERSION=1.25.0 WGET_SHA256=766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784 MAKE_VERSION=4.4.1 MAKE_SHA256=8814ba072182b605d156d7589c19a43b89fc58ea479b9355146160946f8cf6e9 CURL_VERSION=8.22.0 CURL_SHA256=f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7 DASH_VERSION=0.5.12 DASH_SHA256=0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154 JQ_VERSION=1.8.2 JQ_SHA256=b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f VIM_VERSION=9.1.0000 VIM_SHA256=8d2a74e358be9cf260174e15e2e29dba4773f2670718b5bf728db6f54b90e25d SED_VERSION=4.9 SED_SHA256=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181 PATCH_VERSION=2.8 PATCH_SHA256=f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3 GZIP_VERSION=1.14 GZIP_SHA256=01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6 UTIL_LINUX_VERSION=2.40 UTIL_LINUX_SHA256=d57a626081f9ead02fa44c63a6af162ec19c58f53e993f206ab7c3a6641c2cd7 /bin/sh -c curl --fail --location --retry 5       \"https://curl.se/download/curl-${CURL_VERSION}.tar.xz\"       --output curl.tar.xz   && echo \"${CURL_SHA256}  curl.tar.xz\" | sha256sum --check --strict   && tar --extract --file curl.tar.xz   && cd \"curl-${CURL_VERSION}\"   && ./configure --prefix=/oracle --disable-nls --with-openssl   && make -j\"$(nproc)\"   && make install-strip   && cd /build   && rm -rf curl.tar.xz \"curl-${CURL_VERSION}\" # buildkit",
+    "RUN |29 DEBIAN_FRONTEND=noninteractive COREUTILS_VERSION=9.11 COREUTILS_SHA256=394024eda0a5955217ceda9cd1201e65dc8fa3aa29c2951135a49521d57c3cc3 DIFFUTILS_VERSION=3.12 DIFFUTILS_SHA256=7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd FINDUTILS_VERSION=4.10.0 FINDUTILS_SHA256=1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5 GREP_VERSION=3.12 GREP_SHA256=2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9 WGET_VERSION=1.25.0 WGET_SHA256=766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784 MAKE_VERSION=4.4.1 MAKE_SHA256=8814ba072182b605d156d7589c19a43b89fc58ea479b9355146160946f8cf6e9 CURL_VERSION=8.22.0 CURL_SHA256=f7ef3ae8a22e521f289803fe93543eb64c329b58aa73a9e224dfd915a2a5f4f7 DASH_VERSION=0.5.12 DASH_SHA256=0d632f6b945058d84809cac7805326775bd60cb4a316907d0bd4228ff7107154 JQ_VERSION=1.8.2 JQ_SHA256=b1c22172dd303f3be49e935aa56aa48a8b7a46e0bc838b4997d3bb451495870f VIM_VERSION=9.1.0000 VIM_SHA256=8d2a74e358be9cf260174e15e2e29dba4773f2670718b5bf728db6f54b90e25d SED_VERSION=4.9 SED_SHA256=6e226b732e1cd739464ad6862bd1a1aba42d7982922da7a53519631d24975181 PATCH_VERSION=2.8 PATCH_SHA256=f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3 GZIP_VERSION=1.14 GZIP_SHA256=01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6 UTIL_LINUX_VERSION=2.40 UTIL_LINUX_SHA256=d57a626081f9ead02fa44c63a6af162ec19c58f53e993f206ab7c3a6641c2cd7 /bin/sh -c curl --fail --location --retry 5       \"https://ftp.gnu.org/gnu/wget/wget-${WGET_VERSION}.tar.gz\"       --output wget.tar.gz   && echo \"${WGET_SHA256}  wget.tar.gz\" | sha256sum --check --strict   && tar --extract --file wget.tar.gz   && cd \"wget-${WGET_VERSION}\"   && ./configure --prefix=/oracle --disable-nls --with-ssl=openssl   && make -j\"$(nproc)\"   && make install-strip   && cd /build   && rm -rf wget.tar.gz \"wget-${WGET_VERSION}\" # buildkit"
+  ],
+  "binaries": "f924a4be54e87de29349a2d59cb9ac8588a75edc6507cf8cf948a631d1fcc435  /oracle/bin/curl\n1a7f4b9ae3fe6508f41d99922325137a896f3a18d382ae5393880cda1ca494d2  /oracle/bin/wget\n819f065bebee9ead289e4df1d029b5f2cf18858472339443148239bc44bd81e7  /usr/local/bin/versions.sh\n",
+  "case_count": 7,
+  "cases": [
+    {
+      "label": "curl-header-empty",
+      "command": "curl",
+      "first_response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+      "initial_files": [
+        {
+          "name": "input.cookies",
+          "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e67656400ff0a"
+        }
+      ],
+      "phases": [
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "input.cookies",
+            "-c",
+            "saved.cookies",
+            "-H",
+            "X-Empty;",
+            "-H",
+            "X-Removed:",
+            "http://octets.example/set",
+            "http://octets.example/use"
+          ],
+          "status": 0,
+          "stdout_hex": "7365740a7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f73657420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d456d7074793a0d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            },
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f75736520485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d456d7074793a0d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0,
+            1
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        },
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "saved.cookies",
+            "-c",
+            "reloaded.cookies",
+            "-H",
+            "X-Empty;",
+            "-H",
+            "X-Removed:",
+            "http://octets.example/reload"
+          ],
+          "status": 0,
+          "stdout_hex": "7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f72656c6f616420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d456d7074793a0d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "reloaded.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "curl-header-remove-cookie",
+      "command": "curl",
+      "first_response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+      "initial_files": [
+        {
+          "name": "input.cookies",
+          "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e67656400ff0a"
+        }
+      ],
+      "phases": [
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "input.cookies",
+            "-c",
+            "saved.cookies",
+            "-b",
+            "sid=one",
+            "-H",
+            "Cookie:",
+            "http://octets.example/set",
+            "http://octets.example/use"
+          ],
+          "status": 0,
+          "stdout_hex": "7365740a7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f73657420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            },
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f75736520485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0,
+            1
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        },
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "saved.cookies",
+            "-c",
+            "reloaded.cookies",
+            "-b",
+            "sid=one",
+            "-H",
+            "Cookie:",
+            "http://octets.example/reload"
+          ],
+          "status": 0,
+          "stdout_hex": "7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f72656c6f616420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "reloaded.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "curl-header-remove-auth",
+      "command": "curl",
+      "first_response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+      "initial_files": [
+        {
+          "name": "input.cookies",
+          "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e67656400ff0a"
+        }
+      ],
+      "phases": [
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "input.cookies",
+            "-c",
+            "saved.cookies",
+            "-u",
+            "account:secret",
+            "-H",
+            "Authorization:",
+            "http://octets.example/set",
+            "http://octets.example/use"
+          ],
+          "status": 0,
+          "stdout_hex": "7365740a7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f73657420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            },
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f75736520485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0,
+            1
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        },
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "saved.cookies",
+            "-c",
+            "reloaded.cookies",
+            "-u",
+            "account:secret",
+            "-H",
+            "Authorization:",
+            "http://octets.example/reload"
+          ],
+          "status": 0,
+          "stdout_hex": "7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f72656c6f616420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "reloaded.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "curl-header-file",
+      "command": "curl",
+      "first_response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+      "initial_files": [
+        {
+          "name": "headers",
+          "hex": "582d436f6e6669673a206f6e650d0a582d436f6e6669673a2074776f0a582d456d7074793b0a"
+        },
+        {
+          "name": "input.cookies",
+          "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e67656400ff0a"
+        }
+      ],
+      "phases": [
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "input.cookies",
+            "-c",
+            "saved.cookies",
+            "-H",
+            "@headers",
+            "http://octets.example/set",
+            "http://octets.example/use"
+          ],
+          "status": 0,
+          "stdout_hex": "7365740a7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f73657420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d436f6e6669673a206f6e650d0d0a582d436f6e6669673a2074776f0d0a582d456d7074793a0d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+              "files_before": [
+                {
+                  "name": "headers",
+                  "hex": "582d436f6e6669673a206f6e650d0a582d436f6e6669673a2074776f0a582d456d7074793b0a"
+                },
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            },
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f75736520485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d436f6e6669673a206f6e650d0d0a582d436f6e6669673a2074776f0d0a582d456d7074793a0d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "headers",
+                  "hex": "582d436f6e6669673a206f6e650d0a582d436f6e6669673a2074776f0a582d456d7074793b0a"
+                },
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0,
+            1
+          ],
+          "files_after": [
+            {
+              "name": "headers",
+              "hex": "582d436f6e6669673a206f6e650d0a582d436f6e6669673a2074776f0a582d456d7074793b0a"
+            },
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        },
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "saved.cookies",
+            "-c",
+            "reloaded.cookies",
+            "-H",
+            "@headers",
+            "http://octets.example/reload"
+          ],
+          "status": 0,
+          "stdout_hex": "7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f72656c6f616420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d436f6e6669673a206f6e650d0d0a582d436f6e6669673a2074776f0d0a582d456d7074793a0d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "headers",
+                  "hex": "582d436f6e6669673a206f6e650d0a582d436f6e6669673a2074776f0a582d456d7074793b0a"
+                },
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0
+          ],
+          "files_after": [
+            {
+              "name": "headers",
+              "hex": "582d436f6e6669673a206f6e650d0a582d436f6e6669673a2074776f0a582d456d7074793b0a"
+            },
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "reloaded.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "curl-header-file-missing",
+      "command": "curl",
+      "first_response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+      "initial_files": [
+        {
+          "name": "input.cookies",
+          "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e67656400ff0a"
+        }
+      ],
+      "phases": [
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "input.cookies",
+            "-c",
+            "saved.cookies",
+            "-H",
+            "@missing",
+            "http://octets.example/set",
+            "http://octets.example/use"
+          ],
+          "status": 26,
+          "stdout_hex": "",
+          "stderr_hex": "6375726c3a206f7074696f6e202d483a206572726f7220656e636f756e7465726564207768656e2072656164696e6720612066696c650a6375726c3a2074727920276375726c202d2d68656c7027206f7220276375726c202d2d6d616e75616c2720666f72206d6f726520696e666f726d6174696f6e0a",
+          "exchanges": [],
+          "writes": [],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        },
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "saved.cookies",
+            "-c",
+            "reloaded.cookies",
+            "-H",
+            "@missing",
+            "http://octets.example/reload"
+          ],
+          "status": 26,
+          "stdout_hex": "",
+          "stderr_hex": "6375726c3a206f7074696f6e202d483a206572726f7220656e636f756e7465726564207768656e2072656164696e6720612066696c650a6375726c3a2074727920276375726c202d2d68656c7027206f7220276375726c202d2d6d616e75616c2720666f72206d6f726520696e666f726d6174696f6e0a",
+          "exchanges": [],
+          "writes": [],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "curl-header-remove-duplicates",
+      "command": "curl",
+      "first_response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+      "initial_files": [
+        {
+          "name": "input.cookies",
+          "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e67656400ff0a"
+        }
+      ],
+      "phases": [
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "input.cookies",
+            "-c",
+            "saved.cookies",
+            "-H",
+            "X-Test: first",
+            "-H",
+            "X-Test:",
+            "-H",
+            "X-Test: last",
+            "http://octets.example/set",
+            "http://octets.example/use"
+          ],
+          "status": 0,
+          "stdout_hex": "7365740a7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f73657420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d546573743a2066697273740d0a582d546573743a206c6173740d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            },
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f75736520485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d546573743a2066697273740d0a582d546573743a206c6173740d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0,
+            1
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        },
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "saved.cookies",
+            "-c",
+            "reloaded.cookies",
+            "-H",
+            "X-Test: first",
+            "-H",
+            "X-Test:",
+            "-H",
+            "X-Test: last",
+            "http://octets.example/reload"
+          ],
+          "status": 0,
+          "stdout_hex": "7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "47455420687474703a2f2f6f63746574732e6578616d706c652f72656c6f616420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a582d546573743a2066697273740d0a582d546573743a206c6173740d0a0d0a",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "reloaded.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "curl-post-header-remove-length",
+      "command": "curl",
+      "first_response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+      "initial_files": [
+        {
+          "name": "input.cookies",
+          "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+        },
+        {
+          "name": "sentinel",
+          "hex": "756e6368616e67656400ff0a"
+        }
+      ],
+      "phases": [
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "input.cookies",
+            "-c",
+            "saved.cookies",
+            "-d",
+            "abc",
+            "-H",
+            "Content-Length:",
+            "http://octets.example/set",
+            "http://octets.example/use"
+          ],
+          "status": 0,
+          "stdout_hex": "7365740a7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "504f535420687474703a2f2f6f63746574732e6578616d706c652f73657420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a436f6e74656e742d547970653a206170706c69636174696f6e2f782d7777772d666f726d2d75726c656e636f6465640d0a0d0a616263",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7365740a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            },
+            {
+              "request_hex": "504f535420687474703a2f2f6f63746574732e6578616d706c652f75736520485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a436f6e74656e742d547970653a206170706c69636174696f6e2f782d7777772d666f726d2d75726c656e636f6465640d0a0d0a616263",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0,
+            1
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        },
+        {
+          "args": [
+            "-q",
+            "-s",
+            "--max-time",
+            "3",
+            "-b",
+            "saved.cookies",
+            "-c",
+            "reloaded.cookies",
+            "-d",
+            "abc",
+            "-H",
+            "Content-Length:",
+            "http://octets.example/reload"
+          ],
+          "status": 0,
+          "stdout_hex": "7573650a",
+          "stderr_hex": "",
+          "exchanges": [
+            {
+              "request_hex": "504f535420687474703a2f2f6f63746574732e6578616d706c652f72656c6f616420485454502f312e310d0a486f73743a206f63746574732e6578616d706c650d0a557365722d4167656e743a206375726c2f382e32322e300d0a4163636570743a202a2f2a0d0a50726f78792d436f6e6e656374696f6e3a204b6565702d416c6976650d0a436f6e74656e742d547970653a206170706c69636174696f6e2f782d7777772d666f726d2d75726c656e636f6465640d0a0d0a616263",
+              "response_hex": "485454502f312e3120323030204f4b0d0a436f6e74656e742d4c656e6774683a20340d0a436f6e6e656374696f6e3a20636c6f73650d0a0d0a7573650a",
+              "files_before": [
+                {
+                  "name": "input.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+                },
+                {
+                  "name": "saved.cookies",
+                  "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+                },
+                {
+                  "name": "sentinel",
+                  "hex": "756e6368616e67656400ff0a"
+                }
+              ]
+            }
+          ],
+          "writes": [
+            0
+          ],
+          "files_after": [
+            {
+              "name": "input.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a"
+            },
+            {
+              "name": "reloaded.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "saved.cookies",
+              "hex": "23204e65747363617065204854545020436f6f6b69652046696c650a232068747470733a2f2f6375726c2e73652f646f63732f687474702d636f6f6b6965732e68746d6c0a2320546869732066696c65207761732067656e657261746564206279206c69626375726c21204564697420617420796f7572206f776e207269736b2e0a0a"
+            },
+            {
+              "name": "sentinel",
+              "hex": "756e6368616e67656400ff0a"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

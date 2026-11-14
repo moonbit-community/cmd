@@ -1,6 +1,7 @@
 # jq
 
-Published version: `cli/jq@0.2.8`. See the release inventory;
+Development candidate: `cli/jq@0.2.9`; published version remains `cli/jq@0.2.8`.
+See the release inventory;
 [latest.json](../../tests/release/latest.json) records the uploaded coordinates.
 
 Filter JSON for MoonX.
@@ -13,6 +14,12 @@ moonx cli/jq@0.2.8 [OPTION]... [FILTER] [FILE...]
 
 Apply jq-compatible filters to consecutive JSON values, files or stdin. Supports maps, reduce, assignments, try/catch, variables and Unicode string slices. No filter selects identity.
 
+The parser and evaluator are maintained locally in `internal/parser` and
+`internal/ast`; command adaptations and streaming I/O live in `internal/driver`.
+Jq no longer depends on the MoonJQ package. The minimal imported language
+implementation and its original tests come from the verified 0.2.0 archive;
+see [third-party notices](THIRD_PARTY_NOTICES.md).
+
 ## Options
 
 | Option | Description |
@@ -24,6 +31,8 @@ Apply jq-compatible filters to consecutive JSON values, files or stdin. Supports
 | `-s, --slurp` | collect input values in an array |
 | `-R, --raw-input` | read text lines; -Rs reads all text |
 | `-l, --logs` | skip non-JSON lines (project extension) |
+| `--stream` | emit incremental path/leaf and container-end events |
+| `--stream-errors` | emit parse-error events and resume at the next parser buffer |
 | `-S, --sort-keys` | sort object keys recursively |
 | `-e, --exit-status` | return 1 for false/null, 4 for no result |
 | `-f, --from-file` | read the first positional argument as a filter file |
@@ -48,11 +57,27 @@ or prefix the filename with `./`. Missing filenames and attached long values
 
 See the [finite diagnostic profile](../../docs/compatibility.md#extensions-and-diagnostics).
 
+## Streaming input
+
+- `--stream` incrementally emits `[path, leaf]` and `[path]` container endings.
+  Empty arrays/objects are leaves. Duplicate keys, consecutive documents and
+  output before a later parse/read failure are retained. Input files form one
+  byte stream, so tokens and containers may cross file boundaries. The reader stores one
+  64 KiB chunk, one scalar token and the nesting path; `--slurp` deliberately
+  collects events. Existing raw/null modes keep their input precedence.
+- `--stream-errors` emits `[message, path]` and discards the remainder of the
+  fixed CLI parser buffer before resuming. It implies `--stream`. Literal
+  decimal precision and exponent formatting are retained independently of the
+  evaluator's existing floating-point arithmetic limits.
+
 ## Limitations
 
-- Modules, --stream events and full jq compatibility are unsupported.
+- Full modules, filter-driven `input`/`inputs` and full jq compatibility remain
+  unsupported. Shared input continuation, module namespaces and complete
+  filter-argument closures are local implementation gaps. See ADR-0008 for
+  the required behavior and independent validation before enabling them.
 - Color requires explicit -C; automatic terminal color is unavailable. -l/--logs skips invalid lines and conflicts with -n/-R.
-- The adapter preserves complete `group_by`/`sort_by` key streams and stable ties. Grouping canonicalizes object key order and safe numeric representations; numeric ordering at or above 2^53 still follows the dependency's floating-point comparison and is not claimed exact.
+- The adapter preserves complete `group_by`/`sort_by` key streams and stable ties. Grouping canonicalizes object key order and safe numeric representations; numeric ordering at or above 2^53 still follows the imported floating-point comparison and is not claimed exact.
 
 ## Examples
 

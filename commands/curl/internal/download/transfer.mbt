@@ -72,28 +72,45 @@ pub async fn transfer(
       headers,
       length,
       options.resume_from,
+      suppressed=options.suppressed_headers,
     )
     let persistent = prepared_headers.persistent
     let per_request = prepared_headers.per_request
     if credentials_allowed &&
       credentials is Some(credentials) &&
+      !options.suppressed_headers.contains("authorization") &&
       !prepared_headers.authorization_supplied {
-      per_request.set(
-        "Authorization",
-        "Basic " + @base64.encode(@utf8.encode(credentials)),
+      let remaining = per_request.fields.filter(field => {
+        field.name.to_lower() != "authorization"
+      })
+      per_request.fields.clear()
+      per_request.fields.push(
+        @netops.http_header(
+          "Authorization",
+          "Basic " + @base64.encode(@utf8.encode(credentials)),
+        ),
       )
+      per_request.fields.append(remaining)
     }
-    let stored = match options.cookie_jar {
-      Some(jar) => jar.header_for(parsed, @fsops.current_timestamp().seconds)
-      None => None
+    let stored = if options.suppressed_headers.contains("cookie") {
+      None
+    } else {
+      match options.cookie_jar {
+        Some(jar) =>
+          jar.header_octets(parsed, @fsops.current_timestamp().seconds)
+        None => None
+      }
     }
     if per_request.contains("Cookie") && stored is Some(value) {
       // Jar cookies precede explicit fields without merging their values.
-      persistent.set("Cookie", value)
+      persistent.fields.push(
+        @netops.http_header_bytes("Cookie", cookie_bytes(value)),
+      )
     }
     if !per_request.contains("Cookie") {
-      let literal = if parsed.origin_key() == credential_origin {
-        cookie_data
+      let literal = if parsed.origin_key() == credential_origin &&
+        !options.suppressed_headers.contains("cookie") {
+        cookie_data.map(value => cookie_text(@utf8.encode(value)))
       } else {
         None
       }
@@ -104,10 +121,18 @@ pub async fn transfer(
         (None, None) => None
       }
       if value is Some(value) {
-        per_request.set("Cookie", value)
+        if value.contains("\r") || value.contains("\n") {
+          // Preserve transport failure ordering for invalid literal cookie data.
+          per_request.set("Cookie", value)
+        } else {
+          per_request.fields.push(
+            @netops.http_header_bytes("Cookie", cookie_bytes(value)),
+          )
+        }
       }
     }
     let transport = transport_for(options, started)
+    let pending_cookie : Ref[Bytes?] = Ref(None)
     let result = @netops.with_response(
       {
         target: parsed,
@@ -115,8 +140,18 @@ pub async fn transfer(
         request_method,
         headers: persistent.fields + per_request.fields,
         body,
+        chunked: length is None && !(body is EmptyBody),
       },
       transport,
+      receive_header=event => {
+        receive_header(
+          event,
+          parsed,
+          options.cookie_jar,
+          observer,
+          pending_cookie,
+        )
+      },
       client => {
         let head = client.head()
         if !head.complete && head.code != 200 {
@@ -130,27 +165,15 @@ pub async fn transfer(
           code: head.code,
           reason: head.reason,
           headers: Map([]),
-          cookies: [],
         }
         for field in head.fields {
-          if field.name.to_lower() == "set-cookie" {
-            if wire_cookie(field.value) is Some(cookie) {
-              response.cookies.push(cookie)
-            }
-          } else {
+          if field.name.to_lower() != "set-cookie" {
             let key = @http.CaseInsensitiveString(field.name)
             response.headers[key] = match response.headers.get(key) {
               None => field.value
               Some(previous) => previous + "," + field.value
             }
           }
-        }
-        if options.cookie_jar is Some(jar) {
-          jar.receive(
-            parsed,
-            response.cookies,
-            @fsops.current_timestamp().seconds,
-          )
         }
         let total = response_content_length(response)
         let visible_headers = head.fields

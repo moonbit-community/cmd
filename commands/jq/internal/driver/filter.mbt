@@ -1,8 +1,8 @@
 ///|
-/// Compile a jq filter through released public AST adaptations for string
+/// Compile a jq filter through command-owned AST adaptations for string
 /// slicing and stable grouping of complete key streams.
 fn parse_filter(source : String) -> @ast.Expr raise {
-  lower(@moonjq.parse(source).expr)
+  lower(@parser.parse(source))
 }
 
 ///|

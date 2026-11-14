@@ -20,6 +20,7 @@ fn exchange_test_request(port : Int32) -> Request {
     request_method: Get,
     headers: [],
     body: EmptyBody,
+    chunked: false,
   }
 }
 

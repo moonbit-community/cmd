@@ -4,7 +4,9 @@
     {
       "id": "phase3-jq-property",
       "command": "jq",
-      "inputs": ["tests/fixtures/jq/adapter.json"],
+      "inputs": [
+        "tests/fixtures/jq/adapter.json"
+      ],
       "args": [
         ".name"
       ],
@@ -1023,7 +1025,7 @@
         "help"
       ],
       "source_version": "workspace cli/jq@0.2.7 metadata contract",
-      "expected_stdout_text": "Usage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stdout_text": "Usage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "expected_stderr_text": ""
     },
     {
@@ -1042,7 +1044,7 @@
         "version"
       ],
       "source_version": "workspace cli/jq@0.2.7 metadata contract",
-      "expected_stdout_text": "jq 0.2.8\n",
+      "expected_stdout_text": "jq 0.2.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -1475,7 +1477,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1494,7 +1496,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: logs and null-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1513,7 +1515,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1532,7 +1534,7 @@
       "normalizations": [],
       "comparison": "contract",
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: logs and raw-input are mutually exclusive\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": false,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
     },
@@ -1916,7 +1918,7 @@
       "comparison": "contract",
       "expected_status": 2,
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: --from-file requires a filter file\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: --from-file requires a filter file\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": true,
       "coverage": [
         "from-file"
@@ -1960,7 +1962,7 @@
       "comparison": "contract",
       "expected_status": 2,
       "expected_stdout_text": "",
-      "expected_stderr_text": "jq: flag does not accept a value: 'from-file'\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
+      "expected_stderr_text": "jq: flag does not accept a value: 'from-file'\nUsage: jq [OPTION]... [FILTER] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n  -c, --compact-output    print compact JSON\n  -r, --raw-output        print strings without JSON quotes\n  -j, --join-output       raw output without result separators\n  -n, --null-input        evaluate once with null; do not read inputs\n  -s, --slurp             collect input values in an array\n  -R, --raw-input         read text lines; -Rs reads all text\n  -l, --logs              skip non-JSON lines (project extension)\n      --stream            emit path/value leaves and container-end events\n      --stream-errors     emit parse errors as stream events and recover\n  -S, --sort-keys         sort object keys recursively\n  -e, --exit-status       return 1 for false/null, 4 for no result\n  -f, --from-file         read the first positional argument as a filter file\n      --arg NAME VALUE   bind a string variable\n      --argjson NAME JSON bind a JSON variable\n      --indent N         indentation -1 (tabs) through 7\n      --tab              indent with tabs\n  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)\n  -M, --monochrome-output disable colors, including when -C is present\n\nOption values and operands after -- remain literal during alias normalization.\n-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.\n",
       "oracle": true,
       "coverage": [
         "from-file"
@@ -1968,6 +1970,1037 @@
       "source_version": "jq1.8.2 src/main.c: FROM_FILE is a flag; the first positional is program, option clusters and later flags still parse, and -- ends option parsing. Independently specified bytes/status and preserved files.",
       "expected_stderr_contains": "from-file",
       "diagnostic_reason": "Exact local diagnostic is asserted. Upstream uses usage/unknown-option wording; compare the shared program/option identifier, status2, empty stdout and preserved files, without claiming identical message grammar."
+    },
+    {
+      "id": "jq-stream-empty-input",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-scalar",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "1",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[],1]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-adjacent",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "1{}[]\"x\" false null",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[],1]\n[[],{}]\n[[],[]]\n[[],\"x\"]\n[[],false]\n[[],null]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-empty-array",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[],[]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-empty-object",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{}",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[],{}]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-array",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1,2]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[[1],2]\n[[1]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-nested",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"a\":[1,{\"b\":2}],\"c\":[],\"d\":{}}",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[\"a\",0],1]\n[[\"a\",1,\"b\"],2]\n[[\"a\",1,\"b\"]]\n[[\"a\",1]]\n[[\"c\"],[]]\n[[\"d\"],{}]\n[[\"d\"]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-duplicate-key",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"a\":1,\"a\":2}",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[\"a\"],1]\n[[\"a\"],2]\n[[\"a\"]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-escaped-key",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"界\\n\\\"\\\\\":[\"尾\",true,false,null,-1.5e2]}",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[\"界\\n\\\"\\\\\",0],\"尾\"]\n[[\"界\\n\\\"\\\\\",1],true]\n[[\"界\\n\\\"\\\\\",2],false]\n[[\"界\\n\\\"\\\\\",3],null]\n[[\"界\\n\\\"\\\\\",4],-1.5E+2]\n[[\"界\\n\\\"\\\\\",4]]\n[[\"界\\n\\\"\\\\\"]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-consecutive",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1]\n{\"x\":2}\n3",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[[0]]\n[[\"x\"],2]\n[[\"x\"]]\n[[],3]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-late-eof",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1,2",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n",
+      "expected_stderr_text": "jq: parse error: Unfinished JSON term at EOF at line 1, column 4\n"
+    },
+    {
+      "id": "jq-stream-trailing-array-comma",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1,]",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n",
+      "expected_stderr_text": "jq: parse error: Expected another array element at line 1, column 4\n"
+    },
+    {
+      "id": "jq-stream-trailing-object-comma",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"a\":1,}",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[\"a\"],1]\n",
+      "expected_stderr_text": "jq: parse error: Expected another key:value pair at line 1, column 8\n"
+    },
+    {
+      "id": "jq-stream-missing-colon",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"a\" 1}",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Expected separator between values at line 1, column 7\n"
+    },
+    {
+      "id": "jq-stream-invalid-number",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1,01]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[[1],1]\n[[1]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-invalid-literal",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[true,falsee]",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],true]\n",
+      "expected_stderr_text": "jq: parse error: Invalid literal at line 1, column 13\n"
+    },
+    {
+      "id": "jq-stream-invalid-string",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1,\"bad\\q\"]",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n",
+      "expected_stderr_text": "jq: parse error: Invalid escape at line 1, column 10\n"
+    },
+    {
+      "id": "jq-stream-missing-comma",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1 2]",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Expected separator between values at line 1, column 5\n"
+    },
+    {
+      "id": "jq-stream-numbers",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[9007199254740993,1.2300,1e400,1e9999999999,-01,NaN,Infinity,-Infinity]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],9007199254740993]\n[[1],1.2300]\n[[2],1E+400]\n[[3],1.7976931348623157e+308]\n[[4],-1]\n[[5],null]\n[[6],1.7976931348623157e+308]\n[[7],-1.7976931348623157e+308]\n[[7]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-decimal-exponents",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1.2300e2,1e0,1.0e0,0e0,0.00e2,1e-7,1e-6,1e+0002,1e2147483648,1e-2147483649]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],123.00]\n[[1],1]\n[[2],1.0]\n[[3],0]\n[[4],0]\n[[5],1E-7]\n[[6],0.000001]\n[[7],1E+2]\n[[8],1.7976931348623157e+308]\n[[9],0E-1147483646]\n[[9]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-decimal-underflow",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[5e-1147483647,9e-1147483647,15e-1147483647,25e-1147483647,1e-1147483646]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1E-1147483646]\n[[1],1E-1147483646]\n[[2],2E-1147483646]\n[[3],3E-1147483646]\n[[4],1E-1147483646]\n[[4]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-number-grammar",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1.,.5,-.5,+1,-0,-0.0]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[[1],0.5]\n[[2],-0.5]\n[[3],1]\n[[4],-0]\n[[5],-0.0]\n[[5]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-bom",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "﻿[1]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[[0]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-root-number-bad-end",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "1]",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Unmatched ']' at the top-level at line 1, column 2\n"
+    },
+    {
+      "id": "jq-stream-root-literal-bad-end",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "true,",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Expected value before ',' at line 1, column 5\n"
+    },
+    {
+      "id": "jq-stream-root-string-bad-end",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "\"x\"]",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[],\"x\"]\n",
+      "expected_stderr_text": "jq: parse error: Unmatched ']' at the top-level at line 1, column 4\n"
+    },
+    {
+      "id": "jq-stream-object-number-key-end",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{2}",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Objects must consist of key:value pairs at line 1, column 3\n"
+    },
+    {
+      "id": "jq-stream-object-number-key-colon",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{2:",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Object keys must be strings at line 1, column 3\n"
+    },
+    {
+      "id": "jq-stream-object-string-key-end",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{\"a\"}",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Objects must consist of key:value pairs at line 1, column 5\n"
+    },
+    {
+      "id": "jq-stream-object-number-key-eof",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{2",
+      "files": [],
+      "environment": {},
+      "expected_status": 5,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "jq: parse error: Unfinished JSON term at EOF at line 1, column 2\n"
+    },
+    {
+      "id": "jq-stream-stream-errors-lines",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1,\"bad\\q\",2]\n[3,]\n{\"a\":4,\"b\":oops}\n5\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[\"Invalid escape at line 1, column 10\",[1]]\n[[0],3]\n[\"Expected another array element at line 1, column 14\",[1]]\n[[\"a\"],4]\n[\"Invalid numeric literal at line 1, column 30\",[\"b\"]]\n[[],5]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-same-line",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1,\"bad\\q\",2] 7 [8]\n9\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[\"Invalid escape at line 1, column 10\",[1]]\n[[],9]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-eof",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1,2",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[\"Unfinished JSON term at EOF at line 1, column 4\",[1]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-key",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "{2}\n{2:\n{\"a\"}\n{2",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Objects must consist of key:value pairs at line 1, column 3\",[null]]\n[\"Object keys must be strings at line 1, column 6\",[null]]\n[\"Objects must consist of key:value pairs at line 1, column 11\",[null]]\n[\"Unfinished JSON term at EOF at line 1, column 13\",[null]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-files-array",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        ".",
+        "first.json",
+        "second.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "first.json",
+          "content_text": "[1,"
+        },
+        {
+          "path": "second.json",
+          "content_text": "2]"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],1]\n[[1],2]\n[[1]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-files-number",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        ".",
+        "first.json",
+        "second.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "first.json",
+          "content_text": "1"
+        },
+        {
+          "path": "second.json",
+          "content_text": "2"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[],12]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-files-string",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        ".",
+        "first.json",
+        "second.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "first.json",
+          "content_text": "\"first"
+        },
+        {
+          "path": "second.json",
+          "content_text": "second\""
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[],\"firstsecond\"]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-decimal-int64-edges",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream",
+        "-c",
+        "."
+      ],
+      "stdin_text": "[1.0e-9223372036854775808,99e9223372036854775807,1e-9223372036854775808,inf,-inf,nan,-nan]",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[0],0E-1147483646]\n[[1],1.7976931348623157e+308]\n[[2],0E-1147483646]\n[[3],1.7976931348623157e+308]\n[[4],-1.7976931348623157e+308]\n[[5],null]\n[[6],null]\n[[6]]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-buffer-before",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            1]1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4094\",[]]\n[[],2]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-buffer-at",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             1]1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4095\",[]]\n[[],2]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-buffer-after",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              1]1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4096\",[]]\n[[],2]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-files-error-recovery",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        ".",
+        "first.json",
+        "second.json"
+      ],
+      "stdin_text": "",
+      "files": [
+        {
+          "path": "first.json",
+          "content_text": "1]"
+        },
+        {
+          "path": "second.json",
+          "content_text": "1"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 2\",[]]\n[[],1]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-fgets-before",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        1]1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4090\",[]]\n[[],2]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-fgets-at",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         1]1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4091\",[]]\n[[],1]\n[[],2]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-fgets-after",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          1]1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 4092\",[]]\n[[],2]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-utf8-tail",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         \"界\"]1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[[],\"界\"]\n[\"Unmatched ']' at the top-level at line 1, column 4095\",[]]\n[[],2]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "jq-stream-stream-errors-utf8-recovery",
+      "command": "jq",
+      "inputs": [
+        "tests/fixtures/jq/stream.json"
+      ],
+      "args": [
+        "--stream-errors",
+        "-c",
+        "."
+      ],
+      "stdin_text": "1]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        界1\n2\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "[\"Unmatched ']' at the top-level at line 1, column 2\",[]]\n[[],1]\n[[],2]\n",
+      "expected_stderr_text": ""
     }
   ]
 }

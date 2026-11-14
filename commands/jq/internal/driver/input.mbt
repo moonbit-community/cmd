@@ -144,7 +144,11 @@ async fn Evaluation::consume(self : Evaluation, value : Json) -> Unit {
 }
 
 ///|
-async fn Evaluation::read(self : Evaluation, reader : &@io.Reader) -> Unit {
+async fn Evaluation::read(
+  self : Evaluation,
+  reader : &@io.Reader,
+  file_boundaries~ : Set[Int64] = Set([]),
+) -> Unit {
   if self.options.raw_input && self.options.slurp {
     while reader.read_some(max_len=65536) is Some(chunk) {
       for byte in chunk {
@@ -165,6 +169,13 @@ async fn Evaluation::read(self : Evaluation, reader : &@io.Reader) -> Unit {
       self.consume(value)
     }
   } else {
+    if self.options.stream {
+      StreamInput::new(reader, file_boundaries~).read(
+        value => self.consume(value),
+        errors=self.options.stream_errors,
+      )
+      return
+    }
     let input = JsonInput::new(reader)
     while input.next() is Some(value) {
       self.consume(value)

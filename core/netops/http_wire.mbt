@@ -70,10 +70,19 @@ async fn HttpWire::fill(self : HttpWire) -> Bool {
 }
 
 ///|
-async fn HttpWire::line(self : HttpWire, header~ : Bool = false) -> String {
+async fn HttpWire::line_bytes(
+  self : HttpWire,
+  header~ : Bool = false,
+  raw~ : Bool = false,
+) -> Bytes {
   let bytes : Array[Byte] = []
   for ;; {
-    guard self.fill() else { raise @io.ReaderClosed }
+    guard self.fill() else {
+      if raw && header {
+        return Bytes::from_array(bytes)
+      }
+      raise @io.ReaderClosed
+    }
     let byte = self.pending[self.position]
     self.position += 1
     if header {
@@ -86,19 +95,29 @@ async fn HttpWire::line(self : HttpWire, header~ : Bool = false) -> String {
       }
     }
     if byte == b'\n' {
+      if raw {
+        bytes.push(byte)
+        return Bytes::from_array(bytes)
+      }
       guard bytes.last() == Some(b'\r') else {
         raise transfer_error(ReceiveFailure, "HTTP line has no CRLF terminator")
       }
       ignore(bytes.pop())
-      return @utf8.decode(Bytes::from_array(bytes)) catch {
-        _ => raise transfer_error(ReceiveFailure, "invalid HTTP header text")
-      }
+      return Bytes::from_array(bytes)
     }
     bytes.push(byte)
     // Bound untrusted protocol metadata independently of streamed body size.
     guard bytes.length() <= MaxHttpLineBytes else {
       raise transfer_error(ReceiveFailure, "HTTP line exceeds 65536 bytes")
     }
+  }
+}
+
+///|
+async fn HttpWire::line(self : HttpWire, header~ : Bool = false) -> String {
+  let bytes = self.line_bytes(header~)
+  @utf8.decode(bytes) catch {
+    _ => raise transfer_error(ReceiveFailure, "invalid HTTP header text")
   }
 }
 
@@ -167,12 +186,20 @@ async fn HttpWire::response(
   self : HttpWire,
   request_method : HttpMethod,
   capture_header_eof~ : Bool = false,
+  receive_header? : async (ResponseLine) -> HttpHeader?,
 ) -> ResponseHead {
   for interim = 0; ; interim = interim + 1 {
     guard interim <= MaxInterimResponses else {
       raise transfer_error(ReceiveFailure, "too many informational responses")
     }
-    let status = self.line(header=true)
+    let status_bytes = self.line_bytes(
+      header=true,
+      raw=receive_header is Some(_),
+    )
+    guard !status_bytes.is_empty() else { raise @io.ReaderClosed }
+    let status = @utf8.decode_lossy(status_bytes)
+      .trim_end(chars="\r\n")
+      .to_owned()
     guard status.length() >= 12 &&
       (status.has_prefix("HTTP/1.1 ") || status.has_prefix("HTTP/1.0 ")) &&
       (status.length() == 12 || status.code_unit_at(12) == ' ') else {
@@ -184,34 +211,77 @@ async fn HttpWire::response(
       raise transfer_error(ReceiveFailure, "invalid HTTP response status code")
     }
     let reason = if status.length() == 12 { "" } else { status[13:].to_owned() }
+    if receive_header is Some(receive) {
+      ignore(receive(Status(code, status_bytes)))
+    }
     let headers : Map[@http.CaseInsensitiveString, String] = Map([])
     let response_fields : Array[HttpHeader] = []
     let mut complete = true
     for fields = 0; ; fields = fields + 1 {
-      let line = self.line(header=true) catch {
+      let bytes = self.line_bytes(header=true, raw=receive_header is Some(_)) catch {
         @io.ReaderClosed if capture_header_eof => {
           complete = false
-          break
+          b""
         }
         error => raise error
       }
-      if line == "" {
-        break
+      if receive_header is Some(_) && bytes.is_empty() {
+        if !capture_header_eof {
+          raise @io.ReaderClosed
+        }
+        complete = false
       }
-      guard fields < MaxHttpFieldCount else {
+      let end = !complete ||
+        bytes.is_empty() ||
+        bytes == b"\r\n" ||
+        bytes == b"\n"
+      guard end || fields < MaxHttpFieldCount else {
         raise transfer_error(
           ReceiveFailure,
           "HTTP response headers exceed limits",
         )
       }
-      let (name, value) = wire_field(line)
-      response_fields.push(http_header(name, value))
+      let field = match receive_header {
+        Some(receive) =>
+          receive(
+            if !complete {
+              Eof
+            } else if end {
+              End(bytes)
+            } else {
+              Field(bytes)
+            },
+          )
+        None => {
+          if end {
+            break
+          }
+          let line = @utf8.decode(bytes) catch {
+            _ =>
+              raise transfer_error(ReceiveFailure, "invalid HTTP header text")
+          }
+          let (name, value) = wire_field(line)
+          Some(http_header(name, value))
+        }
+      }
+      guard field is Some(field) else {
+        if end {
+          break
+        }
+        continue
+      }
+      let name = field.name
+      let value = field.value
+      response_fields.push(field)
       if name.to_lower() != "set-cookie" {
         let key = @http.CaseInsensitiveString(name)
         headers[key] = match headers.get(key) {
           None => value
           Some(previous) => previous + "," + value
         }
+      }
+      if end {
+        break
       }
     }
     if complete && code >= 100 && code < 200 && code != 101 {

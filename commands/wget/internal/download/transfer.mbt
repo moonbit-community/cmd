@@ -73,19 +73,28 @@ pub async fn transfer(
     if send_basic &&
       credentials is Some(credentials) &&
       !prepared_headers.authorization_supplied {
-      per_request.set(
-        "Authorization",
-        "Basic " + @base64.encode(@utf8.encode(credentials)),
+      let remaining = per_request.fields.copy()
+      per_request.fields.clear()
+      per_request.fields.push(
+        @netops.http_header(
+          "Authorization",
+          "Basic " + @base64.encode(@utf8.encode(credentials)),
+        ),
       )
+      per_request.fields.append(remaining)
     }
     let stored = match options.cookie_jar {
-      Some(jar) => jar.header_for(parsed, @fsops.current_timestamp().seconds)
+      Some(jar) => jar.header_octets(parsed, @fsops.current_timestamp().seconds)
       None => None
     }
     if !per_request.contains("Cookie") && stored is Some(value) {
-      per_request.set("Cookie", value)
+      per_request.fields.push(
+        @netops.http_header_bytes("Cookie", cookie_bytes(value)),
+      )
     }
     let transport = transport_for(options)
+    let header_truncated = Ref(false)
+    let pending_header : Ref[Bytes?] = Ref(None)
     let result = @netops.with_response(
       {
         target: parsed,
@@ -93,8 +102,12 @@ pub async fn transfer(
         request_method,
         headers: persistent.fields + per_request.fields,
         body,
+        chunked: length is None && !(body is EmptyBody),
       },
       transport,
+      receive_header=event => {
+        receive_header(event, pending_header, header_truncated)
+      },
       client => {
         let head = client.head()
         if !head.complete && head.code != 200 {
@@ -112,7 +125,7 @@ pub async fn transfer(
         }
         for field in head.fields {
           if field.name.to_lower() == "set-cookie" {
-            if wire_cookie(field.value) is Some(cookie) {
+            if parse_cookie_octets(cookie_text(field.bytes())) is Some(cookie) {
               response.cookies.push(cookie)
             }
           } else {

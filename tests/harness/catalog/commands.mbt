@@ -96,7 +96,7 @@ pub fn commands() -> Array[CommandContract] {
     contract("jq", Core, StructuredInput, StructuredOutput, [FileRead], [
       "color-output", "monochrome-output", "compact-output", "exit-status", "from-file",
       "indent", "join-output", "logs", "null-input", "raw-input", "sort-keys", "slurp",
-      "tab", "raw-output", "arg", "argjson",
+      "tab", "raw-output", "arg", "argjson", "stream", "stream-errors",
     ]),
     contract("jqlog", Core, StructuredInput, StructuredOutput, [FileRead], [
       "file", "help",
@@ -343,9 +343,11 @@ pub fn commands() -> Array[CommandContract] {
         "output", "proxy", "remote-header-name", "remote-name", "remove-on-error",
         "request", "retry", "retry-all-errors", "retry-connrefused", "retry-delay",
         "retry-max-time", "show-error", "silent", "upload-file", "user", "basic",
-        "cookie", "cookie-jar",
+        "cookie", "cookie-jar", "config", "disable", "url",
       ],
-      exit_codes=[0, 1, 2, 3, 5, 7, 18, 22, 23, 26, 28, 47, 52, 56, 60, 65],
+      exit_codes=[
+        0, 1, 2, 3, 5, 7, 8, 18, 22, 23, 26, 28, 47, 52, 56, 60, 65, 100,
+      ],
     ),
     // Chdir retains filesystem parent traversal in every option spelling.
     contract(
@@ -452,7 +454,7 @@ pub fn commands() -> Array[CommandContract] {
         "read-timeout", "retry-connrefused", "retry-on-http-error", "timeout", "timestamping",
         "tries", "waitretry", "idle-timeout", "user", "password", "http-user", "http-password",
         "auth-no-challenge", "load-cookies", "save-cookies", "keep-session-cookies",
-        "no-cookies", "local-encoding",
+        "no-cookies", "local-encoding", "config", "no-config", "execute",
       ],
       exit_codes=[0, 1, 2, 3, 4, 5, 6, 7, 8],
     ),

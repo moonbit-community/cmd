@@ -1,7 +1,38 @@
 # Command Support Record
 
 Date: 2026-09-05
-Updated: 2026-11-10
+Updated: 2026-11-14
+
+## Issue #34 development candidate
+
+The unpublished candidate is core 0.11.0, curl/wget 0.2.7 and jq 0.2.9.
+The published coordinates and independent expectations in `tests/release/latest*.json`
+remain unchanged. Earlier versioned profiles below retain their dated scope.
+
+Curl and Wget preserve admitted HTTP and Cookie octets through saved jars,
+second-process reloads and outgoing fields. Each command owns response folding,
+control-byte admission, interim/EOF effects and jar grammar. Curl supports
+header removal, semicolon empty fields, header files and ordered `-K` expansion;
+Wget supports startup configuration and `-e` with its separate grammar. The
+207 fresh fixed-image HTTP controls cover these finite behaviors, not every
+upstream configuration directive or malformed input. They do not reconstruct
+the missing historical captures. Host/Transfer-Encoding customization,
+non-UTF-8 configuration, account-database discovery, full Windows discovery,
+non-Basic authentication and consumed-stdin challenge replay remain outside
+this profile. See [ADR-0005](adr/0005-transfer.md).
+
+Jq supports incremental `--stream` and `--stream-errors` events, including
+duplicate keys, scalar precision, partial output, recovery and input spanning
+files. Forty-seven independent jq 1.8.2 observations cover the finite CLI
+profile. Its parser/evaluator and existing command adaptations are maintained
+under `commands/jq/internal`, removing jq's MoonJQ dependency. Shared
+filter-driven input continuation, module namespaces and filter-argument closures
+are local implementation gaps; `input`/`inputs` and module syntax remain
+rejected. Required regressions and reopening conditions are in
+[ADR-0008](adr/0008-data.md).
+These remaining boundaries keep issue #34 open. Local checks, required CI,
+exact-coordinate publication acceptance and performance qualification are
+separate outcomes.
 
 ## Extensions and diagnostics
 
@@ -889,7 +920,7 @@ Full shell compatibility is not claimed. See
 | `rg` | published subset | Fixed rg.mbt 0.2.0 algorithms and Unicode data; asynchronous explicit-file/directory/stdin search, glob/ignore, output modes and user preprocessing | [rg profile](#rg-candidate); effective `-z` rejects; no-path search needs explicit input; public system API and inherited engine limits remain |
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | Field/unpaired/empty output, `-z`, ASCII ignore-case, headers, automatic or accumulated explicit output fields, last order policy | Locale behavior beyond the fixed C profile not claimed |
-| `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices | Released moonjq 0.2.0 plus public-AST adapter; full evaluator/modules/streaming/diagnostics and automatic TTY color are not claimed |
+| `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, AST binding, partial output before errors, -C/-M/JQ_COLORS, tostring/tojson and Unicode string slices; candidate 0.2.9 adds --stream/--stream-errors | The candidate owns its minimal parser/evaluator and driver under internal with no MoonJQ dependency. Full modules, filter-driven inputs, diagnostics and automatic TTY color remain outside the finite profile; publication is separate |
 | `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF; numbered backups advance after the highest valid decimal version; failed recovery reports both errors and destination/backup paths | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain; a recovery error does not determine the final path state |
 | `ls` | subset verified | Existing traversal/sort/link profile plus C quoting, columns/across/commas, width/tab stops and explicit type/suffix/link colors | `-P` is a project extension; enabled raw-mode/capability/link-count predicates and automatic color reject. Long/ownership/inode/block formats remain outside scope |

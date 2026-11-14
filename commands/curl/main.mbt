@@ -202,6 +202,7 @@ fn exit_code(kind : @netops.TransferErrorKind) -> Int32 {
     @netops.InvalidUrl => 3
     @netops.ProxyFailure => 5
     @netops.ConnectionFailure => 7
+    @netops.MalformedReplyFailure => 8
     @netops.PartialBodyFailure => 18
     @netops.HttpStatusFailure | @netops.AuthenticationFailure => 22
     @netops.OutputFailure => 23
@@ -213,19 +214,6 @@ fn exit_code(kind : @netops.TransferErrorKind) -> Int32 {
     @netops.EmptyReplyFailure => 52
     @netops.TlsFailure => 60
   }
-}
-
-///|
-async fn write_headers(
-  status : Int32,
-  reason : String,
-  headers : ArrayView[@netops.HttpHeader],
-) -> Unit {
-  @stdio.stdout.write("HTTP/1.1 \{status} \{reason}\r\n")
-  for header in headers {
-    @stdio.stdout.write("\{header.name}: \{header.value}\r\n")
-  }
-  @stdio.stdout.write("\r\n")
 }
 
 ///|
@@ -259,16 +247,14 @@ async fn observe_transfer(
   event : @download.TransferEvent,
 ) -> Unit {
   match event {
-    @download.ResponseStarted(status~, reason~, headers~, ..) => {
-      if show_headers {
-        write_headers(status, reason, headers)
-      }
+    @download.ResponseHeader(bytes) if show_headers =>
+      @stdio.stdout.write(bytes)
+    @download.ResponseStarted(..) =>
       if show_progress {
         @stdio.stderr.write(
           "  % Total    % Received  Average Speed   Time    Time     Time  Current\n",
         )
       }
-    }
     @download.Progress(received~, content_length~) if show_progress => {
       let text = progress_text(received, content_length, interactive, false)
       if text != "" {
@@ -428,7 +414,8 @@ async fn transfer_one(
     }
   }
   let headers : Array[@netops.HttpHeader] = []
-  if !has_header(options.headers, "user-agent") {
+  if !has_header(options.headers, "user-agent") &&
+    !options.suppressed_headers.contains("user-agent") {
     headers.push(@netops.http_header("User-Agent", "curl/8.22.0"))
   }
   headers.append(options.headers)
@@ -438,10 +425,13 @@ async fn transfer_one(
   } else {
     Some(explicit_cookies.join("; "))
   }
-  if !has_header(headers, "accept") {
+  if !has_header(headers, "accept") &&
+    !options.suppressed_headers.contains("accept") {
     headers.push(@netops.http_header("Accept", "*/*"))
   }
-  if options.data_specs.length() > 0 && !has_header(headers, "content-type") {
+  if options.data_specs.length() > 0 &&
+    !has_header(headers, "content-type") &&
+    !options.suppressed_headers.contains("content-type") {
     headers.push(
       @netops.http_header("Content-Type", "application/x-www-form-urlencoded"),
     )
@@ -495,12 +485,20 @@ async fn transfer_one(
         if source == "" || source.contains("=") {
           continue
         }
-        if source == "-" {
-          jar.load_netscape(@stdio.stdin.read_all().text())
+        let complete = if source == "-" {
+          jar.load_bytes(@stdio.stdin.read_all().binary())
         } else {
           jar.load(source) catch {
-            _ => () // Curl treats unreadable cookie inputs as an empty source.
+            _ => true // Curl treats unreadable cookie inputs as an empty source.
           }
+        }
+        if !complete {
+          if !options.silent || options.show_error {
+            @stdio.stderr.write(
+              "curl: (100) A value or data field grew larger than allowed\n",
+            )
+          }
+          return 100
         }
       }
     }
@@ -513,6 +511,7 @@ async fn transfer_one(
           utf8_hosts=utf8_hosts(),
           request_method=request_method(options),
           headers~,
+          suppressed_headers=options.suppressed_headers,
           body~,
           redirects=if options.location {
             @download.FollowRedirects(
@@ -661,9 +660,48 @@ async fn main {
     @stdio.stdout.write("curl \{MODULE_VERSION}\n")
     return
   }
-  let options = parse_options(@env.args()[1:]) catch {
+  if metadata_args == ["--help"] {
+    @stdio.stdout.write(usage())
+    return
+  }
+  let file_headers : Set[Int32] = Set([])
+  let options = parse_options(
+    configured_arguments(@env.args()[1:], file_headers~),
+    file_headers~,
+  ) catch {
+    ConfigOptionError(option, reason) => {
+      @stdio.stderr.write(
+        "curl: option " +
+        option +
+        ": " +
+        reason +
+        "\ncurl: try 'curl --help' or 'curl --manual' for more information\n",
+      )
+      @sys.exit(
+        if reason == "error encountered when reading a file" {
+          26
+        } else {
+          2
+        },
+      )
+      return
+    }
+    OptionConflict(option) => {
+      @stdio.stderr.write(
+        "curl: option " +
+        option +
+        ": is badly used here\ncurl: try 'curl --help' or 'curl --manual' for more information\n",
+      )
+      @sys.exit(2)
+      return
+    }
     UsageError(message) => {
       @stdio.stderr.write("curl: option error: \{message}\n")
+      @sys.exit(2)
+      return
+    }
+    error => {
+      @stdio.stderr.write("curl: option error: " + error.to_string() + "\n")
       @sys.exit(2)
       return
     }

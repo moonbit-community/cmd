@@ -2,6 +2,9 @@
 
 Download HTTP and HTTPS resources for MoonX.
 
+Development candidate: `cli/wget@0.2.7` with `cli/core@0.11.0`.
+The published coordinate remains `cli/wget@0.2.6` until a separate release.
+
 ```sh
 moonx cli/wget@0.2.6 [OPTION]... [URL]...
 ```
@@ -9,6 +12,20 @@ moonx cli/wget@0.2.6 [OPTION]... [URL]...
 ## Supported scope
 
 Download URLs or URL lists with resume, conditional requests, headers/bodies, retries, redirects, Basic authentication and cookies.
+
+The candidate retains Cookie octets through response admission, jar saving,
+reload and subsequent requests. Wget's physical-line NUL handling, header
+folding, tab/CR jar values and domain-table iteration are separate from Curl's
+rules. Fixed request/response bytes and both process phases are frozen in
+`tests/fixtures/network/http-*.json`.
+
+`--config=FILE` selects startup settings; `--no-config` suppresses discovery.
+The first selector wins during startup scanning. Otherwise the command reads
+SYSTEM_WGETRC (default `/etc/wgetrc`) followed by WGETRC or HOME/.wgetrc.
+`-e`/`--execute` applies a setting at its CLI position. Supported setting names
+ignore case, underscores and hyphens; values remain unquoted text. Boolean
+settings accept on/off, yes/no and 1/0. This profile covers supported command
+options, not every GNU Wget configuration directive.
 
 Version 0.2.6: multiple URL failures retain the lowest
 nonzero transfer exit code, regardless of operand order. A later success keeps
@@ -38,7 +55,7 @@ consume that cache. Explicit Authorization fields remain intact on retry.
 `--auth-no-challenge` enables preemptive Basic; attached on/off, yes/no and 1/0
 values are case-insensitive, with the last occurrence winning. Binary named-file
 request bodies replay unchanged. This finite profile does not add Digest/NTLM,
-netrc, configuration loading, password prompts or arbitrary stdin replay.
+netrc, password prompts or arbitrary stdin replay.
 
 Cookie prefix names retain Wget's ordinary-name behavior. Secure cookies are
 sent only over HTTPS; curl's loopback exception and prefix/admission/overlay
@@ -65,6 +82,9 @@ Outgoing Host fields bracket mapped colons and omit the scheme's default port.
 | Option | Description |
 | --- | --- |
 | `-q, --quiet` | quiet (no output) |
+| `--config=FILE` | read startup settings from FILE |
+| `--no-config` | suppress startup configuration discovery |
+| `-e, --execute=SETTING` | apply a supported configuration setting |
 | `--local-encoding=ENC` | Select UTF-8 or ASCII URL-host input. |
 | `-O, --output-document=FILE` | write documents to FILE |
 | `-o, --output-file=FILE` | log messages to FILE |

@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "candidate": true,
-  "core_version": "0.10.0",
+  "core_version": "0.11.0",
   "base_manifest": "../cases/manifest.json",
   "commands": [
     {
@@ -168,7 +168,7 @@
     {
       "name": "curl",
       "package_name": "cli/curl",
-      "version": "0.2.6",
+      "version": "0.2.7",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -448,7 +448,7 @@
     {
       "name": "jq",
       "package_name": "cli/jq",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "jq",
       "supported_options": [
@@ -1149,7 +1149,7 @@
     {
       "name": "wget",
       "package_name": "cli/wget",
-      "version": "0.2.6",
+      "version": "0.2.7",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [

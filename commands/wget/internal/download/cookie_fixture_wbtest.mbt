@@ -8,10 +8,10 @@ fn Cookie::new(
   secure~ : Bool = false,
 ) -> Cookie {
   {
-    name,
-    value,
-    path,
-    domain,
+    name: cookie_text(@utf8.encode(name)),
+    value: cookie_text(@utf8.encode(value)),
+    path: path.map(value => cookie_text(@utf8.encode(value))),
+    domain: domain.map(value => cookie_text(@utf8.encode(value))),
     secure,
     wget_expiry: match max_age {
       Some(age) => [Age(age.to_double())]

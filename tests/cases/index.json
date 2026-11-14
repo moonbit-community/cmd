@@ -45638,6 +45638,60 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
+      "behavior_id": "case:network-curl-http-cookie",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/curl.json",
+      "case_id": "network-curl-http-cookie",
+      "aliases": [
+        "network-curl-http-cookie-oracle",
+        "case:network-curl-http-cookie-oracle"
+      ],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:network-curl-http-cookie",
+      "command": "curl",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-curl-http-cookie",
+      "case_id": "",
+      "aliases": [
+        "scenario:network-curl-http-cookie-oracle"
+      ],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:network-wget-http-cookie",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "network-wget-http-cookie",
+      "aliases": [
+        "network-wget-http-cookie-oracle",
+        "case:network-wget-http-cookie-oracle"
+      ],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "scenario:network-wget-http-cookie",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::network-wget-http-cookie",
+      "case_id": "",
+      "aliases": [
+        "scenario:network-wget-http-cookie-oracle"
+      ],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
       "behavior_id": "case:network-curl-http-retry",
       "command": "curl",
       "status": "supported",
@@ -46158,6 +46212,523 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jq-stream-empty-input",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-empty-input",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-scalar",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-scalar",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-adjacent",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-adjacent",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-empty-array",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-empty-array",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-empty-object",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-empty-object",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-array",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-array",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-nested",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-nested",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-duplicate-key",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-duplicate-key",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-escaped-key",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-escaped-key",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-consecutive",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-consecutive",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-late-eof",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-late-eof",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-trailing-array-comma",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-trailing-array-comma",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-trailing-object-comma",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-trailing-object-comma",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-missing-colon",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-missing-colon",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-invalid-number",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-invalid-number",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-invalid-literal",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-invalid-literal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-invalid-string",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-invalid-string",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-missing-comma",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-missing-comma",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-numbers",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-numbers",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-decimal-exponents",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-decimal-exponents",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-decimal-underflow",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-decimal-underflow",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-number-grammar",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-number-grammar",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-bom",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-bom",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-root-number-bad-end",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-root-number-bad-end",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-root-literal-bad-end",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-root-literal-bad-end",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-root-string-bad-end",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-root-string-bad-end",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-object-number-key-end",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-object-number-key-end",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-object-number-key-colon",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-object-number-key-colon",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-object-string-key-end",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-object-string-key-end",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-object-number-key-eof",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-object-number-key-eof",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-lines",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-lines",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-same-line",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-same-line",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-eof",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-eof",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-key",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-key",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-files-array",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-files-array",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-files-number",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-files-number",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-files-string",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-files-string",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-decimal-int64-edges",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-decimal-int64-edges",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-buffer-before",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-buffer-before",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-buffer-at",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-buffer-at",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-buffer-after",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-buffer-after",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-files-error-recovery",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-files-error-recovery",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-fgets-before",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-fgets-before",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-fgets-at",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-fgets-at",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-fgets-after",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-fgets-after",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-utf8-tail",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-utf8-tail",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jq-stream-stream-errors-utf8-recovery",
+      "command": "jq",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jq.json",
+      "case_id": "jq-stream-stream-errors-utf8-recovery",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

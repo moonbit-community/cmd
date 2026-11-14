@@ -26,6 +26,7 @@ struct Options {
   mut head : Bool
   mut request_method : @netops.HttpMethod?
   headers : Array[@netops.HttpHeader]
+  suppressed_headers : Array[String]
   data_specs : Array[DataSpec]
   mut upload_file : String?
   mut retry_count : Int32
@@ -67,6 +68,9 @@ fn usage() -> String {
     #|      --max-redirs <num>       maximum redirects (default 50)
     #|  -I, --head                   show response headers only
     #|  -H, --header <header>        send custom fields in order, retaining repeats
+    #|  -K, --config <file>          read options from a file; - reads stdin
+    #|  -q, --disable                skip default configuration when used first
+    #|      --url <url>              add a URL, including in configuration files
     #|  -u, --user <user:password>   HTTP Basic authentication
     #|  -b, --cookie <data|file>     send cookies or load a Netscape jar
     #|  -c, --cookie-jar <file>      write a Netscape cookie jar
@@ -90,7 +94,11 @@ fn usage() -> String {
     #|      --noproxy <list>         bypass proxy for matching hosts
     #|      --remove-on-error        remove opened output after final failure
     #|Already written stdout remains; final partial files remain without cleanup.
-    #|Cookie values containing CR/LF are rejected before request bytes are sent.
+    #|Literal Cookie CR/LF rejects before request bytes; jar CR terminates its row.
+    #|Header Name: suppresses a generated field; Name; sends an empty field.
+    #|-H @file reads header lines; -H @- reads stdin. Host/Transfer-Encoding stay managed.
+    #|Config accepts supported options, quoted escapes and up to five nested files.
+    #|Default discovery uses CURL_HOME, XDG_CONFIG_HOME and HOME; -q must be first.
     #|Final response fields retain order and repetition; request Content-Length is singular.
     #|Raw space/TAB/CR/LF/DEL in an initial URL path or query exits 3 before connecting.
     #|Redirect spaces use %20 in paths and + in queries; TAB uses %09.
@@ -188,14 +196,23 @@ fn parse_retry_seconds(
 }
 
 ///|
-fn parse_header(value : String) -> @netops.HttpHeader raise UsageError {
+fn parse_header(
+  value : String,
+  raw~ : Bool = false,
+) -> @netops.HttpHeader raise UsageError {
+  if !value.contains(":") && value.has_suffix(";") && value.length() > 1 {
+    return @netops.http_header(value[:value.length() - 1].to_owned(), "")
+  }
   guard value.find(":") is Some(index) && index > 0 else {
     raise UsageError("--header: invalid header '\{value}'")
   }
-  @netops.http_header(
-    value[:index].to_owned().trim().to_owned(),
-    value[index + 1:].to_owned().trim().to_owned(),
-  )
+  let name = value[:index].to_owned().trim().to_owned()
+  let content = value[index + 1:].trim(chars=" \t").to_owned()
+  if raw {
+    @netops.http_header_bytes(name, @utf8.encode(content))
+  } else {
+    @netops.http_header(name, content)
+  }
 }
 
 ///|
@@ -213,6 +230,7 @@ fn default_options() -> Options {
     head: false,
     request_method: None,
     headers: [],
+    suppressed_headers: [],
     data_specs: [],
     upload_file: None,
     retry_count: 0,
@@ -235,8 +253,11 @@ fn default_options() -> Options {
 }
 
 ///|
-fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
-  let parsed = @cli.parse(args, [
+fn option_specs() -> Array[@cli.OptionSpec] {
+  let specs = [
+    @cli.flag("disable", short='q'),
+    @cli.option("config", short='K'),
+    @cli.option("url"),
     @cli.flag("silent", short='s'),
     @cli.flag("show-error", short='S'),
     @cli.flag("fail", short='f'),
@@ -270,24 +291,46 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
     @cli.option("noproxy"),
     @cli.flag("remove-on-error"),
     @cli.flag("help"),
-  ]) catch {
+  ]
+  for
+    name in [
+      "silent", "show-error", "fail", "remote-name", "remote-header-name", "location",
+      "head", "insecure", "retry-connrefused", "retry-all-errors", "remove-on-error",
+    ] {
+    specs.push(@cli.flag("no-" + name))
+  }
+  specs
+}
+
+///|
+fn enabled(parsed : @cli.ParsedArgs, name : String) -> Bool {
+  parsed.last_occurrence([name, "no-" + name]) == Some(name)
+}
+
+///|
+fn parse_options(
+  args : ArrayView[String],
+  file_headers~ : Set[Int32] = Set([]),
+) -> Options raise UsageError {
+  let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) =>
       raise UsageError("\{message}: '\{option}'")
   }
   let options = default_options()
   options.urls.append(parsed.operands)
+  options.urls.append(parsed.values("url"))
   options.output_specs.append(parsed.values("output"))
-  options.remote_name = parsed.contains("remote-name")
-  options.remote_header_name = parsed.contains("remote-header-name")
-  options.silent = parsed.contains("silent")
-  options.show_error = parsed.contains("show-error")
-  options.fail = parsed.contains("fail")
-  options.location = parsed.contains("location")
-  options.head = parsed.contains("head")
-  options.retry_connection_refused = parsed.contains("retry-connrefused")
-  options.retry_all_errors = parsed.contains("retry-all-errors")
-  options.insecure = parsed.contains("insecure")
-  options.remove_on_error = parsed.contains("remove-on-error")
+  options.remote_name = enabled(parsed, "remote-name")
+  options.remote_header_name = enabled(parsed, "remote-header-name")
+  options.silent = enabled(parsed, "silent")
+  options.show_error = enabled(parsed, "show-error")
+  options.fail = enabled(parsed, "fail")
+  options.location = enabled(parsed, "location")
+  options.head = enabled(parsed, "head")
+  options.retry_connection_refused = enabled(parsed, "retry-connrefused")
+  options.retry_all_errors = enabled(parsed, "retry-all-errors")
+  options.insecure = enabled(parsed, "insecure")
+  options.remove_on_error = enabled(parsed, "remove-on-error")
   options.help = parsed.contains("help")
   options.user = parsed.last_value("user")
   if options.user is Some(user) && !user.contains(":") {
@@ -300,8 +343,15 @@ fn parse_options(args : ArrayView[String]) -> Options raise UsageError {
   if parsed.last_value("max-redirs") is Some(value) {
     options.max_redirects = parse_redirect_limit(value)
   }
-  for value in parsed.values("header") {
-    options.headers.push(parse_header(value))
+  for index, value in parsed.values("header") {
+    let header = parse_header(value, raw=file_headers.contains(index))
+    if value.contains(":") &&
+      header.value == "" &&
+      !["host", "transfer-encoding"].contains(header.name.to_lower()) {
+      options.suppressed_headers.push(header.name.to_lower())
+    } else {
+      options.headers.push(header)
+    }
   }
   if parsed.last_value("request") is Some(value) {
     options.request_method = Some(

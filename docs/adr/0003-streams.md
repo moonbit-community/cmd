@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-11
+Updated: 2026-11-14
 
 ## Decision
 
@@ -47,6 +47,25 @@ writer, then requires owned directories absent and unowned files preserved.
 Only cleanup is shielded; output backpressure remains cancellable.
 
 ## Package ownership
+
+The issue #34 development candidate assigns byte-preserving HTTP headers,
+physical response-line callbacks and explicit payload chunking to core 0.11.0.
+Curl and Wget are its two real consumers. Header admission, Cookie storage,
+configuration and generated request-field defaults stay with each command;
+core owns transport and framing. Jq's incremental event parser and decimal
+literal spelling stay in jq and use its existing core dependency. Unchanged
+commands keep their published coordinates. These correctness changes have no
+formal timing acceptance; the existing protection registry remains authoritative.
+
+Jq follows rg's private-package ownership: its thin executable calls
+`internal/driver`, which owns argument mapping, input/output and existing AST
+adaptations. `internal/parser` depends on `internal/ast`; the evaluator and
+parser never depend on the driver. Import the required MoonJQ 0.2.0 language
+implementation and original tests with source/license attribution, excluding
+upstream command programs and Query convenience wrappers. Internal APIs serve
+these concrete consumers and need no compatibility forwarding layer. This
+removes jq's dependency-release boundary; missing language behavior is now
+project implementation work, as recorded in ADR-0008.
 
 The 2026-11-10 release candidate assigns the incompatible internal source API
 changes to core 0.10.0. All current command consumers declare that coordinate;
@@ -126,7 +145,8 @@ execution or selection defect, not to reproduce assertions in another format.
 | shell | Session and control-flow state; sh, make and split own orchestration |
 | netops / curl and wget internals | Scoped single-request transport, URL/IDNA/PSL mechanisms / command-owned Cookie, authentication, redirect, retry, resume and output policies |
 | numfmt / time_zone | Exact fixed-profile numeric formatting / checked timezone conversion |
-| jq / jqlog command internals | Local public-AST adaptations preserving lexical bindings and assignment paths, checked against shared independent inputs |
+| jq command internals | Owned parser/evaluator beneath a private driver; preserve lexical bindings, assignment paths and original shared expectations |
+| jqlog command internals | Local public-AST adaptations preserving lexical bindings and assignment paths, checked against shared independent inputs |
 | quoting / expand and unexpand internals | Shared byte quoting / command-local tab grids and dialects |
 
 The network boundary is command adaptation, private download policy and one

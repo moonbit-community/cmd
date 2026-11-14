@@ -8,12 +8,7 @@ async test "transfer sink scope closes real files on cancellation and repeated c
       })
 
       let path = directory + "/body"
-      let response : Response = {
-        code: 200,
-        reason: "OK",
-        headers: {},
-        cookies: [],
-      }
+      let response : Response = { code: 200, reason: "OK", headers: {}, }
       let sink = TransferSink::new(
         FileOutput(
           path~,

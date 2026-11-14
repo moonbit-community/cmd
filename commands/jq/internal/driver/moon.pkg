@@ -1,0 +1,27 @@
+import {
+  "cli/jq/internal/parser",
+  "cli/jq/internal/ast",
+  "cli/core/cli",
+  "cli/core/stream",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/io",
+  "moonbitlang/async/stdio",
+  "moonbitlang/core/env",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+  "moonbitlang/x/sys",
+}
+
+supported_targets = "native+wasm"
+
+import {
+  "moonbitlang/async",
+} for "wbtest"
+
+rule(
+  name: "gen_version",
+  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
+)
+
+dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")

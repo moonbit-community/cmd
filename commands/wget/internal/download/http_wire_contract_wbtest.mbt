@@ -197,7 +197,7 @@ async test "public transfer reports request length failures before response or o
 }
 
 ///|
-async test "public transfer rejects truncated and malformed headers before opening output" {
+async test "response admission distinguishes truncation from tolerated header spelling" {
   @async.with_timeout(10000, () => {
     @async.with_task_group(group => {
       let directory = @fs.tmpdir(prefix="netops-wire-header-boundary-")
@@ -209,6 +209,7 @@ async test "public transfer rejects truncated and malformed headers before openi
           "HTTP/1.1 20", "HTTP/1.1 100 Continue\r\n\r\n", "HTTP/1.1 200 OK\nContent-Length: 1\n\nx",
           "HTTP/1.1 200 OK\r\nBad Header: value\r\n\r\n",
         ] {
+        let accepted = response.contains("200 OK")
         let server = serve_raw_response(group, response)
         for existing in [false, true] {
           let path = directory +
@@ -243,12 +244,23 @@ async test "public transfer rejects truncated and malformed headers before openi
             }
             error => raise error
           } noraise {
-            _ => fail("incomplete or invalid response headers must fail")
+            _ => assert_true(accepted)
           }
-          assert_true(observed.is_empty())
-          if existing {
+          if accepted {
+            assert_false(observed.is_empty())
+            assert_eq(
+              @fs.read_file(path).text(),
+              if response.has_suffix("x") {
+                "x"
+              } else {
+                ""
+              },
+            )
+          } else if existing {
+            assert_true(observed.is_empty())
             assert_eq(@fs.read_file(path).text(), "preserve")
           } else {
+            assert_true(observed.is_empty())
             assert_false(@fs.exists(path))
           }
         }

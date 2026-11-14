@@ -98,6 +98,7 @@ fn request_headers(
   headers : ArrayView[HttpHeader],
   length : Int64?,
   resume_from : Int64?,
+  suppressed~ : Array[String] = [],
 ) -> PreparedHeaders {
   let persistent : HeaderFields = { fields: [], }
   let per_request : HeaderFields = { fields: [], }
@@ -111,20 +112,28 @@ fn request_headers(
     }
   }
   let authorization_supplied = per_request.contains("Authorization")
-  if !authorization_supplied && parsed.user_info is Some(user_info) {
+  if !authorization_supplied &&
+    !suppressed.contains("authorization") &&
+    parsed.user_info is Some(user_info) {
     per_request.set(
       "Authorization",
       "Basic " + @base64.encode(@utf8.encode(@netops.percent_decode(user_info))),
     )
   }
-  if length is Some(value) && !per_request.contains("Content-Length") {
+  if length is Some(value) &&
+    !per_request.contains("Content-Length") &&
+    !suppressed.contains("content-length") {
     per_request.set("Content-Length", value.to_string())
   }
-  if !per_request.contains("Accept-Encoding") {
+  if !per_request.contains("Accept-Encoding") &&
+    !suppressed.contains("accept-encoding") {
     // Keep transfer counts and Range offsets on the encoded representation.
     per_request.set("Accept-Encoding", "identity")
   }
-  if resume_from is Some(value) && value > 0L && !per_request.contains("Range") {
+  if resume_from is Some(value) &&
+    value > 0L &&
+    !per_request.contains("Range") &&
+    !suppressed.contains("range") {
     per_request.set("Range", "bytes=\{value}-")
   }
   { persistent, per_request, authorization_supplied, }

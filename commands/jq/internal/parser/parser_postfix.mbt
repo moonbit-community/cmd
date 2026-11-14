@@ -1,0 +1,115 @@
+///|
+// Adapted from MoonJQ 0.2.0 for local ownership and current syntax.
+// See ../../THIRD_PARTY_NOTICES.md for source and license information.
+
+///|
+/// Parse postfix operators
+fn Parser::parse_postfix(self : Parser) -> @ast.Expr raise ParseError {
+  let mut expr = self.parse_primary()
+  while true {
+    match self.current() {
+      Some(TQuestion) => {
+        self.advance()
+        expr = Optional(expr)
+        continue
+      }
+      Some(TLBracket) => {
+        self.advance()
+        expr = self.parse_index_or_slice(expr)
+        continue
+      }
+      Some(TDot) => {
+        self.advance()
+        expr = self.parse_field_access(expr)
+        continue
+      }
+      _ => break
+    }
+  }
+  expr
+}
+
+///|
+/// Parse array index or slice
+fn Parser::parse_index_or_slice(
+  self : Parser,
+  base : @ast.Expr,
+) -> @ast.Expr raise ParseError {
+  if self.consume(TRBracket) {
+    return Pipe(base, Index([]))
+  }
+  if self.current() is Some(TString(key)) {
+    // .["key"]
+    self.advance()
+    self.expect(TRBracket)
+    return Pipe(base, Key(key))
+  }
+  let start_or_index = self.parse_slice_part()
+  if self.consume(TColon) {
+    let end = self.parse_slice_part()
+    self.expect(TRBracket)
+    Pipe(base, Slice(start_or_index, end))
+  } else {
+    let indices : Array[Int32] = []
+    guard start_or_index is Some(n) else {
+      raise InvalidSyntax("Expected index")
+    }
+    indices.push(n)
+    while self.consume(TComma) {
+      guard self.parse_slice_part() is Some(n2) else {
+        raise InvalidSyntax("Expected index after comma")
+      }
+      indices.push(n2)
+    }
+    self.expect(TRBracket)
+    Pipe(base, Index(indices))
+  }
+}
+
+///|
+/// Parse optional integer for slice
+fn Parser::parse_slice_part(self : Parser) -> Int32? raise ParseError {
+  match self.current() {
+    Some(TNumber(n)) => {
+      self.advance()
+      Some(n.to_int())
+    }
+    Some(TMinus) => {
+      self.advance()
+      guard self.current() is Some(TNumber(n)) else {
+        raise InvalidSyntax("Expected number after minus")
+      }
+      self.advance()
+      Some(-n.to_int())
+    }
+    _ => None
+  }
+}
+
+///|
+/// Parse field access after dot
+fn Parser::parse_field_access(
+  self : Parser,
+  base : @ast.Expr,
+) -> @ast.Expr raise ParseError {
+  match self.current() {
+    Some(TIdentifier(name)) => {
+      self.advance()
+      Pipe(base, Key(name))
+    }
+    Some(TString(name)) => {
+      // ."key"
+      self.advance()
+      Pipe(base, Key(name))
+    }
+    Some(TLBracket) => {
+      self.advance()
+      self.parse_index_or_slice(base)
+    }
+    Some(TDot) => {
+      self.advance()
+      Recurse
+    }
+    _ => base
+  }
+}

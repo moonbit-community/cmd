@@ -69,8 +69,8 @@ mode-preserving replacement remains a filesystem boundary.
 | --- | --- | --- |
 | [comm](../../commands/comm/merge.mbt) | Synchronous merge of available borrowed records | Keep ordering diagnostics and own pending records across refill |
 | [join](../../commands/join/main.mbt) | Group equal keys and batch complete output records | Duplicate groups require their output product; unpaired/header rules remain distinct |
-| [jq input](../../commands/jq/input.mbt) | Scan each available byte chunk synchronously while framing complete JSON values | Quoting, nesting, concatenated values and late parse errors determine safe emission |
-| [jq grouping](../../commands/jq/grouping.mbt) / [sorting](../../commands/jq/sorting.mbt) | Evaluate each key stream once, retain original values and preserve stable ties | Lexical bindings, empty/multiple keys and object key semantics cannot use debug-string equality |
+| [jq input](../../commands/jq/internal/driver/input.mbt) | Scan each available byte chunk synchronously while framing complete JSON values | Quoting, nesting, concatenated values and late parse errors determine safe emission |
+| [jq grouping](../../commands/jq/internal/driver/grouping.mbt) / [sorting](../../commands/jq/internal/driver/sorting.mbt) | Evaluate each key stream once, retain original values and preserve stable ties | Lexical bindings, empty/multiple keys and object key semantics cannot use debug-string equality |
 | [seq](../../commands/seq/integer.mbt) | Checked Int64 admission and synchronous digit/output batches | Overflow, nonintegral values and formatted output use the exact numeric path |
 | [cmp](../../commands/cmp/main.mbt) | Quiet byte-span comparison stops at the first mismatch | Reported differences, offsets and input-error ordering use their command-specific paths |
 

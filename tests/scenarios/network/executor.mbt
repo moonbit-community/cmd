@@ -34,7 +34,8 @@ pub fn supports(id : String) -> Bool {
     "network-wget-cookie-domains-oracle", "network-curl-cookie-lifecycle", "network-curl-cookie-lifecycle-oracle",
     "network-curl-http-retry", "network-curl-http-retry-oracle", "network-wget-authentication-session",
     "network-wget-authentication-replay", "network-wget-authentication-rejection",
-    "network-wget-authentication-option-error",
+    "network-wget-authentication-option-error", "network-curl-http-cookie", "network-curl-http-cookie-oracle",
+    "network-wget-http-cookie", "network-wget-http-cookie-oracle",
   ].contains(id)
 }
 
@@ -48,6 +49,20 @@ pub async fn run(
   oracle_image? : String,
 ) -> Unit {
   match id {
+    "network-curl-http-cookie" | "network-curl-http-cookie-oracle" =>
+      network_http_cookie_scenario(
+        executor,
+        work,
+        command="curl",
+        oracle_image?,
+      )
+    "network-wget-http-cookie" | "network-wget-http-cookie-oracle" =>
+      network_http_cookie_scenario(
+        executor,
+        work,
+        command="wget",
+        oracle_image?,
+      )
     "network-curl-cookie-lifecycle" | "network-curl-cookie-lifecycle-oracle" =>
       network_curl_transfers_scenario(
         executor,
@@ -136,7 +151,13 @@ pub fn observations(id : String) -> Array[String] {
   let result = [
     "status", "stdout", "stdout-bytes", "stderr", "stderr-bytes", "content", "file-content",
   ]
-  if id.has_prefix("network-curl-cookie-lifecycle") ||
+  if id.contains("http-cookie") {
+    result.append([
+      "request-count", "request-method", "request-target", "request-host", "request-cookie",
+      "request-authorization", "response-bytes", "pre-response-file-state", "cookie-row-order",
+      "cookie-effects",
+    ])
+  } else if id.has_prefix("network-curl-cookie-lifecycle") ||
     id.has_prefix("network-curl-http-retry") {
     result.append([
       "type", "file-type", "request-count", "request-target", "request-host", "request-cookie",

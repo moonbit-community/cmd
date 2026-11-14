@@ -4,7 +4,8 @@ fn cookie_suffix_allows(host : String, domain : String) -> Bool {
   host == domain ||
   (
     cookie_domain_matches(host, domain) &&
-    domain.length() > @netops.cookie_longest_suffix(host).length()
+    domain.length() >
+    @utf8.encode(@netops.cookie_longest_suffix(cookie_utf8(host))).length()
   )
 }
 
@@ -27,14 +28,16 @@ fn curl_suffix_admission(host : String?, domain : String) -> Bool {
     return true
   }
   let domain = curl_suffix_name(domain)
-  if @utf8.encode(domain).length() >= 256 {
+  if domain.length() >= 256 {
     return false
   }
   match host {
     Some(host) => {
       let host = curl_suffix_name(host)
-      @utf8.encode(host).length() < 256 && cookie_suffix_allows(host, domain)
+      host.length() < 256 && cookie_suffix_allows(host, domain)
     }
-    None => domain == "localhost" || !@netops.cookie_public_suffix(domain)
+    None =>
+      domain == "localhost" ||
+      !@netops.cookie_public_suffix(cookie_utf8(domain))
   }
 }

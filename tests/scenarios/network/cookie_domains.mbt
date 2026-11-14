@@ -130,7 +130,9 @@ async fn network_cookie_domains_scenario(
     let directory = work +
       "/cookie-domain-" +
       fixture.id.replace_all(old="/", new="-")
+    let evidence = directory + ".evidence"
     @fs.mkdir(directory)
+    @fs.mkdir(evidence)
     @fs.write_file(directory + "/input.jar", fixture.input)
     @fs.write_file(directory + "/sentinel", b"unchanged\n")
     if oracle_image is Some(_) {
@@ -250,10 +252,10 @@ async fn network_cookie_domains_scenario(
         } else {
           []
         }
+        let before = @fs.readdir(directory)
+        assert_false(before.contains(output_name))
         let observing : Executor = {
           invoke: invocation => {
-            let before = @fs.readdir(directory)
-            assert_false(before.contains(output_name))
             defer {
               candidate.append(requests)
               candidate_tunnels.append(tunnels)
@@ -264,12 +266,6 @@ async fn network_cookie_domains_scenario(
             }
             let execution = (executor.invoke)(invocation)
             candidate_returned.val = true
-            before.push(output_name)
-            before.sort()
-            let after = @fs.readdir(directory)
-            after.sort()
-            expected_names.append(before)
-            actual_names.append(after)
             execution
           },
         }
@@ -311,6 +307,7 @@ async fn network_cookie_domains_scenario(
           directory,
           tool,
           args,
+          evidence_work=evidence,
           environment={
             "LC_ALL": fixture.locale,
             "LC_CTYPE": "C",
@@ -332,6 +329,14 @@ async fn network_cookie_domains_scenario(
           oracle_image?,
           oracle_args~,
           oracle_failures=failures,
+          after_candidate=() => {
+            before.push(output_name)
+            before.sort()
+            let after = @fs.readdir(directory)
+            after.sort()
+            expected_names.append(before)
+            actual_names.append(after)
+          },
         )
         assert_true(observer_errors.is_empty(), msg=observer_errors.join("\n"))
         assert_eq(actual_names, expected_names)

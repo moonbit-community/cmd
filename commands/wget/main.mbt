@@ -165,6 +165,7 @@ fn exit_code(kind : @netops.TransferErrorKind) -> Int32 {
       7
     @netops.ConnectionFailure
     | @netops.ReceiveFailure
+    | @netops.MalformedReplyFailure
     | @netops.EmptyReplyFailure
     | @netops.PartialBodyFailure
     | @netops.ProxyFailure
@@ -559,9 +560,23 @@ async fn main {
     @stdio.stdout.write("wget \{MODULE_VERSION}\n")
     return
   }
-  let options = parse_options(@env.args()[1:]) catch {
+  if metadata_args == ["--help"] {
+    @stdio.stdout.write(usage())
+    return
+  }
+  let options = parse_options(configured_arguments(@env.args()[1:])) catch {
     UsageError(message) => {
       @stdio.stderr.write("wget: \{message}\n")
+      @sys.exit(2)
+      return
+    }
+    ConfigError(status, message) => {
+      @stdio.stderr.write("wget: " + message + "\n")
+      @sys.exit(status)
+      return
+    }
+    error => {
+      @stdio.stderr.write("wget: " + error.to_string() + "\n")
       @sys.exit(2)
       return
     }

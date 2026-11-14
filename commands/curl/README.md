@@ -2,6 +2,9 @@
 
 Transfer HTTP and HTTPS data for MoonX.
 
+Development candidate: `cli/curl@0.2.7` with `cli/core@0.11.0`.
+The published coordinate remains `cli/curl@0.2.6` until a separate release.
+
 ```sh
 moonx cli/curl@0.2.6 [options...] <url>
 ```
@@ -9,6 +12,22 @@ moonx cli/curl@0.2.6 [options...] <url>
 ## Supported scope
 
 Send requests, upload files, follow redirects, manage cookies, retry failures and write responses to stdout or files.
+
+The candidate preserves response and cookie-jar octets, including malformed
+UTF-8, and follows the fixed Curl 8.22.0 line, folding, NUL, control-byte and
+jar-length rules exercised by the HTTP fixtures. HEAD writes admitted raw
+header lines and its buffered cleanup tail; an unterminated status line is an
+empty reply. A too-long jar line stops loading with status 100 while retaining
+earlier rows. Cookie admission remains command-owned.
+
+`-K`/`--config` reads supported options in place, including nested files (five
+levels), double-quoted escapes and `--url`. `-K -` reads stdin. Default discovery
+checks `CURL_HOME/.curlrc`, `XDG_CONFIG_HOME/curlrc` and `HOME/.curlrc`; without
+XDG_CONFIG_HOME, `.config/curlrc` fallbacks are considered. A first `-q` or
+`--disable` skips discovery. A default-file error retains the accepted prefix
+and continues with CLI options; an explicit-file error stops before transfer.
+Unsupported option names reject. OS account-database and Windows executable/
+APPDATA discovery are not implemented by this environment-based profile.
 
 Version 0.2.6: repeated custom request fields retain their
 argument order, including an interleaved User-Agent. Final response fields keep
@@ -38,6 +57,9 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
 | `--max-redirs <num>` | maximum redirects (default 50) |
 | `-I, --head` | show response headers only |
 | `-H, --header <header>` | send custom fields in order, retaining repeats |
+| `-K, --config <file>` | read supported options; `-` reads stdin |
+| `-q, --disable` | skip default configuration when placed first |
+| `--url <url>` | add a URL, including from a configuration file |
 | `-u, --user <user:password>` | HTTP Basic authentication |
 | `-b, --cookie <data\|file>` | send cookies or load a Netscape jar |
 | `-c, --cookie-jar <file>` | write a Netscape cookie jar |
@@ -67,7 +89,10 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
 ## Limitations
 
 - Only HTTP/HTTPS and GET, HEAD, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE and PATCH are supported.
-- Header removal, semicolon empty-field syntax and header files are not yet supported; Host and Transfer-Encoding remain transport-managed.
+- `Name:` suppresses a generated field; `Name;` sends an empty field. `-H @file`
+  reads header lines and `-H @-` reads stdin. Explicit duplicate fields retain
+  order. Host and Transfer-Encoding remain transport-managed and reject custom
+  values/removal. Header/config files use UTF-8 text; Cookie files use bytes.
 - The command uses the complete pinned [ICANN/PRIVATE Public Suffix List](../../tests/fixtures/psl/README.md)
   for response and imported cookies. Accepted exact public-suffix response
   domains become host-only before prefix checks; file imports retain curl's
@@ -93,7 +118,8 @@ Header cookie names, values and attributes trim ASCII SP/HTAB before these check
   rejects non-ASCII hosts; other legacy encodings are not supported. Percent
   escapes are decoded before conversion. Canonical hosts govern DNS, TLS SNI,
   Host, credential origins, cookies and NO_PROXY comparisons; exclusion tokens
-  themselves are not IDNA-converted. Full IRI and configuration behavior remain open.
+  themselves are not IDNA-converted. Full IRI and configuration behavior beyond
+  the supported-option/environment discovery profile remain open.
 - Content-encoded responses remain encoded. A redirect cannot rewind consumed stdin uploads.
 - Without `-f`, a complete retryable HTTP response delivers its body before
   retry selection. Stdout retains that body; a regular output file resets for
