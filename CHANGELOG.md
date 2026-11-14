@@ -19,6 +19,7 @@ Development only.
 - Prepare core 0.11.0, curl/wget 0.2.7 and jq 0.2.9. Keep HTTP and Cookie
   octets through command-owned admission, jar save/reload and request output;
   add supported Curl/Wget configuration dialects and Curl header files/removal.
+  Accept distribution `passive_ftp` startup defaults without changing HTTP.
   Preserve observer receipts before cancellable post-process work.
 - Add incremental jq `--stream` and `--stream-errors`, decimal literal
   preservation and cross-file input/recovery. Maintain the minimal parser,
@@ -31,8 +32,8 @@ Development only.
   Candidate definitions and published expectations stay independent. No package
   publication or performance acceptance is claimed.
 - Local validation passes 2,688 Wasm package tests, 231 Native tool tests and
-  complete command checks with 40 declared platform skips. The final raw-byte
-  error-recovery repair passes all 132 jq command contracts. Check, format, interface,
+  3,963 command checks with 40 declared platform skips. Final targeted checks
+  pass 22 Wget package tests and all 132 jq command contracts. Check, format, interface,
   registry and architecture validation pass; an isolated jq module also checks
   without MoonJQ. Required CI and publication acceptance remain separate gates.
 

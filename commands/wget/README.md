@@ -22,10 +22,15 @@ rules. Fixed request/response bytes and both process phases are frozen in
 `--config=FILE` selects startup settings; `--no-config` suppresses discovery.
 The first selector wins during startup scanning. Otherwise the command reads
 SYSTEM_WGETRC (default `/etc/wgetrc`) followed by WGETRC or HOME/.wgetrc.
+An unreadable or non-file SYSTEM_WGETRC override falls back to `/etc/wgetrc`;
+an empty readable file suppresses that fallback, and parse errors remain fatal.
 `-e`/`--execute` applies a setting at its CLI position. Supported setting names
 ignore case, underscores and hyphens; values remain unquoted text. Boolean
 settings accept on/off, yes/no and 1/0. This profile covers supported command
 options, not every GNU Wget configuration directive.
+The `passive_ftp` boolean is accepted in startup files and execute directives;
+it has no effect on HTTP/HTTPS, so distribution startup defaults remain usable.
+Invalid values still fail, and FTP transfers remain unsupported.
 
 Version 0.2.6: multiple URL failures retain the lowest
 nonzero transfer exit code, regardless of operand order. A later success keeps

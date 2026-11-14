@@ -62,7 +62,9 @@ their source position, validates before later reads, limits nested includes to
 five and preserves the accepted default-file prefix on failure. Header-file
 provenance remains typed metadata, so its raw CR policy does not weaken text
 argument validation. Wget applies startup selectors, normalized setting names,
-booleans and execute directives using its separate grammar. Host and
+booleans and execute directives using its separate grammar. Distribution
+startup files may set `passive_ftp`: validate that boolean without changing
+HTTP behavior. This does not enable FTP transfers. Host and
 Transfer-Encoding customization, non-UTF-8 configuration, OS account-database
 discovery and the full Windows default-file search remain outside this profile.
 Reopen those boundaries with fixed-version wire and filesystem evidence.

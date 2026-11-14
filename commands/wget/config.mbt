@@ -9,12 +9,17 @@ fn config_name(name : String) -> String {
 }
 
 ///|
+fn config_line(raw : String) -> StringView {
+  raw[:raw.find("\u0000").unwrap_or(raw.length())].trim(
+    chars=" \t\r\n\u000b\u000c",
+  )
+}
+
+///|
 fn config_setting(raw : String) -> Array[String] raise UsageError {
   let args : Array[String] = []
   let specs = option_specs()
-  let line = raw[:raw.find("\u0000").unwrap_or(raw.length())].trim(
-    chars=" \t\r\n\u000b\u000c",
-  )
+  let line = config_line(raw)
   if line.is_empty() || line.has_prefix("#") {
     return []
   }
@@ -23,6 +28,18 @@ fn config_setting(raw : String) -> Array[String] raise UsageError {
   }
   let name = config_name(key.trim().to_owned())
   let mut value = value.trim(chars=" \t\r\n\u000b\u000c").to_owned()
+  if name == "passiveftp" {
+    // Distribution startup files configure FTP even for HTTP-only requests.
+    if !["on", "off", "yes", "no", "1", "0"].contains(value.to_lower()) {
+      raise UsageError(
+        key.trim().to_owned() +
+        ": Invalid boolean '" +
+        value +
+        "'; use `on' or `off'.",
+      )
+    }
+    return []
+  }
   let canonical = match name {
     "checkcertificate" => "check-certificate"
     "useproxy" => "proxy"
@@ -116,11 +133,11 @@ fn config_file_arguments(text : String, path : String) -> Array[String] raise {
 
 ///|
 fn execute_arguments(text : String) -> Array[String] raise UsageError {
-  let args = config_setting(text)
-  if args.is_empty() {
+  let line = config_line(text)
+  if line.is_empty() || line.has_prefix("#") {
     raise UsageError("Invalid --execute command '" + text + "'")
   }
-  args
+  config_setting(text)
 }
 
 ///|
@@ -196,6 +213,32 @@ fn config_tokens(
 }
 
 ///|
+async fn system_config_arguments(
+  default_path : String,
+  override_path : String?,
+) -> Array[String] {
+  let paths = match override_path {
+    Some(path) if path != "" && path != default_path => [path, default_path]
+    _ => [default_path]
+  }
+  for path in paths {
+    let text = try {
+      if @fs.kind(path, follow_symlink=true) == Regular {
+        Some(@fs.read_file(path).text())
+      } else {
+        None
+      }
+    } catch {
+      _ => None
+    }
+    if text is Some(text) {
+      return config_file_arguments(text, path)
+    }
+  }
+  []
+}
+
+///|
 async fn configured_arguments(args : ArrayView[String]) -> Array[String] {
   let tokens = config_tokens(args)
   let output : Array[String] = []
@@ -219,11 +262,9 @@ async fn configured_arguments(args : ArrayView[String]) -> Array[String] {
     }
   }
   if !selected {
-    let system = @env.get_env_var("SYSTEM_WGETRC").unwrap_or("/etc/wgetrc")
-    let system_text = Some(@fs.read_file(system).text()) catch { _ => None }
-    if system_text is Some(text) {
-      output.append(config_file_arguments(text, system))
-    }
+    output.append(
+      system_config_arguments("/etc/wgetrc", @env.get_env_var("SYSTEM_WGETRC")),
+    )
     let path = match @env.get_env_var("WGETRC") {
       Some(path) if path != "" => Some((path, true))
       _ =>

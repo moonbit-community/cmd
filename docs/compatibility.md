@@ -13,7 +13,8 @@ Curl and Wget preserve admitted HTTP and Cookie octets through saved jars,
 second-process reloads and outgoing fields. Each command owns response folding,
 control-byte admission, interim/EOF effects and jar grammar. Curl supports
 header removal, semicolon empty fields, header files and ordered `-K` expansion;
-Wget supports startup configuration and `-e` with its separate grammar. The
+Wget supports startup configuration and `-e` with its separate grammar,
+including the `passive_ftp` boolean without effects on HTTP/HTTPS. The
 207 fresh fixed-image HTTP controls cover these finite behaviors, not every
 upstream configuration directive or malformed input. They do not reconstruct
 the missing historical captures. Host/Transfer-Encoding customization,

@@ -87,6 +87,7 @@ fn usage() -> String {
     #|Compatibility limits: HTTP/HTTPS only; --method accepts GET, HEAD, POST,
     #|PUT, DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded
     #|by the runtime millisecond timer range.
+    #|The passive_ftp configuration boolean is accepted without affecting HTTP.
     #|Content-coding bytes remain encoded; Accept-Encoding defaults to identity.
     #|Raw space/TAB/CR/LF/DEL in URL paths or queries uses uppercase percent escapes.
     #|Redirect spaces use %20 and TAB uses %09; existing escapes remain encoded.

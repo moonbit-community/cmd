@@ -66,6 +66,71 @@ test "later timeout settings override both configured and explicit deadlines" {
 }
 
 ///|
+test "FTP startup policy accepts booleans without changing HTTP options" {
+  for value in ["on", "OFF", "yes", "No", "1", "0"] {
+    assert_eq(config_arguments("passive_ftp = " + value), [])
+    assert_eq(execute_arguments("PaSsIvE-FtP=" + value), [])
+  }
+  assert_true(parse_options(config_arguments("passive_ftp=on\nquiet=on")).quiet)
+  for value in ["", "maybe", "2"] {
+    try execute_arguments("passive_ftp=" + value) catch {
+      UsageError(message) =>
+        assert_eq(
+          message,
+          "passive_ftp: Invalid boolean '" + value + "'; use `on' or `off'.",
+        )
+    } noraise {
+      _ => fail("invalid FTP configuration boolean accepted")
+    }
+  }
+  for value in [" \t", "\u0000passive_ftp=on", "  # passive_ftp=on"] {
+    try execute_arguments(value) catch {
+      UsageError(_) => ()
+    } noraise {
+      _ => fail("blank execute command accepted")
+    }
+  }
+}
+
+///|
+async test "system configuration falls back only when the override cannot be read" {
+  let root = @fs.tmpdir(prefix="wget-system-config-")
+  defer @async.protect_from_cancel(() => @fs.rmdir(root, recursive=true))
+  let default_path = root + "/system-wgetrc"
+  let override_path = root + "/override-wgetrc"
+  @fs.write_file(default_path, "quiet=on\npassive_ftp=on\n")
+  for path in [None, Some(""), Some(root + "/missing"), Some(root)] {
+    assert_eq(system_config_arguments(default_path, path), ["--quiet"])
+  }
+  @fs.write_file(override_path, "quiet=off\n")
+  assert_eq(system_config_arguments(default_path, Some(override_path)), [
+    "--no-quiet",
+  ])
+  @fs.write_file(override_path, "")
+  assert_eq(system_config_arguments(default_path, Some(override_path)), [])
+  @fs.write_file(override_path, "passive_ftp=maybe\n")
+  try system_config_arguments(default_path, Some(override_path)) catch {
+    ConfigError(code, message) => {
+      assert_eq(code, 2)
+      assert_true(message.contains(override_path))
+    }
+    error => raise error
+  } noraise {
+    _ => fail("invalid readable override fell back to default configuration")
+  }
+  @fs.write_file(default_path, "passive_ftp=maybe\n")
+  try system_config_arguments(default_path, Some(root + "/missing")) catch {
+    ConfigError(code, message) => {
+      assert_eq(code, 2)
+      assert_true(message.contains(default_path))
+    }
+    error => raise error
+  } noraise {
+    _ => fail("invalid fallback configuration was ignored")
+  }
+}
+
+///|
 test "configuration selector scanning respects option values and the delimiter" {
   assert_eq(
     config_tokens([

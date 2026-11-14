@@ -46762,6 +46762,50 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:wget-config-passive-ftp",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "wget-config-passive-ftp",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:wget-system-config-passive-ftp",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "wget-system-config-passive-ftp",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:wget-execute-passive-ftp",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "wget-execute-passive-ftp",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:wget-execute-passive-ftp-invalid",
+      "command": "wget",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/wget.json",
+      "case_id": "wget-execute-passive-ftp-invalid",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
     }
   ]
 }

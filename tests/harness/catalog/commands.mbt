@@ -441,6 +441,7 @@ pub fn commands() -> Array[CommandContract] {
     // and HTTP-option precedence; global Basic challenges cache by hostname.
     // URL credentials use per-hop challenges and do not enter the global cache.
     // Attached authentication booleans retain value and literal-operand order.
+    // The passive_ftp configuration boolean validates but has no HTTP effect.
     contract(
       "wget",
       Restricted,
