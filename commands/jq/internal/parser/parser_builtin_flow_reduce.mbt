@@ -10,30 +10,30 @@ fn Parser::parse_builtin_flow_reduce(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "reduce" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let gen_expr = self.parse_postfix()
       self.expect(TAs)
       guard self.current() is Some(TVariable(var_name)) else {
         raise InvalidSyntax("reduce expects variable after as")
       }
       self.advance()
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let init_expr = self.parse_pipe()
       self.expect(TSemicolon)
       let update_expr = self.parse_pipe()
-      self.expect(TRParen)
-      self.expect(TRParen)
+      self.expect(TRightParen)
+      self.expect(TRightParen)
       Some(Reduce(gen_expr, var_name, init_expr, update_expr))
     }
     "foreach" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let gen_expr = self.parse_postfix()
       self.expect(TAs)
       guard self.current() is Some(TVariable(var_name)) else {
         raise InvalidSyntax("foreach expects variable after as")
       }
       self.advance()
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let init_expr = self.parse_pipe()
       self.expect(TSemicolon)
       let update_expr = self.parse_pipe()
@@ -42,8 +42,8 @@ fn Parser::parse_builtin_flow_reduce(
       } else {
         None
       }
-      self.expect(TRParen)
-      self.expect(TRParen)
+      self.expect(TRightParen)
+      self.expect(TRightParen)
       Some(Foreach(gen_expr, var_name, init_expr, update_expr, extract_expr))
     }
     _ => None

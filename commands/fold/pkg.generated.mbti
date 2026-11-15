@@ -6,7 +6,6 @@ package "cli/fold"
 // Errors
 
 // Types and methods
-type FoldState
 
 // Type aliases
 

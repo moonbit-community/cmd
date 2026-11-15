@@ -122,7 +122,7 @@ async test "corpus: pikevm" {
       Some(h) => h
     }
     let nfa = @automata.compile_nfa(hir) catch { _ => abort("nfa") }
-    let vm = @automata.PikeVM::new(nfa)
+    let vm = @automata.PikeVm::new(nfa)
     ran += 1
     represented_matches += group.names.length()
     let find = (hay, len, start, end, anchored, slots) => {
@@ -194,9 +194,9 @@ async test "corpus: lazy dfa" {
     }) catch {
       _ => abort("nfa")
     }
-    let fdfa = @automata.LazyDFA::new(fwd)
-    let rdfa = @automata.LazyDFA::new(rev, match_all=true)
-    let vm = @automata.PikeVM::new(fwd)
+    let fdfa = @automata.LazyDfa::new(fwd)
+    let rdfa = @automata.LazyDfa::new(rev, match_all=true)
+    let vm = @automata.PikeVm::new(fwd)
     let previous_fallbacks = fallbacks
     ran += 1
     represented_matches += group.names.length()

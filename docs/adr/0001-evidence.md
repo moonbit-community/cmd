@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-09
+Updated: 2026-11-15
 
 ## Decision
 
@@ -12,12 +12,21 @@ Native is reserved for test tools. Mainline changes require a PR, the three
 checks and actual-main validation. Resource observations and exact-version
 published acceptance are separate manual workflows.
 
+Linux checks standalone scripts and generated inputs once; three-platform builds
+and tests perform warning-denying product/tool compilation. Share prepared Linux
+artifacts before tests, bound to the same run's producer attempt, so upstream preparation
+and comparisons overlap correctness. Both jobs remain required at the final
+workflow gate. Cache writes remain restricted to main. Published acceptance
+uses one release-profile tool build, and resource profiles reuse one observer
+build. Retire one-time capture and experiment launchers after their inputs and
+regressions are established; keep historical sources in Git.
+
 Workspace and published commands share execution and assertion mechanisms,
 but retain independent expectations. Keep private-state/injected tests beside
 their packages, CLI contracts in the existing registry and static corpora in
 `tests/fixtures`. Missing fixtures fail; do not expose product APIs to move tests.
 
-Use `tests/run.mbtx` as the public test entry for local work and CI. It discovers
+Use `tools/run.mbtx` as the public test entry for local work and CI. It discovers
 the workspace, normalizes execution to its root, and checks/formats standalone
 scripts explicitly. Generic infrastructure belongs to `tests/harness`, concrete
 stateful assertions to `tests/scenarios`, and current CLI data to `tests/cases`.
@@ -26,8 +35,9 @@ bindings. Retire old paths and modes without forwarding wrappers.
 
 Direct executable assertions and original corpus expectations are authoritative.
 Retire per-assertion reviews, descriptors, proofs and assertion-source sealing.
-`index check` validates current case bindings, executing assertion routes and the
-derived candidate; `index update` updates only that candidate after validation.
+The driver validates current case bindings and assertion routes during execution.
+Candidate generation belongs to explicit release preparation through `tools/release`;
+ordinary development CI does not compare that derived version table.
 Published coordinates and frozen cases remain independent inputs. Historical
 definitions and evidence remain in Git without replay adapters.
 
@@ -62,7 +72,7 @@ version is exactly `<command> <package-version>\n`. Both end with a newline.
 
 ## Verification and reconsideration
 
-The [test entry](../../tests/run.mbtx), [driver](../../tests/harness/driver/) and
+The [test entry](../../tools/run.mbtx), [driver](../../tests/harness/driver/) and
 [oracle verifier](../../tests/harness/oracle.mbt) implement these rules.
 Owned children/containers must be cancelled, waited for and cleaned up;
 missing cleanup remains an infrastructure failure. Host programs observe tests

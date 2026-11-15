@@ -1012,7 +1012,7 @@ fn reference_coverage(face : @otf.Face) -> Array[UInt32] {
 }
 
 ///|
-test "coverage: from ranges as from single codepoints" {
+test "from ranges as from single codepoints" {
   // `FontInfo` adds the segments and groups of a subtable as ranges and
   // unites the subtables without listing their ranges. That must be the
   // encoding that upstream gets codepoint by codepoint.

@@ -196,7 +196,7 @@ acceptance. Pipe tests do not establish PTY or job-control support.
 Implementation: [Session](../../core/shell/session.mbt),
 [executor](../../core/shell/executor.mbt),
 [file predicates](../../core/shell/test_file.mbt),
-[make scheduler](../../commands/make/scheduler.mbt),
+[make scheduler](../../commands/make/internal/driver/scheduler.mbt),
 [scenarios](../../tests/scenarios/dispatch.mbt).
 Raw-path regressions exercise the same predicates through actual
 [sh invocations](../../tests/cases/sh.json),

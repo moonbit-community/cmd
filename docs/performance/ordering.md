@@ -2,12 +2,12 @@
 
 ## Sort: prepare once, preserve exact comparisons
 
-The call path is [invocation](../../commands/sort/invocation.mbt) to
-[input batching](../../commands/sort/input.mbt),
-[key preparation](../../commands/sort/keys.mbt),
-[comparison](../../commands/sort/compare.mbt),
-[external runs](../../commands/sort/external.mbt) and
-[output](../../commands/sort/output.mbt).
+The call path is [invocation](../../commands/sort/internal/driver/invocation.mbt) to
+[input batching](../../commands/sort/internal/driver/input.mbt),
+[key preparation](../../commands/sort/internal/order/keys.mbt),
+[comparison](../../commands/sort/internal/order/compare.mbt),
+[external runs](../../commands/sort/internal/driver/external.mbt) and
+[output](../../commands/sort/internal/driver/output.mbt).
 
 Input batches admit complete records synchronously. Field boundaries are indexed
 once per record and selected ranges are borrowed during preparation. Plain
@@ -15,7 +15,7 @@ untransformed byte ordering is chosen once per invocation. Stable ties, reverse
 ordering and the first unique representative remain part of comparison/output
 state, not shortcuts inferred from a benchmark.
 
-`-n` uses [exact decimal keys](../../commands/sort/numeric_field.mbt): sign,
+`-n` uses [exact decimal keys](../../commands/sort/internal/decimal/decimal.mbt): sign,
 canonical integer digits and fractional digits. Comparison uses sign, integer
 length and lexical digits; insignificant zeros do not alter equality. A bounded
 integer fast path is exact only within its admitted digit range. General numeric
@@ -43,22 +43,22 @@ collisions and all six integer/fractional/spill controls. See the
 
 ## Diff and patch: bytes, keys and edit scripts
 
-[Diff comparison](../../commands/diff/compare.mbt) separates original records
+[Diff comparison](../../commands/diff/internal/compare/compare.mbt) separates original records
 from comparison keys. Byte equality and delimiter scans avoid text round trips.
 Identical outer records can leave the active search domain while retaining
 context and absolute hunk positions. Sparse repeated-anchor
-[discard rules](../../commands/diff/discard.mbt) precede the Myers search.
+[discard rules](../../commands/diff/internal/compare/discard.mbt) precede the Myers search.
 
 Bidirectional frontiers and an explicit subdivision stack bound auxiliary
 reconstruction storage to O(N+M) records. Inputs, keys and result objects remain
 additional allocations, and difficult edit structure still affects work.
 Minimum edit count alone does not establish GNU-compatible repeated-record hunk
 choice. Blank-only suppression also cannot delete blank records before matching.
-[Output](../../commands/diff/output.mbt) appends original bytes while preserving
+[Output](../../commands/diff/internal/compare/output.mbt) appends original bytes while preserving
 labels, context and missing-newline markers.
 
-[Patch byte records](../../commands/patch/bytes.mbt) keep full-source editing in
-the byte domain; [hunk application](../../commands/patch/apply.mbt) retains
+[Patch byte records](../../commands/patch/internal/hunks/bytes.mbt) keep full-source editing in
+the byte domain; [hunk application](../../commands/patch/internal/hunks/apply.mbt) retains
 offset/fuzz ordering, failed-hunk source regions and later successful hunks.
 This avoids repeated conversions, not whole-input retention. Existing-file
 mode-preserving replacement remains a filesystem boundary.
@@ -67,12 +67,12 @@ mode-preserving replacement remains a filesystem boundary.
 
 | Owner | Current mechanism | Contract that prevents a shortcut |
 | --- | --- | --- |
-| [comm](../../commands/comm/merge.mbt) | Synchronous merge of available borrowed records | Keep ordering diagnostics and own pending records across refill |
-| [join](../../commands/join/main.mbt) | Group equal keys and batch complete output records | Duplicate groups require their output product; unpaired/header rules remain distinct |
+| [comm](../../commands/comm/internal/driver/merge.mbt) | Synchronous merge of available borrowed records | Keep ordering diagnostics and own pending records across refill |
+| [join](../../commands/join/internal/driver/main.mbt) | Group equal keys and batch complete output records | Duplicate groups require their output product; unpaired/header rules remain distinct |
 | [jq input](../../commands/jq/internal/driver/cursor.mbt) | Scan each available byte chunk synchronously while framing complete JSON values | Quoting, nesting, concatenated values and late parse errors determine safe emission |
-| [jq grouping](../../commands/jq/internal/driver/grouping.mbt) / [sorting](../../commands/jq/internal/driver/sorting.mbt) | Evaluate each key stream once, retain original values and preserve stable ties | Lexical bindings, empty/multiple keys and object key semantics cannot use debug-string equality |
-| [seq](../../commands/seq/integer.mbt) | Checked Int64 admission and synchronous digit/output batches | Overflow, nonintegral values and formatted output use the exact numeric path |
-| [cmp](../../commands/cmp/main.mbt) | Quiet byte-span comparison stops at the first mismatch | Reported differences, offsets and input-error ordering use their command-specific paths |
+| [jq grouping](../../commands/jq/internal/filter/grouping.mbt) / [sorting](../../commands/jq/internal/filter/sorting.mbt) | Evaluate each key stream once, retain original values and preserve stable ties | Lexical bindings, empty/multiple keys and object key semantics cannot use debug-string equality |
+| [seq](../../commands/seq/internal/driver/integer.mbt) | Checked Int64 admission and synchronous digit/output batches | Overflow, nonintegral values and formatted output use the exact numeric path |
+| [cmp](../../commands/cmp/internal/driver/main.mbt) | Quiet byte-span comparison stops at the first mismatch | Reported differences, offsets and input-error ordering use their command-specific paths |
 
 Jq's dependency comparator still limits exact numeric ordering at and above
 2^53. The AST adapters and fixed Extended80 numeric profile are decisions in

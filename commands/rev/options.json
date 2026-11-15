@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "command": "rev",
+  "help": "Usage: rev [OPTION]... [FILE]...\n{{help:help:0}}\n{{help:version:0}}\n\nReverse each line from ordered FILE operands, or standard input if absent.\nThe fixed Linux C-locale profile reverses bytes and rejects non-ASCII records.\nAn explicit - is a filename, as in the frozen util-linux profile.\nInput streams one record at a time; memory follows the longest record.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [],
+  "options": [
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "import_alias": "argparse",
+      "options": [
+        "help"
+      ]
+    }
+  ]
+}

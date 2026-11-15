@@ -59,7 +59,7 @@ async fn DirEntry::metadata(self : DirEntry) -> @sys.Metadata {
   match self.dent {
     Stdin =>
       raise IgnoreError::Io(
-        @sys.IOError::other(Other, "<stdin> has no metadata"),
+        @sys.IoError::other(Other, "<stdin> has no metadata"),
       ).with_path("<stdin>")
     Raw(x) => x.metadata()
   }
@@ -326,7 +326,7 @@ pub async fn WalkBuilder::add_ignore(
   guard self.get_or_set_current_dir() is Some(cwd) else {
     return Some(
       Io(
-        @sys.IOError::other(
+        @sys.IoError::other(
           Other,
           "CWD is not known, ignoring global gitignore \{path}",
         ),

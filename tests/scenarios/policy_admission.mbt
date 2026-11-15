@@ -204,7 +204,7 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     }
     let manifest_path = root_path(
       root,
-      "commands/" + contract.name + "/moon.pkg",
+      "commands/" + contract.name + "/internal/driver/moon.pkg",
     )
     let manifest = @fs.read_file(manifest_path).text() catch {
       err => {
@@ -233,7 +233,10 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
         failures,
       )
     } else {
-      let command_dir = root_path(root, "commands/" + contract.name)
+      let command_dir = root_path(
+        root,
+        "commands/" + contract.name + "/internal/driver",
+      )
       let entries = @fs.readdir(
         command_dir,
         include_hidden=true,

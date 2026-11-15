@@ -10,7 +10,7 @@ Build the release Wasm artifacts first. The public entry builds the observer:
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- resources \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- resources \
   --wasm-root /absolute/current-artifacts \
   --moonrun /absolute/moonrun \
   --oracle-bin /absolute/pinned-oracle/bin \
@@ -67,18 +67,18 @@ package/contract assertions.
 
 ## Manual profiles and timing
 
-`tests/run.mbtx -- resource-profiles --image sha256:ID` exports the pinned image's
+`tools/run.mbtx -- resource-profiles --image sha256:ID` exports the pinned image's
 oracle prefix and runs the selected profiles serially: `records`, `long`,
-`mixed-synthetic`, `kernel-rss-linux`, `performance`, and `literal-planner`.
+`mixed-synthetic`, `kernel-rss-linux`, and `performance`.
 `CMD_RESOURCE_PROFILE` and `CMD_RESOURCE_COMMANDS` narrow the selection.
-The wrapper records every completed profile and preserves failures. The
+The wrapper builds the Native resource observer once for the selected resource
+profiles, records every completed profile and preserves failures. The
 exported reference uses host libraries, so resource observations do not replace
 sealed-container upstream comparison.
 
-`literal-planner` measures sampled and kernel RSS separately for shared/diverse
-suffix collisions, sparse misses and an over-budget trie. Each selected side
-must have exact count output, status, empty stderr, equal effects and no
-residual candidate entries. Whole-process RSS does not prove a table bound.
+The October 2026 literal-planner launcher and its command-specific synthetic
+distributions are retired. Their implementation and dated observations remain
+in Git; private search regressions and real-source timing workloads remain active.
 
 `performance` invokes the single schema-3 `benchmark/real.json` engine, using
 the complete pinned sources in `fixtures/benchmark/real-sources.json`.

@@ -10,43 +10,43 @@ fn Parser::parse_builtin_string_regex(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "test" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(s)) else {
         raise InvalidSyntax("test expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Test(s))
     }
     "match" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(s)) else {
         raise InvalidSyntax("match expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Match(s))
     }
     "capture" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(s)) else {
         raise InvalidSyntax("capture expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Capture(s))
     }
     "splits" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(s)) else {
         raise InvalidSyntax("splits expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Splits(s))
     }
     "sub" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(pattern)) else {
         raise InvalidSyntax("sub expects string pattern")
       }
@@ -56,11 +56,11 @@ fn Parser::parse_builtin_string_regex(
         raise InvalidSyntax("sub expects string replacement")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Sub(pattern, replacement))
     }
     "gsub" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(pattern)) else {
         raise InvalidSyntax("gsub expects string pattern")
       }
@@ -70,7 +70,7 @@ fn Parser::parse_builtin_string_regex(
         raise InvalidSyntax("gsub expects string replacement")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(GSub(pattern, replacement))
     }
     _ => None

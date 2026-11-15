@@ -29,7 +29,7 @@ fn compile_query(
 /// Compile a jq filter through command-owned AST adaptations for string
 /// slicing and stable grouping of complete key streams.
 fn parse_filter(source : String) -> @ast.Expr raise {
-  lower(@parser.parse(source))
+  @filter.lower(@parser.parse(source))
 }
 
 ///|

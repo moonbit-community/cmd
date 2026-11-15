@@ -1,0 +1,292 @@
+{
+  "schema": 1,
+  "command": "diff",
+  "help": "Usage: diff [-qsauciwbBZrN] [-U LINES | -C LINES] [--label LABEL] FILE1 FILE2\n{{help:help:0}}\n{{help:version:0}}\nCompare files, directories or one stdin operand. Normal, unified and context output.\n{{help:brief:0}}\n{{help:ignore-case:0}}\n{{help:ignore-trailing-space:0}}\n{{help:strip-trailing-cr:0}}\n{{help:recursive:0}}\nTimestamp headers use TZ=UTC or public TZif files; label stdin explicitly.\nNon-C locale collation and link-target-text comparison remain unsupported.\nOption values and operands after -- remain literal during alias normalization.\n",
+  "catalog_options": [
+    "brief",
+    "report-identical-files",
+    "text",
+    "unified",
+    "context",
+    "unified-lines",
+    "context-lines",
+    "label",
+    "ignore-case",
+    "ignore-all-space",
+    "ignore-space-change",
+    "ignore-blank-lines",
+    "ignore-trailing-space",
+    "strip-trailing-cr",
+    "recursive",
+    "new-file",
+    "unidirectional-new-file"
+  ],
+  "options": [
+    {
+      "name": "brief",
+      "aliases": [
+        "-q",
+        "--brief"
+      ],
+      "value": "none",
+      "description": "Report differences briefly / report equal files.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-q reports differences only; -s reports equality; -a treats binary input as text."
+      ]
+    },
+    {
+      "name": "report-identical-files",
+      "aliases": [
+        "-s",
+        "--report-identical-files"
+      ],
+      "value": "none",
+      "description": "Report when the inputs are identical.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "text",
+      "aliases": [
+        "-a",
+        "--text"
+      ],
+      "value": "none",
+      "description": "Treat input bytes as text.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "unified",
+      "aliases": [
+        "-u",
+        "--unified"
+      ],
+      "value": "none",
+      "description": "Select unified / context output.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "unified-lines",
+      "aliases": [
+        "-U",
+        "--unified-lines"
+      ],
+      "value": "required",
+      "description": "Select unified / context output.",
+      "short": "U",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "context",
+      "aliases": [
+        "-c",
+        "--context"
+      ],
+      "value": "none",
+      "description": "Print context-format differences.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "context-lines",
+      "aliases": [
+        "-C",
+        "--context-lines"
+      ],
+      "value": "required",
+      "description": "Select unified / context output.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "label",
+      "aliases": [
+        "--label"
+      ],
+      "value": "required",
+      "description": "Override a header label.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "ignore-case",
+      "aliases": [
+        "-i",
+        "--ignore-case"
+      ],
+      "value": "none",
+      "description": "Ignore ASCII case / whitespace / whitespace amount / trailing whitespace / blank-only changes.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-i ignores ASCII case; -w ignores whitespace; -b ignores changes in whitespace."
+      ]
+    },
+    {
+      "name": "ignore-all-space",
+      "aliases": [
+        "-w",
+        "--ignore-all-space"
+      ],
+      "value": "none",
+      "description": "Ignore ASCII case / whitespace / whitespace amount / trailing whitespace / blank-only changes.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-space-change",
+      "aliases": [
+        "-b",
+        "--ignore-space-change"
+      ],
+      "value": "none",
+      "description": "Ignore ASCII case / whitespace / whitespace amount / trailing whitespace / blank-only changes.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-blank-lines",
+      "aliases": [
+        "-B",
+        "--ignore-blank-lines"
+      ],
+      "value": "none",
+      "description": "Ignore changes consisting only of blank lines.",
+      "short": "B",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-trailing-space",
+      "aliases": [
+        "-Z",
+        "--ignore-trailing-space"
+      ],
+      "value": "none",
+      "description": "Ignore ASCII case / whitespace / whitespace amount / trailing whitespace / blank-only changes.",
+      "short": "Z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-Z ignores trailing whitespace; -B ignores blank-only change groups."
+      ]
+    },
+    {
+      "name": "strip-trailing-cr",
+      "aliases": [
+        "--strip-trailing-cr"
+      ],
+      "value": "none",
+      "description": "Remove one CR before each LF.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "--strip-trailing-cr removes one CR before each LF on input, including displayed lines."
+      ]
+    },
+    {
+      "name": "recursive",
+      "aliases": [
+        "-r",
+        "--recursive"
+      ],
+      "value": "none",
+      "description": "Recurse / treat missing files as empty.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-r recurses; -N treats missing files as empty; --unidirectional-new-file applies only to the left side."
+      ]
+    },
+    {
+      "name": "new-file",
+      "aliases": [
+        "-N",
+        "--new-file"
+      ],
+      "value": "none",
+      "description": "Treat a missing input as an empty file.",
+      "short": "N",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "unidirectional-new-file",
+      "aliases": [
+        "--unidirectional-new-file"
+      ],
+      "value": "none",
+      "description": "Treat missing files as empty on the left only.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "brief",
+        "report-identical-files",
+        "text",
+        "unified",
+        "unified-lines",
+        "context",
+        "context-lines",
+        "label",
+        "ignore-case",
+        "ignore-all-space",
+        "ignore-space-change",
+        "ignore-blank-lines",
+        "ignore-trailing-space",
+        "strip-trailing-cr",
+        "recursive",
+        "new-file",
+        "unidirectional-new-file",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

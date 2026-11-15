@@ -1,0 +1,28 @@
+import {
+  "cli/sed/internal/program",
+}
+
+import {
+  "cli/core/cli",
+  "cli/core/bytere",
+  "cli/core/stream",
+  "moonbitlang/async/io",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/stdio",
+  "moonbitlang/core/env",
+  "moonbitlang/core/buffer",
+  "moonbitlang/x/sys",
+}
+
+supported_targets = "native+wasm"
+
+rule(
+  name: "gen_version",
+  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
+)
+
+dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")
+
+import {
+  "moonbitlang/async",
+} for "wbtest"

@@ -1,23 +1,11 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "cli/patch"
 
-import {
-  "moonbitlang/core/debug",
-}
-
 // Values
 
 // Errors
 
 // Types and methods
-type Change
-
-type FilePatch
-
-type Hunk
-
-#derive(Eq, @debug.Debug)
-type Line
 
 // Type aliases
 

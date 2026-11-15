@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-14
+Updated: 2026-11-15
 
 ## Decision
 
@@ -23,13 +23,13 @@ implementations already guarantee it; temporary-file rollback is explicitly
 protected. Ln/mv destination rollback remains cancellable: cancellation can
 arrive after the link or rename committed, and restoring the old destination
 then could discard the new result. Preserve both the moved bytes and backup;
-the [mv cancellation regression](../../commands/mv/cancellation_wbtest.mbt)
+the [mv cancellation regression](../../commands/mv/internal/driver/cancellation_wbtest.mbt)
 injects cancellation immediately after rename. Buffered output flushes remain
 cancellable under downstream backpressure. The affected rollback and output
 functions acknowledge `cancellable_defer` locally;
 shielding those writes could make a cancelled command wait indefinitely for a
 reader. Keep all other warnings enabled. The blocked-writer test in
-[paste](../../commands/paste/output_wbtest.mbt) covers serial and parallel flush
+[paste](../../commands/paste/internal/driver/output_wbtest.mbt) covers serial and parallel flush
 cancellation. Reconsider shielding output only with a bounded completion
 contract and equivalent cancellation regressions.
 
@@ -48,6 +48,118 @@ Only cleanup is shielded; output backpressure remains cancellable.
 
 ## Package ownership
 
+All 82 command roots contain only the binary entry, configuration, generated
+interface and documentation. Each entry delegates to `internal/driver`, which
+owns argument adaptation, diagnostics, exit status and I/O ordering. Small
+commands retain a single driver. Domain packages exist for an actual boundary:
+`sort/internal/order` owns key preparation and comparison and uses
+`sort/internal/decimal` for exact decimal keys. `sed/internal/program` owns the
+script compiler, pattern spaces and substitution; `find/internal/expression`
+owns expression parsing, effect-preserving optimization and timestamp windows.
+`make/internal/syntax` owns word, assignment, rule-separator and recipe grammar;
+`tr/internal/sets` owns set expressions; `printf/internal/format` owns formatting
+and ordered diagnostic data. `diff/internal/compare` owns edit alignment and
+patch rendering, `patch/internal/hunks` owns patch parsing and application, and
+`fmt/internal/reflow` owns paragraph layout. `expr/internal/expression` owns
+precedence and evaluation, and `tree/internal/pattern` owns byte-pattern
+compilation and matching. `hexdump/internal/format` owns custom format compilation,
+the format program and rendering; `od/internal/format` owns typed binary fields,
+endian conversion and row rendering. `xxd/internal/codec` owns dump rows and the
+incremental reverse decoder; its driver translates decode failures and retains
+seek, flush and output ordering. `column/internal/layout` owns byte fields,
+width observation, bounded field plans and resumable row rendering, while the
+driver owns disk snapshots, cache admission and page I/O. Their private
+tests move with the implementation; path admission and process effects remain
+driver tests. Existing jq, rg, curl/wget and typst library boundaries remain
+command-owned. A directory move does not justify a shared runtime abstraction
+or a package version bump.
+
+Package fixtures are local to their owning module. Jq and jqlog each retain an
+attributed copy of the original adapter corpus because they are independently
+resolvable modules. Current tests may consume owner fixtures in one direction;
+published expectations retain their independent frozen copies. Missing files
+fail, and neither root discovery nor another command's internal source tree is
+a package-test dependency. Preserve corpus bytes, IDs and independent expected
+values when moving tests. Test names describe obligations, not a target coverage
+percentage or an implementation phase.
+
+`tools/run.mbtx` is the development entry. General orchestration, generation,
+CI helpers and the release executable live under the local `cmd-tools` module;
+real-command scenarios, observation facilities, benchmark/resource programs and
+frozen acceptance inputs remain under `tests`. There are no forwarding entries
+at the retired paths. Tool tests are adjacent to their owning packages.
+
+Each command's `options.json` owns option spellings, value forms, descriptions,
+mechanically stated defaults and parser bindings. The pure MoonBit metadata
+tool emits ordinary CLI and argparse tables, rg flag definitions, typst argument
+definitions, structured help, README tables and catalog option IDs. Semantic
+catalog IDs remain coverage bindings, not additional CLI spellings. Custom
+normalization, validation callbacks, priority and error ordering stay in the
+driver. Help layout and historical wording are explicit metadata; generation
+must preserve observable bytes. Negative aliases and fixed defaults are generated
+alongside their positive options; contextual precedence remains command policy.
+Typst's pinned short and long subcommand help uses declared structured variants.
+Jq's renamed token variants retain explicit legacy diagnostic labels so that
+parser errors and independent lexer records keep their existing text. Runtime
+binaries never read these declarations.
+`moon.mod` alone declares module identity and version, and each driver's build
+rule ships the generated constant. Generation checks fail on drift.
+
+Published acceptance resolves exact coordinates from the selected commands'
+`moon.mod` declarations once, records them in the report and refuses missing or
+incorrect coordinates without fallback. Release eligibility and case selection
+remain versionless policy. `latest.json` and `latest-cases.json` retain historical
+publication records and independent expectations; acceptance does not rewrite
+them or use their old version table as a launch target. An unpublished candidate
+dependency remains an explicit standalone-resolution limitation until a
+separately authorized publication or isolated candidate-workspace check.
+
+The restructuring is local development work. Preserved optimized sources,
+artifacts and workload registrations are evidence inputs, not renewed timing
+acceptance. Required three-platform development CI, Linux differential and
+exact-coordinate publication acceptance remain separate gates. Reopen these
+boundaries only for a demonstrated ownership, independent-build or observable
+behavior defect, with the affected scenarios and cleanup obligations retained.
+
+The 2026-11-15 macOS restructuring check reproduced an intermittent
+`touch-existing-boundary` snapshot failure with both the saved original Wasm
+and the candidate (one failure in 30 fresh-directory runs for each). The
+existing-file rejection path and snapshot observer are unchanged. This is a
+pre-existing observation failure, not a relaxed command contract; the differing
+metadata field and root cause still need investigation. Preserve failed reports,
+all timestamp/identity assertions and the exact rejection expectation. Reopen
+the observer separately with before/after metadata evidence; a later successful
+run does not resolve this intermittent defect.
+
+The strict Linux reference requires an x86_64 Linux kernel, shared fixture paths
+and loopback networking between the test driver and Docker daemon, and the
+registered observation tools and fixture permissions. The ordinary driver and
+oracle invocations share CI's `0022` umask; explicit umask scenarios retain their
+selected masks. Rosetta binfmt execution
+and an outer container with isolated paths or networking are not equivalent:
+they can alter command names in diagnostics, suppress subprocess observations,
+prevent tracing and make fixtures unreachable. Coreutils must also pass the
+reviewed glibc long-double formatting probe at image build time; Rosetta can
+change a configure result and select a different formatter from the same source.
+
+Oracle profile version 3 verifies the Dockerfile and inventory script bytes
+inside the immutable image, the complete executable inventory with empty stderr,
+and the source/distribution checksums. A digest plus matching local recipe files
+is insufficient: the earlier restructuring attempt used an obsolete image that
+lacked rg, rev and typst despite passing that weaker preflight. Its failed run
+and original-artifact controls remain historical evidence in CHANGELOG and the
+local execution reports. Reopen product defects only with independent original
+expectations and a fresh complete run in the required reference environment;
+never normalize these diagnostics, replace expectations or count unavailable
+observations as parity. Local differential acceptance still does not replace
+required three-platform CI or performance qualification.
+
+The [native Linux rerun at `7f69162a`](https://github.com/moonbit-community/cmd/actions/runs/43682839998)
+passes all 2,894 selected comparisons, including the original 97 failed and 41
+unavailable records, with the original network deadlines. This establishes the
+registered reference-environment observations; it does not broaden the supported
+command dialects or resolve the separate intermittent macOS touch observer.
+
 The issue #34 release assigns byte-preserving HTTP headers,
 physical response-line callbacks and explicit payload chunking to core 0.11.0.
 Curl and Wget are its two real consumers. Header admission, Cookie storage,
@@ -57,17 +169,25 @@ literal spelling stay in jq and use its existing core dependency. Unchanged
 commands keep their published coordinates. These correctness changes have no
 formal timing acceptance; the existing protection registry remains authoritative.
 
-Jq follows rg's private-package ownership: its thin executable calls
-`internal/driver`, which owns argument mapping, input/output and existing AST
-adaptations. `internal/parser` depends on `internal/ast`; the evaluator and
-parser never depend on the driver. Import the required MoonJQ 0.2.0 language
-implementation and original tests with source/license attribution, excluding
-upstream command programs and Query convenience wrappers. Internal APIs serve
-these concrete consumers and need no compatibility forwarding layer. This
-removes jq's dependency-release boundary. Jq now owns resumable evaluation,
-lexical function scopes, module linking and shared-input continuation; jqlog
-retains its independent JSONL language profile. The same command ownership
-layout applies to both, as recorded in ADR-0008.
+Jq owns one parser, AST and resumable evaluator under `internal`, together with
+the original MoonJQ 0.2.0 attribution and retained regression coverage. Shared
+AST adaptations belong to `internal/filter`. The private jq driver owns
+argument mapping, module loading, shared-input continuation and rendering;
+language packages never depend on that driver.
+
+The public `cli/jq/engine` package exposes an opaque compiled value filter,
+compilation and per-value application. Jqlog depends on this interface instead
+of copying the language implementation or importing jq internals. Its private
+driver retains JSONL admission, options and per-line output. Both consumers
+use the same corrected value semantics; old jqlog language defects are not a
+second evaluator profile. The engine collects a record's results before return,
+rejects module imports and fails evaluated host requests explicitly.
+
+This intentionally couples jqlog's selected engine dependency to jq's module
+version, with jq published first when both change. Jq-only CLI changes do not
+require a jqlog release. Keep the two MoonX command coordinates; reconsider a
+separate engine module only when independent consumers need a separate release
+lifecycle. See ADR-0008 for language and effect boundaries.
 
 The 2026-11-10 release assigned the incompatible internal source API
 changes to core 0.10.0. Its 74 published command consumers selected that coordinate;
@@ -148,8 +268,8 @@ execution or selection defect, not to reproduce assertions in another format.
 | shell | Session and control-flow state; sh, make and split own orchestration |
 | netops / curl and wget internals | Scoped single-request transport, URL/IDNA/PSL mechanisms / command-owned Cookie, authentication, redirect, retry, resume and output policies |
 | numfmt / time_zone | Exact fixed-profile numeric formatting / checked timezone conversion |
-| jq command internals | Owned parser/evaluator beneath a private driver; preserve lexical bindings, assignment paths and original shared expectations |
-| jqlog command internals | Owned parser/evaluator under internal, with a private JSONL driver and AST adaptations checked against shared independent inputs |
+| jq engine and internals | One parser/evaluator and AST adaptation, an opaque public value-filter API and private CLI effects; preserve lexical bindings, assignment paths and original shared expectations |
+| jqlog command internals | Private JSONL driver consuming cli/jq/engine; retain line admission, option meanings and per-record output |
 | quoting / expand and unexpand internals | Shared byte quoting / command-local tab grids and dialects |
 
 The network boundary is command adaptation, private download policy and one
@@ -199,9 +319,10 @@ evaluation/comparison to seq. Core retains the cp/mv path relationship mechanism
 and private numeric rounding/comparison needed by its formatter. Seq keeps its
 own bounded arithmetic helpers rather than publishing an arithmetic API just to
 avoid duplication. The test-only backup-name wrapper is removed; its tests call
-the private selection directly. Jq and jqlog each own their small AST adaptation;
-their 28 original positive expectations share one fixture and error tests stay
-local. Expand and unexpand own their grids independently. Reconsider sharing
+the private selection directly. Jq owns the shared AST adaptation used by both
+its driver and the public engine; the engine consumer and implementation run
+the unchanged 28-record fixture, with error tests beside their boundaries.
+Expand and unexpand own their grids independently. Reconsider sharing
 only for an actual common mechanism and identical consumer contracts; consumer
 count alone does not establish that boundary.
 
@@ -380,7 +501,7 @@ exit-priority correction is recorded in [ADR-0005](0005-transfer.md).
 These are development changes, not publication or performance acceptance. On
 2026-11-08 the maintainer explicitly deferred performance qualification and
 optimization to a separate stage. This simplification stage is accepted through
-CLI correctness, architecture checks and required three-platform development CI;
+CLI correctness, architecture review and required three-platform development CI;
 incomplete timing coverage does not block its integration. No benchmark threshold
 or historical result changes with this scoped decision.
 
@@ -427,8 +548,15 @@ mount layouts keep invocation-owned containers and are counted separately.
 Actual container/launch counts and complete-gate timings determine subsequent
 optimization, not the size of a split fast job.
 
-Use [architecture validation](../../tests/tools/architecture.mbtx), private ownership
-tests and independent CLI contracts. Strategy/source/test/workload bindings live
+Review dependency direction and ownership with the implementation, using private
+ownership tests and independent CLI contracts. On 2026-11-15 the maintainer
+removed architecture/naming scanners, fixed command/help counts, generated-version
+source checks and the separate candidate-consistency gate. Versions remain
+generated from `moon.mod`; registry validation remains in actual execution.
+These removals reduce parallel policy machinery without changing CLI assertions
+or measurement requirements. Add a dedicated check only if a concrete recurring
+defect is not covered at its owning boundary.
+Strategy/source/test/workload bindings live
 in [protection.json](../../tests/benchmark/protection.json); measurement gates
 live in [PROTECTION.md](../../tests/benchmark/PROTECTION.md). New sharing must
 preserve bytes, error order and real consumer contracts before timing.

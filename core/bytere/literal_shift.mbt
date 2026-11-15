@@ -99,7 +99,7 @@ fn LiteralShift::find(
     let mut length = 0
     if self.buckets.get(key) is Some(group) {
       if adaptive {
-        if position - window_start >= literal_shift_density_window_bytes {
+        if position - window_start >= LITERAL_SHIFT_DENSITY_WINDOW_BYTES {
           window_start = position
           checks = 0
         }
@@ -126,7 +126,7 @@ fn LiteralShift::find(
     // All candidate starts through `left` are resolved. The counter only
     // chooses an engine; it never establishes a match or skips an unchecked start.
     if adaptive &&
-      checks >= literal_shift_minimum_checks &&
+      checks >= LITERAL_SHIFT_MINIMUM_CHECKS &&
       checks > (position - window_start + 1) * 4 {
       return { outcome: Resume, start: left + 1, end: 0, }
     }

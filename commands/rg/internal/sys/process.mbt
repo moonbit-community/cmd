@@ -103,7 +103,7 @@ pub async fn Process::spawn(
   if child.val is None {
     reader.close()
     raise from_error(
-      failure.val.unwrap_or(IOError::other(Other, "preprocessor did not start")),
+      failure.val.unwrap_or(IoError::other(Other, "preprocessor did not start")),
     )
   }
   delivered = true

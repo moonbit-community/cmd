@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "command": "cmp",
+  "help": "Usage: cmp [-b] [-s|-l] [-n LIMIT] [-i SKIP[:SKIP2]] FILE1 [FILE2]\n{{help:print-bytes:0}}\n{{help:silent:0}}\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "bytes",
+    "ignore-initial",
+    "silent",
+    "verbose",
+    "print-bytes"
+  ],
+  "options": [
+    {
+      "name": "silent",
+      "aliases": [
+        "-s",
+        "--silent"
+      ],
+      "value": "none",
+      "description": "Report status only; stop at the first difference.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --silent      report status only; stop at the first difference"
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "Report status only; stop at the first difference.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-l",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "List every differing byte.",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "print-bytes",
+      "aliases": [
+        "-b",
+        "--print-bytes"
+      ],
+      "value": "none",
+      "description": "Show differing byte values.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b, --print-bytes  print differing octal and visible byte values"
+      ]
+    },
+    {
+      "name": "bytes",
+      "aliases": [
+        "-n",
+        "--bytes"
+      ],
+      "value": "required",
+      "description": "Compare at most LIMIT bytes.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "ignore-initial",
+      "aliases": [
+        "-i",
+        "--ignore-initial"
+      ],
+      "value": "required",
+      "description": "Skip initial bytes independently.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "silent",
+        "quiet",
+        "verbose",
+        "print-bytes",
+        "bytes",
+        "ignore-initial",
+        "help"
+      ]
+    }
+  ]
+}

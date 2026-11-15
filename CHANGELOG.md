@@ -12,6 +12,70 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-15
+
+Development candidates; no new package publication.
+
+- Remove architecture/naming scanners, generated-version source checks and the
+  separate candidate-consistency CI gate. Generate release candidates explicitly;
+  retain registry validation during execution and the existing behavior assertions.
+- Retire the issue #34 jq/HTTP collectors and the October grep resource launcher;
+  preserve captured expectations and product regressions. Consolidate validation
+  entry points, check generated inputs once on Linux, share prepared artifacts
+  before tests, and reuse publication/resource tool builds. Keep cache writes on
+  main and require both Linux correctness and applicable upstream comparisons.
+- Restructure all 82 command roots as entries into `internal/driver`; move
+  substantive parsing, formatting and ordering domains into owned packages,
+  relocate package corpora and separate development tools from real-command
+  tests. Preserve the initial jq/jqlog candidate work and published versions.
+- Generate parser bindings, structured help, fixed defaults, README option
+  tables and catalog metadata from each command's `options.json`. Resolve
+  selected publication coordinates once from `moon.mod`, retaining independent
+  frozen expectations and refusing missing versions without fallback. All 183
+  saved help/version observations remain byte-identical.
+- Restructuring validation passes 2,720 Wasm package tests, 246 Native tool
+  tests and 4,091 macOS command checks (3,990 semantic passes), with 40 declared
+  platform skips. Of 83 isolated product modules, 82 build and test; jqlog
+  requires the unpublished jq 0.2.10 candidate, while their isolated two-module
+  workspace passes 588 tests. Linux differential remains failed: 2,756 passes,
+  97 failures reproduced with identical diagnostics by original artifacts, and
+  41 infrastructure-unavailable cases. The final six-domain rerun retains only
+  the pre-existing od EOF failure. Preserve the intermittent touch snapshot
+  failure reproduced with both old and new artifacts; see ADR-0003. These results
+  do not replace required CI, publication acceptance or performance qualification.
+- Repair stale-oracle acceptance and the local Linux reference environment:
+  profile 3 verifies image-contained recipes and every inventory executable,
+  rejects inventory stderr, and checks the GNU printf ABI profile. The original
+  138-case rerun passes 132; matching CI's umask resolves mkdir separately, for
+  133 original cases passing at their existing limits, including all 41 formerly
+  unavailable cases. Five network aggregate deadlines remain exceeded under
+  full-system QEMU. Temporary extended-budget diagnostics remain outside the
+  candidate source and cannot pass the original deadline gate. Tool regressions
+  pass 248 tests; the candidate retains every original assertion and deadline.
+  Product sources, versions and frozen published expectations are unchanged by
+  these repairs; retain the failed local runs as historical evidence.
+- Preserve README line endings during metadata generation and retain imported
+  package fixture bytes on Windows checkouts. The CRLF checkout check verifies
+  all 82 metadata declarations and 21 byte-identical package fixture files.
+- The [native Linux rerun](https://github.com/moonbit-community/cmd/actions/runs/43682839998)
+  at `7f69162a` passes all 2,894 selected upstream comparisons with no failures or
+  skips, resolving the original 97 failures and 41 unavailable records. All five
+  network scenarios pass their original deadlines. Linux and macOS development
+  checks pass in that run; its Windows metadata failure is retained and repaired
+  separately. Required development checks for the final source, exact-coordinate
+  publication acceptance and performance qualification remain separate gates.
+- Prepare jq 0.2.10 with a small public value-filter engine and jqlog 0.2.8
+  consuming it. Maintain one parser/evaluator and one jq-owned AST adaptation;
+  preserve both command entries and jqlog's JSONL admission and per-line output.
+- Align jqlog with jq's lexical functions, `elif`, Boolean and generator
+  semantics. Keep module loading and shared input cursors in jq's CLI; preserve
+  imported test coverage and independent published expectations.
+- Local validation passes 2,708 Wasm package tests, 235 Native tool tests and
+  4,088 macOS command checks, with zero failures and 40 declared platform skips.
+  Architecture checks and an isolated two-module build against published
+  dependencies pass. These results do not replace three-platform CI or release
+  acceptance.
+
 ## 2026-11-14
 
 Published coordinates; exact-version acceptance is a required merge gate.

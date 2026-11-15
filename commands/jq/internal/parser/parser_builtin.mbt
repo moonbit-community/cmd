@@ -35,17 +35,17 @@ fn Parser::parse_builtin(
   match self.parse_builtin_by_name(name) {
     Some(expr) => expr
     None =>
-      if self.current() == Some(TLParen) {
+      if self.current() == Some(TLeftParen) {
         self.advance()
         let args : Array[@ast.Expr] = []
         // Check if there's an expression (not just closing paren)
-        if self.current() != Some(TRParen) {
+        if self.current() != Some(TRightParen) {
           args.push(self.parse_pipe())
           while self.consume(TSemicolon) {
             args.push(self.parse_pipe())
           }
         }
-        self.expect(TRParen)
+        self.expect(TRightParen)
         FunctionCall(name, args)
       } else {
         FunctionCall(name, [])
@@ -56,14 +56,14 @@ fn Parser::parse_builtin(
 ///|
 fn Parser::parse_arguments(self : Parser) -> Array[@ast.Expr] raise ParseError {
   let args : Array[@ast.Expr] = []
-  if self.consume(TLParen) {
-    if self.current() != Some(TRParen) {
+  if self.consume(TLeftParen) {
+    if self.current() != Some(TRightParen) {
       args.push(self.parse_pipe())
       while self.consume(TSemicolon) {
         args.push(self.parse_pipe())
       }
     }
-    self.expect(TRParen)
+    self.expect(TRightParen)
   }
   args
 }

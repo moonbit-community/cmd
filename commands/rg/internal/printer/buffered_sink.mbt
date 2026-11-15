@@ -1,6 +1,6 @@
 ///|
 /// Bound the optional record copy independently of previous long records.
-let maximum_buffered_match_bytes : Int32 = 65536
+const MAXIMUM_BUFFERED_MATCH_BYTES : Int32 = 65536
 
 ///|
 /// Use the existing block-output permission for bounded synchronous delivery.
@@ -70,7 +70,7 @@ fn StandardImpl::try_buffer_line(
     @matcher.Match::new(0, end - start),
   )
   let start = start + range.start
-  if end - start > maximum_buffered_match_bytes ||
+  if end - start > MAXIMUM_BUFFERED_MATCH_BYTES ||
     self.exceeds_max_columns(end - start) {
     return false
   }
@@ -109,7 +109,7 @@ fn StandardImpl::try_buffer_line(
     self.searcher.line_terminator().as_bytes()
   }
   if bytes.length() >
-    maximum_buffered_match_bytes - (end - start) - ending.length() {
+    MAXIMUM_BUFFERED_MATCH_BYTES - (end - start) - ending.length() {
     return false
   }
   if bytes.length() == 0 && ending.is_empty() {

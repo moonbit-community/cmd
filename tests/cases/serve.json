@@ -120,6 +120,32 @@
       "comparison": "scenario",
       "oracle": false,
       "timeout_ms": 20000
+    },
+    {
+      "id": "serve-failure-diagnostic-source-name",
+      "command": "serve",
+      "args": [
+        "file"
+      ],
+      "stdin_text": "unread input",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "regular file"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_contains_all": [
+        "serve: Failure(main.mbt:",
+        "@cli/serve FAILED: not a directory: file)\n"
+      ],
+      "diagnostic_reason": "Preserve the existing command-level source name and complete failure message; source line and column numbers vary with formatting.",
+      "source_version": "Independent pre-migration Wasm observation; source-before and wasm-before archives retained outside the checkout."
     }
   ]
 }

@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "command": "mv",
+  "help": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n{{help:help:0}}\n{{help:version:0}}\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require unavailable file identity metadata.\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n",
+  "catalog_options": [
+    "force",
+    "no-clobber",
+    "no-target-directory",
+    "verbose",
+    "interactive",
+    "update",
+    "update-mode",
+    "backup",
+    "backup-control",
+    "suffix"
+  ],
+  "options": [
+    {
+      "name": "force",
+      "aliases": [
+        "-f",
+        "--force"
+      ],
+      "value": "none",
+      "description": "Replace without asking.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-clobber",
+      "aliases": [
+        "-n",
+        "--no-clobber"
+      ],
+      "value": "none",
+      "description": "Skip existing targets successfully.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "interactive",
+      "aliases": [
+        "-i",
+        "--interactive"
+      ],
+      "value": "none",
+      "description": "Ask before replacing; refusal or EOF returns 1.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "update",
+      "aliases": [
+        "-u",
+        "--update"
+      ],
+      "value": "none",
+      "description": "Select older (bare -u/--update), all, none or none-fail.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "update-mode",
+      "aliases": [
+        "--update=MODE"
+      ],
+      "value": "required",
+      "description": "Select the documented destination update policy.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "backup",
+      "aliases": [
+        "-b",
+        "--backup"
+      ],
+      "value": "none",
+      "description": "Back up targets: none, simple, numbered or existing; bare flag selects existing.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "backup-control",
+      "aliases": [
+        "--backup=CONTROL"
+      ],
+      "value": "required",
+      "description": "Select the documented backup naming policy.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "suffix",
+      "aliases": [
+        "-S",
+        "--suffix"
+      ],
+      "value": "required",
+      "description": "Set simple backup suffix; default ~.",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "~",
+      "default_binding": {
+        "name": "DEFAULT_SUFFIX",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "no-target-directory",
+      "aliases": [
+        "-T",
+        "--no-target-directory"
+      ],
+      "value": "none",
+      "description": "Treat target as a complete path; one source only.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "Show moves.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "force",
+        "no-clobber",
+        "interactive",
+        "update",
+        "update-mode",
+        "backup",
+        "backup-control",
+        "suffix",
+        "no-target-directory",
+        "verbose",
+        "help"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/jq/engine"
+
+import {
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn compile(String) -> Filter raise
+
+// Errors
+
+// Types and methods
+pub struct Filter {
+  // private fields
+}
+pub fn Filter::apply(Self, @json.Json) -> Array[@json.Json] raise
+
+// Type aliases
+
+// Traits

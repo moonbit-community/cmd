@@ -246,7 +246,7 @@ async fn SearchWorker::search_path(
     let storage = match self.file_read_storage {
       Some(storage) => storage
       None => {
-        let storage = FixedArray::make(maximum_file_read_bytes, b'\x00')
+        let storage = FixedArray::make(MAXIMUM_FILE_READ_BYTES, b'\x00')
         self.file_read_storage = Some(storage)
         storage
       }
@@ -277,7 +277,7 @@ async fn SearchWorker::search_reader(
       run(sink)
       { has_match: sink.has_match(), stats: sink.stats(), }
     }
-    JSON(p) => {
+    Json(p) => {
       let sink = p.sink_with_path(self.matcher, path)
       run(sink)
       { has_match: sink.has_match(), stats: Some(sink.stats()), }
@@ -290,9 +290,9 @@ async fn SearchWorker::search_reader(
 fn error_message(e : Error) -> String {
   match e {
     RgError(msg) => msg
-    @sys.IOError(..) as e => e.to_string()
+    @sys.IoError(..) as e => e.to_string()
     @searcher.ConfigError(_) as e => e.to_string()
-    @searcher.SearchIOError(_) as e => e.to_string()
+    @searcher.IoError(_) as e => e.to_string()
     @cli.CommandIo(_) as e => e.to_string()
     @cli.CommandStderr(_) as e => e.to_string()
     @printer.PrinterError(msg) => msg

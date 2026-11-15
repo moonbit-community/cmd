@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "command": "date",
+  "help": "Usage: date [OPTION]... [+FORMAT]\nPrint time in TZ or the host local timezone.\n{{help:utc:0}}\n{{help:date:0}}\n  -I[PRECISION], --iso-8601[=PRECISION]\n                      date, hours, minutes, seconds, or ns\n{{help:rfc-email:0}}\n{{help:help:0}}\n{{help:version:0}}\nFormats: %Y %y %m %d %e %H %M %S %j %a %A %b %h %B %F %T %R %s %N %z %Z %%\nRelative date parsing and setting the clock are unsupported.\nOption values and operands after -- remain literal during alias normalization.\n",
+  "catalog_options": [
+    "utc",
+    "date",
+    "iso-8601",
+    "rfc-email",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "utc",
+      "aliases": [
+        "-u",
+        "--utc"
+      ],
+      "value": "none",
+      "description": "Use UTC.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -u, --utc           use UTC"
+      ]
+    },
+    {
+      "name": "date",
+      "aliases": [
+        "-d",
+        "--date"
+      ],
+      "value": "required",
+      "description": "Read an ISO date/time or @SECONDS.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -d, --date=TEXT     ISO date/time or @SECONDS (up to 9 fractional digits)"
+      ]
+    },
+    {
+      "name": "iso",
+      "aliases": [
+        "--iso"
+      ],
+      "value": "required",
+      "description": "ISO output: date, hours, minutes, seconds or ns.",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "date",
+      "default_binding": {
+        "name": "DEFAULT_ISO",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "rfc-email",
+      "aliases": [
+        "-R",
+        "--rfc-email"
+      ],
+      "value": "none",
+      "description": "Print an RFC email timestamp.",
+      "short": "R",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -R, --rfc-email     RFC email timestamp"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help          display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version       display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "utc",
+        "date",
+        "iso",
+        "rfc-email",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

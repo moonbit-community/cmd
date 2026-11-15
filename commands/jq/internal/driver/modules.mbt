@@ -250,11 +250,11 @@ async fn Modules::link(
   for body = program.body {
     match body {
       Pipe(FunctionDef(name, parameters, filter), rest) => {
-        scope = scope.set_function(name, lower(filter), parameters)
+        scope = scope.set_function(name, @filter.lower(filter), parameters)
         exports.push((name, parameters.length()))
         continue rest
       }
-      _ => break { scope, exports, body: lower(body), }
+      _ => break { scope, exports, body: @filter.lower(body), }
     }
   }
 }

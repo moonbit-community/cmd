@@ -119,8 +119,9 @@ async test "oracle inventory failure is never an accepted identity" {
   let root = @fs.tmpdir(prefix="mooncmd-oracle-inventory-")
   defer (@fs.rmdir(root, recursive=true) catch { _ => () })
   let (profile_path, profile) = lifecycle_oracle_profile(root)
-  try
-    verify_oracle_image_with(profile.image, profile_path, args => {
+  let original = @fs.read_file(profile_path).binary()
+  for status in [0, 27] {
+    let execute : async (Array[String]) -> RunResult = args => {
       if args[0] == "image" {
         {
           status: 0,
@@ -129,21 +130,126 @@ async test "oracle inventory failure is never an accepted identity" {
         }
       } else {
         {
-          status: 27,
-          stdout: b"partial inventory",
+          status,
+          stdout: @utf8.encode(profile.versions),
           stderr: b"inventory observer failed",
         }
       }
-    })
-  catch {
-    error =>
-      assert_true(
-        error
-        .to_string()
-        .contains("oracle inventory failed: inventory observer failed"),
-      )
-  } noraise {
-    _ => fail("a failed inventory observer must not produce an identity")
+    }
+    for seal in [false, true] {
+      try {
+        if seal {
+          seal_oracle_profile_with(profile_path, profile.image_digest, execute)
+        } else {
+          ignore(verify_oracle_image_with(profile.image, profile_path, execute))
+        }
+      } catch {
+        error =>
+          assert_true(error.to_string().contains("inventory observer failed"))
+      } noraise {
+        _ => fail("a failed inventory observer must not produce an identity")
+      }
+      assert_eq(@fs.read_file(profile_path).binary(), original)
+    }
+  }
+}
+
+///|
+async test "matching local recipes cannot seal a stale or incomplete oracle image" {
+  let root = @fs.tmpdir(prefix="mooncmd-oracle-image-recipe-")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let (profile_path, profile) = lifecycle_oracle_profile(root)
+  for defect in ["missing recipe", "stale recipe", "stale inventory recipe"] {
+    let original = @fs.read_file(profile_path).binary()
+    try
+      verify_oracle_image_with(profile.image, profile_path, args => {
+        if args[0] == "image" {
+          return {
+            status: 0,
+            stdout: @utf8.encode(profile.image_digest + "\n"),
+            stderr: b"",
+          }
+        }
+        if args.get(3) != Some("/bin/cat") {
+          return {
+            status: 0,
+            stdout: @utf8.encode(profile.versions),
+            stderr: b"",
+          }
+        }
+        let recipe = args.last() ==
+          Some("/usr/local/share/mooncmd-oracle/Dockerfile")
+        if recipe && defect == "missing recipe" {
+          return { status: 1, stdout: b"", stderr: b"missing image recipe", }
+        }
+        let text = if (recipe && defect == "stale recipe") ||
+          (!recipe && defect == "stale inventory recipe") {
+          "obsolete recipe\n"
+        } else if recipe {
+          "lifecycle fixture recipe\n"
+        } else {
+          "lifecycle fixture inventory recipe\n"
+        }
+        { status: 0, stdout: @utf8.encode(text), stderr: b"", }
+      })
+    catch {
+      error =>
+        assert_true(
+          error
+          .to_string()
+          .contains("oracle image does not contain the reviewed recipe"),
+        )
+    } noraise {
+      _ => fail("a digest and local recipe do not prove image contents")
+    }
+    assert_eq(@fs.read_file(profile_path).binary(), original)
+  }
+}
+
+///|
+async test "oracle inventories retain missing executable failures hidden by pipelines" {
+  let root = @fs.tmpdir(prefix="mooncmd-oracle-inventory-complete-")
+  defer (@fs.rmdir(root, recursive=true) catch { _ => () })
+  let (_, profile) = lifecycle_oracle_profile(root)
+  let markers = [
+    ("SED", "sed (GNU sed) 4.9"),
+    ("RIPGREP", "ripgrep 15.1.0"),
+    ("UTIL_LINUX", "hexdump from util-linux 2.40"),
+    ("UTIL_LINUX", "column from util-linux 2.40"),
+    ("UTIL_LINUX", "rev from util-linux 2.40"),
+    ("FINDUTILS", "find (GNU findutils) 4.10.0"),
+    ("FINDUTILS", "xargs (GNU findutils) 4.10.0"),
+    ("TYPST", "typst 0.15.1"),
+  ]
+  let sources = ["SED", "RIPGREP", "UTIL_LINUX", "FINDUTILS", "TYPST"].map(project => {
+    project,
+    version: "fixture",
+    sha256: sha256_text(project),
+  })
+  let versions = markers.map(pair => pair.1).join("\n") + "\n"
+  let complete = {
+    ..profile,
+    sources,
+    versions,
+    versions_sha256: sha256_text(versions),
+  }
+  assert_true(oracle_profile_errors(complete).is_empty())
+  for (project, marker) in markers {
+    let versions = markers
+      .filter(pair => pair.1 != marker)
+      .map(pair => pair.1)
+      .join("\n") +
+      "\n"
+    let missing = {
+      ..complete,
+      versions,
+      versions_sha256: sha256_text(versions),
+    }
+    assert_true(
+      oracle_profile_errors(missing).contains(
+        "oracle inventory is missing " + project + " executable output",
+      ),
+    )
   }
 }
 

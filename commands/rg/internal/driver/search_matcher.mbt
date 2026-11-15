@@ -74,7 +74,7 @@ impl @matcher.Matcher for SearchMatcher with fn non_matching_bytes(self) {
 impl @matcher.Matcher for SearchMatcher with fn literal_overlap(self, term) {
   match self.regex.hir().kind {
     Literal(bytes) if bytes.length() > 0 &&
-      bytes.length() <= literal_stream_max_bytes &&
+      bytes.length() <= LITERAL_STREAM_MAX_BYTES &&
       self.non_matching_bytes.contains(term) => Some(bytes.length() - 1)
     _ => None
   }
@@ -120,14 +120,14 @@ impl @matcher.Matcher for SearchMatcher with fn count_matching_lines(
   if self.regex.count_exact_lines(hay, hs, he, term) is Some(count) {
     return Some(count)
   }
-  if he - hs >= boolean_min_block_bytes &&
+  if he - hs >= BOOLEAN_MIN_BLOCK_BYTES &&
     self.regex.byte_prefix_start(hay, hs, he) == Some(-1) {
     return Some(0L)
   }
-  if he - hs < boolean_min_block_bytes || self.regex.is_accelerated() {
+  if he - hs < BOOLEAN_MIN_BLOCK_BYTES || self.regex.is_accelerated() {
     return None
   }
-  if he - hs > boolean_ordinary_block_bytes &&
+  if he - hs > BOOLEAN_ORDINARY_BLOCK_BYTES &&
     self.fast_line_regex is Some(filter) {
     if filter.search_half(hay, hs, he, hs, he) is None {
       return Some(0L)
@@ -135,14 +135,14 @@ impl @matcher.Matcher for SearchMatcher with fn count_matching_lines(
   }
   // Retain the mandatory-literal rejection pass. Dense candidates may
   // use a count-only DFA; sparse candidates keep the existing verifier.
-  if he - hs <= boolean_ordinary_block_bytes &&
+  if he - hs <= BOOLEAN_ORDINARY_BLOCK_BYTES &&
     self.fast_line_regex is Some(filter) {
     let mut at = hs
-    for sample in 0..<boolean_density_samples {
+    for sample in 0..<BOOLEAN_DENSITY_SAMPLES {
       match filter.search_half(hay, hs, he, at, he) {
         None => return if sample == 0 { Some(0L) } else { None }
         Some(end) => {
-          if end - hs > boolean_density_window_bytes {
+          if end - hs > BOOLEAN_DENSITY_WINDOW_BYTES {
             return None
           }
           at = end.max(at + 1)
@@ -176,7 +176,7 @@ impl @matcher.Matcher for SearchMatcher with fn find_candidate_line(
 ) {
   match self.fast_line_regex {
     Some(re) => {
-      let at = if he - hs >= boolean_min_block_bytes {
+      let at = if he - hs >= BOOLEAN_MIN_BLOCK_BYTES {
         match self.regex.byte_prefix_start(hay, hs, he) {
           Some(-1) => return None
           Some(start) => start
@@ -191,7 +191,7 @@ impl @matcher.Matcher for SearchMatcher with fn find_candidate_line(
       }
     }
     None => {
-      if he - hs > boolean_ordinary_block_bytes &&
+      if he - hs > BOOLEAN_ORDINARY_BLOCK_BYTES &&
         self.line_terminator is Some(_) {
         match self.regex.search_boolean_long(hay, hs, he) {
           Some(-1) => return None

@@ -65,7 +65,7 @@ test "flags/test_auto_hybrid_regex" {
   assert_true(args.engine is EngineChoice::Auto)
 
   let args = low(["--auto-hybrid-regex", "-P"])
-  assert_true(args.engine is EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::Pcre2)
 
   let args = low(["-P", "--auto-hybrid-regex"])
   assert_true(args.engine is EngineChoice::Auto)
@@ -524,13 +524,13 @@ test "flags/test_engine" {
   assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["--engine", "pcre2"])
-  assert_true(args.engine is EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::Pcre2)
 
   let args = low(["--engine=pcre2"])
-  assert_true(args.engine is EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::Pcre2)
 
   let args = low(["--auto-hybrid-regex", "--engine=pcre2"])
-  assert_true(args.engine is EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::Pcre2)
 
   let args = low(["--engine=pcre2", "--auto-hybrid-regex"])
   assert_true(args.engine is EngineChoice::Auto)
@@ -1028,7 +1028,7 @@ test "flags/test_json" {
   assert_true(args.mode is Mode::Search(Standard))
 
   let args = low(["--json"])
-  assert_true(args.mode is Mode::Search(JSON))
+  assert_true(args.mode is Mode::Search(Json))
 
   let args = low(["--json", "--no-json"])
   assert_true(args.mode is Mode::Search(Standard))
@@ -1500,10 +1500,10 @@ test "flags/test_pcre2" {
   assert_true(args.engine is EngineChoice::Default)
 
   let args = low(["--pcre2"])
-  assert_true(args.engine is EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::Pcre2)
 
   let args = low(["-P"])
-  assert_true(args.engine is EngineChoice::PCRE2)
+  assert_true(args.engine is EngineChoice::Pcre2)
 
   let args = low(["-P", "--no-pcre2"])
   assert_true(args.engine is EngineChoice::Default)
@@ -1521,7 +1521,7 @@ test "flags/test_pcre2_version" {
   assert_true(args.special is None)
 
   let args = low(["--pcre2-version"])
-  assert_true(args.special is Some(SpecialMode::VersionPCRE2))
+  assert_true(args.special is Some(SpecialMode::VersionPcre2))
 }
 
 ///|

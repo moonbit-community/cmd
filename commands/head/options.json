@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "command": "head",
+  "help": "Usage: head [-qvz] [-n NUM|-c NUM] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "bytes",
+    "lines",
+    "quiet",
+    "verbose",
+    "zero-terminated"
+  ],
+  "options": [
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "Suppress file headers.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "Always show file headers.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "zero-terminated",
+      "aliases": [
+        "-z",
+        "--zero-terminated"
+      ],
+      "value": "none",
+      "description": "Use NUL-delimited records.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "lines",
+      "aliases": [
+        "-n",
+        "--lines"
+      ],
+      "value": "required",
+      "description": "Select N records.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "10",
+      "default_binding": {
+        "name": "DEFAULT_LINES",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "bytes",
+      "aliases": [
+        "-c",
+        "--bytes"
+      ],
+      "value": "required",
+      "description": "Select N bytes.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "quiet",
+        "verbose",
+        "zero-terminated",
+        "lines",
+        "bytes",
+        "help"
+      ]
+    }
+  ]
+}

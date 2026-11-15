@@ -1,0 +1,24 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/od/internal/format"
+
+// Values
+pub fn labeled_address(Int64, Int32, Int64?) -> String
+
+pub fn parse_formats(String) -> Array[Format] raise FormatError
+
+pub fn render_row(Bytes, Int64, Int32, Array[Format], Int32, Bool, label? : Int64?) -> String
+
+// Errors
+pub suberror FormatError {
+  FormatError(String)
+}
+
+// Types and methods
+pub struct Format {
+  size : Int32
+  // private fields
+}
+
+// Type aliases
+
+// Traits

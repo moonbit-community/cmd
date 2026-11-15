@@ -1,0 +1,327 @@
+----
+import {
+  "moonbitlang/async@0.22.9",
+  "moonbitlang/async@0.22.9/fs",
+  "moonbitlang/async@0.22.9/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/x@0.5.7/path",
+}
+----
+
+///|
+async fn workspace_root() -> String {
+  let mut root = @fs.realpath(".")
+  for ;; {
+    if @fs.exists(root + "/moon.work") && @fs.exists(root + "/tests/moon.mod") {
+      return root
+    }
+    let parent = @path.Path(root).dirname().to_string()
+    guard parent != root else {
+      fail("run tests from inside the cmd workspace")
+    }
+    root = parent
+  }
+}
+
+///|
+async fn scripts_in(directory : String, scripts : Array[String]) -> Unit {
+  for name in @fs.readdir(directory) {
+    if name.has_prefix(".") || ["_build", "target"].contains(name) {
+      continue
+    }
+    let path = directory + "/" + name
+    match @fs.kind(path, follow_symlink=false) {
+      Directory => scripts_in(path, scripts)
+      Regular if name.has_suffix(".mbtx") => scripts.push(path)
+      _ => ()
+    }
+  }
+}
+
+///|
+async fn moon(root : String, args : Array[String]) -> Unit {
+  @shell.Cmd(
+    "moon",
+    args,
+    cwd=root,
+    env=Map([
+      (
+        "CMD_TEST_PROFILE",
+        @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("debug"),
+      ),
+    ]),
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
+}
+
+///|
+fn tool_arguments(profile : String, packages : Array[String]) -> Array[String] {
+  let args = ["build", "--target", "native", "--deny-warn", ..packages]
+  if profile == "release" {
+    args.push("--release")
+  }
+  args
+}
+
+///|
+async fn validate(root : String, published : Bool, profile : String) -> Unit {
+  let mode = if published { "published" } else { "functional" }
+  let report_root = @env.get_env_var("CMD_TEST_REPORT_ROOT").unwrap_or(
+    root + "/test-reports",
+  )
+  guard @path.Path(report_root).is_absolute() else {
+    fail("CMD_TEST_REPORT_ROOT must be absolute")
+  }
+  @fs.mkdir(report_root, recursive=true, allow_exist=true)
+  let program = root +
+    "/_build/native/" +
+    profile +
+    "/build/mooxCLI/" +
+    (if published {
+      "cmd-tools/release/release.exe"
+    } else {
+      "cmd-tests/harness/driver/driver.exe"
+    })
+  let arguments = [
+    "--suite",
+    if published && @async.platform is Linux {
+      "all"
+    } else {
+      "functional"
+    },
+    "--jobs",
+    if published {
+      "1"
+    } else {
+      "4"
+    },
+    "--report-dir",
+    report_root + "/" + mode,
+  ]
+  if published {
+    arguments.append([
+      "--manifest",
+      @env.get_env_var("CMD_RELEASE_MANIFEST").unwrap_or(
+        "tests/release/latest.json",
+      ),
+    ])
+  }
+  if published && @async.platform is Linux {
+    let image = @fs.read_file(report_root + "/oracle-image.txt")
+      .text()
+      .trim()
+      .to_owned()
+    arguments.append([
+      "--oracle-image",
+      image,
+      "--oracle-profile",
+      report_root + "/oracle-profile/profile.json",
+    ])
+  }
+  let started = @async.now()
+  let status = @shell.Cmd(
+    program,
+    arguments,
+    cwd=root,
+    env=Map([("CMD_TEST_PROFILE", profile)]),
+    stdout=Inherit,
+    stderr=Inherit,
+  ).status()
+  let timing : Json = {
+    "mode": mode,
+    "tool_profile": profile,
+    "duration_ms": @async.now() - started,
+    "status": status,
+  }
+  @fs.write_file(
+    report_root + "/execution.json",
+    timing.stringify(indent=2) + "\n",
+  )
+  if @env.get_env_var("GITHUB_STEP_SUMMARY") is Some(path) {
+    @fs.write_file(
+      path,
+      "Command validation: " + timing.stringify() + "\n",
+      append=true,
+    )
+  }
+  guard status == 0 else {
+    fail("command validation failed with status \{status}")
+  }
+}
+
+///|
+async fn main {
+  let args = @env.args()[1:]
+  if args.is_empty() || args is ["--help"] {
+    let help =
+      #|Usage: moon run tools/run.mbtx -- COMMAND [ARGS]
+      #|  check [inputs]                Check all code, or only scripts and generated inputs
+      #|  test tools|packages|all        Run Native tools, Wasm packages, or both
+      #|  format [--check]              Format packages and every standalone script
+      #|  prepare [published]           Build workspace products/tools or published tools once
+      #|  functional                    Run workspace correctness and validate complete results
+      #|  published                     Run exact-coordinate published acceptance
+      #|  list|validate [DRIVER_ARGS]    Inspect the current functional selection
+      #|  metadata check|update         Check or regenerate declarative option artifacts
+      #|  oracle --image SHA256_ID      Prepare the pinned upstream identity
+      #|  ci COMMAND                    Select, transfer, verify, and summarize CI inputs
+      #|  corpus ARGS                   Prepare complete pinned benchmark sources
+      #|  benchmark ARGS                Run the generic timing engine
+      #|  protect BASELINE REPORT       Run old/new artifact performance protection
+      #|  resources ARGS                Observe resource usage
+      #|  resource-profiles ARGS        Run selected Linux resource profiles
+    println(help)
+    return
+  }
+  let root = workspace_root()
+  let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("debug")
+  guard ["debug", "release"].contains(profile) else {
+    fail("unknown test-tool profile")
+  }
+  let tools = [
+    "tests/harness", "tests/harness/catalog", "tests/scenarios", "tests/scenarios/network",
+    "tests/scenarios/filesystem", "tests/harness/driver", "tools/release", "tests/benchmark",
+    "tests/resources", "tools/metadata",
+  ]
+  let rest = args[1:].to_owned()
+  let prepared = @env.get_env_var("CMD_TEST_PREPARED") == Some("1")
+  match args[0] {
+    "prepare" =>
+      match rest {
+        [] => {
+          moon(root, ["build", "--target", "wasm", "--release", "--deny-warn"])
+          moon(root, tool_arguments(profile, ["tests/harness/driver"]))
+        }
+        ["published"] =>
+          moon(
+            root,
+            tool_arguments("release", ["tests/harness/driver", "tools/release"]),
+          )
+        _ => fail("prepare accepts only published")
+      }
+    "check" => {
+      guard rest.is_empty() || rest == ["inputs"] else {
+        fail("check accepts only inputs")
+      }
+      if rest.is_empty() {
+        moon(root, ["check", "--target", "wasm", "--deny-warn"])
+        moon(root, ["check", "--target", "native", "--deny-warn", ..tools])
+      }
+      let scripts : Array[String] = []
+      scripts_in(root + "/tests", scripts)
+      scripts_in(root + "/tools", scripts)
+      scripts.sort()
+      for path in scripts {
+        moon(root, ["check", "--deny-warn", path])
+      }
+      moon(root, ["run", "tools/public_suffix.mbtx", "--", "check"])
+      moon(root, ["run", "tools/idna.mbtx", "--", "check"])
+      moon(root, ["run", "--target", "native", "tools/metadata", "--", "check"])
+    }
+    "test" => {
+      guard rest is [selection] &&
+        ["tools", "packages", "all"].contains(selection) else {
+        fail("test requires tools, packages or all")
+      }
+      if selection != "tools" {
+        moon(root, [
+          "test", "--target", "wasm", "--release", "--deny-warn", "--no-parallelize",
+        ])
+      }
+      if selection != "packages" {
+        moon(
+          root,
+          [
+            "test", "--target", "native", "--deny-warn", "--no-parallelize", ..tools,
+          ],
+        )
+        moon(root, ["run", "tools/ci.mbtx", "--", "self-test"])
+      }
+    }
+    "format" => {
+      guard rest.is_empty() || rest == ["--check"] else {
+        fail("format accepts only --check")
+      }
+      moon(root, ["fmt", ..rest])
+      let scripts : Array[String] = []
+      scripts_in(root + "/tests", scripts)
+      scripts_in(root + "/tools", scripts)
+      scripts.sort()
+      for path in scripts {
+        moon(root, ["fmt", ..rest, path])
+      }
+    }
+    "metadata" =>
+      moon(root, ["run", "--target", "native", "tools/metadata", "--", ..rest])
+    "list" | "validate" => {
+      if !prepared {
+        moon(root, tool_arguments(profile, ["tests/harness/driver"]))
+      }
+      @shell.Cmd(
+        root +
+        "/_build/native/" +
+        profile +
+        "/build/mooxCLI/cmd-tests/harness/driver/driver.exe",
+        [
+          "--suite",
+          "functional",
+          if args[0] == "list" {
+            "--list"
+          } else {
+            "--validate-only"
+          },
+          ..rest,
+        ],
+        cwd=root,
+        stdout=Inherit,
+        stderr=Inherit,
+      ).run()
+    }
+    "functional" | "published" => {
+      guard rest.is_empty() else {
+        fail("use list/validate or the driver for diagnostic selections")
+      }
+      let published = args[0] == "published"
+      if published && !prepared {
+        moon(
+          root,
+          tool_arguments("release", ["tests/harness/driver", "tools/release"]),
+        )
+      } else if !published && !prepared {
+        moon(root, ["build", "--target", "wasm", "--release", "--deny-warn"])
+        moon(root, tool_arguments(profile, ["tests/harness/driver"]))
+      }
+      validate(root, published, if published { "release" } else { profile })
+    }
+    "resources" => {
+      moon(root, tool_arguments(profile, ["tests/resources"]))
+      @shell.Cmd(
+        root +
+        "/_build/native/" +
+        profile +
+        "/build/mooxCLI/cmd-tests/resources/resources.exe",
+        rest,
+        cwd=root,
+        stdout=Inherit,
+        stderr=Inherit,
+      ).run()
+    }
+    command => {
+      let script = match command {
+        "ci" => "tools/ci.mbtx"
+        "oracle" => "tools/oracle.mbtx"
+        "corpus" => "tools/corpus.mbtx"
+        "benchmark" => "tools/benchmark.mbtx"
+        "protect" => "tools/protect.mbtx"
+        "resource-profiles" => "tools/resource_profiles.mbtx"
+        _ => fail("unknown test command: " + command)
+      }
+      if command == "oracle" && !prepared {
+        moon(root, tool_arguments(profile, ["tests/harness/driver"]))
+      }
+      moon(root, ["run", script, "--", ..rest])
+    }
+  }
+}

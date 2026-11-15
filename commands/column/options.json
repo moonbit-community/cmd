@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "command": "column",
+  "help": "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n{{help:table:0}}\n{{help:separator:0}}\n{{help:output-separator:0}}\n{{help:output-width:0}}\n{{help:fillrows:0}}\n{{help:help:0}}\n{{help:version:0}}\nLayout uses the C locale. Bytes above ASCII are printed as \\xHH.\nLayout uses temporary files and requires filesystem write access.\n",
+  "catalog_options": [
+    "table",
+    "separator",
+    "output-separator",
+    "output-width",
+    "fillrows",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "table",
+      "aliases": [
+        "-t",
+        "--table"
+      ],
+      "value": "none",
+      "description": "create a table",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -t, --table                 create a table"
+      ]
+    },
+    {
+      "name": "separator",
+      "aliases": [
+        "-s",
+        "--separator"
+      ],
+      "value": "required",
+      "description": "table delimiters (default: space and TAB)",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -s, --separator=CHARS       table delimiters (default: space and TAB)"
+      ]
+    },
+    {
+      "name": "output-separator",
+      "aliases": [
+        "-o",
+        "--output-separator"
+      ],
+      "value": "required",
+      "description": "table separator (default: two spaces)",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -o, --output-separator=SEP  table separator (default: two spaces)"
+      ],
+      "default_value": "  ",
+      "default_binding": {
+        "name": "DEFAULT_OUTPUT_SEPARATOR",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "output-width",
+      "aliases": [
+        "-c",
+        "--output-width"
+      ],
+      "value": "required",
+      "description": "output width (default: COLUMNS or 80)",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -c, --output-width=WIDTH    output width (default: COLUMNS or 80)"
+      ]
+    },
+    {
+      "name": "fillrows",
+      "aliases": [
+        "-x",
+        "--fillrows"
+      ],
+      "value": "none",
+      "description": "fill rows before columns",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -x, --fillrows              fill rows before columns"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help                 display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version              display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "table",
+        "separator",
+        "output-separator",
+        "output-width",
+        "fillrows",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

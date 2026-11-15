@@ -103,7 +103,7 @@ async fn canonical_for_loop(path : String) -> String? {
 
 ///|
 priv enum WdErrorInner {
-  Io(path~ : String?, err~ : @sys.IOError)
+  Io(path~ : String?, err~ : @sys.IoError)
   Loop(ancestor~ : String, child~ : String)
 }
 
@@ -154,12 +154,12 @@ fn WdError::to_string(self : WdError) -> String {
 
 ///|
 /// Converts to an I/O error like `impl From<walkdir::Error> for io::Error`.
-fn WdError::to_io_error(self : WdError) -> @sys.IOError {
+fn WdError::to_io_error(self : WdError) -> @sys.IoError {
   let kind = match self.inner {
     Io(err~, ..) => @sys.from_error(err).kind()
     Loop(..) => Other
   }
-  @sys.IOError::other(kind, self.to_string())
+  @sys.IoError::other(kind, self.to_string())
 }
 
 ///|

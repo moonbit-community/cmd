@@ -1,34 +1,4 @@
 ///|
-fn help_message(command : String, modern : Bool) -> String {
-  let extra = if modern {
-    "  -a, --algorithm=TYPE  bsd, sysv, crc (default), crc32b, md5, sha1,\n" +
-    "                        sha224, sha256, sha384, sha512, sha2, sha3, blake2b, sm3\n" +
-    "  -l, --length=BITS     SHA2/SHA3: 224, 256, 384, 512; BLAKE2b: 8..512 by 8\n" +
-    "      --untagged        omit algorithm tags (modern digests default to tags)\n" +
-    "      --base64          encode modern digests in Base64\n" +
-    "      --raw             write digest bytes without names or separators\n"
-  } else {
-    ""
-  }
-  "Usage: \{command} [OPTION]... [FILE]...\n" +
-  "Print or check checksums. With no FILE, or FILE -, read stdin.\n\n" +
-  extra +
-  "  -b, --binary          mark untagged output as binary\n" +
-  "  -t, --text            mark untagged output as text (default)\n" +
-  "      --tag             print BSD tagged records\n" +
-  "  -c, --check           read checksum records and verify files\n" +
-  "  -z, --zero            end output records with NUL; disable escaping\n" +
-  "      --ignore-missing  skip missing files when checking\n" +
-  "      --quiet           suppress successful verification output\n" +
-  "      --status          suppress verification results and summaries\n" +
-  "      --strict          fail if a checksum line is malformed\n" +
-  "  -w, --warn            warn for each malformed checksum line\n" +
-  "      --help            display this help and exit\n" +
-  "      --version         display version and exit\n\n" +
-  "Input bytes are unchanged by -b or -t on every supported platform.\n"
-}
-
-///|
 async fn usage_error(
   command : String,
   message : String,
@@ -49,27 +19,7 @@ async fn run_command(
 ) -> Int32 {
   let modern = fixed is None
   let command = fixed.map(a => a.label().to_lower() + "sum").unwrap_or("cksum")
-  let specs = [
-    @args.flag("check", short='c'),
-    @args.flag("zero", short='z'),
-    @args.flag("binary", short='b'),
-    @args.flag("text", short='t'),
-    @args.flag("tag"),
-    @args.flag("quiet"),
-    @args.flag("status"),
-    @args.flag("strict"),
-    @args.flag("warn", short='w'),
-    @args.flag("ignore-missing"),
-    @args.flag("help"),
-    @args.flag("version"),
-  ]
-  if modern {
-    specs.push(@args.option("algorithm", short='a'))
-    specs.push(@args.option("length", short='l'))
-    specs.push(@args.flag("untagged"))
-    specs.push(@args.flag("base64"))
-    specs.push(@args.flag("raw"))
-  }
+  let specs = checksum_options(modern)
   let parsed = @args.parse(args, specs) catch {
     @args.CliError(option~, message~, ..) => {
       @stdio.stderr.write("\{command}: \{message}: '\{option}'\n")

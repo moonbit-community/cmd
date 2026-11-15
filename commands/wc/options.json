@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "command": "wc",
+  "help": "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n{{help:total:0}}\n{{help:help:0}}\n{{help:version:0}}\nCounting uses the fixed C byte profile; -m counts every byte.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "bytes",
+    "chars",
+    "files0-from",
+    "lines",
+    "max-line-length",
+    "total",
+    "words"
+  ],
+  "options": [
+    {
+      "short": "l",
+      "name": "lines",
+      "description": "Count newline bytes.",
+      "aliases": [
+        "-l",
+        "--lines"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "w",
+      "name": "words",
+      "description": "Count C-byte words.",
+      "aliases": [
+        "-w",
+        "--words"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "c",
+      "name": "bytes",
+      "description": "Count bytes; both are identical in this profile.",
+      "aliases": [
+        "-c",
+        "--bytes"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "m",
+      "name": "chars",
+      "description": "Count bytes; both are identical in this profile.",
+      "aliases": [
+        "-m",
+        "--chars"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "L",
+      "name": "max-line-length",
+      "description": "Report maximum C-profile display width.",
+      "aliases": [
+        "-L",
+        "--max-line-length"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "parser_action": "Append",
+      "allow_hyphen_values": true,
+      "name": "files0-from",
+      "description": "Read NUL-delimited filenames; - selects stdin.",
+      "aliases": [
+        "--files0-from"
+      ],
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "parser_action": "Append",
+      "allow_hyphen_values": true,
+      "name": "total",
+      "description": "Select auto (default), always, never or only.",
+      "aliases": [
+        "--total"
+      ],
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --total=WHEN  print totals: auto (default), always, only, never"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "import_alias": "argparse",
+      "options": [
+        "lines",
+        "words",
+        "bytes",
+        "chars",
+        "max-line-length",
+        "help"
+      ]
+    },
+    {
+      "kind": "options",
+      "function_name": "command_options",
+      "import_alias": "argparse",
+      "options": [
+        "files0-from",
+        "total"
+      ]
+    }
+  ]
+}

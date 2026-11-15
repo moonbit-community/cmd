@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "command": "sed",
+  "help": "Usage: sed [-nE] [-e SCRIPT] [-f SCRIPTFILE] [SCRIPT] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\nStream editor: p/d/q/=, s/RE/REPLACEMENT/[gNp], h/H/g/G/x, :/b/t/T, groups, n/N/P/D/a/i/c.\nAddresses: line number, $, /RE/, ranges and !. BRE default; -E enables ERE.\nBRE/ERE supports pattern backreferences and word assertions.\nIn-place editing and locale-aware matching are not supported.\nProject alias: --extended selects -r/-E; the GNU long name is --regexp-extended.\n",
+  "catalog_options": [
+    "expression",
+    "file",
+    "extended-regexp",
+    "quiet",
+    "silent",
+    "in-place"
+  ],
+  "options": [
+    {
+      "name": "quiet",
+      "aliases": [
+        "-n",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "Suppress automatic output.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "silent",
+      "aliases": [
+        "--silent"
+      ],
+      "value": "none",
+      "description": "Suppress automatic output.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "regexp-extended",
+      "aliases": [
+        "-E",
+        "--regexp-extended"
+      ],
+      "value": "none",
+      "description": "Use extended regular expressions.",
+      "short": "E",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "extended",
+      "aliases": [
+        "-r",
+        "--extended"
+      ],
+      "value": "none",
+      "description": "Use extended regular expressions.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "expression",
+      "aliases": [
+        "-e",
+        "--expression"
+      ],
+      "value": "required",
+      "description": "Append a script; may repeat.",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "file",
+      "aliases": [
+        "-f",
+        "--file"
+      ],
+      "value": "required",
+      "description": "Read a script file; may repeat.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "quiet",
+        "silent",
+        "regexp-extended",
+        "extended",
+        "expression",
+        "file",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

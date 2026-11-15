@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "command": "csplit",
+  "help": "Usage: csplit [OPTION]... FILE PATTERN...\nSplit FILE (- for stdin) at line numbers or basic regular expressions.\nPatterns: NUMBER, /REGEXP/[OFFSET], %REGEXP%[OFFSET], {N}, {*}\n\n{{help:prefix:0}}\n{{help:digits:0}}\n{{help:suffix-format:0}}\n{{help:suppress-matched:0}}\n{{help:silent:0}}\n{{help:quiet:0}}\n{{help:keep-files:0}}\n{{help:elide-empty-files:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nBRE matching includes backreferences, byte classes and word assertions.\nExisting output paths and locale-specific matching are unsupported.\nWindows output names ending in spaces or dots are rejected before input.\nInput is snapshotted with a disk index; temporary write access is required.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "elide-empty-files",
+    "prefix",
+    "quiet",
+    "silent",
+    "keep-files",
+    "digits",
+    "suffix-format",
+    "suppress-matched"
+  ],
+  "options": [
+    {
+      "name": "prefix",
+      "aliases": [
+        "-f",
+        "--prefix"
+      ],
+      "value": "required",
+      "description": "Use PREFIX instead of xx.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -f, --prefix=PREFIX      Use PREFIX instead of xx."
+      ],
+      "default_value": "xx",
+      "default_binding": {
+        "name": "DEFAULT_PREFIX",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "digits",
+      "aliases": [
+        "-n",
+        "--digits"
+      ],
+      "value": "required",
+      "description": "Use at least NUMBER suffix digits (default 2).",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -n, --digits=NUMBER      Use at least NUMBER suffix digits (default 2)."
+      ],
+      "default_value": "2",
+      "default_binding": {
+        "name": "DEFAULT_DIGITS",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "suffix-format",
+      "aliases": [
+        "-b",
+        "--suffix-format"
+      ],
+      "value": "required",
+      "description": "Use one d/i/u/o/x/X conversion for suffixes.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -b, --suffix-format=FORMAT  Use one d/i/u/o/x/X conversion for suffixes."
+      ]
+    },
+    {
+      "name": "suppress-matched",
+      "aliases": [
+        "--suppress-matched"
+      ],
+      "value": "none",
+      "description": "Omit the offset-adjusted split boundary line.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --suppress-matched    Omit the offset-adjusted split boundary line."
+      ]
+    },
+    {
+      "name": "silent",
+      "aliases": [
+        "-s",
+        "--silent"
+      ],
+      "value": "none",
+      "description": "Suppress output byte counts.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --silent             Suppress output byte counts."
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "Same as --silent.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -q, --quiet              Same as --silent."
+      ]
+    },
+    {
+      "name": "keep-files",
+      "aliases": [
+        "-k",
+        "--keep-files"
+      ],
+      "value": "none",
+      "description": "Keep created fragments after a split error.",
+      "short": "k",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -k, --keep-files         Keep created fragments after a split error."
+      ]
+    },
+    {
+      "name": "elide-empty-files",
+      "aliases": [
+        "-z",
+        "--elide-empty-files"
+      ],
+      "value": "none",
+      "description": "Omit empty output fragments.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -z, --elide-empty-files  Omit empty output fragments."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help               display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version            display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "prefix",
+        "digits",
+        "suffix-format",
+        "suppress-matched",
+        "silent",
+        "quiet",
+        "keep-files",
+        "elide-empty-files",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

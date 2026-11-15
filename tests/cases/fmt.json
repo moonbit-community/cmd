@@ -917,6 +917,28 @@
       "expected_stderr_text": "",
       "oracle": true,
       "source_version": "Issue #22 independently specified argument-boundary and extension contract; project-only spellings are kept separate from fixed-upstream invocations."
+    },
+    {
+      "id": "fmt-failure-diagnostic-source-name",
+      "command": "fmt",
+      "args": [
+        "-w",
+        "-1"
+      ],
+      "stdin_text": "unread input",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_contains_all": [
+        "fmt: Failure(main.mbt:",
+        "@cli/fmt FAILED: width must be between 0 and 2500)\n"
+      ],
+      "diagnostic_reason": "Preserve the existing command-level source name and complete failure message; source line and column numbers vary with formatting.",
+      "source_version": "Independent pre-migration Wasm observation; source-before and wasm-before archives retained outside the checkout."
     }
   ]
 }

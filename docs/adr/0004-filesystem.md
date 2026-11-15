@@ -100,7 +100,7 @@ Ln preserves the original creation error after successful backup restoration.
 When restoration also fails, it reports both errors with the destination and
 backup paths. The diagnostic describes the attempted recovery without claiming
 that either path necessarily retains its old contents. Private injected-runtime
-tests in [ln/recovery_wbtest.mbt](../../commands/ln/recovery_wbtest.mbt) perform
+tests in [ln/recovery_wbtest.mbt](../../commands/ln/internal/driver/recovery_wbtest.mbt) perform
 real backups and assert successful restoration, recovery failures both before
 and after mutation, and exact diagnostics. Rollback stays cancellable because
 cancellation may follow a committed creation; an acknowledged-commit test checks
@@ -160,7 +160,7 @@ Size requests reject selected links before querying their referents, and
 display only with public readlink support. Async 0.22.9 already exposes no-follow
 entry sizes; extending tree's selected-link-size profile is a separate decision
 requiring exact link, dangling-target and no-follow tests. The CLI contracts in `tests/cases/tree.json`
-and private traversal tests in `commands/tree/symlink_wbtest.mbt` own this scope.
+and private traversal tests in `commands/tree/internal/driver/symlink_wbtest.mbt` own this scope.
 
 ## Metadata predicates and parent creation
 

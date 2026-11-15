@@ -81,7 +81,7 @@ and source hashes alone do not identify a finished executable image.
 
 The checked-in [profile template](../tests/fixtures/oracle/profile.json) deliberately
 has no final image digest or inventory. Linux development and manual acceptance
-jobs pass the built content ID to [oracle.mbtx](../tests/tools/oracle.mbtx), which
+jobs pass the built content ID to [oracle.mbtx](../tools/oracle.mbtx), which
 records the actual image, tool versions and source/recipe checksums in a fresh
 run profile. [The verifier](../tests/harness/oracle.mbt) binds that profile to
 the reviewed recipe. The tag `mooncmd-oracle:phase0` is only a local build name;

@@ -1,13 +1,7 @@
 ///|
 async test "complete shared jq adapter corpus preserves independent expectations" {
-  let mut root = @fixture_fs.realpath(".")
-  while !@fixture_fs.exists(root + "/moon.work") {
-    let parent = @fixture_fs.realpath(root + "/..")
-    guard parent != root else { fail("jq corpus workspace is missing") }
-    root = parent
-  }
   let value = @json.parse(
-    @fixture_fs.read_file(root + "/tests/fixtures/jq/adapter.json").text(),
+    @fixture_fs.read_file("internal/driver/fixtures/adapter.json").text(),
   )
   guard value
     is {
@@ -35,6 +29,6 @@ async test "complete shared jq adapter corpus preserves independent expectations
       fail("invalid or duplicate jq adapter record")
     }
     seen.add(id)
-    assert_eq(@ast.eval(parse_filter(query), input).collect(), expected, msg=id)
+    assert_eq(@engine.compile(query).apply(input), expected, msg=id)
   }
 }

@@ -21,14 +21,14 @@ pub struct Teddy {
 
 ///|
 /// The maximum number of literals Teddy is used for.
-let teddy_max_literals : Int32 = 64
+const TEDDY_MAX_LITERALS : Int32 = 64
 
 ///|
 /// Builds a Teddy searcher for `lits` (in priority order). Returns `None` if
 /// there are no literals, too many, or an empty one.
 pub fn Teddy::new(lits : Array[FixedArray[Byte]]) -> Teddy? {
   let n = lits.length()
-  if n == 0 || n > teddy_max_literals || lits.iter().any(l => l.length() == 0) {
+  if n == 0 || n > TEDDY_MAX_LITERALS || lits.iter().any(l => l.length() == 0) {
     return None
   }
   let mut min_len = lits[0].length()

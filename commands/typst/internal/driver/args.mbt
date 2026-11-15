@@ -448,210 +448,60 @@ fn parse_i64(value : String) -> Int64 raise @kit.StrError {
 /// The common world arguments.
 fn world_specs() -> Array[ArgSpec] {
   [
-    opt(
-      "root",
-      "DIR",
-      env="TYPST_ROOT",
-      help="Configures the project root (for absolute paths)",
-    ),
-    opt(
-      "input",
-      "key=value",
-      short='i',
-      validate=v => parse_input_pair(v) |> ignore,
-      empty=Pass,
-      multiple=true,
-      help="Add a string key-value pair visible through `sys.inputs`",
-    ),
+    argument_root(),
+    argument_input(validate=v => parse_input_pair(v) |> ignore),
     ..font_specs(),
     ..package_specs(),
-    opt(
-      "creation-timestamp",
-      "UNIX_TIMESTAMP",
-      env="SOURCE_DATE_EPOCH",
-      validate=v => parse_timestamp(v) |> ignore,
-      empty=Pass,
-      help="The document's creation date formatted as a UNIX timestamp",
-    ),
+    argument_creation_timestamp(validate=v => parse_timestamp(v) |> ignore),
   ]
 }
 
 ///|
 fn font_specs() -> Array[ArgSpec] {
   [
-    opt(
-      "font-path",
-      "DIR",
-      env="TYPST_FONT_PATHS",
-      delimiter=env_path_sep(),
-      empty=Pass,
-      multiple=true,
-      help="Adds additional directories that are recursively searched for fonts",
-    ),
-    flag(
-      "ignore-system-fonts",
-      env="TYPST_IGNORE_SYSTEM_FONTS",
-      help="Ensures system fonts won't be searched, unless explicitly included via `--font-path`",
-    ),
-    flag(
-      "ignore-embedded-fonts",
-      env="TYPST_IGNORE_EMBEDDED_FONTS",
-      help="Ensures fonts embedded into Typst won't be considered",
-    ),
+    argument_font_path(delimiter=env_path_sep()),
+    argument_ignore_system_fonts(),
+    argument_ignore_embedded_fonts(),
   ]
 }
 
 ///|
 fn package_specs() -> Array[ArgSpec] {
-  [
-    opt(
-      "package-path",
-      "DIR",
-      env="TYPST_PACKAGE_PATH",
-      help="Custom path to local packages, defaults to system-dependent location",
-    ),
-    opt(
-      "package-cache-path",
-      "DIR",
-      env="TYPST_PACKAGE_CACHE_PATH",
-      help="Custom path to package cache, defaults to system-dependent location",
-    ),
-  ]
+  [argument_package_path(), argument_package_cache_path()]
 }
 
 ///|
 fn process_specs() -> Array[ArgSpec] {
   [
-    opt(
-      "jobs",
-      "JOBS",
-      short='j',
-      validate=v => parse_jobs(v) |> ignore,
-      empty=Pass,
-      help="Number of parallel jobs spawned during compilation (only 1 is supported)",
-    ),
-    opt(
-      "features",
-      "FEATURES",
-      env="TYPST_FEATURES",
-      delimiter=',',
-      possible=["html", "bundle", "a11y-extras"],
-      multiple=true,
-      help="Enables in-development features that may be changed or removed at any time",
-    ),
-    opt(
-      "diagnostic-format",
-      "DIAGNOSTIC_FORMAT",
-      env="TYPST_DIAGNOSTIC_FORMAT",
-      possible=["human", "short"],
-      help="The format to emit diagnostics in [default: human]",
-    ),
+    argument_jobs(validate=v => parse_jobs(v) |> ignore),
+    argument_features(),
+    argument_diagnostic_format(),
   ]
 }
 
 ///|
 fn compile_spec(path : String, about : String, watch : Bool) -> CommandSpec {
   let args = [
-    opt(
-      "format",
-      "FORMAT",
-      short='f',
-      possible=["pdf", "png", "svg", "html", "bundle"],
-      help="The format of the output file, inferred from the extension by default",
-    ),
+    argument_format_compile(),
     ..world_specs(),
-    opt_optional(
-      "pretty",
-      "PRETTY",
-      "true",
-      possible=["true", "false"],
-      help="Whether to pretty-print produced output",
-    ),
-    opt(
-      "pages",
-      "PAGES",
-      delimiter=',',
-      validate=v => parse_pages(v) |> ignore,
-      empty=Pass,
-      multiple=true,
-      help="Which pages to export. When unspecified, all pages are exported",
-    ),
-    opt(
-      "pdf-standard",
-      "PDF_STANDARD",
-      delimiter=',',
-      possible=pdf_standard_names[:].map(p => p.0),
-      multiple=true,
-      help="One (or multiple comma-separated) PDF standards that Typst will enforce conformance with",
-    ),
-    flag("no-pdf-tags", hidden=true, help=""),
-    opt_optional(
-      "pdf-tagged",
-      "PDF_TAGGED",
-      "true",
-      possible=["true", "false"],
-      help="Enables or disables PDF tagging",
-    ),
-    opt(
-      "ppi",
-      "PPI",
-      validate=v => parse_ppi(v) |> ignore,
-      empty=Pass,
-      help="The PPI (pixels per inch) to use for PNG export [default: 144]",
-    ),
-    opt("make-deps", "PATH", hidden=true, help=""),
-    opt(
-      "deps",
-      "PATH",
-      validate=v => parse_output(v, "--deps <PATH>") |> ignore,
-      empty=Pass,
-      help="File path to which a list of current compilation's dependencies will be written. Use `-` to write to stdout",
-    ),
-    opt(
-      "deps-format",
-      "DEPS_FORMAT",
-      possible=["json", "zero", "make"],
-      help="File format to use for dependencies [default: json]",
-    ),
+    argument_pretty_compile(),
+    argument_pages(validate=v => parse_pages(v) |> ignore),
+    argument_pdf_standard(possible=pdf_standard_names[:].map(p => p.0)),
+    argument_no_pdf_tags(),
+    argument_pdf_tagged(),
+    argument_ppi(validate=v => parse_ppi(v) |> ignore),
+    argument_make_deps(),
+    argument_deps(validate=v => parse_output(v, "--deps <PATH>") |> ignore),
+    argument_deps_format(),
     ..process_specs(),
-    opt_optional(
-      "open",
-      "VIEWER",
-      "",
-      empty=Pass,
-      help="Opens the output file with the default viewer or a specific program after compilation (not supported)",
-    ),
-    opt(
-      "timings",
-      "OUTPUT_JSON",
-      help="Produces performance timings of the compilation process (not supported)",
-    ),
+    argument_open(),
+    argument_timings(),
   ]
   if watch {
-    args.push(
-      flag(
-        "no-fullscreen",
-        help="Stops the watcher from taking over the terminal",
-      ),
-    )
-    args.push(
-      flag("no-serve", help="Disables the built-in HTTP server for HTML export"),
-    )
-    args.push(
-      flag(
-        "no-reload",
-        help="Disables the injected live reload script for HTML export. The HTML that is written to disk isn't affected either way",
-      ),
-    )
-    args.push(
-      opt(
-        "port",
-        "PORT",
-        validate=v => parse_port(v) |> ignore,
-        empty=Pass,
-        help="The port where HTML is served",
-      ),
-    )
+    args.push(argument_no_fullscreen())
+    args.push(argument_no_serve())
+    args.push(argument_no_reload())
+    args.push(argument_port(validate=v => parse_port(v) |> ignore))
   }
   {
     key: if watch {
@@ -688,23 +538,13 @@ fn main_spec() -> CommandSpec {
     about: "The Typst compiler",
     args: [
       {
-        ..opt(
-          "color",
-          "COLOR",
-          possible=["auto", "always", "never"],
-          help="Whether to use color. When set to `auto`, uses color if the terminal supports it [default: auto] [possible values: auto, always, never]",
-        ),
+        ..argument_color(),
         // Upstream also sets `default_missing_value = "always"`
         // (args.rs:70), which clap never applies to an argument that
         // requires a value.
         kind: LooseValue,
       },
-      opt(
-        "cert",
-        "CERT",
-        env="TYPST_CERT",
-        help="Path to a custom CA certificate to use when making network requests",
-      ),
+      argument_cert(),
     ],
     positionals: [],
     subcommands: [
@@ -809,26 +649,11 @@ fn parse_args(argv : Array[String]) -> CliArguments raise CliError {
         path: "typst query",
         about: "Processes an input file to extract provided metadata (deprecated, use `eval` instead)",
         args: [
-          opt(
-            "field",
-            "FIELD",
-            empty=Pass,
-            help="Extracts just one field from all retrieved elements",
-          ),
-          flag("one", help="Expects and retrieves exactly one element"),
-          opt(
-            "format",
-            "FORMAT",
-            possible=["json", "yaml"],
-            help="The format to serialize in [default: json]",
-          ),
-          flag("pretty", help="Whether to pretty-print the serialized output"),
-          opt(
-            "target",
-            "TARGET",
-            possible=["paged", "html", "bundle"],
-            help="The target to compile for [default: paged]",
-          ),
+          argument_field(),
+          argument_one(),
+          argument_format_query(),
+          argument_pretty_query(),
+          argument_target(),
           ..world_specs(),
           ..process_specs(),
         ],
@@ -875,26 +700,10 @@ fn parse_args(argv : Array[String]) -> CliArguments raise CliError {
         path: "typst eval",
         about: "Evaluates a piece of Typst code, optionally in the context of a document",
         args: [
-          opt(
-            "in",
-            "IN",
-            validate=v => parse_input(v, "--in <IN>") |> ignore,
-            empty=Pass,
-            help="A file in whose context to evaluate the code. Use `-` to read input from stdin",
-          ),
-          opt(
-            "target",
-            "TARGET",
-            possible=["paged", "html", "bundle"],
-            help="The target to compile for [default: paged]",
-          ),
-          opt(
-            "format",
-            "FORMAT",
-            possible=["json", "yaml", "raw"],
-            help="The format to serialize in [default: json]",
-          ),
-          flag("pretty", help="Whether to pretty-print the serialized output"),
+          argument_in(validate=v => parse_input(v, "--in <IN>") |> ignore),
+          argument_target_eval(),
+          argument_format_eval(),
+          argument_pretty_eval(),
           ..world_specs(),
           ..process_specs(),
         ],
@@ -931,10 +740,7 @@ fn parse_args(argv : Array[String]) -> CliArguments raise CliError {
         key: "fonts",
         path: "typst fonts",
         about: "Lists all discovered fonts in system and custom font paths",
-        args: [
-          ..font_specs(),
-          flag("variants", help="Also lists style variants of each font family"),
-        ],
+        args: [..font_specs(), argument_variants()],
         positionals: [],
         subcommands: [],
       }
@@ -946,19 +752,7 @@ fn parse_args(argv : Array[String]) -> CliArguments raise CliError {
         key: "update",
         path: "typst update",
         about: "Self update the Typst CLI",
-        args: [
-          flag("force", help="Forces a downgrade to an older version"),
-          flag(
-            "revert",
-            help="Reverts to the version from before the last update",
-          ),
-          opt(
-            "backup-path",
-            "FILE",
-            env="TYPST_UPDATE_BACKUP_PATH",
-            help="Custom path to the backup file",
-          ),
-        ],
+        args: [argument_force(), argument_revert(), argument_backup_path()],
         positionals: [
           {
             name: "VERSION",
@@ -998,16 +792,7 @@ fn parse_args(argv : Array[String]) -> CliArguments raise CliError {
         key: "info",
         path: "typst info",
         about: "Displays debugging information about Typst",
-        args: [
-          opt(
-            "format",
-            "FORMAT",
-            short='f',
-            possible=["json", "yaml"],
-            help="The format to serialize in, if it should be machine-readable",
-          ),
-          flag("pretty", help="Whether to pretty-print the serialized output"),
-        ],
+        args: [argument_format_info(), argument_pretty_info()],
         positionals: [],
         subcommands: [],
       }
@@ -1053,7 +838,7 @@ fn parse_args(argv : Array[String]) -> CliArguments raise CliError {
   }
   matches.resolve_pending()
   let color = match matches.value("color") {
-    None | Some("auto") => Auto
+    None | Some("auto") => default_color()
     Some("always") => Always
     Some("never") => Never
     Some(other) =>
@@ -1095,7 +880,7 @@ fn parse_target(m : Matches) -> Target {
   match m.value("target") {
     Some("html") => Html
     Some("bundle") => Bundle
-    _ => Paged
+    _ => default_target()
   }
 }
 
@@ -1148,7 +933,7 @@ fn compile_args(spec : CommandSpec, m : Matches) -> CompileArgs raise CliError {
   let deps_format : DepsFormat = match m.value("deps-format") {
     Some("zero") => Zero
     Some("make") => Make
-    _ => Json
+    _ => default_deps_format()
   }
   {
     input,

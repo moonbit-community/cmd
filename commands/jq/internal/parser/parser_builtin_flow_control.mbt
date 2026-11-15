@@ -10,30 +10,30 @@ fn Parser::parse_builtin_flow_control(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "limit" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TNumber(n)) else {
         raise InvalidSyntax("limit expects number argument")
       }
       self.advance()
       self.expect(TSemicolon)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Limit(n.to_int(), expr))
     }
     "until" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let cond = self.parse_pipe()
       self.expect(TSemicolon)
       let update = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Until(cond, update))
     }
     "while" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let cond = self.parse_pipe()
       self.expect(TSemicolon)
       let update = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(While(cond, update))
     }
     _ => None

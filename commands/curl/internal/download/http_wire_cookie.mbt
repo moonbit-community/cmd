@@ -1,6 +1,6 @@
 ///|
 fn parse_cookie_octets(value : String) -> Cookie? {
-  guard value.length() <= MaxCookieLineBytes else { return None }
+  guard value.length() <= MAX_COOKIE_LINE_BYTES else { return None }
   let value = match value.find("\r") {
     Some(end) => value[:end].to_owned()
     None => value
@@ -10,7 +10,7 @@ fn parse_cookie_octets(value : String) -> Cookie? {
   let name = parts[0][:equal].trim(chars=" \t").to_owned()
   let content = parts[0][equal + 1:].trim(chars=" \t").to_owned()
   guard !name.is_empty() &&
-    name.length() + content.length() <= MaxCookiePairBytes &&
+    name.length() + content.length() <= MAX_COOKIE_PAIR_BYTES &&
     !cookie_control(name) &&
     !cookie_control(content) else {
     return None

@@ -72,9 +72,9 @@ fn Lexer::starts_operand(self : Lexer) -> Bool {
       | TFormat(_)
       | TDot
       | TDotDot
-      | TRParen
-      | TRBracket
-      | TRBrace
+      | TRightParen
+      | TRightBracket
+      | TRightBrace
       | TQuestion
       | TNot
     ) => false

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "command": "sleep",
+  "help": "Usage: sleep NUMBER[SUFFIX]...\n{{help:help:0}}\n{{help:version:0}}\n\nPause for NUMBER seconds, like sleep(1). NUMBER may be fractional.\nSUFFIX may be 's' (seconds, default), 'm' (minutes), 'h' (hours), or\n'd' (days). With multiple arguments, sleep for their sum.\nThe total is rounded up to milliseconds and capped at 2147483647 ms.\n",
+  "catalog_options": [
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": []
+}

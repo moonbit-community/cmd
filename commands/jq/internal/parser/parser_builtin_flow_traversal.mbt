@@ -10,19 +10,19 @@ fn Parser::parse_builtin_flow_traversal(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "recurse" =>
-      if self.consume(TLParen) {
+      if self.consume(TLeftParen) {
         let f = self.parse_pipe()
         self.expect(TSemicolon)
         let cond = self.parse_pipe()
-        self.expect(TRParen)
+        self.expect(TRightParen)
         Some(RecurseWith(f, cond))
       } else {
         Some(Recurse)
       }
     "walk" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Walk(expr))
     }
     _ => None

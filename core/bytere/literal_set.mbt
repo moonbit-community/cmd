@@ -38,7 +38,7 @@ pub fn LiteralSet::new(patterns : Array[Bytes]) -> LiteralSet? {
   let mut width = 1
   let mut total = 0
   for pattern in patterns {
-    if pattern.length() > literal_set_byte_limit - total {
+    if pattern.length() > LITERAL_SET_BYTE_LIMIT - total {
       return None
     }
     total += pattern.length()

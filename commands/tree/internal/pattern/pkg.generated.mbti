@@ -1,0 +1,18 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/tree/internal/pattern"
+
+// Values
+pub fn compile_pattern(String, Bool) -> Pattern
+
+pub fn matches_any(Array[Pattern], String, Bool, Bool) -> Bool
+
+// Errors
+
+// Types and methods
+pub struct Pattern {
+  // private fields
+}
+
+// Type aliases
+
+// Traits

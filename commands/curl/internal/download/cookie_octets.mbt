@@ -1,8 +1,8 @@
 ///|
-const MaxCookieLineBytes = 5000
+const MAX_COOKIE_LINE_BYTES = 5000
 
 ///|
-const MaxCookiePairBytes = 4096
+const MAX_COOKIE_PAIR_BYTES = 4096
 
 ///|
 /// Curl's fixed file reader consumes at most 127 bytes per fgets call, appends
@@ -26,7 +26,7 @@ fn cookie_file_lines(text : String) -> (Array[String], Bool) {
     }
     let chunk = text[start:position]
     let visible = chunk[:chunk.find("\u0000").unwrap_or(chunk.length())]
-    if size + visible.length() >= MaxCookieLineBytes {
+    if size + visible.length() >= MAX_COOKIE_LINE_BYTES {
       return (result, false)
     }
     line.write_view(visible)
@@ -35,7 +35,7 @@ fn cookie_file_lines(text : String) -> (Array[String], Bool) {
       last = visible.get_char(visible.length() - 1).unwrap()
     }
     if position == text.length() && last != '\n' {
-      if size + 1 >= MaxCookieLineBytes {
+      if size + 1 >= MAX_COOKIE_LINE_BYTES {
         return (result, false)
       }
       line.write_char('\n')

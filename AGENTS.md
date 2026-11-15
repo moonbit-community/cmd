@@ -15,6 +15,13 @@ You can browse and install extra skills here:
 - The toplevel directory contains `moon.work`; publishable modules have their
   own `moon.mod`, including `core/moon.mod` and each `commands/<cmd>/moon.mod`.
 
+- Every command root contains only its executable entry, module/package
+  configuration, generated interface and documentation. The entry delegates to
+  `internal/driver`, including small commands and checksum wrappers. The driver
+  owns argument policy, diagnostics, exit status and I/O orchestration; domain
+  implementations live in responsibility-named internal packages when a separate
+  boundary is useful. Public library types belong to their public package.
+
 ## Coding convention
 
 - Internal simplification preserves the `moonx cli/<cmd>` contract: arguments,
@@ -33,6 +40,15 @@ You can browse and install extra skills here:
   implementation phase, historical audit number or retired backend. Keep common
   parser cases with that parser; command tests cover argument mapping, error
   translation and effects. Preserve command-specific exit codes and diagnostics.
+
+- Use `snake_case` for packages, files, functions, variables and fields,
+  `PascalCase` for types, traits and variants (including `HttpClient` and `Url`),
+  and `SCREAMING_SNAKE_CASE` for constants. Common local abbreviations such as
+  `args`, `env`, `buf`, `len`, `pos`, `src`, `dst`, `ctx`, `req` and `resp` are
+  acceptable. Single-letter names belong only to small mathematical or loop
+  scopes. Name units and coordinates explicitly, such as `byte_offset` and
+  `char_index`. Test names describe behavior, conditions and results in English;
+  preserve upstream record identifiers and attribution.
 
 - Repository documentation, issue titles/bodies, PR descriptions and new
   explanatory comments must be written in English. Historical document
@@ -83,11 +99,28 @@ module and version before any release operation.
   `MOON_HOME="$HOME/.moon-accounts/cli" moon test --update` to refresh
   snapshots.
 
-- Keep large static regression corpora in `tests/fixtures` and CLI-equivalent
-  cases in the existing contract runner/registry. Preserve private-state and
-  injected-runtime tests beside their packages; do not widen product APIs just
-  to relocate tests. Migrations must preserve original expected values and
-  corpus records, with missing fixtures failing rather than silently skipping.
+- Package tests own their static inputs in a package `fixtures` directory and
+  resolve them from the module directory, without searching for the workspace
+  or reading central `tests/` inputs. Shared inputs within a module have one
+  explicit owner; independent modules may retain attributed identical upstream
+  inputs with independently maintained expectations. Central Wasm integration
+  tests may consume current package fixtures in one direction. Historical
+  publication inputs and expectations remain frozen and independent.
+- Blackbox tests verify public behavior; whitebox tests verify private state,
+  invariants, injected failures and resource lifetimes. Do not widen product APIs
+  to relocate tests. Keep real-process stream, exit, side-effect, cancellation
+  and cleanup assertions in the central integration runner. Preserve original
+  bytes, expected values and corpus records; missing fixtures fail. Remove
+  duplicate execution only after checking the actual verification obligations.
+- Module names and versions are declared only in `moon.mod`. Generated version
+  constants ship in published source; runtime commands never read source metadata.
+  Declarative command options supply generated tables and structured help/docs;
+  command-specific syntax, precedence and error ordering remain explicit adapters.
+  Independent expectations must not call the generator to compute their answers.
+- The 2026-11-15 restructuring is local only: preserve the existing jq/jqlog
+  candidate versions, do not bump versions for moves, and do not push or publish.
+  Record pre-existing defects separately from migration regressions. Structural
+  completion and resolution of all behavior defects are separate outcomes.
 
 - Prefer `assert_eq` or `assert_true(pattern is Pattern(...))` for results that
   are stable or very unlikely to change. For snapshot tests that record
@@ -109,16 +142,19 @@ module and version before any release operation.
 
 - Serialize workspace check/test/build/info/fmt commands: they share the build
   directory. Agent-authored automation must use pure MoonBit `.mbtx` files.
-- Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- COMMAND`
+- Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- COMMAND`
   for test orchestration and CI. `check` includes all standalone scripts;
+  development CI uses `check inputs` once on Linux and relies on builds/tests
+  with `--deny-warn` for product and tool type checking on all three platforms.
   `format --check` checks them explicitly. Entry arguments resolve from the
   repository root, and execution uses a fresh absolute `CMD_TEST_REPORT_ROOT`.
   Current cases and identity bindings belong to `tests/cases`, reusable
   infrastructure to `tests/harness`, and specialized assertions to
   `tests/scenarios`. Do not add retired-path wrappers or historical modes.
 - Keep direct assertions beside the behavior they verify. Preserve original
-  corpus records and expected values; use `index update` then `index check`
-  for the candidate and registry. The per-assertion review/descriptor/proof
+  corpus records and expected values. The driver validates the registry during
+  execution; generate the candidate with `tools/release` when preparing a
+  release, as documented in `tools/README.md`. The per-assertion review/descriptor/proof
   chain and assertion-source sealing are retired. Validate complete selected
   results, explicit platform skips, deadlines, cleanup and report writes.
   Keep fresh execution reports without backfill. Published coordinates and
@@ -140,16 +176,20 @@ module and version before any release operation.
   acceptance, and this workflow does not run automatically on ordinary pushes.
 
 - Internal architecture changes follow command adaptation -> domain
-  implementation -> runtime mechanisms and algorithms. Run
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- architecture /absolute/new-inventory.json`
-  from the repository root after updating interfaces. Keep module dispositions
+  implementation -> runtime mechanisms and algorithms. Review dependency
+  direction and ownership with the implementation; do not add architecture,
+  naming, fixed-inventory-count or generated-version source scanners.
+  Keep module dispositions
   in ADR-0003, not another report hierarchy. New shared mechanisms need two
   actual consumers; catalog/contract metadata has validation consumers rather
   than runtime command consumers. Preserve dialects, error ordering and fast
   loops instead of forcing them into a generic command framework.
 
 - Keep copy/removal/mode policies, tac range copying, seq arithmetic, jq AST
-  adapters and expand/unexpand grids in their owning commands. Do not import
+  adaptations and expand/unexpand grids in their owning commands. Jq owns the
+  shared parser/evaluator and adaptations; jqlog consumes `cli/jq/engine` and
+  retains its JSONL command policy. Keep the engine's API limited to compiled
+  value filters; jq CLI effects do not become jqlog options. Do not import
   another command's internal packages. Small identical adaptations may remain
   local when their dialects evolve independently; share independent test inputs
   rather than widening runtime APIs. The jq adapter corpus retains the original
@@ -196,13 +236,18 @@ module and version before any release operation.
   fixture changes select their consumers; shared or unclassified execution inputs
   and missing Git baselines select all. `ubuntu-24.04` aggregates correctness and
   the required comparison, failing on missing, cancelled or unexpected skips.
-  Reuse only same-run source/toolchain-bound build artifacts, never dynamic
+  Reuse only same-run source/toolchain-bound build artifacts from the selected
+  producer attempt, never dynamic
   candidate observations. Fixture paths belong to existing case `inputs` fields;
   unsupported oracle profiles require explicit policy boundaries.
   Apply change-selection rules to functionality, dependencies, executable tests,
   actual test inputs and CI execution configuration. Plain documentation, license
   notices and document assets do not require upstream comparison. Do not add
   parallel text-review rules or ownership records for ordinary prose.
+  Export Linux artifacts before test execution so upstream image preparation
+  and comparison can overlap correctness. Keep compilation and Docker cache
+  writes restricted to main. Retire completed one-time collection and experiment
+  launchers; preserve their captured expectations, regressions and Git history.
 - Mainline changes use a PR and the required ubuntu-24.04, macos-15 and
   windows-2025 checks, followed by actual-main validation. Do not bypass branch
   protection. The former C1 coverage audit, change declaration, source/artifact
@@ -213,7 +258,9 @@ module and version before any release operation.
   still requires passing development checks, followed by complete three-platform
   acceptance of the uploaded exact coordinates and Linux upstream comparison.
 - Keep current candidate and published expectations separate. latest.json is the
-  current published-coordinate authority; acceptance never rewrites the repository.
+  historical published-coordinate authority. Acceptance resolves the selected
+  current moon.mod coordinates once and records them, without fallback to that
+  historical table; acceptance never rewrites the repository.
   Do not republish unchanged commands or generate new historical snapshot chains.
 - Retain concise results, stage durations and failure diagnostics. Preserve
   historical evidence in Git without backfill. Missing artifacts, empty required

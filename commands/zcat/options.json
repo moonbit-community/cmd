@@ -1,0 +1,233 @@
+{
+  "schema": 1,
+  "command": "zcat",
+  "help": "Usage: zcat [OPTION]... [FILE]...\nProcess gzip streams; no FILE or - reads stdin.\nInput and output use bounded buffers.\n\n{{help:stdout:0}}\n{{help:decompress:0}}\n{{help:test:0}}\n{{help:no-name:0}}\n{{help:quiet:0}}\n{{help:fast:0}}\n{{help:fast:1}}\n{{help:best:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nNamed-file gzip compression requires -cn.\nNamed-file gzip/gunzip decompression requires -c unless testing with -t.\nzcat writes named inputs to stdout by default.\nCompression levels are ignored when decompressing or testing.\nIn-place replacement, saved-name metadata and recursion are unsupported.\n",
+  "catalog_options": [
+    "stdout",
+    "decompress",
+    "test",
+    "no-name",
+    "quiet",
+    "fast",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "best"
+  ],
+  "options": [
+    {
+      "name": "stdout",
+      "aliases": [
+        "-c",
+        "--stdout"
+      ],
+      "value": "none",
+      "description": "Write to stdout and keep input files.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --stdout       Write to stdout and keep input files."
+      ]
+    },
+    {
+      "name": "decompress",
+      "aliases": [
+        "-d",
+        "--decompress"
+      ],
+      "value": "none",
+      "description": "Decompress (default for gunzip and zcat).",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -d, --decompress   Decompress (default for gunzip and zcat)."
+      ]
+    },
+    {
+      "name": "test",
+      "aliases": [
+        "-t",
+        "--test"
+      ],
+      "value": "none",
+      "description": "Validate compressed input without output.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -t, --test         Validate compressed input without output."
+      ]
+    },
+    {
+      "name": "no-name",
+      "aliases": [
+        "-n",
+        "--no-name"
+      ],
+      "value": "none",
+      "description": "Omit name/time metadata when compressing.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -n, --no-name      Omit name/time metadata when compressing."
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "Suppress trailing-garbage warnings.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -q, --quiet        Suppress trailing-garbage warnings."
+      ]
+    },
+    {
+      "name": "fast",
+      "aliases": [
+        "-1",
+        "--fast"
+      ],
+      "value": "none",
+      "description": "Same as -1.",
+      "repeatable": true,
+      "allow_attached": false,
+      "short": "1",
+      "help_lines": [
+        "  -1 .. -9           Compression level (default: -6; last option wins).",
+        "      --fast         Same as -1."
+      ]
+    },
+    {
+      "name": "best",
+      "aliases": [
+        "-9",
+        "--best"
+      ],
+      "value": "none",
+      "description": "Same as -9.",
+      "repeatable": true,
+      "allow_attached": false,
+      "short": "9",
+      "help_lines": [
+        "      --best         Same as -9."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help         display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version      display version and exit"
+      ]
+    },
+    {
+      "name": "2",
+      "aliases": [
+        "-2"
+      ],
+      "short": "2",
+      "value": "none",
+      "description": "Select compression level 2; ignored when decompressing or testing.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "3",
+      "aliases": [
+        "-3"
+      ],
+      "short": "3",
+      "value": "none",
+      "description": "Select compression level 3; ignored when decompressing or testing.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "4",
+      "aliases": [
+        "-4"
+      ],
+      "short": "4",
+      "value": "none",
+      "description": "Select compression level 4; ignored when decompressing or testing.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "5",
+      "aliases": [
+        "-5"
+      ],
+      "short": "5",
+      "value": "none",
+      "description": "Select compression level 5; ignored when decompressing or testing.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "6",
+      "aliases": [
+        "-6"
+      ],
+      "short": "6",
+      "value": "none",
+      "description": "Select compression level 6; ignored when decompressing or testing.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "7",
+      "aliases": [
+        "-7"
+      ],
+      "short": "7",
+      "value": "none",
+      "description": "Select compression level 7; ignored when decompressing or testing.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "8",
+      "aliases": [
+        "-8"
+      ],
+      "short": "8",
+      "value": "none",
+      "description": "Select compression level 8; ignored when decompressing or testing.",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": []
+}

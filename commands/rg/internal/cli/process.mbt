@@ -3,7 +3,7 @@
 #derive(Debug)
 pub suberror CommandError {
   /// An I/O error (e.g. the command could not be spawned).
-  CommandIo(@sys.IOError)
+  CommandIo(@sys.IoError)
   /// The command failed; the payload is its stderr.
   CommandStderr(Bytes)
 }

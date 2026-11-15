@@ -1,0 +1,10 @@
+import {
+  "cli/jq/internal/ast",
+}
+
+import {
+  "cli/jq/internal/parser",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+} for "wbtest"

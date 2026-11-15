@@ -43,9 +43,9 @@ pub fn RegexConfig::default() -> RegexConfig {
 /// leftmost-first semantics (like Rust's regex crate).
 pub struct Regex {
   priv hir : @syntax.Hir
-  priv mut pikevm : DeferredEngine[@automata.PikeVM]
-  priv fwd : @automata.LazyDFA
-  priv mut rev : DeferredEngine[@automata.LazyDFA]
+  priv mut pikevm : DeferredEngine[@automata.PikeVm]
+  priv fwd : @automata.LazyDfa
+  priv mut rev : DeferredEngine[@automata.LazyDfa]
   priv dfa_state_limit : Int32
   priv pre : @automata.Prefilter?
   /// When true, the prefilter itself finds exact matches.
@@ -88,7 +88,7 @@ pub fn Regex::from_hir(
   // doesn't need a regex engine, so the NFA size limit doesn't apply to it.
   let size_limit = if pre_is_exact { None } else { config.nfa_size_limit }
   let nfa = @automata.compile_nfa(hir, config={
-    ..@automata.NFAConfig::default(),
+    ..@automata.NfaConfig::default(),
     size_limit,
   }) catch {
     TooBig(n) => raise TooBig(n)
@@ -104,7 +104,7 @@ pub fn Regex::from_hir(
   {
     hir,
     pikevm: Pending(nfa),
-    fwd: @automata.LazyDFA::new(nfa, state_limit=config.dfa_state_limit),
+    fwd: @automata.LazyDfa::new(nfa, state_limit=config.dfa_state_limit),
     rev: Pending(rev_nfa),
     dfa_state_limit: config.dfa_state_limit,
     pre,

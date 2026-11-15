@@ -43,7 +43,7 @@ pub fn Match::is_empty(self : Match) -> Bool {
 #derive(Debug, Eq, Hash)
 pub(all) enum LineTerminator {
   Byte(Byte)
-  CRLF
+  Crlf
 }
 
 ///|
@@ -53,7 +53,7 @@ pub fn LineTerminator::byte(b : Byte) -> LineTerminator {
 
 ///|
 pub fn LineTerminator::crlf() -> LineTerminator {
-  CRLF
+  Crlf
 }
 
 ///|
@@ -63,7 +63,7 @@ pub fn LineTerminator::default() -> LineTerminator {
 
 ///|
 pub fn LineTerminator::is_crlf(self : LineTerminator) -> Bool {
-  self is CRLF
+  self is Crlf
 }
 
 ///|
@@ -71,7 +71,7 @@ pub fn LineTerminator::is_crlf(self : LineTerminator) -> Bool {
 pub fn LineTerminator::as_byte(self : LineTerminator) -> Byte {
   match self {
     Byte(b) => b
-    CRLF => b'\n'
+    Crlf => b'\n'
   }
 }
 
@@ -79,7 +79,7 @@ pub fn LineTerminator::as_byte(self : LineTerminator) -> Byte {
 pub fn LineTerminator::as_bytes(self : LineTerminator) -> Bytes {
   match self {
     Byte(b) => Bytes::make(1, b)
-    CRLF => b"\r\n"
+    Crlf => b"\r\n"
   }
 }
 

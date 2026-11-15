@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "command": "touch",
+  "help": "Usage: touch [-c] [-a|-m] [-d STRING|-r FILE|-t STAMP] FILE...\n{{help:help:0}}\n{{help:version:0}}\nExisting files are unsupported, including with -c. This command creates missing files only; it cannot update timestamps.\nNote: -a/-m/-d/-r/-t are recognized but unavailable without a portable timestamp setter.\nRejection aliases --access-time (-a), --modification-time (-m) and --stamp (-t)\nrequest unavailable timestamp-setting capabilities and fail before mutation.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "access-time",
+    "date",
+    "modification-time",
+    "no-create",
+    "reference",
+    "stamp",
+    "time"
+  ],
+  "options": [
+    {
+      "short": "c",
+      "name": "no-create",
+      "description": "Skip missing files without creating them.",
+      "aliases": [
+        "-c",
+        "--no-create"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "a",
+      "name": "access-time",
+      "description": "Recognized but rejected before mutation: Select only the access timestamp.",
+      "aliases": [
+        "-a",
+        "--access-time"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "m",
+      "name": "modification-time",
+      "description": "Recognized but rejected before mutation: Select only the modification timestamp.",
+      "aliases": [
+        "-m",
+        "--modification-time"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "short": "d",
+      "parser_action": "Append",
+      "allow_hyphen_values": true,
+      "name": "date",
+      "description": "Recognized but rejected before mutation: Use the supplied date and time.",
+      "aliases": [
+        "-d",
+        "--date"
+      ],
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "short": "r",
+      "parser_action": "Append",
+      "allow_hyphen_values": true,
+      "name": "reference",
+      "description": "Recognized but rejected before mutation: Use timestamps from the reference file.",
+      "aliases": [
+        "-r",
+        "--reference"
+      ],
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "short": "t",
+      "parser_action": "Append",
+      "allow_hyphen_values": true,
+      "name": "stamp",
+      "description": "Recognized but rejected before mutation: Set timestamps using the numeric time form.",
+      "aliases": [
+        "-t",
+        "--stamp"
+      ],
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "parser_action": "Append",
+      "allow_hyphen_values": true,
+      "name": "time",
+      "description": "Recognized but rejected before mutation: Select the timestamp to change.",
+      "aliases": [
+        "--time"
+      ],
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "import_alias": "argparse",
+      "options": [
+        "no-create",
+        "access-time",
+        "modification-time",
+        "help"
+      ]
+    },
+    {
+      "kind": "options",
+      "function_name": "command_options",
+      "import_alias": "argparse",
+      "options": [
+        "date",
+        "reference",
+        "stamp",
+        "time"
+      ]
+    }
+  ]
+}

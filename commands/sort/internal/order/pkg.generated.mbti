@@ -1,0 +1,70 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/sort/internal/order"
+
+// Values
+pub fn compare_entries(Entry, Entry, Array[KeySpec], Modifiers, Bool) -> Int32
+
+pub fn entry_comparator(Array[KeySpec], Modifiers, Bool) -> (Entry, Entry) -> Int32
+
+pub fn make_entry(Bytes, Int64, Array[KeySpec], Modifiers, Byte?, seed? : Bytes) -> Entry
+
+pub fn mode_from_flags(Int32) -> CompareMode
+
+pub fn ordering_flag(CompareMode) -> Int32
+
+pub fn parse_key(String, Modifiers) -> KeySpec raise CliError
+
+pub fn transforms_key(Modifiers) -> Bool
+
+pub fn validate_ordering(Modifiers) -> Unit raise CliError
+
+// Errors
+pub(all) suberror CliError {
+  CliError(String)
+}
+
+// Types and methods
+#derive(Eq)
+pub(all) enum CompareMode {
+  Lexical
+  Numeric
+  GeneralNumeric
+  HumanNumeric
+  Month
+  Version
+  Random
+}
+pub fn CompareMode::equal(Self, Self) -> Bool
+pub fn CompareMode::not_equal(Self, Self) -> Bool
+
+pub(all) struct Entry {
+  record : Bytes
+  keys : Array[Bytes]
+  index : Int64
+}
+
+pub(all) struct KeySpec {
+  start : Position
+  end : Position?
+  modifiers : Modifiers
+}
+
+pub(all) struct Modifiers {
+  mut ignore_leading_blanks : Bool
+  mut dictionary_order : Bool
+  mut fold_case : Bool
+  mut ignore_nonprinting : Bool
+  mut mode : CompareMode
+  mut ordering_modes : Int32
+  mut reverse : Bool
+}
+
+pub(all) struct Position {
+  field : Int32
+  character : Int32
+  skip_blanks : Bool
+}
+
+// Type aliases
+
+// Traits

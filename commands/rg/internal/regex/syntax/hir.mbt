@@ -590,11 +590,11 @@ pub(all) enum Dot {
   AnyChar
   AnyByte
   AnyCharExcept(Int32)
-  AnyCharExceptLF
-  AnyCharExceptCRLF
+  AnyCharExceptLf
+  AnyCharExceptCrlf
   AnyByteExcept(Int32)
-  AnyByteExceptLF
-  AnyByteExceptCRLF
+  AnyByteExceptLf
+  AnyByteExceptCrlf
 }
 
 ///|
@@ -603,11 +603,11 @@ pub fn Hir::dot(dot : Dot) -> Hir {
     AnyChar => Hir::class(Unicode([(0, 0x10FFFF)]))
     AnyByte => Hir::class(Bytes([(0, 0xFF)]))
     AnyCharExcept(c) => Hir::class(Unicode(ranges_negate([(c, c)], true)))
-    AnyCharExceptLF => Hir::class(Unicode([(0, 9), (0xB, 0x10FFFF)]))
-    AnyCharExceptCRLF =>
+    AnyCharExceptLf => Hir::class(Unicode([(0, 9), (0xB, 0x10FFFF)]))
+    AnyCharExceptCrlf =>
       Hir::class(Unicode([(0, 9), (0xB, 0xC), (0xE, 0x10FFFF)]))
     AnyByteExcept(b) => Hir::class(Bytes(ranges_negate([(b, b)], false)))
-    AnyByteExceptLF => Hir::class(Bytes([(0, 9), (0xB, 0xFF)]))
-    AnyByteExceptCRLF => Hir::class(Bytes([(0, 9), (0xB, 0xC), (0xE, 0xFF)]))
+    AnyByteExceptLf => Hir::class(Bytes([(0, 9), (0xB, 0xFF)]))
+    AnyByteExceptCrlf => Hir::class(Bytes([(0, 9), (0xB, 0xC), (0xE, 0xFF)]))
   }
 }

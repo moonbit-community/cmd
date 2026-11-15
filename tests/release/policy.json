@@ -1757,7 +1757,17 @@
         "release-metadata-jqlog-version",
         "repair-edge-jqlog-slice-type-error",
         "repair-final-jqlog-non-json-whitespace",
-        "proof-jqlog-group-null-false-true"
+        "proof-jqlog-group-null-false-true",
+        "jqlog-engine-lexical-filter-parameters",
+        "jqlog-engine-elif",
+        "jqlog-engine-boolean-results",
+        "jqlog-engine-lexical-capture",
+        "jqlog-engine-foreach-empty-extract",
+        "jqlog-engine-line-output-commit",
+        "jqlog-engine-input-boundary",
+        "jqlog-engine-inputs-boundary",
+        "jqlog-engine-module-boundary",
+        "jqlog-engine-input-short-circuit"
       ],
       "oracle_boundary": "The source coordinate is recorded, but the pinned image does not contain a runnable jqlog oracle; direct JSONL contracts remain mandatory."
     },
@@ -4348,7 +4358,8 @@
         "f17-diff-reject-unified-lines-value",
         "f17-diff-reject-context-lines-bare",
         "f17-diff-reject-context-lines-value",
-        "f17-diff-label-value-internal-looking"
+        "f17-diff-label-value-internal-looking",
+        "diff-failure-diagnostic-source-name"
       ]
     },
     {
@@ -4660,7 +4671,8 @@
         "o3-fmt-prefix-hanging-tagged",
         "o3-fmt-prefix-blank-leading-tagged",
         "f17-fmt-numeric-prefix-short",
-        "f17-fmt-numeric-prefix-long"
+        "f17-fmt-numeric-prefix-long",
+        "fmt-failure-diagnostic-source-name"
       ]
     },
     {
@@ -5082,7 +5094,8 @@
         "serve-reject-extra-root",
         "serve-reject-missing-port",
         "serve-static",
-        "serve-policy"
+        "serve-policy",
+        "serve-failure-diagnostic-source-name"
       ],
       "oracle_boundary": "Project-specific server; the pinned oracle has no corresponding executable or upstream contract."
     }

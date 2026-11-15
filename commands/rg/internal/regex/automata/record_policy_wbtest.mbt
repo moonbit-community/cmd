@@ -1,24 +1,24 @@
 ///|
 test "resolved state and transition cell budgets enforce exact boundaries" {
-  let single = LazyDFA::new(compile_nfa(@syntax.parse("a")))
+  let single = LazyDfa::new(compile_nfa(@syntax.parse("a")))
     .record_boolean()
     .unwrap()
   let extra_states = single.transitions.length() / single.stride - 1
   for
     states in [
-      boolean_dfa_state_limit - 1,
-      boolean_dfa_state_limit,
-      boolean_dfa_state_limit + 1,
+      BOOLEAN_DFA_STATE_LIMIT - 1,
+      BOOLEAN_DFA_STATE_LIMIT,
+      BOOLEAN_DFA_STATE_LIMIT + 1,
     ] {
     let nfa = compile_nfa(@syntax.parse("a".repeat(states - extra_states)))
-    let plan = LazyDFA::new(nfa).record_boolean()
-    assert_eq(plan is Some(_), states <= boolean_dfa_state_limit)
+    let plan = LazyDfa::new(nfa).record_boolean()
+    assert_eq(plan is Some(_), states <= BOOLEAN_DFA_STATE_LIMIT)
     if plan is Some(plan) {
       assert_eq(plan.transitions.length() / plan.stride, states)
     }
   }
   let base = compile_nfa(
-    @syntax.parse("a".repeat(boolean_dfa_state_limit - extra_states)),
+    @syntax.parse("a".repeat(BOOLEAN_DFA_STATE_LIMIT - extra_states)),
   )
   // Refine equivalent byte classes without changing the language: 255 byte
   // classes plus EOF make exactly 256 cells in each of 256 resolved rows.
@@ -29,14 +29,14 @@ test "resolved state and transition cell budgets enforce exact boundaries" {
   }
   for
     cells in [
-      boolean_table_entry_limit - 1,
-      boolean_table_entry_limit,
-      boolean_table_entry_limit + 1,
+      BOOLEAN_TABLE_ENTRY_LIMIT - 1,
+      BOOLEAN_TABLE_ENTRY_LIMIT,
+      BOOLEAN_TABLE_ENTRY_LIMIT + 1,
     ] {
-    let plan = LazyDFA::new(nfa).record_boolean_with_table_limit(cells)
-    assert_eq(plan is Some(_), cells >= boolean_table_entry_limit)
+    let plan = LazyDfa::new(nfa).record_boolean_with_table_limit(cells)
+    assert_eq(plan is Some(_), cells >= BOOLEAN_TABLE_ENTRY_LIMIT)
     if plan is Some(plan) {
-      assert_eq(plan.transitions.length(), boolean_table_entry_limit)
+      assert_eq(plan.transitions.length(), BOOLEAN_TABLE_ENTRY_LIMIT)
     }
   }
 }
@@ -46,9 +46,9 @@ test "boolean NFA budget includes the limit and declines one extra state" {
   let base = compile_nfa(@syntax.parse("a"))
   for
     size in [
-      boolean_nfa_state_limit - 1,
-      boolean_nfa_state_limit,
-      boolean_nfa_state_limit + 1,
+      BOOLEAN_NFA_STATE_LIMIT - 1,
+      BOOLEAN_NFA_STATE_LIMIT,
+      BOOLEAN_NFA_STATE_LIMIT + 1,
     ] {
     // Unreachable fail states change construction size without changing language.
     let nfa = {
@@ -61,8 +61,8 @@ test "boolean NFA budget includes the limit and declines one extra state" {
         }
       }),
     }
-    let plan = LazyDFA::new(nfa).record_boolean()
-    assert_eq(plan is Some(_), size <= boolean_nfa_state_limit)
+    let plan = LazyDfa::new(nfa).record_boolean()
+    assert_eq(plan is Some(_), size <= BOOLEAN_NFA_STATE_LIMIT)
   }
 }
 

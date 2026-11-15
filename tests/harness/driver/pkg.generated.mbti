@@ -21,9 +21,6 @@ type Manifest
 type MetadataObservation
 
 #derive(@json.FromJson)
-type PublishedCommand
-
-#derive(@json.FromJson)
 type PublishedSelection
 
 // Type aliases

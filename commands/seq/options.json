@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "command": "seq",
+  "help": "Usage: seq [-w] [-f FORMAT] [-s STRING] [FIRST [INCREMENT]] LAST\nPrint a numeric sequence; the default increment is 1.\n{{help:equal-width:0}}\n{{help:format:0}}\n{{help:separator:0}}\n{{help:help:0}}\n{{help:version:0}}\nWithout -f, exact decimal operands are limited to 4096 characters; exponent and decimal scale must be within -4096..4096.\n",
+  "catalog_options": [
+    "equal-width",
+    "format",
+    "separator",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "separator",
+      "aliases": [
+        "-s",
+        "--separator"
+      ],
+      "value": "required",
+      "description": "Replace the separator between values.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -s, --separator=STRING  separate numbers with STRING"
+      ]
+    },
+    {
+      "name": "equal-width",
+      "aliases": [
+        "-w",
+        "--equal-width"
+      ],
+      "value": "none",
+      "description": "Pad values to equal width.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -w, --equal-width       pad numbers with leading zeroes"
+      ]
+    },
+    {
+      "name": "format",
+      "aliases": [
+        "-f",
+        "--format"
+      ],
+      "value": "required",
+      "description": "Use one e/E/f/F/g/G/a/A conversion.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -f, --format=FORMAT     use one e/E/f/F/g/G/a/A floating conversion"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help              display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version           display version and exit"
+      ]
+    }
+  ],
+  "tables": [],
+  "adapter_match": true
+}

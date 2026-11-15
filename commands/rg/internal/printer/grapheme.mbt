@@ -30,8 +30,8 @@ let grapheme_pattern : String =
 
 ///|
 priv struct GraphemeMatcher {
-  dfa : @automata.LazyDFA
-  pikevm : @automata.PikeVM
+  dfa : @automata.LazyDfa
+  pikevm : @automata.PikeVm
 }
 
 ///|
@@ -49,8 +49,8 @@ fn get_grapheme_matcher() -> GraphemeMatcher {
         _ => abort("failed to compile grapheme regex")
       }
       let m = {
-        dfa: @automata.LazyDFA::new(nfa),
-        pikevm: @automata.PikeVM::new(nfa),
+        dfa: @automata.LazyDfa::new(nfa),
+        pikevm: @automata.PikeVm::new(nfa),
       }
       grapheme_matcher.val = Some(m)
       m

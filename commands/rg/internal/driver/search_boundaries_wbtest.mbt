@@ -44,7 +44,7 @@ fn roundtrip(pattern : String, b : Byte) -> String {
 
 ///|
 fn roundtrip_crlf(pattern : String) -> String {
-  match roundtrip_lt(pattern, CRLF) {
+  match roundtrip_lt(pattern, Crlf) {
     Ok(s) => s
     Err(e) => "ERR: " + e
   }

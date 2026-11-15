@@ -166,7 +166,7 @@ fn update_flag(
       let s = v.unwrap_value()
       args.engine = match s {
         "default" => Default
-        "pcre2" => PCRE2
+        "pcre2" => Pcre2
         "auto" => Auto
         _ => raise RgError("unrecognized regex engine '\{s}'")
       }
@@ -218,8 +218,8 @@ fn update_flag(
     "invert-match" => args.invert_match = v.unwrap_switch()
     "json" =>
       if v.unwrap_switch() {
-        args.mode = Search(JSON)
-      } else if args.mode is Search(JSON) {
+        args.mode = Search(Json)
+      } else if args.mode is Search(Json) {
         args.mode = Search(Standard)
       }
     "line-buffered" => args.buffer = if v.unwrap_switch() { Line } else { Auto }
@@ -283,8 +283,8 @@ fn update_flag(
       }
     }
     "passthru" => args.context = Passthru
-    "pcre2" => args.engine = if v.unwrap_switch() { PCRE2 } else { Default }
-    "pcre2-version" => args.special = Some(VersionPCRE2)
+    "pcre2" => args.engine = if v.unwrap_switch() { Pcre2 } else { Default }
+    "pcre2-version" => args.special = Some(VersionPcre2)
     "pre" =>
       match v {
         Value(path) => {

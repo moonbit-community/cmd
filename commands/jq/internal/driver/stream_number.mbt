@@ -1,10 +1,10 @@
 ///|
 // jq 1.8's decimal literal context retains precision independently of the
 // evaluator's Double value. These bounds follow its fixed decNumber context.
-const StreamDecimalMaxExponent : Int64 = 999999999L
+const STREAM_DECIMAL_MAX_EXPONENT : Int64 = 999999999L
 
 ///|
-const StreamDecimalMinExponent : Int64 = -1147483646L
+const STREAM_DECIMAL_MIN_EXPONENT : Int64 = -1147483646L
 
 ///|
 fn stream_increment(digits : String) -> String {
@@ -50,8 +50,8 @@ fn stream_number(text : String) -> Json? {
   // Beyond the context plus the token length, later decimal-point adjustment
   // cannot bring an exponent back into range. Saturate before arithmetic.
   let margin = mantissa.length().to_int64() + 1L
-  let lower = StreamDecimalMinExponent - margin
-  let upper = StreamDecimalMaxExponent + margin
+  let lower = STREAM_DECIMAL_MIN_EXPONENT - margin
+  let upper = STREAM_DECIMAL_MAX_EXPONENT + margin
   let mut scale = (@string.parse_int64(exponent) catch {
       _ => if exponent.has_prefix("-") { lower } else { upper }
     })
@@ -80,11 +80,11 @@ fn stream_number(text : String) -> Json? {
     coefficient = "0"
   }
   if coefficient != "0" &&
-    scale + coefficient.length().to_int64() - 1L > StreamDecimalMaxExponent {
+    scale + coefficient.length().to_int64() - 1L > STREAM_DECIMAL_MAX_EXPONENT {
     return stream_number_value(maximum)
   }
-  if scale < StreamDecimalMinExponent {
-    let discard = StreamDecimalMinExponent - scale
+  if scale < STREAM_DECIMAL_MIN_EXPONENT {
+    let discard = STREAM_DECIMAL_MIN_EXPONENT - scale
     let retain = (coefficient.length().to_int64() - discard).max(0L).to_int()
     let round_up = discard <= coefficient.length().to_int64() &&
       coefficient.code_unit_at(retain) >= '5'
@@ -96,10 +96,10 @@ fn stream_number(text : String) -> Json? {
     if round_up {
       coefficient = stream_increment(coefficient)
     }
-    scale = StreamDecimalMinExponent
+    scale = STREAM_DECIMAL_MIN_EXPONENT
   }
-  if coefficient == "0" && scale > StreamDecimalMaxExponent {
-    scale = StreamDecimalMaxExponent
+  if coefficient == "0" && scale > STREAM_DECIMAL_MAX_EXPONENT {
+    scale = STREAM_DECIMAL_MAX_EXPONENT
   }
   let adjusted = scale + coefficient.length().to_int64() - 1L
   let literal = if scale <= 0L && adjusted >= -6L {

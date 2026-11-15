@@ -4,7 +4,7 @@ priv enum SpecialMode {
   HelpLong
   VersionShort
   VersionLong
-  VersionPCRE2
+  VersionPcre2
 }
 
 ///|
@@ -14,7 +14,7 @@ priv enum SearchMode {
   FilesWithoutMatch
   Count
   CountMatches
-  JSON
+  Json
 }
 
 ///|
@@ -80,8 +80,8 @@ priv struct ContextModeLimited {
 
 ///|
 fn ContextModeLimited::get(self : ContextModeLimited) -> (Int32, Int32) {
-  let mut before = 0
-  let mut after = 0
+  let mut before = DEFAULT_BEFORE_CONTEXT
+  let mut after = DEFAULT_AFTER_CONTEXT
   if self.both is Some(n) {
     before = n
     after = n
@@ -141,7 +141,7 @@ priv enum EncodingMode {
 priv enum EngineChoice {
   Default
   Auto
-  PCRE2
+  Pcre2
 }
 
 ///|
@@ -261,72 +261,72 @@ fn LowArgs::default() -> LowArgs {
     mode: Search(Standard),
     positional: [],
     patterns: [],
-    binary: Auto,
+    binary: default_binary(),
     boundary: None,
-    buffer: Auto,
-    byte_offset: false,
-    case: Sensitive,
-    color: Auto,
+    buffer: default_buffer(),
+    byte_offset: DEFAULT_BYTE_OFFSET,
+    case: default_case(),
+    color: default_color(),
     colors: [],
     column: None,
     context: ContextMode::default(),
-    context_separator: Some(b"--"),
-    crlf: false,
-    encoding: Auto,
-    engine: Default,
-    field_context_separator: b"-",
-    field_match_separator: b":",
-    fixed_strings: false,
-    follow: false,
-    glob_case_insensitive: false,
+    context_separator: Some(DEFAULT_CONTEXT_SEPARATOR),
+    crlf: DEFAULT_CRLF,
+    encoding: default_encoding(),
+    engine: default_engine(),
+    field_context_separator: DEFAULT_FIELD_CONTEXT_SEPARATOR,
+    field_match_separator: DEFAULT_FIELD_MATCH_SEPARATOR,
+    fixed_strings: DEFAULT_FIXED_STRINGS,
+    follow: DEFAULT_FOLLOW,
+    glob_case_insensitive: DEFAULT_GLOB_CASE_INSENSITIVE,
     globs: [],
     heading: None,
-    hidden: false,
+    hidden: DEFAULT_HIDDEN,
     hostname_bin: None,
-    hyperlink_format: "",
+    hyperlink_format: DEFAULT_HYPERLINK_FORMAT,
     iglobs: [],
     ignore_file: [],
-    ignore_file_case_insensitive: false,
-    include_zero: false,
-    invert_match: false,
+    ignore_file_case_insensitive: DEFAULT_IGNORE_FILE_CASE_INSENSITIVE,
+    include_zero: DEFAULT_INCLUDE_ZERO,
+    invert_match: DEFAULT_INVERT_MATCH,
     line_number: None,
     logging: None,
     max_columns: None,
-    max_columns_preview: false,
+    max_columns_preview: DEFAULT_MAX_COLUMNS_PREVIEW,
     max_count: None,
     max_depth: None,
     max_filesize: None,
-    multiline: false,
-    multiline_dotall: false,
-    no_config: false,
-    no_ignore_dot: false,
-    no_ignore_exclude: false,
-    no_ignore_files: false,
-    no_ignore_global: false,
-    no_ignore_messages: false,
-    no_ignore_parent: false,
-    no_ignore_vcs: false,
-    no_messages: false,
-    no_require_git: false,
-    no_unicode: false,
-    null: false,
-    null_data: false,
-    one_file_system: false,
-    only_matching: false,
+    multiline: DEFAULT_MULTILINE,
+    multiline_dotall: DEFAULT_MULTILINE_DOTALL,
+    no_config: DEFAULT_NO_CONFIG,
+    no_ignore_dot: DEFAULT_NO_IGNORE_DOT,
+    no_ignore_exclude: DEFAULT_NO_IGNORE_EXCLUDE,
+    no_ignore_files: DEFAULT_NO_IGNORE_FILES,
+    no_ignore_global: DEFAULT_NO_IGNORE_GLOBAL,
+    no_ignore_messages: DEFAULT_NO_IGNORE_MESSAGES,
+    no_ignore_parent: DEFAULT_NO_IGNORE_PARENT,
+    no_ignore_vcs: DEFAULT_NO_IGNORE_VCS,
+    no_messages: DEFAULT_NO_MESSAGES,
+    no_require_git: DEFAULT_NO_REQUIRE_GIT,
+    no_unicode: DEFAULT_NO_UNICODE,
+    null: DEFAULT_NULL,
+    null_data: DEFAULT_NULL_DATA,
+    one_file_system: DEFAULT_ONE_FILE_SYSTEM,
+    only_matching: DEFAULT_ONLY_MATCHING,
     path_separator: None,
     pre: None,
     pre_glob: [],
-    quiet: false,
+    quiet: DEFAULT_QUIET,
     regex_size_limit: None,
     replace: None,
-    search_zip: false,
+    search_zip: DEFAULT_SEARCH_ZIP,
     sort: None,
-    stats: false,
-    stop_on_nonmatch: false,
-    trim: false,
+    stats: DEFAULT_STATS,
+    stop_on_nonmatch: DEFAULT_STOP_ON_NONMATCH,
+    trim: DEFAULT_TRIM,
     type_changes: [],
-    unrestricted: 0,
-    vimgrep: false,
+    unrestricted: DEFAULT_UNRESTRICTED,
+    vimgrep: DEFAULT_VIMGREP,
     with_filename: None,
   }
 }

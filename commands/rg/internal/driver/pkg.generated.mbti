@@ -68,7 +68,7 @@ pub struct Haystack {
 pub enum Printer {
   Standard(@printer.Standard)
   Summary(@printer.Summary)
-  JSON(@printer.JSON)
+  Json(@printer.JsonPrinter)
 }
 
 pub struct StdoutWriter {

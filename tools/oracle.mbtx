@@ -1,0 +1,64 @@
+----
+import {
+  "moonbitlang/async@0.22.9",
+  "moonbitlang/async@0.22.9/fs",
+  "moonbitlang/async@0.22.9/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+----
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 3 &&
+    args[1] == "--image" &&
+    args[2].has_prefix("sha256:") else {
+    fail("Usage: oracle.mbtx --image sha256:IMAGE-ID")
+  }
+  let image = args[2]
+  let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("release")
+  guard ["debug", "release"].contains(profile) else {
+    fail("unknown test-tool profile: " + profile)
+  }
+  let report_root = @env.get_env_var("CMD_TEST_REPORT_ROOT").unwrap_or(
+    @fs.realpath(".") + "/test-reports",
+  )
+  let directory = report_root + "/oracle-profile"
+  @fs.mkdir(directory, recursive=true)
+  for name in ["profile.json", "Dockerfile", "versions.sh"] {
+    @fs.write_file(
+      directory + "/" + name,
+      @fs.read_file("tests/fixtures/oracle/" + name).binary(),
+    )
+  }
+  @shell.Cmd(
+    "./_build/native/" +
+    profile +
+    "/build/mooxCLI/cmd-tests/harness/driver/driver.exe",
+    ["--seal-oracle", image, "--oracle-profile", directory + "/profile.json"],
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
+  let profile_data = @json.parse(
+    @fs.read_file(directory + "/profile.json").text(),
+  )
+  guard profile_data is { "versions": String(versions), .. } else {
+    fail("missing sealed version inventory")
+  }
+  @fs.write_file(report_root + "/oracle-versions.txt", versions)
+  @fs.write_file(report_root + "/oracle-image.txt", image + "\n")
+  @shell.Cmd(
+    "moon",
+    [
+      "run",
+      "tools/public_suffix.mbtx",
+      "--",
+      "oracle",
+      image,
+      report_root + "/oracle-public-suffix",
+    ],
+    stdout=Inherit,
+    stderr=Inherit,
+  ).run()
+}

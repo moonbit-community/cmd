@@ -95,27 +95,27 @@ fn Lexer::lex_symbol(self : Lexer, c : Char) -> Unit raise LexError {
     }
     '(' => {
       self.advance()
-      self.add_token(TLParen)
+      self.add_token(TLeftParen)
     }
     ')' => {
       self.advance()
-      self.add_token(TRParen)
+      self.add_token(TRightParen)
     }
     '[' => {
       self.advance()
-      self.add_token(TLBracket)
+      self.add_token(TLeftBracket)
     }
     ']' => {
       self.advance()
-      self.add_token(TRBracket)
+      self.add_token(TRightBracket)
     }
     '{' => {
       self.advance()
-      self.add_token(TLBrace)
+      self.add_token(TLeftBrace)
     }
     '}' => {
       self.advance()
-      self.add_token(TRBrace)
+      self.add_token(TRightBrace)
     }
     '+' => {
       self.advance()

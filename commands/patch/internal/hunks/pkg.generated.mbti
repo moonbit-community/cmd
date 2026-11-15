@@ -1,0 +1,53 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/patch/internal/hunks"
+
+// Values
+pub fn apply_hunks(Bytes, Array[Hunk], Bool, Int32) -> AppliedPatch
+
+pub fn batch_reverse(Bytes, Hunk, Bool, Int32) -> Bool
+
+pub fn parse_context(Bytes) -> Array[FilePatch] raise
+
+pub fn parse_patch(Bytes) -> Array[FilePatch] raise
+
+pub fn parse_unified(Bytes) -> Array[FilePatch] raise
+
+pub fn reject_bytes(FilePatch, Array[HunkResult], Bool) -> Bytes
+
+// Errors
+pub(all) suberror PatchError {
+  PatchError(String)
+}
+
+// Types and methods
+pub(all) struct AppliedPatch {
+  data : Bytes
+  results : Array[HunkResult]
+}
+
+pub(all) struct FilePatch {
+  old_name : String
+  new_name : String
+  hunks : Array[Hunk]
+  old_header : String
+  new_header : String
+  unified : Bool
+}
+
+pub struct Hunk {
+  old_start : Int32
+  old_count : Int32
+  new_start : Int32
+  new_count : Int32
+  section : String
+  // private fields
+}
+
+pub(all) enum HunkResult {
+  Applied(position~ : Int32, offset~ : Int32, fuzz~ : Int32)
+  Rejected(position~ : Int32, output_delta~ : Int32)
+}
+
+// Type aliases
+
+// Traits

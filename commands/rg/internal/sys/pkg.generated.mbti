@@ -20,7 +20,7 @@ pub async fn file_len(String) -> Int64
 
 pub async fn file_times(String) -> FileTimes
 
-pub fn from_error(Error) -> IOError
+pub fn from_error(Error) -> IoError
 
 pub fn hostname() -> String?
 
@@ -42,7 +42,7 @@ pub async fn read_fd(Int32, FixedArray[Byte], Int32, Int32) -> Int32
 
 pub async fn read_file(String) -> Bytes
 
-pub fn read_link(String) -> String raise IOError
+pub fn read_link(String) -> String raise IoError
 
 pub async fn remove_dir_all(String) -> Unit
 
@@ -62,14 +62,14 @@ pub async fn write_file(String, Bytes) -> Unit
 
 // Errors
 #derive(@debug.Debug)
-pub suberror IOError {
-  IOError(kind~ : IOErrorKind, code~ : Int32, message~ : String)
+pub suberror IoError {
+  IoError(kind~ : IoErrorKind, code~ : Int32, message~ : String)
 }
-pub fn IOError::from_errno(Int32) -> Self
-pub fn IOError::kind(Self) -> IOErrorKind
-pub fn IOError::other(IOErrorKind, String) -> Self
-pub fn IOError::to_string(Self) -> String
-pub impl Show for IOError
+pub fn IoError::from_errno(Int32) -> Self
+pub fn IoError::kind(Self) -> IoErrorKind
+pub fn IoError::other(IoErrorKind, String) -> Self
+pub fn IoError::to_string(Self) -> String
+pub impl Show for IoError
 
 // Types and methods
 #derive(Eq, @debug.Debug)
@@ -108,7 +108,7 @@ pub(all) enum FileType {
 }
 
 #derive(Eq, @debug.Debug)
-pub(all) enum IOErrorKind {
+pub(all) enum IoErrorKind {
   NotFound
   PermissionDenied
   AlreadyExists

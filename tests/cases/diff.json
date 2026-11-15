@@ -2252,6 +2252,25 @@
           "unchanged": true
         }
       ]
+    },
+    {
+      "id": "diff-failure-diagnostic-source-name",
+      "command": "diff",
+      "args": [],
+      "stdin_text": "unread input",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 2,
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_contains_all": [
+        "diff: Failure(main.mbt:",
+        "@cli/diff FAILED: expected two file operands)\n"
+      ],
+      "diagnostic_reason": "Preserve the existing command-level source name and complete failure message; source line and column numbers vary with formatting.",
+      "source_version": "Independent pre-migration Wasm observation; source-before and wasm-before archives retained outside the checkout."
     }
   ]
 }

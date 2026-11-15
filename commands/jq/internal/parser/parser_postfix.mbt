@@ -13,7 +13,7 @@ fn Parser::parse_postfix(self : Parser) -> @ast.Expr raise ParseError {
         expr = Optional(expr)
         continue
       }
-      Some(TLBracket) => {
+      Some(TLeftBracket) => {
         self.advance()
         expr = self.parse_index_or_slice(expr)
         continue
@@ -35,19 +35,19 @@ fn Parser::parse_index_or_slice(
   self : Parser,
   base : @ast.Expr,
 ) -> @ast.Expr raise ParseError {
-  if self.consume(TRBracket) {
+  if self.consume(TRightBracket) {
     return Pipe(base, Index([]))
   }
   if self.current() is Some(TString(key)) {
     // .["key"]
     self.advance()
-    self.expect(TRBracket)
+    self.expect(TRightBracket)
     return Pipe(base, Key(key))
   }
   let start_or_index = self.parse_slice_part()
   if self.consume(TColon) {
     let end = self.parse_slice_part()
-    self.expect(TRBracket)
+    self.expect(TRightBracket)
     Pipe(base, Slice(start_or_index, end))
   } else {
     let indices : Array[Int32] = []
@@ -61,7 +61,7 @@ fn Parser::parse_index_or_slice(
       }
       indices.push(n2)
     }
-    self.expect(TRBracket)
+    self.expect(TRightBracket)
     Pipe(base, Index(indices))
   }
 }
@@ -102,7 +102,7 @@ fn Parser::parse_field_access(
       self.advance()
       Pipe(base, Key(name))
     }
-    Some(TLBracket) => {
+    Some(TLeftBracket) => {
       self.advance()
       self.parse_index_or_slice(base)
     }

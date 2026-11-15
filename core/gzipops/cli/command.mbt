@@ -1,26 +1,4 @@
 ///|
-fn help(command : String) -> String {
-  "Usage: \{command} [OPTION]... [FILE]...\n" +
-  "Process gzip streams; no FILE or - reads stdin.\n" +
-  "Input and output use bounded buffers.\n\n" +
-  "  -c, --stdout       Write to stdout and keep input files.\n" +
-  "  -d, --decompress   Decompress (default for gunzip and zcat).\n" +
-  "  -t, --test         Validate compressed input without output.\n" +
-  "  -n, --no-name      Omit name/time metadata when compressing.\n" +
-  "  -q, --quiet        Suppress trailing-garbage warnings.\n" +
-  "  -1 .. -9           Compression level (default: -6; last option wins).\n" +
-  "      --fast         Same as -1.\n" +
-  "      --best         Same as -9.\n" +
-  "      --help         display this help and exit\n" +
-  "      --version      display version and exit\n\n" +
-  "Named-file gzip compression requires -cn.\n" +
-  "Named-file gzip/gunzip decompression requires -c unless testing with -t.\n" +
-  "zcat writes named inputs to stdout by default.\n" +
-  "Compression levels are ignored when decompressing or testing.\n" +
-  "In-place replacement, saved-name metadata and recursion are unsupported.\n"
-}
-
-///|
 fn parse_gzip_args(
   args : ArrayView[String],
 ) -> @args.ParsedArgs raise @args.CliError {
@@ -39,24 +17,7 @@ fn parse_gzip_args(
       }
     }
   }
-  @args.parse(args, [
-    @args.flag("stdout", short='c'),
-    @args.flag("decompress", short='d'),
-    @args.flag("test", short='t'),
-    @args.flag("no-name", short='n'),
-    @args.flag("quiet", short='q'),
-    @args.flag("fast", short='1'),
-    @args.flag("2", short='2'),
-    @args.flag("3", short='3'),
-    @args.flag("4", short='4'),
-    @args.flag("5", short='5'),
-    @args.flag("6", short='6'),
-    @args.flag("7", short='7'),
-    @args.flag("8", short='8'),
-    @args.flag("best", short='9'),
-    @args.flag("help"),
-    @args.flag("version"),
-  ])
+  @args.parse(args, compression_options())
 }
 
 ///|

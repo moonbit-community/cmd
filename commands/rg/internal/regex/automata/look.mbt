@@ -106,13 +106,13 @@ fn look_matches(
   match look {
     Start => at == hs
     End => at == he
-    StartLF => at == hs || hay[at - 1].to_int() == lineterm
-    EndLF => at == he || hay[at].to_int() == lineterm
-    StartCRLF =>
+    StartLf => at == hs || hay[at - 1].to_int() == lineterm
+    EndLf => at == he || hay[at].to_int() == lineterm
+    StartCrlf =>
       at == hs ||
       hay[at - 1] == b'\n' ||
       (hay[at - 1] == b'\r' && (at >= he || hay[at] != b'\n'))
-    EndCRLF =>
+    EndCrlf =>
       at == he ||
       hay[at] == b'\r' ||
       (hay[at] == b'\n' && (at == hs || hay[at - 1] != b'\r'))

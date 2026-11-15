@@ -1,24 +1,24 @@
 ///|
 // Independent budgets retain separate names even where values coincide.
-let literal_set_byte_limit : Int32 = 4096
+const LITERAL_SET_BYTE_LIMIT : Int32 = 4096
 
 ///|
-let literal_automaton_state_limit : Int32 = 1024
+const LITERAL_AUTOMATON_STATE_LIMIT : Int32 = 1024
 
 ///|
-let literal_shift_density_window_bytes : Int32 = 4096
+const LITERAL_SHIFT_DENSITY_WINDOW_BYTES : Int32 = 4096
 
 ///|
-let literal_shift_minimum_checks : Int32 = 256
+const LITERAL_SHIFT_MINIMUM_CHECKS : Int32 = 256
 
 ///|
-let record_nfa_state_limit : Int32 = 256
+const RECORD_NFA_STATE_LIMIT : Int32 = 256
 
 ///|
-let record_dfa_state_limit : Int32 = 256
+const RECORD_DFA_STATE_LIMIT : Int32 = 256
 
 ///|
-let record_acceleration_min_bytes : Int32 = 256
+const RECORD_ACCELERATION_MIN_BYTES : Int32 = 256
 
 ///|
-let record_skip_plan_limit : Int32 = 8
+const RECORD_SKIP_PLAN_LIMIT : Int32 = 8

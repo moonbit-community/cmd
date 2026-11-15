@@ -10,21 +10,21 @@ fn Parser::parse_builtin_string_trim(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "ltrimstr" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(s)) else {
         raise InvalidSyntax("ltrimstr expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(LTrimStr(s))
     }
     "rtrimstr" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(s)) else {
         raise InvalidSyntax("rtrimstr expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(RTrimStr(s))
     }
     "ascii_upcase" => Some(AsciiUpcase)

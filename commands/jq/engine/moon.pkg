@@ -1,0 +1,11 @@
+import {
+  "cli/jq/internal/ast",
+  "cli/jq/internal/parser",
+  "cli/jq/internal/filter",
+}
+
+import {
+  "moonbitlang/core/json",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+} for "test"

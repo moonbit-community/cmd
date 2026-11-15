@@ -1,0 +1,393 @@
+{
+  "schema": 1,
+  "command": "od",
+  "help": "Usage: od [OPTION]... [FILE]...\nDump concatenated files, or stdin when no FILE or FILE - is given.\n{{help:address-radix:0}}\n{{help:skip-bytes:0}}\n{{help:read-bytes:0}}\n{{help:format:0}}\n{{help:named:0}}\n{{help:float:0}}\n{{help:endian:0}}\n  -w[N], --width[=N]         bytes per line (default 16, bare option 32)\n{{help:output-duplicates:0}}\n{{help:strings:0}}\n{{help:traditional:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nProject format aliases: --named = -a; --octal-byte = -b; --character = -c.\n{{help:decimal:0}}\n{{help:hex:0}}\n",
+  "catalog_options": [
+    "address-radix",
+    "skip-bytes",
+    "read-bytes",
+    "format",
+    "endian",
+    "width",
+    "output-duplicates",
+    "named",
+    "octal-byte",
+    "character",
+    "decimal",
+    "int",
+    "long",
+    "octal",
+    "signed",
+    "hex",
+    "strings",
+    "traditional",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "address-radix",
+      "aliases": [
+        "-A",
+        "--address-radix"
+      ],
+      "value": "required",
+      "description": "address base, or no addresses",
+      "short": "A",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -A, --address-radix=d|o|x|n  address base, or no addresses"
+      ],
+      "default_value": "o",
+      "default_binding": {
+        "name": "DEFAULT_ADDRESS_RADIX",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "skip-bytes",
+      "aliases": [
+        "-j",
+        "--skip-bytes"
+      ],
+      "value": "required",
+      "description": "skip N input bytes",
+      "short": "j",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -j, --skip-bytes=N          skip N input bytes"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_SKIP_BYTES",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "read-bytes",
+      "aliases": [
+        "-N",
+        "--read-bytes"
+      ],
+      "value": "required",
+      "description": "print at most N bytes",
+      "short": "N",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -N, --read-bytes=N          print at most N bytes"
+      ]
+    },
+    {
+      "name": "format",
+      "aliases": [
+        "-t",
+        "--format"
+      ],
+      "value": "required",
+      "description": "a, c, integers 1/2/4/8; floats 2/4/8/16; optional z",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -t, --format=TYPE           a, c, integers 1/2/4/8; floats 2/4/8/16; optional z"
+      ]
+    },
+    {
+      "name": "endian",
+      "aliases": [
+        "--endian"
+      ],
+      "value": "required",
+      "description": "byte order (default little)",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --endian=little|big     byte order (default little)"
+      ],
+      "default_value": "little",
+      "default_binding": {
+        "name": "DEFAULT_ENDIAN",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "width",
+      "aliases": [
+        "-w",
+        "--width"
+      ],
+      "value": "required",
+      "description": "bytes per line (default 16, bare option 32)",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "16",
+      "default_binding": {
+        "name": "DEFAULT_WIDTH",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "output-duplicates",
+      "aliases": [
+        "-v",
+        "--output-duplicates"
+      ],
+      "value": "none",
+      "description": "do not replace repeated blocks with *",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -v, --output-duplicates    do not replace repeated blocks with *"
+      ]
+    },
+    {
+      "name": "named",
+      "aliases": [
+        "-a",
+        "--named"
+      ],
+      "value": "none",
+      "description": "traditional named/integer formats",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -a -b -c -d -i -l -o -s -x  traditional named/integer formats"
+      ]
+    },
+    {
+      "name": "octal-byte",
+      "aliases": [
+        "-b",
+        "--octal-byte"
+      ],
+      "value": "none",
+      "description": "traditional named/integer formats",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "character",
+      "aliases": [
+        "-c",
+        "--character"
+      ],
+      "value": "none",
+      "description": "traditional named/integer formats",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "decimal",
+      "aliases": [
+        "-d",
+        "--decimal"
+      ],
+      "value": "none",
+      "description": "traditional named/integer formats",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "--decimal = -d; --int = -i; --long = -l; --octal = -o; --signed = -s."
+      ]
+    },
+    {
+      "name": "int",
+      "aliases": [
+        "-i",
+        "--int"
+      ],
+      "value": "none",
+      "description": "traditional named/integer formats",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "long",
+      "aliases": [
+        "-l",
+        "--long"
+      ],
+      "value": "none",
+      "description": "traditional named/integer formats",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "octal",
+      "aliases": [
+        "-o",
+        "--octal"
+      ],
+      "value": "none",
+      "description": "traditional named/integer formats",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "signed",
+      "aliases": [
+        "-s",
+        "--signed"
+      ],
+      "value": "none",
+      "description": "traditional named/integer formats",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "hex",
+      "aliases": [
+        "-x",
+        "--hex"
+      ],
+      "value": "none",
+      "description": "Print hexadecimal two-byte units.",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "--hex = -x; --float = -f; --double = -e; --double-F = -F."
+      ]
+    },
+    {
+      "name": "float",
+      "aliases": [
+        "-f",
+        "--float"
+      ],
+      "value": "none",
+      "description": "traditional float or double formats",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -f -e -F                    traditional float or double formats"
+      ]
+    },
+    {
+      "name": "double",
+      "aliases": [
+        "-e",
+        "--double"
+      ],
+      "value": "none",
+      "description": "traditional float or double formats",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "double-F",
+      "aliases": [
+        "-F"
+      ],
+      "value": "none",
+      "description": "Print double-precision floating-point values.",
+      "short": "F",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "strings",
+      "aliases": [
+        "-S",
+        "--strings"
+      ],
+      "value": "required",
+      "description": "print NUL-terminated printable strings (default 3)",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -S N, --strings[=N]       print NUL-terminated printable strings (default 3)"
+      ],
+      "default_value": "3",
+      "default_binding": {
+        "name": "DEFAULT_STRINGS",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "traditional",
+      "aliases": [
+        "--traditional"
+      ],
+      "value": "none",
+      "description": "accept old offset and label operands",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --traditional        accept old offset and label operands"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help                 display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version              display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "address-radix",
+        "skip-bytes",
+        "read-bytes",
+        "format",
+        "endian",
+        "width",
+        "output-duplicates",
+        "named",
+        "octal-byte",
+        "character",
+        "decimal",
+        "int",
+        "long",
+        "octal",
+        "signed",
+        "hex",
+        "float",
+        "double",
+        "double-F",
+        "strings",
+        "traditional",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

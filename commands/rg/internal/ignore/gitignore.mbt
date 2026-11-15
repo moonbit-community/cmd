@@ -322,7 +322,7 @@ pub async fn GitignoreBuilder::add(
       _ => {
         errs.push(
           IgnoreError::Io(
-            @sys.IOError::other(Other, "stream did not contain valid UTF-8"),
+            @sys.IoError::other(Other, "stream did not contain valid UTF-8"),
           ).tagged(path, lineno),
         )
         break

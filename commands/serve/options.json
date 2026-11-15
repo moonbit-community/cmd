@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "command": "serve",
+  "help": "Usage: serve [options] [directory]\n\nServe regular files and directory index.html documents over HTTP.\n\nArguments:\n  directory  Directory to serve. [default: .]\n\nOptions:\n{{help:help:0}}\n{{help:version:0}}\n{{help:host:0}}\n{{help:port:0}}\n",
+  "catalog_options": [
+    "host",
+    "port"
+  ],
+  "options": [
+    {
+      "name": "help",
+      "aliases": [
+        "-h",
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help information.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -h, --help         Show help information."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "-V",
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show version information.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -V, --version      Show version information."
+      ]
+    },
+    {
+      "name": "host",
+      "aliases": [
+        "--host"
+      ],
+      "value": "required",
+      "description": "Numeric IPv4 or IPv6 listen address.",
+      "default_value": "127.0.0.1",
+      "repeatable": false,
+      "allow_attached": true,
+      "help_lines": [
+        "  --host <host>      Numeric IPv4 or IPv6 listen address. [default: 127.0.0.1]"
+      ]
+    },
+    {
+      "name": "port",
+      "aliases": [
+        "-p",
+        "--port"
+      ],
+      "value": "required",
+      "short": "p",
+      "description": "Listen port. Use 0 to choose an available port.",
+      "default_value": "8000",
+      "repeatable": false,
+      "allow_attached": true,
+      "allow_hyphen_values": true,
+      "help_lines": [
+        "  -p, --port <port>  Listen port. Use 0 to choose an available port. [default: 8000]"
+      ]
+    }
+  ],
+  "tables": []
+}

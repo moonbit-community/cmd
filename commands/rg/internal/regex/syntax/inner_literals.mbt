@@ -1,32 +1,32 @@
 ///|
 /// A literal sequence tagged with whether it is a prefix of the regex.
-priv struct TSeq {
+priv struct LiteralSequence {
   seq : Seq
   mut prefix : Bool
 }
 
 ///|
-fn TSeq::empty() -> TSeq {
+fn LiteralSequence::empty() -> LiteralSequence {
   { seq: Seq::empty(), prefix: true, }
 }
 
 ///|
-fn TSeq::infinite() -> TSeq {
+fn LiteralSequence::infinite() -> LiteralSequence {
   { seq: Seq::infinite(), prefix: true, }
 }
 
 ///|
-fn TSeq::singleton(lit : Lit) -> TSeq {
+fn LiteralSequence::singleton(lit : Lit) -> LiteralSequence {
   { seq: Seq::singleton(lit), prefix: true, }
 }
 
 ///|
-fn TSeq::copy(self : TSeq) -> TSeq {
+fn LiteralSequence::copy(self : LiteralSequence) -> LiteralSequence {
   { seq: self.seq.copy(), prefix: self.prefix, }
 }
 
 ///|
-fn TSeq::is_good(self : TSeq) -> Bool {
+fn LiteralSequence::is_good(self : LiteralSequence) -> Bool {
   if self.has_poisonous_literal() {
     return false
   }
@@ -39,7 +39,7 @@ fn TSeq::is_good(self : TSeq) -> Bool {
 }
 
 ///|
-fn TSeq::is_really_good(self : TSeq) -> Bool {
+fn LiteralSequence::is_really_good(self : LiteralSequence) -> Bool {
   if self.has_poisonous_literal() {
     return false
   }
@@ -49,7 +49,7 @@ fn TSeq::is_really_good(self : TSeq) -> Bool {
 }
 
 ///|
-fn TSeq::has_poisonous_literal(self : TSeq) -> Bool {
+fn LiteralSequence::has_poisonous_literal(self : LiteralSequence) -> Bool {
   match self.seq.literals() {
     None => false
     Some(lits) => lits.iter().any(Lit::is_poisonous)
@@ -57,7 +57,10 @@ fn TSeq::has_poisonous_literal(self : TSeq) -> Bool {
 }
 
 ///|
-fn TSeq::choose(self : TSeq, other : TSeq) -> TSeq {
+fn LiteralSequence::choose(
+  self : LiteralSequence,
+  other : LiteralSequence,
+) -> LiteralSequence {
   let seq1 = self
   let seq2 = other
   seq1.seq.make_inexact()
@@ -120,11 +123,11 @@ fn InnerExtractor::extract_untagged(self : InnerExtractor, hir : Hir) -> Seq {
 }
 
 ///|
-fn InnerExtractor::extract(self : InnerExtractor, hir : Hir) -> TSeq {
+fn InnerExtractor::extract(self : InnerExtractor, hir : Hir) -> LiteralSequence {
   match hir.kind {
-    Empty | Look(_) => TSeq::singleton(Lit::exact(b""))
+    Empty | Look(_) => LiteralSequence::singleton(Lit::exact(b""))
     Literal(bytes) => {
-      let seq = TSeq::singleton(Lit::exact(bytes))
+      let seq = LiteralSequence::singleton(Lit::exact(bytes))
       self.enforce_literal_len(seq)
       seq
     }
@@ -141,9 +144,9 @@ fn InnerExtractor::extract(self : InnerExtractor, hir : Hir) -> TSeq {
 fn InnerExtractor::extract_concat(
   self : InnerExtractor,
   hirs : Array[Hir],
-) -> TSeq {
-  let mut seq = TSeq::singleton(Lit::exact(b""))
-  let mut prev : TSeq? = None
+) -> LiteralSequence {
+  let mut seq = LiteralSequence::singleton(Lit::exact(b""))
+  let mut prev : LiteralSequence? = None
   for hir in hirs {
     if seq.seq.is_inexact() {
       if seq.seq.is_empty() {
@@ -158,7 +161,7 @@ fn InnerExtractor::extract_concat(
           Some(p) => p.choose(seq)
         },
       )
-      seq = TSeq::singleton(Lit::exact(b""))
+      seq = LiteralSequence::singleton(Lit::exact(b""))
       seq.prefix = false
     }
     seq = self.cross(seq, self.extract(hir))
@@ -173,8 +176,8 @@ fn InnerExtractor::extract_concat(
 fn InnerExtractor::extract_alternation(
   self : InnerExtractor,
   hirs : Array[Hir],
-) -> TSeq {
-  let mut seq = TSeq::empty()
+) -> LiteralSequence {
+  let mut seq = LiteralSequence::empty()
   for hir in hirs {
     if !seq.seq.is_finite() {
       break
@@ -191,20 +194,20 @@ fn InnerExtractor::extract_repetition(
   max : Int32?,
   greedy : Bool,
   sub : Hir,
-) -> TSeq {
+) -> LiteralSequence {
   let subseq = self.extract(sub)
   if min == 0 {
     if max != Some(1) {
       subseq.seq.make_inexact()
     }
-    let empty = TSeq::singleton(Lit::exact(b""))
+    let empty = LiteralSequence::singleton(Lit::exact(b""))
     if greedy {
       self.union(subseq, empty)
     } else {
       self.union(empty, subseq)
     }
   } else if max is Some(mx) && min == mx {
-    let mut seq = TSeq::singleton(Lit::exact(b""))
+    let mut seq = LiteralSequence::singleton(Lit::exact(b""))
     let n = if min < self.limit_repeat { min } else { self.limit_repeat }
     for _ in 0..<n {
       if seq.seq.is_inexact() {
@@ -217,7 +220,7 @@ fn InnerExtractor::extract_repetition(
     }
     seq
   } else if max is Some(mx) && min < mx {
-    let mut seq = TSeq::singleton(Lit::exact(b""))
+    let mut seq = LiteralSequence::singleton(Lit::exact(b""))
     let n = if min < self.limit_repeat { min } else { self.limit_repeat }
     for _ in 0..<n {
       if seq.seq.is_inexact() {
@@ -234,18 +237,21 @@ fn InnerExtractor::extract_repetition(
 }
 
 ///|
-fn InnerExtractor::extract_class(self : InnerExtractor, cls : Class) -> TSeq {
+fn InnerExtractor::extract_class(
+  self : InnerExtractor,
+  cls : Class,
+) -> LiteralSequence {
   let mut count = 0
   for r in cls.ranges() {
     if count > self.limit_class {
-      return TSeq::infinite()
+      return LiteralSequence::infinite()
     }
     count += r.1 - r.0 + 1
   }
   if count > self.limit_class {
-    return TSeq::infinite()
+    return LiteralSequence::infinite()
   }
-  let seq = TSeq::empty()
+  let seq = LiteralSequence::empty()
   match cls {
     Unicode(ranges) =>
       for r in ranges {
@@ -272,9 +278,9 @@ fn InnerExtractor::extract_class(self : InnerExtractor, cls : Class) -> TSeq {
 ///|
 fn InnerExtractor::cross(
   self : InnerExtractor,
-  seq1 : TSeq,
-  seq2 : TSeq,
-) -> TSeq {
+  seq1 : LiteralSequence,
+  seq2 : LiteralSequence,
+) -> LiteralSequence {
   if !seq2.prefix {
     return seq1.choose(seq2)
   }
@@ -289,9 +295,9 @@ fn InnerExtractor::cross(
 ///|
 fn InnerExtractor::union(
   self : InnerExtractor,
-  seq1 : TSeq,
-  seq2 : TSeq,
-) -> TSeq {
+  seq1 : LiteralSequence,
+  seq2 : LiteralSequence,
+) -> LiteralSequence {
   if seq1.seq.max_union_len(seq2.seq) is Some(len) && len > self.limit_total {
     seq1.seq.keep_first_bytes(4)
     seq2.seq.keep_first_bytes(4)
@@ -309,7 +315,7 @@ fn InnerExtractor::union(
 ///|
 fn InnerExtractor::enforce_literal_len(
   self : InnerExtractor,
-  seq : TSeq,
+  seq : LiteralSequence,
 ) -> Unit {
   seq.seq.keep_first_bytes(self.limit_literal_len)
 }

@@ -124,8 +124,8 @@ fn remove_matching_bytes(expr : @syntax.Hir, set : @matcher.ByteSet) -> Unit {
     Empty => ()
     Look(look) =>
       match look {
-        Start | End | StartLF | EndLF => set.remove(b'\n')
-        StartCRLF | EndCRLF => {
+        Start | End | StartLf | EndLf => set.remove(b'\n')
+        StartCrlf | EndCrlf => {
           set.remove(b'\r')
           set.remove(b'\n')
         }

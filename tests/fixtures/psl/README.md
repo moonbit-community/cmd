@@ -17,7 +17,7 @@ its original CC0 notice is retained. These are independent expectations, not
 values regenerated from the product lookup table.
 
 From the repository root, run
-`MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/tools/public_suffix.mbtx -- update`
+`MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/public_suffix.mbtx -- update`
 to regenerate `core/netops/cookie_suffix_data.mbt`, or use `check` to verify it.
 The generator rejects a missing or changed source and retains every rule.
 The pure MoonBit Punycode dependency is pinned in the generator's imports.

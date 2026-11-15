@@ -1,0 +1,1886 @@
+{
+  "schema": 1,
+  "command": "typst",
+  "help": "Usage: typst [OPTIONS] <COMMAND>\n\nCompile Typst documents with the MoonBit typesetting engine.\n\nCommands:\n  compile, c   Compile to PDF, PNG, SVG, HTML or a bundle\n  watch, w     Recompile when input dependencies change\n  eval         Evaluate Typst code\n  query        Query document elements\n  fonts        List available fonts\n  info         Show configuration and engine information\n  init         Initialize from a locally installed template\n  help         Show help for a command\n\nOptions:\n{{help:color:0}}\n  -h, --help                       Show help\n  -V, --version                    Show cli/typst package version\n\nUse 'typst help <COMMAND>' for command options.\nPackages must be installed locally; network downloads, update, completions,\n{{help:open:0}}\nUse --no-serve for HTML watch. --jobs does not enable parallel compilation.\nWasm uses lexical paths, cannot detect symlinks, and assumes local time UTC.\n",
+  "catalog_options": [
+    "input",
+    "format",
+    "root",
+    "creation-timestamp",
+    "pretty",
+    "jobs",
+    "in",
+    "field",
+    "one",
+    "ignore-system-fonts",
+    "ignore-embedded-fonts",
+    "pages",
+    "ppi",
+    "deps",
+    "no-serve",
+    "timings",
+    "update",
+    "completions"
+  ],
+  "options": [
+    {
+      "name": "root",
+      "parser_name": "root",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Configures the project root (for absolute paths)",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Configures the project root (for absolute paths)",
+        "variable": "DIR",
+        "environment": "TYPST_ROOT",
+        "dynamic": []
+      },
+      "aliases": [
+        "--root"
+      ],
+      "help_lines": [
+        "      --root <DIR>",
+        "          Configures the project root (for absolute paths) [env: TYPST_ROOT=]",
+        "      --root <DIR>",
+        "          Configures the project root (for absolute paths)",
+        "          ",
+        "          [env: TYPST_ROOT=]",
+        "",
+        "      --root <DIR>",
+        "          Configures the project root (for absolute paths) [env: TYPST_ROOT=]",
+        "      --root <DIR>",
+        "          Configures the project root (for absolute paths)",
+        "          ",
+        "          [env: TYPST_ROOT=]",
+        "",
+        "      --root <DIR>",
+        "          Configures the project root (for absolute paths) [env: TYPST_ROOT=]",
+        "      --root <DIR>",
+        "          Configures the project root (for absolute paths)",
+        "          ",
+        "          [env: TYPST_ROOT=]",
+        "",
+        "      --root <DIR>",
+        "          Configures the project root (for absolute paths) [env: TYPST_ROOT=]",
+        "      --root <DIR>",
+        "          Configures the project root (for absolute paths)",
+        "          ",
+        "          [env: TYPST_ROOT=]",
+        ""
+      ]
+    },
+    {
+      "name": "input",
+      "parser_name": "input",
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true,
+      "short": "i",
+      "description": "Add a string key-value pair visible through `sys.inputs`",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "Add a string key-value pair visible through `sys.inputs`",
+        "variable": "key=value",
+        "dynamic": [
+          "validate"
+        ]
+      },
+      "aliases": [
+        "--input",
+        "-i"
+      ],
+      "help_lines": [
+        "  -i, --input <key=value>",
+        "          Add a string key-value pair visible through `sys.inputs`",
+        "  -i, --input <key=value>",
+        "          Add a string key-value pair visible through `sys.inputs`",
+        "",
+        "  -i, --input <key=value>",
+        "          Add a string key-value pair visible through `sys.inputs`",
+        "  -i, --input <key=value>",
+        "          Add a string key-value pair visible through `sys.inputs`",
+        "",
+        "  -i, --input <key=value>",
+        "          Add a string key-value pair visible through `sys.inputs`",
+        "  -i, --input <key=value>",
+        "          Add a string key-value pair visible through `sys.inputs`",
+        "",
+        "  -i, --input <key=value>",
+        "          Add a string key-value pair visible through `sys.inputs`",
+        "  -i, --input <key=value>",
+        "          Add a string key-value pair visible through `sys.inputs`",
+        ""
+      ]
+    },
+    {
+      "name": "creation-timestamp",
+      "parser_name": "creation-timestamp",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "The document's creation date formatted as a UNIX timestamp",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "The document's creation date formatted as a UNIX timestamp",
+        "variable": "UNIX_TIMESTAMP",
+        "environment": "SOURCE_DATE_EPOCH",
+        "dynamic": [
+          "validate"
+        ]
+      },
+      "aliases": [
+        "--creation-timestamp"
+      ],
+      "help_lines": [
+        "      --creation-timestamp <UNIX_TIMESTAMP>",
+        "          The document's creation date formatted as a UNIX timestamp [env:",
+        "          SOURCE_DATE_EPOCH=]",
+        "      --creation-timestamp <UNIX_TIMESTAMP>",
+        "          The document's creation date formatted as a UNIX timestamp.",
+        "          ",
+        "          For more information, see",
+        "          <https://reproducible-builds.org/specs/source-date-epoch/>.",
+        "          ",
+        "          [env: SOURCE_DATE_EPOCH=]",
+        "",
+        "      --creation-timestamp <UNIX_TIMESTAMP>",
+        "          The document's creation date formatted as a UNIX timestamp [env:",
+        "          SOURCE_DATE_EPOCH=]",
+        "      --creation-timestamp <UNIX_TIMESTAMP>",
+        "          The document's creation date formatted as a UNIX timestamp.",
+        "          ",
+        "          For more information, see",
+        "          <https://reproducible-builds.org/specs/source-date-epoch/>.",
+        "          ",
+        "          [env: SOURCE_DATE_EPOCH=]",
+        "",
+        "      --creation-timestamp <UNIX_TIMESTAMP>",
+        "          The document's creation date formatted as a UNIX timestamp [env:",
+        "          SOURCE_DATE_EPOCH=]",
+        "      --creation-timestamp <UNIX_TIMESTAMP>",
+        "          The document's creation date formatted as a UNIX timestamp.",
+        "          ",
+        "          For more information, see",
+        "          <https://reproducible-builds.org/specs/source-date-epoch/>.",
+        "          ",
+        "          [env: SOURCE_DATE_EPOCH=]",
+        "",
+        "      --creation-timestamp <UNIX_TIMESTAMP>",
+        "          The document's creation date formatted as a UNIX timestamp [env:",
+        "          SOURCE_DATE_EPOCH=]",
+        "      --creation-timestamp <UNIX_TIMESTAMP>",
+        "          The document's creation date formatted as a UNIX timestamp.",
+        "          ",
+        "          For more information, see",
+        "          <https://reproducible-builds.org/specs/source-date-epoch/>.",
+        "          ",
+        "          [env: SOURCE_DATE_EPOCH=]",
+        ""
+      ]
+    },
+    {
+      "name": "font-path",
+      "parser_name": "font-path",
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true,
+      "description": "Adds additional directories that are recursively searched for fonts",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "Adds additional directories that are recursively searched for fonts",
+        "variable": "DIR",
+        "environment": "TYPST_FONT_PATHS",
+        "dynamic": [
+          "delimiter"
+        ]
+      },
+      "aliases": [
+        "--font-path"
+      ],
+      "help_lines": [
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts",
+        "          [env: TYPST_FONT_PATHS=]",
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts.",
+        "          ",
+        "          If multiple paths are specified, they are separated by the system's",
+        "          path separator (`:` on Unix-like systems and `;` on Windows).",
+        "          ",
+        "          [env: TYPST_FONT_PATHS=]",
+        "",
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts",
+        "          [env: TYPST_FONT_PATHS=]",
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts.",
+        "          ",
+        "          If multiple paths are specified, they are separated by the system's",
+        "          path separator (`:` on Unix-like systems and `;` on Windows).",
+        "          ",
+        "          [env: TYPST_FONT_PATHS=]",
+        "",
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts",
+        "          [env: TYPST_FONT_PATHS=]",
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts.",
+        "          ",
+        "          If multiple paths are specified, they are separated by the system's",
+        "          path separator (`:` on Unix-like systems and `;` on Windows).",
+        "          ",
+        "          [env: TYPST_FONT_PATHS=]",
+        "",
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts",
+        "          [env: TYPST_FONT_PATHS=]",
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts.",
+        "          ",
+        "          If multiple paths are specified, they are separated by the system's",
+        "          path separator (`:` on Unix-like systems and `;` on Windows).",
+        "          ",
+        "          [env: TYPST_FONT_PATHS=]",
+        "",
+        "      --font-path <DIR>        Adds additional directories that are recursively",
+        "                               searched for fonts [env: TYPST_FONT_PATHS=]",
+        "      --font-path <DIR>",
+        "          Adds additional directories that are recursively searched for fonts.",
+        "          ",
+        "          If multiple paths are specified, they are separated by the system's",
+        "          path separator (`:` on Unix-like systems and `;` on Windows).",
+        "          ",
+        "          [env: TYPST_FONT_PATHS=]",
+        ""
+      ]
+    },
+    {
+      "name": "ignore-system-fonts",
+      "parser_name": "ignore-system-fonts",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Ensures system fonts won't be searched, unless explicitly included via `--font-path`",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Ensures system fonts won't be searched, unless explicitly included via `--font-path`",
+        "environment": "TYPST_IGNORE_SYSTEM_FONTS",
+        "dynamic": []
+      },
+      "aliases": [
+        "--ignore-system-fonts"
+      ],
+      "help_lines": [
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path` [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path`",
+        "          ",
+        "          [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        "",
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path` [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path`",
+        "          ",
+        "          [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        "",
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path` [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path`",
+        "          ",
+        "          [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        "",
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path` [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path`",
+        "          ",
+        "          [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        "",
+        "      --ignore-system-fonts    Ensures system fonts won't be searched, unless",
+        "                               explicitly included via `--font-path` [env:",
+        "                               TYPST_IGNORE_SYSTEM_FONTS=]",
+        "      --ignore-system-fonts",
+        "          Ensures system fonts won't be searched, unless explicitly included via",
+        "          `--font-path`",
+        "          ",
+        "          [env: TYPST_IGNORE_SYSTEM_FONTS=]",
+        ""
+      ]
+    },
+    {
+      "name": "ignore-embedded-fonts",
+      "parser_name": "ignore-embedded-fonts",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Ensures fonts embedded into Typst won't be considered",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Ensures fonts embedded into Typst won't be considered",
+        "environment": "TYPST_IGNORE_EMBEDDED_FONTS",
+        "dynamic": []
+      },
+      "aliases": [
+        "--ignore-embedded-fonts"
+      ],
+      "help_lines": [
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered [env:",
+        "          TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered",
+        "          ",
+        "          [env: TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "",
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered [env:",
+        "          TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered",
+        "          ",
+        "          [env: TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "",
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered [env:",
+        "          TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered",
+        "          ",
+        "          [env: TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "",
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered [env:",
+        "          TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered",
+        "          ",
+        "          [env: TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "",
+        "      --ignore-embedded-fonts  Ensures fonts embedded into Typst won't be",
+        "                               considered [env: TYPST_IGNORE_EMBEDDED_FONTS=]",
+        "      --ignore-embedded-fonts",
+        "          Ensures fonts embedded into Typst won't be considered",
+        "          ",
+        "          [env: TYPST_IGNORE_EMBEDDED_FONTS=]",
+        ""
+      ]
+    },
+    {
+      "name": "package-path",
+      "parser_name": "package-path",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Custom path to local packages, defaults to system-dependent location",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Custom path to local packages, defaults to system-dependent location",
+        "variable": "DIR",
+        "environment": "TYPST_PACKAGE_PATH",
+        "dynamic": []
+      },
+      "aliases": [
+        "--package-path"
+      ],
+      "help_lines": [
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        "      --package-path <DIR>",
+        "          Custom path to local packages, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_PATH=]",
+        ""
+      ]
+    },
+    {
+      "name": "package-cache-path",
+      "parser_name": "package-cache-path",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Custom path to package cache, defaults to system-dependent location",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Custom path to package cache, defaults to system-dependent location",
+        "variable": "DIR",
+        "environment": "TYPST_PACKAGE_CACHE_PATH",
+        "dynamic": []
+      },
+      "aliases": [
+        "--package-cache-path"
+      ],
+      "help_lines": [
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        "      --package-cache-path <DIR>",
+        "          Custom path to package cache, defaults to system-dependent location",
+        "          ",
+        "          [env: TYPST_PACKAGE_CACHE_PATH=]",
+        ""
+      ]
+    },
+    {
+      "name": "jobs",
+      "parser_name": "jobs",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "short": "j",
+      "description": "Number of parallel jobs spawned during compilation (only 1 is supported)",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "Number of parallel jobs spawned during compilation (only 1 is supported)",
+        "variable": "JOBS",
+        "dynamic": [
+          "validate"
+        ]
+      },
+      "aliases": [
+        "--jobs",
+        "-j"
+      ],
+      "help_lines": [
+        "  -j, --jobs <JOBS>",
+        "          Number of parallel jobs spawned during compilation. Defaults to number",
+        "          of CPUs. Setting it to 1 disables parallelism",
+        "  -j, --jobs <JOBS>",
+        "          Number of parallel jobs spawned during compilation. Defaults to number",
+        "          of CPUs. Setting it to 1 disables parallelism",
+        "",
+        "  -j, --jobs <JOBS>",
+        "          Number of parallel jobs spawned during compilation. Defaults to number",
+        "          of CPUs. Setting it to 1 disables parallelism",
+        "  -j, --jobs <JOBS>",
+        "          Number of parallel jobs spawned during compilation. Defaults to number",
+        "          of CPUs. Setting it to 1 disables parallelism",
+        "",
+        "  -j, --jobs <JOBS>",
+        "          Number of parallel jobs spawned during compilation. Defaults to number",
+        "          of CPUs. Setting it to 1 disables parallelism",
+        "  -j, --jobs <JOBS>",
+        "          Number of parallel jobs spawned during compilation. Defaults to number",
+        "          of CPUs. Setting it to 1 disables parallelism",
+        "",
+        "  -j, --jobs <JOBS>",
+        "          Number of parallel jobs spawned during compilation. Defaults to number",
+        "          of CPUs. Setting it to 1 disables parallelism",
+        "  -j, --jobs <JOBS>",
+        "          Number of parallel jobs spawned during compilation. Defaults to number",
+        "          of CPUs. Setting it to 1 disables parallelism",
+        ""
+      ]
+    },
+    {
+      "name": "features",
+      "parser_name": "features",
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true,
+      "description": "Enables in-development features that may be changed or removed at any time",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "html",
+          "bundle",
+          "a11y-extras"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Enables in-development features that may be changed or removed at any time",
+        "variable": "FEATURES",
+        "environment": "TYPST_FEATURES",
+        "delimiter": ",",
+        "dynamic": []
+      },
+      "aliases": [
+        "--features"
+      ],
+      "help_lines": [
+        "      --features <FEATURES>",
+        "          Enables in-development features that may be changed or removed at any",
+        "          time [env: TYPST_FEATURES=] [possible values: html, bundle,",
+        "          a11y-extras]",
+        "      --features <FEATURES>",
+        "          Enables in-development features that may be changed or removed at any",
+        "          time",
+        "          ",
+        "          [env: TYPST_FEATURES=]",
+        "          [possible values: html, bundle, a11y-extras]",
+        "",
+        "      --features <FEATURES>",
+        "          Enables in-development features that may be changed or removed at any",
+        "          time [env: TYPST_FEATURES=] [possible values: html, bundle,",
+        "          a11y-extras]",
+        "      --features <FEATURES>",
+        "          Enables in-development features that may be changed or removed at any",
+        "          time",
+        "          ",
+        "          [env: TYPST_FEATURES=]",
+        "          [possible values: html, bundle, a11y-extras]",
+        "",
+        "      --features <FEATURES>",
+        "          Enables in-development features that may be changed or removed at any",
+        "          time [env: TYPST_FEATURES=] [possible values: html, bundle,",
+        "          a11y-extras]",
+        "      --features <FEATURES>",
+        "          Enables in-development features that may be changed or removed at any",
+        "          time",
+        "          ",
+        "          [env: TYPST_FEATURES=]",
+        "          [possible values: html, bundle, a11y-extras]",
+        "",
+        "      --features <FEATURES>",
+        "          Enables in-development features that may be changed or removed at any",
+        "          time [env: TYPST_FEATURES=] [possible values: html, bundle,",
+        "          a11y-extras]",
+        "      --features <FEATURES>",
+        "          Enables in-development features that may be changed or removed at any",
+        "          time",
+        "          ",
+        "          [env: TYPST_FEATURES=]",
+        "          [possible values: html, bundle, a11y-extras]",
+        ""
+      ]
+    },
+    {
+      "name": "diagnostic-format",
+      "parser_name": "diagnostic-format",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "The format to emit diagnostics in [default: human]",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "human",
+          "short"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "The format to emit diagnostics in [default: human]",
+        "variable": "DIAGNOSTIC_FORMAT",
+        "environment": "TYPST_DIAGNOSTIC_FORMAT",
+        "dynamic": []
+      },
+      "aliases": [
+        "--diagnostic-format"
+      ],
+      "help_lines": [
+        "      --diagnostic-format <DIAGNOSTIC_FORMAT>",
+        "          The format to emit diagnostics in [env: TYPST_DIAGNOSTIC_FORMAT=]",
+        "          [default: human] [possible values: human, short]",
+        "      --diagnostic-format <DIAGNOSTIC_FORMAT>",
+        "          The format to emit diagnostics in",
+        "          ",
+        "          [env: TYPST_DIAGNOSTIC_FORMAT=]",
+        "          [default: human]",
+        "          [possible values: human, short]",
+        "",
+        "      --diagnostic-format <DIAGNOSTIC_FORMAT>",
+        "          The format to emit diagnostics in [env: TYPST_DIAGNOSTIC_FORMAT=]",
+        "          [default: human] [possible values: human, short]",
+        "      --diagnostic-format <DIAGNOSTIC_FORMAT>",
+        "          The format to emit diagnostics in",
+        "          ",
+        "          [env: TYPST_DIAGNOSTIC_FORMAT=]",
+        "          [default: human]",
+        "          [possible values: human, short]",
+        "",
+        "      --diagnostic-format <DIAGNOSTIC_FORMAT>",
+        "          The format to emit diagnostics in [env: TYPST_DIAGNOSTIC_FORMAT=]",
+        "          [default: human] [possible values: human, short]",
+        "      --diagnostic-format <DIAGNOSTIC_FORMAT>",
+        "          The format to emit diagnostics in",
+        "          ",
+        "          [env: TYPST_DIAGNOSTIC_FORMAT=]",
+        "          [default: human]",
+        "          [possible values: human, short]",
+        "",
+        "      --diagnostic-format <DIAGNOSTIC_FORMAT>",
+        "          The format to emit diagnostics in [env: TYPST_DIAGNOSTIC_FORMAT=]",
+        "          [default: human] [possible values: human, short]",
+        "      --diagnostic-format <DIAGNOSTIC_FORMAT>",
+        "          The format to emit diagnostics in",
+        "          ",
+        "          [env: TYPST_DIAGNOSTIC_FORMAT=]",
+        "          [default: human]",
+        "          [possible values: human, short]",
+        ""
+      ]
+    },
+    {
+      "name": "format-compile",
+      "parser_name": "format",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "short": "f",
+      "description": "The format of the output file, inferred from the extension by default",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "pdf",
+          "png",
+          "svg",
+          "html",
+          "bundle"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "The format of the output file, inferred from the extension by default",
+        "variable": "FORMAT",
+        "dynamic": []
+      },
+      "aliases": [
+        "--format",
+        "-f"
+      ],
+      "help_lines": [
+        "  -f, --format <FORMAT>",
+        "          The format of the output file, inferred from the extension by default",
+        "          [possible values: pdf, png, svg, html, bundle]",
+        "  -f, --format <FORMAT>",
+        "          The format of the output file, inferred from the extension by default",
+        "          ",
+        "          [possible values: pdf, png, svg, html, bundle]",
+        "",
+        "  -f, --format <FORMAT>",
+        "          The format of the output file, inferred from the extension by default",
+        "          [possible values: pdf, png, svg, html, bundle]",
+        "  -f, --format <FORMAT>",
+        "          The format of the output file, inferred from the extension by default",
+        "          ",
+        "          [possible values: pdf, png, svg, html, bundle]",
+        ""
+      ]
+    },
+    {
+      "name": "pretty-compile",
+      "parser_name": "pretty",
+      "value": "optional",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Whether to pretty-print produced output",
+      "typst": {
+        "builder": "opt_optional",
+        "choices": [
+          "true",
+          "false"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Whether to pretty-print produced output",
+        "variable": "PRETTY",
+        "missing": "true",
+        "dynamic": []
+      },
+      "aliases": [
+        "--pretty"
+      ]
+    },
+    {
+      "name": "pages",
+      "parser_name": "pages",
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true,
+      "description": "Which pages to export. When unspecified, all pages are exported",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "Which pages to export. When unspecified, all pages are exported",
+        "variable": "PAGES",
+        "delimiter": ",",
+        "dynamic": [
+          "validate"
+        ]
+      },
+      "aliases": [
+        "--pages"
+      ],
+      "help_lines": [
+        "      --pages <PAGES>",
+        "          Which pages to export. When unspecified, all pages are exported",
+        "      --pages <PAGES>",
+        "          Which pages to export. When unspecified, all pages are exported.",
+        "          ",
+        "          Pages to export are separated by commas, and can be either simple page",
+        "          numbers (e.g. '2,5' to export only pages 2 and 5) or page ranges (e.g.",
+        "          '2,3-6,8-' to export page 2, pages 3 to 6 (inclusive), page 8 and any",
+        "          pages after it).",
+        "          ",
+        "          Page numbers are one-indexed and correspond to physical page numbers",
+        "          in the document (therefore not being affected by the document's page",
+        "          counter).",
+        "",
+        "      --pages <PAGES>",
+        "          Which pages to export. When unspecified, all pages are exported",
+        "      --pages <PAGES>",
+        "          Which pages to export. When unspecified, all pages are exported.",
+        "          ",
+        "          Pages to export are separated by commas, and can be either simple page",
+        "          numbers (e.g. '2,5' to export only pages 2 and 5) or page ranges (e.g.",
+        "          '2,3-6,8-' to export page 2, pages 3 to 6 (inclusive), page 8 and any",
+        "          pages after it).",
+        "          ",
+        "          Page numbers are one-indexed and correspond to physical page numbers",
+        "          in the document (therefore not being affected by the document's page",
+        "          counter).",
+        ""
+      ]
+    },
+    {
+      "name": "pdf-standard",
+      "parser_name": "pdf-standard",
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true,
+      "description": "One (or multiple comma-separated) PDF standards that Typst will enforce conformance with",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "One (or multiple comma-separated) PDF standards that Typst will enforce conformance with",
+        "variable": "PDF_STANDARD",
+        "delimiter": ",",
+        "dynamic": [
+          "possible"
+        ]
+      },
+      "aliases": [
+        "--pdf-standard"
+      ],
+      "help_lines": [
+        "      --pdf-standard <PDF_STANDARD>",
+        "          One (or multiple comma-separated) PDF standards that Typst will",
+        "          enforce conformance with [possible values: 1.4, 1.5, 1.6, 1.7, 2.0,",
+        "          a-1b, a-1a, a-2b, a-2u, a-2a, a-3b, a-3u, a-3a, a-4, a-4f, a-4e, ua-1]",
+        "      --pdf-standard <PDF_STANDARD>",
+        "          One (or multiple comma-separated) PDF standards that Typst will",
+        "          enforce conformance with",
+        "",
+        "          Possible values:",
+        "      --pdf-standard <PDF_STANDARD>",
+        "          One (or multiple comma-separated) PDF standards that Typst will",
+        "          enforce conformance with [possible values: 1.4, 1.5, 1.6, 1.7, 2.0,",
+        "          a-1b, a-1a, a-2b, a-2u, a-2a, a-3b, a-3u, a-3a, a-4, a-4f, a-4e, ua-1]",
+        "      --pdf-standard <PDF_STANDARD>",
+        "          One (or multiple comma-separated) PDF standards that Typst will",
+        "          enforce conformance with",
+        "",
+        "          Possible values:"
+      ]
+    },
+    {
+      "name": "no-pdf-tags",
+      "parser_name": "no-pdf-tags",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Hidden compatibility option; see the documented support boundaries.",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": true,
+        "empty": "Required",
+        "help_text": "",
+        "dynamic": []
+      },
+      "aliases": [
+        "--no-pdf-tags"
+      ]
+    },
+    {
+      "name": "pdf-tagged",
+      "parser_name": "pdf-tagged",
+      "value": "optional",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Enables or disables PDF tagging",
+      "typst": {
+        "builder": "opt_optional",
+        "choices": [
+          "true",
+          "false"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Enables or disables PDF tagging",
+        "variable": "PDF_TAGGED",
+        "missing": "true",
+        "dynamic": []
+      },
+      "aliases": [
+        "--pdf-tagged"
+      ]
+    },
+    {
+      "name": "ppi",
+      "parser_name": "ppi",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "The PPI (pixels per inch) to use for PNG export [default: 144]",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "The PPI (pixels per inch) to use for PNG export [default: 144]",
+        "variable": "PPI",
+        "dynamic": [
+          "validate"
+        ]
+      },
+      "aliases": [
+        "--ppi"
+      ],
+      "help_lines": [
+        "      --ppi <PPI>",
+        "          The PPI (pixels per inch) to use for PNG export",
+        "      --ppi <PPI>",
+        "          The PPI (pixels per inch) to use for PNG export.",
+        "          ",
+        "          [default: 144]",
+        "",
+        "      --ppi <PPI>",
+        "          The PPI (pixels per inch) to use for PNG export",
+        "      --ppi <PPI>",
+        "          The PPI (pixels per inch) to use for PNG export.",
+        "          ",
+        "          [default: 144]",
+        ""
+      ]
+    },
+    {
+      "name": "make-deps",
+      "parser_name": "make-deps",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Hidden compatibility option; see the documented support boundaries.",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": true,
+        "empty": "Required",
+        "help_text": "",
+        "variable": "PATH",
+        "dynamic": []
+      },
+      "aliases": [
+        "--make-deps"
+      ]
+    },
+    {
+      "name": "deps",
+      "parser_name": "deps",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "File path to which a list of current compilation's dependencies will be written. Use `-` to write to stdout",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "File path to which a list of current compilation's dependencies will be written. Use `-` to write to stdout",
+        "variable": "PATH",
+        "dynamic": [
+          "validate"
+        ]
+      },
+      "aliases": [
+        "--deps"
+      ],
+      "help_lines": [
+        "      --deps <PATH>",
+        "          File path to which a list of current compilation's dependencies will",
+        "          be written. Use `-` to write to stdout",
+        "      --deps <PATH>",
+        "          File path to which a list of current compilation's dependencies will",
+        "          be written. Use `-` to write to stdout",
+        "",
+        "      --deps <PATH>",
+        "          File path to which a list of current compilation's dependencies will",
+        "          be written. Use `-` to write to stdout",
+        "      --deps <PATH>",
+        "          File path to which a list of current compilation's dependencies will",
+        "          be written. Use `-` to write to stdout",
+        ""
+      ]
+    },
+    {
+      "name": "deps-format",
+      "parser_name": "deps-format",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "File format to use for dependencies [default: json]",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "json",
+          "zero",
+          "make"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "File format to use for dependencies [default: json]",
+        "variable": "DEPS_FORMAT",
+        "dynamic": []
+      },
+      "aliases": [
+        "--deps-format"
+      ],
+      "help_lines": [
+        "      --deps-format <DEPS_FORMAT>",
+        "          File format to use for dependencies [default: json] [possible values:",
+        "          json, zero, make]",
+        "      --deps-format <DEPS_FORMAT>",
+        "          File format to use for dependencies",
+        "",
+        "          Possible values:",
+        "      --deps-format <DEPS_FORMAT>",
+        "          File format to use for dependencies [default: json] [possible values:",
+        "          json, zero, make]",
+        "      --deps-format <DEPS_FORMAT>",
+        "          File format to use for dependencies",
+        "",
+        "          Possible values:"
+      ],
+      "default_value": "json",
+      "default_binding": {
+        "name": "DEFAULT_DEPS_FORMAT",
+        "type_": "DepsFormat",
+        "variant": "Json"
+      }
+    },
+    {
+      "name": "open",
+      "parser_name": "open",
+      "value": "optional",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Opens the output file with the default viewer or a specific program after compilation (not supported)",
+      "typst": {
+        "builder": "opt_optional",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "Opens the output file with the default viewer or a specific program after compilation (not supported)",
+        "variable": "VIEWER",
+        "missing": "",
+        "dynamic": []
+      },
+      "aliases": [
+        "--open"
+      ],
+      "help_lines": [
+        "--open, --timings and the watch HTTP server are unsupported."
+      ]
+    },
+    {
+      "name": "timings",
+      "parser_name": "timings",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Produces performance timings of the compilation process (not supported)",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Produces performance timings of the compilation process (not supported)",
+        "variable": "OUTPUT_JSON",
+        "dynamic": []
+      },
+      "aliases": [
+        "--timings"
+      ],
+      "help_lines": [
+        "      --timings <OUTPUT_JSON>",
+        "          Produces performance timings of the compilation process.",
+        "          (experimental)",
+        "      --timings <OUTPUT_JSON>",
+        "          Produces performance timings of the compilation process.",
+        "          (experimental)",
+        "          ",
+        "          The resulting JSON file can be loaded into a tracing tool such as",
+        "          <https://ui.perfetto.dev>. It does not contain any sensitive",
+        "          information apart from file names and line numbers.",
+        "",
+        "      --timings <OUTPUT_JSON>",
+        "          Produces performance timings of the compilation process.",
+        "          (experimental)",
+        "      --timings <OUTPUT_JSON>",
+        "          Produces performance timings of the compilation process.",
+        "          (experimental)",
+        "          ",
+        "          The resulting JSON file can be loaded into a tracing tool such as",
+        "          <https://ui.perfetto.dev>. It does not contain any sensitive",
+        "          information apart from file names and line numbers.",
+        ""
+      ]
+    },
+    {
+      "name": "no-fullscreen",
+      "parser_name": "no-fullscreen",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Stops the watcher from taking over the terminal",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Stops the watcher from taking over the terminal",
+        "dynamic": []
+      },
+      "aliases": [
+        "--no-fullscreen"
+      ],
+      "help_lines": [
+        "      --no-fullscreen",
+        "          Stops the watcher from taking over the terminal",
+        "      --no-fullscreen",
+        "          Stops the watcher from taking over the terminal.",
+        "          ",
+        "          With this flag, the watcher will only ever print normal output lines,",
+        "          not clear or reconfigure the terminal.",
+        ""
+      ]
+    },
+    {
+      "name": "no-serve",
+      "parser_name": "no-serve",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Disables the built-in HTTP server for HTML export",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Disables the built-in HTTP server for HTML export",
+        "dynamic": []
+      },
+      "aliases": [
+        "--no-serve"
+      ],
+      "help_lines": [
+        "      --no-serve",
+        "          Disables the built-in HTTP server for HTML export",
+        "      --no-serve",
+        "          Disables the built-in HTTP server for HTML export",
+        ""
+      ]
+    },
+    {
+      "name": "no-reload",
+      "parser_name": "no-reload",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Disables the injected live reload script for HTML export. The HTML that is written to disk isn't affected either way",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Disables the injected live reload script for HTML export. The HTML that is written to disk isn't affected either way",
+        "dynamic": []
+      },
+      "aliases": [
+        "--no-reload"
+      ],
+      "help_lines": [
+        "      --no-reload",
+        "          Disables the injected live reload script for HTML export. The HTML",
+        "          that is written to disk isn't affected either way",
+        "      --no-reload",
+        "          Disables the injected live reload script for HTML export. The HTML",
+        "          that is written to disk isn't affected either way",
+        ""
+      ]
+    },
+    {
+      "name": "port",
+      "parser_name": "port",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "The port where HTML is served",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "The port where HTML is served",
+        "variable": "PORT",
+        "dynamic": [
+          "validate"
+        ]
+      },
+      "aliases": [
+        "--port"
+      ],
+      "help_lines": [
+        "      --port <PORT>",
+        "          The port where HTML is served",
+        "      --port <PORT>",
+        "          The port where HTML is served.",
+        "          ",
+        "          Defaults to the first free port in the range 3000-3005.",
+        ""
+      ]
+    },
+    {
+      "name": "cert",
+      "parser_name": "cert",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Path to a custom CA certificate to use when making network requests",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Path to a custom CA certificate to use when making network requests",
+        "variable": "CERT",
+        "environment": "TYPST_CERT",
+        "dynamic": []
+      },
+      "aliases": [
+        "--cert"
+      ],
+      "help_lines": [
+        "      --cert <CERT>    Path to a custom CA certificate to use when making",
+        "                       network requests [env: TYPST_CERT=]",
+        "      --cert <CERT>    Path to a custom CA certificate to use when making",
+        "                       network requests [env: TYPST_CERT=]"
+      ]
+    },
+    {
+      "name": "field",
+      "parser_name": "field",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Extracts just one field from all retrieved elements",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "Extracts just one field from all retrieved elements",
+        "variable": "FIELD",
+        "dynamic": []
+      },
+      "aliases": [
+        "--field"
+      ],
+      "help_lines": [
+        "      --field <FIELD>",
+        "          Extracts just one field from all retrieved elements",
+        "      --field <FIELD>",
+        "          Extracts just one field from all retrieved elements",
+        ""
+      ]
+    },
+    {
+      "name": "one",
+      "parser_name": "one",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Expects and retrieves exactly one element",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Expects and retrieves exactly one element",
+        "dynamic": []
+      },
+      "aliases": [
+        "--one"
+      ],
+      "help_lines": [
+        "      --one",
+        "          Expects and retrieves exactly one element",
+        "      --one",
+        "          Expects and retrieves exactly one element",
+        ""
+      ]
+    },
+    {
+      "name": "format-query",
+      "parser_name": "format",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "The format to serialize in [default: json]",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "json",
+          "yaml"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "The format to serialize in [default: json]",
+        "variable": "FORMAT",
+        "dynamic": []
+      },
+      "aliases": [
+        "--format"
+      ],
+      "help_lines": [
+        "      --format <FORMAT>",
+        "          The format to serialize in [default: json] [possible values: json,",
+        "          yaml]",
+        "      --format <FORMAT>",
+        "          The format to serialize in",
+        "          ",
+        "          [default: json]",
+        "          [possible values: json, yaml]",
+        ""
+      ]
+    },
+    {
+      "name": "pretty-query",
+      "parser_name": "pretty",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Whether to pretty-print the serialized output",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Whether to pretty-print the serialized output",
+        "dynamic": []
+      },
+      "aliases": [
+        "--pretty"
+      ],
+      "help_lines": [
+        "      --pretty",
+        "          Whether to pretty-print the serialized output",
+        "      --pretty",
+        "          Whether to pretty-print the serialized output.",
+        "          ",
+        "          Only applies to JSON format.",
+        ""
+      ]
+    },
+    {
+      "name": "target",
+      "parser_name": "target",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "The target to compile for [default: paged]",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "paged",
+          "html",
+          "bundle"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "The target to compile for [default: paged]",
+        "variable": "TARGET",
+        "dynamic": []
+      },
+      "aliases": [
+        "--target"
+      ],
+      "help_lines": [
+        "      --target <TARGET>",
+        "          The target to compile for [default: paged] [possible values: paged,",
+        "          html, bundle]",
+        "      --target <TARGET>",
+        "          The target to compile for",
+        "",
+        "          Possible values:"
+      ],
+      "default_value": "paged",
+      "default_binding": {
+        "name": "DEFAULT_TARGET",
+        "type_": "Target",
+        "variant": "Paged"
+      }
+    },
+    {
+      "name": "in",
+      "parser_name": "in",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "A file in whose context to evaluate the code. Use `-` to read input from stdin",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Pass",
+        "help_text": "A file in whose context to evaluate the code. Use `-` to read input from stdin",
+        "variable": "IN",
+        "dynamic": [
+          "validate"
+        ]
+      },
+      "aliases": [
+        "--in"
+      ],
+      "help_lines": [
+        "      --in <IN>",
+        "          A file in whose context to evaluate the code. Can be used to",
+        "          introspect the document. Use `-` to read input from stdin",
+        "      --in <IN>",
+        "          A file in whose context to evaluate the code. Can be used to",
+        "          introspect the document. Use `-` to read input from stdin",
+        ""
+      ]
+    },
+    {
+      "name": "target-eval",
+      "parser_name": "target",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "The target to compile for [default: paged]",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "paged",
+          "html",
+          "bundle"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "The target to compile for [default: paged]",
+        "variable": "TARGET",
+        "dynamic": []
+      },
+      "aliases": [
+        "--target"
+      ],
+      "help_lines": [
+        "      --target <TARGET>",
+        "          The target to compile for [default: paged] [possible values: paged,",
+        "          html, bundle]",
+        "      --target <TARGET>",
+        "          The target to compile for",
+        "",
+        "          Possible values:"
+      ]
+    },
+    {
+      "name": "format-eval",
+      "parser_name": "format",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "The format to serialize in [default: json]",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "json",
+          "yaml",
+          "raw"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "The format to serialize in [default: json]",
+        "variable": "FORMAT",
+        "dynamic": []
+      },
+      "aliases": [
+        "--format"
+      ],
+      "help_lines": [
+        "      --format <FORMAT>",
+        "          The format to serialize in [default: json] [possible values: json,",
+        "          yaml, raw]",
+        "      --format <FORMAT>",
+        "          The format to serialize in",
+        "",
+        "          Possible values:"
+      ]
+    },
+    {
+      "name": "pretty-eval",
+      "parser_name": "pretty",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Whether to pretty-print the serialized output",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Whether to pretty-print the serialized output",
+        "dynamic": []
+      },
+      "aliases": [
+        "--pretty"
+      ],
+      "help_lines": [
+        "      --pretty",
+        "          Whether to pretty-print the serialized output",
+        "      --pretty",
+        "          Whether to pretty-print the serialized output.",
+        "          ",
+        "          Only applies to JSON format.",
+        ""
+      ]
+    },
+    {
+      "name": "variants",
+      "parser_name": "variants",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Also lists style variants of each font family",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Also lists style variants of each font family",
+        "dynamic": []
+      },
+      "aliases": [
+        "--variants"
+      ],
+      "help_lines": [
+        "      --variants               Also lists style variants of each font family",
+        "      --variants",
+        "          Also lists style variants of each font family",
+        ""
+      ]
+    },
+    {
+      "name": "force",
+      "parser_name": "force",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Forces a downgrade to an older version",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Forces a downgrade to an older version",
+        "dynamic": []
+      },
+      "aliases": [
+        "--force"
+      ],
+      "help_lines": [
+        "      --force               Forces a downgrade to an older version (required for",
+        "                            downgrading)",
+        "      --force               Forces a downgrade to an older version (required for",
+        "                            downgrading)"
+      ]
+    },
+    {
+      "name": "revert",
+      "parser_name": "revert",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Reverts to the version from before the last update",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Reverts to the version from before the last update",
+        "dynamic": []
+      },
+      "aliases": [
+        "--revert"
+      ],
+      "help_lines": [
+        "      --revert              Reverts to the version from before the last update",
+        "                            (only possible if `typst update` has previously ran)",
+        "      --revert              Reverts to the version from before the last update",
+        "                            (only possible if `typst update` has previously ran)"
+      ]
+    },
+    {
+      "name": "backup-path",
+      "parser_name": "backup-path",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Custom path to the backup file",
+      "typst": {
+        "builder": "opt",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Custom path to the backup file",
+        "variable": "FILE",
+        "environment": "TYPST_UPDATE_BACKUP_PATH",
+        "dynamic": []
+      },
+      "aliases": [
+        "--backup-path"
+      ],
+      "help_lines": [
+        "      --backup-path <FILE>  Custom path to the backup file created on update and",
+        "                            used by `--revert`, defaults to system-dependent",
+        "                            location [env: TYPST_UPDATE_BACKUP_PATH=]",
+        "      --backup-path <FILE>  Custom path to the backup file created on update and",
+        "                            used by `--revert`, defaults to system-dependent",
+        "                            location [env: TYPST_UPDATE_BACKUP_PATH=]"
+      ]
+    },
+    {
+      "name": "format-info",
+      "parser_name": "format",
+      "value": "required",
+      "repeatable": false,
+      "allow_attached": true,
+      "short": "f",
+      "description": "The format to serialize in, if it should be machine-readable",
+      "typst": {
+        "builder": "opt",
+        "choices": [
+          "json",
+          "yaml"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "The format to serialize in, if it should be machine-readable",
+        "variable": "FORMAT",
+        "dynamic": []
+      },
+      "aliases": [
+        "--format",
+        "-f"
+      ],
+      "help_lines": [
+        "  -f, --format <FORMAT>  The format to serialize in, if it should be",
+        "                         machine-readable [possible values: json, yaml]",
+        "  -f, --format <FORMAT>",
+        "          The format to serialize in, if it should be machine-readable.",
+        "          ",
+        "          If no format is passed the output is displayed human-readable. Note",
+        "          that human-readable format truncates the build commit hash value.",
+        "          ",
+        "          [possible values: json, yaml]",
+        ""
+      ]
+    },
+    {
+      "name": "pretty-info",
+      "parser_name": "pretty",
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": true,
+      "description": "Whether to pretty-print the serialized output",
+      "typst": {
+        "builder": "flag",
+        "choices": [],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Whether to pretty-print the serialized output",
+        "dynamic": []
+      },
+      "aliases": [
+        "--pretty"
+      ],
+      "help_lines": [
+        "      --pretty           Whether to pretty-print the serialized output",
+        "      --pretty",
+        "          Whether to pretty-print the serialized output.",
+        "          ",
+        "          Only applies to JSON format.",
+        ""
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "color",
+      "aliases": [
+        "--color"
+      ],
+      "value": "required",
+      "description": "Whether to use color. When set to `auto`, uses color if the terminal supports it [default: auto] [possible values: auto, always, never]",
+      "repeatable": false,
+      "allow_attached": true,
+      "default_value": "auto",
+      "default_binding": {
+        "name": "DEFAULT_COLOR",
+        "type_": "ColorChoice",
+        "variant": "Auto"
+      },
+      "typst": {
+        "builder": "opt",
+        "variable": "COLOR",
+        "choices": [
+          "auto",
+          "always",
+          "never"
+        ],
+        "hidden": false,
+        "empty": "Required",
+        "help_text": "Whether to use color. When set to `auto`, uses color if the terminal supports it [default: auto] [possible values: auto, always, never]",
+        "dynamic": []
+      },
+      "help_lines": [
+        "      --color <auto|always|never>  Diagnostic colors (auto is uncolored)",
+        "      --color <COLOR>  Whether to use color. When set to `auto`, uses color if",
+        "                       the terminal supports it [default: auto] [possible",
+        "                       values: auto, always, never]",
+        "      --color <COLOR>  Whether to use color. When set to `auto`, uses color if",
+        "                       the terminal supports it [default: auto] [possible",
+        "                       values: auto, always, never]"
+      ]
+    }
+  ],
+  "tables": [],
+  "help_variants": [
+    {
+      "command": "",
+      "long": false,
+      "text": "Typst 0.15.1 (e58a63af)\n\nUsage: typst [OPTIONS] <COMMAND>\n\nCommands:\n  compile      Compiles an input file into a supported output format [alias: c]\n  watch        Watches an input file and recompiles on changes [alias: w]\n  init         Initializes a new project from a template\n  eval         Evaluates a piece of Typst code, optionally in the context of a\n               document\n  fonts        Lists all discovered fonts in system and custom font paths\n  completions  Generates shell completion scripts\n  info         Displays debugging information about Typst\n  help         Print this message or the help of the given subcommand(s)\n\nOptions:\n{{help:color:1}}\n{{help:color:2}}\n{{help:color:3}}\n{{help:cert:0}}\n{{help:cert:1}}\n  -h, --help           Print help\n  -V, --version        Print version\n\nResources:\n  Tutorial:                 https://typst.app/docs/tutorial/\n  Reference documentation:  https://typst.app/docs/reference/\n  Templates & Packages:     https://typst.app/universe/\n  Forum for questions:      https://forum.typst.app/"
+    },
+    {
+      "command": "",
+      "long": true,
+      "text": "Typst 0.15.1 (e58a63af)\n\nUsage: typst [OPTIONS] <COMMAND>\n\nCommands:\n  compile      Compiles an input file into a supported output format [alias: c]\n  watch        Watches an input file and recompiles on changes [alias: w]\n  init         Initializes a new project from a template\n  eval         Evaluates a piece of Typst code, optionally in the context of a\n               document\n  fonts        Lists all discovered fonts in system and custom font paths\n  completions  Generates shell completion scripts\n  info         Displays debugging information about Typst\n  help         Print this message or the help of the given subcommand(s)\n\nOptions:\n{{help:color:4}}\n{{help:color:5}}\n{{help:color:6}}\n{{help:cert:2}}\n{{help:cert:3}}\n  -h, --help           Print help\n  -V, --version        Print version\n\nResources:\n  Tutorial:                 https://typst.app/docs/tutorial/\n  Reference documentation:  https://typst.app/docs/reference/\n  Templates & Packages:     https://typst.app/universe/\n  Forum for questions:      https://forum.typst.app/"
+    },
+    {
+      "command": "compile",
+      "long": false,
+      "text": "Compiles an input file into a supported output format\n\nUsage: typst compile [OPTIONS] <INPUT> [OUTPUT]\n\nArguments:\n  <INPUT>   Path to input Typst file. Use `-` to read input from stdin\n  [OUTPUT]  Path to output file (PDF, PNG, SVG, or HTML). Use `-` to write\n            output to stdout\n\nOptions:\n{{help:format-compile:0}}\n{{help:format-compile:1}}\n{{help:format-compile:2}}\n{{help:root:0}}\n{{help:root:1}}\n{{help:input:0}}\n{{help:input:1}}\n{{help:font-path:0}}\n{{help:font-path:1}}\n{{help:font-path:2}}\n{{help:ignore-system-fonts:0}}\n{{help:ignore-system-fonts:1}}\n{{help:ignore-system-fonts:2}}\n{{help:ignore-embedded-fonts:0}}\n{{help:ignore-embedded-fonts:1}}\n{{help:ignore-embedded-fonts:2}}\n{{help:package-path:0}}\n{{help:package-path:1}}\n{{help:package-path:2}}\n{{help:package-cache-path:0}}\n{{help:package-cache-path:1}}\n{{help:package-cache-path:2}}\n{{help:creation-timestamp:0}}\n{{help:creation-timestamp:1}}\n{{help:creation-timestamp:2}}\n      --pretty[=<PRETTY>]\n          Whether to pretty-print produced output [possible values: true, false]\n{{help:pages:0}}\n{{help:pages:1}}\n{{help:pdf-standard:0}}\n{{help:pdf-standard:1}}\n{{help:pdf-standard:2}}\n{{help:pdf-standard:3}}\n      --pdf-tagged[=<PDF_TAGGED>]\n          Enables or disables PDF tagging [possible values: true, false]\n{{help:ppi:0}}\n{{help:ppi:1}}\n{{help:deps:0}}\n{{help:deps:1}}\n{{help:deps:2}}\n{{help:deps-format:0}}\n{{help:deps-format:1}}\n{{help:deps-format:2}}\n{{help:jobs:0}}\n{{help:jobs:1}}\n{{help:jobs:2}}\n{{help:features:0}}\n{{help:features:1}}\n{{help:features:2}}\n{{help:features:3}}\n{{help:diagnostic-format:0}}\n{{help:diagnostic-format:1}}\n{{help:diagnostic-format:2}}\n      --open[=<VIEWER>]\n          Opens the output file with the default viewer or a specific program\n          after compilation. Ignored if output is stdout\n{{help:timings:0}}\n{{help:timings:1}}\n{{help:timings:2}}\n  -h, --help\n          Print help (see more with '--help')"
+    },
+    {
+      "command": "compile",
+      "long": true,
+      "text": "Compiles an input file into a supported output format\n\nUsage: typst compile [OPTIONS] <INPUT> [OUTPUT]\n\nArguments:\n  <INPUT>\n          Path to input Typst file. Use `-` to read input from stdin\n\n  [OUTPUT]\n          Path to output file (PDF, PNG, SVG, or HTML). Use `-` to write output\n          to stdout.\n          \n          For output formats emitting one file per page (PNG & SVG), a page\n          number template must be present if the source document renders to\n          multiple pages. Use `{p}` for page numbers, `{0p}` for zero padded\n          page numbers and `{t}` for page count. For example,\n          `page-{0p}-of-{t}.png` creates `page-01-of-10.png`,\n          `page-02-of-10.png`, and so on.\n\nOptions:\n{{help:format-compile:3}}\n{{help:format-compile:4}}\n{{help:format-compile:5}}\n{{help:format-compile:6}}\n{{help:format-compile:7}}\n{{help:root:2}}\n{{help:root:3}}\n{{help:root:4}}\n{{help:root:5}}\n{{help:root:6}}\n{{help:input:2}}\n{{help:input:3}}\n{{help:input:4}}\n{{help:font-path:3}}\n{{help:font-path:4}}\n{{help:font-path:5}}\n{{help:font-path:6}}\n{{help:font-path:7}}\n{{help:font-path:8}}\n{{help:font-path:9}}\n{{help:font-path:10}}\n{{help:ignore-system-fonts:3}}\n{{help:ignore-system-fonts:4}}\n{{help:ignore-system-fonts:5}}\n{{help:ignore-system-fonts:6}}\n{{help:ignore-system-fonts:7}}\n{{help:ignore-system-fonts:8}}\n{{help:ignore-embedded-fonts:3}}\n{{help:ignore-embedded-fonts:4}}\n{{help:ignore-embedded-fonts:5}}\n{{help:ignore-embedded-fonts:6}}\n{{help:ignore-embedded-fonts:7}}\n{{help:package-path:3}}\n{{help:package-path:4}}\n{{help:package-path:5}}\n{{help:package-path:6}}\n{{help:package-path:7}}\n{{help:package-cache-path:3}}\n{{help:package-cache-path:4}}\n{{help:package-cache-path:5}}\n{{help:package-cache-path:6}}\n{{help:package-cache-path:7}}\n{{help:creation-timestamp:3}}\n{{help:creation-timestamp:4}}\n{{help:creation-timestamp:5}}\n{{help:creation-timestamp:6}}\n{{help:creation-timestamp:7}}\n{{help:creation-timestamp:8}}\n{{help:creation-timestamp:9}}\n{{help:creation-timestamp:10}}\n      --pretty[=<PRETTY>]\n          Whether to pretty-print produced output.\n          \n          This formats the output in a more human-readable, but less\n          space-efficient way. Affects HTML, SVG, and PDF export, but not PNG\n          export.\n          \n          [possible values: true, false]\n\n{{help:pages:2}}\n{{help:pages:3}}\n{{help:pages:4}}\n{{help:pages:5}}\n{{help:pages:6}}\n{{help:pages:7}}\n{{help:pages:8}}\n{{help:pages:9}}\n{{help:pages:10}}\n{{help:pages:11}}\n{{help:pages:12}}\n{{help:pages:13}}\n{{help:pdf-standard:4}}\n{{help:pdf-standard:5}}\n{{help:pdf-standard:6}}\n{{help:pdf-standard:7}}\n{{help:pdf-standard:8}}\n          - 1.4:  PDF 1.4\n          - 1.5:  PDF 1.5\n          - 1.6:  PDF 1.6\n          - 1.7:  PDF 1.7\n          - 2.0:  PDF 2.0\n          - a-1b: PDF/A-1b\n          - a-1a: PDF/A-1a\n          - a-2b: PDF/A-2b\n          - a-2u: PDF/A-2u\n          - a-2a: PDF/A-2a\n          - a-3b: PDF/A-3b\n          - a-3u: PDF/A-3u\n          - a-3a: PDF/A-3a\n          - a-4:  PDF/A-4\n          - a-4f: PDF/A-4f\n          - a-4e: PDF/A-4e\n          - ua-1: PDF/UA-1\n\n      --pdf-tagged[=<PDF_TAGGED>]\n          Enables or disables PDF tagging.\n          \n          By default, even when not producing a `PDF/UA-1` document, a tagged\n          PDF document is written to provide a baseline of accessibility. In\n          some circumstances (for example when trying to reduce the size of a\n          document) it can be desirable to disable PDF tags.\n          \n          [possible values: true, false]\n\n{{help:ppi:2}}\n{{help:ppi:3}}\n{{help:ppi:4}}\n{{help:ppi:5}}\n{{help:ppi:6}}\n{{help:deps:3}}\n{{help:deps:4}}\n{{help:deps:5}}\n{{help:deps:6}}\n{{help:deps-format:3}}\n{{help:deps-format:4}}\n{{help:deps-format:5}}\n{{help:deps-format:6}}\n          - json: Encodes as JSON, failing for non-Unicode paths\n          - zero: Separates paths with NULL bytes and can express all paths\n          - make: Emits in Make format, omitting inexpressible paths\n          \n          [default: json]\n\n{{help:jobs:3}}\n{{help:jobs:4}}\n{{help:jobs:5}}\n{{help:jobs:6}}\n{{help:features:4}}\n{{help:features:5}}\n{{help:features:6}}\n{{help:features:7}}\n{{help:features:8}}\n{{help:features:9}}\n{{help:features:10}}\n{{help:diagnostic-format:3}}\n{{help:diagnostic-format:4}}\n{{help:diagnostic-format:5}}\n{{help:diagnostic-format:6}}\n{{help:diagnostic-format:7}}\n{{help:diagnostic-format:8}}\n{{help:diagnostic-format:9}}\n      --open[=<VIEWER>]\n          Opens the output file with the default viewer or a specific program\n          after compilation. Ignored if output is stdout.\n          \n          When passing a specific program, the name must be attached with an\n          equals sign (`--open=VIEWER`).\n\n{{help:timings:3}}\n{{help:timings:4}}\n{{help:timings:5}}\n{{help:timings:6}}\n{{help:timings:7}}\n{{help:timings:8}}\n{{help:timings:9}}\n{{help:timings:10}}\n  -h, --help\n          Print help (see a summary with '-h')"
+    },
+    {
+      "command": "watch",
+      "long": false,
+      "text": "Watches an input file and recompiles on changes\n\nUsage: typst watch [OPTIONS] <INPUT> [OUTPUT]\n\nArguments:\n  <INPUT>   Path to input Typst file. Use `-` to read input from stdin\n  [OUTPUT]  Path to output file (PDF, PNG, SVG, or HTML). Use `-` to write\n            output to stdout\n\nOptions:\n{{help:format-compile:8}}\n{{help:format-compile:9}}\n{{help:format-compile:10}}\n{{help:root:7}}\n{{help:root:8}}\n{{help:input:5}}\n{{help:input:6}}\n{{help:font-path:11}}\n{{help:font-path:12}}\n{{help:font-path:13}}\n{{help:ignore-system-fonts:9}}\n{{help:ignore-system-fonts:10}}\n{{help:ignore-system-fonts:11}}\n{{help:ignore-embedded-fonts:8}}\n{{help:ignore-embedded-fonts:9}}\n{{help:ignore-embedded-fonts:10}}\n{{help:package-path:8}}\n{{help:package-path:9}}\n{{help:package-path:10}}\n{{help:package-cache-path:8}}\n{{help:package-cache-path:9}}\n{{help:package-cache-path:10}}\n{{help:creation-timestamp:11}}\n{{help:creation-timestamp:12}}\n{{help:creation-timestamp:13}}\n      --pretty[=<PRETTY>]\n          Whether to pretty-print produced output [possible values: true, false]\n{{help:pages:14}}\n{{help:pages:15}}\n{{help:pdf-standard:9}}\n{{help:pdf-standard:10}}\n{{help:pdf-standard:11}}\n{{help:pdf-standard:12}}\n      --pdf-tagged[=<PDF_TAGGED>]\n          Enables or disables PDF tagging [possible values: true, false]\n{{help:ppi:7}}\n{{help:ppi:8}}\n{{help:deps:7}}\n{{help:deps:8}}\n{{help:deps:9}}\n{{help:deps-format:7}}\n{{help:deps-format:8}}\n{{help:deps-format:9}}\n{{help:jobs:7}}\n{{help:jobs:8}}\n{{help:jobs:9}}\n{{help:features:11}}\n{{help:features:12}}\n{{help:features:13}}\n{{help:features:14}}\n{{help:diagnostic-format:10}}\n{{help:diagnostic-format:11}}\n{{help:diagnostic-format:12}}\n      --open[=<VIEWER>]\n          Opens the output file with the default viewer or a specific program\n          after compilation. Ignored if output is stdout\n{{help:timings:11}}\n{{help:timings:12}}\n{{help:timings:13}}\n{{help:no-fullscreen:0}}\n{{help:no-fullscreen:1}}\n{{help:no-serve:0}}\n{{help:no-serve:1}}\n{{help:no-reload:0}}\n{{help:no-reload:1}}\n{{help:no-reload:2}}\n{{help:port:0}}\n{{help:port:1}}\n  -h, --help\n          Print help (see more with '--help')"
+    },
+    {
+      "command": "watch",
+      "long": true,
+      "text": "Watches an input file and recompiles on changes\n\nUsage: typst watch [OPTIONS] <INPUT> [OUTPUT]\n\nArguments:\n  <INPUT>\n          Path to input Typst file. Use `-` to read input from stdin\n\n  [OUTPUT]\n          Path to output file (PDF, PNG, SVG, or HTML). Use `-` to write output\n          to stdout.\n          \n          For output formats emitting one file per page (PNG & SVG), a page\n          number template must be present if the source document renders to\n          multiple pages. Use `{p}` for page numbers, `{0p}` for zero padded\n          page numbers and `{t}` for page count. For example,\n          `page-{0p}-of-{t}.png` creates `page-01-of-10.png`,\n          `page-02-of-10.png`, and so on.\n\nOptions:\n{{help:format-compile:11}}\n{{help:format-compile:12}}\n{{help:format-compile:13}}\n{{help:format-compile:14}}\n{{help:format-compile:15}}\n{{help:root:9}}\n{{help:root:10}}\n{{help:root:11}}\n{{help:root:12}}\n{{help:root:13}}\n{{help:input:7}}\n{{help:input:8}}\n{{help:input:9}}\n{{help:font-path:14}}\n{{help:font-path:15}}\n{{help:font-path:16}}\n{{help:font-path:17}}\n{{help:font-path:18}}\n{{help:font-path:19}}\n{{help:font-path:20}}\n{{help:font-path:21}}\n{{help:ignore-system-fonts:12}}\n{{help:ignore-system-fonts:13}}\n{{help:ignore-system-fonts:14}}\n{{help:ignore-system-fonts:15}}\n{{help:ignore-system-fonts:16}}\n{{help:ignore-system-fonts:17}}\n{{help:ignore-embedded-fonts:11}}\n{{help:ignore-embedded-fonts:12}}\n{{help:ignore-embedded-fonts:13}}\n{{help:ignore-embedded-fonts:14}}\n{{help:ignore-embedded-fonts:15}}\n{{help:package-path:11}}\n{{help:package-path:12}}\n{{help:package-path:13}}\n{{help:package-path:14}}\n{{help:package-path:15}}\n{{help:package-cache-path:11}}\n{{help:package-cache-path:12}}\n{{help:package-cache-path:13}}\n{{help:package-cache-path:14}}\n{{help:package-cache-path:15}}\n{{help:creation-timestamp:14}}\n{{help:creation-timestamp:15}}\n{{help:creation-timestamp:16}}\n{{help:creation-timestamp:17}}\n{{help:creation-timestamp:18}}\n{{help:creation-timestamp:19}}\n{{help:creation-timestamp:20}}\n{{help:creation-timestamp:21}}\n      --pretty[=<PRETTY>]\n          Whether to pretty-print produced output.\n          \n          This formats the output in a more human-readable, but less\n          space-efficient way. Affects HTML, SVG, and PDF export, but not PNG\n          export.\n          \n          [possible values: true, false]\n\n{{help:pages:16}}\n{{help:pages:17}}\n{{help:pages:18}}\n{{help:pages:19}}\n{{help:pages:20}}\n{{help:pages:21}}\n{{help:pages:22}}\n{{help:pages:23}}\n{{help:pages:24}}\n{{help:pages:25}}\n{{help:pages:26}}\n{{help:pages:27}}\n{{help:pdf-standard:13}}\n{{help:pdf-standard:14}}\n{{help:pdf-standard:15}}\n{{help:pdf-standard:16}}\n{{help:pdf-standard:17}}\n          - 1.4:  PDF 1.4\n          - 1.5:  PDF 1.5\n          - 1.6:  PDF 1.6\n          - 1.7:  PDF 1.7\n          - 2.0:  PDF 2.0\n          - a-1b: PDF/A-1b\n          - a-1a: PDF/A-1a\n          - a-2b: PDF/A-2b\n          - a-2u: PDF/A-2u\n          - a-2a: PDF/A-2a\n          - a-3b: PDF/A-3b\n          - a-3u: PDF/A-3u\n          - a-3a: PDF/A-3a\n          - a-4:  PDF/A-4\n          - a-4f: PDF/A-4f\n          - a-4e: PDF/A-4e\n          - ua-1: PDF/UA-1\n\n      --pdf-tagged[=<PDF_TAGGED>]\n          Enables or disables PDF tagging.\n          \n          By default, even when not producing a `PDF/UA-1` document, a tagged\n          PDF document is written to provide a baseline of accessibility. In\n          some circumstances (for example when trying to reduce the size of a\n          document) it can be desirable to disable PDF tags.\n          \n          [possible values: true, false]\n\n{{help:ppi:9}}\n{{help:ppi:10}}\n{{help:ppi:11}}\n{{help:ppi:12}}\n{{help:ppi:13}}\n{{help:deps:10}}\n{{help:deps:11}}\n{{help:deps:12}}\n{{help:deps:13}}\n{{help:deps-format:10}}\n{{help:deps-format:11}}\n{{help:deps-format:12}}\n{{help:deps-format:13}}\n          - json: Encodes as JSON, failing for non-Unicode paths\n          - zero: Separates paths with NULL bytes and can express all paths\n          - make: Emits in Make format, omitting inexpressible paths\n          \n          [default: json]\n\n{{help:jobs:10}}\n{{help:jobs:11}}\n{{help:jobs:12}}\n{{help:jobs:13}}\n{{help:features:15}}\n{{help:features:16}}\n{{help:features:17}}\n{{help:features:18}}\n{{help:features:19}}\n{{help:features:20}}\n{{help:features:21}}\n{{help:diagnostic-format:13}}\n{{help:diagnostic-format:14}}\n{{help:diagnostic-format:15}}\n{{help:diagnostic-format:16}}\n{{help:diagnostic-format:17}}\n{{help:diagnostic-format:18}}\n{{help:diagnostic-format:19}}\n      --open[=<VIEWER>]\n          Opens the output file with the default viewer or a specific program\n          after compilation. Ignored if output is stdout.\n          \n          When passing a specific program, the name must be attached with an\n          equals sign (`--open=VIEWER`).\n\n{{help:timings:14}}\n{{help:timings:15}}\n{{help:timings:16}}\n{{help:timings:17}}\n{{help:timings:18}}\n{{help:timings:19}}\n{{help:timings:20}}\n{{help:timings:21}}\n{{help:no-fullscreen:2}}\n{{help:no-fullscreen:3}}\n{{help:no-fullscreen:4}}\n{{help:no-fullscreen:5}}\n{{help:no-fullscreen:6}}\n{{help:no-fullscreen:7}}\n{{help:no-serve:2}}\n{{help:no-serve:3}}\n{{help:no-serve:4}}\n{{help:no-reload:3}}\n{{help:no-reload:4}}\n{{help:no-reload:5}}\n{{help:no-reload:6}}\n{{help:port:2}}\n{{help:port:3}}\n{{help:port:4}}\n{{help:port:5}}\n{{help:port:6}}\n  -h, --help\n          Print help (see a summary with '-h')"
+    },
+    {
+      "command": "init",
+      "long": false,
+      "text": "Initializes a new project from a template\n\nUsage: typst init [OPTIONS] <TEMPLATE> [DIR]\n\nArguments:\n  <TEMPLATE>  The template to use, e.g. `@preview/charged-ieee`\n  [DIR]       The project directory, defaults to the template's name\n\nOptions:\n{{help:package-path:16}}\n{{help:package-path:17}}\n{{help:package-path:18}}\n{{help:package-cache-path:16}}\n{{help:package-cache-path:17}}\n{{help:package-cache-path:18}}\n  -h, --help\n          Print help (see more with '--help')"
+    },
+    {
+      "command": "init",
+      "long": true,
+      "text": "Initializes a new project from a template\n\nUsage: typst init [OPTIONS] <TEMPLATE> [DIR]\n\nArguments:\n  <TEMPLATE>\n          The template to use, e.g. `@preview/charged-ieee`.\n          \n          You can specify the version by appending e.g. `:0.1.0`. If no version\n          is specified, Typst will default to the latest version.\n          \n          Supports both local and published templates.\n\n  [DIR]\n          The project directory, defaults to the template's name\n\nOptions:\n{{help:package-path:19}}\n{{help:package-path:20}}\n{{help:package-path:21}}\n{{help:package-path:22}}\n{{help:package-path:23}}\n{{help:package-cache-path:19}}\n{{help:package-cache-path:20}}\n{{help:package-cache-path:21}}\n{{help:package-cache-path:22}}\n{{help:package-cache-path:23}}\n  -h, --help\n          Print help (see a summary with '-h')"
+    },
+    {
+      "command": "query",
+      "long": false,
+      "text": "Processes an input file to extract provided metadata (deprecated, use `eval`\ninstead)\n\nUsage: typst query [OPTIONS] <INPUT> <SELECTOR>\n\nArguments:\n  <INPUT>     Path to input Typst file. Use `-` to read input from stdin\n  <SELECTOR>  Defines which elements to retrieve\n\nOptions:\n{{help:field:0}}\n{{help:field:1}}\n{{help:one:0}}\n{{help:one:1}}\n{{help:format-query:0}}\n{{help:format-query:1}}\n{{help:format-query:2}}\n{{help:pretty-query:0}}\n{{help:pretty-query:1}}\n{{help:target:0}}\n{{help:target:1}}\n{{help:target:2}}\n{{help:root:14}}\n{{help:root:15}}\n{{help:input:10}}\n{{help:input:11}}\n{{help:font-path:22}}\n{{help:font-path:23}}\n{{help:font-path:24}}\n{{help:ignore-system-fonts:18}}\n{{help:ignore-system-fonts:19}}\n{{help:ignore-system-fonts:20}}\n{{help:ignore-embedded-fonts:16}}\n{{help:ignore-embedded-fonts:17}}\n{{help:ignore-embedded-fonts:18}}\n{{help:package-path:24}}\n{{help:package-path:25}}\n{{help:package-path:26}}\n{{help:package-cache-path:24}}\n{{help:package-cache-path:25}}\n{{help:package-cache-path:26}}\n{{help:creation-timestamp:22}}\n{{help:creation-timestamp:23}}\n{{help:creation-timestamp:24}}\n{{help:jobs:14}}\n{{help:jobs:15}}\n{{help:jobs:16}}\n{{help:features:22}}\n{{help:features:23}}\n{{help:features:24}}\n{{help:features:25}}\n{{help:diagnostic-format:20}}\n{{help:diagnostic-format:21}}\n{{help:diagnostic-format:22}}\n  -h, --help\n          Print help (see more with '--help')"
+    },
+    {
+      "command": "query",
+      "long": true,
+      "text": "Processes an input file to extract provided metadata (deprecated, use `eval`\ninstead)\n\nUsage: typst query [OPTIONS] <INPUT> <SELECTOR>\n\nArguments:\n  <INPUT>\n          Path to input Typst file. Use `-` to read input from stdin\n\n  <SELECTOR>\n          Defines which elements to retrieve\n\nOptions:\n{{help:field:2}}\n{{help:field:3}}\n{{help:field:4}}\n{{help:one:2}}\n{{help:one:3}}\n{{help:one:4}}\n{{help:format-query:3}}\n{{help:format-query:4}}\n{{help:format-query:5}}\n{{help:format-query:6}}\n{{help:format-query:7}}\n{{help:format-query:8}}\n{{help:pretty-query:2}}\n{{help:pretty-query:3}}\n{{help:pretty-query:4}}\n{{help:pretty-query:5}}\n{{help:pretty-query:6}}\n{{help:target:3}}\n{{help:target:4}}\n{{help:target:5}}\n{{help:target:6}}\n          - paged:  PDF and image formats\n          - html:   HTML\n          - bundle: Bundle\n          \n          [default: paged]\n\n{{help:root:16}}\n{{help:root:17}}\n{{help:root:18}}\n{{help:root:19}}\n{{help:root:20}}\n{{help:input:12}}\n{{help:input:13}}\n{{help:input:14}}\n{{help:font-path:25}}\n{{help:font-path:26}}\n{{help:font-path:27}}\n{{help:font-path:28}}\n{{help:font-path:29}}\n{{help:font-path:30}}\n{{help:font-path:31}}\n{{help:font-path:32}}\n{{help:ignore-system-fonts:21}}\n{{help:ignore-system-fonts:22}}\n{{help:ignore-system-fonts:23}}\n{{help:ignore-system-fonts:24}}\n{{help:ignore-system-fonts:25}}\n{{help:ignore-system-fonts:26}}\n{{help:ignore-embedded-fonts:19}}\n{{help:ignore-embedded-fonts:20}}\n{{help:ignore-embedded-fonts:21}}\n{{help:ignore-embedded-fonts:22}}\n{{help:ignore-embedded-fonts:23}}\n{{help:package-path:27}}\n{{help:package-path:28}}\n{{help:package-path:29}}\n{{help:package-path:30}}\n{{help:package-path:31}}\n{{help:package-cache-path:27}}\n{{help:package-cache-path:28}}\n{{help:package-cache-path:29}}\n{{help:package-cache-path:30}}\n{{help:package-cache-path:31}}\n{{help:creation-timestamp:25}}\n{{help:creation-timestamp:26}}\n{{help:creation-timestamp:27}}\n{{help:creation-timestamp:28}}\n{{help:creation-timestamp:29}}\n{{help:creation-timestamp:30}}\n{{help:creation-timestamp:31}}\n{{help:creation-timestamp:32}}\n{{help:jobs:17}}\n{{help:jobs:18}}\n{{help:jobs:19}}\n{{help:jobs:20}}\n{{help:features:26}}\n{{help:features:27}}\n{{help:features:28}}\n{{help:features:29}}\n{{help:features:30}}\n{{help:features:31}}\n{{help:features:32}}\n{{help:diagnostic-format:23}}\n{{help:diagnostic-format:24}}\n{{help:diagnostic-format:25}}\n{{help:diagnostic-format:26}}\n{{help:diagnostic-format:27}}\n{{help:diagnostic-format:28}}\n{{help:diagnostic-format:29}}\n  -h, --help\n          Print help (see a summary with '-h')"
+    },
+    {
+      "command": "eval",
+      "long": false,
+      "text": "Evaluates a piece of Typst code, optionally in the context of a document\n\nUsage: typst eval [OPTIONS] <EXPRESSION>\n\nArguments:\n  <EXPRESSION>  The piece of Typst code to evaluate\n\nOptions:\n{{help:in:0}}\n{{help:in:1}}\n{{help:in:2}}\n{{help:target-eval:0}}\n{{help:target-eval:1}}\n{{help:target-eval:2}}\n{{help:format-eval:0}}\n{{help:format-eval:1}}\n{{help:format-eval:2}}\n{{help:pretty-eval:0}}\n{{help:pretty-eval:1}}\n{{help:root:21}}\n{{help:root:22}}\n{{help:input:15}}\n{{help:input:16}}\n{{help:font-path:33}}\n{{help:font-path:34}}\n{{help:font-path:35}}\n{{help:ignore-system-fonts:27}}\n{{help:ignore-system-fonts:28}}\n{{help:ignore-system-fonts:29}}\n{{help:ignore-embedded-fonts:24}}\n{{help:ignore-embedded-fonts:25}}\n{{help:ignore-embedded-fonts:26}}\n{{help:package-path:32}}\n{{help:package-path:33}}\n{{help:package-path:34}}\n{{help:package-cache-path:32}}\n{{help:package-cache-path:33}}\n{{help:package-cache-path:34}}\n{{help:creation-timestamp:33}}\n{{help:creation-timestamp:34}}\n{{help:creation-timestamp:35}}\n{{help:jobs:21}}\n{{help:jobs:22}}\n{{help:jobs:23}}\n{{help:features:33}}\n{{help:features:34}}\n{{help:features:35}}\n{{help:features:36}}\n{{help:diagnostic-format:30}}\n{{help:diagnostic-format:31}}\n{{help:diagnostic-format:32}}\n  -h, --help\n          Print help (see more with '--help')"
+    },
+    {
+      "command": "eval",
+      "long": true,
+      "text": "Evaluates a piece of Typst code, optionally in the context of a document\n\nUsage: typst eval [OPTIONS] <EXPRESSION>\n\nArguments:\n  <EXPRESSION>\n          The piece of Typst code to evaluate\n\nOptions:\n{{help:in:3}}\n{{help:in:4}}\n{{help:in:5}}\n{{help:in:6}}\n{{help:target-eval:3}}\n{{help:target-eval:4}}\n{{help:target-eval:5}}\n{{help:target-eval:6}}\n          - paged:  PDF and image formats\n          - html:   HTML\n          - bundle: Bundle\n          \n          [default: paged]\n\n{{help:format-eval:3}}\n{{help:format-eval:4}}\n{{help:format-eval:5}}\n{{help:format-eval:6}}\n          - json\n          - yaml\n          - raw:  Prints the output without any additional formatting or\n            escaping (only supports strings and bytes)\n          \n          [default: json]\n\n{{help:pretty-eval:2}}\n{{help:pretty-eval:3}}\n{{help:pretty-eval:4}}\n{{help:pretty-eval:5}}\n{{help:pretty-eval:6}}\n{{help:root:23}}\n{{help:root:24}}\n{{help:root:25}}\n{{help:root:26}}\n{{help:root:27}}\n{{help:input:17}}\n{{help:input:18}}\n{{help:input:19}}\n{{help:font-path:36}}\n{{help:font-path:37}}\n{{help:font-path:38}}\n{{help:font-path:39}}\n{{help:font-path:40}}\n{{help:font-path:41}}\n{{help:font-path:42}}\n{{help:font-path:43}}\n{{help:ignore-system-fonts:30}}\n{{help:ignore-system-fonts:31}}\n{{help:ignore-system-fonts:32}}\n{{help:ignore-system-fonts:33}}\n{{help:ignore-system-fonts:34}}\n{{help:ignore-system-fonts:35}}\n{{help:ignore-embedded-fonts:27}}\n{{help:ignore-embedded-fonts:28}}\n{{help:ignore-embedded-fonts:29}}\n{{help:ignore-embedded-fonts:30}}\n{{help:ignore-embedded-fonts:31}}\n{{help:package-path:35}}\n{{help:package-path:36}}\n{{help:package-path:37}}\n{{help:package-path:38}}\n{{help:package-path:39}}\n{{help:package-cache-path:35}}\n{{help:package-cache-path:36}}\n{{help:package-cache-path:37}}\n{{help:package-cache-path:38}}\n{{help:package-cache-path:39}}\n{{help:creation-timestamp:36}}\n{{help:creation-timestamp:37}}\n{{help:creation-timestamp:38}}\n{{help:creation-timestamp:39}}\n{{help:creation-timestamp:40}}\n{{help:creation-timestamp:41}}\n{{help:creation-timestamp:42}}\n{{help:creation-timestamp:43}}\n{{help:jobs:24}}\n{{help:jobs:25}}\n{{help:jobs:26}}\n{{help:jobs:27}}\n{{help:features:37}}\n{{help:features:38}}\n{{help:features:39}}\n{{help:features:40}}\n{{help:features:41}}\n{{help:features:42}}\n{{help:features:43}}\n{{help:diagnostic-format:33}}\n{{help:diagnostic-format:34}}\n{{help:diagnostic-format:35}}\n{{help:diagnostic-format:36}}\n{{help:diagnostic-format:37}}\n{{help:diagnostic-format:38}}\n{{help:diagnostic-format:39}}\n  -h, --help\n          Print help (see a summary with '-h')"
+    },
+    {
+      "command": "fonts",
+      "long": false,
+      "text": "Lists all discovered fonts in system and custom font paths\n\nUsage: typst fonts [OPTIONS]\n\nOptions:\n{{help:font-path:44}}\n{{help:font-path:45}}\n{{help:ignore-system-fonts:36}}\n{{help:ignore-system-fonts:37}}\n{{help:ignore-system-fonts:38}}\n{{help:ignore-embedded-fonts:32}}\n{{help:ignore-embedded-fonts:33}}\n{{help:variants:0}}\n  -h, --help                   Print help (see more with '--help')"
+    },
+    {
+      "command": "fonts",
+      "long": true,
+      "text": "Lists all discovered fonts in system and custom font paths\n\nUsage: typst fonts [OPTIONS]\n\nOptions:\n{{help:font-path:46}}\n{{help:font-path:47}}\n{{help:font-path:48}}\n{{help:font-path:49}}\n{{help:font-path:50}}\n{{help:font-path:51}}\n{{help:font-path:52}}\n{{help:font-path:53}}\n{{help:ignore-system-fonts:39}}\n{{help:ignore-system-fonts:40}}\n{{help:ignore-system-fonts:41}}\n{{help:ignore-system-fonts:42}}\n{{help:ignore-system-fonts:43}}\n{{help:ignore-system-fonts:44}}\n{{help:ignore-embedded-fonts:34}}\n{{help:ignore-embedded-fonts:35}}\n{{help:ignore-embedded-fonts:36}}\n{{help:ignore-embedded-fonts:37}}\n{{help:ignore-embedded-fonts:38}}\n{{help:variants:1}}\n{{help:variants:2}}\n{{help:variants:3}}\n  -h, --help\n          Print help (see a summary with '-h')"
+    },
+    {
+      "command": "update",
+      "long": false,
+      "text": "Self update the Typst CLI\n\nUsage: typst update [OPTIONS] [VERSION]\n\nArguments:\n  [VERSION]  Which version to update to (defaults to latest)\n\nOptions:\n{{help:force:0}}\n{{help:force:1}}\n{{help:revert:0}}\n{{help:revert:1}}\n{{help:backup-path:0}}\n{{help:backup-path:1}}\n{{help:backup-path:2}}\n  -h, --help                Print help"
+    },
+    {
+      "command": "update",
+      "long": true,
+      "text": "Self update the Typst CLI\n\nUsage: typst update [OPTIONS] [VERSION]\n\nArguments:\n  [VERSION]  Which version to update to (defaults to latest)\n\nOptions:\n{{help:force:2}}\n{{help:force:3}}\n{{help:revert:2}}\n{{help:revert:3}}\n{{help:backup-path:3}}\n{{help:backup-path:4}}\n{{help:backup-path:5}}\n  -h, --help                Print help"
+    },
+    {
+      "command": "completions",
+      "long": false,
+      "text": "Generates shell completion scripts\n\nUsage: typst completions <SHELL>\n\nArguments:\n  <SHELL>  The shell to generate completions for [possible values: bash, elvish,\n           fish, nushell, powershell, zsh]\n\nOptions:\n  -h, --help  Print help"
+    },
+    {
+      "command": "completions",
+      "long": true,
+      "text": "Generates shell completion scripts\n\nUsage: typst completions <SHELL>\n\nArguments:\n  <SHELL>  The shell to generate completions for [possible values: bash, elvish,\n           fish, nushell, powershell, zsh]\n\nOptions:\n  -h, --help  Print help"
+    },
+    {
+      "command": "info",
+      "long": false,
+      "text": "Displays debugging information about Typst\n\nUsage: typst info [OPTIONS]\n\nOptions:\n{{help:format-info:0}}\n{{help:format-info:1}}\n{{help:pretty-info:0}}\n  -h, --help             Print help (see more with '--help')"
+    },
+    {
+      "command": "info",
+      "long": true,
+      "text": "Displays debugging information about Typst\n\nUsage: typst info [OPTIONS]\n\nOptions:\n{{help:format-info:2}}\n{{help:format-info:3}}\n{{help:format-info:4}}\n{{help:format-info:5}}\n{{help:format-info:6}}\n{{help:format-info:7}}\n{{help:format-info:8}}\n{{help:format-info:9}}\n{{help:pretty-info:1}}\n{{help:pretty-info:2}}\n{{help:pretty-info:3}}\n{{help:pretty-info:4}}\n{{help:pretty-info:5}}\n  -h, --help\n          Print help (see a summary with '-h')"
+    }
+  ]
+}

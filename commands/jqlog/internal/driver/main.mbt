@@ -20,23 +20,7 @@ priv enum CliParseResult {
 
 ///|
 fn help_message() -> String {
-  let message =
-    #|Usage: jqlog [options] <query> [input]
-    #|  -h, --help      display this help and exit
-    #|      --version   display version and exit
-    #|
-    #|Options:
-    #|  -f, --file <path>   Read input text from a file.
-    #|
-    #|Notes:
-    #|  - Input is treated as JSONL/NDJSON with possible non-JSON lines.
-    #|  - Non-JSON lines are skipped.
-    #|  - If [input] is omitted, stdin is used.
-    #|  - If [input] is provided without --file, it is treated as raw text.
-    #|
-    #|Examples:
-    #|  cat logs.ndjson | jqlog '.message'
-    #|  jqlog -f output.txt '.a'
+  let message = metadata_help().strip_suffix("\n").unwrap().to_owned()
   message + "\n"
 }
 
@@ -46,10 +30,10 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
   let mut index = 0
   while index < args.length() {
     let arg = args[index]
-    if arg == "-h" || arg == "--help" {
+    if metadata_option_matches("help", arg) {
       return Help
     }
-    if arg == "-f" || arg == "--file" {
+    if metadata_option_matches("file", arg) {
       if index + 1 >= args.length() {
         return Error("Missing path after --file")
       }
@@ -143,12 +127,12 @@ pub async fn run_main() -> Unit {
     Run(options) =>
       try {
         let input = read_input(options.input)
-        let query = parse_filter(options.query)
+        let query = @engine.compile(options.query)
         for line in input.split("\n") {
           let value = @json.parse(line.strip_suffix("\r").unwrap_or(line)) catch {
             _ => continue
           }
-          write_results(@ast.eval(query, value))
+          write_results(query.apply(value).iter())
         }
       } catch {
         err => {

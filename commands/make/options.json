@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "command": "make",
+  "help": "Usage: make [-B] [-k] [-n] [-s] [-j [N]] [-W FILE] [-C DIR] [-f FILE] [VARIABLE=VALUE] [TARGET...]\n{{help:help:0}}\n{{help:version:0}}\nSupports computed variables, named/default export and unexport, .EXPORT_ALL_VARIABLES, .SECONDEXPANSION and .SHELLSTATUS.\nMAKEFLAGS can inherit an existing POSIX FIFO jobserver; descriptor pipes and Windows semaphores are unavailable.\nWithout an inherited FIFO, recursive make runs one job per parent slot.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nShell captures preserve status and output before errors; ignored recipe errors continue.\nOn POSIX, every file-test operand ending in a slash must name a directory.\nMakefile and dependency paths retain filesystem traversal; -C resolves each requested directory.\n",
+  "catalog_options": [
+    "always-make",
+    "directory",
+    "file",
+    "jobs",
+    "keep-going",
+    "just-print",
+    "silent",
+    "what-if"
+  ],
+  "options": [
+    {
+      "name": "file",
+      "aliases": [
+        "-f",
+        "--file"
+      ],
+      "value": "required",
+      "description": "Select a makefile.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "C",
+      "aliases": [
+        "-C"
+      ],
+      "value": "required",
+      "description": "Change working directory.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "just-print",
+      "aliases": [
+        "-n",
+        "--just-print"
+      ],
+      "value": "none",
+      "description": "Print recipes; recursive and `+` recipes still execute.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "silent",
+      "aliases": [
+        "-s",
+        "--silent"
+      ],
+      "value": "none",
+      "description": "Suppress recipe echo.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "always-make",
+      "aliases": [
+        "-B",
+        "--always-make"
+      ],
+      "value": "none",
+      "description": "Force rebuilding.",
+      "short": "B",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "j",
+      "aliases": [
+        "-j",
+        "--jobs"
+      ],
+      "value": "optional",
+      "description": "Run up to N recipe chains; bare -j allows all ready targets.",
+      "short": "j",
+      "repeatable": true,
+      "allow_attached": false,
+      "default_value": "1",
+      "default_binding": {
+        "name": "DEFAULT_J",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "k",
+      "aliases": [
+        "-k",
+        "--keep-going"
+      ],
+      "value": "none",
+      "description": "Continue independent targets after failures.",
+      "short": "k",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "W",
+      "aliases": [
+        "-W",
+        "--what-if"
+      ],
+      "value": "required",
+      "description": "Treat FILE as newly modified.",
+      "short": "W",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help",
+        "-h"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [],
+  "adapter_match": true
+}

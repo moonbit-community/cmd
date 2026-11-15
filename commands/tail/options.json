@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "command": "tail",
+  "help": "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n{{help:zero-terminated:0}}\nStreamed last-N selection retains selected records, including an unfinished final record.\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "bytes",
+    "follow",
+    "lines",
+    "quiet",
+    "sleep-interval",
+    "verbose",
+    "zero-terminated"
+  ],
+  "options": [
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "Suppress / always print headers.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "Suppress / always print headers.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "follow",
+      "aliases": [
+        "-f",
+        "--follow"
+      ],
+      "value": "none",
+      "description": "Follow an open regular file.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "zero-terminated",
+      "aliases": [
+        "-z",
+        "--zero-terminated"
+      ],
+      "value": "none",
+      "description": "Use NUL-delimited records.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -z, --zero-terminated  use NUL as the record delimiter"
+      ]
+    },
+    {
+      "name": "lines",
+      "aliases": [
+        "-n",
+        "--lines"
+      ],
+      "value": "required",
+      "description": "Select records; +K starts at record K.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "10",
+      "default_binding": {
+        "name": "DEFAULT_LINES",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "bytes",
+      "aliases": [
+        "-c",
+        "--bytes"
+      ],
+      "value": "required",
+      "description": "Select bytes; +K starts at byte K.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "sleep-interval",
+      "aliases": [
+        "-s",
+        "--sleep-interval"
+      ],
+      "value": "required",
+      "description": "Set follow polling interval; default 1.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "1",
+      "default_binding": {
+        "name": "DEFAULT_SLEEP_INTERVAL",
+        "type_": "Int32",
+        "scale": 1000
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "quiet",
+        "verbose",
+        "follow",
+        "zero-terminated",
+        "lines",
+        "bytes",
+        "sleep-interval",
+        "help"
+      ]
+    }
+  ]
+}

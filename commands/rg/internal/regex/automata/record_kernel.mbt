@@ -40,7 +40,7 @@ fn WideBoolean::probe_exit(
     }
     return {
       offset: next,
-      accelerating: !observe_density || next - at >= boolean_sparse_exit_bytes,
+      accelerating: !observe_density || next - at >= BOOLEAN_SPARSE_EXIT_BYTES,
     }
   }
   { offset: at, accelerating: true, }

@@ -1,0 +1,152 @@
+{
+  "schema": 1,
+  "command": "cut",
+  "help": "Usage: cut (-b LIST | -c LIST | -f LIST [-d CHAR] [-s]) [--complement] [--output-delimiter=STRING] [-z] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "bytes",
+    "characters",
+    "complement",
+    "delimiter",
+    "fields",
+    "only-delimited",
+    "output-delimiter",
+    "zero-terminated"
+  ],
+  "options": [
+    {
+      "name": "only-delimited",
+      "aliases": [
+        "-s",
+        "--only-delimited"
+      ],
+      "value": "none",
+      "description": "Skip undelimited records in field mode.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "delimiter",
+      "aliases": [
+        "-d",
+        "--delimiter"
+      ],
+      "value": "required",
+      "description": "Set the field delimiter; empty means NUL.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "fields",
+      "aliases": [
+        "-f",
+        "--fields"
+      ],
+      "value": "required",
+      "description": "Select fields.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "bytes",
+      "aliases": [
+        "-b",
+        "--bytes"
+      ],
+      "value": "required",
+      "description": "Select bytes.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "characters",
+      "aliases": [
+        "-c",
+        "--characters"
+      ],
+      "value": "required",
+      "description": "Select characters under the C-byte profile.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "complement",
+      "aliases": [
+        "--complement"
+      ],
+      "value": "none",
+      "description": "Invert the selected positions.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "output-delimiter",
+      "aliases": [
+        "--output-delimiter"
+      ],
+      "value": "required",
+      "description": "Join selected fields/ranges; empty means NUL.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "zero-terminated",
+      "aliases": [
+        "-z",
+        "--zero-terminated"
+      ],
+      "value": "none",
+      "description": "Use NUL-delimited records.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "only-delimited",
+        "delimiter",
+        "fields",
+        "bytes",
+        "characters",
+        "complement",
+        "output-delimiter",
+        "zero-terminated",
+        "help"
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Command validation
 
-Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- COMMAND`.
+Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- COMMAND`.
 Keep the current PATH toolchain. CI installs MoonBit and its matching core through
 the official Unix/PowerShell installers in `.github/actions/setup-moonbit`, with
 bounded retries for installer and archive downloads. Setup does not require Nu or
@@ -8,42 +8,45 @@ GitHub release assets. The entry discovers the workspace and resolves
 its arguments from that root. Moon commands sharing a build directory run
 serially. Product acceptance targets Wasm; Native is only for test tools.
 
-Command policies and their private tests live together. The jq and jqlog adapters
-consume all 28 records in `fixtures/jq/adapter.json`, including the original
+Command policies and their private tests live together. Jq's shared filter
+adaptation and jqlog's public-engine consumer
+consume all 28 records in their module-owned `fixtures/adapter.json` copies, including the original
 3,000-member stable-order inputs and independent expected arrays. This fixture
 was extracted from the previous tests without evaluating either implementation.
 Readers require the exact count, unique nonempty IDs and valid records; missing
-files fail. Error propagation remains covered beside each adapter.
+files fail. Error propagation remains covered beside the engine and each command adapter.
 
 ## Commands
 
 | Command | Responsibility |
 | --- | --- |
-| `check` | Wasm products, Native tools and every standalone `.mbtx` script |
-| `prepare` | Build product Wasm and Native execution tools once |
+| `check` / `check inputs` | Complete type checking, or only standalone scripts and generated data |
+| `prepare` / `prepare published` | Build product Wasm and Native execution tools, or release-profile acceptance tools once |
 | `test packages` / `test tools` / `test all` | Wasm package tests and Native infrastructure regressions |
 | `format --check` | Packages and all standalone scripts |
-| `index check` / `index update` | Validate cases and bindings; check or update the derived candidate |
+| `metadata check` / `metadata update` | Verify or regenerate parser, help, README and catalog artifacts |
 | `list --command sort` / `validate` | Inspect or validate selection without product execution |
 | `functional` | Run applicable workspace assertions and verify complete results |
-| `architecture /absolute/fresh.json` | Validate package and strategy dependencies |
 | `oracle --image sha256:ID` | Prepare and verify the immutable Linux oracle |
 | `published` | Validate independent exact published coordinates and expectations |
 | `corpus`, `benchmark`, `protect` | Separate [performance protection](benchmark/PROTECTION.md) |
 | `resources`, `resource-profiles` | Separate manual [resource observations](resources/README.md) |
 
 Tools default to debug, products and package tests to release. Published tools
-use release. Standalone commands build their required tools. CI runs `prepare`
+use release. Standalone commands build their required tools. Development CI runs `prepare`
 first and sets `CMD_TEST_PREPARED=1` for later commands; missing artifacts fail.
 Choose a fresh absolute `CMD_TEST_REPORT_ROOT` for each execution. Linux correctness
-exports prepared Wasm and Native tools to the upstream job, bound to the commit,
-toolchain and complete artifact inventory. Diagnostic subsets
+exports prepared Wasm and Native tools before its test stages, bound to the commit,
+toolchain and complete artifact inventory. The upstream job consumes only the
+latest producer attempt's artifact within the same run and overlaps image preparation/comparison with
+correctness. Missing producer artifacts and failed, cancelled or incomplete jobs
+fail the final Linux gate. Diagnostic subsets
 do not qualify complete development or published acceptance.
 
 ## Ownership and assertions
 
 Package tests own parser tables, numeric boundaries and private state. Keep
-large original corpora in `fixtures/`, preserve their independent expected
+large original corpora in the owning package's `fixtures/`, preserve their independent expected
 values, and fail on missing files. Command scenarios own argument mapping,
 diagnostics and real file, network, stream and child-process effects. Do not
 expose product internals to relocate tests.
@@ -71,12 +74,13 @@ and timestamp formatting. These are compatibility checks, not timing evidence.
 
 | Location | Responsibility |
 | --- | --- |
-| `run.mbtx`, `tools/` | Public entry and internal MoonBit orchestration |
+| `../tools/run.mbtx`, `../tools/` | Development entry, generation and CI orchestration |
 | `harness/`, `harness/driver/` | Execution, observation, selection and reporting |
 | `harness/catalog/`, `cases/` | Current command declarations, identities and cases |
 | `scenarios/` | Concrete events and resource lifetimes |
-| `fixtures/` | Original corpora and immutable oracle inputs |
-| `release/` | Candidate generation and independent published expectations |
+| `fixtures/` | Integration/oracle inputs and independent historical corpus copies |
+| `release/` | Versionless release policy, candidate selection and frozen published expectations |
+| `../tools/release/` | Candidate generation and exact-coordinate acceptance launcher |
 | `benchmark/`, `resources/` | Manual timing and resource programs |
 
 Assertions execute directly. Registration checks inspect the case expectations
@@ -86,9 +90,11 @@ generated quality/coverage catalogs and assertion-source sealing are retired.
 Their historical content is preserved in Git at `aa65c57`. This does not retire
 original cases, corpus records, immutable oracle identity or performance baselines.
 
-`index check` validates current bindings and assertion routes before platform
-filtering, then checks the candidate. `index update` changes only the candidate
-after validation. Neither rewrites `release/latest.json` or `latest-cases.json`.
+The driver validates current bindings and assertion routes before platform
+filtering during execution. Generate a release candidate explicitly with
+[`tools/release`](../tools/README.md) when preparing a release; ordinary CI does
+not compare this derived version table. Generation never rewrites
+`release/latest.json` or `latest-cases.json`.
 Case aliases do not cause duplicate execution.
 The same rule covers network, filesystem metadata/umask, tee, mktemp and printf
 state events: current registrations select one scenario, and differential mode
@@ -163,8 +169,24 @@ The counters cover the runner's direct launch paths, not arbitrary descendants
 inside command oracles or the compiler. Three warm and one cold comparable runs
 are required before accepting the CI latency target.
 
-The oracle family remains `pinned-oracle-v1`, with reviewed profile version 2.
-It verifies image identity, tool inventory and source/distribution checksums.
+The oracle family remains `pinned-oracle-v1`, with reviewed profile version 3.
+Sealing and execution preflight verify the immutable image ID, complete tool
+inventory, source/distribution checksums, and the Dockerfile and inventory script
+bytes inside that exact image. Inventory stderr must be empty; a missing command
+in a shell pipeline cannot be accepted as a successful version check. The build
+also checks the Linux amd64 glibc long-double formatting profile used by the
+independent printf expectations.
+
+Run this reference environment with an x86_64 Linux kernel. The driver and Docker
+daemon need the same fixture paths and loopback network, plus the CI observation
+tools and permission to create the registered block-device fixture. Launch the
+driver with the same `0022` umask used by CI and ordinary Docker invocations;
+explicit umask scenarios retain their own selected masks. Rosetta
+binfmt execution and an outer container with separate temporary directories or
+network namespaces do not provide equivalent observations. Keep their failed
+reports; do not normalize diagnostics or replace frozen expectations to accept
+them.
+
 PSL rules and A-label aliases are checked against the pinned libpsl. Complete
 Unicode 15 inputs and IDNA generation remain checked by `check`; the independent
 normalization corpus retains all 19,074 records. Network corpora retain their

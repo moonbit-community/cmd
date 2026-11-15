@@ -1,0 +1,391 @@
+{
+  "schema": 1,
+  "command": "sort",
+  "help": "Usage: sort [-bcdfghinMruVz] [-s] [-m] [-o FILE] [-R|--sort=random] [--random-source=FILE] [-k KEY] [-t CHAR] [-c|-C] [-S SIZE] [-T DIR] [--batch-size=N] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\n\nLarge inputs use temporary disk runs and require filesystem write access.\n-S/--buffer-size selects an accounted byte budget (default units: KiB).\n-T/--temporary-directory may repeat; --batch-size uses at most 16 merge inputs.\n{{help:numeric-sort:0}}\nNonzero percentage buffer sizes require an unavailable physical-memory query.\nOption values and operands after -- remain literal during alias normalization.\n",
+  "catalog_options": [
+    "batch-size",
+    "buffer-size",
+    "check",
+    "check-quiet",
+    "dictionary-order",
+    "field-separator",
+    "general-numeric-sort",
+    "human-numeric-sort",
+    "ignore-case",
+    "ignore-leading-blanks",
+    "ignore-nonprinting",
+    "key",
+    "merge",
+    "month-sort",
+    "numeric-sort",
+    "output",
+    "random-sort",
+    "random-source",
+    "reverse",
+    "sort",
+    "stable",
+    "temporary-directory",
+    "unique",
+    "version-sort",
+    "zero-terminated"
+  ],
+  "options": [
+    {
+      "name": "reverse",
+      "aliases": [
+        "-r",
+        "--reverse"
+      ],
+      "value": "none",
+      "description": "Reverse / unique keys / stable key ties.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "numeric-sort",
+      "aliases": [
+        "-n",
+        "--numeric-sort"
+      ],
+      "value": "none",
+      "description": "Numeric / general numeric / human numeric / month / version order.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-n compares decimal prefixes exactly; -g uses general floating-point order."
+      ]
+    },
+    {
+      "name": "general-numeric-sort",
+      "aliases": [
+        "-g",
+        "--general-numeric-sort"
+      ],
+      "value": "none",
+      "description": "Numeric / general numeric / human numeric / month / version order.",
+      "short": "g",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "human-numeric-sort",
+      "aliases": [
+        "-h",
+        "--human-numeric-sort"
+      ],
+      "value": "none",
+      "description": "Numeric / general numeric / human numeric / month / version order.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "month-sort",
+      "aliases": [
+        "-M",
+        "--month-sort"
+      ],
+      "value": "none",
+      "description": "Numeric / general numeric / human numeric / month / version order.",
+      "short": "M",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "version-sort",
+      "aliases": [
+        "-V",
+        "--version-sort"
+      ],
+      "value": "none",
+      "description": "Compare version components.",
+      "short": "V",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "random-sort",
+      "aliases": [
+        "-R",
+        "--random-sort"
+      ],
+      "value": "none",
+      "description": "Random key order / select seed source.",
+      "short": "R",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "sort",
+      "aliases": [
+        "--sort"
+      ],
+      "value": "required",
+      "description": "Select the ordering mode.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "random-source",
+      "aliases": [
+        "--random-source"
+      ],
+      "value": "required",
+      "description": "Random key order / select seed source.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "stable",
+      "aliases": [
+        "-s",
+        "--stable"
+      ],
+      "value": "none",
+      "description": "Retain input order for equal selected keys.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "merge",
+      "aliases": [
+        "-m",
+        "--merge"
+      ],
+      "value": "none",
+      "description": "Merge inputs already in order.",
+      "short": "m",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "output",
+      "aliases": [
+        "-o",
+        "--output"
+      ],
+      "value": "required",
+      "description": "Write named output; - is a literal filename.",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "buffer-size",
+      "aliases": [
+        "-S",
+        "--buffer-size"
+      ],
+      "value": "required",
+      "description": "Sorting budget; default 64 MiB; bare numbers use KiB.",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "temporary-directory",
+      "aliases": [
+        "-T",
+        "--temporary-directory"
+      ],
+      "value": "required",
+      "description": "Select temporary directories; may repeat.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "batch-size",
+      "aliases": [
+        "--batch-size"
+      ],
+      "value": "required",
+      "description": "Maximum merge fan-in; at least 2, capped at 16.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "unique",
+      "aliases": [
+        "-u",
+        "--unique"
+      ],
+      "value": "none",
+      "description": "Reverse / unique keys / stable key ties.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-case",
+      "aliases": [
+        "-f",
+        "--ignore-case"
+      ],
+      "value": "none",
+      "description": "Ignore leading blanks / dictionary order / ASCII fold / ignore nonprinting bytes.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-leading-blanks",
+      "aliases": [
+        "-b",
+        "--ignore-leading-blanks"
+      ],
+      "value": "none",
+      "description": "Ignore leading blanks / dictionary order / ASCII fold / ignore nonprinting bytes.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "dictionary-order",
+      "aliases": [
+        "-d",
+        "--dictionary-order"
+      ],
+      "value": "none",
+      "description": "Ignore leading blanks / dictionary order / ASCII fold / ignore nonprinting bytes.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-nonprinting",
+      "aliases": [
+        "-i",
+        "--ignore-nonprinting"
+      ],
+      "value": "none",
+      "description": "Ignore nonprinting bytes in comparison keys.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "zero-terminated",
+      "aliases": [
+        "-z",
+        "--zero-terminated"
+      ],
+      "value": "none",
+      "description": "Read and write NUL-delimited records.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "check",
+      "aliases": [
+        "-c",
+        "--check"
+      ],
+      "value": "none",
+      "description": "Check order with diagnostics / status only.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "check-quiet",
+      "aliases": [
+        "-C",
+        "--check=quiet"
+      ],
+      "value": "none",
+      "description": "Check ordering and report the result through exit status.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "key",
+      "aliases": [
+        "-k",
+        "--key"
+      ],
+      "value": "required",
+      "description": "Select comparison keys / field separator.",
+      "short": "k",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "field-separator",
+      "aliases": [
+        "-t",
+        "--field-separator"
+      ],
+      "value": "required",
+      "description": "Select comparison keys / field separator.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "reverse",
+        "numeric-sort",
+        "general-numeric-sort",
+        "human-numeric-sort",
+        "month-sort",
+        "version-sort",
+        "random-sort",
+        "sort",
+        "random-source",
+        "stable",
+        "merge",
+        "output",
+        "buffer-size",
+        "temporary-directory",
+        "batch-size",
+        "unique",
+        "ignore-case",
+        "ignore-leading-blanks",
+        "dictionary-order",
+        "ignore-nonprinting",
+        "zero-terminated",
+        "check",
+        "check-quiet",
+        "key",
+        "field-separator",
+        "help"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "command": "echo",
+  "help": "Usage: echo [-n] [-e|-E] [STRING...]\n{{help:help:0}}\n{{help:version:0}}\nPOSIXLY_CORRECT enables escapes; only an initial -n permits option parsing.\nStandalone --help/--version retain the project metadata contract in that environment.\n",
+  "catalog_options": [
+    "enable-escapes",
+    "disable-escapes",
+    "help",
+    "no-newline",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "n",
+      "aliases": [
+        "-n"
+      ],
+      "value": "none",
+      "description": "Omit the final newline.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "e",
+      "aliases": [
+        "-e"
+      ],
+      "value": "none",
+      "description": "Enable / disable backslash escapes.",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "E",
+      "aliases": [
+        "-E"
+      ],
+      "value": "none",
+      "description": "Enable / disable backslash escapes.",
+      "short": "E",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": []
+}

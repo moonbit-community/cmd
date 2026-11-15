@@ -1,7 +1,7 @@
 ///|
 /// The approximate NFA size limit used when compiling glob regexes. This
 /// mirrors the 10MB limit used by the Rust implementation.
-let nfa_size_limit : Int32 = 10 * (1 << 20)
+const NFA_SIZE_LIMIT : Int32 = 10 * (1 << 20)
 
 ///|
 /// Parses `pat` with the syntax configuration used for all glob regexes:
@@ -22,7 +22,7 @@ fn new_regex(pat : String) -> @regex.Regex raise GlobError {
   }
   @regex.Regex::from_hir(hir, config={
     ..@regex.RegexConfig::default(),
-    nfa_size_limit: Some(nfa_size_limit),
+    nfa_size_limit: Some(NFA_SIZE_LIMIT),
   }) catch {
     e => raise GlobError(glob=Some(pat), kind=Regex(e.to_string()))
   }
@@ -48,7 +48,7 @@ fn new_regex_any(pats : ArrayView[String]) -> @regex.Regex raise GlobError {
   }
   @regex.Regex::from_hir(hir, config={
     ..@regex.RegexConfig::default(),
-    nfa_size_limit: Some(nfa_size_limit),
+    nfa_size_limit: Some(NFA_SIZE_LIMIT),
   }) catch {
     e => raise GlobError(glob=None, kind=Regex(e.to_string()))
   }

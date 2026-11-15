@@ -188,14 +188,14 @@ fn encoding_kind_for_label(label : String) -> EncKind? {
     | "ksc5601"
     | "ksc_5601"
     | "windows-949" => Some(EucKr)
-    "unicodefffe" | "utf-16be" => Some(Utf16BE)
+    "unicodefffe" | "utf-16be" => Some(Utf16Be)
     "csunicode"
     | "iso-10646-ucs-2"
     | "ucs-2"
     | "unicode"
     | "unicodefeff"
     | "utf-16"
-    | "utf-16le" => Some(Utf16LE)
+    | "utf-16le" => Some(Utf16Le)
     "x-user-defined" => Some(XUserDefined)
     _ => None
   }

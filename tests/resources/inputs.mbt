@@ -5,7 +5,6 @@ async fn write_input(
   record : Int64,
   mixed : Bool,
   binary : Bool,
-  literal~ : String = "",
 ) -> Unit {
   let file = @fs.create(path)
   defer file.close()
@@ -31,12 +30,6 @@ async fn write_input(
       let end = column == width - 1 || at == size - 1
       let byte = if end {
         b'\n'
-      } else if !literal.is_empty() {
-        if literal == "literal-sparse" {
-          b'Z'
-        } else {
-          b'a'
-        }
       } else if binary && row % 3 == 1 && column == 13 {
         b'\x00'
       } else if binary && row % 3 == 1 && column == 31 {

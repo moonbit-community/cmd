@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "command": "env",
+  "help": "Usage: env [-i] [-0] [-u NAME] [-C DIR] [-S STRING] [NAME=VALUE]... [COMMAND [ARG]...]\n{{help:split-string:0}}\n{{help:help:0}}\n{{help:version:0}}\nDirectory paths retain filesystem traversal before child launch.\nWindows Native: child launches require a nonempty environment.\n",
+  "catalog_options": [
+    "chdir",
+    "ignore-environment",
+    "null",
+    "split-string",
+    "unset",
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "ignore-environment",
+      "aliases": [
+        "-i",
+        "--ignore-environment"
+      ],
+      "value": "none",
+      "description": "Start with an empty environment; bare - is equivalent.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "unset",
+      "aliases": [
+        "-u",
+        "--unset"
+      ],
+      "value": "required",
+      "description": "Remove a variable.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "null",
+      "aliases": [
+        "-0",
+        "--null"
+      ],
+      "value": "none",
+      "description": "Separate printed entries with NUL.",
+      "short": "0",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "chdir",
+      "aliases": [
+        "-C",
+        "--chdir"
+      ],
+      "value": "required",
+      "description": "Set the child working directory.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "split-string",
+      "aliases": [
+        "-S",
+        "--split-string"
+      ],
+      "value": "required",
+      "description": "Split quotes, escapes and original-environment substitutions.",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -S, --split-string=STRING  split quotes, escapes and original environment variables"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [],
+  "adapter_match": true
+}

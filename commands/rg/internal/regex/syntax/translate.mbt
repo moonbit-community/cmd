@@ -1,5 +1,5 @@
 ///|
-priv struct TFlags {
+priv struct TranslationFlags {
   case_insensitive : Bool?
   multi_line : Bool?
   dot_matches_new_line : Bool?
@@ -9,7 +9,7 @@ priv struct TFlags {
 }
 
 ///|
-fn TFlags::from_ast(ast : Flags) -> TFlags {
+fn TranslationFlags::from_ast(ast : Flags) -> TranslationFlags {
   let mut ci = None
   let mut ml = None
   let mut dot = None
@@ -25,7 +25,7 @@ fn TFlags::from_ast(ast : Flags) -> TFlags {
       Flag(DotMatchesNewLine) => dot = Some(enable)
       Flag(SwapGreed) => sg = Some(enable)
       Flag(Unicode) => uni = Some(enable)
-      Flag(CRLF) => crlf = Some(enable)
+      Flag(Crlf) => crlf = Some(enable)
       Flag(IgnoreWhitespace) => ()
     }
   }
@@ -40,7 +40,10 @@ fn TFlags::from_ast(ast : Flags) -> TFlags {
 }
 
 ///|
-fn TFlags::merge(self : TFlags, prev : TFlags) -> TFlags {
+fn TranslationFlags::merge(
+  self : TranslationFlags,
+  prev : TranslationFlags,
+) -> TranslationFlags {
   fn m(a : Bool?, b : Bool?) -> Bool? {
     match a {
       None => b
@@ -93,7 +96,7 @@ priv struct Translator {
   pattern : String
   utf8 : Bool
   line_terminator : Int32
-  mut flags : TFlags
+  mut flags : TranslationFlags
 }
 
 ///|
@@ -116,9 +119,9 @@ fn Translator::case_insensitive(self : Translator) -> Bool {
 }
 
 ///|
-fn Translator::set_flags(self : Translator, ast : Flags) -> TFlags {
+fn Translator::set_flags(self : Translator, ast : Flags) -> TranslationFlags {
   let old = self.flags
-  self.flags = TFlags::from_ast(ast).merge(old)
+  self.flags = TranslationFlags::from_ast(ast).merge(old)
   old
 }
 
@@ -305,7 +308,7 @@ fn Translator::hir_dot(self : Translator, span : Span) -> Hir raise SyntaxError 
     }
   } else if unicode {
     if crlf {
-      AnyCharExceptCRLF
+      AnyCharExceptCrlf
     } else {
       if lineterm > 0x7F {
         raise self.error(span, InvalidLineTerminator)
@@ -313,7 +316,7 @@ fn Translator::hir_dot(self : Translator, span : Span) -> Hir raise SyntaxError 
       AnyCharExcept(lineterm)
     }
   } else if crlf {
-    AnyByteExceptCRLF
+    AnyByteExceptCrlf
   } else {
     AnyByteExcept(lineterm)
   }
@@ -329,14 +332,14 @@ fn Translator::hir_assertion(self : Translator, kind : AssertionKind) -> Hir {
     StartLine =>
       if multi_line {
         if crlf {
-          Look::StartCRLF
+          Look::StartCrlf
         } else {
-          StartLF
+          StartLf
         }
       } else {
         Start
       }
-    EndLine => if multi_line { if crlf { EndCRLF } else { EndLF } } else { End }
+    EndLine => if multi_line { if crlf { EndCrlf } else { EndLf } } else { End }
     StartText => Start
     EndText => End
     WordBoundary => if unicode { WordUnicode } else { WordAscii }

@@ -47,7 +47,7 @@ pub(all) enum LineMatchKind {
 #derive(Eq, Hash, @debug.Debug)
 pub(all) enum LineTerminator {
   Byte(Byte)
-  CRLF
+  Crlf
 }
 pub fn LineTerminator::as_byte(Self) -> Byte
 pub fn LineTerminator::as_bytes(Self) -> Bytes

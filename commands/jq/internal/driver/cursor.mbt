@@ -111,7 +111,9 @@ async fn Sources::next_chunk(self : Sources) -> Bytes? {
         }
       }
     }
-    let limit = StreamParserBufferBytes.min(self.chunk.length() - self.position)
+    let limit = STREAM_PARSER_BUFFER_BYTES.min(
+      self.chunk.length() - self.position,
+    )
     let start = self.position
     let mut count = 0
     while count < limit {

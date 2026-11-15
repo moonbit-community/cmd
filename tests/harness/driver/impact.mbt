@@ -114,6 +114,11 @@ fn oracle_impact(
       parts[0] == "commands" &&
       commands.contains(parts[1]) {
       selected.add(parts[1])
+      // jqlog resolves the jq engine from the same command module. Include its
+      // consumer for source, package configuration and dependency changes.
+      if parts[1] == "jq" && commands.contains("jqlog") {
+        selected.add("jqlog")
+      }
       continue
     }
     if parts is ["tests", "cases", file] && file.has_suffix(".json") {
@@ -138,6 +143,7 @@ fn oracle_impact(
     if source ||
       path.has_prefix("core/") ||
       path.has_prefix("tests/") ||
+      path.has_prefix("tools/") ||
       path.has_prefix(".github/workflows/") ||
       path.has_prefix(".github/actions/") ||
       ["moon.work", "moon.mod", "moon.pkg", ".gitmodules"].contains(path) {

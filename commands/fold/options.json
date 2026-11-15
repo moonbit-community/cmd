@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "command": "fold",
+  "help": "Usage: fold [OPTION]... [FILE]...\nWrap each input line, reading stdin with no FILE or FILE -.\n{{help:bytes:0}}\n{{help:characters:0}}\n{{help:spaces:0}}\n{{help:width:0}}\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "bytes",
+    "characters",
+    "spaces",
+    "width",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "bytes",
+      "aliases": [
+        "-b",
+        "--bytes"
+      ],
+      "value": "none",
+      "description": "count bytes rather than columns",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b, --bytes          count bytes rather than columns"
+      ]
+    },
+    {
+      "name": "characters",
+      "aliases": [
+        "-c",
+        "--characters"
+      ],
+      "value": "none",
+      "description": "count characters in the C-locale byte profile",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --characters     count characters in the C-locale byte profile"
+      ]
+    },
+    {
+      "name": "spaces",
+      "aliases": [
+        "-s",
+        "--spaces"
+      ],
+      "value": "none",
+      "description": "break after the last available blank",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --spaces         break after the last available blank"
+      ]
+    },
+    {
+      "name": "width",
+      "aliases": [
+        "-w",
+        "--width"
+      ],
+      "value": "required",
+      "description": "use WIDTH columns instead of 80",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -w, --width=WIDTH    use WIDTH columns instead of 80"
+      ],
+      "default_value": "80",
+      "default_binding": {
+        "name": "DEFAULT_WIDTH",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help           display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version        display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "bytes",
+        "characters",
+        "spaces",
+        "width",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

@@ -101,7 +101,7 @@ test "policy admission decodes import paths and ignores only actual comments" {
 ///|
 async test "policy admission accepts the mv test observer without production process authority" {
   let root = @harness.repository_root()
-  let manifest = @fs.read_file(root + "/commands/mv/moon.pkg").text()
+  let manifest = @fs.read_file(root + "/commands/mv/internal/driver/moon.pkg").text()
   assert_true(manifest.contains("\"moonbitlang/async/process\""))
   assert_true(manifest.contains("} for \"wbtest\""))
   assert_false(admission_has_process_authority(manifest))

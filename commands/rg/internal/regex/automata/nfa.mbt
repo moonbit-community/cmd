@@ -31,7 +31,7 @@ fn State::is_epsilon(self : State) -> Bool {
 
 ///|
 /// A Thompson NFA over bytes.
-pub struct NFA {
+pub struct Nfa {
   states : Array[State]
   start_anchored : Int32
   start_unanchored : Int32
@@ -50,22 +50,22 @@ pub struct NFA {
 }
 
 ///|
-pub fn NFA::states(self : NFA) -> Array[State] {
+pub fn Nfa::states(self : Nfa) -> Array[State] {
   self.states
 }
 
 ///|
-pub fn NFA::group_len(self : NFA) -> Int32 {
+pub fn Nfa::group_len(self : Nfa) -> Int32 {
   self.group_len
 }
 
 ///|
-pub fn NFA::group_names(self : NFA) -> Array[String?] {
+pub fn Nfa::group_names(self : Nfa) -> Array[String?] {
   self.group_names
 }
 
 ///|
-pub fn NFA::to_string(self : NFA) -> String {
+pub fn Nfa::to_string(self : Nfa) -> String {
   let buf = StringBuilder()
   for i, s in self.states {
     let marker = if i == self.start_anchored {
@@ -126,7 +126,7 @@ fn show_range(a : Int32, b : Int32) -> String {
 ///|
 /// Builder states: like NFA states, but with `Empty` states used for
 /// patching and union states whose alternates may be reversed.
-priv enum BState {
+priv enum BuildState {
   BEmpty(Int32)
   BByteRange(Int32, Int32, Int32)
   BSparse(Array[Transition])
@@ -141,7 +141,7 @@ priv enum BState {
 
 ///|
 priv struct Builder {
-  states : Array[BState]
+  states : Array[BuildState]
   size_limit : Int32?
   // Heap memory used by states, accounted like regex-automata's builder
   // (8 bytes per sparse transition, 4 per union alternate).
@@ -149,7 +149,7 @@ priv struct Builder {
 }
 
 ///|
-fn Builder::add(self : Builder, s : BState) -> Int32 {
+fn Builder::add(self : Builder, s : BuildState) -> Int32 {
   let id = self.states.length()
   self.memory_states += match s {
     BSparse(trans) => trans.length() * 8
@@ -213,7 +213,7 @@ fn Builder::build(
   reverse : Bool,
   group_len : Int32,
   group_names : Array[String?],
-) -> NFA {
+) -> Nfa {
   let n = self.states.length()
   // Resolve each builder state to a final state, skipping empties.
   let remap = FixedArray::make(n, -1)
@@ -384,7 +384,7 @@ priv struct ThompsonRef {
 
 ///|
 /// Configuration for compiling an HIR to an NFA.
-pub(all) struct NFAConfig {
+pub(all) struct NfaConfig {
   reverse : Bool
   captures : Bool
   unanchored_prefix : Bool
@@ -392,14 +392,14 @@ pub(all) struct NFAConfig {
 }
 
 ///|
-pub fn NFAConfig::default() -> NFAConfig {
+pub fn NfaConfig::default() -> NfaConfig {
   { reverse: false, captures: true, unanchored_prefix: true, size_limit: None, }
 }
 
 ///|
 priv struct Compiler {
   builder : Builder
-  config : NFAConfig
+  config : NfaConfig
   group_names : Map[Int32, String]
   mut max_group : Int32
 }
@@ -408,8 +408,8 @@ priv struct Compiler {
 /// Compiles the given HIR into a Thompson NFA.
 pub fn compile_nfa(
   hir : @syntax.Hir,
-  config~ : NFAConfig = NFAConfig::default(),
-) -> NFA raise BuildError {
+  config~ : NfaConfig = NfaConfig::default(),
+) -> Nfa raise BuildError {
   let c : Compiler = {
     builder: { states: [], size_limit: config.size_limit, memory_states: 0, },
     config,

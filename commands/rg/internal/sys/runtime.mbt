@@ -71,7 +71,7 @@ pub async fn read_fd(
   len : Int32,
 ) -> Int32 {
   guard fd == 0 else {
-    raise IOError::other(Unsupported, "use File::read for file handles")
+    raise IoError::other(Unsupported, "use File::read for file handles")
   }
   @stdio.stdin.read(buf, offset=start, max_len=len) catch {
     e => raise from_error(e)
@@ -90,7 +90,7 @@ pub async fn write_fd(
     1 => @stdio.stdout.write(bytes) catch { e => raise from_error(e) }
     2 => @stdio.stderr.write(bytes) catch { e => raise from_error(e) }
     _ =>
-      raise IOError::other(
+      raise IoError::other(
         Unsupported,
         "unsupported standard output descriptor",
       )

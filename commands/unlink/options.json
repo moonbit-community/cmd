@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "command": "unlink",
+  "help": "Usage: unlink FILE\nRemove exactly one non-directory name.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [],
+  "options": [
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help     display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version  display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "import_alias": "argparse",
+      "options": [
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

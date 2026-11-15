@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "command": "tr",
+  "help": "Usage: tr [-dscCt] SET1 [SET2]\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "complement",
+    "delete",
+    "squeeze-repeats",
+    "truncate-set1"
+  ],
+  "options": [
+    {
+      "short": "d",
+      "name": "delete",
+      "description": "Delete SET1 bytes.",
+      "aliases": [
+        "-d",
+        "--delete"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "s",
+      "name": "squeeze-repeats",
+      "description": "Collapse repeated selected bytes.",
+      "aliases": [
+        "-s",
+        "--squeeze-repeats"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "c",
+      "name": "complement",
+      "description": "Complement SET1.",
+      "aliases": [
+        "-c",
+        "--complement"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "C",
+      "parser_long": "",
+      "name": "complement-short",
+      "description": "Complement the first set.",
+      "aliases": [
+        "-C"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "t",
+      "name": "truncate-set1",
+      "description": "Truncate SET1 to SET2's length.",
+      "aliases": [
+        "-t",
+        "--truncate-set1"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "import_alias": "argparse",
+      "options": [
+        "delete",
+        "squeeze-repeats",
+        "complement",
+        "complement-short",
+        "truncate-set1",
+        "help"
+      ]
+    }
+  ]
+}

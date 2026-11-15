@@ -95,20 +95,20 @@ pub(all) enum HyperlinkFormatErrorKind {
   UnclosedVariable
 }
 
-pub struct JSON {
+pub struct JsonPrinter {
   // private fields
 }
-pub fn JSON::get_mut(Self) -> &@termcolor.WriteColor
-pub fn JSON::new(&@termcolor.Write, pretty? : Bool, always_begin_end? : Bool, replacement? : Bytes?, clock? : () -> Int64) -> Self
-pub fn JSON::sink(Self, &@matcher.Matcher) -> JSONSink
-pub fn JSON::sink_with_path(Self, &@matcher.Matcher, String) -> JSONSink
+pub fn JsonPrinter::get_mut(Self) -> &@termcolor.WriteColor
+pub fn JsonPrinter::new(&@termcolor.Write, pretty? : Bool, always_begin_end? : Bool, replacement? : Bytes?, clock? : () -> Int64) -> Self
+pub fn JsonPrinter::sink(Self, &@matcher.Matcher) -> JsonSink
+pub fn JsonPrinter::sink_with_path(Self, &@matcher.Matcher, String) -> JsonSink
 
-pub struct JSONSink {
+pub struct JsonSink {
   // private fields
 }
-pub fn JSONSink::has_match(Self) -> Bool
-pub fn JSONSink::stats(Self) -> Stats
-pub impl @searcher.Sink for JSONSink
+pub fn JsonSink::has_match(Self) -> Bool
+pub fn JsonSink::stats(Self) -> Stats
+pub impl @searcher.Sink for JsonSink
 
 pub struct JsonWriter {
   // private fields

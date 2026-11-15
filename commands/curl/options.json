@@ -1,0 +1,821 @@
+{
+  "schema": 1,
+  "command": "curl",
+  "help": "Usage: curl [options...] <url>\n{{help:help:0}}\n{{help:version:0}}\n{{help:silent:0}}\n{{help:show-error:0}}\n{{help:fail:0}}\n{{help:output:0}}\n{{help:remote-name:0}}\n{{help:remote-header-name:0}}\n{{help:location:0}}\n{{help:max-redirs:0}}\n{{help:head:0}}\n{{help:header:0}}\n{{help:config:0}}\n{{help:disable:0}}\n{{help:url:0}}\n{{help:user:0}}\n{{help:cookie:0}}\n{{help:cookie-jar:0}}\n{{help:header:1}}\n{{help:request:0}}\n{{help:data:0}}\n{{help:data-raw:0}}\n{{help:data-binary:0}}\n{{help:data-urlencode:0}}\n{{help:upload-file:0}}\n{{help:retry:0}}\n{{help:retry-delay:0}}\n{{help:retry-max-time:0}}\n{{help:retry-connrefused:0}}\n{{help:retry-all-errors:0}}\n{{help:connect-timeout:0}}\n{{help:max-time:0}}\n{{help:idle-timeout:0}}\n{{help:insecure:0}}\n{{help:proxy:0}}\n{{help:noproxy:0}}\n{{help:remove-on-error:0}}\nAlready written stdout remains; final partial files remain without cleanup.\nLiteral Cookie CR/LF rejects before request bytes; jar CR terminates its row.\nHeader Name: suppresses a generated field; Name; sends an empty field.\n{{help:header:2}}\nConfig accepts supported options, quoted escapes and up to five nested files.\nDefault discovery uses CURL_HOME, XDG_CONFIG_HOME and HOME; -q must be first.\nFinal response fields retain order and repetition; request Content-Length is singular.\nRaw space/TAB/CR/LF/DEL in an initial URL path or query exits 3 before connecting.\nRedirect spaces use %20 in paths and + in queries; TAB uses %09.\nSet-Cookie without '=' is ignored; nonnumeric Max-Age deletes its stored cookie.\nPositive decimal Max-Age overflow keeps the new cookie under a 400-day cap.\nStored __Secure-/__Host- cookies require Secure and the effective prefix scope.\nSecure cookie contexts are HTTPS or exact localhost/127.0.0.1/::1.\nInsecure origins cannot overlay live Secure cookies.\nCookie domains preserve ASCII case and use the pinned ICANN/PRIVATE suffix list.\nCookie jars save newer creation first without adding a second leading Domain dot.\nCookie files reload before each URL or retry; response cookies take precedence.\n{{help:cookie-jar:1}}\nWithout -f, HTTP retry bodies reach output before a retry is selected.\nRetryable HTTP statuses include 408, 429, 500, 502, 503, 504, 522 and 524.\nUTF-8 environment spellings select pinned Unicode 15 URL-host IDNA.\nOther input encodings and Cookie Domain normalization remain unsupported.\nAn empty HTTP reply exits 52; incomplete bodies exit 18; receive errors exit 56.\nAn initial empty failure leaves ordinary unopened output untouched.\nAn accepted retry resets an opened regular file before the next request.\n{{help:remote-name:1}}\nAn existing selected filename exits 23 untouched; retries retain the first name.\nFile write errors exit 23; an earlier transfer failure keeps its exit status.\nA redirect requiring already uploaded stdin to rewind exits 65.\n-sS keeps each failed attempt's error visible even if a later retry succeeds.\nContent-coding bytes remain encoded; Accept-Encoding defaults to identity.\n\nCompatibility limits: HTTP/HTTPS only; -X accepts GET, HEAD, POST, PUT,\nDELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded by\nthe runtime millisecond timer range.\n",
+  "catalog_options": [
+    "connect-timeout",
+    "data",
+    "data-binary",
+    "data-raw",
+    "data-urlencode",
+    "fail",
+    "head",
+    "header",
+    "idle-timeout",
+    "insecure",
+    "location",
+    "max-redirs",
+    "max-time",
+    "output",
+    "proxy",
+    "remote-header-name",
+    "remote-name",
+    "remove-on-error",
+    "request",
+    "retry",
+    "retry-all-errors",
+    "retry-connrefused",
+    "retry-delay",
+    "retry-max-time",
+    "show-error",
+    "silent",
+    "upload-file",
+    "user",
+    "basic",
+    "cookie",
+    "cookie-jar",
+    "config",
+    "disable",
+    "url"
+  ],
+  "options": [
+    {
+      "name": "disable",
+      "aliases": [
+        "-q",
+        "--disable"
+      ],
+      "value": "none",
+      "description": "skip default configuration when placed first",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -q, --disable                skip default configuration when used first"
+      ]
+    },
+    {
+      "name": "config",
+      "aliases": [
+        "-K",
+        "--config"
+      ],
+      "value": "required",
+      "description": "read supported options; `-` reads stdin",
+      "short": "K",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -K, --config <file>          read options from a file; - reads stdin"
+      ]
+    },
+    {
+      "name": "url",
+      "aliases": [
+        "--url"
+      ],
+      "value": "required",
+      "description": "add a URL, including from a configuration file",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --url <url>              add a URL, including in configuration files"
+      ]
+    },
+    {
+      "name": "silent",
+      "aliases": [
+        "-s",
+        "--silent"
+      ],
+      "value": "none",
+      "description": "silent mode",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --silent                 silent mode"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_SILENT",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "show-error",
+      "aliases": [
+        "-S",
+        "--show-error"
+      ],
+      "value": "none",
+      "description": "show errors with --silent",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -S, --show-error             show errors with --silent"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_SHOW_ERROR",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "fail",
+      "aliases": [
+        "-f",
+        "--fail"
+      ],
+      "value": "none",
+      "description": "fail on HTTP response codes >= 400",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -f, --fail                   fail on HTTP response codes >= 400"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_FAIL",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "output",
+      "aliases": [
+        "-o",
+        "--output"
+      ],
+      "value": "required",
+      "description": "write to file instead of stdout",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -o, --output <file>          write to file instead of stdout"
+      ]
+    },
+    {
+      "name": "remote-name",
+      "aliases": [
+        "-O",
+        "--remote-name"
+      ],
+      "value": "none",
+      "description": "use the remote file name",
+      "short": "O",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -O, --remote-name            use the remote file name",
+        "-O -J creates valid Content-Disposition filenames exclusively for 2xx/3xx."
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_REMOTE_NAME",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "remote-header-name",
+      "aliases": [
+        "-J",
+        "--remote-header-name"
+      ],
+      "value": "none",
+      "description": "use Content-Disposition with -O",
+      "short": "J",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -J, --remote-header-name     use Content-Disposition with -O"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_REMOTE_HEADER_NAME",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "location",
+      "aliases": [
+        "-L",
+        "--location"
+      ],
+      "value": "none",
+      "description": "follow redirects",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -L, --location               follow redirects"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_LOCATION",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "max-redirs",
+      "aliases": [
+        "--max-redirs"
+      ],
+      "value": "required",
+      "description": "maximum redirects (default 50)",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --max-redirs <num>       maximum redirects (default 50)"
+      ],
+      "default_value": "50",
+      "default_binding": {
+        "name": "DEFAULT_MAX_REDIRECTS",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "head",
+      "aliases": [
+        "-I",
+        "--head"
+      ],
+      "value": "none",
+      "description": "show response headers only",
+      "short": "I",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -I, --head                   show response headers only"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_HEAD",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "header",
+      "aliases": [
+        "-H",
+        "--header"
+      ],
+      "value": "required",
+      "description": "send custom fields in order, retaining repeats",
+      "short": "H",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -H, --header <header>        send custom fields in order, retaining repeats",
+        "      -H 'Cookie: ...'       send a separate field after stored jar cookies",
+        "-H @file reads header lines; -H @- reads stdin. Host/Transfer-Encoding stay managed."
+      ]
+    },
+    {
+      "name": "user",
+      "aliases": [
+        "-u",
+        "--user"
+      ],
+      "value": "required",
+      "description": "HTTP Basic authentication",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -u, --user <user:password>   HTTP Basic authentication"
+      ]
+    },
+    {
+      "name": "basic",
+      "aliases": [
+        "--basic"
+      ],
+      "value": "none",
+      "description": "Select HTTP Basic authentication.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "cookie",
+      "aliases": [
+        "-b",
+        "--cookie"
+      ],
+      "value": "required",
+      "description": "send cookies or load a Netscape jar",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -b, --cookie <data|file>     send cookies or load a Netscape jar"
+      ]
+    },
+    {
+      "name": "cookie-jar",
+      "aliases": [
+        "-c",
+        "--cookie-jar"
+      ],
+      "value": "required",
+      "description": "write a Netscape cookie jar",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -c, --cookie-jar <file>      write a Netscape cookie jar",
+        "-c saves after each URL, including fixed-header jar output for -c -."
+      ]
+    },
+    {
+      "name": "request",
+      "aliases": [
+        "-X",
+        "--request"
+      ],
+      "value": "required",
+      "description": "specify a supported HTTP method",
+      "short": "X",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -X, --request <method>       specify a supported HTTP method"
+      ]
+    },
+    {
+      "name": "data",
+      "aliases": [
+        "-d",
+        "--data"
+      ],
+      "value": "required",
+      "description": "HTTP POST data",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -d, --data <data>            HTTP POST data"
+      ]
+    },
+    {
+      "name": "data-raw",
+      "aliases": [
+        "--data-raw"
+      ],
+      "value": "required",
+      "description": "HTTP POST data without @ expansion",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --data-raw <data>        HTTP POST data without @ expansion"
+      ]
+    },
+    {
+      "name": "data-binary",
+      "aliases": [
+        "--data-binary"
+      ],
+      "value": "required",
+      "description": "HTTP POST data without conversion",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --data-binary <data>     HTTP POST data without conversion"
+      ]
+    },
+    {
+      "name": "data-urlencode",
+      "aliases": [
+        "--data-urlencode"
+      ],
+      "value": "required",
+      "description": "URL-encode HTTP POST data",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --data-urlencode <data>  URL-encode HTTP POST data"
+      ]
+    },
+    {
+      "name": "upload-file",
+      "aliases": [
+        "-T",
+        "--upload-file"
+      ],
+      "value": "required",
+      "description": "stream file as an upload",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -T, --upload-file <file>     stream file as an upload"
+      ]
+    },
+    {
+      "name": "retry",
+      "aliases": [
+        "--retry"
+      ],
+      "value": "required",
+      "description": "retry transient failures",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --retry <num>            retry transient failures"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_RETRY_COUNT",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "retry-delay",
+      "aliases": [
+        "--retry-delay"
+      ],
+      "value": "required",
+      "description": "wait between retries",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --retry-delay <seconds>  wait between retries"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_RETRY_DELAY_MS",
+        "type_": "Int32",
+        "scale": 1000
+      }
+    },
+    {
+      "name": "retry-max-time",
+      "aliases": [
+        "--retry-max-time"
+      ],
+      "value": "required",
+      "description": "maximum time spent retrying",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --retry-max-time <secs>  maximum time spent retrying"
+      ]
+    },
+    {
+      "name": "retry-connrefused",
+      "aliases": [
+        "--retry-connrefused"
+      ],
+      "value": "none",
+      "description": "retry connection refused failures",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --retry-connrefused      retry connection refused failures"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_RETRY_CONNECTION_REFUSED",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "retry-all-errors",
+      "aliases": [
+        "--retry-all-errors"
+      ],
+      "value": "none",
+      "description": "retry all transfer errors",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --retry-all-errors       retry all transfer errors"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_RETRY_ALL_ERRORS",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "connect-timeout",
+      "aliases": [
+        "--connect-timeout"
+      ],
+      "value": "required",
+      "description": "maximum connection setup time",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --connect-timeout <secs> maximum connection setup time"
+      ],
+      "default_value": "300",
+      "default_binding": {
+        "name": "DEFAULT_CONNECT_TIMEOUT_MS",
+        "type_": "Int32",
+        "scale": 1000
+      }
+    },
+    {
+      "name": "max-time",
+      "aliases": [
+        "-m",
+        "--max-time"
+      ],
+      "value": "required",
+      "description": "maximum time for one transfer",
+      "short": "m",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -m, --max-time <seconds>     maximum time for one transfer"
+      ]
+    },
+    {
+      "name": "idle-timeout",
+      "aliases": [
+        "--idle-timeout"
+      ],
+      "value": "required",
+      "description": "extension: inactivity timeout",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --idle-timeout <seconds> extension: inactivity timeout"
+      ],
+      "default_value": "300",
+      "default_binding": {
+        "name": "DEFAULT_IDLE_TIMEOUT_MS",
+        "type_": "Int32",
+        "scale": 1000
+      }
+    },
+    {
+      "name": "insecure",
+      "aliases": [
+        "-k",
+        "--insecure"
+      ],
+      "value": "none",
+      "description": "allow insecure TLS connections",
+      "short": "k",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -k, --insecure               allow insecure TLS connections"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_INSECURE",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "proxy",
+      "aliases": [
+        "-x",
+        "--proxy"
+      ],
+      "value": "required",
+      "description": "use this proxy",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -x, --proxy <url>            use this proxy"
+      ]
+    },
+    {
+      "name": "noproxy",
+      "aliases": [
+        "--noproxy"
+      ],
+      "value": "required",
+      "description": "bypass proxy for matching hosts",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --noproxy <list>         bypass proxy for matching hosts"
+      ]
+    },
+    {
+      "name": "remove-on-error",
+      "aliases": [
+        "--remove-on-error"
+      ],
+      "value": "none",
+      "description": "remove opened output after final failure",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --remove-on-error        remove opened output after final failure"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_REMOVE_ON_ERROR",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    },
+    {
+      "name": "no-silent",
+      "aliases": [
+        "--no-silent"
+      ],
+      "value": "none",
+      "description": "Disable --silent.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-show-error",
+      "aliases": [
+        "--no-show-error"
+      ],
+      "value": "none",
+      "description": "Disable --show-error.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-fail",
+      "aliases": [
+        "--no-fail"
+      ],
+      "value": "none",
+      "description": "Disable --fail.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-remote-name",
+      "aliases": [
+        "--no-remote-name"
+      ],
+      "value": "none",
+      "description": "Disable --remote-name.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-remote-header-name",
+      "aliases": [
+        "--no-remote-header-name"
+      ],
+      "value": "none",
+      "description": "Disable --remote-header-name.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-location",
+      "aliases": [
+        "--no-location"
+      ],
+      "value": "none",
+      "description": "Disable --location.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-head",
+      "aliases": [
+        "--no-head"
+      ],
+      "value": "none",
+      "description": "Disable --head.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-insecure",
+      "aliases": [
+        "--no-insecure"
+      ],
+      "value": "none",
+      "description": "Disable --insecure.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-retry-connrefused",
+      "aliases": [
+        "--no-retry-connrefused"
+      ],
+      "value": "none",
+      "description": "Disable --retry-connrefused.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-retry-all-errors",
+      "aliases": [
+        "--no-retry-all-errors"
+      ],
+      "value": "none",
+      "description": "Disable --retry-all-errors.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-remove-on-error",
+      "aliases": [
+        "--no-remove-on-error"
+      ],
+      "value": "none",
+      "description": "Disable --remove-on-error.",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "transfer_option_specs",
+      "import_alias": "cli",
+      "options": [
+        "disable",
+        "config",
+        "url",
+        "silent",
+        "show-error",
+        "fail",
+        "output",
+        "remote-name",
+        "remote-header-name",
+        "location",
+        "max-redirs",
+        "head",
+        "header",
+        "user",
+        "basic",
+        "cookie",
+        "cookie-jar",
+        "request",
+        "data",
+        "data-raw",
+        "data-binary",
+        "data-urlencode",
+        "upload-file",
+        "retry",
+        "retry-delay",
+        "retry-max-time",
+        "retry-connrefused",
+        "retry-all-errors",
+        "connect-timeout",
+        "max-time",
+        "idle-timeout",
+        "insecure",
+        "proxy",
+        "noproxy",
+        "remove-on-error",
+        "help"
+      ]
+    },
+    {
+      "function_name": "negative_option_specs",
+      "import_alias": "cli",
+      "options": [
+        "no-silent",
+        "no-show-error",
+        "no-fail",
+        "no-remote-name",
+        "no-remote-header-name",
+        "no-location",
+        "no-head",
+        "no-insecure",
+        "no-retry-connrefused",
+        "no-retry-all-errors",
+        "no-remove-on-error"
+      ]
+    }
+  ]
+}

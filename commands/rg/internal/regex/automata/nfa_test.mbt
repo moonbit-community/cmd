@@ -7,7 +7,7 @@ fn nfa(pattern : String, reverse~ : Bool = false) -> String {
     e => abort(e.to_string())
   }
   let config = {
-    ..@automata.NFAConfig::default(),
+    ..@automata.NfaConfig::default(),
     reverse,
     captures: !reverse,
   }

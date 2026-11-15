@@ -1,0 +1,260 @@
+{
+  "schema": 1,
+  "command": "cksum",
+  "help": "Usage: cksum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n{{help:algorithm:0}}\n                        sha224, sha256, sha384, sha512, sha2, sha3, blake2b, sm3\n{{help:length:0}}\n{{help:untagged:0}}\n{{help:base64:0}}\n{{help:raw:0}}\n{{help:binary:0}}\n{{help:text:0}}\n{{help:tag:0}}\n{{help:check:0}}\n{{help:zero:0}}\n{{help:ignore-missing:0}}\n{{help:quiet:0}}\n{{help:status:0}}\n{{help:strict:0}}\n{{help:warn:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
+  "catalog_options": [
+    "algorithm",
+    "length",
+    "base64",
+    "raw",
+    "untagged",
+    "tag",
+    "binary",
+    "text",
+    "zero",
+    "check",
+    "ignore-missing",
+    "quiet",
+    "status",
+    "strict",
+    "warn"
+  ],
+  "options": [
+    {
+      "name": "algorithm",
+      "aliases": [
+        "-a",
+        "--algorithm"
+      ],
+      "value": "required",
+      "description": "Select the checksum algorithm listed above.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -a, --algorithm=TYPE  bsd, sysv, crc (default), crc32b, md5, sha1,"
+      ]
+    },
+    {
+      "name": "length",
+      "aliases": [
+        "-l",
+        "--length"
+      ],
+      "value": "required",
+      "description": "SHA2/SHA3: 224, 256, 384, 512; BLAKE2b: 8..512 by 8",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -l, --length=BITS     SHA2/SHA3: 224, 256, 384, 512; BLAKE2b: 8..512 by 8"
+      ]
+    },
+    {
+      "name": "untagged",
+      "aliases": [
+        "--untagged"
+      ],
+      "value": "none",
+      "description": "omit algorithm tags (modern digests default to tags)",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --untagged        omit algorithm tags (modern digests default to tags)"
+      ]
+    },
+    {
+      "name": "base64",
+      "aliases": [
+        "--base64"
+      ],
+      "value": "none",
+      "description": "encode modern digests in Base64",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --base64          encode modern digests in Base64"
+      ]
+    },
+    {
+      "name": "raw",
+      "aliases": [
+        "--raw"
+      ],
+      "value": "none",
+      "description": "write digest bytes without names or separators",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --raw             write digest bytes without names or separators"
+      ]
+    },
+    {
+      "name": "binary",
+      "aliases": [
+        "-b",
+        "--binary"
+      ],
+      "value": "none",
+      "description": "mark untagged output as binary",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b, --binary          mark untagged output as binary"
+      ]
+    },
+    {
+      "name": "text",
+      "aliases": [
+        "-t",
+        "--text"
+      ],
+      "value": "none",
+      "description": "mark untagged output as text (default)",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -t, --text            mark untagged output as text (default)"
+      ]
+    },
+    {
+      "name": "tag",
+      "aliases": [
+        "--tag"
+      ],
+      "value": "none",
+      "description": "print BSD tagged records",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --tag             print BSD tagged records"
+      ]
+    },
+    {
+      "name": "check",
+      "aliases": [
+        "-c",
+        "--check"
+      ],
+      "value": "none",
+      "description": "read checksum records and verify files",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --check           read checksum records and verify files"
+      ]
+    },
+    {
+      "name": "zero",
+      "aliases": [
+        "-z",
+        "--zero"
+      ],
+      "value": "none",
+      "description": "end output records with NUL; disable escaping",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -z, --zero            end output records with NUL; disable escaping"
+      ]
+    },
+    {
+      "name": "ignore-missing",
+      "aliases": [
+        "--ignore-missing"
+      ],
+      "value": "none",
+      "description": "skip missing files when checking",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --ignore-missing  skip missing files when checking"
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "suppress successful verification output",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --quiet           suppress successful verification output"
+      ]
+    },
+    {
+      "name": "status",
+      "aliases": [
+        "--status"
+      ],
+      "value": "none",
+      "description": "suppress verification results and summaries",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --status          suppress verification results and summaries"
+      ]
+    },
+    {
+      "name": "strict",
+      "aliases": [
+        "--strict"
+      ],
+      "value": "none",
+      "description": "fail if a checksum line is malformed",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --strict          fail if a checksum line is malformed"
+      ]
+    },
+    {
+      "name": "warn",
+      "aliases": [
+        "-w",
+        "--warn"
+      ],
+      "value": "none",
+      "description": "warn for each malformed checksum line",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -w, --warn            warn for each malformed checksum line"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help            display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version         display version and exit"
+      ]
+    }
+  ],
+  "tables": []
+}

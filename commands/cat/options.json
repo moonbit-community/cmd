@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "command": "cat",
+  "help": "Usage: cat [OPTION]... [FILE]...\n{{help:help:0}}\n{{help:version:0}}\n\nConcatenate FILEs (or stdin) to standard output, byte-transparently:\nno decoding, no newline normalization. Use '-' or no file for stdin.\n\n{{help:number:0}}\n{{help:number-nonblank:0}}\n{{help:squeeze-blank:0}}\n{{help:show-tabs:0}}\n{{help:show-ends:0}}\n{{help:show-nonprinting:0}}\n{{help:show-all:0}}\n{{help:show-ends-nonprinting:0}}\n{{help:show-tabs-nonprinting:0}}\n{{help:unbuffered:0}}\n\nProject aliases: --show-ends-nonprinting = -e; --show-tabs-nonprinting = -t.\n{{help:unbuffered:1}}\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "number",
+    "number-nonblank",
+    "show-all",
+    "show-ends",
+    "show-nonprinting",
+    "show-tabs",
+    "squeeze-blank",
+    "unbuffered"
+  ],
+  "options": [
+    {
+      "short": "n",
+      "name": "number",
+      "description": "Number all lines.",
+      "aliases": [
+        "-n",
+        "--number"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -n, --number             Number all output lines."
+      ]
+    },
+    {
+      "short": "b",
+      "name": "number-nonblank",
+      "description": "Number nonempty lines; overrides -n.",
+      "aliases": [
+        "-b",
+        "--number-nonblank"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b, --number-nonblank    Number nonempty output lines (overrides -n)."
+      ]
+    },
+    {
+      "short": "s",
+      "name": "squeeze-blank",
+      "description": "Collapse repeated empty lines.",
+      "aliases": [
+        "-s",
+        "--squeeze-blank"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --squeeze-blank      Suppress repeated empty output lines."
+      ]
+    },
+    {
+      "short": "T",
+      "name": "show-tabs",
+      "description": "Display tabs as ^I.",
+      "aliases": [
+        "-T",
+        "--show-tabs"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -T, --show-tabs          Display TAB as ^I."
+      ]
+    },
+    {
+      "short": "E",
+      "name": "show-ends",
+      "description": "Display $ before each newline.",
+      "aliases": [
+        "-E",
+        "--show-ends"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -E, --show-ends          Display '$' at the end of each line."
+      ]
+    },
+    {
+      "short": "v",
+      "name": "show-nonprinting",
+      "description": "Display nonprinting bytes visibly.",
+      "aliases": [
+        "-v",
+        "--show-nonprinting"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -v, --show-nonprinting   Display nonprinting bytes visibly."
+      ]
+    },
+    {
+      "short": "A",
+      "name": "show-all",
+      "description": "Equivalent to -vET.",
+      "aliases": [
+        "-A",
+        "--show-all"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -A, --show-all           Equivalent to -vET."
+      ]
+    },
+    {
+      "short": "e",
+      "name": "show-ends-nonprinting",
+      "description": "Show line endings and nonprinting bytes.",
+      "aliases": [
+        "-e",
+        "--show-ends-nonprinting"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -e                       Equivalent to -vE."
+      ]
+    },
+    {
+      "short": "t",
+      "name": "show-tabs-nonprinting",
+      "description": "Show tabs and nonprinting bytes.",
+      "aliases": [
+        "-t",
+        "--show-tabs-nonprinting"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -t                       Equivalent to -vT."
+      ]
+    },
+    {
+      "short": "u",
+      "name": "unbuffered",
+      "description": "Accepted without changing behavior.",
+      "aliases": [
+        "-u",
+        "--unbuffered"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -u, --unbuffered         Accepted no-op (-u is GNU; long spelling is a project alias).",
+        "--unbuffered is a project alias of the GNU -u no-op; -h is a project help alias."
+      ]
+    },
+    {
+      "short": "h",
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "-h",
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -h, --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "import_alias": "argparse",
+      "options": [
+        "number",
+        "number-nonblank",
+        "squeeze-blank",
+        "show-tabs",
+        "show-ends",
+        "show-nonprinting",
+        "show-all",
+        "show-ends-nonprinting",
+        "show-tabs-nonprinting",
+        "unbuffered",
+        "help"
+      ]
+    }
+  ]
+}

@@ -312,7 +312,7 @@ fn preprocessor_globs_from_low(
 
 ///|
 fn stats_from_low(low : LowArgs) -> Bool {
-  low.mode is Search(_) && (low.stats || low.mode is Search(JSON))
+  low.mode is Search(_) && (low.stats || low.mode is Search(Json))
 }
 
 ///|
@@ -485,7 +485,7 @@ async fn ExecutionPlan::from_low_args(low : LowArgs) -> ExecutionPlan {
           | Search(FilesWithoutMatch)
           | Search(Count)
           | Search(CountMatches) => false
-          Search(JSON) => true
+          Search(Json) => true
           Search(Standard) =>
             (state.is_terminal_stdout && !paths.is_only_stdin()) ||
             column ||
@@ -632,7 +632,7 @@ fn ExecutionPlan::matcher_rust(
 fn ExecutionPlan::matcher(self : ExecutionPlan) -> SearchMatcher raise RgError {
   match self.search.engine {
     Default => self.matcher_rust()
-    PCRE2 => raise RgError("PCRE2 is not available in this build of ripgrep")
+    Pcre2 => raise RgError("PCRE2 is not available in this build of ripgrep")
     Auto => {
       let rust_err = try self.matcher_rust() catch {
         RgError(msg) => msg

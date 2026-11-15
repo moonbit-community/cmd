@@ -14,16 +14,8 @@ priv struct CookieCorpusCase {
 
 ///|
 async fn cookie_corpus(name : String, count : Int32) -> Array[CookieCorpusCase] {
-  let mut root = @fs.realpath(".")
-  while !@fs.exists(root + "/moon.work") {
-    let parent = @path.Path(root).dirname().to_string()
-    guard parent != root else {
-      fail("cookie corpus requires the repository workspace")
-    }
-    root = parent
-  }
   let source = @json.parse(
-    @fs.read_file(root + "/tests/fixtures/network/" + name + ".json").text(),
+    @fs.read_file("internal/download/fixtures/" + name + ".json").text(),
   )
   guard source is { "schema": 1, "cases": Array(rows), .. } else {
     fail("invalid cookie corpus: " + name)

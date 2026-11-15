@@ -1,0 +1,2600 @@
+{
+  "schema": 1,
+  "command": "rg",
+  "help": "Usage: rg [OPTIONS] PATTERN PATH...\n\nRecursive search for MoonX. Use explicit paths or - for stdin.\n{{help:files:0}}\nUse -h for an option index or --help for descriptions.\n\nINPUT OPTIONS:\n{{help:regexp:0}}\n        A pattern to search for. This option can be provided multiple times,\n        where all patterns given are searched, in addition to any patterns\n        provided by -f/--file. Lines matching at least one of the provided\n        patterns are printed. This flag can also be used when searching for\n        patterns that start with a dash.\n\n        For example, to search for the literal -foo:\n\n            rg -e -foo\n\n        You can also use the special -- delimiter to indicate that no more\n        flags will be provided. Namely, the following is equivalent to the\n        above:\n\n            rg -- -foo\n\n        When -f/--file or -e/--regexp is used, then ripgrep treats all\n        positional arguments as files or directories to search.\n\n{{help:file:0}}\n        Search for patterns from the given file, with one pattern per line.\n        When this flag is used multiple times or in combination with the\n        -e/--regexp flag, then all patterns provided are searched. Empty\n        pattern lines will match all input lines, and the newline is not\n        counted as part of the pattern.\n\n        A line is printed if and only if it matches at least one of the\n        patterns.\n\n        When PATTERNFILE is -, then stdin will be read for the patterns.\n\n        When -f/--file or -e/--regexp is used, then ripgrep treats all\n        positional arguments as files or directories to search.\n\n{{help:pre:0}}\n        For each input PATH, this flag causes ripgrep to search the standard\n        output of COMMAND PATH instead of the contents of PATH. This option\n        expects the COMMAND program to either be a path or to be available in\n        your PATH. Either an empty string COMMAND or the --no-pre flag will\n        disable this behavior.\n\n        WARNING: When this flag is set, ripgrep will unconditionally spawn a\n        process for every file that is searched. Therefore, this can incur an\n        unnecessarily large performance penalty if you don't otherwise need the\n        flexibility offered by this flag. One possible mitigation to this is to\n        use the --pre-glob flag to limit which files a preprocessor is run\n        with.\n\n        A preprocessor is not run when ripgrep is searching stdin.\n\n        When searching over sets of files that may require one of several\n        preprocessors, COMMAND should be a wrapper program which first\n        classifies PATH based on magic numbers/content or based on the PATH\n        name and then dispatches to an appropriate preprocessor. Each COMMAND\n        also has its standard input connected to PATH for convenience.\n\n        For example, a shell script for COMMAND might look like:\n\n            case \"$1\" in\n            *.pdf)\n                exec pdftotext \"$1\" -\n                ;;\n            *)\n                case $(file \"$1\") in\n                *Zstandard*)\n                    exec pzstd -cdq\n                    ;;\n                *)\n                    exec cat\n                    ;;\n                esac\n                ;;\n            esac\n\n        The above script uses pdftotext to convert a PDF file to plain text.\n        For all other files, the script uses the file utility to sniff the type\n        of the file based on its contents. If it is a compressed file in the\n        Zstandard format, then pzstd is used to decompress the contents to\n        stdout.\n\n        This overrides the -z/--search-zip flag.\n\n{{help:pre-glob:0}}\n        This flag works in conjunction with the --pre flag. Namely, when one or\n        more --pre-glob flags are given, then only files that match the given\n        set of globs will be handed to the command specified by the --pre flag.\n        Any non-matching files will be searched without using the preprocessor\n        command.\n\n        This flag is useful when searching many files with the --pre flag.\n        Namely, it provides the ability to avoid process overhead for files\n        that don't need preprocessing. For example, given the following shell\n        script, pre-pdftotext:\n\n            #!/bin/sh\n            pdftotext \"$1\" -\n\n        then it is possible to use --pre pre-pdftotext --pre-glob '*.pdf' to\n        make it so ripgrep only executes the pre-pdftotext command on files\n        with a .pdf extension.\n\n        Multiple --pre-glob flags may be used. Globbing rules match gitignore\n        globs. Precede a glob with a ! to exclude it.\n\n        This flag has no effect if the --pre flag is not used.\n\n{{help:search-zip:0}}\n        Compressed search is deferred in cli/rg. An effective -z or\n{{help:search-zip:1}}\n        retains option precedence.\n\n        This flag can be disabled with --no-search-zip.\n\nSEARCH OPTIONS:\n{{help:case-sensitive:0}}\n        Execute the search case sensitively. This is the default mode.\n\n        This is a global option that applies to all patterns given to ripgrep.\n        Individual patterns can still be matched case insensitively by using\n        inline regex flags. For example, (?i)abc will match abc case\n        insensitively even when this flag is used.\n\n        This flag overrides the -i/--ignore-case and -S/--smart-case flags.\n\n{{help:crlf:0}}\n        When enabled, ripgrep will treat CRLF (\\r\\n) as a line terminator\n        instead of just \\n.\n\n        Principally, this permits the line anchor assertions ^ and $ in regex\n        patterns to treat CRLF, CR or LF as line terminators instead of just\n        LF. Note that they will never match between a CR and a LF. CRLF is\n        treated as one single line terminator.\n\n        When using the default regex engine, CRLF support can also be enabled\n        inside the pattern with the R flag. For example, (?R:$) will match just\n        before either CR or LF, but never between CR and LF.\n\n        This flag overrides --null-data.\n\n        This flag can be disabled with --no-crlf.\n\n{{help:dfa-size-limit:0}}\n        This option is rejected in cli/rg because the regex engine does not\n        expose a byte-budgeted DFA cache. Its fixed state-count limit is not a\n        byte limit.\n\n        Numeric values and K, M or G suffixes are validated before the\n        unsupported option diagnostic. No supplied value, including zero,\n        changes the cache budget.\n\n{{help:encoding:0}}\n        Specify the text encoding that ripgrep will use on all files searched.\n        The default value is auto, which will cause ripgrep to do a best effort\n        automatic detection of encoding on a per-file basis. Automatic\n        detection in this case only applies to files that begin with a UTF-8 or\n        UTF-16 byte-order mark (BOM). No other automatic detection is\n        performed. One can also specify none which will then completely disable\n        BOM sniffing and always result in searching the raw bytes, including a\n        BOM if it's present, regardless of its encoding.\n\n        Other supported values can be found in the list of labels here:\n        https://encoding.spec.whatwg.org/#concept-encoding-get.\n\n        For more details on encoding and how ripgrep deals with it, see\n        GUIDE.md.\n\n        The encoding detection that ripgrep uses can be reverted to its\n        automatic mode via the --no-encoding flag.\n\n{{help:engine:0}}\n        Select default or auto; this build only provides the default engine.\n        Selecting pcre2 fails.\n\n{{help:fixed-strings:0}}\n        Treat all patterns as literals instead of as regular expressions. When\n        this flag is used, special regular expression meta characters such as\n        .(){}*+ should not need be escaped.\n\n        This flag can be disabled with --no-fixed-strings.\n\n{{help:ignore-case:0}}\n        When this flag is provided, all patterns will be searched case\n        insensitively. The case insensitivity rules used by ripgrep's default\n        regex engine conform to Unicode's \"simple\" case folding rules.\n\n        This is a global option that applies to all patterns given to ripgrep.\n        Individual patterns can still be matched case sensitively by using\n        inline regex flags. For example, (?-i)abc will match abc case\n        sensitively even when this flag is used.\n\n        This flag overrides -s/--case-sensitive and -S/--smart-case.\n\n{{help:invert-match:0}}\n        This flag inverts matching. That is, instead of printing lines that\n        match, ripgrep will print lines that don't match.\n\n        Note that this only inverts line-by-line matching. For example,\n        combining this flag with -l/--files-with-matches will emit files that\n        contain any lines that do not match the patterns given. That's not the\n        same as, for example, --files-without-match, which will emit files that\n        do not contain any matching lines.\n\n        This flag can be disabled with --no-invert-match.\n\n{{help:line-regexp:0}}\n        When enabled, ripgrep will only show matches surrounded by line\n        boundaries. This is equivalent to surrounding every pattern with ^ and\n        $. In other words, this only prints lines where the entire line\n        participates in a match.\n\n        This overrides the -w/--word-regexp flag.\n\n{{help:max-count:0}}\n        Limit the number of matching lines per file searched to NUM.\n\n        When -U/--multiline is used, a single match that spans multiple lines\n        is only counted once for the purposes of this limit. Multiple matches\n        in a single line are counted only once, as they would be in\n        non-multiline mode.\n\n        When combined with -A/--after-context or -C/--context, it's possible\n        for more matches than the maximum to be printed if contextual lines\n        contain a match.\n\n        Note that 0 is a legal value but not likely to be useful. When used,\n        ripgrep won't search anything.\n\n{{help:mmap:0}}\n        Accepted for compatibility; this build always uses ordinary reads, not\n        memory maps.\n\n        This flag can be disabled with --no-mmap.\n\n{{help:multiline:0}}\n        Permit matches spanning lines. This can require the complete input in\n        memory, including stdin; this build does not memory-map files.\n\n        This flag can be disabled with --no-multiline.\n\n{{help:multiline-dotall:0}}\n        This flag enables \"dot all\" mode in all regex patterns. This causes .\n        to match line terminators when multiline searching is enabled. This\n        flag has no effect if multiline searching isn't enabled with the\n        -U/--multiline flag.\n\n        Normally, a . will match any character except line terminators. While\n        this behavior typically isn't relevant for line-oriented matching\n        (since matches can span at most one line), this can be useful when\n        searching with the -U/--multiline flag. By default, multiline mode runs\n        without \"dot all\" mode enabled.\n\n        This flag is generally intended to be used in an alias or your ripgrep\n        config file if you prefer \"dot all\" semantics by default. Note that\n        regardless of whether this flag is used, \"dot all\" semantics can still\n        be controlled via inline flags in the regex pattern itself, e.g.,\n        (?s:.) always enables \"dot all\" whereas (?-s:.) always disables \"dot\n        all\". Moreover, you can use character classes like \\p{any} to match any\n        Unicode codepoint regardless of whether \"dot all\" mode is enabled or\n        not.\n\n        This flag can be disabled with --no-multiline-dotall.\n\n{{help:no-unicode:0}}\n        This flag disables Unicode mode for all patterns given to ripgrep.\n\n        By default, ripgrep will enable \"Unicode mode\" in all of its regexes.\n        This has a number of consequences:\n\n        • . will only match valid UTF-8 encoded Unicode scalar values.\n\n        • Classes like \\w, \\s, \\d are all Unicode aware and much bigger than\n        their ASCII only versions.\n\n        • Case insensitive matching will use Unicode case folding.\n\n        • A large array of classes like \\p{Emoji} are available. (Although the\n        specific set of classes available varies based on the regex engine. In\n        general, the default regex engine has more classes available to it.)\n\n        • Word boundaries (\\b and \\B) use the Unicode definition of a word\n        character.\n\n        In some cases it can be desirable to turn these things off. This flag\n        will do exactly that. For example, Unicode mode can sometimes have a\n        negative impact on performance, especially when things like \\w are used\n        frequently (including via bounded repetitions like \\w{100}) when only\n        their ASCII interpretation is needed.\n\n        This flag can be disabled with --unicode.\n\n{{help:null-data:0}}\n        Enabling this flag causes ripgrep to use NUL as a line terminator\n        instead of the default of \\n.\n\n        This is useful when searching large binary files that would otherwise\n        have very long lines if \\n were used as the line terminator. In\n        particular, ripgrep requires that, at a minimum, each line must fit\n        into memory. Using NUL instead can be a useful stopgap to keep memory\n        requirements low and avoid OOM (out of memory) conditions.\n\n        This is also useful for processing NUL delimited data, such as that\n        emitted when using ripgrep's -0/--null flag or find's --print0 flag.\n\n        Using this flag implies -a/--text. It also overrides --crlf.\n\n{{help:pcre2:0}}\n        Unsupported in this build. Use the default regex engine; patterns\n        requiring PCRE2 are rejected.\n\n        This flag can be disabled with --no-pcre2.\n\n{{help:regex-size-limit:0}}\n        The size limit of the compiled regex, where the compiled regex\n        generally corresponds to a single object in memory that can match all\n        of the patterns provided to ripgrep. The default limit is generous\n        enough that most reasonable patterns (or even a small number of them)\n        should fit.\n\n        This useful to change when you explicitly want to let ripgrep spend\n        potentially much more time and/or memory building a regex matcher.\n\n        The input format accepts suffixes of K, M or G which correspond to\n        kilobytes, megabytes and gigabytes, respectively. If no suffix is\n        provided the input is treated as bytes.\n\n{{help:smart-case:0}}\n        This flag instructs ripgrep to searches case insensitively if the\n        pattern is all lowercase. Otherwise, ripgrep will search case\n        sensitively.\n\n        A pattern is considered all lowercase if both of the following rules\n        hold:\n\n        • First, the pattern contains at least one literal character. For\n        example, a\\w contains a literal (a) but just \\w does not.\n\n        • Second, of the literals in the pattern, none of them are considered\n        to be uppercase according to Unicode. For example, foo\\pL has no\n        uppercase literals but Foo\\pL does.\n\n        This overrides the -s/--case-sensitive and -i/--ignore-case flags.\n\n{{help:stop-on-nonmatch:0}}\n        Enabling this option will cause ripgrep to stop reading a file once it\n        encounters a non-matching line after it has encountered a matching\n        line. This is useful if it is expected that all matches in a given file\n        will be on sequential lines, for example due to the lines being sorted.\n\n        This overrides the -U/--multiline flag.\n\n{{help:text:0}}\n        This flag instructs ripgrep to search binary files as if they were\n        text. When this flag is present, ripgrep's binary file detection is\n        disabled. This means that when a binary file is searched, its contents\n        may be printed if there is a match. This may cause escape codes to be\n        printed that alter the behavior of your terminal.\n\n        When binary file detection is enabled, it is imperfect. In general, it\n        uses a simple heuristic. If a NUL byte is seen during search, then the\n        file is considered binary and searching stops (unless this flag is\n        present). Alternatively, if the --binary flag is used, then ripgrep\n        will only quit when it sees a NUL byte after it sees a match (or\n        searches the entire file).\n\n        This flag overrides the --binary flag.\n\n        This flag can be disabled with --no-text.\n\n{{help:threads:0}}\n        Accepted for compatibility; this build searches on one thread\n        regardless of NUM.\n\n{{help:word-regexp:0}}\n        When enabled, ripgrep will only show matches surrounded by word\n        boundaries. This is equivalent to surrounding every pattern with\n        \\b{start-half} and \\b{end-half}. These are a custom syntax from\n        ripgrep's default regex engine that, unlike \\b, doesn't require\n        matching a word character on one side. That is, \\b{start-half}\n        corresponds to matching \\W|\\A on the left and \\b{end-half} corresponds\n        to matching \\W|\\z on the right.\n\n        This overrides the -x/--line-regexp flag.\n\n{{help:auto-hybrid-regex:0}}\n        Accepted for compatibility; PCRE2 is unavailable, so only the default\n        regex engine is used.\n\n        This flag can be disabled with --no-auto-hybrid-regex.\n\n{{help:no-pcre2-unicode:0}}\n        DEPRECATED. Use --no-unicode instead.\n\n        Note that Unicode mode is enabled by default.\n\n        This flag can be disabled with --pcre2-unicode.\n\nFILTER OPTIONS:\n{{help:binary:0}}\n        Enabling this flag will cause ripgrep to search binary files. By\n        default, ripgrep attempts to automatically skip binary files in order\n        to improve the relevance of results and make the search faster.\n\n        Binary files are heuristically detected based on whether they contain a\n        NUL byte or not. By default (without this flag set), once a NUL: byte\n        is seen, ripgrep will stop searching the file. Usually, NUL bytes occur\n        in the beginning of most binary files. If a NUL byte occurs after a\n        match, then ripgrep will not print the match, stop searching that file,\n        and emit a warning that some matches are being suppressed.\n\n        In contrast, when this flag is provided, ripgrep will continue\n        searching a file even if a NUL byte is found. In particular, if a NUL\n        byte is found then ripgrep will continue searching until either a match\n        is found or the end of the file is reached, whichever comes sooner. If\n        a match is found, then ripgrep will stop and print a warning saying\n        that the search stopped prematurely.\n\n        If you want ripgrep to search a file without any special NUL byte\n        handling at all (and potentially print binary data to stdout), then you\n        should use the -a/--text flag.\n\n        The --binary flag is a flag for controlling ripgrep's automatic\n        filtering mechanism. As such, it does not need to be used when\n        searching a file explicitly or when searching stdin. That is, it is\n        only applicable when recursively searching a directory.\n\n        When the -u/--unrestricted flag is provided for a third time, then this\n        flag is automatically enabled.\n\n        This flag overrides the -a/--text flag.\n\n        This flag can be disabled with --no-binary.\n\n{{help:follow:0}}\n        This flag instructs ripgrep to follow symbolic links while traversing\n        directories. This behavior is disabled by default. Note that ripgrep\n        will check for symbolic link loops and report errors if it finds one.\n        ripgrep will also report errors for broken links. To suppress error\n        messages, use the --no-messages flag.\n\n        This flag can be disabled with --no-follow.\n\n{{help:glob:0}}\n        Include or exclude files and directories for searching that match the\n        given glob. This always overrides any other ignore logic. Multiple glob\n        flags may be used. Globbing rules match .gitignore globs. Precede a\n        glob with a ! to exclude it. If multiple globs match a file or\n        directory, the glob given later in the command line takes precedence.\n\n        As an extension, globs support specifying alternatives: \"-g'\"ab{c,d}*'\n        is equivalent to \"-g\"\"abc\"\"-g\"abd. Empty alternatives like \"-g'\"ab{,c}'\n        are not currently supported. Note that this syntax extension is also\n        currently enabled in gitignore files, even though this syntax isn't\n        supported by git itself. ripgrep may disable this syntax extension in\n        gitignore files, but it will always remain available via the -g/--glob\n        flag.\n\n        When this flag is set, every file and directory is applied to it to\n        test for a match. For example, if you only want to search in a\n        particular directory foo, then \"-g\"foo is incorrect because foo/bar\n        does not match the glob foo. Instead, you should use \"-g'\"foo/**'.\n\n{{help:glob-case-insensitive:0}}\n        Process all glob patterns given with the -g/--glob flag case\n        insensitively. This effectively treats -g/--glob as --iglob.\n\n        This flag can be disabled with --no-glob-case-insensitive.\n\n{{help:hidden:0}}\n        Search hidden files and directories. By default, hidden files and\n        directories are skipped. Note that if a hidden file or a directory is\n        whitelisted in an ignore file, then it will be searched even if this\n        flag isn't provided. Similarly if a hidden file or directory is given\n        explicitly as an argument to ripgrep.\n\n        A file or directory is considered hidden if its base name starts with a\n        dot character (.). On operating systems which support a \"hidden\" file\n        attribute, like Windows, files with this attribute are also considered\n        hidden.\n\n        Note that -./--hidden will include files and folders like .git\n        regardless of --no-ignore-vcs. To exclude such paths when using\n        -./--hidden, you must explicitly ignore them using another flag or\n        ignore file.\n\n        This flag can be disabled with --no-hidden.\n\n{{help:iglob:0}}\n        Include or exclude files and directories for searching that match the\n        given glob. This always overrides any other ignore logic. Multiple glob\n        flags may be used. Globbing rules match .gitignore globs. Precede a\n        glob with a ! to exclude it. If multiple globs match a file or\n        directory, the glob given later in the command line takes precedence.\n        Globs used via this flag are matched case insensitively.\n\n{{help:ignore-file:0}}\n        Specifies a path to one or more gitignore formatted rules files. These\n        patterns are applied after the patterns found in .gitignore, .rgignore\n        and .ignore are applied and are matched relative to the current working\n        directory. That is, files specified via this flag have lower precedence\n        than files automatically found in the directory tree. Multiple\n        additional ignore files can be specified by using this flag repeatedly.\n        When specifying multiple ignore files, earlier files have lower\n        precedence than later files.\n\n        If you are looking for a way to include or exclude files and\n        directories directly on the command line, then use -g/--glob instead.\n\n{{help:ignore-file-case-insensitive:0}}\n        Process ignore files (.gitignore, .ignore, etc.) case insensitively.\n        Note that this comes with a performance penalty and is most useful on\n        case insensitive file systems (such as Windows).\n\n        This flag can be disabled with --no-ignore-file-case-insensitive.\n\n{{help:max-depth:0}}\n        This flag limits the depth of directory traversal to NUM levels beyond\n        the paths given. A value of 0 only searches the explicitly given paths\n        themselves.\n\n        For example, rg --max-depth 0 dir/ is a no-op because dir/ will not be\n        descended into. rg --max-depth 1 dir/ will search only the direct\n        children of dir.\n\n        An alternative spelling for this flag is --maxdepth.\n\n{{help:max-filesize:0}}\n        Ignore files larger than NUM in size. This does not apply to\n        directories.\n\n        The input format accepts suffixes of K, M or G which correspond to\n        kilobytes, megabytes and gigabytes, respectively. If no suffix is\n        provided the input is treated as bytes.\n\n        Examples: --max-filesize 50K or --max-filesize 80M.\n\n{{help:no-ignore:0}}\n        When set, ignore files such as .gitignore, .ignore and .rgignore will\n        not be respected. This implies --no-ignore-dot, --no-ignore-exclude,\n{{help:no-ignore-global:0}}\n\n        This does not imply --no-ignore-files, since --ignore-file is specified\n        explicitly as a command line argument.\n\n        When given only once, the -u/--unrestricted flag is identical in\n        behavior to this flag and can be considered an alias. However,\n        subsequent -u/--unrestricted flags have additional effects.\n\n        This flag can be disabled with --ignore.\n\n{{help:no-ignore-dot:0}}\n        Don't respect filter rules from .ignore or .rgignore files.\n\n        This does not impact whether ripgrep will ignore files and directories\n        whose names begin with a dot. For that, see the -./--hidden flag. This\n        flag also does not impact whether filter rules from .gitignore files\n        are respected.\n\n        This flag can be disabled with --ignore-dot.\n\n{{help:no-ignore-exclude:0}}\n        Don't respect filter rules from files that are manually configured for\n        the repository. For example, this includes git's .git/info/exclude.\n\n        This flag can be disabled with --ignore-exclude.\n\n{{help:no-ignore-files:0}}\n        When set, any --ignore-file flags, even ones that come after this flag,\n        are ignored.\n\n        This flag can be disabled with --ignore-files.\n\n{{help:no-ignore-global:1}}\n        Don't respect filter rules from ignore files that come from \"global\"\n        sources such as git's core.excludesFile configuration option (which\n        defaults to $HOME/.config/git/ignore).\n\n        This flag can be disabled with --ignore-global.\n\n{{help:no-ignore-parent:0}}\n        When this flag is set, filter rules from ignore files found in parent\n        directories are not respected. By default, ripgrep will ascend the\n        parent directories of the current working directory to look for any\n        applicable ignore files that should be applied. In some cases this may\n        not be desirable.\n\n        This flag can be disabled with --ignore-parent.\n\n{{help:no-ignore-vcs:0}}\n        When given, filter rules from source control ignore files (e.g.,\n        .gitignore) are not respected. By default, ripgrep respects git's\n        ignore rules for automatic filtering. In some cases, it may not be\n        desirable to respect the source control's ignore rules and instead only\n        respect rules in .ignore or .rgignore.\n\n        Note that this flag does not directly affect the filtering of source\n        control files or folders that start with a dot (.), like .git. These\n        are affected by -./--hidden and its related flags instead.\n\n        This flag implies --no-ignore-parent for source control ignore files as\n        well.\n\n        This flag can be disabled with --ignore-vcs.\n\n{{help:no-require-git:0}}\n        When this flag is given, source control ignore files such as .gitignore\n        are respected even if no git repository is present.\n\n        By default, ripgrep will only respect filter rules from source control\n        ignore files when ripgrep detects that the search is executed inside a\n        source control repository. For example, when a .git directory is\n        observed.\n\n        This flag relaxes the default restriction. For example, it might be\n        useful when the contents of a git repository are stored or copied\n        somewhere, but where the repository state is absent.\n\n        This flag can be disabled with --require-git.\n\n{{help:one-file-system:0}}\n        Unsupported in this build. An effective --one-file-system exits 2\n        before traversal; --no-one-file-system disables it.\n\n        This flag can be disabled with --no-one-file-system.\n\n{{help:type:0}}\n        This flag limits ripgrep to searching files matching TYPE. Multiple\n        -t/--type flags may be provided.\n\n        This flag supports the special value all, which will behave as if\n        -t/--type was provided for every file type supported by ripgrep\n        (including any custom file types). The end result is that --type=all\n        causes ripgrep to search in \"whitelist\" mode, where it will only search\n        files it recognizes via its type definitions.\n\n        Note that this flag has lower precedence than both the -g/--glob flag\n        and any rules found in ignore files.\n\n        To see the list of available file types, use the --type-list flag.\n\n{{help:type-not:0}}\n        Do not search files matching TYPE. Multiple -T/--type-not flags may be\n        provided. Use the --type-list flag to list all available types.\n\n        This flag supports the special value all, which will behave as if\n        -T/--type-not was provided for every file type supported by ripgrep\n        (including any custom file types). The end result is that\n{{help:type-not:1}}\n        will only search files that are unrecognized by its type definitions.\n\n        To see the list of available file types, use the --type-list flag.\n\n{{help:type-add:0}}\n        This flag adds a new glob for a particular file type. Only one glob can\n        be added at a time. Multiple --type-add flags can be provided. Unless\n{{help:type-clear:0}}\n        inside of ripgrep.\n\n        Note that this must be passed to every invocation of ripgrep. Type\n        settings are not persisted. See CONFIGURATION FILES for a workaround.\n\n        Example:\n\n            rg --type-add 'foo:*.foo' -tfoo PATTERN\n\n        This flag can also be used to include rules from other types with the\n        special include directive. The include directive permits specifying one\n        or more other type names (separated by a comma) that have been defined\n        and its rules will automatically be imported into the type specified.\n        For example, to create a type called src that matches C++, Python and\n        Markdown files, one can use:\n\n{{help:type-add:1}}\n\n        Additional glob rules can still be added to the src type by using this\n        flag again:\n\n{{help:type-add:2}}\n\n        Note that type names must consist only of Unicode letters or numbers.\n        Punctuation characters are not allowed.\n\n{{help:type-clear:1}}\n        Clear the file type globs previously defined for TYPE. This clears any\n        previously defined globs for the TYPE, but globs can be added after\n        this flag.\n\n        Note that this must be passed to every invocation of ripgrep. Type\n        settings are not persisted. See CONFIGURATION FILES for a workaround.\n\n{{help:unrestricted:0}}\n        This flag reduces the level of \"smart\" filtering. Repeated uses (up to\n        3) reduces the filtering even more. When repeated three times, ripgrep\n        will search every file in a directory tree.\n\n        A single -u/--unrestricted flag is equivalent to --no-ignore. Two\n        -u/--unrestricted flags is equivalent to --no-ignore -./--hidden. Three\n        -u/--unrestricted flags is equivalent to --no-ignore -./--hidden\n        --binary.\n\n        The only filtering ripgrep still does when -uuu is given is to skip\n        symbolic links and to avoid printing matches from binary files.\n        Symbolic links can be followed via the -L/--follow flag, and binary\n        files can be treated as text files via the -a/--text flag.\n\nOUTPUT OPTIONS:\n{{help:after-context:0}}\n        Show NUM lines after each match.\n\n        This overrides the --passthru flag and partially overrides the\n        -C/--context flag.\n\n{{help:before-context:0}}\n        Show NUM lines before each match.\n\n        This overrides the --passthru flag and partially overrides the\n        -C/--context flag.\n\n{{help:block-buffered:0}}\n        Buffer output in blocks (the default). Overrides --line-buffered.\n\n        This flag can be disabled with --no-block-buffered.\n\n{{help:byte-offset:0}}\n        Print the 0-based byte offset within the input file before each line of\n        output. If -o/--only-matching is specified, print the offset of the\n        matched text itself.\n\n        If ripgrep does transcoding, then the byte offset is in terms of the\n        result of transcoding and not the original data. This applies similarly\n        to other transformations on the data, such as decompression or a --pre\n        filter.\n\n        This flag can be disabled with --no-byte-offset.\n\n{{help:color:0}}\n        Select never, auto, always or ansi. Default auto produces no color\n        because terminal detection is unavailable; use always or ansi\n        explicitly.\n\n{{help:colors:0}}\n        This flag specifies color settings for use in the output. This flag may\n        be provided multiple times. Settings are applied iteratively.\n        Pre-existing color labels are limited to one of eight choices: red,\n        blue, green, cyan, magenta, yellow, white and black. Styles are limited\n        to nobold, bold, nointense, intense, nounderline, underline, noitalic\n        or italic.\n\n        The format of the flag is {type}:{attribute}:{value}. type should be\n        one of path, line, column, highlight or match. attribute can be fg, bg\n        or style. value is either a color (for fg and bg) or a text style. A\n        special format, {type}:none, will clear all color settings for type.\n\n        For example, the following command will change the match color to\n        magenta and the background color for line numbers to yellow:\n\n            rg --colors 'match:fg:magenta' --colors 'line:bg:yellow'\n\n        Another example, the following command will \"highlight\" the\n        non-matching text in matching lines:\n\n            rg --colors 'highlight:bg:yellow' --colors 'highlight:fg:black'\n\n        The \"highlight\" color type is particularly useful for contrasting\n        matching lines with surrounding context printed by the\n        -B/--before-context, -A/--after-context, -C/--context or --passthru\n        flags.\n\n        Extended colors can be used for value when the tty supports ANSI color\n        sequences. These are specified as either x (256-color) or x,x,x (24-bit\n        truecolor) where x is a number between 0 and 255 inclusive. x may be\n        given as a normal decimal number or a hexadecimal number, which is\n        prefixed by 0x.\n\n        For example, the following command will change the match background\n        color to that represented by the rgb value (0,128,255):\n\n            rg --colors 'match:bg:0,128,255'\n\n        or, equivalently,\n\n            rg --colors 'match:bg:0x0,0x80,0xFF'\n\n        Note that the intense and nointense styles will have no effect when\n        used alongside these extended color codes.\n\n{{help:column:0}}\n        Show column numbers (1-based). This only shows the column numbers for\n        the first match on each line. This does not try to account for Unicode.\n        One byte is equal to one column. This implies -n/--line-number.\n\n        When -o/--only-matching is used, then the column numbers written\n        correspond to the start of each match.\n\n        This flag can be disabled with --no-column.\n\n{{help:context:0}}\n        Show NUM lines before and after each match. This is equivalent to\n        providing both the -B/--before-context and -A/--after-context flags\n        with the same value.\n\n        This overrides the --passthru flag. The -A/--after-context and\n        -B/--before-context flags both partially override this flag, regardless\n        of the order. For example, -A2 -C1 is equivalent to -A2 -B1.\n\n{{help:context-separator:0}}\n        The string used to separate non-contiguous context lines in the output.\n        This is only used when one of the context flags is used (that is,\n        -A/--after-context, -B/--before-context or -C/--context). Escape\n        sequences like \\x7F or \\t may be used. The default value is --.\n\n        When the context separator is set to an empty string, then a line break\n        is still inserted. To completely disable context separators, use the\n{{help:context-separator:1}}\n\n{{help:field-context-separator:0}}\n        Set the field context separator. This separator is only used when\n        printing contextual lines. It is used to delimit file paths, line\n        numbers, columns and the contextual line itself. The separator may be\n        any number of bytes, including zero. Escape sequences like \\x7F or \\t\n        may be used.\n\n        The - character is the default value.\n\n{{help:field-match-separator:0}}\n        Set the field match separator. This separator is only used when\n        printing matching lines. It is used to delimit file paths, line\n        numbers, columns and the matching line itself. The separator may be any\n        number of bytes, including zero. Escape sequences like \\x7F or \\t may\n        be used.\n\n        The : character is the default value.\n\n{{help:heading:0}}\n        Print a filename heading before its matches. Headings are off by\n        default on every output destination; --heading enables them explicitly.\n\n        This flag can be disabled with --no-heading.\n\n{{help:help:0}}\n        display this help and exit. -h selects the short option index; --help\n        includes descriptions. Standalone --help bypasses configuration and\n        leaves stdin unread.\n\n{{help:hostname-bin:0}}\n        This flag controls how ripgrep determines this system's hostname. The\n        flag's value should correspond to an executable (either a path or\n        something that can be found via your system's PATH environment\n        variable). When set, ripgrep will run this executable, with no\n        arguments, and treat its output (with leading and trailing whitespace\n        stripped) as your system's hostname.\n\n        When not set (the default, or the empty string), ripgrep will try to\n        automatically detect your system's hostname. On Unix, this corresponds\n        to calling gethostname. On Windows, this corresponds to calling\n        GetComputerNameExW to fetch the system's \"physical DNS hostname.\"\n\n        ripgrep uses your system's hostname for producing hyperlinks.\n\n{{help:hyperlink-format:0}}\n        Set a hyperlink format with path, host, line and column placeholders.\n        Automatic hyperlinks remain off because terminal detection is\n        unavailable.\n\n{{help:include-zero:0}}\n        When used with -c/--count or --count-matches, this causes ripgrep to\n        print the number of matches for each file even if there were zero\n        matches. This is disabled by default but can be enabled to make ripgrep\n        behave more like grep.\n\n        This flag can be disabled with --no-include-zero.\n\n{{help:line-buffered:0}}\n        Flush output after each matching line. This must be selected\n        explicitly; terminal detection does not enable it.\n\n        This flag can be disabled with --no-line-buffered.\n\n{{help:line-number:0}}\n        Print one-based line numbers. Off by default on every output\n        destination; -n enables them explicitly.\n\n{{help:no-line-number:0}}\n        Suppress line numbers, including when an earlier option enabled them.\n\n{{help:max-columns:0}}\n        When given, ripgrep will omit lines longer than this limit in bytes.\n        Instead of printing long lines, only the number of matches in that line\n        is printed.\n\n        When this flag is omitted or is set to 0, then it has no effect.\n\n{{help:max-columns-preview:0}}\n        Prints a preview for lines exceeding the configured max column limit.\n\n        When the -M/--max-columns flag is used, ripgrep will by default\n        completely replace any line that is too long with a message indicating\n        that a matching line was removed. When this flag is combined with\n        -M/--max-columns, a preview of the line (corresponding to the limit\n        size) is shown instead, where the part of the line exceeding the limit\n        is not shown.\n\n        If the -M/--max-columns flag is not set, then this has no effect.\n\n        This flag can be disabled with --no-max-columns-preview.\n\n{{help:null:0}}\n        Whenever a file path is printed, follow it with a NUL byte. This\n        includes printing file paths before matches, and when printing a list\n        of matching files such as with -c/--count, -l/--files-with-matches and\n        --files. This option is useful for use with xargs.\n\n{{help:only-matching:0}}\n        Print only the matched (non-empty) parts of a matching line, with each\n        such part on a separate output line.\n\n{{help:path-separator:0}}\n        Set the path separator to use when printing file paths. This defaults\n        to your platform's path separator, which is / on Unix and \\ on Windows.\n        This flag is intended for overriding the default when the environment\n        demands it (e.g., cygwin). A path separator is limited to a single\n        byte.\n\n        Setting this flag to an empty string reverts it to its default\n        behavior. That is, the path separator is automatically chosen based on\n        the environment.\n\n{{help:passthru:0}}\n        Print both matching and non-matching lines.\n\n        Another way to achieve a similar effect is by modifying your pattern to\n        match the empty string. For example, if you are searching using rg foo,\n        then using rg '^|foo' instead will emit every line in every file\n        searched, but only occurrences of foo will be highlighted. This flag\n        enables the same behavior without needing to modify the pattern.\n\n        An alternative spelling for this flag is --passthrough.\n\n        This overrides the -C/--context, -A/--after-context and\n        -B/--before-context flags.\n\n{{help:pretty:0}}\n        Enable color, headings and line numbers explicitly, including on\n        redirected output.\n\n{{help:quiet:0}}\n        Do not print anything to stdout. If a match is found in a file, then\n        ripgrep will stop searching. This is useful when ripgrep is used only\n        for its exit code (which will be an error code if no matches are\n        found).\n\n        When --files is used, ripgrep will stop finding files after finding the\n        first file that does not match any ignore rules.\n\n{{help:replace:0}}\n        Replaces every match with the text given when printing results. Neither\n        this flag nor any other ripgrep flag will modify your files.\n\n        Capture group indices (e.g., $5) and names (e.g., $foo) are supported\n        in the replacement string. Capture group indices are numbered based on\n        the position of the opening parenthesis of the group, where the\n        leftmost such group is $1. The special $0 group corresponds to the\n        entire match.\n\n        The name of a group is formed by taking the longest string of letters,\n        numbers and underscores (i.e. [_0-9A-Za-z]) after the $. For example,\n        $1a will be replaced with the group named 1a, not the group at index 1.\n        If the group's name contains characters that aren't letters, numbers or\n        underscores, or you want to immediately follow the group with another\n        string, the name should be put inside braces. For example, ${1}a will\n        take the content of the group at index 1 and append a to the end of it.\n\n        If an index or name does not refer to a valid capture group, it will be\n        replaced with an empty string.\n\n        In shells such as Bash and zsh, you should wrap the pattern in single\n        quotes instead of double quotes. Otherwise, capture group indices will\n        be replaced by expanded shell variables which will most likely be\n        empty.\n\n        To write a literal $, use $$.\n\n        Note that the replacement by default replaces each match, and not the\n        entire line. To replace the entire line, you should match the entire\n        line.\n\n        This flag can be used with the -o/--only-matching flag.\n\n{{help:sort:0}}\n        Sort paths ascending by path, modified or accessed, or use none.\n        Creation-time sorting (created) is unsupported. Sorting retains the\n        selected path list.\n\n{{help:sortr:0}}\n        Sort paths descending by path, modified or accessed, or use none.\n        Creation-time sorting (created) is unsupported.\n\n{{help:trim:0}}\n        When set, all ASCII whitespace at the beginning of each line printed\n        will be removed.\n\n        This flag can be disabled with --no-trim.\n\n{{help:vimgrep:0}}\n        This flag instructs ripgrep to print results with every match on its\n        own line, including line numbers and column numbers.\n\n        With this option, a line with more than one match will be printed in\n        its entirety more than once. For that reason, the total amount of\n        output as a result of this flag can be quadratic in the size of the\n        input. For example, if the pattern matches every byte in an input file,\n        then each line will be repeated for every byte matched. For this\n        reason, users should only use this flag when there is no other choice.\n        Editor integrations should prefer some other way of reading results\n        from ripgrep, such as via the --json flag. One alternative to avoiding\n        exorbitant memory usage is to force ripgrep into single threaded mode\n        with the -j/--threads flag. Note though that this will not impact the\n        total size of the output, just the heap memory that ripgrep will use.\n\n{{help:with-filename:0}}\n        This flag instructs ripgrep to print the file path for each matching\n        line. This is the default when more than one file is searched. If\n{{help:heading:1}}\n        path will be shown above clusters of matches from each file; otherwise,\n        the file name will be shown as a prefix for each matched line.\n\n        This flag overrides -I/--no-filename.\n\n{{help:no-filename:0}}\n        This flag instructs ripgrep to never print the file path with each\n        matching line. This is the default when ripgrep is explicitly\n        instructed to search one file or stdin.\n\n        This flag overrides -H/--with-filename.\n\n{{help:sort-files:0}}\n        DEPRECATED. Use --sort=path instead.\n\n        This flag instructs ripgrep to sort search results by file path\n        lexicographically in ascending order. Note that this currently disables\n        all parallelism and runs search in a single thread.\n\n        This flag overrides --sort and --sortr.\n\n        This flag can be disabled with --no-sort-files.\n\nOUTPUT MODES:\n{{help:count:0}}\n        This flag suppresses normal output and shows the number of lines that\n        match the given patterns for each file searched. Each file containing a\n        match has its path and count printed on each line. Note that unless\n        -U/--multiline is enabled and the pattern(s) given can match over\n        multiple lines, this reports the number of lines that match and not the\n        total number of matches. When multiline mode is enabled and the\n        pattern(s) given can match over multiple lines, -c/--count is\n        equivalent to --count-matches.\n\n        If only one file is given to ripgrep, then only the count is printed if\n        there is a match. The -H/--with-filename flag can be used to force\n        printing the file path in this case. If you need a count to be printed\n        regardless of whether there is a match, then use --include-zero.\n\n        Note that it is possible for this flag to have results inconsistent\n        with the output of -l/--files-with-matches. Notably, by default,\n        ripgrep tries to avoid searching files with binary data. With this\n        flag, ripgrep needs to search the entire content of files, which may\n        include binary data. But with -l/--files-with-matches, ripgrep can stop\n        as soon as a match is observed, which may come well before any binary\n        data. To avoid this inconsistency without disabling binary detection,\n        use the --binary flag.\n\n        This overrides the --count-matches flag. Note that when -c/--count is\n        combined with -o/--only-matching, then ripgrep behaves as if\n{{help:count-matches:0}}\n\n{{help:count-matches:1}}\n        This flag suppresses normal output and shows the number of individual\n        matches of the given patterns for each file searched. Each file\n        containing matches has its path and match count printed on each line.\n        Note that this reports the total number of individual matches and not\n        the number of lines that match.\n\n        If only one file is given to ripgrep, then only the count is printed if\n        there is a match. The -H/--with-filename flag can be used to force\n        printing the file path in this case.\n\n        This overrides the -c/--count flag. Note that when -c/--count is\n        combined with -o/--only-matching, then ripgrep behaves as if\n{{help:count-matches:2}}\n\n{{help:files-with-matches:0}}\n        Print only the paths with at least one match and suppress match\n        contents.\n\n        Note that it is possible for this flag to have results inconsistent\n        with the output of -c/--count. Notably, by default, ripgrep tries to\n        avoid searching files with binary data. With this flag, ripgrep might\n        stop searching before the binary data is observed. But with -c/--count,\n        ripgrep has to search the entire contents to determine the match count,\n        which means it might see binary data that causes it to skip searching\n        that file. To avoid this inconsistency without disabling binary\n        detection, use the --binary flag.\n\n        This overrides --files-without-match.\n\n{{help:files-without-match:0}}\n        Print the paths that contain zero matches and suppress match contents.\n\n        This overrides -l/--files-with-matches.\n\n{{help:json:0}}\n        Enable printing results in a JSON Lines format.\n\n        When this flag is provided, ripgrep will emit a sequence of messages,\n        each encoded as a JSON object, where there are five different message\n        types:\n\n        begin: A message that indicates a file is being searched and contains\n        at least one match.\n\n        end: A message the indicates a file is done being searched. This\n        message also include summary statistics about the search for a\n        particular file.\n\n        match: A message that indicates a match was found. This includes the\n        text and offsets of the match.\n\n        context: A message that indicates a contextual line was found. This\n        includes the text of the line, along with any match information if the\n        search was inverted.\n\n        summary: The final message emitted by ripgrep that contains summary\n        statistics about the search across all files.\n\n        Since file paths or the contents of files are not guaranteed to be\n        valid UTF-8 and JSON itself must be representable by a Unicode\n        encoding, ripgrep will emit all data elements as objects with one of\n        two keys: text or bytes. text is a normal JSON string when the data is\n        valid UTF-8 while bytes is the base64 encoded contents of the data.\n\n        The JSON Lines format is only supported for showing search results. It\n        cannot be used with other flags that emit other types of output, such\n        as --files, -l/--files-with-matches, --files-without-match, -c/--count\n        or --count-matches. ripgrep will report an error if any of the\n        aforementioned flags are used in concert with --json.\n\n        Other flags that control aspects of the standard output such as\n        -o/--only-matching, --heading, -r/--replace, -M/--max-columns, etc.,\n        have no effect when --json is set. However, enabling JSON output will\n        always implicitly and unconditionally enable --stats.\n\n        A more complete description of the JSON format used can be found here:\n        https://docs.rs/grep-printer/*/grep_printer/struct.JSON.html.\n\n        This flag can be disabled with --no-json.\n\nINDEXING:\n    Indexing is not supported in this build of ripgrep.\n\nLOGGING OPTIONS:\n{{help:debug:0}}\n        Show debug messages. Please use this when filing a bug report.\n\n        The --debug flag is generally useful for figuring out why ripgrep\n        skipped searching a particular file. The debug messages should mention\n        all files skipped and why they were skipped.\n\n        To get even more debug output, use the --trace flag, which implies\n{{help:debug:1}}\n\n{{help:no-ignore-messages:0}}\n        When this flag is enabled, all error messages related to parsing ignore\n        files are suppressed. By default, error messages are printed to stderr.\n        In cases where these errors are expected, this flag can be used to\n        avoid seeing the noise produced by the messages.\n\n        This flag can be disabled with --ignore-messages.\n\n{{help:no-messages:0}}\n        This flag suppresses some error messages. Specifically, messages\n        related to the failed opening and reading of files. Error messages\n        related to the syntax of the pattern are still shown.\n\n        This flag can be disabled with --messages.\n\n{{help:stats:0}}\n        When enabled, ripgrep will print aggregate statistics about the search.\n        When this flag is present, ripgrep will print at least the following\n        stats to stdout at the end of the search: number of matched lines,\n        number of files with matches, number of files searched, and the time\n        taken for the entire search to complete.\n\n        This set of aggregate statistics may expand over time.\n\n        This flag is always and implicitly enabled when --json is used.\n\n        Note that this flag has no effect if --files, -l/--files-with-matches\n        or --files-without-match is passed.\n\n        This flag can be disabled with --no-stats.\n\n{{help:trace:0}}\n        Show trace messages. This shows even more detail than the --debug flag.\n        Generally, one should only use this if --debug doesn't emit the\n        information you're looking for.\n\nOTHER BEHAVIORS:\n{{help:files:1}}\n        Print each file that would be searched without actually performing the\n        search. This is useful to determine whether a particular file is being\n        searched or not.\n\n        This overrides --type-list.\n\n{{help:generate:0}}\n        This flag instructs ripgrep to generate some special kind of output\n        identified by KIND and then quit without searching. KIND can be one of\n        the following values:\n\n        man: Generates a manual page for ripgrep in the roff format.\n\n        complete-bash: Generates a completion script for the bash shell.\n\n        complete-zsh: Generates a completion script for the zsh shell.\n\n        complete-fish: Generates a completion script for the fish shell.\n\n        complete-powershell: Generates a completion script for PowerShell.\n\n        The output is written to stdout. The list above may expand over time.\n\n{{help:no-config:0}}\n        When set, ripgrep will never read configuration files. When this flag\n        is present, ripgrep will not respect the RIPGREP_CONFIG_PATH\n        environment variable.\n\n        If ripgrep ever grows a feature to automatically read configuration\n        files in pre-defined locations, then this flag will also disable that\n        behavior as well.\n\n{{help:pcre2-version:0}}\n        When this flag is present, ripgrep will print the version of PCRE2 in\n        use, along with other information, and then exit. If PCRE2 is not\n        available, then ripgrep will print an error message and exit with an\n        error code.\n\n{{help:type-list:0}}\n        Show all supported file types and their corresponding globs. This takes\n        any --type-add and --type-clear flags given into account. Each type is\n        printed on its own line, followed by a : and then a comma-delimited\n        list of globs for that type on the same line.\n\n{{help:version:0}}\n        display version and exit. Prints the cli/rg release number, not the\n        upstream ripgrep release.\n",
+  "catalog_options": [
+    "regexp",
+    "file",
+    "fixed-strings",
+    "ignore-case",
+    "smart-case",
+    "word-regexp",
+    "line-regexp",
+    "invert-match",
+    "only-matching",
+    "replace",
+    "line-number",
+    "byte-offset",
+    "count",
+    "count-matches",
+    "files",
+    "files-with-matches",
+    "files-without-match",
+    "quiet",
+    "max-count",
+    "before-context",
+    "after-context",
+    "context",
+    "glob",
+    "iglob",
+    "hidden",
+    "no-ignore",
+    "ignore-file",
+    "type",
+    "type-not",
+    "type-add",
+    "type-list",
+    "follow",
+    "max-depth",
+    "sort",
+    "sortr",
+    "multiline",
+    "multiline-dotall",
+    "crlf",
+    "null",
+    "null-data",
+    "text",
+    "binary",
+    "encoding",
+    "json",
+    "color",
+    "colors",
+    "heading",
+    "with-filename",
+    "no-filename",
+    "pre",
+    "pre-glob",
+    "no-config"
+  ],
+  "options": [
+    {
+      "name": "regexp",
+      "aliases": [
+        "--regexp",
+        "-e"
+      ],
+      "value": "required",
+      "description": "A pattern to search for.",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "PATTERN",
+        "category": "Input",
+        "long_help": "\nA pattern to search for. This option can be provided multiple times, where\nall patterns given are searched, in addition to any patterns provided by\n\\flag{file}. Lines matching at least one of the provided patterns are printed.\nThis flag can also be used when searching for patterns that start with a dash.\n.sp\nFor example, to search for the literal \\fB\\-foo\\fP:\n.sp\n.EX\n    rg \\-e \\-foo\n.EE\n.sp\nYou can also use the special \\fB\\-\\-\\fP delimiter to indicate that no more\nflags will be provided. Namely, the following is equivalent to the above:\n.sp\n.EX\n    rg \\-\\- \\-foo\n.EE\n.sp\nWhen \\flag{file} or \\flag{regexp} is used, then ripgrep treats all positional\narguments as files or directories to search.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -e PATTERN, --regexp=PATTERN"
+      ]
+    },
+    {
+      "name": "file",
+      "aliases": [
+        "--file",
+        "-f"
+      ],
+      "value": "required",
+      "description": "Search for patterns from the given file.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "PATTERNFILE",
+        "category": "Input",
+        "long_help": "\nSearch for patterns from the given file, with one pattern per line. When this\nflag is used multiple times or in combination with the \\flag{regexp} flag, then\nall patterns provided are searched. Empty pattern lines will match all input\nlines, and the newline is not counted as part of the pattern.\n.sp\nA line is printed if and only if it matches at least one of the patterns.\n.sp\nWhen \\fIPATTERNFILE\\fP is \\fB-\\fP, then \\fBstdin\\fP will be read for the\npatterns.\n.sp\nWhen \\flag{file} or \\flag{regexp} is used, then ripgrep treats all positional\narguments as files or directories to search.\n",
+        "choices": [],
+        "completion": "Filename"
+      },
+      "help_lines": [
+        "    -f PATTERNFILE, --file=PATTERNFILE"
+      ]
+    },
+    {
+      "name": "after-context",
+      "aliases": [
+        "--after-context",
+        "-A"
+      ],
+      "value": "required",
+      "description": "Show NUM lines after each match.",
+      "short": "A",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM",
+        "category": "Output",
+        "long_help": "\nShow \\fINUM\\fP lines after each match.\n.sp\nThis overrides the \\flag{passthru} flag and partially overrides the\n\\flag{context} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -A NUM, --after-context=NUM"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_AFTER_CONTEXT",
+        "type_": "Int32"
+      }
+    },
+    {
+      "name": "before-context",
+      "aliases": [
+        "--before-context",
+        "-B"
+      ],
+      "value": "required",
+      "description": "Show NUM lines before each match.",
+      "short": "B",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM",
+        "category": "Output",
+        "long_help": "\nShow \\fINUM\\fP lines before each match.\n.sp\nThis overrides the \\flag{passthru} flag and partially overrides the\n\\flag{context} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -B NUM, --before-context=NUM"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_BEFORE_CONTEXT",
+        "type_": "Int32"
+      }
+    },
+    {
+      "name": "binary",
+      "aliases": [
+        "--binary",
+        "--no-binary"
+      ],
+      "value": "none",
+      "description": "Search binary files.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-binary",
+        "category": "Filter",
+        "long_help": "\nEnabling this flag will cause ripgrep to search binary files. By default,\nripgrep attempts to automatically skip binary files in order to improve the\nrelevance of results and make the search faster.\n.sp\nBinary files are heuristically detected based on whether they contain a\n\\fBNUL\\fP byte or not. By default (without this flag set), once a \\fBNUL\\fP\nbyte is seen, ripgrep will stop searching the file. Usually, \\fBNUL\\fP bytes\noccur in the beginning of most binary files. If a \\fBNUL\\fP byte occurs after\na match, then ripgrep will not print the match, stop searching that file, and\nemit a warning that some matches are being suppressed.\n.sp\nIn contrast, when this flag is provided, ripgrep will continue searching a\nfile even if a \\fBNUL\\fP byte is found. In particular, if a \\fBNUL\\fP byte is\nfound then ripgrep will continue searching until either a match is found or\nthe end of the file is reached, whichever comes sooner. If a match is found,\nthen ripgrep will stop and print a warning saying that the search stopped\nprematurely.\n.sp\nIf you want ripgrep to search a file without any special \\fBNUL\\fP byte\nhandling at all (and potentially print binary data to stdout), then you should\nuse the \\flag{text} flag.\n.sp\nThe \\flag{binary} flag is a flag for controlling ripgrep's automatic filtering\nmechanism. As such, it does not need to be used when searching a file\nexplicitly or when searching stdin. That is, it is only applicable when\nrecursively searching a directory.\n.sp\nWhen the \\flag{unrestricted} flag is provided for a third time, then this flag\nis automatically enabled.\n.sp\nThis flag overrides the \\flag{text} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --binary"
+      ],
+      "default_value": "auto",
+      "default_binding": {
+        "name": "DEFAULT_BINARY",
+        "type_": "BinaryMode",
+        "variant": "Auto"
+      }
+    },
+    {
+      "name": "block-buffered",
+      "aliases": [
+        "--block-buffered",
+        "--no-block-buffered"
+      ],
+      "value": "none",
+      "description": "Buffer output in blocks (the default). Overrides --line-buffered.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-block-buffered",
+        "category": "Output",
+        "long_help": "Buffer output in blocks (the default). Overrides --line-buffered.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --block-buffered"
+      ],
+      "default_value": "auto",
+      "default_binding": {
+        "name": "DEFAULT_BUFFER",
+        "type_": "BufferMode",
+        "variant": "Auto"
+      }
+    },
+    {
+      "name": "byte-offset",
+      "aliases": [
+        "--byte-offset",
+        "-b",
+        "--no-byte-offset"
+      ],
+      "value": "none",
+      "description": "Print the byte offset for each matching line.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-byte-offset",
+        "category": "Output",
+        "long_help": "\nPrint the 0-based byte offset within the input file before each line of output.\nIf \\flag{only-matching} is specified, print the offset of the matched text\nitself.\n.sp\nIf ripgrep does transcoding, then the byte offset is in terms of the result\nof transcoding and not the original data. This applies similarly to other\ntransformations on the data, such as decompression or a \\flag{pre} filter.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -b, --byte-offset"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_BYTE_OFFSET",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "case-sensitive",
+      "aliases": [
+        "--case-sensitive",
+        "-s"
+      ],
+      "value": "none",
+      "description": "Search case sensitively (default).",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Search",
+        "long_help": "\nExecute the search case sensitively. This is the default mode.\n.sp\nThis is a global option that applies to all patterns given to ripgrep.\nIndividual patterns can still be matched case insensitively by using inline\nregex flags. For example, \\fB(?i)abc\\fP will match \\fBabc\\fP case insensitively\neven when this flag is used.\n.sp\nThis flag overrides the \\flag{ignore-case} and \\flag{smart-case} flags.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -s, --case-sensitive"
+      ],
+      "default_value": "sensitive",
+      "default_binding": {
+        "name": "DEFAULT_CASE",
+        "type_": "CaseMode",
+        "variant": "Sensitive"
+      }
+    },
+    {
+      "name": "color",
+      "aliases": [
+        "--color"
+      ],
+      "value": "required",
+      "description": "Select never, auto, always or ansi. Default auto produces no color because terminal detection is unavailable; use always or ansi explicitly.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "WHEN",
+        "category": "Output",
+        "long_help": "Select never, auto, always or ansi. Default auto produces no color because terminal detection is unavailable; use always or ansi explicitly.",
+        "choices": [
+          "never",
+          "auto",
+          "always",
+          "ansi"
+        ],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --color=WHEN"
+      ],
+      "default_value": "auto",
+      "default_binding": {
+        "name": "DEFAULT_COLOR",
+        "type_": "ColorChoice",
+        "variant": "Auto"
+      }
+    },
+    {
+      "name": "colors",
+      "aliases": [
+        "--colors"
+      ],
+      "value": "required",
+      "description": "Configure color settings and styles.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "COLOR_SPEC",
+        "category": "Output",
+        "long_help": "\nThis flag specifies color settings for use in the output. This flag may be\nprovided multiple times. Settings are applied iteratively. Pre-existing color\nlabels are limited to one of eight choices: \\fBred\\fP, \\fBblue\\fP, \\fBgreen\\fP,\n\\fBcyan\\fP, \\fBmagenta\\fP, \\fByellow\\fP, \\fBwhite\\fP and \\fBblack\\fP. Styles\nare limited to \\fBnobold\\fP, \\fBbold\\fP, \\fBnointense\\fP, \\fBintense\\fP,\n\\fBnounderline\\fP, \\fBunderline\\fP, \\fBnoitalic\\fP or \\fBitalic\\fP.\n.sp\nThe format of the flag is\n\\fB{\\fP\\fItype\\fP\\fB}:{\\fP\\fIattribute\\fP\\fB}:{\\fP\\fIvalue\\fP\\fB}\\fP.\n\\fItype\\fP should be one of \\fBpath\\fP, \\fBline\\fP, \\fBcolumn\\fP,\n\\fBhighlight\\fP or \\fBmatch\\fP. \\fIattribute\\fP can be \\fBfg\\fP, \\fBbg\\fP or\n\\fBstyle\\fP. \\fIvalue\\fP is either a color (for \\fBfg\\fP and \\fBbg\\fP) or a\ntext style. A special format, \\fB{\\fP\\fItype\\fP\\fB}:none\\fP, will clear all\ncolor settings for \\fItype\\fP.\n.sp\nFor example, the following command will change the match color to magenta and\nthe background color for line numbers to yellow:\n.sp\n.EX\n    rg \\-\\-colors 'match:fg:magenta' \\-\\-colors 'line:bg:yellow'\n.EE\n.sp\nAnother example, the following command will \"highlight\" the non-matching text\nin matching lines:\n.sp\n.EX\n    rg \\-\\-colors 'highlight:bg:yellow' \\-\\-colors 'highlight:fg:black'\n.EE\n.sp\nThe \"highlight\" color type is particularly useful for contrasting matching\nlines with surrounding context printed by the \\flag{before-context},\n\\flag{after-context}, \\flag{context} or \\flag{passthru} flags.\n.sp\nExtended colors can be used for \\fIvalue\\fP when the tty supports ANSI color\nsequences. These are specified as either \\fIx\\fP (256-color) or\n.IB x , x , x\n(24-bit truecolor) where \\fIx\\fP is a number between \\fB0\\fP and \\fB255\\fP\ninclusive. \\fIx\\fP may be given as a normal decimal number or a hexadecimal\nnumber, which is prefixed by \\fB0x\\fP.\n.sp\nFor example, the following command will change the match background color to\nthat represented by the rgb value (0,128,255):\n.sp\n.EX\n    rg \\-\\-colors 'match:bg:0,128,255'\n.EE\n.sp\nor, equivalently,\n.sp\n.EX\n    rg \\-\\-colors 'match:bg:0x0,0x80,0xFF'\n.EE\n.sp\nNote that the \\fBintense\\fP and \\fBnointense\\fP styles will have no effect when\nused alongside these extended color codes.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --colors=COLOR_SPEC"
+      ]
+    },
+    {
+      "name": "column",
+      "aliases": [
+        "--column",
+        "--no-column"
+      ],
+      "value": "none",
+      "description": "Show column numbers.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-column",
+        "category": "Output",
+        "long_help": "\nShow column numbers (1-based). This only shows the column numbers for the first\nmatch on each line. This does not try to account for Unicode. One byte is equal\nto one column. This implies \\flag{line-number}.\n.sp\nWhen \\flag{only-matching} is used, then the column numbers written correspond\nto the start of each match.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --column"
+      ]
+    },
+    {
+      "name": "context",
+      "aliases": [
+        "--context",
+        "-C"
+      ],
+      "value": "required",
+      "description": "Show NUM lines before and after each match.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM",
+        "category": "Output",
+        "long_help": "\nShow \\fINUM\\fP lines before and after each match. This is equivalent to\nproviding both the \\flag{before-context} and \\flag{after-context} flags with\nthe same value.\n.sp\nThis overrides the \\flag{passthru} flag. The \\flag{after-context} and\n\\flag{before-context} flags both partially override this flag, regardless of\nthe order. For example, \\fB\\-A2 \\-C1\\fP is equivalent to \\fB\\-A2 \\-B1\\fP.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -C NUM, --context=NUM"
+      ]
+    },
+    {
+      "name": "context-separator",
+      "aliases": [
+        "--context-separator",
+        "--no-context-separator"
+      ],
+      "value": "required",
+      "description": "Set the separator for contextual chunks.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-context-separator",
+        "variable": "SEPARATOR",
+        "category": "Output",
+        "long_help": "\nThe string used to separate non-contiguous context lines in the output. This is\nonly used when one of the context flags is used (that is, \\flag{after-context},\n\\flag{before-context} or \\flag{context}). Escape sequences like \\fB\\\\x7F\\fP or\n\\fB\\\\t\\fP may be used. The default value is \\fB\\-\\-\\fP.\n.sp\nWhen the context separator is set to an empty string, then a line break\nis still inserted. To completely disable context separators, use the\n\\flag-negate{context-separator} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --context-separator=SEPARATOR",
+        "        --no-context-separator flag."
+      ],
+      "default_value": "--",
+      "default_binding": {
+        "name": "DEFAULT_CONTEXT_SEPARATOR",
+        "type_": "Bytes"
+      }
+    },
+    {
+      "name": "count",
+      "aliases": [
+        "--count",
+        "-c"
+      ],
+      "value": "none",
+      "description": "Show count of matching lines for each file.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OutputModes",
+        "long_help": "\nThis flag suppresses normal output and shows the number of lines that match\nthe given patterns for each file searched. Each file containing a match has\nits path and count printed on each line. Note that unless \\flag{multiline} is\nenabled and the pattern(s) given can match over multiple lines, this reports\nthe number of lines that match and not the total number of matches. When\nmultiline mode is enabled and the pattern(s) given can match over multiple\nlines, \\flag{count} is equivalent to \\flag{count-matches}.\n.sp\nIf only one file is given to ripgrep, then only the count is printed if there\nis a match. The \\flag{with-filename} flag can be used to force printing the\nfile path in this case. If you need a count to be printed regardless of whether\nthere is a match, then use \\flag{include-zero}.\n.sp\nNote that it is possible for this flag to have results inconsistent with\nthe output of \\flag{files-with-matches}. Notably, by default, ripgrep tries\nto avoid searching files with binary data. With this flag, ripgrep needs to\nsearch the entire content of files, which may include binary data. But with\n\\flag{files-with-matches}, ripgrep can stop as soon as a match is observed,\nwhich may come well before any binary data. To avoid this inconsistency without\ndisabling binary detection, use the \\flag{binary} flag.\n.sp\nThis overrides the \\flag{count-matches} flag. Note that when \\flag{count}\nis combined with \\flag{only-matching}, then ripgrep behaves as if\n\\flag{count-matches} was given.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -c, --count"
+      ]
+    },
+    {
+      "name": "count-matches",
+      "aliases": [
+        "--count-matches"
+      ],
+      "value": "none",
+      "description": "Show count of every match for each file.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OutputModes",
+        "long_help": "\nThis flag suppresses normal output and shows the number of individual matches\nof the given patterns for each file searched. Each file containing matches has\nits path and match count printed on each line. Note that this reports the total\nnumber of individual matches and not the number of lines that match.\n.sp\nIf only one file is given to ripgrep, then only the count is printed if there\nis a match. The \\flag{with-filename} flag can be used to force printing the\nfile path in this case.\n.sp\nThis overrides the \\flag{count} flag. Note that when \\flag{count} is combined\nwith \\flag{only-matching}, then ripgrep behaves as if \\flag{count-matches} was\ngiven.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "        --count-matches was given.",
+        "    --count-matches",
+        "        --count-matches was given."
+      ]
+    },
+    {
+      "name": "crlf",
+      "aliases": [
+        "--crlf",
+        "--no-crlf"
+      ],
+      "value": "none",
+      "description": "Use CRLF line terminators (nice for Windows).",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-crlf",
+        "category": "Search",
+        "long_help": "\nWhen enabled, ripgrep will treat CRLF (\\fB\\\\r\\\\n\\fP) as a line terminator\ninstead of just \\fB\\\\n\\fP.\n.sp\nPrincipally, this permits the line anchor assertions \\fB^\\fP and \\fB$\\fP in\nregex patterns to treat CRLF, CR or LF as line terminators instead of just LF.\nNote that they will never match between a CR and a LF. CRLF is treated as one\nsingle line terminator.\n.sp\nWhen using the default regex engine, CRLF support can also be enabled inside\nthe pattern with the \\fBR\\fP flag. For example, \\fB(?R:$)\\fP will match just\nbefore either CR or LF, but never between CR and LF.\n.sp\nThis flag overrides \\flag{null-data}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --crlf"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_CRLF",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "debug",
+      "aliases": [
+        "--debug"
+      ],
+      "value": "none",
+      "description": "Show debug messages.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Logging",
+        "long_help": "\nShow debug messages. Please use this when filing a bug report.\n.sp\nThe \\flag{debug} flag is generally useful for figuring out why ripgrep skipped\nsearching a particular file. The debug messages should mention all files\nskipped and why they were skipped.\n.sp\nTo get even more debug output, use the \\flag{trace} flag, which implies\n\\flag{debug} along with additional trace data.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --debug",
+        "        --debug along with additional trace data."
+      ]
+    },
+    {
+      "name": "dfa-size-limit",
+      "aliases": [
+        "--dfa-size-limit"
+      ],
+      "value": "required",
+      "description": "Unsupported: byte-based DFA cache limits.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM+SUFFIX?",
+        "category": "Search",
+        "long_help": "\nThis option is rejected in cli/rg because the regex engine does not expose a\nbyte-budgeted DFA cache. Its fixed state-count limit is not a byte limit.\n.sp\nNumeric values and K, M or G suffixes are validated before the unsupported\noption diagnostic. No supplied value, including zero, changes the cache budget.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --dfa-size-limit=NUM+SUFFIX?"
+      ],
+      "support_note": "Recognized but rejected by this build. Preserved upstream description: "
+    },
+    {
+      "name": "encoding",
+      "aliases": [
+        "--encoding",
+        "-E",
+        "--no-encoding"
+      ],
+      "value": "required",
+      "description": "Specify the text encoding of files to search.",
+      "short": "E",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-encoding",
+        "variable": "ENCODING",
+        "category": "Search",
+        "long_help": "\nSpecify the text encoding that ripgrep will use on all files searched. The\ndefault value is \\fBauto\\fP, which will cause ripgrep to do a best effort\nautomatic detection of encoding on a per-file basis. Automatic detection in\nthis case only applies to files that begin with a UTF-8 or UTF-16 byte-order\nmark (BOM). No other automatic detection is performed. One can also specify\n\\fBnone\\fP which will then completely disable BOM sniffing and always result\nin searching the raw bytes, including a BOM if it's present, regardless of its\nencoding.\n.sp\nOther supported values can be found in the list of labels here:\n\\fIhttps://encoding.spec.whatwg.org/#concept-encoding-get\\fP.\n.sp\nFor more details on encoding and how ripgrep deals with it, see \\fBGUIDE.md\\fP.\n.sp\nThe encoding detection that ripgrep uses can be reverted to its automatic mode\nvia the \\flag-negate{encoding} flag.\n",
+        "choices": [],
+        "completion": "Encoding"
+      },
+      "help_lines": [
+        "    -E ENCODING, --encoding=ENCODING"
+      ],
+      "default_value": "auto",
+      "default_binding": {
+        "name": "DEFAULT_ENCODING",
+        "type_": "EncodingMode",
+        "variant": "Auto"
+      }
+    },
+    {
+      "name": "engine",
+      "aliases": [
+        "--engine"
+      ],
+      "value": "required",
+      "description": "Select default or auto; this build only provides the default engine. Selecting pcre2 fails.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "ENGINE",
+        "category": "Search",
+        "long_help": "Select default or auto; this build only provides the default engine. Selecting pcre2 fails.",
+        "choices": [
+          "default",
+          "pcre2",
+          "auto"
+        ],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --engine=ENGINE"
+      ],
+      "default_value": "default",
+      "default_binding": {
+        "name": "DEFAULT_ENGINE",
+        "type_": "EngineChoice",
+        "variant": "Default"
+      }
+    },
+    {
+      "name": "field-context-separator",
+      "aliases": [
+        "--field-context-separator"
+      ],
+      "value": "required",
+      "description": "Set the field context separator.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "SEPARATOR",
+        "category": "Output",
+        "long_help": "\nSet the field context separator. This separator is only used when printing\ncontextual lines. It is used to delimit file paths, line numbers, columns and\nthe contextual line itself. The separator may be any number of bytes, including\nzero. Escape sequences like \\fB\\\\x7F\\fP or \\fB\\\\t\\fP may be used.\n.sp\nThe \\fB-\\fP character is the default value.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --field-context-separator=SEPARATOR"
+      ],
+      "default_value": "-",
+      "default_binding": {
+        "name": "DEFAULT_FIELD_CONTEXT_SEPARATOR",
+        "type_": "Bytes"
+      }
+    },
+    {
+      "name": "field-match-separator",
+      "aliases": [
+        "--field-match-separator"
+      ],
+      "value": "required",
+      "description": "Set the field match separator.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "SEPARATOR",
+        "category": "Output",
+        "long_help": "\nSet the field match separator. This separator is only used when printing\nmatching lines. It is used to delimit file paths, line numbers, columns and the\nmatching line itself. The separator may be any number of bytes, including zero.\nEscape sequences like \\fB\\\\x7F\\fP or \\fB\\\\t\\fP may be used.\n.sp\nThe \\fB:\\fP character is the default value.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --field-match-separator=SEPARATOR"
+      ],
+      "default_value": ":",
+      "default_binding": {
+        "name": "DEFAULT_FIELD_MATCH_SEPARATOR",
+        "type_": "Bytes"
+      }
+    },
+    {
+      "name": "files",
+      "aliases": [
+        "--files"
+      ],
+      "value": "none",
+      "description": "Print each file that would be searched.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OtherBehaviors",
+        "long_help": "\nPrint each file that would be searched without actually performing the search.\nThis is useful to determine whether a particular file is being searched or not.\n.sp\nThis overrides \\flag{type-list}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "--files defaults to the current directory. Hidden/ignored files are skipped by default.",
+        "    --files"
+      ]
+    },
+    {
+      "name": "files-with-matches",
+      "aliases": [
+        "--files-with-matches",
+        "-l"
+      ],
+      "value": "none",
+      "description": "Print the paths with at least one match.",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OutputModes",
+        "long_help": "\nPrint only the paths with at least one match and suppress match contents.\n.sp\nNote that it is possible for this flag to have results inconsistent with the\noutput of \\flag{count}. Notably, by default, ripgrep tries to avoid searching\nfiles with binary data. With this flag, ripgrep might stop searching before\nthe binary data is observed. But with \\flag{count}, ripgrep has to search the\nentire contents to determine the match count, which means it might see binary\ndata that causes it to skip searching that file. To avoid this inconsistency\nwithout disabling binary detection, use the \\flag{binary} flag.\n.sp\nThis overrides \\flag{files-without-match}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -l, --files-with-matches"
+      ]
+    },
+    {
+      "name": "files-without-match",
+      "aliases": [
+        "--files-without-match"
+      ],
+      "value": "none",
+      "description": "Print the paths that contain zero matches.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OutputModes",
+        "long_help": "\nPrint the paths that contain zero matches and suppress match contents.\n.sp\nThis overrides \\flag{files-with-matches}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --files-without-match"
+      ]
+    },
+    {
+      "name": "fixed-strings",
+      "aliases": [
+        "--fixed-strings",
+        "-F",
+        "--no-fixed-strings"
+      ],
+      "value": "none",
+      "description": "Treat all patterns as literals.",
+      "short": "F",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-fixed-strings",
+        "category": "Search",
+        "long_help": "\nTreat all patterns as literals instead of as regular expressions. When this\nflag is used, special regular expression meta characters such as \\fB.(){}*+\\fP\nshould not need be escaped.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -F, --fixed-strings"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_FIXED_STRINGS",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "follow",
+      "aliases": [
+        "--follow",
+        "-L",
+        "--no-follow"
+      ],
+      "value": "none",
+      "description": "Follow symbolic links.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-follow",
+        "category": "Filter",
+        "long_help": "\nThis flag instructs ripgrep to follow symbolic links while traversing\ndirectories. This behavior is disabled by default. Note that ripgrep will\ncheck for symbolic link loops and report errors if it finds one. ripgrep will\nalso report errors for broken links. To suppress error messages, use the\n\\flag{no-messages} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -L, --follow"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_FOLLOW",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "generate",
+      "aliases": [
+        "--generate"
+      ],
+      "value": "required",
+      "description": "Generate man pages and completion scripts.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "KIND",
+        "category": "OtherBehaviors",
+        "long_help": "\nThis flag instructs ripgrep to generate some special kind of output identified\nby \\fIKIND\\fP and then quit without searching. \\fIKIND\\fP can be one of the\nfollowing values:\n.sp\n.TP 15\n\\fBman\\fP\nGenerates a manual page for ripgrep in the \\fBroff\\fP format.\n.TP 15\n\\fBcomplete\\-bash\\fP\nGenerates a completion script for the \\fBbash\\fP shell.\n.TP 15\n\\fBcomplete\\-zsh\\fP\nGenerates a completion script for the \\fBzsh\\fP shell.\n.TP 15\n\\fBcomplete\\-fish\\fP\nGenerates a completion script for the \\fBfish\\fP shell.\n.TP 15\n\\fBcomplete\\-powershell\\fP\nGenerates a completion script for PowerShell.\n.PP\nThe output is written to \\fBstdout\\fP. The list above may expand over time.\n",
+        "choices": [
+          "man",
+          "complete-bash",
+          "complete-zsh",
+          "complete-fish",
+          "complete-powershell"
+        ],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --generate=KIND"
+      ]
+    },
+    {
+      "name": "glob",
+      "aliases": [
+        "--glob",
+        "-g"
+      ],
+      "value": "required",
+      "description": "Include or exclude file paths.",
+      "short": "g",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "GLOB",
+        "category": "Filter",
+        "long_help": "\nInclude or exclude files and directories for searching that match the given\nglob. This always overrides any other ignore logic. Multiple glob flags may\nbe used. Globbing rules match \\fB.gitignore\\fP globs. Precede a glob with a\n\\fB!\\fP to exclude it. If multiple globs match a file or directory, the glob\ngiven later in the command line takes precedence.\n.sp\nAs an extension, globs support specifying alternatives:\n.BI \"\\-g '\" ab{c,d}* '\nis equivalent to\n.BI \"\\-g \" \"abc \" \"\\-g \" abd.\nEmpty alternatives like\n.BI \"\\-g '\" ab{,c} '\nare not currently supported. Note that this syntax extension is also currently\nenabled in \\fBgitignore\\fP files, even though this syntax isn't supported by\ngit itself. ripgrep may disable this syntax extension in gitignore files, but\nit will always remain available via the \\flag{glob} flag.\n.sp\nWhen this flag is set, every file and directory is applied to it to test for\na match. For example, if you only want to search in a particular directory\n\\fIfoo\\fP, then\n.BI \"\\-g \" foo\nis incorrect because \\fIfoo/bar\\fP does not match\nthe glob \\fIfoo\\fP. Instead, you should use\n.BI \"\\-g '\" foo/** '.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -g GLOB, --glob=GLOB"
+      ]
+    },
+    {
+      "name": "glob-case-insensitive",
+      "aliases": [
+        "--glob-case-insensitive",
+        "--no-glob-case-insensitive"
+      ],
+      "value": "none",
+      "description": "Process all glob patterns case insensitively.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-glob-case-insensitive",
+        "category": "Filter",
+        "long_help": "\nProcess all glob patterns given with the \\flag{glob} flag case insensitively.\nThis effectively treats \\flag{glob} as \\flag{iglob}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --glob-case-insensitive"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_GLOB_CASE_INSENSITIVE",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "heading",
+      "aliases": [
+        "--heading",
+        "--no-heading"
+      ],
+      "value": "none",
+      "description": "Print a filename heading before its matches. Headings are off by default on every output destination; --heading enables them explicitly.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-heading",
+        "category": "Output",
+        "long_help": "Print a filename heading before its matches. Headings are off by default on every output destination; --heading enables them explicitly.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --heading",
+        "        --heading is enabled (the default when printing to a tty), the file"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help",
+        "-h"
+      ],
+      "value": "none",
+      "description": "display this help and exit. -h selects the short option index; --help includes descriptions. Standalone --help bypasses configuration and leaves stdin unread.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "display this help and exit. -h selects the short option index; --help includes descriptions. Standalone --help bypasses configuration and leaves stdin unread.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -h, --help"
+      ]
+    },
+    {
+      "name": "hidden",
+      "aliases": [
+        "--hidden",
+        "-.",
+        "--no-hidden"
+      ],
+      "value": "none",
+      "description": "Search hidden files and directories.",
+      "short": ".",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-hidden",
+        "category": "Filter",
+        "long_help": "\nSearch hidden files and directories. By default, hidden files and directories\nare skipped. Note that if a hidden file or a directory is whitelisted in\nan ignore file, then it will be searched even if this flag isn't provided.\nSimilarly if a hidden file or directory is given explicitly as an argument to\nripgrep.\n.sp\nA file or directory is considered hidden if its base name starts with a dot\ncharacter (\\fB.\\fP). On operating systems which support a \"hidden\" file\nattribute, like Windows, files with this attribute are also considered hidden.\n.sp\nNote that \\flag{hidden} will include files and folders like \\fB.git\\fP\nregardless of \\flag{no-ignore-vcs}. To exclude such paths when using\n\\flag{hidden}, you must explicitly ignore them using another flag or ignore\nfile.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -., --hidden"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_HIDDEN",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "hostname-bin",
+      "aliases": [
+        "--hostname-bin"
+      ],
+      "value": "required",
+      "description": "Run a program to get this system's hostname.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "COMMAND",
+        "category": "Output",
+        "long_help": "\nThis flag controls how ripgrep determines this system's hostname. The flag's\nvalue should correspond to an executable (either a path or something that can\nbe found via your system's \\fBPATH\\fP environment variable). When set, ripgrep\nwill run this executable, with no arguments, and treat its output (with leading\nand trailing whitespace stripped) as your system's hostname.\n.sp\nWhen not set (the default, or the empty string), ripgrep will try to\nautomatically detect your system's hostname. On Unix, this corresponds\nto calling \\fBgethostname\\fP. On Windows, this corresponds to calling\n\\fBGetComputerNameExW\\fP to fetch the system's \"physical DNS hostname.\"\n.sp\nripgrep uses your system's hostname for producing hyperlinks.\n",
+        "choices": [],
+        "completion": "Executable"
+      },
+      "help_lines": [
+        "    --hostname-bin=COMMAND"
+      ]
+    },
+    {
+      "name": "hyperlink-format",
+      "aliases": [
+        "--hyperlink-format"
+      ],
+      "value": "required",
+      "description": "Set a hyperlink format with path, host, line and column placeholders. Automatic hyperlinks remain off because terminal detection is unavailable.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "FORMAT",
+        "category": "Output",
+        "long_help": "Set a hyperlink format with path, host, line and column placeholders. Automatic hyperlinks remain off because terminal detection is unavailable.",
+        "choices": [
+          "default",
+          "none",
+          "cursor",
+          "file",
+          "grep+",
+          "kitty",
+          "macvim",
+          "textmate",
+          "vscode",
+          "vscode-insiders",
+          "vscodium"
+        ],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --hyperlink-format=FORMAT"
+      ],
+      "default_value": "",
+      "default_binding": {
+        "name": "DEFAULT_HYPERLINK_FORMAT",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "iglob",
+      "aliases": [
+        "--iglob"
+      ],
+      "value": "required",
+      "description": "Include/exclude paths case insensitively.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "GLOB",
+        "category": "Filter",
+        "long_help": "\nInclude or exclude files and directories for searching that match the given\nglob. This always overrides any other ignore logic. Multiple glob flags may\nbe used. Globbing rules match \\fB.gitignore\\fP globs. Precede a glob with a\n\\fB!\\fP to exclude it. If multiple globs match a file or directory, the glob\ngiven later in the command line takes precedence. Globs used via this flag are\nmatched case insensitively.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --iglob=GLOB"
+      ]
+    },
+    {
+      "name": "ignore-case",
+      "aliases": [
+        "--ignore-case",
+        "-i"
+      ],
+      "value": "none",
+      "description": "Case insensitive search.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Search",
+        "long_help": "\nWhen this flag is provided, all patterns will be searched case insensitively.\nThe case insensitivity rules used by ripgrep's default regex engine conform to\nUnicode's \"simple\" case folding rules.\n.sp\nThis is a global option that applies to all patterns given to ripgrep.\nIndividual patterns can still be matched case sensitively by using\ninline regex flags. For example, \\fB(?\\-i)abc\\fP will match \\fBabc\\fP\ncase sensitively even when this flag is used.\n.sp\nThis flag overrides \\flag{case-sensitive} and \\flag{smart-case}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -i, --ignore-case"
+      ]
+    },
+    {
+      "name": "ignore-file",
+      "aliases": [
+        "--ignore-file"
+      ],
+      "value": "required",
+      "description": "Specify additional ignore files.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "PATH",
+        "category": "Filter",
+        "long_help": "\nSpecifies a path to one or more \\fBgitignore\\fP formatted rules files.\nThese patterns are applied after the patterns found in \\fB.gitignore\\fP,\n\\fB.rgignore\\fP and \\fB.ignore\\fP are applied and are matched relative to the\ncurrent working directory. That is, files specified via this flag have lower\nprecedence than files automatically found in the directory tree. Multiple\nadditional ignore files can be specified by using this flag repeatedly. When\nspecifying multiple ignore files, earlier files have lower precedence than\nlater files.\n.sp\nIf you are looking for a way to include or exclude files and directories\ndirectly on the command line, then use \\flag{glob} instead.\n",
+        "choices": [],
+        "completion": "Filename"
+      },
+      "help_lines": [
+        "    --ignore-file=PATH"
+      ]
+    },
+    {
+      "name": "ignore-file-case-insensitive",
+      "aliases": [
+        "--ignore-file-case-insensitive",
+        "--no-ignore-file-case-insensitive"
+      ],
+      "value": "none",
+      "description": "Process ignore files case insensitively.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-ignore-file-case-insensitive",
+        "category": "Filter",
+        "long_help": "\nProcess ignore files (\\fB.gitignore\\fP, \\fB.ignore\\fP, etc.) case\ninsensitively. Note that this comes with a performance penalty and is most\nuseful on case insensitive file systems (such as Windows).\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --ignore-file-case-insensitive"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_IGNORE_FILE_CASE_INSENSITIVE",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "include-zero",
+      "aliases": [
+        "--include-zero",
+        "--no-include-zero"
+      ],
+      "value": "none",
+      "description": "Include zero matches in summary output.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-include-zero",
+        "category": "Output",
+        "long_help": "\nWhen used with \\flag{count} or \\flag{count-matches}, this causes ripgrep to\nprint the number of matches for each file even if there were zero matches. This\nis disabled by default but can be enabled to make ripgrep behave more like\ngrep.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --include-zero"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_INCLUDE_ZERO",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "index",
+      "aliases": [
+        "--index",
+        "-X"
+      ],
+      "value": "none",
+      "description": "Use a search index when one is available.",
+      "short": "X",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Indexing",
+        "long_help": "\nEnable searching with an index. Without this flag, ripgrep never uses an\nindex.\n.sp\nripgrep looks for an index in the following order. The first step that finds\none or more indexes wins:\n.sp\n.IP 1. 4\nWhen path operands are given on the command line, each operand is interpreted\nas an index directory and every index is searched in command line order. An\noperand that is not a valid index is an error.\n.sp\n.IP 2. 4\nThe index named by the \\fBRIPGREP_INDEX_PATH\\fP environment variable.\n.sp\n.IP 3. 4\nA valid index in a \\fB.ripgrep\\fP directory in the current working directory.\n.sp\n.IP 4. 4\nA valid index in a \\fB.ripgrep\\fP directory in the nearest parent of the current\nworking directory.\n.PP\nIf no index is found, ripgrep performs an ordinary search.\n.sp\nIndexed candidates are filtered by explicit glob and file-type selections,\nhidden-file and depth settings, and the maximum file size. Ignore files,\nincluding \\fB.gitignore\\fP, are not read or reapplied during an indexed search.\nOptions that require transformed contents or every file make the query\nineligible for candidate filtering and therefore trigger the fallback below.\n.sp\nThis flag may be given at most twice. When it is given once and the query\ncannot use an index, ripgrep performs an ordinary search. When it is given\ntwice and an index was found, ripgrep stops instead of performing an ordinary\nsearch if the query cannot use the index.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "support_note": "Recognized but rejected by this build. Preserved upstream description: "
+    },
+    {
+      "name": "x-crud",
+      "aliases": [
+        "--x-crud"
+      ],
+      "value": "none",
+      "description": "Create or update a search index.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Indexing",
+        "long_help": "\nCreate or update an index for the files and directories given on the command\nline. When no path is given, this recursively indexes the current working\ndirectory. The files added to the index are exactly those selected by\nripgrep's normal traversal and filtering options.\n.sp\nAn existing file is re-indexed only when its modification time is newer than\nthe time at which it was indexed. Use \\flag{x-force} to re-index every selected\nfile, including files on file systems with unreliable or deliberately\npreserved modification times. A previously indexed path that is no longer\naccessible is removed from the index.\n.sp\nripgrep chooses the index location in the following order:\n.sp\n.IP 1. 4\nThe path given by \\flag{x-path}.\n.sp\n.IP 2. 4\nThe path in the \\fBRIPGREP_INDEX_PATH\\fP environment variable.\n.sp\n.IP 3. 4\nA valid index in a \\fB.ripgrep\\fP directory in the current working directory.\n.sp\n.IP 4. 4\nA valid index in a \\fB.ripgrep\\fP directory in the nearest parent of the current\nworking directory.\n.sp\n.IP 5. 4\nA \\fB.ripgrep\\fP directory in the current working directory, which is created\nwhen necessary.\n.PP\nIf the final location already exists but does not contain a valid index, then\nripgrep reports an error.\n.sp\nFor example, this creates or incrementally updates an index for the current\ndirectory:\n.sp\n.EX\n    rg --x-crud\n.EE\n.sp\nThis updates one path in the same index:\n.sp\n.EX\n    rg --x-crud path/to/file\n.EE\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "support_note": "Recognized but rejected by this build. Preserved upstream description: "
+    },
+    {
+      "name": "x-force",
+      "aliases": [
+        "--x-force"
+      ],
+      "value": "none",
+      "description": "Force selected files to be re-indexed.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Indexing",
+        "long_help": "\nWhen used with \\flag{x-crud}, re-index every selected file even when its\nmodification time indicates that the index is already up to date.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "support_note": "Recognized but rejected by this build. Preserved upstream description: "
+    },
+    {
+      "name": "x-path",
+      "aliases": [
+        "--x-path"
+      ],
+      "value": "required",
+      "description": "Set the path of the index to update.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "PATH",
+        "category": "Indexing",
+        "long_help": "\nSet the index path used by \\flag{x-crud}. This takes precedence over\n\\fBRIPGREP_INDEX_PATH\\fP and automatic discovery of a \\fB.ripgrep\\fP directory.\n",
+        "choices": [],
+        "completion": "Filename"
+      },
+      "support_note": "Recognized but rejected by this build. Preserved upstream description: "
+    },
+    {
+      "name": "invert-match",
+      "aliases": [
+        "--invert-match",
+        "-v",
+        "--no-invert-match"
+      ],
+      "value": "none",
+      "description": "Invert matching.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-invert-match",
+        "category": "Search",
+        "long_help": "\nThis flag inverts matching. That is, instead of printing lines that match,\nripgrep will print lines that don't match.\n.sp\nNote that this only inverts line-by-line matching. For example, combining this\nflag with \\flag{files-with-matches} will emit files that contain any lines\nthat do not match the patterns given. That's not the same as, for example,\n\\flag{files-without-match}, which will emit files that do not contain any\nmatching lines.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -v, --invert-match"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_INVERT_MATCH",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "json",
+      "aliases": [
+        "--json",
+        "--no-json"
+      ],
+      "value": "none",
+      "description": "Show search results in a JSON Lines format.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-json",
+        "category": "OutputModes",
+        "long_help": "\nEnable printing results in a JSON Lines format.\n.sp\nWhen this flag is provided, ripgrep will emit a sequence of messages, each\nencoded as a JSON object, where there are five different message types:\n.sp\n.TP 12\n\\fBbegin\\fP\nA message that indicates a file is being searched and contains at least one\nmatch.\n.TP 12\n\\fBend\\fP\nA message the indicates a file is done being searched. This message also\ninclude summary statistics about the search for a particular file.\n.TP 12\n\\fBmatch\\fP\nA message that indicates a match was found. This includes the text and offsets\nof the match.\n.TP 12\n\\fBcontext\\fP\nA message that indicates a contextual line was found. This includes the text of\nthe line, along with any match information if the search was inverted.\n.TP 12\n\\fBsummary\\fP\nThe final message emitted by ripgrep that contains summary statistics about the\nsearch across all files.\n.PP\nSince file paths or the contents of files are not guaranteed to be valid\nUTF-8 and JSON itself must be representable by a Unicode encoding, ripgrep\nwill emit all data elements as objects with one of two keys: \\fBtext\\fP or\n\\fBbytes\\fP. \\fBtext\\fP is a normal JSON string when the data is valid UTF-8\nwhile \\fBbytes\\fP is the base64 encoded contents of the data.\n.sp\nThe JSON Lines format is only supported for showing search results. It cannot\nbe used with other flags that emit other types of output, such as \\flag{files},\n\\flag{files-with-matches}, \\flag{files-without-match}, \\flag{count} or\n\\flag{count-matches}. ripgrep will report an error if any of the aforementioned\nflags are used in concert with \\flag{json}.\n.sp\nOther flags that control aspects of the standard output such as\n\\flag{only-matching}, \\flag{heading}, \\flag{replace}, \\flag{max-columns}, etc.,\nhave no effect when \\flag{json} is set. However, enabling JSON output will\nalways implicitly and unconditionally enable \\flag{stats}.\n.sp\nA more complete description of the JSON format used can be found here:\n\\fIhttps://docs.rs/grep-printer/*/grep_printer/struct.JSON.html\\fP.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --json"
+      ]
+    },
+    {
+      "name": "line-buffered",
+      "aliases": [
+        "--line-buffered",
+        "--no-line-buffered"
+      ],
+      "value": "none",
+      "description": "Flush output after each matching line. This must be selected explicitly; terminal detection does not enable it.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-line-buffered",
+        "category": "Output",
+        "long_help": "Flush output after each matching line. This must be selected explicitly; terminal detection does not enable it.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --line-buffered"
+      ]
+    },
+    {
+      "name": "line-number",
+      "aliases": [
+        "--line-number",
+        "-n"
+      ],
+      "value": "none",
+      "description": "Print one-based line numbers. Off by default on every output destination; -n enables them explicitly.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "Print one-based line numbers. Off by default on every output destination; -n enables them explicitly.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -n, --line-number"
+      ]
+    },
+    {
+      "name": "no-line-number",
+      "aliases": [
+        "--no-line-number",
+        "-N"
+      ],
+      "value": "none",
+      "description": "Suppress line numbers, including when an earlier option enabled them.",
+      "short": "N",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "Suppress line numbers, including when an earlier option enabled them.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -N, --no-line-number"
+      ]
+    },
+    {
+      "name": "line-regexp",
+      "aliases": [
+        "--line-regexp",
+        "-x"
+      ],
+      "value": "none",
+      "description": "Show matches surrounded by line boundaries.",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Search",
+        "long_help": "\nWhen enabled, ripgrep will only show matches surrounded by line boundaries.\nThis is equivalent to surrounding every pattern with \\fB^\\fP and \\fB$\\fP. In\nother words, this only prints lines where the entire line participates in a\nmatch.\n.sp\nThis overrides the \\flag{word-regexp} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -x, --line-regexp"
+      ]
+    },
+    {
+      "name": "max-columns",
+      "aliases": [
+        "--max-columns",
+        "-M"
+      ],
+      "value": "required",
+      "description": "Omit lines longer than this limit.",
+      "short": "M",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM",
+        "category": "Output",
+        "long_help": "\nWhen given, ripgrep will omit lines longer than this limit in bytes. Instead of\nprinting long lines, only the number of matches in that line is printed.\n.sp\nWhen this flag is omitted or is set to \\fB0\\fP, then it has no effect.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -M NUM, --max-columns=NUM"
+      ]
+    },
+    {
+      "name": "max-columns-preview",
+      "aliases": [
+        "--max-columns-preview",
+        "--no-max-columns-preview"
+      ],
+      "value": "none",
+      "description": "Show preview for lines exceeding the limit.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-max-columns-preview",
+        "category": "Output",
+        "long_help": "\nPrints a preview for lines exceeding the configured max column limit.\n.sp\nWhen the \\flag{max-columns} flag is used, ripgrep will by default completely\nreplace any line that is too long with a message indicating that a matching\nline was removed. When this flag is combined with \\flag{max-columns}, a preview\nof the line (corresponding to the limit size) is shown instead, where the part\nof the line exceeding the limit is not shown.\n.sp\nIf the \\flag{max-columns} flag is not set, then this has no effect.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --max-columns-preview"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_MAX_COLUMNS_PREVIEW",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "max-count",
+      "aliases": [
+        "--max-count",
+        "-m"
+      ],
+      "value": "required",
+      "description": "Limit the number of matching lines.",
+      "short": "m",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM",
+        "category": "Search",
+        "long_help": "\nLimit the number of matching lines per file searched to \\fINUM\\fP.\n.sp\nWhen \\flag{multiline} is used, a single match that spans multiple lines is only\ncounted once for the purposes of this limit. Multiple matches in a single line\nare counted only once, as they would be in non-multiline mode.\n.sp\nWhen combined with \\flag{after-context} or \\flag{context}, it's possible for\nmore matches than the maximum to be printed if contextual lines contain a\nmatch.\n.sp\nNote that \\fB0\\fP is a legal value but not likely to be useful. When used,\nripgrep won't search anything.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -m NUM, --max-count=NUM"
+      ]
+    },
+    {
+      "name": "max-depth",
+      "aliases": [
+        "--max-depth",
+        "-d",
+        "--maxdepth"
+      ],
+      "value": "required",
+      "description": "Descend at most NUM directories.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM",
+        "category": "Filter",
+        "long_help": "\nThis flag limits the depth of directory traversal to \\fINUM\\fP levels beyond\nthe paths given. A value of \\fB0\\fP only searches the explicitly given paths\nthemselves.\n.sp\nFor example, \\fBrg --max-depth 0 \\fP\\fIdir/\\fP is a no-op because \\fIdir/\\fP\nwill not be descended into. \\fBrg --max-depth 1 \\fP\\fIdir/\\fP will search only\nthe direct children of \\fIdir\\fP.\n.sp\nAn alternative spelling for this flag is \\fB\\-\\-maxdepth\\fP.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -d NUM, --max-depth=NUM"
+      ]
+    },
+    {
+      "name": "max-filesize",
+      "aliases": [
+        "--max-filesize"
+      ],
+      "value": "required",
+      "description": "Ignore files larger than NUM in size.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM+SUFFIX?",
+        "category": "Filter",
+        "long_help": "\nIgnore files larger than \\fINUM\\fP in size. This does not apply to directories.\n.sp\nThe input format accepts suffixes of \\fBK\\fP, \\fBM\\fP or \\fBG\\fP which\ncorrespond to kilobytes, megabytes and gigabytes, respectively. If no suffix is\nprovided the input is treated as bytes.\n.sp\nExamples: \\fB\\-\\-max-filesize 50K\\fP or \\fB\\-\\-max\\-filesize 80M\\fP.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --max-filesize=NUM+SUFFIX?"
+      ]
+    },
+    {
+      "name": "mmap",
+      "aliases": [
+        "--mmap",
+        "--no-mmap"
+      ],
+      "value": "none",
+      "description": "Accepted for compatibility; this build always uses ordinary reads, not memory maps.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-mmap",
+        "category": "Search",
+        "long_help": "Accepted for compatibility; this build always uses ordinary reads, not memory maps.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --mmap"
+      ]
+    },
+    {
+      "name": "multiline",
+      "aliases": [
+        "--multiline",
+        "-U",
+        "--no-multiline"
+      ],
+      "value": "none",
+      "description": "Permit matches spanning lines. This can require the complete input in memory, including stdin; this build does not memory-map files.",
+      "short": "U",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-multiline",
+        "category": "Search",
+        "long_help": "Permit matches spanning lines. This can require the complete input in memory, including stdin; this build does not memory-map files.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -U, --multiline"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_MULTILINE",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "multiline-dotall",
+      "aliases": [
+        "--multiline-dotall",
+        "--no-multiline-dotall"
+      ],
+      "value": "none",
+      "description": "Make '.' match line terminators.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-multiline-dotall",
+        "category": "Search",
+        "long_help": "\nThis flag enables \"dot all\" mode in all regex patterns. This causes \\fB.\\fP to\nmatch line terminators when multiline searching is enabled. This flag has no\neffect if multiline searching isn't enabled with the \\flag{multiline} flag.\n.sp\nNormally, a \\fB.\\fP will match any character except line terminators. While\nthis behavior typically isn't relevant for line-oriented matching (since\nmatches can span at most one line), this can be useful when searching with the\n\\flag{multiline} flag. By default, multiline mode runs without \"dot all\" mode\nenabled.\n.sp\nThis flag is generally intended to be used in an alias or your ripgrep config\nfile if you prefer \"dot all\" semantics by default. Note that regardless of\nwhether this flag is used, \"dot all\" semantics can still be controlled via\ninline flags in the regex pattern itself, e.g., \\fB(?s:.)\\fP always enables\n\"dot all\" whereas \\fB(?-s:.)\\fP always disables \"dot all\". Moreover, you\ncan use character classes like \\fB\\\\p{any}\\fP to match any Unicode codepoint\nregardless of whether \"dot all\" mode is enabled or not.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --multiline-dotall"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_MULTILINE_DOTALL",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-config",
+      "aliases": [
+        "--no-config"
+      ],
+      "value": "none",
+      "description": "Never read configuration files.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OtherBehaviors",
+        "long_help": "\nWhen set, ripgrep will never read configuration files. When this flag is\npresent, ripgrep will not respect the \\fBRIPGREP_CONFIG_PATH\\fP environment\nvariable.\n.sp\nIf ripgrep ever grows a feature to automatically read configuration files in\npre-defined locations, then this flag will also disable that behavior as well.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-config"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_CONFIG",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-ignore",
+      "aliases": [
+        "--no-ignore",
+        "--ignore"
+      ],
+      "value": "none",
+      "description": "Don't use ignore files.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "ignore",
+        "category": "Filter",
+        "long_help": "\nWhen set, ignore files such as \\fB.gitignore\\fP, \\fB.ignore\\fP and\n\\fB.rgignore\\fP will not be respected. This implies \\flag{no-ignore-dot},\n\\flag{no-ignore-exclude}, \\flag{no-ignore-global}, \\flag{no-ignore-parent} and\n\\flag{no-ignore-vcs}.\n.sp\nThis does not imply \\flag{no-ignore-files}, since \\flag{ignore-file} is\nspecified explicitly as a command line argument.\n.sp\nWhen given only once, the \\flag{unrestricted} flag is identical in\nbehavior to this flag and can be considered an alias. However, subsequent\n\\flag{unrestricted} flags have additional effects.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-ignore"
+      ]
+    },
+    {
+      "name": "no-ignore-dot",
+      "aliases": [
+        "--no-ignore-dot",
+        "--ignore-dot"
+      ],
+      "value": "none",
+      "description": "Don't use .ignore or .rgignore files.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "ignore-dot",
+        "category": "Filter",
+        "long_help": "\nDon't respect filter rules from \\fB.ignore\\fP or \\fB.rgignore\\fP files.\n.sp\nThis does not impact whether ripgrep will ignore files and directories whose\nnames begin with a dot. For that, see the \\flag{hidden} flag. This flag also\ndoes not impact whether filter rules from \\fB.gitignore\\fP files are respected.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-ignore-dot"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_IGNORE_DOT",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-ignore-exclude",
+      "aliases": [
+        "--no-ignore-exclude",
+        "--ignore-exclude"
+      ],
+      "value": "none",
+      "description": "Don't use local exclusion files.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "ignore-exclude",
+        "category": "Filter",
+        "long_help": "\nDon't respect filter rules from files that are manually configured for the repository.\nFor example, this includes \\fBgit\\fP's \\fB.git/info/exclude\\fP.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-ignore-exclude"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_IGNORE_EXCLUDE",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-ignore-files",
+      "aliases": [
+        "--no-ignore-files",
+        "--ignore-files"
+      ],
+      "value": "none",
+      "description": "Don't use --ignore-file arguments.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "ignore-files",
+        "category": "Filter",
+        "long_help": "\nWhen set, any \\flag{ignore-file} flags, even ones that come after this flag,\nare ignored.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-ignore-files"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_IGNORE_FILES",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-ignore-global",
+      "aliases": [
+        "--no-ignore-global",
+        "--ignore-global"
+      ],
+      "value": "none",
+      "description": "Don't use global ignore files.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "ignore-global",
+        "category": "Filter",
+        "long_help": "\nDon't respect filter rules from ignore files that come from \"global\" sources\nsuch as \\fBgit\\fP's \\fBcore.excludesFile\\fP configuration option (which\ndefaults to \\fB$HOME/.config/git/ignore\\fP).\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "        --no-ignore-global, --no-ignore-parent and --no-ignore-vcs.",
+        "    --no-ignore-global"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_IGNORE_GLOBAL",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-ignore-messages",
+      "aliases": [
+        "--no-ignore-messages",
+        "--ignore-messages"
+      ],
+      "value": "none",
+      "description": "Suppress gitignore parse error messages.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "ignore-messages",
+        "category": "Logging",
+        "long_help": "\nWhen this flag is enabled, all error messages related to parsing ignore files\nare suppressed. By default, error messages are printed to stderr. In cases\nwhere these errors are expected, this flag can be used to avoid seeing the\nnoise produced by the messages.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-ignore-messages"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_IGNORE_MESSAGES",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-ignore-parent",
+      "aliases": [
+        "--no-ignore-parent",
+        "--ignore-parent"
+      ],
+      "value": "none",
+      "description": "Don't use ignore files in parent directories.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "ignore-parent",
+        "category": "Filter",
+        "long_help": "\nWhen this flag is set, filter rules from ignore files found in parent\ndirectories are not respected. By default, ripgrep will ascend the parent\ndirectories of the current working directory to look for any applicable ignore\nfiles that should be applied. In some cases this may not be desirable.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-ignore-parent"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_IGNORE_PARENT",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-ignore-vcs",
+      "aliases": [
+        "--no-ignore-vcs",
+        "--ignore-vcs"
+      ],
+      "value": "none",
+      "description": "Don't use ignore files from source control.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "ignore-vcs",
+        "category": "Filter",
+        "long_help": "\nWhen given, filter rules from source control ignore files (e.g.,\n\\fB.gitignore\\fP) are not respected. By default, ripgrep respects \\fBgit\\fP's\nignore rules for automatic filtering. In some cases, it may not be desirable\nto respect the source control's ignore rules and instead only respect rules in\n\\fB.ignore\\fP or \\fB.rgignore\\fP.\n.sp\nNote that this flag does not directly affect the filtering of source control\nfiles or folders that start with a dot (\\fB.\\fP), like \\fB.git\\fP. These are\naffected by \\flag{hidden} and its related flags instead.\n.sp\nThis flag implies \\flag{no-ignore-parent} for source control ignore files as\nwell.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-ignore-vcs"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_IGNORE_VCS",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-messages",
+      "aliases": [
+        "--no-messages",
+        "--messages"
+      ],
+      "value": "none",
+      "description": "Suppress some error messages.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "messages",
+        "category": "Logging",
+        "long_help": "\nThis flag suppresses some error messages. Specifically, messages related to\nthe failed opening and reading of files. Error messages related to the syntax\nof the pattern are still shown.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-messages"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_MESSAGES",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-require-git",
+      "aliases": [
+        "--no-require-git",
+        "--require-git"
+      ],
+      "value": "none",
+      "description": "Use .gitignore outside of git repositories.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "require-git",
+        "category": "Filter",
+        "long_help": "\nWhen this flag is given, source control ignore files such as \\fB.gitignore\\fP\nare respected even if no \\fBgit\\fP repository is present.\n.sp\nBy default, ripgrep will only respect filter rules from source control ignore\nfiles when ripgrep detects that the search is executed inside a source control\nrepository. For example, when a \\fB.git\\fP directory is observed.\n.sp\nThis flag relaxes the default restriction. For example, it might be useful when\nthe contents of a \\fBgit\\fP repository are stored or copied somewhere, but\nwhere the repository state is absent.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-require-git"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_REQUIRE_GIT",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-unicode",
+      "aliases": [
+        "--no-unicode",
+        "--unicode"
+      ],
+      "value": "none",
+      "description": "Disable Unicode mode.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "unicode",
+        "category": "Search",
+        "long_help": "\nThis flag disables Unicode mode for all patterns given to ripgrep.\n.sp\nBy default, ripgrep will enable \"Unicode mode\" in all of its regexes. This has\na number of consequences:\n.sp\n.IP \\(bu 3n\n\\fB.\\fP will only match valid UTF-8 encoded Unicode scalar values.\n.sp\n.IP \\(bu 3n\nClasses like \\fB\\\\w\\fP, \\fB\\\\s\\fP, \\fB\\\\d\\fP are all Unicode aware and much\nbigger than their ASCII only versions.\n.sp\n.IP \\(bu 3n\nCase insensitive matching will use Unicode case folding.\n.sp\n.IP \\(bu 3n\nA large array of classes like \\fB\\\\p{Emoji}\\fP are available. (Although the\nspecific set of classes available varies based on the regex engine. In general,\nthe default regex engine has more classes available to it.)\n.sp\n.IP \\(bu 3n\nWord boundaries (\\fB\\\\b\\fP and \\fB\\\\B\\fP) use the Unicode definition of a word\ncharacter.\n.PP\nIn some cases it can be desirable to turn these things off. This flag will do\nexactly that. For example, Unicode mode can sometimes have a negative impact\non performance, especially when things like \\fB\\\\w\\fP are used frequently\n(including via bounded repetitions like \\fB\\\\w{100}\\fP) when only their ASCII\ninterpretation is needed.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-unicode"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_UNICODE",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "null",
+      "aliases": [
+        "--null",
+        "-0"
+      ],
+      "value": "none",
+      "description": "Print a NUL byte after file paths.",
+      "short": "0",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "\nWhenever a file path is printed, follow it with a \\fBNUL\\fP byte. This includes\nprinting file paths before matches, and when printing a list of matching files\nsuch as with \\flag{count}, \\flag{files-with-matches} and \\flag{files}. This\noption is useful for use with \\fBxargs\\fP.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -0, --null"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NULL",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "null-data",
+      "aliases": [
+        "--null-data"
+      ],
+      "value": "none",
+      "description": "Use NUL as a line terminator.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Search",
+        "long_help": "\nEnabling this flag causes ripgrep to use \\fBNUL\\fP as a line terminator instead\nof the default of \\fP\\\\n\\fP.\n.sp\nThis is useful when searching large binary files that would otherwise have\nvery long lines if \\fB\\\\n\\fP were used as the line terminator. In particular,\nripgrep requires that, at a minimum, each line must fit into memory. Using\n\\fBNUL\\fP instead can be a useful stopgap to keep memory requirements low and\navoid OOM (out of memory) conditions.\n.sp\nThis is also useful for processing NUL delimited data, such as that emitted\nwhen using ripgrep's \\flag{null} flag or \\fBfind\\fP's \\fB\\-\\-print0\\fP flag.\n.sp\nUsing this flag implies \\flag{text}. It also overrides \\flag{crlf}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --null-data"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NULL_DATA",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "one-file-system",
+      "aliases": [
+        "--one-file-system",
+        "--no-one-file-system"
+      ],
+      "value": "none",
+      "description": "Unsupported in this build. An effective --one-file-system exits 2 before traversal; --no-one-file-system disables it.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-one-file-system",
+        "category": "Filter",
+        "long_help": "Unsupported in this build. An effective --one-file-system exits 2 before traversal; --no-one-file-system disables it.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --one-file-system"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_ONE_FILE_SYSTEM",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "only-matching",
+      "aliases": [
+        "--only-matching",
+        "-o"
+      ],
+      "value": "none",
+      "description": "Print only matched parts of a line.",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "\nPrint only the matched (non-empty) parts of a matching line, with each such\npart on a separate output line.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -o, --only-matching"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_ONLY_MATCHING",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "path-separator",
+      "aliases": [
+        "--path-separator"
+      ],
+      "value": "required",
+      "description": "Set the path separator for printing paths.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "SEPARATOR",
+        "category": "Output",
+        "long_help": "\nSet the path separator to use when printing file paths. This defaults to your\nplatform's path separator, which is \\fB/\\fP on Unix and \\fB\\\\\\fP on Windows.\nThis flag is intended for overriding the default when the environment demands\nit (e.g., cygwin). A path separator is limited to a single byte.\n.sp\nSetting this flag to an empty string reverts it to its default behavior. That\nis, the path separator is automatically chosen based on the environment.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --path-separator=SEPARATOR"
+      ]
+    },
+    {
+      "name": "passthru",
+      "aliases": [
+        "--passthru",
+        "--passthrough"
+      ],
+      "value": "none",
+      "description": "Print both matching and non-matching lines.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "\nPrint both matching and non-matching lines.\n.sp\nAnother way to achieve a similar effect is by modifying your pattern to match\nthe empty string. For example, if you are searching using \\fBrg\\fP \\fIfoo\\fP,\nthen using \\fBrg\\fP \\fB'^|\\fP\\fIfoo\\fP\\fB'\\fP instead will emit every line in\nevery file searched, but only occurrences of \\fIfoo\\fP will be highlighted.\nThis flag enables the same behavior without needing to modify the pattern.\n.sp\nAn alternative spelling for this flag is \\fB\\-\\-passthrough\\fP.\n.sp\nThis overrides the \\flag{context}, \\flag{after-context} and\n\\flag{before-context} flags.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --passthru"
+      ]
+    },
+    {
+      "name": "pcre2",
+      "aliases": [
+        "--pcre2",
+        "-P",
+        "--no-pcre2"
+      ],
+      "value": "none",
+      "description": "Unsupported in this build. Use the default regex engine; patterns requiring PCRE2 are rejected.",
+      "short": "P",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-pcre2",
+        "category": "Search",
+        "long_help": "Unsupported in this build. Use the default regex engine; patterns requiring PCRE2 are rejected.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -P, --pcre2"
+      ]
+    },
+    {
+      "name": "pcre2-version",
+      "aliases": [
+        "--pcre2-version"
+      ],
+      "value": "none",
+      "description": "Print the version of PCRE2 that ripgrep uses.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OtherBehaviors",
+        "long_help": "\nWhen this flag is present, ripgrep will print the version of PCRE2 in use,\nalong with other information, and then exit. If PCRE2 is not available, then\nripgrep will print an error message and exit with an error code.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --pcre2-version"
+      ]
+    },
+    {
+      "name": "pre",
+      "aliases": [
+        "--pre",
+        "--no-pre"
+      ],
+      "value": "required",
+      "description": "Search output of COMMAND for each PATH.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-pre",
+        "variable": "COMMAND",
+        "category": "Input",
+        "long_help": "\nFor each input \\fIPATH\\fP, this flag causes ripgrep to search the standard\noutput of \\fICOMMAND\\fP \\fIPATH\\fP instead of the contents of \\fIPATH\\fP.\nThis option expects the \\fICOMMAND\\fP program to either be a path or to be\navailable in your \\fBPATH\\fP. Either an empty string \\fICOMMAND\\fP or the\n\\fB\\-\\-no\\-pre\\fP flag will disable this behavior.\n.sp\n.TP 12\n\\fBWARNING\\fP\nWhen this flag is set, ripgrep will unconditionally spawn a process for every\nfile that is searched. Therefore, this can incur an unnecessarily large\nperformance penalty if you don't otherwise need the flexibility offered by this\nflag. One possible mitigation to this is to use the \\flag{pre-glob} flag to\nlimit which files a preprocessor is run with.\n.PP\nA preprocessor is not run when ripgrep is searching stdin.\n.sp\nWhen searching over sets of files that may require one of several\npreprocessors, \\fICOMMAND\\fP should be a wrapper program which first classifies\n\\fIPATH\\fP based on magic numbers/content or based on the \\fIPATH\\fP name and\nthen dispatches to an appropriate preprocessor. Each \\fICOMMAND\\fP also has its\nstandard input connected to \\fIPATH\\fP for convenience.\n.sp\nFor example, a shell script for \\fICOMMAND\\fP might look like:\n.sp\n.EX\n    case \"$1\" in\n    *.pdf)\n        exec pdftotext \"$1\" -\n        ;;\n    *)\n        case $(file \"$1\") in\n        *Zstandard*)\n            exec pzstd -cdq\n            ;;\n        *)\n            exec cat\n            ;;\n        esac\n        ;;\n    esac\n.EE\n.sp\nThe above script uses \\fBpdftotext\\fP to convert a PDF file to plain text. For\nall other files, the script uses the \\fBfile\\fP utility to sniff the type of\nthe file based on its contents. If it is a compressed file in the Zstandard\nformat, then \\fBpzstd\\fP is used to decompress the contents to stdout.\n.sp\nThis overrides the \\flag{search-zip} flag.\n",
+        "choices": [],
+        "completion": "Executable"
+      },
+      "help_lines": [
+        "    --pre=COMMAND"
+      ]
+    },
+    {
+      "name": "pre-glob",
+      "aliases": [
+        "--pre-glob"
+      ],
+      "value": "required",
+      "description": "Include or exclude files from a preprocessor.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "GLOB",
+        "category": "Input",
+        "long_help": "\nThis flag works in conjunction with the \\flag{pre} flag. Namely, when one or\nmore \\flag{pre-glob} flags are given, then only files that match the given set\nof globs will be handed to the command specified by the \\flag{pre} flag. Any\nnon-matching files will be searched without using the preprocessor command.\n.sp\nThis flag is useful when searching many files with the \\flag{pre} flag.\nNamely, it provides the ability to avoid process overhead for files that\ndon't need preprocessing. For example, given the following shell script,\n\\fIpre-pdftotext\\fP:\n.sp\n.EX\n    #!/bin/sh\n    pdftotext \"$1\" -\n.EE\n.sp\nthen it is possible to use \\fB\\-\\-pre\\fP \\fIpre-pdftotext\\fP\n\\fB\\-\\-pre\\-glob\\fP '\\fI*.pdf\\fP' to make it so ripgrep only executes\nthe \\fIpre-pdftotext\\fP command on files with a \\fI.pdf\\fP extension.\n.sp\nMultiple \\flag{pre-glob} flags may be used. Globbing rules match\n\\fBgitignore\\fP globs. Precede a glob with a \\fB!\\fP to exclude it.\n.sp\nThis flag has no effect if the \\flag{pre} flag is not used.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --pre-glob=GLOB"
+      ]
+    },
+    {
+      "name": "pretty",
+      "aliases": [
+        "--pretty",
+        "-p"
+      ],
+      "value": "none",
+      "description": "Enable color, headings and line numbers explicitly, including on redirected output.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "Enable color, headings and line numbers explicitly, including on redirected output.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -p, --pretty"
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "--quiet",
+        "-q"
+      ],
+      "value": "none",
+      "description": "Do not print anything to stdout.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "\nDo not print anything to stdout. If a match is found in a file, then ripgrep\nwill stop searching. This is useful when ripgrep is used only for its exit code\n(which will be an error code if no matches are found).\n.sp\nWhen \\flag{files} is used, ripgrep will stop finding files after finding the\nfirst file that does not match any ignore rules.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -q, --quiet"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_QUIET",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "regex-size-limit",
+      "aliases": [
+        "--regex-size-limit"
+      ],
+      "value": "required",
+      "description": "The size limit of the compiled regex.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM+SUFFIX?",
+        "category": "Search",
+        "long_help": "\nThe size limit of the compiled regex, where the compiled regex generally\ncorresponds to a single object in memory that can match all of the patterns\nprovided to ripgrep. The default limit is generous enough that most reasonable\npatterns (or even a small number of them) should fit.\n.sp\nThis useful to change when you explicitly want to let ripgrep spend potentially\nmuch more time and/or memory building a regex matcher.\n.sp\nThe input format accepts suffixes of \\fBK\\fP, \\fBM\\fP or \\fBG\\fP which\ncorrespond to kilobytes, megabytes and gigabytes, respectively. If no suffix is\nprovided the input is treated as bytes.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --regex-size-limit=NUM+SUFFIX?"
+      ]
+    },
+    {
+      "name": "replace",
+      "aliases": [
+        "--replace",
+        "-r"
+      ],
+      "value": "required",
+      "description": "Replace matches with the given text.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "REPLACEMENT",
+        "category": "Output",
+        "long_help": "\nReplaces every match with the text given when printing results. Neither this\nflag nor any other ripgrep flag will modify your files.\n.sp\nCapture group indices (e.g., \\fB$\\fP\\fI5\\fP) and names (e.g., \\fB$\\fP\\fIfoo\\fP)\nare supported in the replacement string. Capture group indices are numbered\nbased on the position of the opening parenthesis of the group, where the\nleftmost such group is \\fB$\\fP\\fI1\\fP. The special \\fB$\\fP\\fI0\\fP group\ncorresponds to the entire match.\n.sp\nThe name of a group is formed by taking the longest string of letters, numbers\nand underscores (i.e. \\fB[_0-9A-Za-z]\\fP) after the \\fB$\\fP. For example,\n\\fB$\\fP\\fI1a\\fP will be replaced with the group named \\fI1a\\fP, not the\ngroup at index \\fI1\\fP. If the group's name contains characters that aren't\nletters, numbers or underscores, or you want to immediately follow the group\nwith another string, the name should be put inside braces. For example,\n\\fB${\\fP\\fI1\\fP\\fB}\\fP\\fIa\\fP will take the content of the group at index\n\\fI1\\fP and append \\fIa\\fP to the end of it.\n.sp\nIf an index or name does not refer to a valid capture group, it will be\nreplaced with an empty string.\n.sp\nIn shells such as Bash and zsh, you should wrap the pattern in single quotes\ninstead of double quotes. Otherwise, capture group indices will be replaced by\nexpanded shell variables which will most likely be empty.\n.sp\nTo write a literal \\fB$\\fP, use \\fB$$\\fP.\n.sp\nNote that the replacement by default replaces each match, and not the entire\nline. To replace the entire line, you should match the entire line.\n.sp\nThis flag can be used with the \\flag{only-matching} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -r REPLACEMENT, --replace=REPLACEMENT"
+      ]
+    },
+    {
+      "name": "search-zip",
+      "aliases": [
+        "--search-zip",
+        "-z",
+        "--no-search-zip"
+      ],
+      "value": "none",
+      "description": "Compressed search is deferred (rejected).",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-search-zip",
+        "category": "Input",
+        "long_help": "Compressed search is deferred in cli/rg. An effective -z or --search-zip exits with status 2. --no-search-zip or a later --pre retains option precedence.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -z, --search-zip",
+        "        --search-zip exits with status 2. --no-search-zip or a later --pre"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_SEARCH_ZIP",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "smart-case",
+      "aliases": [
+        "--smart-case",
+        "-S"
+      ],
+      "value": "none",
+      "description": "Smart case search.",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Search",
+        "long_help": "\nThis flag instructs ripgrep to searches case insensitively if the pattern is\nall lowercase. Otherwise, ripgrep will search case sensitively.\n.sp\nA pattern is considered all lowercase if both of the following rules hold:\n.sp\n.IP \\(bu 3n\nFirst, the pattern contains at least one literal character. For example,\n\\fBa\\\\w\\fP contains a literal (\\fBa\\fP) but just \\fB\\\\w\\fP does not.\n.sp\n.IP \\(bu 3n\nSecond, of the literals in the pattern, none of them are considered to be\nuppercase according to Unicode. For example, \\fBfoo\\\\pL\\fP has no uppercase\nliterals but \\fBFoo\\\\pL\\fP does.\n.PP\nThis overrides the \\flag{case-sensitive} and \\flag{ignore-case} flags.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -S, --smart-case"
+      ]
+    },
+    {
+      "name": "sort",
+      "aliases": [
+        "--sort"
+      ],
+      "value": "required",
+      "description": "Sort paths ascending by path, modified or accessed, or use none. Creation-time sorting (created) is unsupported. Sorting retains the selected path list.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "SORTBY",
+        "category": "Output",
+        "long_help": "Sort paths ascending by path, modified or accessed, or use none. Creation-time sorting (created) is unsupported. Sorting retains the selected path list.",
+        "choices": [
+          "none",
+          "path",
+          "modified",
+          "accessed",
+          "created"
+        ],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --sort=SORTBY"
+      ]
+    },
+    {
+      "name": "sortr",
+      "aliases": [
+        "--sortr"
+      ],
+      "value": "required",
+      "description": "Sort paths descending by path, modified or accessed, or use none. Creation-time sorting (created) is unsupported.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "SORTBY",
+        "category": "Output",
+        "long_help": "Sort paths descending by path, modified or accessed, or use none. Creation-time sorting (created) is unsupported.",
+        "choices": [
+          "none",
+          "path",
+          "modified",
+          "accessed",
+          "created"
+        ],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --sortr=SORTBY"
+      ]
+    },
+    {
+      "name": "stats",
+      "aliases": [
+        "--stats",
+        "--no-stats"
+      ],
+      "value": "none",
+      "description": "Print statistics about the search.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-stats",
+        "category": "Logging",
+        "long_help": "\nWhen enabled, ripgrep will print aggregate statistics about the search. When\nthis flag is present, ripgrep will print at least the following stats to\nstdout at the end of the search: number of matched lines, number of files with\nmatches, number of files searched, and the time taken for the entire search to\ncomplete.\n.sp\nThis set of aggregate statistics may expand over time.\n.sp\nThis flag is always and implicitly enabled when \\flag{json} is used.\n.sp\nNote that this flag has no effect if \\flag{files}, \\flag{files-with-matches} or\n\\flag{files-without-match} is passed.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --stats"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_STATS",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "stop-on-nonmatch",
+      "aliases": [
+        "--stop-on-nonmatch"
+      ],
+      "value": "none",
+      "description": "Stop searching after a non-match.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Search",
+        "long_help": "\nEnabling this option will cause ripgrep to stop reading a file once it\nencounters a non-matching line after it has encountered a matching line.\nThis is useful if it is expected that all matches in a given file will be on\nsequential lines, for example due to the lines being sorted.\n.sp\nThis overrides the \\flag{multiline} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --stop-on-nonmatch"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_STOP_ON_NONMATCH",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "text",
+      "aliases": [
+        "--text",
+        "-a",
+        "--no-text"
+      ],
+      "value": "none",
+      "description": "Search binary files as if they were text.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-text",
+        "category": "Search",
+        "long_help": "\nThis flag instructs ripgrep to search binary files as if they were text. When\nthis flag is present, ripgrep's binary file detection is disabled. This means\nthat when a binary file is searched, its contents may be printed if there is\na match. This may cause escape codes to be printed that alter the behavior of\nyour terminal.\n.sp\nWhen binary file detection is enabled, it is imperfect. In general, it uses\na simple heuristic. If a \\fBNUL\\fP byte is seen during search, then the file\nis considered binary and searching stops (unless this flag is present).\nAlternatively, if the \\flag{binary} flag is used, then ripgrep will only quit\nwhen it sees a \\fBNUL\\fP byte after it sees a match (or searches the entire\nfile).\n.sp\nThis flag overrides the \\flag{binary} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -a, --text"
+      ]
+    },
+    {
+      "name": "threads",
+      "aliases": [
+        "--threads",
+        "-j"
+      ],
+      "value": "required",
+      "description": "Accepted for compatibility; this build searches on one thread regardless of NUM.",
+      "short": "j",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "NUM",
+        "category": "Search",
+        "long_help": "Accepted for compatibility; this build searches on one thread regardless of NUM.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -j NUM, --threads=NUM"
+      ]
+    },
+    {
+      "name": "trace",
+      "aliases": [
+        "--trace"
+      ],
+      "value": "none",
+      "description": "Show trace messages.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Logging",
+        "long_help": "\nShow trace messages. This shows even more detail than the \\flag{debug}\nflag. Generally, one should only use this if \\flag{debug} doesn't emit the\ninformation you're looking for.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --trace"
+      ]
+    },
+    {
+      "name": "trim",
+      "aliases": [
+        "--trim",
+        "--no-trim"
+      ],
+      "value": "none",
+      "description": "Trim prefix whitespace from matches.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-trim",
+        "category": "Output",
+        "long_help": "\nWhen set, all ASCII whitespace at the beginning of each line printed will be\nremoved.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --trim"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_TRIM",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "type",
+      "aliases": [
+        "--type",
+        "-t"
+      ],
+      "value": "required",
+      "description": "Only search files matching TYPE.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "TYPE",
+        "category": "Filter",
+        "long_help": "\nThis flag limits ripgrep to searching files matching \\fITYPE\\fP. Multiple\n\\flag{type} flags may be provided.\n.sp\nThis flag supports the special value \\fBall\\fP, which will behave as if\n\\flag{type} was provided for every file type supported by ripgrep (including\nany custom file types). The end result is that \\fB\\-\\-type=all\\fP causes\nripgrep to search in \"whitelist\" mode, where it will only search files it\nrecognizes via its type definitions.\n.sp\nNote that this flag has lower precedence than both the \\flag{glob} flag and\nany rules found in ignore files.\n.sp\nTo see the list of available file types, use the \\flag{type-list} flag.\n",
+        "choices": [],
+        "completion": "Filetype"
+      },
+      "help_lines": [
+        "    -t TYPE, --type=TYPE"
+      ]
+    },
+    {
+      "name": "type-not",
+      "aliases": [
+        "--type-not",
+        "-T"
+      ],
+      "value": "required",
+      "description": "Do not search files matching TYPE.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "TYPE",
+        "category": "Filter",
+        "long_help": "\nDo not search files matching \\fITYPE\\fP. Multiple \\flag{type-not} flags may be\nprovided. Use the \\flag{type-list} flag to list all available types.\n.sp\nThis flag supports the special value \\fBall\\fP, which will behave\nas if \\flag{type-not} was provided for every file type supported by\nripgrep (including any custom file types). The end result is that\n\\fB\\-\\-type\\-not=all\\fP causes ripgrep to search in \"blacklist\" mode, where it\nwill only search files that are unrecognized by its type definitions.\n.sp\nTo see the list of available file types, use the \\flag{type-list} flag.\n",
+        "choices": [],
+        "completion": "Filetype"
+      },
+      "help_lines": [
+        "    -T TYPE, --type-not=TYPE",
+        "        --type-not=all causes ripgrep to search in \"blacklist\" mode, where it"
+      ]
+    },
+    {
+      "name": "type-add",
+      "aliases": [
+        "--type-add"
+      ],
+      "value": "required",
+      "description": "Add a new glob for a file type.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "TYPESPEC",
+        "category": "Filter",
+        "long_help": "\nThis flag adds a new glob for a particular file type. Only one glob can be\nadded at a time. Multiple \\flag{type-add} flags can be provided. Unless\n\\flag{type-clear} is used, globs are added to any existing globs defined inside\nof ripgrep.\n.sp\nNote that this must be passed to every invocation of ripgrep. Type settings are\nnot persisted. See \\fBCONFIGURATION FILES\\fP for a workaround.\n.sp\nExample:\n.sp\n.EX\n    rg \\-\\-type\\-add 'foo:*.foo' -tfoo \\fIPATTERN\\fP\n.EE\n.sp\nThis flag can also be used to include rules from other types with the special\ninclude directive. The include directive permits specifying one or more other\ntype names (separated by a comma) that have been defined and its rules will\nautomatically be imported into the type specified. For example, to create a\ntype called src that matches C++, Python and Markdown files, one can use:\n.sp\n.EX\n    \\-\\-type\\-add 'src:include:cpp,py,md'\n.EE\n.sp\nAdditional glob rules can still be added to the src type by using this flag\nagain:\n.sp\n.EX\n    \\-\\-type\\-add 'src:include:cpp,py,md' \\-\\-type\\-add 'src:*.foo'\n.EE\n.sp\nNote that type names must consist only of Unicode letters or numbers.\nPunctuation characters are not allowed.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --type-add=TYPESPEC",
+        "            --type-add 'src:include:cpp,py,md'",
+        "            --type-add 'src:include:cpp,py,md' --type-add 'src:*.foo'"
+      ]
+    },
+    {
+      "name": "type-clear",
+      "aliases": [
+        "--type-clear"
+      ],
+      "value": "required",
+      "description": "Clear globs for a file type.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "variable": "TYPE",
+        "category": "Filter",
+        "long_help": "\nClear the file type globs previously defined for \\fITYPE\\fP. This clears any\npreviously defined globs for the \\fITYPE\\fP, but globs can be added after this\nflag.\n.sp\nNote that this must be passed to every invocation of ripgrep. Type settings are\nnot persisted. See \\fBCONFIGURATION FILES\\fP for a workaround.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "        --type-clear is used, globs are added to any existing globs defined",
+        "    --type-clear=TYPE"
+      ]
+    },
+    {
+      "name": "type-list",
+      "aliases": [
+        "--type-list"
+      ],
+      "value": "none",
+      "description": "Show all supported file types.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OtherBehaviors",
+        "long_help": "\nShow all supported file types and their corresponding globs. This takes any\n\\flag{type-add} and \\flag{type-clear} flags given into account. Each type is\nprinted on its own line, followed by a \\fB:\\fP and then a comma-delimited list\nof globs for that type on the same line.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --type-list"
+      ]
+    },
+    {
+      "name": "unrestricted",
+      "aliases": [
+        "--unrestricted",
+        "-u"
+      ],
+      "value": "none",
+      "description": "Reduce the level of \"smart\" filtering.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Filter",
+        "long_help": "\nThis flag reduces the level of \"smart\" filtering. Repeated uses (up to 3) reduces\nthe filtering even more. When repeated three times, ripgrep will search every\nfile in a directory tree.\n.sp\nA single \\flag{unrestricted} flag is equivalent to \\flag{no-ignore}. Two\n\\flag{unrestricted} flags is equivalent to \\flag{no-ignore} \\flag{hidden}.\nThree \\flag{unrestricted} flags is equivalent to \\flag{no-ignore} \\flag{hidden}\n\\flag{binary}.\n.sp\nThe only filtering ripgrep still does when \\fB-uuu\\fP is given is to skip\nsymbolic links and to avoid printing matches from binary files. Symbolic links\ncan be followed via the \\flag{follow} flag, and binary files can be treated as\ntext files via the \\flag{text} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -u, --unrestricted"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_UNRESTRICTED",
+        "type_": "Int32"
+      }
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version",
+        "-V"
+      ],
+      "value": "none",
+      "description": "display version and exit. Prints the cli/rg release number, not the upstream ripgrep release.",
+      "short": "V",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "OtherBehaviors",
+        "long_help": "display version and exit. Prints the cli/rg release number, not the upstream ripgrep release.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -V, --version"
+      ]
+    },
+    {
+      "name": "vimgrep",
+      "aliases": [
+        "--vimgrep"
+      ],
+      "value": "none",
+      "description": "Print results in a vim compatible format.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "\nThis flag instructs ripgrep to print results with every match on its own line,\nincluding line numbers and column numbers.\n.sp\nWith this option, a line with more than one match will be printed in its\nentirety more than once. For that reason, the total amount of output as a\nresult of this flag can be quadratic in the size of the input. For example,\nif the pattern matches every byte in an input file, then each line will be\nrepeated for every byte matched. For this reason, users should only use this\nflag when there is no other choice. Editor integrations should prefer some\nother way of reading results from ripgrep, such as via the \\flag{json} flag.\nOne alternative to avoiding exorbitant memory usage is to force ripgrep into\nsingle threaded mode with the \\flag{threads} flag. Note though that this will\nnot impact the total size of the output, just the heap memory that ripgrep will\nuse.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --vimgrep"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_VIMGREP",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "with-filename",
+      "aliases": [
+        "--with-filename",
+        "-H"
+      ],
+      "value": "none",
+      "description": "Print the file path with each matching line.",
+      "short": "H",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "\nThis flag instructs ripgrep to print the file path for each matching line.\nThis is the default when more than one file is searched. If \\flag{heading} is\nenabled (the default when printing to a tty), the file path will be shown above\nclusters of matches from each file; otherwise, the file name will be shown as a\nprefix for each matched line.\n.sp\nThis flag overrides \\flag{no-filename}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -H, --with-filename"
+      ]
+    },
+    {
+      "name": "no-filename",
+      "aliases": [
+        "--no-filename",
+        "-I"
+      ],
+      "value": "none",
+      "description": "Never print the path with each matching line.",
+      "short": "I",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Output",
+        "long_help": "\nThis flag instructs ripgrep to never print the file path with each matching\nline. This is the default when ripgrep is explicitly instructed to search one\nfile or stdin.\n.sp\nThis flag overrides \\flag{with-filename}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -I, --no-filename"
+      ]
+    },
+    {
+      "name": "word-regexp",
+      "aliases": [
+        "--word-regexp",
+        "-w"
+      ],
+      "value": "none",
+      "description": "Show matches surrounded by word boundaries.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "category": "Search",
+        "long_help": "\nWhen enabled, ripgrep will only show matches surrounded by word boundaries.\nThis is equivalent to surrounding every pattern with \\fB\\\\b{start-half}\\fP and\n\\fB\\\\b{end-half}\\fP. These are a custom syntax from ripgrep's default regex\nengine that, unlike \\fB\\\\b\\fP, doesn't require matching a word character on one\nside. That is, \\fB\\\\b{start-half}\\fP corresponds to matching \\fB\\\\W|\\\\A\\fP on\nthe left and \\fB\\\\b{end-half}\\fP corresponds to matching \\fB\\\\W|\\\\z\\fP on the\nright.\n.sp\nThis overrides the \\flag{line-regexp} flag.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    -w, --word-regexp"
+      ]
+    },
+    {
+      "name": "auto-hybrid-regex",
+      "aliases": [
+        "--auto-hybrid-regex",
+        "--no-auto-hybrid-regex"
+      ],
+      "value": "none",
+      "description": "Accepted for compatibility; PCRE2 is unavailable, so only the default regex engine is used.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-auto-hybrid-regex",
+        "category": "Search",
+        "long_help": "Accepted for compatibility; PCRE2 is unavailable, so only the default regex engine is used.",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --auto-hybrid-regex"
+      ]
+    },
+    {
+      "name": "no-pcre2-unicode",
+      "aliases": [
+        "--no-pcre2-unicode",
+        "--pcre2-unicode"
+      ],
+      "value": "none",
+      "description": "(DEPRECATED) Disable Unicode mode for PCRE2.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "pcre2-unicode",
+        "category": "Search",
+        "long_help": "\nDEPRECATED. Use \\flag{no-unicode} instead.\n.sp\nNote that Unicode mode is enabled by default.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --no-pcre2-unicode"
+      ]
+    },
+    {
+      "name": "sort-files",
+      "aliases": [
+        "--sort-files",
+        "--no-sort-files"
+      ],
+      "value": "none",
+      "description": "(DEPRECATED) Sort results by file path.",
+      "repeatable": true,
+      "allow_attached": true,
+      "rg": {
+        "negated": "no-sort-files",
+        "category": "Output",
+        "long_help": "\nDEPRECATED. Use \\fB\\-\\-sort=path\\fP instead.\n.sp\nThis flag instructs ripgrep to sort search results by file path\nlexicographically in ascending order. Note that this currently disables all\nparallelism and runs search in a single thread.\n.sp\nThis flag overrides \\flag{sort} and \\flag{sortr}.\n",
+        "choices": [],
+        "completion": "Other"
+      },
+      "help_lines": [
+        "    --sort-files"
+      ]
+    }
+  ],
+  "tables": []
+}

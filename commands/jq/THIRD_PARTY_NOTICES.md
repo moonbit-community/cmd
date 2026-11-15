@@ -30,7 +30,8 @@ instead of the Query wrapper. The current formatter also updates deprecated
 derivation syntax. Subsequent local work replaces eager expression composition
 with resumable streams, lexical scopes and compile validation, and adds module
 syntax and source locations. Atomic operations retain the imported algorithms.
-Existing command-owned AST adaptations, input
-framing, stream events and rendering live in `internal/driver`. These packages
+Shared jq-owned AST adaptations live in `internal/filter`; input framing,
+stream events and rendering remain in `internal/driver`. The public `engine`
+package exposes value filtering to jqlog without exporting AST types. These packages
 are maintained in this repository; jq no longer resolves the MoonJQ package.
 Later behavior changes must retain independent command/oracle expectations.

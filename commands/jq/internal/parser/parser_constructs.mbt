@@ -5,7 +5,7 @@
 ///|
 /// Parse object constructor
 fn Parser::parse_object(self : Parser) -> @ast.Expr raise ParseError {
-  if self.consume(TRBrace) {
+  if self.consume(TRightBrace) {
     return ObjectConstruct([])
   }
   let pairs : Array[(@ast.Expr, @ast.Expr?)] = []
@@ -19,10 +19,10 @@ fn Parser::parse_object(self : Parser) -> @ast.Expr raise ParseError {
         self.advance()
         Literal(String(name))
       }
-      Some(TLParen) => {
+      Some(TLeftParen) => {
         self.advance()
         let expr = self.parse_pipe()
-        self.expect(TRParen)
+        self.expect(TRightParen)
         expr
       }
       _ => raise InvalidSyntax("Expected object key")
@@ -33,11 +33,11 @@ fn Parser::parse_object(self : Parser) -> @ast.Expr raise ParseError {
       None
     }
     pairs.push((key, value))
-    if !self.consume(TComma) || self.check(TRBrace) {
+    if !self.consume(TComma) || self.check(TRightBrace) {
       break
     }
   }
-  self.expect(TRBrace)
+  self.expect(TRightBrace)
   ObjectConstruct(pairs)
 }
 
@@ -88,11 +88,11 @@ fn Parser::parse_reduce(self : Parser) -> @ast.Expr raise ParseError {
   }
   self.advance()
   // Expect (INIT; UPDATE)
-  self.expect(TLParen)
+  self.expect(TLeftParen)
   let init_expr = self.parse_pipe()
   self.expect(TSemicolon)
   let update_expr = self.parse_pipe()
-  self.expect(TRParen)
+  self.expect(TRightParen)
   Reduce(gen_expr, var_name, init_expr, update_expr)
 }
 
@@ -110,7 +110,7 @@ fn Parser::parse_foreach(self : Parser) -> @ast.Expr raise ParseError {
   }
   self.advance()
   // Expect (INIT; UPDATE) or (INIT; UPDATE; EXTRACT)
-  self.expect(TLParen)
+  self.expect(TLeftParen)
   let init_expr = self.parse_pipe()
   self.expect(TSemicolon)
   let update_expr = self.parse_pipe()
@@ -120,6 +120,6 @@ fn Parser::parse_foreach(self : Parser) -> @ast.Expr raise ParseError {
   } else {
     None
   }
-  self.expect(TRParen)
+  self.expect(TRightParen)
   Foreach(gen_expr, var_name, init_expr, update_expr, extract_expr)
 }

@@ -3,6 +3,7 @@ members = [
   "./commands/rg",
   "./core",
   "./tests",
+  "./tools",
   "./commands/sed",
   "./commands/expr",
   "./commands/md5sum",

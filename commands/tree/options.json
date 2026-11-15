@@ -1,0 +1,336 @@
+{
+  "schema": 1,
+  "command": "tree",
+  "help": "Usage: tree [-adfJCnsh] [-L level] [-P pattern] [-I pattern] [-H base] [-T title] [directory ...]\n{{help:help:0}}\n{{help:version:0}}\n{{help:json:0}}\n{{help:pattern:0}}\n{{help:matchdirs:0}}\n{{help:filelimit:0}}\n{{help:size:0}}\n{{help:color:0}}\n  Symlinks are named leaves; -d selects real child directories, retaining explicit operands.\n  Symlink target text/sizes and mode-based colors require unavailable public metadata APIs.\nProject aliases: --all = -a; --dirs-only = -d; --full-path = -f; --level = -L.\n{{help:json:1}}\n{{help:size:1}}\n",
+  "catalog_options": [
+    "all",
+    "dirs-only",
+    "full-path",
+    "level",
+    "noreport",
+    "json",
+    "html",
+    "title",
+    "pattern",
+    "ignore",
+    "matchdirs",
+    "ignore-case",
+    "prune",
+    "filelimit",
+    "size",
+    "human-readable",
+    "si",
+    "du",
+    "color",
+    "no-color"
+  ],
+  "options": [
+    {
+      "name": "all",
+      "aliases": [
+        "-a",
+        "--all"
+      ],
+      "value": "none",
+      "description": "Include hidden entries / directories only / full paths.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "dirs-only",
+      "aliases": [
+        "-d",
+        "--dirs-only"
+      ],
+      "value": "none",
+      "description": "Include hidden entries / directories only / full paths.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "full-path",
+      "aliases": [
+        "-f",
+        "--full-path"
+      ],
+      "value": "none",
+      "description": "Include hidden entries / directories only / full paths.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "level",
+      "aliases": [
+        "-L",
+        "--level"
+      ],
+      "value": "required",
+      "description": "Limit depth.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "noreport",
+      "aliases": [
+        "--noreport"
+      ],
+      "value": "none",
+      "description": "Limit descent by entry count / omit totals.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "json",
+      "aliases": [
+        "-J",
+        "--json"
+      ],
+      "value": "none",
+      "description": "JSON / HTML / HTML title.",
+      "short": "J",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -J emits JSON; -H BASE emits escaped HTML; -T TITLE selects its title.",
+        "--json = -J; --html = -H; --title = -T; --pattern = -P; --ignore = -I."
+      ]
+    },
+    {
+      "name": "html",
+      "aliases": [
+        "-H",
+        "--html"
+      ],
+      "value": "required",
+      "description": "JSON / HTML / HTML title.",
+      "short": "H",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "title",
+      "aliases": [
+        "-T",
+        "--title"
+      ],
+      "value": "required",
+      "description": "JSON / HTML / HTML title.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "Directory Tree",
+      "default_binding": {
+        "name": "DEFAULT_TITLE",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "pattern",
+      "aliases": [
+        "-P",
+        "--pattern"
+      ],
+      "value": "required",
+      "description": "Include files / exclude names and subtrees.",
+      "short": "P",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -P includes files; -I excludes names/subtrees; --ignore-case changes matching."
+      ]
+    },
+    {
+      "name": "ignore",
+      "aliases": [
+        "-I",
+        "--ignore"
+      ],
+      "value": "required",
+      "description": "Include files / exclude names and subtrees.",
+      "short": "I",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "matchdirs",
+      "aliases": [
+        "--matchdirs"
+      ],
+      "value": "none",
+      "description": "ASCII-insensitive matching / match directories / prune empty selections.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --matchdirs includes matching directory contents; --prune removes empty branches."
+      ]
+    },
+    {
+      "name": "ignore-case",
+      "aliases": [
+        "--ignore-case"
+      ],
+      "value": "none",
+      "description": "ASCII-insensitive matching / match directories / prune empty selections.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "prune",
+      "aliases": [
+        "--prune"
+      ],
+      "value": "none",
+      "description": "ASCII-insensitive matching / match directories / prune empty selections.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "filelimit",
+      "aliases": [
+        "--filelimit"
+      ],
+      "value": "required",
+      "description": "Limit descent by entry count / omit totals.",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  --filelimit N limits entries before traversal; --noreport omits totals."
+      ]
+    },
+    {
+      "name": "size",
+      "aliases": [
+        "-s",
+        "--size"
+      ],
+      "value": "none",
+      "description": "Sizes / binary human sizes / decimal sizes / summed sizes.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, -h, --si and --du use public size metadata; unsupported host metadata reports an error.",
+        "--size = -s; --human-readable = -h; --color = -C; --no-color = -n."
+      ]
+    },
+    {
+      "name": "human-readable",
+      "aliases": [
+        "-h",
+        "--human-readable"
+      ],
+      "value": "none",
+      "description": "Sizes / binary human sizes / decimal sizes / summed sizes.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "si",
+      "aliases": [
+        "--si"
+      ],
+      "value": "none",
+      "description": "Sizes / binary human sizes / decimal sizes / summed sizes.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "du",
+      "aliases": [
+        "--du"
+      ],
+      "value": "none",
+      "description": "Sizes / binary human sizes / decimal sizes / summed sizes.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "color",
+      "aliases": [
+        "-C",
+        "--color"
+      ],
+      "value": "none",
+      "description": "Force color / disable unforced color.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -C forces explicit type/extension colors; -n disables unforced color."
+      ]
+    },
+    {
+      "name": "no-color",
+      "aliases": [
+        "-n",
+        "--no-color"
+      ],
+      "value": "none",
+      "description": "Disable color output.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "all",
+        "dirs-only",
+        "full-path",
+        "level",
+        "noreport",
+        "json",
+        "html",
+        "title",
+        "pattern",
+        "ignore",
+        "matchdirs",
+        "ignore-case",
+        "prune",
+        "filelimit",
+        "size",
+        "human-readable",
+        "si",
+        "du",
+        "color",
+        "no-color",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

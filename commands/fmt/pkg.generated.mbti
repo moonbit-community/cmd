@@ -6,7 +6,6 @@ package "cli/fmt"
 // Errors
 
 // Types and methods
-type Word
 
 // Type aliases
 

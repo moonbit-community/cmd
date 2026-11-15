@@ -23,7 +23,7 @@ async test "shared stdout translates I/O errors once and never replays on cleanu
     @termcolor.Write::flush(writer)
     false
   } catch {
-    @sys.IOError(..) as error => {
+    @sys.IoError(..) as error => {
       assert_eq(
         error.kind(),
         @sys.from_error(

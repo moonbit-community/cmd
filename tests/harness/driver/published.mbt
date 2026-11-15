@@ -1,27 +1,16 @@
 ///|
 #derive(FromJson)
-struct PublishedCommand {
-  name : String
-  package_name : String
-  version : String
-}
-
-///|
-#derive(FromJson)
 struct PublishedSelection {
   candidate : Bool?
   base_manifest : String
-  commands : Array[PublishedCommand]
   case_ids : Array[String]
   extra_cases : Array[Json]
 }
 
 ///|
-fn published_coordinates(
-  selection : PublishedSelection,
-) -> Map[String, String] raise {
-  guard !selection.commands.is_empty() && !selection.case_ids.is_empty() else {
-    fail("published acceptance requires commands and cases")
+fn validate_published_selection(selection : PublishedSelection) -> Unit raise {
+  guard !selection.case_ids.is_empty() else {
+    fail("published acceptance requires selected cases")
   }
   // Generated candidates use the sibling current corpus; other parent paths
   // remain rejected, and published snapshots keep their local expectation file.
@@ -43,44 +32,129 @@ fn published_coordinates(
     }
     ids.add(id)
   }
+}
+
+///|
+fn module_coordinate(command : String, source : String) -> String raise {
+  let fields : Map[String, String] = Map([])
+  for line in source.split("\n") {
+    for key in ["name", "version"] {
+      if line.trim().strip_prefix(key + " = ") is Some(value) {
+        guard !fields.contains(key) &&
+          @json.parse(value.to_owned()) is String(value) else {
+          fail("invalid or duplicate module " + key + ": " + command)
+        }
+        fields[key] = value
+      }
+    }
+  }
+  guard fields.get("name") == Some("cli/" + command) &&
+    fields.get("version") is Some(version) else {
+    fail("missing or mismatched module coordinate: " + command)
+  }
+  guard exact_version(version) else {
+    fail("expected an exact module version: " + command)
+  }
+  "cli/" + command + "@" + version
+}
+
+///|
+fn exact_version(version : String) -> Bool {
+  let build = version.split("+").collect()
+  guard build.length() <= 2 else { return false }
+  let identifiers = fn(text : StringView, prerelease : Bool) -> Bool {
+    text
+    .split(".")
+    .all(part => {
+      !part.is_empty() &&
+      part
+      .iter()
+      .all(char => char is ('0'..<='9' | 'a'..<='z' | 'A'..<='Z' | '-')) &&
+      (
+        !prerelease ||
+        !part.iter().all(char => char is ('0'..<='9')) ||
+        part.length() == 1 ||
+        !part.has_prefix("0")
+      )
+    })
+  }
+  if build.length() == 2 && !identifiers(build[1], false) {
+    return false
+  }
+  let release = build[0]
+  let core = if release.find("-") is Some(index) {
+    if !identifiers(release[index + 1:], true) {
+      return false
+    }
+    release[:index]
+  } else {
+    release
+  }
+  let parts = core.split(".").collect()
+  parts.length() == 3 &&
+  parts.all(part => {
+    !part.is_empty() &&
+    part.iter().all(char => char is ('0'..<='9')) &&
+    (part.length() == 1 || !part.has_prefix("0"))
+  })
+}
+
+///|
+async fn published_coordinates(
+  commands : Array[String],
+  read_module~ : async (String) -> String = name => {
+    @fs.read_file(@harness.repository_path("commands/" + name + "/moon.mod")).text()
+  },
+) -> Map[String, String] {
+  guard !commands.is_empty() else {
+    fail("empty release eligibility selection")
+  }
   let coordinates : Map[String, String] = Map([])
-  for command in selection.commands {
-    guard command.package_name == "cli/" + command.name &&
-      command.version != "latest" &&
-      !command.version.is_empty() &&
-      !command.version.contains("@") &&
-      !command.version.contains("/") &&
-      !coordinates.contains(command.name) &&
-      command.name != "timeout" else {
-      fail("invalid or duplicate published coordinate: " + command.name)
-    }
-    guard @catalog.find(command.name) is Some(contract) &&
+  for name in commands {
+    guard !coordinates.contains(name) &&
+      @catalog.find(name) is Some(contract) &&
       @catalog.releasable(contract) else {
-      fail("command is outside the published inventory: " + command.name)
+      fail("invalid release eligibility: " + name)
     }
-    guard command.version.split(".").count() >= 3 &&
-      ![" ", "\t", "\n", "\r"].any(value => command.version.contains(value)) else {
-      fail("expected an exact package version: " + command.name)
-    }
-    coordinates[command.name] = command.package_name + "@" + command.version
+    coordinates[name] = module_coordinate(name, read_module(name))
   }
   coordinates
 }
 
 ///|
-async fn load_published_commands(
-  path : String,
-  moonx : String,
-) -> (String, Array[String]) {
+async fn load_published_commands(path : String) -> (String, Array[String]) {
   let selection : PublishedSelection = @json.from_json(
     @json.parse(@fs.read_file(path).text()),
   )
-  @harness.configure_commands(published_coordinates(selection), moonx)
+  validate_published_selection(selection)
   let cases = @path.Path(path)
     .dirname()
     .join(Path(selection.base_manifest))
     .to_string()
   (cases, selection.case_ids)
+}
+
+///|
+fn published_case_commands(cases : Array[@harness.Case]) -> Array[String] raise {
+  let names : Set[String] = Set([])
+  for fixture in cases {
+    guard @catalog.find(fixture.command) is Some(contract) &&
+      @catalog.releasable(contract) else {
+      fail("invalid primary release eligibility: " + fixture.command)
+    }
+    names.add(fixture.command)
+    for related in fixture.related_commands.unwrap_or([]) {
+      guard @catalog.find(related) is Some(contract) else {
+        fail("unknown related command: " + related)
+      }
+      if @catalog.releasable(contract) {
+        names.add(related)
+      }
+    }
+  }
+  let result = names.iter().collect()
+  result.sort_by((left, right) => left.lexical_compare(right))
+  result
 }
 
 ///|

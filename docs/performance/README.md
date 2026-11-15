@@ -32,9 +32,9 @@ and API proposals. [CHANGELOG.md](../../CHANGELOG.md) owns dated delivery summar
 The [benchmark guide](../../tests/benchmark/README.md) and
 [protection protocol](../../tests/benchmark/PROTECTION.md) own measurement rules.
 Do not create another runner, workload registry or chronological report archive.
-Source/test/workload bindings are executable in
-[protection.json](../../tests/benchmark/protection.json), checked by
-[architecture.mbtx](../../tests/tools/architecture.mbtx).
+Source/test/workload bindings remain in
+[protection.json](../../tests/benchmark/protection.json). Review ownership with
+the implementation; the protection runner checks workload coverage for timing.
 
 ## Evidence and limits
 

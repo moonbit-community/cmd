@@ -1,6 +1,7 @@
 import {
   "cli/jq/internal/parser",
   "cli/jq/internal/ast",
+  "cli/jq/internal/filter",
   "cli/core/cli",
   "cli/core/platform",
   "moonbitlang/async/fs",

@@ -337,7 +337,7 @@
     {
       "sources": [
         "core/bytesearch",
-        "commands/wc/main.mbt",
+        "commands/wc/internal/driver/main.mbt",
         "commands/rg/internal/searcher",
         "core/bytere"
       ],
@@ -354,19 +354,19 @@
       "sources": [
         "core/stream/output.mbt",
         "commands/rg/internal/driver/stdout.mbt",
-        "commands/column/spool.mbt",
-        "commands/nl/main.mbt",
-        "commands/paste/main.mbt",
-        "commands/comm/main.mbt"
+        "commands/column/internal/driver/spool.mbt",
+        "commands/nl/internal/driver/main.mbt",
+        "commands/paste/internal/driver/main.mbt",
+        "commands/comm/internal/driver/main.mbt"
       ],
       "retain": "Bounded output ownership, no asynchronous reuse, no replay after partial failure, prefix flush on read failure, diagnostics order and command formatting loops"
     },
     {
       "sources": [
         "core/tempio",
-        "commands/tac/reverse_fixed.mbt",
-        "commands/column/table.mbt",
-        "commands/sort/external.mbt"
+        "commands/tac/internal/driver/reverse_fixed.mbt",
+        "commands/column/internal/driver/table.mbt",
+        "commands/sort/internal/driver/external.mbt"
       ],
       "retain": "Exclusive temporary ownership, exact range reads, independent reverse blocks, page caches and sort run layouts"
     },
@@ -395,7 +395,7 @@
     },
     {
       "sources": [
-        "commands/grep/record_output.mbt",
+        "commands/grep/internal/driver/record_output.mbt",
         "core/bytere/record_linear.mbt"
       ],
       "retain": "Immutable selected runs and output-failure ordering; branch-free fixed-length anchored Boolean matching; exact EOF acceptance; captures, word/whole-record constraints, branches, repetition and backreferences retain the existing span engine"
@@ -411,9 +411,9 @@
       "sources": [
         "core/fswalk",
         "commands/rg/internal/sys/filesystem.mbt",
-        "commands/find/main.mbt",
-        "commands/tree/main.mbt",
-        "commands/grep/main.mbt"
+        "commands/find/internal/driver/main.mbt",
+        "commands/tree/internal/driver/main.mbt",
+        "commands/grep/internal/driver/main.mbt"
       ],
       "retain": "Directory lifetime and explicit metadata queries; caller-owned ordering, pruning, links and error precedence"
     },
@@ -426,16 +426,16 @@
     },
     {
       "sources": [
-        "commands/csplit/snapshot.mbt",
-        "commands/csplit/main.mbt"
+        "commands/csplit/internal/driver/snapshot.mbt",
+        "commands/csplit/internal/driver/main.mbt"
       ],
       "retain": "Data spool precedes signed 64-bit index writes; index pages remain 64 KiB and failed writes are never replayed; synchronous regex matching requires both cached offsets and the entire cached record, otherwise retain the original long-record and page-refill path; preserve negative offsets, byte semantics, fragment cleanup and output order"
     },
     {
       "sources": [
-        "commands/sed/execute.mbt",
-        "commands/sed/space.mbt",
-        "commands/sed/pattern.mbt"
+        "commands/sed/internal/driver/execute.mbt",
+        "commands/sed/internal/program/space.mbt",
+        "commands/sed/internal/program/pattern.mbt"
       ],
       "retain": "Record scanning retains immutable backing bytes across refills and uses an owned buffer for spanning records; lazy text conversion only mutates a cache, and content changes create new pattern/hold spaces; mandatory-literal rejection follows executed-pattern resolution and replacement-reference validation, never establishes a match, and retains full matching on uncertainty; record coalescing and bounded output batching retain exact bytes, missing-newline state, append ordering and n/N lookahead; flush before external input reads or opens, on completion and before propagating later script failures; failed output is never replayed"
     },
@@ -458,8 +458,8 @@
         "core/bytere/cache.mbt",
         "core/platform",
         "core/process",
-        "commands/expand/tabs.mbt",
-        "commands/unexpand/tabs.mbt"
+        "commands/expand/internal/driver/tabs.mbt",
+        "commands/unexpand/internal/driver/tabs.mbt"
       ],
       "retain": "Explicit adaptive-cache failure state, required capability boundaries, launch policy and aligned/relative tab-stop overflow checks"
     }
@@ -473,36 +473,36 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/base32/main.mbt",
-        "commands/base32/encode.mbt"
+        "commands/base32/internal/driver/main.mbt",
+        "commands/base32/internal/driver/encode.mbt"
       ],
       "tests": [
         {
-          "file": "commands/base32/main_wbtest.mbt",
+          "file": "commands/base32/internal/driver/main_wbtest.mbt",
           "name": "base32 RFC 4648 vectors"
         },
         {
-          "file": "commands/base32/main_wbtest.mbt",
+          "file": "commands/base32/internal/driver/main_wbtest.mbt",
           "name": "base32 byte encoding preserves every byte and wrap boundaries"
         },
         {
-          "file": "commands/base32/main_wbtest.mbt",
+          "file": "commands/base32/internal/driver/main_wbtest.mbt",
           "name": "base32 whole input acceptance retains fragments and read failures"
         },
         {
-          "file": "commands/base32/main_wbtest.mbt",
+          "file": "commands/base32/internal/driver/main_wbtest.mbt",
           "name": "base32 complete group windows preserve padding across the 64 KiB boundary"
         },
         {
-          "file": "commands/base32/stream_wbtest.mbt",
+          "file": "commands/base32/internal/driver/stream_wbtest.mbt",
           "name": "base32 fragmented quanta preserve padding and wrap columns"
         },
         {
-          "file": "commands/base32/stream_wbtest.mbt",
+          "file": "commands/base32/internal/driver/stream_wbtest.mbt",
           "name": "base32 emits a complete quantum while input remains open"
         },
         {
-          "file": "commands/base32/stream_wbtest.mbt",
+          "file": "commands/base32/internal/driver/stream_wbtest.mbt",
           "name": "base32 read and write failures preserve only completed output"
         }
       ],
@@ -524,20 +524,20 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/base64/encode.mbt",
-        "commands/base64/main.mbt"
+        "commands/base64/internal/driver/encode.mbt",
+        "commands/base64/internal/driver/main.mbt"
       ],
       "tests": [
         {
-          "file": "commands/base64/main_wbtest.mbt",
+          "file": "commands/base64/internal/driver/main_wbtest.mbt",
           "name": "base64 byte encoding preserves every byte across fragmented quanta and wraps"
         },
         {
-          "file": "commands/base64/main_wbtest.mbt",
+          "file": "commands/base64/internal/driver/main_wbtest.mbt",
           "name": "base64 emits complete quanta before later read errors and never replays failed writes"
         },
         {
-          "file": "commands/base64/main_wbtest.mbt",
+          "file": "commands/base64/internal/driver/main_wbtest.mbt",
           "name": "base64 stream carry crosses the full read boundary without inserting padding"
         }
       ],
@@ -556,32 +556,32 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/nl/main.mbt",
-        "commands/nl/numbering.mbt"
+        "commands/nl/internal/driver/main.mbt",
+        "commands/nl/internal/driver/numbering.mbt"
       ],
       "tests": [
         {
-          "file": "commands/nl/output_wbtest.mbt",
+          "file": "commands/nl/internal/driver/output_wbtest.mbt",
           "name": "numbering preserves sections binary bytes and an unterminated final record"
         },
         {
-          "file": "commands/nl/output_wbtest.mbt",
+          "file": "commands/nl/internal/driver/output_wbtest.mbt",
           "name": "numbering retains completed output before an input failure"
         },
         {
-          "file": "commands/nl/output_wbtest.mbt",
+          "file": "commands/nl/internal/driver/output_wbtest.mbt",
           "name": "numbering never replays bytes after a partial write failure"
         },
         {
-          "file": "commands/nl/output_wbtest.mbt",
+          "file": "commands/nl/internal/driver/output_wbtest.mbt",
           "name": "numbering batches preserve blank grouping section resets and signed formatting"
         },
         {
-          "file": "commands/nl/output_wbtest.mbt",
+          "file": "commands/nl/internal/driver/output_wbtest.mbt",
           "name": "numbering does not advance a declined oversized record after write failure"
         },
         {
-          "file": "commands/nl/output_wbtest.mbt",
+          "file": "commands/nl/internal/driver/output_wbtest.mbt",
           "name": "numbering empty input does not allocate a requested number field"
         }
       ],
@@ -599,21 +599,21 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/sed/pattern.mbt",
-        "commands/sed/parser.mbt",
-        "commands/sed/execute.mbt"
+        "commands/sed/internal/program/pattern.mbt",
+        "commands/sed/internal/program/parser.mbt",
+        "commands/sed/internal/driver/execute.mbt"
       ],
       "tests": [
         {
-          "file": "commands/sed/pattern_wbtest.mbt",
+          "file": "commands/sed/internal/program/pattern_wbtest.mbt",
           "name": "sed byte rejection preserves the full matcher for nullable alternatives captures and binary data"
         },
         {
-          "file": "commands/sed/pattern_wbtest.mbt",
+          "file": "commands/sed/internal/driver/pattern_wbtest.mbt",
           "name": "sed byte rejection updates executed pattern history without decoding a miss"
         },
         {
-          "file": "commands/sed/pattern_wbtest.mbt",
+          "file": "commands/sed/internal/driver/pattern_wbtest.mbt",
           "name": "sed byte rejection preserves previous regex errors branches captures and multiline spaces"
         }
       ],
@@ -632,32 +632,32 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/csplit/snapshot.mbt",
-        "commands/csplit/main.mbt"
+        "commands/csplit/internal/driver/snapshot.mbt",
+        "commands/csplit/internal/driver/main.mbt"
       ],
       "tests": [
         {
-          "file": "commands/csplit/main_wbtest.mbt",
+          "file": "commands/csplit/internal/driver/main_wbtest.mbt",
           "name": "csplit flushes full index pages before an unterminated final boundary"
         },
         {
-          "file": "commands/csplit/main_wbtest.mbt",
+          "file": "commands/csplit/internal/driver/main_wbtest.mbt",
           "name": "csplit index pages retain 64 bit offsets and never replay a failed flush"
         },
         {
-          "file": "commands/csplit/main_wbtest.mbt",
+          "file": "commands/csplit/internal/driver/main_wbtest.mbt",
           "name": "csplit synchronous index scans resume before an uncommitted boundary"
         },
         {
-          "file": "commands/csplit/main_wbtest.mbt",
+          "file": "commands/csplit/internal/driver/main_wbtest.mbt",
           "name": "csplit cached matching retains byte semantics and declines crossing records"
         },
         {
-          "file": "commands/csplit/main_wbtest.mbt",
+          "file": "commands/csplit/internal/driver/main_wbtest.mbt",
           "name": "csplit cached scans stop at the first match or uncached record"
         },
         {
-          "file": "commands/csplit/main_wbtest.mbt",
+          "file": "commands/csplit/internal/driver/main_wbtest.mbt",
           "name": "csplit byte matcher retains BRE assertions alternatives and backreferences"
         }
       ],
@@ -675,52 +675,52 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/sed/execute.mbt",
-        "commands/sed/space.mbt"
+        "commands/sed/internal/driver/execute.mbt",
+        "commands/sed/internal/program/space.mbt"
       ],
       "tests": [
         {
-          "file": "commands/sed/sed_wbtest.mbt",
+          "file": "commands/sed/internal/driver/sed_wbtest.mbt",
           "name": "sed output records preserve separators termination empty and byte values"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed delivers completed output before waiting for another input chunk"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed cached record admission never consumes a spanning record"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed synchronous output admission preserves slow path newline ownership"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed buffered output failure precedes a later script error without replay"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed buffered output failure precedes a failing input read"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed buffered output retains n N append and unterminated boundaries"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed record scanning preserves all bytes and fragmented final records"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed raw spaces preserve bytes without decoding and retain independent hold contents"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed raw spaces survive refills substitutions hold exchange and multiline restart"
         },
         {
-          "file": "commands/sed/output_wbtest.mbt",
+          "file": "commands/sed/internal/driver/output_wbtest.mbt",
           "name": "sed record output preserves separators and termination across buffer boundaries"
         }
       ],
@@ -1118,12 +1118,12 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/grep/execution.mbt",
-        "commands/grep/streaming.mbt"
+        "commands/grep/internal/driver/execution.mbt",
+        "commands/grep/internal/driver/streaming.mbt"
       ],
       "tests": [
         {
-          "file": "commands/grep/execution_wbtest.mbt",
+          "file": "commands/grep/internal/driver/execution_wbtest.mbt",
           "name": "grep execution preserves flag priority and contextual span output"
         }
       ],
@@ -1150,15 +1150,15 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/grep/record_output.mbt"
+        "commands/grep/internal/driver/record_output.mbt"
       ],
       "tests": [
         {
-          "file": "commands/grep/record_output_wbtest.mbt",
+          "file": "commands/grep/internal/driver/record_output_wbtest.mbt",
           "name": "whole record batches do not retry a partial output failure"
         },
         {
-          "file": "commands/grep/record_output_wbtest.mbt",
+          "file": "commands/grep/internal/driver/record_output_wbtest.mbt",
           "name": "whole record batches preserve cross-chunk records and final tails"
         }
       ],
@@ -1185,15 +1185,15 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/grep/streaming.mbt"
+        "commands/grep/internal/driver/streaming.mbt"
       ],
       "tests": [
         {
-          "file": "commands/grep/span_output_wbtest.mbt",
+          "file": "commands/grep/internal/driver/span_output_wbtest.mbt",
           "name": "span output flushes a complete and partial record before a read error"
         },
         {
-          "file": "commands/grep/span_output_wbtest.mbt",
+          "file": "commands/grep/internal/driver/span_output_wbtest.mbt",
           "name": "span output never retries a partially failed threshold flush"
         }
       ],
@@ -1220,11 +1220,11 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/grep/prefilter.mbt"
+        "commands/grep/internal/driver/prefilter.mbt"
       ],
       "tests": [
         {
-          "file": "commands/grep/prefilter_wbtest.mbt",
+          "file": "commands/grep/internal/driver/prefilter_wbtest.mbt",
           "name": "counting batches retain inverted matches NUL records and final fragments"
         }
       ],
@@ -1287,7 +1287,7 @@
       "sources": [
         "core/bytere/record.mbt",
         "core/bytere/record_skip.mbt",
-        "commands/csplit/snapshot.mbt"
+        "commands/csplit/internal/driver/snapshot.mbt"
       ],
       "tests": [
         {
@@ -1400,7 +1400,7 @@
       "sources": [
         "core/stream/output.mbt",
         "commands/rg/internal/driver/stdout.mbt",
-        "commands/sed/execute.mbt"
+        "commands/sed/internal/driver/execute.mbt"
       ],
       "tests": [
         {
@@ -1442,17 +1442,20 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/column/fields.mbt",
-        "commands/column/spool.mbt",
-        "commands/column/table.mbt"
+        "commands/column/internal/driver/fields.mbt",
+        "commands/column/internal/driver/spool.mbt",
+        "commands/column/internal/driver/table.mbt",
+        "commands/column/internal/layout/fields.mbt",
+        "commands/column/internal/layout/plan.mbt",
+        "commands/column/internal/layout/row.mbt"
       ],
       "tests": [
         {
-          "file": "commands/column/fields_wbtest.mbt",
+          "file": "commands/column/internal/driver/fields_wbtest.mbt",
           "name": "large-row field metadata is bounded and does not alter snapshot storage"
         },
         {
-          "file": "commands/column/fields_wbtest.mbt",
+          "file": "commands/column/internal/driver/fields_wbtest.mbt",
           "name": "field metadata thresholds preserve widths at exact row and byte limits"
         }
       ],
@@ -1471,16 +1474,16 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/tac/reverse.mbt",
-        "commands/tac/reverse_fixed.mbt"
+        "commands/tac/internal/driver/reverse.mbt",
+        "commands/tac/internal/driver/reverse_fixed.mbt"
       ],
       "tests": [
         {
-          "file": "commands/tac/cleanup_wbtest.mbt",
+          "file": "commands/tac/internal/driver/cleanup_wbtest.mbt",
           "name": "spool cleanup runs once and preserves primary error precedence"
         },
         {
-          "file": "commands/tac/cleanup_wbtest.mbt",
+          "file": "commands/tac/internal/driver/cleanup_wbtest.mbt",
           "name": "cancelled spool operations still clean up once"
         }
       ],
@@ -1500,25 +1503,25 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/diff/main.mbt",
-        "commands/diff/compare.mbt",
-        "commands/diff/output.mbt"
+        "commands/diff/internal/driver/main.mbt",
+        "commands/diff/internal/compare/compare.mbt",
+        "commands/diff/internal/compare/output.mbt"
       ],
       "tests": [
         {
-          "file": "commands/diff/compare_wbtest.mbt",
+          "file": "commands/diff/internal/compare/compare_wbtest.mbt",
           "name": "patch byte output preserves every byte and byte encoded labels"
         },
         {
-          "file": "commands/diff/compare_wbtest.mbt",
+          "file": "commands/diff/internal/compare/compare_wbtest.mbt",
           "name": "compact diff retains hunk positions context and EOF across equal edges"
         },
         {
-          "file": "commands/diff/compare_wbtest.mbt",
+          "file": "commands/diff/internal/compare/compare_wbtest.mbt",
           "name": "normal edits retain byte records and missing line terminators"
         },
         {
-          "file": "commands/diff/compare_wbtest.mbt",
+          "file": "commands/diff/internal/compare/compare_wbtest.mbt",
           "name": "repeated records choose GNU-compatible aligned change groups"
         }
       ],
@@ -1539,38 +1542,38 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/sort/external.mbt",
-        "commands/sort/input.mbt",
-        "commands/sort/compare.mbt",
-        "commands/sort/output.mbt"
+        "commands/sort/internal/driver/external.mbt",
+        "commands/sort/internal/driver/input.mbt",
+        "commands/sort/internal/order/compare.mbt",
+        "commands/sort/internal/driver/output.mbt"
       ],
       "tests": [
         {
-          "file": "commands/sort/sort_wbtest.mbt",
+          "file": "commands/sort/internal/driver/sort_wbtest.mbt",
           "name": "sort merge reservation leaves useful run space for a one MiB budget"
         },
         {
-          "file": "commands/sort/sort_wbtest.mbt",
+          "file": "commands/sort/internal/driver/sort_wbtest.mbt",
           "name": "sort temporary parent failure cleans owned runs and preserves output"
         },
         {
-          "file": "commands/sort/sort_wbtest.mbt",
+          "file": "commands/sort/internal/driver/sort_wbtest.mbt",
           "name": "sort buffered output keeps unique representatives and failed writes are not replayed"
         },
         {
-          "file": "commands/sort/sort_wbtest.mbt",
+          "file": "commands/sort/internal/driver/sort_wbtest.mbt",
           "name": "sort batch admission preserves overflow ownership sequence and unterminated records"
         },
         {
-          "file": "commands/sort/sort_wbtest.mbt",
+          "file": "commands/sort/internal/decimal/decimal_wbtest.mbt",
           "name": "sort integral prefix accepts only exactly represented integer prefixes"
         },
         {
-          "file": "commands/sort/sort_wbtest.mbt",
+          "file": "commands/sort/internal/order/ordering_test.mbt",
           "name": "sort lexical plan matches general ordering for ties reverse and raw bytes"
         },
         {
-          "file": "commands/sort/sort_wbtest.mbt",
+          "file": "commands/sort/internal/driver/sort_wbtest.mbt",
           "name": "sort cached run entries preserve refill boundaries ownership and truncation"
         }
       ],
@@ -1738,15 +1741,15 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/cmp/main.mbt"
+        "commands/cmp/internal/driver/main.mbt"
       ],
       "tests": [
         {
-          "file": "commands/cmp/compare_wbtest.mbt",
+          "file": "commands/cmp/internal/driver/compare_wbtest.mbt",
           "name": "cmp quiet chunks preserve skips limits binary data and unequal EOF"
         },
         {
-          "file": "commands/cmp/compare_wbtest.mbt",
+          "file": "commands/cmp/internal/driver/compare_wbtest.mbt",
           "name": "cmp quiet mismatch returns before a later read failure"
         }
       ],
@@ -1767,20 +1770,20 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/seq/integer.mbt",
-        "commands/seq/main.mbt"
+        "commands/seq/internal/driver/integer.mbt",
+        "commands/seq/internal/driver/main.mbt"
       ],
       "tests": [
         {
-          "file": "commands/seq/integer_wbtest.mbt",
+          "file": "commands/seq/internal/driver/integer_wbtest.mbt",
           "name": "seq integer batches preserve signs widths separators endpoints and overflow"
         },
         {
-          "file": "commands/seq/integer_wbtest.mbt",
+          "file": "commands/seq/internal/driver/integer_wbtest.mbt",
           "name": "seq bounded integer admission preserves exact decimal and large integer fallback"
         },
         {
-          "file": "commands/seq/integer_wbtest.mbt",
+          "file": "commands/seq/internal/driver/integer_wbtest.mbt",
           "name": "seq integer output propagates partial write failure without replay"
         }
       ],
@@ -1870,16 +1873,16 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/join/input.mbt",
-        "commands/join/main.mbt"
+        "commands/join/internal/driver/input.mbt",
+        "commands/join/internal/driver/main.mbt"
       ],
       "tests": [
         {
-          "file": "commands/join/output_wbtest.mbt",
+          "file": "commands/join/internal/driver/output_wbtest.mbt",
           "name": "join buffered output flushes before the next external read"
         },
         {
-          "file": "commands/join/output_wbtest.mbt",
+          "file": "commands/join/internal/driver/output_wbtest.mbt",
           "name": "join output retains duplicate products and never replays a failed write"
         }
       ],
@@ -1897,24 +1900,24 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/comm/merge.mbt",
-        "commands/comm/main.mbt"
+        "commands/comm/internal/driver/merge.mbt",
+        "commands/comm/internal/driver/main.mbt"
       ],
       "tests": [
         {
-          "file": "commands/comm/output_wbtest.mbt",
+          "file": "commands/comm/internal/driver/output_wbtest.mbt",
           "name": "comm columns suppression and totals retain record separators"
         },
         {
-          "file": "commands/comm/output_wbtest.mbt",
+          "file": "commands/comm/internal/driver/output_wbtest.mbt",
           "name": "comm retains the merged prefix when a later read fails"
         },
         {
-          "file": "commands/comm/output_wbtest.mbt",
+          "file": "commands/comm/internal/driver/output_wbtest.mbt",
           "name": "comm borrowed merge preserves fragmented duplicates and suppression"
         },
         {
-          "file": "commands/comm/output_wbtest.mbt",
+          "file": "commands/comm/internal/driver/output_wbtest.mbt",
           "name": "comm oversized record output failure does not replay queued bytes"
         }
       ],
@@ -1932,12 +1935,12 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/patch/bytes.mbt",
-        "commands/patch/apply.mbt"
+        "commands/patch/internal/hunks/bytes.mbt",
+        "commands/patch/internal/hunks/apply.mbt"
       ],
       "tests": [
         {
-          "file": "commands/patch/bytes_wbtest.mbt",
+          "file": "commands/patch/internal/hunks/bytes_wbtest.mbt",
           "name": "patch byte domain preserves every unchanged byte and changed binary records"
         }
       ],
@@ -1957,12 +1960,12 @@
       ],
       "status": "adopted",
       "sources": [
-        "commands/sort/numeric_field.mbt",
-        "commands/sort/compare.mbt"
+        "commands/sort/internal/decimal/decimal.mbt",
+        "commands/sort/internal/order/compare.mbt"
       ],
       "tests": [
         {
-          "file": "commands/sort/numeric_field_wbtest.mbt",
+          "file": "commands/sort/internal/decimal/decimal_wbtest.mbt",
           "name": "sort fractional field cache preserves exact decimal ordering and raw marker collisions"
         }
       ],

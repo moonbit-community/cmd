@@ -61,7 +61,7 @@ RUN mkdir -p /oracle/bin
 FROM toolchain AS build-coreutils
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz" \
+      "https://mirrors.kernel.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz" \
       --output coreutils.tar.xz \
   && echo "${COREUTILS_SHA256}  coreutils.tar.xz" | sha256sum --check --strict \
   && tar --extract --file coreutils.tar.xz \
@@ -72,10 +72,16 @@ RUN curl --fail --location --retry 5 \
   && cd /build \
   && rm -rf coreutils.tar.xz "coreutils-${COREUTILS_VERSION}"
 
+# The reviewed Linux amd64 expectations use glibc's x87 long-double format.
+# Rosetta can fail configure's allocation probe and select a different formatter.
+RUN mkdir -p /oracle/observations \
+  && LC_ALL=C /oracle/bin/printf '%a|%+a\n' 1.5 nan > /oracle/observations/coreutils-profile.txt \
+  && grep --fixed-strings --line-regexp '0xcp-3|+nan' /oracle/observations/coreutils-profile.txt
+
 FROM toolchain AS build-diffutils
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/diffutils/diffutils-${DIFFUTILS_VERSION}.tar.xz" \
+      "https://mirrors.kernel.org/gnu/diffutils/diffutils-${DIFFUTILS_VERSION}.tar.xz" \
       --output diffutils.tar.xz \
   && echo "${DIFFUTILS_SHA256}  diffutils.tar.xz" | sha256sum --check --strict \
   && tar --extract --file diffutils.tar.xz \
@@ -89,7 +95,7 @@ RUN curl --fail --location --retry 5 \
 FROM toolchain AS build-findutils
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/findutils/findutils-${FINDUTILS_VERSION}.tar.xz" \
+      "https://mirrors.kernel.org/gnu/findutils/findutils-${FINDUTILS_VERSION}.tar.xz" \
       --output findutils.tar.xz \
   && echo "${FINDUTILS_SHA256}  findutils.tar.xz" | sha256sum --check --strict \
   && tar --extract --file findutils.tar.xz \
@@ -103,7 +109,7 @@ RUN curl --fail --location --retry 5 \
 FROM toolchain AS build-grep
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/grep/grep-${GREP_VERSION}.tar.xz" \
+      "https://mirrors.kernel.org/gnu/grep/grep-${GREP_VERSION}.tar.xz" \
       --output grep.tar.xz \
   && echo "${GREP_SHA256}  grep.tar.xz" | sha256sum --check --strict \
   && tar --extract --file grep.tar.xz \
@@ -117,7 +123,7 @@ RUN curl --fail --location --retry 5 \
 FROM toolchain AS build-wget
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/wget/wget-${WGET_VERSION}.tar.gz" \
+      "https://mirrors.kernel.org/gnu/wget/wget-${WGET_VERSION}.tar.gz" \
       --output wget.tar.gz \
   && echo "${WGET_SHA256}  wget.tar.gz" | sha256sum --check --strict \
   && tar --extract --file wget.tar.gz \
@@ -131,7 +137,7 @@ RUN curl --fail --location --retry 5 \
 FROM toolchain AS build-make
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/make/make-${MAKE_VERSION}.tar.lz" \
+      "https://mirrors.kernel.org/gnu/make/make-${MAKE_VERSION}.tar.lz" \
       --output make.tar.lz \
   && echo "${MAKE_SHA256}  make.tar.lz" | sha256sum --check --strict \
   && tar --extract --lzip --file make.tar.lz \
@@ -193,7 +199,7 @@ RUN curl --fail --location --retry 5 \
 FROM toolchain AS build-sed
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/sed/sed-${SED_VERSION}.tar.xz" \
+      "https://mirrors.kernel.org/gnu/sed/sed-${SED_VERSION}.tar.xz" \
       --output sed.tar.xz \
   && echo "${SED_SHA256}  sed.tar.xz" | sha256sum --check --strict \
   && tar --extract --file sed.tar.xz \
@@ -207,7 +213,7 @@ RUN curl --fail --location --retry 5 \
 FROM toolchain AS build-patch
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/patch/patch-${PATCH_VERSION}.tar.xz" \
+      "https://mirrors.kernel.org/gnu/patch/patch-${PATCH_VERSION}.tar.xz" \
       --output patch.tar.xz \
   && echo "${PATCH_SHA256}  patch.tar.xz" | sha256sum --check --strict \
   && tar --extract --file patch.tar.xz \
@@ -221,7 +227,7 @@ RUN curl --fail --location --retry 5 \
 FROM toolchain AS build-gzip
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/gzip/gzip-${GZIP_VERSION}.tar.xz" \
+      "https://mirrors.kernel.org/gnu/gzip/gzip-${GZIP_VERSION}.tar.xz" \
       --output gzip.tar.xz \
   && echo "${GZIP_SHA256}  gzip.tar.xz" | sha256sum --check --strict \
   && tar --extract --file gzip.tar.xz \
@@ -235,7 +241,7 @@ RUN curl --fail --location --retry 5 \
 FROM toolchain AS build-util-linux
 
 RUN curl --fail --location --retry 5 \
-      "https://www.kernel.org/pub/linux/utils/util-linux/v${UTIL_LINUX_VERSION}/util-linux-${UTIL_LINUX_VERSION}.tar.xz" \
+      "https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${UTIL_LINUX_VERSION}/util-linux-${UTIL_LINUX_VERSION}.tar.xz" \
       --output util-linux.tar.xz \
   && echo "${UTIL_LINUX_SHA256}  util-linux.tar.xz" | sha256sum --check --strict \
   && tar --extract --file util-linux.tar.xz \
@@ -254,7 +260,7 @@ ARG BINUTILS_VERSION=2.44
 ARG BINUTILS_SHA256=ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237
 
 RUN curl --fail --location --retry 5 \
-      "https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz" \
+      "https://mirrors.kernel.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz" \
       --output binutils.tar.xz \
   && echo "${BINUTILS_SHA256}  binutils.tar.xz" | sha256sum --check --strict \
   && tar --extract --file binutils.tar.xz \
@@ -368,6 +374,7 @@ RUN ln -s /oracle/bin/dash /oracle/bin/sh \
   && ln -sf /oracle/bin/dash /bin/sh
 
 COPY --chmod=0755 entrypoint.sh versions.sh /usr/local/bin/
+COPY Dockerfile /usr/local/share/mooncmd-oracle/Dockerfile
 
 ENV LANG=C LC_ALL=C TZ=UTC PATH=/oracle/bin SHELL=/oracle/bin/sh
 WORKDIR /work

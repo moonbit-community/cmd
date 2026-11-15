@@ -1,0 +1,19 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/printf/internal/format"
+
+// Values
+pub fn render(String, Array[String]) -> Result
+
+// Errors
+
+// Types and methods
+pub(all) struct Result {
+  out : Bytes
+  messages : Array[String]
+  fatal : String?
+  exit_error : Bool
+}
+
+// Type aliases
+
+// Traits

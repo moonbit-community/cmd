@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "command": "jqlog",
+  "help": "Usage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n{{help:version:0}}\n\nOptions:\n{{help:file:0}}\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - Filters use the shared jq engine; modules and input/inputs are unavailable.\n  - Results from each valid line are written only if its filter succeeds.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
+  "catalog_options": [
+    "file",
+    "help"
+  ],
+  "options": [
+    {
+      "name": "file",
+      "aliases": [
+        "-f",
+        "--file"
+      ],
+      "value": "required",
+      "description": "Read log input from a file.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -f, --file <path>   Read input text from a file."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "-h",
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [],
+  "adapter_match": true
+}

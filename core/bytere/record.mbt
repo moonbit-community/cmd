@@ -52,7 +52,7 @@ pub fn RecordMatcher::matches(
   }
   if !whole && !word && self.dfa is Ready(dfa) {
     let result = if required.is_empty() &&
-      value.length() >= record_acceleration_min_bytes {
+      value.length() >= RECORD_ACCELERATION_MIN_BYTES {
       dfa.matches_accelerated(value)
     } else {
       dfa.matches(value)
@@ -116,7 +116,7 @@ fn Instruction::consumes(self : Instruction, byte : Int32) -> Bool {
 fn RecordDfa::new(pattern : Pattern) -> RecordDfa? {
   // Bound both the NFA and cached subsets. Assertions need position/word context,
   // and references need registers; neither is approximated by this byte DFA.
-  if pattern.program.length() > record_nfa_state_limit ||
+  if pattern.program.length() > RECORD_NFA_STATE_LIMIT ||
     pattern.backreferences ||
     pattern.program.iter().any(instruction => instruction is Assert(_, _)) {
     return None
@@ -129,12 +129,12 @@ fn RecordDfa::new(pattern : Pattern) -> RecordDfa? {
     states: [],
     ids: Map([]),
     edges: FixedArray::make(
-      record_dfa_state_limit * representatives.length(),
+      RECORD_DFA_STATE_LIMIT * representatives.length(),
       -1,
     ),
-    skip_plans: FixedArray::make(record_dfa_state_limit, None),
-    skip_planned: FixedArray::make(record_dfa_state_limit, false),
-    skip_budget: record_skip_plan_limit,
+    skip_plans: FixedArray::make(RECORD_DFA_STATE_LIMIT, None),
+    skip_planned: FixedArray::make(RECORD_DFA_STATE_LIMIT, false),
+    skip_budget: RECORD_SKIP_PLAN_LIMIT,
   }
   let nodes = dfa.closure([pattern.entry])
   dfa.states.push({ nodes, })
@@ -227,7 +227,7 @@ fn RecordDfa::transition(
     self.edges[slot] = existing * width
     return existing * width
   }
-  if self.states.length() >= record_dfa_state_limit {
+  if self.states.length() >= RECORD_DFA_STATE_LIMIT {
     return -3
   }
   let next = self.states.length()

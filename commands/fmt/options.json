@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "command": "fmt",
+  "help": "Usage: fmt [-WIDTH] [-w WIDTH] [-g GOAL] [-suct] [-p PREFIX] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\nReformat paragraphs, preserving indentation; default width 75.\n{{help:split-only:0}}\n{{help:crown-margin:0}}\n{{help:tagged-paragraph:0}}\n{{help:prefix:0}}\nC-locale byte columns; split takes precedence over crown, then tagged.\nOption values and operands after -- remain literal during alias normalization.\n",
+  "catalog_options": [
+    "width",
+    "goal",
+    "split-only",
+    "uniform-spacing",
+    "crown-margin",
+    "tagged-paragraph",
+    "prefix"
+  ],
+  "options": [
+    {
+      "name": "width",
+      "aliases": [
+        "-w",
+        "--width"
+      ],
+      "value": "required",
+      "description": "Set maximum width (0 through 2500).",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "75",
+      "default_binding": {
+        "name": "DEFAULT_WIDTH",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "goal",
+      "aliases": [
+        "-g",
+        "--goal"
+      ],
+      "value": "required",
+      "description": "Set preferred width.",
+      "short": "g",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "split-only",
+      "aliases": [
+        "-s",
+        "--split-only"
+      ],
+      "value": "none",
+      "description": "Split long lines without joining input lines.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-s splits lines without joining; -u uses uniform spacing."
+      ]
+    },
+    {
+      "name": "uniform-spacing",
+      "aliases": [
+        "-u",
+        "--uniform-spacing"
+      ],
+      "value": "none",
+      "description": "Use one inter-word space and two after sentences.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "crown-margin",
+      "aliases": [
+        "-c",
+        "--crown-margin"
+      ],
+      "value": "none",
+      "description": "Allow a different first-line indent.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-c, --crown-margin allows a different first-line indent."
+      ]
+    },
+    {
+      "name": "tagged-paragraph",
+      "aliases": [
+        "-t",
+        "--tagged-paragraph"
+      ],
+      "value": "none",
+      "description": "Preserve hanging indentation.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-t, --tagged-paragraph preserves a hanging indent."
+      ]
+    },
+    {
+      "name": "prefix",
+      "aliases": [
+        "-p",
+        "--prefix"
+      ],
+      "value": "required",
+      "description": "Reformat matching prefixed lines only.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "-p, --prefix=PREFIX reformats only matching prefixed lines."
+      ],
+      "default_value": "",
+      "default_binding": {
+        "name": "DEFAULT_PREFIX",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "width",
+        "goal",
+        "split-only",
+        "uniform-spacing",
+        "crown-margin",
+        "tagged-paragraph",
+        "prefix",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

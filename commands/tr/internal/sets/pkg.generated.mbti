@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/tr/internal/sets"
+
+// Values
+pub fn complement_set(Array[Byte]) -> Array[Byte]
+
+pub fn expand_set_details(String, Int32?) -> ExpandedSet raise CliError
+
+pub fn membership(Array[Byte]) -> FixedArray[Bool]
+
+pub fn validate_translation_sets(ExpandedSet, ExpandedSet, Bool) -> Unit raise CliError
+
+// Errors
+pub(all) suberror CliError {
+  CliError(String)
+}
+
+// Types and methods
+pub(all) struct ExpandedSet {
+  bytes : Array[Byte]
+  classes : Array[(Int32, String)]
+  has_equivalence : Bool
+  indefinite_repeats : Int32
+  warnings : Array[String]
+}
+
+// Type aliases
+
+// Traits

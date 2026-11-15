@@ -1,0 +1,419 @@
+///|
+priv suberror CliError {
+  CliError(String)
+}
+
+///|
+/// `Last(n)` selects the final n units; `FromStart(k)` selects from the k-th
+/// unit (1-based) to the end, mirroring tail's `-n +K` syntax.
+priv enum CountSpec {
+  Last(Int64)
+  FromStart(Int64)
+}
+
+///|
+const CHUNK_SIZE : Int32 = 65536
+
+///|
+/// The follow loop keeps the descriptor open so renames do not switch it to a
+/// different file. The offset is the next byte that has not been emitted.
+priv struct FollowFile {
+  file : @fs.File
+  name : String
+  source_index : Int32
+  mut offset : Int64
+}
+
+///|
+fn parse_spec(text : String) -> CountSpec raise CliError {
+  let (from_start, digits) = if text is ['+', .. rest] {
+    (true, rest)
+  } else {
+    (false, text)
+  }
+  let n = @string.parse_int64(digits) catch {
+    _ => raise CliError("tail: invalid count: '\{text}'")
+  }
+  if n < 0 {
+    raise CliError("tail: invalid count: '\{text}'")
+  }
+  if from_start {
+    FromStart(if n < 1 { 1 } else { n })
+  } else {
+    Last(n)
+  }
+}
+
+///|
+/// Parse GNU tail's follow polling interval and convert seconds to the
+/// millisecond unit used by the async runtime.
+fn parse_sleep_interval(text : String) -> Int32 raise CliError {
+  if text is ['-', ..] {
+    raise CliError("tail: invalid sleep interval: '\{text}'")
+  }
+  let seconds = @string.parse_double(text) catch {
+    _ => raise CliError("tail: invalid sleep interval: '\{text}'")
+  }
+  if seconds < 0.0 || seconds.is_nan() || seconds.is_inf() {
+    raise CliError("tail: invalid sleep interval: '\{text}'")
+  }
+  let milliseconds = (seconds * 1000.0).ceil()
+  if milliseconds >= 2147483647.0 {
+    2147483647
+  } else {
+    let rounded = milliseconds.to_int()
+    if rounded < 1 {
+      1
+    } else {
+      rounded
+    }
+  }
+}
+
+///|
+fn count_newlines(chunk : Bytes, delimiter~ : Byte = b'\n') -> Int32 {
+  @bytesearch.count_byte(chunk[:], delimiter)
+}
+
+///|
+/// Stream file bytes in [start, end) to stdout in fixed-size chunks.
+async fn stream_range(file : @fs.File, start : Int64, end : Int64) -> Unit {
+  let mut pos = start
+  while pos < end {
+    let len = if end - pos < CHUNK_SIZE.to_int64() {
+      (end - pos).to_int()
+    } else {
+      CHUNK_SIZE
+    }
+    @stdio.stdout.write(file.read_exactly_at(len, position=pos))
+    pos += len.to_int64()
+  }
+}
+
+///|
+/// GNU-style tail for seekable files: find the start of the selection by
+/// scanning backward (or forward for +K) in fixed-size chunks, then stream
+/// it out. Memory stays bounded by the chunk size for any file size.
+async fn tail_file(
+  file : @fs.File,
+  spec : CountSpec,
+  bytes_mode : Bool,
+  delimiter~ : Byte = b'\n',
+) -> Int64 {
+  let size = file.size()
+  if bytes_mode {
+    let start : Int64 = match spec {
+      Last(n) => if n >= size { 0 } else { size - n }
+      FromStart(k) => if k - 1 > size { size } else { k - 1 }
+    }
+    stream_range(file, start, size)
+    return size
+  }
+  match spec {
+    Last(n) => {
+      if n <= 0 || size == 0 {
+        return size
+      }
+      let mut newlines : Int64 = 0
+      let mut start : Int64 = 0
+      let mut found = false
+      let mut pos = size
+      let mut at_file_end = true
+      while pos > 0 && !found {
+        let len = if pos < CHUNK_SIZE.to_int64() {
+          pos.to_int()
+        } else {
+          CHUNK_SIZE
+        }
+        let chunk = file.read_exactly_at(len, position=pos - len.to_int64())
+        let mut idx = chunk.length() - 1
+        if at_file_end && chunk[idx] == delimiter {
+          // The trailing newline terminates the last line rather than
+          // starting an empty one.
+          idx -= 1
+        }
+        at_file_end = false
+        while idx >= 0 {
+          if chunk[idx] == delimiter {
+            newlines += 1
+            if newlines == n {
+              start = pos - len.to_int64() + idx.to_int64() + 1
+              found = true
+              break
+            }
+          }
+          idx -= 1
+        }
+        pos -= len.to_int64()
+      }
+      stream_range(file, start, size)
+      size
+    }
+    FromStart(k) => {
+      if k <= 1 {
+        stream_range(file, 0, size)
+        return size
+      }
+      // Scan forward for the (k-1)-th newline, then stream the rest.
+      let mut seen : Int64 = 0
+      let mut pos : Int64 = 0
+      while pos < size {
+        let len = if size - pos < CHUNK_SIZE.to_int64() {
+          (size - pos).to_int()
+        } else {
+          CHUNK_SIZE
+        }
+        let chunk = file.read_exactly_at(len, position=pos)
+        for i in 0..<chunk.length() {
+          if chunk[i] == delimiter {
+            seen += 1
+            if seen == k - 1 {
+              stream_range(file, pos + i.to_int64() + 1, size)
+              return size
+            }
+          }
+        }
+        pos += len.to_int64()
+      }
+      size
+    }
+  }
+}
+
+///|
+async fn read_chunk(r : &@io.Reader) -> Bytes? {
+  r.read_some(max_len=CHUNK_SIZE)
+}
+
+///|
+/// Tail an unseekable stream (stdin, pipes). `Last` keeps a ring of chunks
+/// holding just the bytes of the selection, so memory is bounded by the
+/// output size plus one chunk; `FromStart` writes through once the start
+/// point has passed, buffering nothing.
+async fn tail_stream(
+  r : &@io.Reader,
+  spec : CountSpec,
+  bytes_mode : Bool,
+  delimiter~ : Byte = b'\n',
+) -> Unit {
+  match spec {
+    Last(n) => {
+      if n <= 0 {
+        // Drain the input like GNU tail, producing no output.
+        while true {
+          if read_chunk(r) is None {
+            break
+          }
+        }
+        return
+      }
+      let window = TailWindow::new()
+      while read_chunk(r) is Some(chunk) {
+        window.push(chunk, n, bytes_mode, delimiter)
+      }
+      window.write(@stdio.stdout)
+    }
+    FromStart(k) =>
+      if bytes_mode {
+        let mut to_skip : Int64 = if k > 1 { k - 1 } else { 0 }
+        for ;; {
+          match read_chunk(r) {
+            Some(chunk) =>
+              if to_skip >= chunk.length().to_int64() {
+                to_skip -= chunk.length().to_int64()
+              } else if to_skip > 0 {
+                @stdio.stdout.write(chunk[to_skip.to_int():])
+                to_skip = 0
+              } else {
+                @stdio.stdout.write(chunk)
+              }
+            None => break
+          }
+        }
+      } else {
+        let mut remaining : Int64 = if k > 1 { k - 1 } else { 0 }
+        for ;; {
+          match read_chunk(r) {
+            Some(chunk) => {
+              if remaining == 0 {
+                @stdio.stdout.write(chunk)
+                continue
+              }
+              for i in 0..<chunk.length() {
+                if chunk[i] == delimiter {
+                  remaining -= 1
+                  if remaining == 0 {
+                    @stdio.stdout.write(chunk[i + 1:])
+                    break
+                  }
+                }
+              }
+            }
+            None => break
+          }
+        }
+      }
+  }
+}
+
+///|
+/// Read the bytes observed by one follow pass. A short read is valid when a
+/// writer truncates the file while the pass is in progress; returning the
+/// actual position lets the next pass recover without skipping data.
+async fn stream_available(file : @fs.File, start : Int64, end : Int64) -> Int64 {
+  let buf : FixedArray[Byte] = FixedArray::make(CHUNK_SIZE, 0)
+  let mut pos = start
+  while pos < end {
+    let len = if end - pos < CHUNK_SIZE.to_int64() {
+      (end - pos).to_int()
+    } else {
+      CHUNK_SIZE
+    }
+    let n = file.read_at(buf, position=pos, len~)
+    if n == 0 {
+      return pos
+    }
+    @stdio.stdout.write(Bytes::from_array(buf[0:n]))
+    pos += n.to_int64()
+    if n < len {
+      return pos
+    }
+  }
+  pos
+}
+
+///|
+/// Follow regular files by polling their already-open descriptors. A smaller
+/// size means the file was truncated in place, so the next pass starts again
+/// at byte zero. Cancellation closes every descriptor through the defer.
+async fn follow_files(
+  files : Array[FollowFile],
+  interval_ms : Int32,
+  show_headers : Bool,
+  last_source_index : Int32,
+) -> Unit {
+  defer (for state in files {
+    state.file.close()
+  })
+  let mut last_output = last_source_index
+  for ;; {
+    @async.sleep(interval_ms)
+    for index in 0..<files.length() {
+      let file = files[index].file
+      let offset = files[index].offset
+      let size = file.size()
+      let start : Int64 = if size < offset { 0 } else { offset }
+      if size > start {
+        if show_headers && files[index].source_index != last_output {
+          @stdio.stdout.write("\n==> \{files[index].name} <==\n")
+          last_output = files[index].source_index
+        }
+        files[index].offset = stream_available(file, start, size)
+      } else if size < offset {
+        files[index].offset = 0
+      }
+    }
+  }
+}
+
+///|
+pub async fn run_main() -> Unit {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("tail \{MODULE_VERSION}\n")
+    return
+  }
+  let args = @env.args()[1:]
+  let parsed = @cli.parse(args, option_specs()) catch {
+    @cli.CliError(option~, message~, ..) => {
+      @stdio.stderr.write("tail: \{message}: '\{option}'\n")
+      @sys.exit(1)
+      return
+    }
+  }
+  if parsed.contains("help") {
+    @stdio.stdout.write(metadata_help())
+    return
+  }
+  let quiet = parsed.contains("quiet")
+  let verbose = parsed.contains("verbose")
+  let follow = parsed.contains("follow")
+  let delimiter = if parsed.contains("zero-terminated") {
+    b'\x00'
+  } else {
+    b'\n'
+  }
+  let (spec, bytes_mode) = try {
+    match parsed.last_occurrence(["lines", "bytes"]) {
+      Some("bytes") => (parse_spec(parsed.last_value("bytes").unwrap()), true)
+      Some(_) => (parse_spec(parsed.last_value("lines").unwrap()), false)
+      None => (Last(DEFAULT_LINES.to_int64()), false)
+    }
+  } catch {
+    CliError(msg) => {
+      @stdio.stderr.write("\{msg}\n")
+      @sys.exit(1)
+      return
+    }
+  }
+  let interval_ms = try {
+    match parsed.last_value("sleep-interval") {
+      Some(text) => parse_sleep_interval(text)
+      None => DEFAULT_SLEEP_INTERVAL
+    }
+  } catch {
+    CliError(msg) => {
+      @stdio.stderr.write("\{msg}\n")
+      @sys.exit(1)
+      return
+    }
+  }
+  let files = parsed.operands
+  let sources = if files.is_empty() { ["-"] } else { files }
+  let show_headers = (sources.length() > 1 || verbose) && !quiet
+  let mut failed = false
+  let follow_states : Array[FollowFile] = []
+  for index, path in sources {
+    if show_headers {
+      let name = if path == "-" { "standard input" } else { path }
+      let prefix = if index > 0 { "\n" } else { "" }
+      @stdio.stdout.write("\{prefix}==> \{name} <==\n")
+    }
+    try {
+      if path == "-" {
+        tail_stream(@stdio.stdin, spec, bytes_mode, delimiter~)
+      } else {
+        let file = @fs.open(path, mode=ReadOnly)
+        errdefer file.close()
+        if file.kind() is Regular {
+          let offset = tail_file(file, spec, bytes_mode, delimiter~)
+          if follow {
+            follow_states.push({
+              file,
+              name: path,
+              source_index: index,
+              offset,
+            })
+          } else {
+            file.close()
+          }
+        } else {
+          // Named pipes and devices are not seekable; stream them instead.
+          tail_stream(file, spec, bytes_mode, delimiter~)
+          file.close()
+        }
+      }
+    } catch {
+      err => {
+        @stdio.stderr.write("tail: \{err}\n")
+        failed = true
+      }
+    }
+  }
+  if follow && !follow_states.is_empty() {
+    follow_files(follow_states, interval_ms, show_headers, sources.length() - 1)
+  }
+  if failed {
+    @sys.exit(1)
+  }
+}

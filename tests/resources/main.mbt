@@ -52,15 +52,8 @@ async fn main {
   }
   let long = long_option == "true"
   let distribution = options.get("--distribution").unwrap_or("ascii")
-  let literal = distribution.has_prefix("literal-")
-  guard [
-    "ascii", "mixed-synthetic", "literal-shared", "literal-diverse", "literal-sparse",
-    "literal-budget",
-  ].contains(distribution) else {
+  guard ["ascii", "mixed-synthetic"].contains(distribution) else {
     fail("unknown resource distribution")
-  }
-  guard !literal || commands == ["grep"] else {
-    fail("literal distributions require grep only")
   }
   let timeout = @string.parse_int(
     options.get("--timeout-ms").unwrap_or("900000"),
@@ -98,11 +91,7 @@ async fn main {
     "blind_holdout": false,
     "general_performance_acceptance": false,
     "evidence_role": "synthetic-resource-regression",
-    "record_keys": if literal {
-      "all a collision misses or all Z sparse misses; sixteen fixed patterns with common suffix; one-MiB records unless long-record is selected"
-    } else {
-      "deterministic varying decimal keys; legacy mixed-synthetic widths7/89/4097/65537/128 with NUL/0xff on byte profiles; diff and csplit select ordinary80 or short-byte-dominant mixed32/64/96/128/512/4096 ASCII content modes"
-    },
+    "record_keys": "deterministic varying decimal keys; legacy mixed-synthetic widths7/89/4097/65537/128 with NUL/0xff on byte profiles; diff and csplit select ordinary80 or short-byte-dominant mixed32/64/96/128/512/4096 ASCII content modes",
     "command_specific_overrides": "diff selects distinct-equal, sparse interior insert/delete and distributed interior edit modes; csplit selects repeated interior SECTION boundaries; these content modes use many short records; long-record additionally retains a separately named single-record-control control for each command",
   }
   @fs.write_file(root + "/metadata.json", metadata.stringify(indent=2))
@@ -133,15 +122,7 @@ async fn main {
         let single_record = regime == "single-record-control"
         let content = (command == "diff" || command == "csplit") &&
           !single_record
-        let record = if content {
-          80L
-        } else if long {
-          size
-        } else if literal {
-          1048576L
-        } else {
-          80L
-        }
+        let record = if content { 80L } else if long { size } else { 80L }
         let mixed = !single_record &&
           distribution == "mixed-synthetic" &&
           (content || !long)
@@ -165,14 +146,7 @@ async fn main {
             )
           } else {
             content_features = None
-            write_input(
-              input,
-              size,
-              record,
-              mixed,
-              binary,
-              literal=if literal { distribution } else { "" },
-            )
+            write_input(input, size, record, mixed, binary)
           }
           last_record = record
           last_binary = binary
@@ -286,21 +260,6 @@ async fn main {
         )
         let argv = if single_record && command == "csplit" {
           ["-s", "-f", "part-", "-", "/^/"]
-        } else if literal {
-          let result = ["-F", "-c"]
-          let length = if distribution == "literal-budget" { 256 } else { 32 }
-          let marker = if distribution == "literal-shared" { 28 } else { 0 }
-          for number in 0..<16 {
-            let pattern = Bytes::makei(length, index => {
-              if index == marker {
-                (98 + number).to_byte()
-              } else {
-                b'a'
-              }
-            })
-            result.append(["-e", @utf8.decode(pattern)])
-          }
-          result
         } else {
           arguments(command, input, changed, binary)
         }
@@ -336,10 +295,8 @@ async fn main {
           ) else {
           fail("resource oracle changed a shared input")
         }
-        let expected = if (
-            command == "diff" && regime != "distinct-equal-content"
-          ) ||
-          literal {
+        let expected = if command == "diff" &&
+          regime != "distinct-equal-content" {
           1
         } else {
           0

@@ -67,6 +67,11 @@ async test "workspace dependency manifests keep one async baseline and the selec
     fail("published manifest must name its core coordinate")
   }
   let published_core_coordinate = "cli/core@" + published_core
+  let jq_coordinate = "cli/jq@" +
+    dependency_manifest_field(
+      @fs.read_file(root + "commands/jq/moon.mod").text(),
+      "version",
+    )
   // A newer core publication does not upgrade unchanged consumers' exact pins.
   let retained_core_coordinates = ["cli/core@0.9.5", "cli/core@0.10.0"]
   let commands = command_names(root + "commands")
@@ -74,22 +79,30 @@ async test "workspace dependency manifests keep one async baseline and the selec
   let independent = [
     "echo", "false", "jqlog", "serve", "sleep", "true", "typst",
   ]
-  let modules = ["core", "tests"]
+  let modules = ["core", "tests", "tools"]
   for command in commands {
     modules.push("commands/" + command)
   }
-  assert_eq(modules.length(), 84)
+  assert_eq(modules.length(), 85)
   for directory in modules {
     let text = @fs.read_file(root + directory + "/moon.mod").text()
     let expected_name = if directory == "core" {
       "cli/core"
     } else if directory == "tests" {
       "mooxCLI/cmd-tests"
+    } else if directory == "tools" {
+      "mooxCLI/cmd-tools"
     } else {
       "cli/" + directory.strip_prefix("commands/").unwrap().to_owned()
     }
     assert_eq(dependency_manifest_field(text, "name"), expected_name)
     let imports = dependency_manifest_imports(text)
+    if directory == "commands/jqlog" {
+      assert_eq(
+        imports.filter(coordinate => coordinate.has_prefix("cli/jq@")),
+        [jq_coordinate],
+      )
+    }
     assert_eq(
       imports.filter(coordinate => coordinate.has_prefix("moonbitlang/async@")),
       ["moonbitlang/async@0.22.9"],

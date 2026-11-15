@@ -21,7 +21,7 @@ async test "directory entries retain known directories and query unknown kinds" 
           ignore(entry.file_type(path))
           false
         } catch {
-          @sys.IOError(kind=NotFound, ..) => true
+          @sys.IoError(kind=NotFound, ..) => true
           _ => false
         },
       )

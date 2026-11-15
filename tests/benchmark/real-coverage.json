@@ -3738,7 +3738,7 @@
         },
         {
           "kind": "package-whitebox",
-          "source": "commands/diff/compare_wbtest.mbt",
+          "source": "commands/diff/internal/compare/compare_wbtest.mbt",
           "test_name": "edit scripts reconstruct both sides with minimum edit count",
           "scope": "Exhaustive four-record binary choices reconstruct both sides and compare edit cost with dynamic programming. Requires separate package-test execution; not a real-source timing witness."
         }
@@ -3760,7 +3760,7 @@
         },
         {
           "kind": "package-whitebox",
-          "source": "commands/diff/compare_wbtest.mbt",
+          "source": "commands/diff/internal/compare/compare_wbtest.mbt",
           "test_name": "edit scripts reconstruct both sides with minimum edit count",
           "scope": "Exhaustive four-record binary choices reconstruct both sides and compare edit cost with dynamic programming. Requires separate package-test execution; not a real-source timing witness."
         }

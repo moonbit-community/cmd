@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "command": "unexpand",
+  "help": "Usage: unexpand [OPTION]... [FILE]...\n{{help:help:0}}\n{{help:version:0}}\n\nConvert spaces in each FILE to tabs, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n{{help:all:0}}\n{{help:first-only:0}}\n{{help:tabs:0}}\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "all",
+    "first-only",
+    "tabs"
+  ],
+  "options": [
+    {
+      "name": "all",
+      "aliases": [
+        "-a",
+        "--all"
+      ],
+      "value": "none",
+      "description": "Convert blanks throughout each record.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -a, --all          convert all blanks, not just leading blanks"
+      ]
+    },
+    {
+      "name": "first-only",
+      "aliases": [
+        "--first-only"
+      ],
+      "value": "none",
+      "description": "Convert leading blanks only, overriding -a and -t.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --first-only   convert only leading blank sequences"
+      ]
+    },
+    {
+      "name": "tabs",
+      "aliases": [
+        "-t",
+        "--tabs"
+      ],
+      "value": "required",
+      "description": "Select ascending stops; implies --all. Final /N or +N extends stops.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -t, --tabs=LIST    use ascending stops; /N absolute, +N relative (implies --all)"
+      ],
+      "default_value": "8",
+      "default_binding": {
+        "name": "DEFAULT_TABS",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "all",
+        "first-only",
+        "tabs",
+        "help"
+      ]
+    }
+  ]
+}

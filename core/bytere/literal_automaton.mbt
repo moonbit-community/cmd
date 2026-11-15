@@ -30,7 +30,7 @@ fn LiteralAutomaton::new(
       state = match children[state].get(class) {
         Some(next) => next
         None => {
-          if children.length() >= literal_automaton_state_limit {
+          if children.length() >= LITERAL_AUTOMATON_STATE_LIMIT {
             return None
           }
           let next = children.length()

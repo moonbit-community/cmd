@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "command": "mktemp",
+  "help": "Usage: mktemp [OPTION]... [TEMPLATE]\nCreate an exclusive temporary file (0600) or directory (0700).\n{{help:directory:0}}\n{{help:tmpdir:0}}\n{{help:tmpdir-short-t:0}}\n{{help:suffix:0}}\n{{help:quiet:0}}\n{{help:help:0}}\n{{help:version:0}}\nDefault template: tmp.XXXXXXXXXX. The final X run requires at least three Xs.\n",
+  "catalog_options": [
+    "directory",
+    "quiet",
+    "suffix",
+    "tmpdir"
+  ],
+  "options": [
+    {
+      "name": "directory",
+      "aliases": [
+        "-d",
+        "--directory"
+      ],
+      "value": "none",
+      "description": "create a directory",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -d, --directory       create a directory"
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "suppress creation and output errors",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -q, --quiet           suppress creation and output errors"
+      ]
+    },
+    {
+      "name": "tmpdir",
+      "aliases": [
+        "-p",
+        "--tmpdir"
+      ],
+      "value": "required",
+      "description": "use DIR, then TMPDIR, then /tmp",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -p DIR, --tmpdir[=DIR] use DIR, then TMPDIR, then /tmp"
+      ]
+    },
+    {
+      "name": "suffix",
+      "aliases": [
+        "--suffix"
+      ],
+      "value": "required",
+      "description": "append SUFFIX to a template ending in X",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --suffix=SUFFIX   append SUFFIX to a template ending in X"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help            display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version         display version and exit"
+      ]
+    },
+    {
+      "name": "tmpdir-short-t",
+      "parser_name": "tmpdir",
+      "aliases": [
+        "-t"
+      ],
+      "value": "none",
+      "description": "use DIR, then TMPDIR, then /tmp",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -t                    prefer TMPDIR; reject template directories"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "directory",
+        "quiet",
+        "tmpdir",
+        "tmpdir-short-t",
+        "suffix",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

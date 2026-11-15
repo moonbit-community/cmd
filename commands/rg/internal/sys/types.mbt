@@ -55,7 +55,7 @@ pub struct File {
 
 ///|
 #derive(Debug, Eq)
-pub(all) enum IOErrorKind {
+pub(all) enum IoErrorKind {
   NotFound
   PermissionDenied
   AlreadyExists
@@ -70,30 +70,30 @@ pub(all) enum IOErrorKind {
 
 ///|
 #derive(Debug)
-pub suberror IOError {
-  IOError(kind~ : IOErrorKind, code~ : Int32, message~ : String)
+pub suberror IoError {
+  IoError(kind~ : IoErrorKind, code~ : Int32, message~ : String)
 }
 
 ///|
-pub fn IOError::kind(self : IOError) -> IOErrorKind {
-  let IOError(kind~, ..) = self
+pub fn IoError::kind(self : IoError) -> IoErrorKind {
+  let IoError(kind~, ..) = self
   kind
 }
 
 ///|
-fn IOError::code(self : IOError) -> Int32 {
-  let IOError(code~, ..) = self
+fn IoError::code(self : IoError) -> Int32 {
+  let IoError(code~, ..) = self
   code
 }
 
 ///|
-fn IOError::message(self : IOError) -> String {
-  let IOError(message~, ..) = self
+fn IoError::message(self : IoError) -> String {
+  let IoError(message~, ..) = self
   message
 }
 
 ///|
-pub fn IOError::to_string(self : IOError) -> String {
+pub fn IoError::to_string(self : IoError) -> String {
   if self.code() >= 0 {
     "\{self.message()} (os error \{self.code()})"
   } else {
@@ -102,31 +102,31 @@ pub fn IOError::to_string(self : IOError) -> String {
 }
 
 ///|
-pub impl Show for IOError with fn output(self, logger) {
+pub impl Show for IoError with fn output(self, logger) {
   logger.write_string(self.to_string())
 }
 
 ///|
-pub fn IOError::other(kind : IOErrorKind, message : String) -> IOError {
-  IOError(kind~, code=-1, message~)
+pub fn IoError::other(kind : IoErrorKind, message : String) -> IoError {
+  IoError(kind~, code=-1, message~)
 }
 
 ///|
 /// Logical errno requests are synthetic errors, never fabricated host errno data.
-pub fn IOError::from_errno(code : Int32) -> IOError {
+pub fn IoError::from_errno(code : Int32) -> IoError {
   let (kind, message) = match code {
     2 => (NotFound, "No such file or directory")
     20 => (NotADirectory, "Not a directory")
     40 => (Other, "Too many levels of symbolic links")
     _ => (Other, "I/O operation failed")
   }
-  IOError(kind~, code~, message~)
+  IoError(kind~, code~, message~)
 }
 
 ///|
-pub fn from_error(error : Error) -> IOError {
+pub fn from_error(error : Error) -> IoError {
   match error {
-    IOError(..) as e => e
+    IoError(..) as e => e
     @os_error.OSError(code, ..) as e => {
       let kind = if e.is_ENOENT() {
         NotFound
@@ -145,8 +145,8 @@ pub fn from_error(error : Error) -> IOError {
       } else {
         Other
       }
-      IOError(kind~, code=-1, message=e.to_string())
+      IoError(kind~, code=-1, message=e.to_string())
     }
-    _ => IOError::other(Other, error.to_string())
+    _ => IoError::other(Other, error.to_string())
   }
 }

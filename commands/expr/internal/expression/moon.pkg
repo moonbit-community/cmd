@@ -1,0 +1,5 @@
+import {
+  "cli/core/bytere",
+}
+
+supported_targets = "native+wasm"

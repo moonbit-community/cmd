@@ -1,0 +1,251 @@
+{
+  "schema": 1,
+  "command": "join",
+  "help": "Usage: join [options] FILE1 FILE2\n{{help:help:0}}\n{{help:version:0}}\n\nJoin lines of two files sorted on their join fields.\n\nOptions:\n{{help:field1:0}}\n{{help:field2:0}}\n{{help:separator:0}}\n              blanks; the output separator becomes CHAR as well.\n{{help:after:0}}\n{{help:only:0}}\n{{help:empty:0}}\n{{help:output:0}}\n{{help:ignore-case:0}}\n{{help:header:0}}\n{{help:check-order:0}}\n{{help:nocheck-order:0}}\n{{help:zero-terminated:0}}\n\nUse '-' as a file name to read stdin.\n\nProject aliases: --field1 = -1; --field2 = -2; --separator = -t.\n{{help:after:1}}\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "1",
+    "2",
+    "after",
+    "empty",
+    "only",
+    "output",
+    "t",
+    "check-order",
+    "nocheck-order",
+    "header",
+    "help",
+    "ignore-case",
+    "zero-terminated"
+  ],
+  "options": [
+    {
+      "name": "field1",
+      "aliases": [
+        "-1",
+        "--field1"
+      ],
+      "value": "required",
+      "description": "Choose each file's join field.",
+      "short": "1",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -1 FIELD    Join on this field of FILE1 (default 1)."
+      ]
+    },
+    {
+      "name": "field2",
+      "aliases": [
+        "-2",
+        "--field2"
+      ],
+      "value": "required",
+      "description": "Choose each file's join field.",
+      "short": "2",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -2 FIELD    Join on this field of FILE2 (default 1)."
+      ]
+    },
+    {
+      "name": "separator",
+      "aliases": [
+        "-t",
+        "--separator"
+      ],
+      "value": "required",
+      "description": "Set a single-byte field separator.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -t CHAR     Use CHAR as the field separator instead of runs of"
+      ]
+    },
+    {
+      "name": "after",
+      "aliases": [
+        "-a",
+        "--after"
+      ],
+      "value": "required",
+      "description": "Include / select only unpairable rows.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -a FILENO    Also print unpairable lines from FILENO (1 or 2).",
+        "--after = -a; --only = -v; --empty = -e; --output = -o; -h = --help."
+      ]
+    },
+    {
+      "name": "only",
+      "aliases": [
+        "-v",
+        "--only"
+      ],
+      "value": "required",
+      "description": "Include / select only unpairable rows.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -v FILENO    Print only unpairable lines from FILENO."
+      ]
+    },
+    {
+      "name": "empty",
+      "aliases": [
+        "-e",
+        "--empty"
+      ],
+      "value": "required",
+      "description": "Replace missing or empty fields.",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -e STRING    Replace missing or empty fields with STRING."
+      ],
+      "default_value": "",
+      "default_binding": {
+        "name": "DEFAULT_EMPTY",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "output",
+      "aliases": [
+        "-o",
+        "--output"
+      ],
+      "value": "required",
+      "description": "Choose output fields.",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -o LIST      Select output fields (for example 0,1.2,2.2), or auto."
+      ]
+    },
+    {
+      "name": "ignore-case",
+      "aliases": [
+        "-i",
+        "--ignore-case"
+      ],
+      "value": "none",
+      "description": "Compare keys ignoring ASCII case.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -i, --ignore-case  Compare join fields without ASCII case distinctions."
+      ]
+    },
+    {
+      "name": "header",
+      "aliases": [
+        "--header"
+      ],
+      "value": "none",
+      "description": "Join first records without comparing their keys.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --header  Print the first lines as headers without matching keys."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "-h",
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -h, --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "check-order",
+      "aliases": [
+        "--check-order"
+      ],
+      "value": "none",
+      "description": "Enable immediate order checking / disable checks.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --check-order  Diagnose unsorted input."
+      ]
+    },
+    {
+      "name": "nocheck-order",
+      "aliases": [
+        "--nocheck-order"
+      ],
+      "value": "none",
+      "description": "Enable immediate order checking / disable checks.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --nocheck-order  Do not diagnose unsorted input."
+      ]
+    },
+    {
+      "name": "zero-terminated",
+      "aliases": [
+        "-z",
+        "--zero-terminated"
+      ],
+      "value": "none",
+      "description": "Use NUL-delimited records.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -z           End records with NUL instead of newline."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "field1",
+        "field2",
+        "separator",
+        "after",
+        "only",
+        "empty",
+        "output",
+        "ignore-case",
+        "header",
+        "help",
+        "check-order",
+        "nocheck-order",
+        "zero-terminated"
+      ]
+    }
+  ]
+}

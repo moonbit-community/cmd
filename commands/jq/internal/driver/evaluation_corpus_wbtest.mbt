@@ -1,16 +1,6 @@
 ///|
 async test "owned evaluation follows independently frozen jq generator and closure results" {
-  let mut root = @fs.realpath(".")
-  while !@fs.exists(root + "/moon.work") {
-    let parent = @fs.realpath(root + "/..")
-    guard parent != root else {
-      fail("jq evaluation corpus workspace is missing")
-    }
-    root = parent
-  }
-  guard @json.parse(
-      @fs.read_file(root + "/tests/fixtures/jq/evaluation.json").text(),
-    )
+  guard @json.parse(@fs.read_file("engine/fixtures/evaluation.json").text())
     is { "binary_sha256": String(binary), "cases": Array(cases), .. } else {
     fail("missing evaluation corpus")
   }
