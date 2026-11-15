@@ -15,7 +15,8 @@ its README shows the repository invocation. Module versions come from
 `moon.mod` and are reported by standalone `--version`.
 
 Jq and jqlog use the shared `cli/jq/engine` value-filter API introduced in
-cli/jq 0.2.10. Unversioned MoonX examples resolve registry packages, not this checkout.
+cli/jq 0.2.10. Unversioned MoonX examples use the local registry index;
+run `moon update` to refresh it, or append `@<version>` to pin a release.
 The frozen [published inventory](../tests/release/latest.json) records the 81
 published coordinates; it is independent of current workspace behavior.
 
@@ -64,12 +65,12 @@ identify the principal refusals and platform differences.
 | [fold](../commands/fold/README.md) | Byte/control-column wrapping and whitespace breaks. | C-locale width. |
 | [grep](../commands/grep/README.md) | BRE/ERE/literal search, context, recursion and binary policies. | C-byte matching and ASCII case folding. |
 | [gunzip](../commands/gunzip/README.md) | Streaming multi-member gzip decompression and integrity checks. | Partial output on corruption; named-file metadata/replacement limits. |
-| [gzip](../commands/gzip/README.md) | Streaming gzip levels 1–9 and checked multi-member decompression. | Named-file metadata/replacement limits; partial output on corrupt input. |
+| [gzip](../commands/gzip/README.md) | Streaming gzip levels 1–9 and checked multi-member decompression. | Named compression requires -nc; no saved metadata or file replacement. |
 | [head](../commands/head/README.md) | Line/byte prefixes, negative counts, headers and NUL records. | Finite Int64 counts. |
 | [hexdump](../commands/hexdump/README.md) | Canonical/custom dumps, offsets, duplicate suppression and colors. | Fixed numeric profile; forward stdin discard is an extension. |
 | [join](../commands/join/README.md) | Field joins, unpaired rows, headers, output selection and order checks. | Sorted C-byte input; no locale collation. |
-| [jq](../commands/jq/README.md) | JSON filters, lexical functions, modules, shared input cursor and stream events. | Subset language/numeric profile; workspace candidate differs from registry. |
-| [jqlog](../commands/jqlog/README.md) | JSONL filtering with compact results and per-line evaluation. | Skips invalid JSON; no module/input effects; unpublished engine candidate. |
+| [jq](../commands/jq/README.md) | JSON filters, lexical functions, modules, shared input cursor and stream events. | Subset language; exact numeric ordering at or above 2^53 is not claimed. |
+| [jqlog](../commands/jqlog/README.md) | JSONL filtering with compact results and per-line evaluation. | Skips invalid JSON; no module/input effects. |
 | [ln](../commands/ln/README.md) | POSIX symbolic links, relative targets, replacement and backups. | No hard links or Windows creation. |
 | [ls](../commands/ls/README.md) | Names, layouts, quoting, timestamps/size sorting and explicit colors. | No long/owner/inode/mode listings or automatic terminal color. |
 | [make](../commands/make/README.md) | Dependencies, variables, recipes, parallel jobs and selected jobserver support. | Partial GNU make; host process/jobserver transport boundaries. |

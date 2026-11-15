@@ -18,7 +18,7 @@
     "8",
     "best"
   ],
-  "readme_options": ["stdout","decompress","test","fast","best","help","version"],
+  "readme_options": ["stdout","decompress","test","no-name","fast","best","help","version"],
   "options": [
     {
       "name": "stdout",

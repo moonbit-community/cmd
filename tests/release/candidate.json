@@ -384,7 +384,7 @@
     {
       "name": "gzip",
       "package_name": "cli/gzip",
-      "version": "0.1.7",
+      "version": "0.1.8",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [

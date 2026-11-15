@@ -5,7 +5,7 @@ Compress data into gzip streams through MoonX.
 ## Usage
 
 ```sh
-moonx cli/gzip -c input.txt > input.txt.gz
+moonx cli/gzip -nc input.txt > input.txt.gz
 
 moonx cli/gzip -dc input.txt.gz > restored.txt
 ```
@@ -22,6 +22,7 @@ Stream compression or decompression with levels 1 through 9. Use -c to keep file
 | `-c`, `--stdout` | Write to stdout and keep input files. |
 | `-d`, `--decompress` | Decompress (default for gunzip and zcat). |
 | `-t`, `--test` | Validate compressed input without output. |
+| `-n`, `--no-name` | Omit name/time metadata when compressing. |
 | `-1`, `--fast` | Same as -1. |
 | `-9`, `--best` | Same as -9. |
 | `--help` | Show help. |
@@ -32,7 +33,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-- Named-file replacement and metadata preservation have filesystem limits; stdout mode is the portable path.
+- Named-file compression requires -nc: -n omits saved name/time metadata and -c keeps the input. Named-file replacement and metadata preservation are unsupported.
 - Decompression validates members and checksums but may emit a valid prefix before reporting corruption.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.
