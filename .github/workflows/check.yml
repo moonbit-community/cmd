@@ -109,7 +109,7 @@ jobs:
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: cmd-test-reports-ubuntu-24.04
+          name: cmd-test-reports-ubuntu-24.04-${{ github.run_attempt }}
           path: test-reports
           retention-days: 7
           if-no-files-found: error
@@ -117,7 +117,7 @@ jobs:
         if: ${{ always() && (cancelled() || steps.upload_results.outcome == 'failure') }}
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: cmd-test-diagnostics-ubuntu-24.04
+          name: cmd-test-diagnostics-ubuntu-24.04-${{ github.run_attempt }}
           path: |
             test-reports/*.log
             test-reports/*.json
@@ -208,7 +208,7 @@ jobs:
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: cmd-test-reports-${{ matrix.os }}
+          name: cmd-test-reports-${{ matrix.os }}-${{ github.run_attempt }}
           path: test-reports
           retention-days: 7
           if-no-files-found: error
@@ -216,7 +216,7 @@ jobs:
         if: ${{ always() && (cancelled() || steps.upload_results.outcome == 'failure') }}
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: cmd-test-diagnostics-${{ matrix.os }}
+          name: cmd-test-diagnostics-${{ matrix.os }}-${{ github.run_attempt }}
           path: |
             test-reports/*.log
             test-reports/*.json
@@ -315,7 +315,7 @@ jobs:
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: cmd-test-reports-upstream
+          name: cmd-test-reports-upstream-${{ github.run_attempt }}
           path: test-reports
           retention-days: 7
           if-no-files-found: error

@@ -75,3 +75,5 @@ caches; other branches may restore them.
 Consumer-only retries can reuse the same run's earlier producer artifact;
 full retries wait for their new producer. Import still checks source, toolchain
 and artifact bytes before execution.
+Report artifacts also include the run attempt, so retries preserve earlier
+diagnostics without colliding with immutable artifact names.

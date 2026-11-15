@@ -79,7 +79,7 @@ jobs:
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: published-results-${{ matrix.os }}
+          name: published-results-${{ matrix.os }}-${{ github.run_attempt }}
           path: test-reports
           retention-days: 30
           if-no-files-found: error
@@ -87,7 +87,7 @@ jobs:
         if: ${{ always() && (cancelled() || steps.upload_results.outcome == 'failure') }}
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: published-diagnostics-${{ matrix.os }}
+          name: published-diagnostics-${{ matrix.os }}-${{ github.run_attempt }}
           path: |
             test-reports/*.log
             test-reports/*.json
