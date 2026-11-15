@@ -67,6 +67,11 @@ async test "workspace dependency manifests keep one async baseline and the selec
     fail("published manifest must name its core coordinate")
   }
   let published_core_coordinate = "cli/core@" + published_core
+  let jq_coordinate = "cli/jq@" +
+    dependency_manifest_field(
+      @fs.read_file(root + "commands/jq/moon.mod").text(),
+      "version",
+    )
   // A newer core publication does not upgrade unchanged consumers' exact pins.
   let retained_core_coordinates = ["cli/core@0.9.5", "cli/core@0.10.0"]
   let commands = command_names(root + "commands")
@@ -90,6 +95,12 @@ async test "workspace dependency manifests keep one async baseline and the selec
     }
     assert_eq(dependency_manifest_field(text, "name"), expected_name)
     let imports = dependency_manifest_imports(text)
+    if directory == "commands/jqlog" {
+      assert_eq(
+        imports.filter(coordinate => coordinate.has_prefix("cli/jq@")),
+        [jq_coordinate],
+      )
+    }
     assert_eq(
       imports.filter(coordinate => coordinate.has_prefix("moonbitlang/async@")),
       ["moonbitlang/async@0.22.9"],

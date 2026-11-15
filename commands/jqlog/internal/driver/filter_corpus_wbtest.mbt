@@ -35,6 +35,6 @@ async test "complete shared jq adapter corpus preserves independent expectations
       fail("invalid or duplicate jq adapter record")
     }
     seen.add(id)
-    assert_eq(@ast.eval(parse_filter(query), input).collect(), expected, msg=id)
+    assert_eq(@engine.compile(query).apply(input), expected, msg=id)
   }
 }

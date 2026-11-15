@@ -1,0 +1,17 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/jq/internal/filter"
+
+import {
+  "cli/jq/internal/ast",
+}
+
+// Values
+pub fn lower(@ast.Expr) -> @ast.Expr
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

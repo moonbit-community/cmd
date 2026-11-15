@@ -31,6 +31,8 @@ fn help_message() -> String {
     #|Notes:
     #|  - Input is treated as JSONL/NDJSON with possible non-JSON lines.
     #|  - Non-JSON lines are skipped.
+    #|  - Filters use the shared jq engine; modules and input/inputs are unavailable.
+    #|  - Results from each valid line are written only if its filter succeeds.
     #|  - If [input] is omitted, stdin is used.
     #|  - If [input] is provided without --file, it is treated as raw text.
     #|
@@ -143,12 +145,12 @@ pub async fn run_main() -> Unit {
     Run(options) =>
       try {
         let input = read_input(options.input)
-        let query = parse_filter(options.query)
+        let query = @engine.compile(options.query)
         for line in input.split("\n") {
           let value = @json.parse(line.strip_suffix("\r").unwrap_or(line)) catch {
             _ => continue
           }
-          write_results(@ast.eval(query, value))
+          write_results(query.apply(value).iter())
         }
       } catch {
         err => {

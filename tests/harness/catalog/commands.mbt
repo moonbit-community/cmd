@@ -98,6 +98,8 @@ pub fn commands() -> Array[CommandContract] {
       "indent", "join-output", "logs", "null-input", "raw-input", "sort-keys", "slurp",
       "tab", "raw-output", "arg", "argjson", "stream", "stream-errors", "library-path",
     ]),
+    // Shares jq value-filter semantics; JSONL admission and per-line output stay local.
+    // Module loading and the shared input cursor are jq CLI effects, not jqlog options.
     contract("jqlog", Core, StructuredInput, StructuredOutput, [FileRead], [
       "file", "help",
     ]),

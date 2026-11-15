@@ -62,7 +62,15 @@ invalid library syntax is reported and produces null during metadata inspection.
 The independent
 [runtime](../../tests/fixtures/jq/runtime.json) and
 [evaluation](../../tests/fixtures/jq/evaluation.json) corpora govern these rules.
-The separate jqlog module keeps its own bounded JSONL language profile.
+Jqlog calls `engine.compile -> internal/parser + internal/filter`, then
+`Filter::apply -> internal/ast.evaluate` for each valid JSON line. The parser,
+resumable evaluator and AST adaptations are shared with jq. Compilation checks
+lexical references once; each application uses a fresh scope and collects its
+results before the driver writes them. This preserves the per-record output
+boundary, at a storage cost proportional to that record's generated results.
+Jqlog still reads the complete log input; this refactoring makes no new bounded
+input or performance claim. The public value interface rejects module imports
+and evaluated host requests; jq's CLI supplies those effects separately.
 
 ## Base32 and base64 encoding
 

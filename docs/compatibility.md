@@ -43,9 +43,14 @@ remain explicit follow-up boundaries. Local checks, required CI,
 exact-coordinate publication acceptance and performance qualification remain
 separate outcomes.
 
-Jqlog also owns its parser, evaluator and JSONL command logic under
-`commands/jqlog/internal`, with no MoonJQ dependency. Its original filtering,
-line admission and output/error ordering remain separate from jq's input modes.
+Development candidates jq 0.2.10 and jqlog 0.2.8 share the jq-owned parser,
+evaluator and AST adaptations through `cli/jq/engine`. Jqlog adopts the current
+jq value semantics, including lexical parameters, `elif`, Boolean results and
+generator corrections. Its private driver retains JSONL admission and per-line
+output: invalid lines are skipped and failed records emit no results, while
+earlier successful records remain visible. Imports and evaluated host-input or
+module-metadata requests are unavailable through this value-only interface.
+Published coordinates and their frozen expectations remain unchanged.
 
 ## Extensions and diagnostics
 
@@ -934,7 +939,7 @@ Full shell compatibility is not claimed. See
 | `head` | subset verified | `-n`, `-c`, signed/attached/long/legacy counts and decimal/binary/IEC size suffixes, `-z`, `-q/-v`, files/stdin and headers | Counts are bounded by signed 64-bit storage; locale-aware records are not claimed |
 | `join` | subset verified | Field/unpaired/empty output, `-z`, ASCII ignore-case, headers, automatic or accumulated explicit output fields, last order policy | Locale behavior beyond the fixed C profile not claimed |
 | `jq` | subset verified | Consecutive JSON, -s/-R/-n/-e, partial output, colors and Unicode slices; published 0.2.9 adds streaming events, shared input/inputs, lexical functions and module loading | Owned parser/evaluator and driver; fixed module/input controls cover the supported language. Full builtin/diagnostic parity, exact large-number arithmetic and automatic TTY color remain outside the finite profile; complete published acceptance remains a merge gate |
-| `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices | Independent JSONL contract; invalid whitespace lines are not repaired by trimming; full jq CLI compatibility is not claimed |
+| `jqlog` | subset verified | JSONL stdin/raw input, -f/-h, invalid-line skipping, conversions and Unicode slices; candidate 0.2.8 adopts jq's shared value-filter engine | Independent JSONL admission and per-record output; candidate lexical/generator semantics follow jq, while module loading and shared input cursors remain jq CLI effects; full jq CLI compatibility is not claimed |
 | `ln` | subset verified | Symbolic -s/-r, last -f/-i selection, -n/-T/-t, backup/suffix/-v and refusal status 1 including EOF; numbered backups advance after the highest valid decimal version; failed recovery reports both errors and destination/backup paths | POSIX symlinks; hard-link requests reject before mutation; broader overwrite/target combinations remain; a recovery error does not determine the final path state |
 | `ls` | subset verified | Existing traversal/sort/link profile plus C quoting, columns/across/commas, width/tab stops and explicit type/suffix/link colors | `-P` is a project extension; enabled raw-mode/capability/link-count predicates and automatic color reject. Long/ownership/inode/block formats remain outside scope |
 | `make` | subset verified | Dependency-ready `-j`, shared prerequisites, variable flavors/computed names, named/default export and unexport, `.EXPORT_ALL_VARIABLES`, recursive Wasm submakes, recipe expansion/environment phases, GNU shell argv and `.SHELLSTATUS`, `.SECONDEXPANSION`, existing POSIX FIFO tokens; raw-path repair and sequential physical `-C` | Invalid UTF-8 before a capture's first NUL rejects; unavailable target sizes reject; new FIFO creation, descriptor-pipe import and Windows semaphores need public APIs; no full GNU function/rule/database claim; without inherited FIFO recursive children use `-j1`; parent-path link regressions are POSIX-only; [language boundaries](adr/0007-language.md) |

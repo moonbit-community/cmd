@@ -1,6 +1,5 @@
 import {
-  "cli/jqlog/internal/parser",
-  "cli/jqlog/internal/ast",
+  "cli/jq/engine",
   "moonbitlang/core/json",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",

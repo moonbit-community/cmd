@@ -1,11 +1,13 @@
 # jq
 
-Version: `cli/jq@0.2.9`.
+Version: `cli/jq@0.2.10` (development candidate; published baseline: `0.2.9`).
 
 Filter JSON for MoonX.
 
+Candidate usage after publication:
+
 ```sh
-moonx cli/jq@0.2.9 [OPTION]... [FILTER] [FILE...]
+moonx cli/jq@0.2.10 [OPTION]... [FILTER] [FILE...]
 ```
 
 ## Supported scope
@@ -13,10 +15,19 @@ moonx cli/jq@0.2.9 [OPTION]... [FILTER] [FILE...]
 Apply jq-compatible filters to consecutive JSON values, files or stdin. Supports maps, reduce, assignments, try/catch, variables and Unicode string slices. No filter selects identity.
 
 The parser and evaluator are maintained locally in `internal/parser` and
-`internal/ast`; command adaptations and streaming I/O live in `internal/driver`.
+`internal/ast`; shared AST adaptations live in `internal/filter`, and CLI effects
+and streaming I/O live in `internal/driver`. The public `cli/jq/engine` package
+provides an opaque compiled filter for supplied JSON values. Jqlog consumes this
+same implementation instead of maintaining another parser and evaluator.
 Jq no longer depends on the MoonJQ package. The minimal imported language
 implementation and its original tests come from the verified 0.2.0 archive;
 see [third-party notices](THIRD_PARTY_NOTICES.md).
+
+The engine exposes `compile(source)` and `Filter::apply(value)`. Compilation
+checks lexical references; each application starts a fresh scope and returns
+the complete result array only on success. It performs no I/O: module imports
+are rejected, and evaluated input/metadata requests fail explicitly. The jq CLI
+continues to supply its own module loader and resumable input cursor.
 
 ## Options
 
@@ -110,8 +121,8 @@ On Windows, an absent `HOME` falls back to `USERPROFILE`, then to
 ## Examples
 
 ```sh
-printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.9 -r '.name'
-moonx cli/jq@0.2.9 -n -c '{ok: true, values: [1, 2]}'
+printf '%s' '{"name":"Moon"}' | moonx cli/jq@0.2.10 -r '.name'
+moonx cli/jq@0.2.10 -n -c '{ok: true, values: [1, 2]}'
 ```
 
 [Capability matrix](../../docs/compatibility.md) · [ADR](../../docs/adr/0008-data.md)

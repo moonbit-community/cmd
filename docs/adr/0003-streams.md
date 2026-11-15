@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-14
+Updated: 2026-11-15
 
 ## Decision
 
@@ -57,17 +57,25 @@ literal spelling stay in jq and use its existing core dependency. Unchanged
 commands keep their published coordinates. These correctness changes have no
 formal timing acceptance; the existing protection registry remains authoritative.
 
-Jq follows rg's private-package ownership: its thin executable calls
-`internal/driver`, which owns argument mapping, input/output and existing AST
-adaptations. `internal/parser` depends on `internal/ast`; the evaluator and
-parser never depend on the driver. Import the required MoonJQ 0.2.0 language
-implementation and original tests with source/license attribution, excluding
-upstream command programs and Query convenience wrappers. Internal APIs serve
-these concrete consumers and need no compatibility forwarding layer. This
-removes jq's dependency-release boundary. Jq now owns resumable evaluation,
-lexical function scopes, module linking and shared-input continuation; jqlog
-retains its independent JSONL language profile. The same command ownership
-layout applies to both, as recorded in ADR-0008.
+Jq owns one parser, AST and resumable evaluator under `internal`, together with
+the original MoonJQ 0.2.0 attribution and retained regression coverage. Shared
+AST adaptations belong to `internal/filter`. The private jq driver owns
+argument mapping, module loading, shared-input continuation and rendering;
+language packages never depend on that driver.
+
+The public `cli/jq/engine` package exposes an opaque compiled value filter,
+compilation and per-value application. Jqlog depends on this interface instead
+of copying the language implementation or importing jq internals. Its private
+driver retains JSONL admission, options and per-line output. Both consumers
+use the same corrected value semantics; old jqlog language defects are not a
+second evaluator profile. The engine collects a record's results before return,
+rejects module imports and fails evaluated host requests explicitly.
+
+This intentionally couples jqlog's selected engine dependency to jq's module
+version, with jq published first when both change. Jq-only CLI changes do not
+require a jqlog release. Keep the two MoonX command coordinates; reconsider a
+separate engine module only when independent consumers need a separate release
+lifecycle. See ADR-0008 for language and effect boundaries.
 
 The 2026-11-10 release assigned the incompatible internal source API
 changes to core 0.10.0. Its 74 published command consumers selected that coordinate;
@@ -148,8 +156,8 @@ execution or selection defect, not to reproduce assertions in another format.
 | shell | Session and control-flow state; sh, make and split own orchestration |
 | netops / curl and wget internals | Scoped single-request transport, URL/IDNA/PSL mechanisms / command-owned Cookie, authentication, redirect, retry, resume and output policies |
 | numfmt / time_zone | Exact fixed-profile numeric formatting / checked timezone conversion |
-| jq command internals | Owned parser/evaluator beneath a private driver; preserve lexical bindings, assignment paths and original shared expectations |
-| jqlog command internals | Owned parser/evaluator under internal, with a private JSONL driver and AST adaptations checked against shared independent inputs |
+| jq engine and internals | One parser/evaluator and AST adaptation, an opaque public value-filter API and private CLI effects; preserve lexical bindings, assignment paths and original shared expectations |
+| jqlog command internals | Private JSONL driver consuming cli/jq/engine; retain line admission, option meanings and per-record output |
 | quoting / expand and unexpand internals | Shared byte quoting / command-local tab grids and dialects |
 
 The network boundary is command adaptation, private download policy and one
@@ -199,9 +207,10 @@ evaluation/comparison to seq. Core retains the cp/mv path relationship mechanism
 and private numeric rounding/comparison needed by its formatter. Seq keeps its
 own bounded arithmetic helpers rather than publishing an arithmetic API just to
 avoid duplication. The test-only backup-name wrapper is removed; its tests call
-the private selection directly. Jq and jqlog each own their small AST adaptation;
-their 28 original positive expectations share one fixture and error tests stay
-local. Expand and unexpand own their grids independently. Reconsider sharing
+the private selection directly. Jq owns the shared AST adaptation used by both
+its driver and the public engine; the engine consumer and implementation run
+the unchanged 28-record fixture, with error tests beside their boundaries.
+Expand and unexpand own their grids independently. Reconsider sharing
 only for an actual common mechanism and identical consumer contracts; consumer
 count alone does not establish that boundary.
 

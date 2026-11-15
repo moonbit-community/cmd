@@ -48071,6 +48071,116 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:jqlog-engine-lexical-filter-parameters",
+      "command": "jqlog",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-lexical-filter-parameters",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-elif",
+      "command": "jqlog",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-elif",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-boolean-results",
+      "command": "jqlog",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-boolean-results",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-lexical-capture",
+      "command": "jqlog",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-lexical-capture",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-foreach-empty-extract",
+      "command": "jqlog",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-foreach-empty-extract",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-line-output-commit",
+      "command": "jqlog",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-line-output-commit",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-input-boundary",
+      "command": "jqlog",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-input-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-inputs-boundary",
+      "command": "jqlog",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-inputs-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-module-boundary",
+      "command": "jqlog",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-module-boundary",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:jqlog-engine-input-short-circuit",
+      "command": "jqlog",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/jqlog.json",
+      "case_id": "jqlog-engine-input-short-circuit",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
     }
   ]
 }

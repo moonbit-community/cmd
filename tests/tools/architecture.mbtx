@@ -259,7 +259,12 @@ fn invalid_driver_dependency(name : String, dependency : String) -> Bool {
     }
   }
   ["cli/jq", "cli/jqlog"].any(owner => {
-    [owner + "/internal/parser", owner + "/internal/ast"].contains(name) &&
+    [
+      owner + "/engine",
+      owner + "/internal/filter",
+      owner + "/internal/parser",
+      owner + "/internal/ast",
+    ].contains(name) &&
     dependency == owner + "/internal/driver"
   }) ||
   (
@@ -405,6 +410,22 @@ async fn main {
   }
   assert_true(
     invalid_driver_dependency("cli/curl", "cli/wget/internal/download"),
+  )
+  assert_false(
+    invalid_driver_dependency("cli/jqlog/internal/driver", "cli/jq/engine"),
+  )
+  assert_true(
+    invalid_driver_dependency(
+      "cli/jqlog/internal/driver", "cli/jq/internal/ast",
+    ),
+  )
+  assert_true(
+    invalid_driver_dependency("cli/jq/engine", "cli/jq/internal/driver"),
+  )
+  assert_true(
+    invalid_driver_dependency(
+      "cli/jq/internal/filter", "cli/jq/internal/driver",
+    ),
   )
   assert_true(
     invalid_driver_dependency("cli/core/netops", "cli/wget/internal/download"),

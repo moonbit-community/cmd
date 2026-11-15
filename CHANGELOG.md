@@ -12,6 +12,22 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-15
+
+Development candidates; no new package publication.
+
+- Prepare jq 0.2.10 with a small public value-filter engine and jqlog 0.2.8
+  consuming it. Maintain one parser/evaluator and one jq-owned AST adaptation;
+  preserve both command entries and jqlog's JSONL admission and per-line output.
+- Align jqlog with jq's lexical functions, `elif`, Boolean and generator
+  semantics. Keep module loading and shared input cursors in jq's CLI; preserve
+  imported test coverage and independent published expectations.
+- Local validation passes 2,708 Wasm package tests, 235 Native tool tests and
+  4,088 macOS command checks, with zero failures and 40 declared platform skips.
+  Architecture checks and an isolated two-module build against published
+  dependencies pass. These results do not replace three-platform CI or release
+  acceptance.
+
 ## 2026-11-14
 
 Published coordinates; exact-version acceptance is a required merge gate.

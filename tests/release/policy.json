@@ -1757,7 +1757,17 @@
         "release-metadata-jqlog-version",
         "repair-edge-jqlog-slice-type-error",
         "repair-final-jqlog-non-json-whitespace",
-        "proof-jqlog-group-null-false-true"
+        "proof-jqlog-group-null-false-true",
+        "jqlog-engine-lexical-filter-parameters",
+        "jqlog-engine-elif",
+        "jqlog-engine-boolean-results",
+        "jqlog-engine-lexical-capture",
+        "jqlog-engine-foreach-empty-extract",
+        "jqlog-engine-line-output-commit",
+        "jqlog-engine-input-boundary",
+        "jqlog-engine-inputs-boundary",
+        "jqlog-engine-module-boundary",
+        "jqlog-engine-input-short-circuit"
       ],
       "oracle_boundary": "The source coordinate is recorded, but the pinned image does not contain a runnable jqlog oracle; direct JSONL contracts remain mandatory."
     },

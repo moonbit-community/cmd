@@ -8,12 +8,13 @@ GitHub release assets. The entry discovers the workspace and resolves
 its arguments from that root. Moon commands sharing a build directory run
 serially. Product acceptance targets Wasm; Native is only for test tools.
 
-Command policies and their private tests live together. The jq and jqlog adapters
+Command policies and their private tests live together. Jq's shared filter
+adaptation and jqlog's public-engine consumer
 consume all 28 records in `fixtures/jq/adapter.json`, including the original
 3,000-member stable-order inputs and independent expected arrays. This fixture
 was extracted from the previous tests without evaluating either implementation.
 Readers require the exact count, unique nonempty IDs and valid records; missing
-files fail. Error propagation remains covered beside each adapter.
+files fail. Error propagation remains covered beside the engine and each command adapter.
 
 ## Commands
 

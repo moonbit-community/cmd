@@ -149,7 +149,10 @@ module and version before any release operation.
   loops instead of forcing them into a generic command framework.
 
 - Keep copy/removal/mode policies, tac range copying, seq arithmetic, jq AST
-  adapters and expand/unexpand grids in their owning commands. Do not import
+  adaptations and expand/unexpand grids in their owning commands. Jq owns the
+  shared parser/evaluator and adaptations; jqlog consumes `cli/jq/engine` and
+  retains its JSONL command policy. Keep the engine's API limited to compiled
+  value filters; jq CLI effects do not become jqlog options. Do not import
   another command's internal packages. Small identical adaptations may remain
   local when their dialects evolve independently; share independent test inputs
   rather than widening runtime APIs. The jq adapter corpus retains the original

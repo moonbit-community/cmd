@@ -2,9 +2,7 @@
 test "grouping rejects outer types before key evaluation and retains errors" {
   for input in ["null", "42", "{}", "\"text\""] {
     let rejected = try {
-      ignore(
-        @ast.eval(parse_filter("group_by(.)"), @json.parse(input)).collect(),
-      )
+      ignore(@engine.compile("group_by(.)").apply(@json.parse(input)))
       false
     } catch {
       _ => true
@@ -12,10 +10,9 @@ test "grouping rejects outer types before key evaluation and retains errors" {
     assert_true(rejected, msg=input)
   }
   assert_eq(
-    @ast.eval(
-      parse_filter("try group_by(. / 0) catch \"caught\""),
+    @engine.compile("try group_by(. / 0) catch \"caught\"").apply(
       @json.parse("[1,2]"),
-    ).collect(),
+    ),
     [Json::string("caught")],
   )
 }
