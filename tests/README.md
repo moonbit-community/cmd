@@ -166,8 +166,24 @@ The counters cover the runner's direct launch paths, not arbitrary descendants
 inside command oracles or the compiler. Three warm and one cold comparable runs
 are required before accepting the CI latency target.
 
-The oracle family remains `pinned-oracle-v1`, with reviewed profile version 2.
-It verifies image identity, tool inventory and source/distribution checksums.
+The oracle family remains `pinned-oracle-v1`, with reviewed profile version 3.
+Sealing and execution preflight verify the immutable image ID, complete tool
+inventory, source/distribution checksums, and the Dockerfile and inventory script
+bytes inside that exact image. Inventory stderr must be empty; a missing command
+in a shell pipeline cannot be accepted as a successful version check. The build
+also checks the Linux amd64 glibc long-double formatting profile used by the
+independent printf expectations.
+
+Run this reference environment with an x86_64 Linux kernel. The driver and Docker
+daemon need the same fixture paths and loopback network, plus the CI observation
+tools and permission to create the registered block-device fixture. Launch the
+driver with the same `0022` umask used by CI and ordinary Docker invocations;
+explicit umask scenarios retain their own selected masks. Rosetta
+binfmt execution and an outer container with separate temporary directories or
+network namespaces do not provide equivalent observations. Keep their failed
+reports; do not normalize diagnostics or replace frozen expectations to accept
+them.
+
 PSL rules and A-label aliases are checked against the pinned libpsl. Complete
 Unicode 15 inputs and IDNA generation remain checked by `check`; the independent
 normalization corpus retains all 19,074 records. Network corpora retain their

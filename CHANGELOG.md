@@ -35,6 +35,17 @@ Development candidates; no new package publication.
   the pre-existing od EOF failure. Preserve the intermittent touch snapshot
   failure reproduced with both old and new artifacts; see ADR-0003. These results
   do not replace required CI, publication acceptance or performance qualification.
+- Repair stale-oracle acceptance and the local Linux reference environment:
+  profile 3 verifies image-contained recipes and every inventory executable,
+  rejects inventory stderr, and checks the GNU printf ABI profile. The original
+  138-case rerun passes 132; matching CI's umask resolves mkdir separately, for
+  133 original cases passing at their existing limits, including all 41 formerly
+  unavailable cases. Five network aggregate deadlines remain exceeded under
+  full-system QEMU. Temporary extended-budget diagnostics remain outside the
+  candidate source and cannot pass the original deadline gate. Tool regressions
+  pass 248 tests; the candidate retains every original assertion and deadline.
+  Product sources, versions and frozen published expectations are unchanged by
+  these repairs; retain the failed runs and require native Linux acceptance.
 - Prepare jq 0.2.10 with a small public value-filter engine and jqlog 0.2.8
   consuming it. Maintain one parser/evaluator and one jq-owned AST adaptation;
   preserve both command entries and jqlog's JSONL admission and per-line output.

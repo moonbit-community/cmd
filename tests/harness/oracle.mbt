@@ -161,7 +161,60 @@ pub fn oracle_profile_errors(profile : OracleProfile) -> Array[String] {
     }
     projects.add(source.project)
   }
+  for
+    (project, prefix) in [
+      ("COREUTILS", "base64 (GNU coreutils) "),
+      ("DIFFUTILS", "cmp (GNU diffutils) "),
+      ("SED", "sed (GNU sed) "),
+      ("PATCH", "GNU patch "),
+      ("GZIP", "gzip "),
+      ("UTIL_LINUX", "hexdump from util-linux "),
+      ("UTIL_LINUX", "column from util-linux "),
+      ("UTIL_LINUX", "rev from util-linux "),
+      ("BINUTILS", "GNU strings (GNU Binutils) "),
+      ("TREE", "tree v"),
+      ("FINDUTILS", "find (GNU findutils) "),
+      ("FINDUTILS", "xargs (GNU findutils) "),
+      ("GREP", "grep (GNU grep) "),
+      ("RIPGREP", "ripgrep "),
+      ("TYPST", "typst "),
+      ("WGET", "GNU Wget "),
+      ("CURL", "curl "),
+      ("MAKE", "GNU Make "),
+      ("JQ", "jq-"),
+      ("VIM", "xxd "),
+      ("DASH", "sh oracle: POSIX.1-2024 via dash "),
+    ] {
+    if projects.contains(project) &&
+      !profile.versions.split("\n").any(line => line.has_prefix(prefix)) {
+      errors.push(
+        "oracle inventory is missing " + project + " executable output",
+      )
+    }
+  }
   errors
+}
+
+///|
+async fn verify_image_recipe(
+  digest : String,
+  profile : OracleProfile,
+  execute : async (Array[String]) -> RunResult,
+) -> Unit {
+  for
+    (path, expected) in [
+      ("/usr/local/share/mooncmd-oracle/Dockerfile", profile.dockerfile_sha256),
+      ("/usr/local/bin/versions.sh", profile.versions_script_sha256),
+    ] {
+    let observed = execute([
+      "run", "--rm", "--entrypoint", "/bin/cat", digest, path,
+    ])
+    guard observed.status == 0 &&
+      observed.stderr.is_empty() &&
+      sha256_bytes(observed.stdout) == expected else {
+      fail("oracle image does not contain the reviewed recipe: " + path)
+    }
+  }
 }
 
 ///|
@@ -264,7 +317,11 @@ async fn seal_oracle_profile_with(
   let observed = execute([
     "run", "--rm", expected_digest, "/usr/local/bin/versions.sh",
   ])
-  guard observed.status == 0 else { fail("oracle version inventory failed") }
+  guard observed.status == 0 && observed.stderr.is_empty() else {
+    fail(
+      "oracle version inventory failed: " + @utf8.decode_lossy(observed.stderr),
+    )
+  }
   let versions = @utf8.decode(observed.stdout)
   let profile_with_identity = {
     ..profile,
@@ -279,6 +336,7 @@ async fn seal_oracle_profile_with(
     let errors = oracle_profile_binding_errors(profile_with_identity, expected)
     guard errors.is_empty() else { fail(errors.join("; ")) }
   }
+  verify_image_recipe(expected_digest, profile_with_identity, execute)
   @fs.write_file(
     profile_path,
     canonical_json(ToJson::to_json(profile_with_identity)) + "\n",
@@ -360,12 +418,13 @@ async fn verify_oracle_image_with(
   let versions = execute(["run", "--rm", digest, "/usr/local/bin/versions.sh"]) catch {
     error => fail("oracle inventory unavailable: \{error}")
   }
-  guard versions.status == 0 else {
+  guard versions.status == 0 && versions.stderr.is_empty() else {
     fail("oracle inventory failed: " + @utf8.decode(versions.stderr))
   }
   let inventory = @utf8.decode(versions.stdout)
   let errors = check_oracle_identity(profile, digest, inventory)
   guard errors.is_empty() else { fail(errors.join("; ")) }
+  verify_image_recipe(digest, profile, execute)
   { image: digest, digest, versions: inventory, profile_id: profile.id, }
 }
 

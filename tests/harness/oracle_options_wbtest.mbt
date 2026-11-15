@@ -95,6 +95,12 @@ async test "staged oracle sealing preserves reviewed inputs and verified identit
       stdout: @utf8.encode(
         if args[0] == "image" {
           digest + "\n"
+        } else if args.get(3) == Some("/bin/cat") {
+          if args.last() == Some("/usr/local/share/mooncmd-oracle/Dockerfile") {
+            recipe
+          } else {
+            inventory_recipe
+          }
         } else {
           inventory
         },
@@ -140,11 +146,19 @@ async test "staged oracle sealing preserves reviewed inputs and verified identit
   assert_eq(identity.profile_id, reviewed.id)
   assert_eq(identity.digest, digest)
   assert_eq(identity.versions, inventory)
-  assert_eq(calls.length(), 4)
+  assert_eq(calls.length(), 8)
   assert_eq(calls[0], ["image", "inspect", "--format={{.Id}}", digest])
   assert_eq(calls[1], ["run", "--rm", digest, "/usr/local/bin/versions.sh"])
-  assert_eq(calls[2], ["image", "inspect", "--format={{.Id}}", reviewed.image])
-  assert_eq(calls[3], calls[1])
+  assert_eq(calls[2], [
+    "run", "--rm", "--entrypoint", "/bin/cat", digest, "/usr/local/share/mooncmd-oracle/Dockerfile",
+  ])
+  assert_eq(calls[3], [
+    "run", "--rm", "--entrypoint", "/bin/cat", digest, "/usr/local/bin/versions.sh",
+  ])
+  assert_eq(calls[4], ["image", "inspect", "--format={{.Id}}", reviewed.image])
+  assert_eq(calls[5], calls[1])
+  assert_eq(calls[6], calls[2])
+  assert_eq(calls[7], calls[3])
 
   // Reusing the reviewed ID cannot authorize a different recipe or inventory.
   for
@@ -180,7 +194,7 @@ async test "staged oracle sealing preserves reviewed inputs and verified identit
     } noraise {
       _ => fail("unrelated profiles must fail before launching Docker")
     }
-    assert_eq(calls.length(), 4)
+    assert_eq(calls.length(), 8)
   }
   @fs.write_file(staged_path, canonical_json(ToJson::to_json(sealed_profile)))
   try
@@ -197,7 +211,7 @@ async test "staged oracle sealing preserves reviewed inputs and verified identit
   } noraise {
     _ => fail("registry profile mismatch must fail")
   }
-  assert_eq(calls.length(), 4)
+  assert_eq(calls.length(), 8)
   assert_eq(@fs.read_file(reviewed_dir + "/profile.json").text(), original)
   assert_false(
     oracle_profile_binding_errors(

@@ -131,19 +131,28 @@ all timestamp/identity assertions and the exact rejection expectation. Reopen
 the observer separately with before/after metadata evidence; a later successful
 run does not resolve this intermittent defect.
 
-The local Linux differential attempt uses the verified immutable AMD64 oracle
-on an ARM Linux VM through Rosetta. Its complete run has 2,756 passes, 97 failing
-cases and 41 infrastructure-unavailable results. All 97 failures have identical
-stage and diagnostic details when rerun with the saved pre-restructuring Wasm
-artifacts and the same pinned oracle and observer. The final six domain
-extractions receive a fresh selected rerun; its sole failure,
-`o7-19-od-strings-eof`, also reproduces with the original artifact. This is not a passing differential gate and
-does not establish that every failure is a product defect: unavailable tracing,
-scenario deadlines, oracle invocation diagnostics and existing output differences
-remain distinct investigation inputs. Preserve the complete failed reports and
-original-artifact controls without relaxing expectations. Reopen product defects
-separately after reproduction on the required native Linux CI environment;
-repeat unavailable observations there before claiming upstream parity.
+The strict Linux reference requires an x86_64 Linux kernel, shared fixture paths
+and loopback networking between the test driver and Docker daemon, and the
+registered observation tools and fixture permissions. The ordinary driver and
+oracle invocations share CI's `0022` umask; explicit umask scenarios retain their
+selected masks. Rosetta binfmt execution
+and an outer container with isolated paths or networking are not equivalent:
+they can alter command names in diagnostics, suppress subprocess observations,
+prevent tracing and make fixtures unreachable. Coreutils must also pass the
+reviewed glibc long-double formatting probe at image build time; Rosetta can
+change a configure result and select a different formatter from the same source.
+
+Oracle profile version 3 verifies the Dockerfile and inventory script bytes
+inside the immutable image, the complete executable inventory with empty stderr,
+and the source/distribution checksums. A digest plus matching local recipe files
+is insufficient: the earlier restructuring attempt used an obsolete image that
+lacked rg, rev and typst despite passing that weaker preflight. Its failed run
+and original-artifact controls remain historical evidence in CHANGELOG and the
+local execution reports. Reopen product defects only with independent original
+expectations and a fresh complete run in the required reference environment;
+never normalize these diagnostics, replace expectations or count unavailable
+observations as parity. Local differential acceptance still does not replace
+required three-platform CI or performance qualification.
 
 The issue #34 release assigns byte-preserving HTTP headers,
 physical response-line callbacks and explicit payload chunking to core 0.11.0.
