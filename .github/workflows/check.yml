@@ -58,6 +58,7 @@ jobs:
             .mooncakes
             core/.mooncakes
             tests/.mooncakes
+            tools/.mooncakes
             commands/*/.mooncakes
             _build/.moon_db
             _build/native/debug
@@ -70,10 +71,23 @@ jobs:
         run: (command -v lsof && test -x /usr/bin/nc) || (sudo apt-get update && sudo apt-get install --yes lsof netcat-openbsd)
       - name: Dependencies
         run: moon update
-      - name: Check products and test tools
-        run: moon run tools/run.mbtx -- check
+      - name: Check scripts and generated inputs
+        run: moon run tools/run.mbtx -- check inputs
       - name: Prepare products and execution tools
         run: moon run tools/run.mbtx -- prepare
+      - name: Select required upstream comparisons
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: moon run tools/run.mbtx -- ci select "$BASE_SHA" "$GITHUB_SHA"
+      - name: Export prepared Linux inputs
+        run: moon run tools/run.mbtx -- ci export
+      - name: Share prepared Linux inputs
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: cmd-linux-build-${{ github.run_attempt }}
+          path: ci-inputs
+          retention-days: 1
+          if-no-files-found: error
       - name: Wasm package tests
         timeout-minutes: 5
         run: moon run tools/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log
@@ -87,22 +101,6 @@ jobs:
           moon info
           moon run tools/run.mbtx -- format --check
           git diff --exit-code
-      - name: Select required upstream comparisons
-        if: runner.os == 'Linux'
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: moon run tools/run.mbtx -- ci select "$BASE_SHA" "$GITHUB_SHA"
-      - name: Export prepared Linux inputs
-        if: runner.os == 'Linux'
-        run: moon run tools/run.mbtx -- ci export
-      - name: Share prepared Linux inputs
-        if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v7.0.2
-        with:
-          name: cmd-linux-build
-          path: ci-inputs
-          retention-days: 1
-          if-no-files-found: error
       - name: Record report footprint
         if: ${{ always() && !cancelled() }}
         run: moon run tools/run.mbtx -- ci metrics
@@ -137,6 +135,7 @@ jobs:
             .mooncakes
             core/.mooncakes
             tests/.mooncakes
+            tools/.mooncakes
             commands/*/.mooncakes
             _build/.moon_db
             _build/native/debug
@@ -182,6 +181,7 @@ jobs:
             .mooncakes
             core/.mooncakes
             tests/.mooncakes
+            tools/.mooncakes
             commands/*/.mooncakes
             _build/.moon_db
             _build/native/debug
@@ -191,8 +191,6 @@ jobs:
             ${{ steps.cache-key.outputs.prefix }}-
       - name: Dependencies
         run: moon update
-      - name: Check products and test tools
-        run: moon run tools/run.mbtx -- check
       - name: Prepare products and execution tools
         run: moon run tools/run.mbtx -- prepare
       - name: Wasm package tests
@@ -236,6 +234,7 @@ jobs:
             .mooncakes
             core/.mooncakes
             tests/.mooncakes
+            tools/.mooncakes
             commands/*/.mooncakes
             _build/.moon_db
             _build/native/debug
@@ -244,9 +243,11 @@ jobs:
 
   differential:
     name: linux-upstream
-    needs: linux
     runs-on: ubuntu-24.04
     timeout-minutes: 40
+    permissions:
+      contents: read
+      actions: read
     outputs:
       required: ${{ steps.inputs.outputs.required }}
       executed: ${{ steps.compare.outputs.executed }}
@@ -266,12 +267,17 @@ jobs:
         run: |
           mkdir -p test-reports
           moon version --all | tee test-reports/toolchain.log
-      - uses: actions/download-artifact@v8.0.2
-        with:
-          name: cmd-linux-build
-          path: ci-inputs
       - name: Refresh script dependency registry
         run: moon update
+      - name: Wait for prepared Linux inputs
+        id: prepared
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: moon run tools/run.mbtx -- ci wait
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: ${{ steps.prepared.outputs.artifact }}
+          path: ci-inputs
       - name: Verify prepared inputs and selection
         id: inputs
         run: moon run tools/run.mbtx -- ci import
@@ -321,14 +327,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v7.0.1
-      - uses: ./.github/actions/setup-moonbit
-      - name: Refresh script dependency registry
-        run: moon update
       - name: Require correctness and selected upstream results
-        env:
-          LINUX_RESULT: ${{ needs.linux.result }}
-          ORACLE_RESULT: ${{ needs.differential.result }}
-          ORACLE_REQUIRED: ${{ needs.differential.outputs.required }}
-          ORACLE_EXECUTED: ${{ needs.differential.outputs.executed }}
-        run: moon run tools/run.mbtx -- ci gate
+        if: ${{ always() && (needs.linux.result != 'success' || needs.differential.result != 'success' || !(needs.differential.outputs.required == 'false' || (needs.differential.outputs.required == 'true' && needs.differential.outputs.executed == 'true'))) }}
+        run: exit 1

@@ -144,6 +144,8 @@ module and version before any release operation.
   directory. Agent-authored automation must use pure MoonBit `.mbtx` files.
 - Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- COMMAND`
   for test orchestration and CI. `check` includes all standalone scripts;
+  development CI uses `check inputs` once on Linux and relies on builds/tests
+  with `--deny-warn` for product and tool type checking on all three platforms.
   `format --check` checks them explicitly. Entry arguments resolve from the
   repository root, and execution uses a fresh absolute `CMD_TEST_REPORT_ROOT`.
   Current cases and identity bindings belong to `tests/cases`, reusable
@@ -234,13 +236,18 @@ module and version before any release operation.
   fixture changes select their consumers; shared or unclassified execution inputs
   and missing Git baselines select all. `ubuntu-24.04` aggregates correctness and
   the required comparison, failing on missing, cancelled or unexpected skips.
-  Reuse only same-run source/toolchain-bound build artifacts, never dynamic
+  Reuse only same-run source/toolchain-bound build artifacts from the selected
+  producer attempt, never dynamic
   candidate observations. Fixture paths belong to existing case `inputs` fields;
   unsupported oracle profiles require explicit policy boundaries.
   Apply change-selection rules to functionality, dependencies, executable tests,
   actual test inputs and CI execution configuration. Plain documentation, license
   notices and document assets do not require upstream comparison. Do not add
   parallel text-review rules or ownership records for ordinary prose.
+  Export Linux artifacts before test execution so upstream image preparation
+  and comparison can overlap correctness. Keep compilation and Docker cache
+  writes restricted to main. Retire completed one-time collection and experiment
+  launchers; preserve their captured expectations, regressions and Git history.
 - Mainline changes use a PR and the required ubuntu-24.04, macos-15 and
   windows-2025 checks, followed by actual-main validation. Do not bypass branch
   protection. The former C1 coverage audit, change declaration, source/artifact

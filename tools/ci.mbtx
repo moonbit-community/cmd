@@ -123,17 +123,74 @@ async fn checked_artifact(path : String, digest : String) -> Bytes {
 }
 
 ///|
-fn require_gate(
-  linux : String,
-  oracle : String,
-  needed : String,
-  executed : String,
-) -> Unit raise {
-  assert_eq(linux, "success", msg="Linux correctness must pass")
-  assert_eq(oracle, "success", msg="differential job must pass")
-  guard needed == "false" || (needed == "true" && executed == "true") else {
-    fail("required differential did not execute")
+fn inputs_ready(artifacts : Json, name : String) -> Bool raise {
+  guard artifacts is { "artifacts": Array(items), .. } else {
+    fail("invalid Actions artifact response")
   }
+  items.any(item => {
+    item is { "name": String(found), "expired": false, .. } && found == name
+  })
+}
+
+///|
+fn producer_completed(jobs : Json) -> Bool? raise {
+  guard jobs is { "jobs": Array(items), .. } else {
+    fail("invalid Actions jobs response")
+  }
+  for job in items {
+    if job is { "name": "linux-correctness", "status": String(status), .. } {
+      return Some(status == "completed")
+    }
+  }
+  None
+}
+
+///|
+async fn actions_json(endpoint : String) -> Json {
+  let response = @async.with_timeout(30000, () => {
+    @shell.Cmd("gh", ["api", endpoint]).output()
+  })
+  response.check()
+  @json.parse(response.stdout())
+}
+
+///|
+async fn wait_for_inputs() -> Unit {
+  let run = "repos/" +
+    required("GITHUB_REPOSITORY") +
+    "/actions/runs/" +
+    required("GITHUB_RUN_ID")
+  let attempt : Int32 = @json.from_json(
+    @json.parse(required("GITHUB_RUN_ATTEMPT")),
+  )
+  let started = @async.now()
+  while @async.now() - started < 600000 {
+    // A consumer-only retry reuses this run's latest producer; a full retry
+    // waits for its new producer instead of taking an older artifact.
+    for producer = attempt; producer > 0; producer = producer - 1 {
+      let jobs = actions_json(
+        run + "/attempts/" + producer.to_string() + "/jobs?per_page=100",
+      )
+      if producer_completed(jobs) is Some(completed) {
+        let name = "cmd-linux-build-" + producer.to_string()
+        if inputs_ready(actions_json(run + "/artifacts?per_page=100"), name) {
+          @fs.write_file(
+            required("GITHUB_OUTPUT"),
+            "artifact=" + name + "\n",
+            append=true,
+          )
+          println("Prepared Linux inputs available: " + name)
+          return
+        }
+        guard !completed else {
+          fail("Linux producer completed without the prepared build artifact")
+        }
+        break
+      }
+    }
+    @async.sleep(5000)
+  }
+  fail("timed out waiting for prepared Linux inputs")
 }
 
 ///|
@@ -182,22 +239,30 @@ async fn self_test() -> Unit {
   } noraise {
     _ => fail("wrong selection source passed")
   }
-  for
-    (linux, oracle, required, executed) in [
-      ("failure", "success", "true", "true"),
-      ("success", "cancelled", "true", "true"),
-      ("success", "skipped", "false", ""),
-      ("success", "success", "true", ""),
-      ("success", "success", "", "true"),
-    ] {
-    try require_gate(linux, oracle, required, executed) catch {
-      _ => ()
-    } noraise {
-      _ => fail("incomplete required gate passed")
-    }
+  let artifacts : Json = {
+    "artifacts": [{ "name": "cmd-linux-build-2", "expired": false }],
   }
-  require_gate("success", "success", "true", "true")
-  require_gate("success", "success", "false", "")
+  assert_true(inputs_ready(artifacts, "cmd-linux-build-2"))
+  assert_false(inputs_ready(artifacts, "cmd-linux-build-3"))
+  assert_false(
+    inputs_ready(
+      { "artifacts": [{ "name": "cmd-linux-build-2", "expired": true }] },
+      "cmd-linux-build-2",
+    ),
+  )
+  assert_eq(producer_completed({ "jobs": [] }), None)
+  assert_eq(
+    producer_completed({
+      "jobs": [{ "name": "linux-correctness", "status": "in_progress" }],
+    }),
+    Some(false),
+  )
+  assert_eq(
+    producer_completed({
+      "jobs": [{ "name": "linux-correctness", "status": "completed" }],
+    }),
+    Some(true),
+  )
   let digest = @crypto.bytes_to_hex_string(@crypto.sha256(b"artifact"))
   let manifest : Json = {
     "schema": 1,
@@ -235,7 +300,9 @@ async fn self_test() -> Unit {
   } noraise {
     _ => fail("changed artifact passed")
   }
-  println("CI selection, gate and build-integrity negative regressions passed")
+  println(
+    "CI selection, artifact handoff and build-integrity negative regressions passed",
+  )
 }
 
 ///|
@@ -269,6 +336,7 @@ async fn main {
   let bundle = root + "/ci-inputs"
   match @env.args()[1:] {
     ["self-test"] => self_test()
+    ["wait"] => wait_for_inputs()
     ["metrics"] => {
       let (files, bytes) = report_size(report)
       @fs.write_file(
@@ -378,16 +446,9 @@ async fn main {
       ])
       @fs.write_file(required("GITHUB_OUTPUT"), "executed=true\n", append=true)
     }
-    ["gate"] => {
-      require_gate(
-        required("LINUX_RESULT"),
-        required("ORACLE_RESULT"),
-        required("ORACLE_REQUIRED"),
-        @env.get_env_var("ORACLE_EXECUTED").unwrap_or(""),
-      )
-      println("Linux correctness and required upstream differential passed")
-    }
     _ =>
-      fail("ci requires select BASE HEAD, export, import, differential or gate")
+      fail(
+        "ci requires select BASE HEAD, export, wait, import, differential or metrics",
+      )
   }
 }

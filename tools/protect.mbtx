@@ -220,16 +220,14 @@ async fn main {
       msg="product source changed during build: " + path,
     )
   }
-  for tool_package in ["tests/benchmark", "tests/harness/driver"] {
-    run_checked(
-      "moon",
-      ["build", "--target", "native", "--release", "--deny-warn", tool_package],
-      evidence +
-      "/build-" +
-      (if tool_package == "tests/benchmark" { "benchmark" } else { "driver" }) +
-      ".log",
-    )
-  }
+  run_checked(
+    "moon",
+    [
+      "build", "--target", "native", "--release", "--deny-warn", "tests/benchmark",
+      "tests/harness/driver",
+    ],
+    evidence + "/build-tools.log",
+  )
   let registry = @json.parse(
     @fs.read_file("tests/benchmark/protection.json").text(),
   )

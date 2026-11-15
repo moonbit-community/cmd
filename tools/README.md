@@ -38,13 +38,10 @@ It does not regenerate and compare the release candidate as another gate.
 | Tool | Responsibility and caller |
 | --- | --- |
 | `run.mbtx` | Public dispatcher for checks, builds, tests and manual workflows. |
-| `validate.mbtx` | Launch workspace or published acceptance, record elapsed time and propagate failure. Called by `run.mbtx`. |
-| `ci.mbtx` | Select upstream cases, transfer same-run Linux artifacts, aggregate status and summarize report size. Called by development CI. |
-| `metadata/` | Generate and check option tables, help, README sections and catalog metadata. `check` runs it in development CI. |
+| `ci.mbtx` | Select upstream cases, hand off prepared Linux artifacts from this run's producer, and summarize report size. Called by development CI. |
+| `metadata/` | Generate and check option tables, help, README sections and catalog metadata. Linux runs it through `check inputs`. |
 | `release/` | Generate candidate coordinates and launch exact-coordinate MoonX acceptance. Acceptance is a manual workflow. |
 | `oracle.mbtx` | Prepare the immutable reference-image profile, version inventory and PSL comparison for Linux differential or published acceptance. |
-| `jq_oracle.mbtx` | Offline collector of independent jq runtime and evaluation expectations from a reference image. Ordinary CI does not execute this collector. |
-| `http_cookie.mbtx` | Offline collector of Curl/Wget HTTP, Cookie and configuration reference observations. Ordinary CI does not execute this collector. |
 | `public_suffix.mbtx` | Generate/check the pinned PSL table and compare it with the oracle. Called by `check` and `oracle.mbtx`. |
 | `idna.mbtx` | Generate/check pinned Unicode IDNA tables. Called by `check`. |
 | `corpus.mbtx` | Prepare hash-pinned genuine benchmark sources; optionally download them. Called manually or by resource profiles. |
@@ -52,10 +49,29 @@ It does not regenerate and compare the release candidate as another gate.
 | `protect.mbtx` | Preserve and compare old/new Wasm artifacts using the registered performance workloads. Manual entry. |
 | `resource_profiles.mbtx` | Set up Linux reference tools and dispatch selected resource/timing profiles. Called by the manual resources workflow. |
 | `performance.mbtx` | Run the real-corpus timing suite and record its complete verdict. Called by `resource_profiles.mbtx`. |
-| `literal.mbtx` | Run grep literal-planner resource shapes with sampled and Linux RSS observers. Called by `resource_profiles.mbtx`. |
 
-The three oracle-related entries serve different stages: environment preparation,
-jq corpus collection and HTTP corpus collection. Their independent expected data
-must not be regenerated from the candidate during CI. All retained standalone
-scripts are type-checked by `check`, including the manual collectors; only the
-entries listed as CI callers execute in ordinary development workflows.
+The one-time jq and HTTP collectors used for issue #34 and the October 2026
+grep literal-planner resource launcher are retired. Their source is preserved
+in [Git at c35e7c1](https://github.com/moonbit-community/cmd/tree/c35e7c1aff0e5b976473ae3664106df8f86c79ad/tools).
+Captured independent expectations and product regressions remain active.
+New reference captures belong to the work that needs them, rather than permanent
+CI entry points after that work is complete.
+
+`run.mbtx` launches workspace and published acceptance directly, including timing
+and failure reporting. `prepare published` builds the release-profile driver and
+launcher once; `CMD_TEST_PREPARED=1` reuses them for oracle setup and acceptance.
+Resource profiles build their Native observer once before the selected runs.
+
+Development CI relies on warning-denying builds and tests for product/tool type
+checking. Linux additionally runs `check inputs` for standalone scripts and
+generated data; local `check` still checks the complete workspace. The metadata
+generator runs and tests on Native, with no unused Wasm executable or duplicate
+Wasm tool tests. Linux exports
+its prepared artifacts before package and functional tests. The upstream job
+waits for the latest producer attempt's artifact, then prepares the image and runs comparisons
+while correctness continues. The workflow expression combines both job results
+without another toolchain installation. Only main saves compilation and Docker
+caches; other branches may restore them.
+Consumer-only retries can reuse the same run's earlier producer artifact;
+full retries wait for their new producer. Import still checks source, toolchain
+and artifact bytes before execution.

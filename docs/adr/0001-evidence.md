@@ -12,6 +12,15 @@ Native is reserved for test tools. Mainline changes require a PR, the three
 checks and actual-main validation. Resource observations and exact-version
 published acceptance are separate manual workflows.
 
+Linux checks standalone scripts and generated inputs once; three-platform builds
+and tests perform warning-denying product/tool compilation. Share prepared Linux
+artifacts before tests, bound to the same run's producer attempt, so upstream preparation
+and comparisons overlap correctness. Both jobs remain required at the final
+workflow gate. Cache writes remain restricted to main. Published acceptance
+uses one release-profile tool build, and resource profiles reuse one observer
+build. Retire one-time capture and experiment launchers after their inputs and
+regressions are established; keep historical sources in Git.
+
 Workspace and published commands share execution and assertion mechanisms,
 but retain independent expectations. Keep private-state/injected tests beside
 their packages, CLI contracts in the existing registry and static corpora in

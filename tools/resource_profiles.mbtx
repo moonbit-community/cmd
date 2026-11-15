@@ -54,11 +54,15 @@ async fn main {
     "LD_LIBRARY_PATH": libraries,
   }
   @fs.write_file(reports + "/setup.json", metadata.stringify(indent=2) + "\n")
+  let profile = @env.get_env_var("CMD_TEST_PROFILE").unwrap_or("debug")
+  guard ["debug", "release"].contains(profile) else {
+    fail("unknown test-tool profile")
+  }
+  let observer = workspace +
+    "/_build/native/" +
+    profile +
+    "/build/mooxCLI/cmd-tests/resources/resources.exe"
   let common = [
-    "run",
-    workspace + "/tools/run.mbtx",
-    "--",
-    "resources",
     "--wasm-root",
     workspace + "/_build/wasm/release/build",
     "--moonrun",
@@ -81,7 +85,6 @@ async fn main {
       ],
     ),
     ("performance", []),
-    ("literal-planner", []),
   ]
   let results : Array[Json] = []
   let mut failures = 0
@@ -95,25 +98,17 @@ async fn main {
     profiles.any(row => row.0 == selected_profile) else {
     fail("unknown resource profile: " + selected_profile)
   }
+  if selected_profile != "performance" {
+    let build = [
+      "build", "--target", "native", "--deny-warn", "tests/resources",
+    ]
+    if profile == "release" {
+      build.push("--release")
+    }
+    @shell.Cmd("moon", build, cwd=workspace, stdout=Inherit, stderr=Inherit).run()
+  }
   for (name, options) in profiles {
     if selected_profile != "all" && name != selected_profile {
-      continue
-    }
-    if name == "literal-planner" &&
-      !selected_commands.is_empty() &&
-      !selected_commands.split(",").any(command => command == "grep") {
-      guard selected_profile == "all" else {
-        fail("literal-planner requires grep")
-      }
-      results.push({
-        "profile": name,
-        "status": Json::null(),
-        "skipped": "grep not selected",
-      })
-      @fs.write_file(
-        reports + "/profiles.json",
-        Json(results).stringify(indent=2) + "\n",
-      )
       continue
     }
     let corpus_parent = if name == "performance" {
@@ -153,18 +148,12 @@ async fn main {
       [..filtered, "--commands", selected_commands]
     }
     let status = @shell.Cmd(
-      "moon",
-      if name == "literal-planner" {
-        [
-          "run",
-          workspace + "/tools/literal.mbtx",
-          "--",
-          reports + "/literal-planner",
-          workspace + "/_build/wasm/release/build",
-          moonrun,
-          prefix + "/bin",
-        ]
-      } else if name == "performance" {
+      if name == "performance" {
+        "moon"
+      } else {
+        observer
+      },
+      if name == "performance" {
         [
           "run",
           workspace + "/tools/performance.mbtx",

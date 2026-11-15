@@ -72,15 +72,13 @@ async fn main {
       } : Json).stringify(indent=2) +
     "\n",
   )
-  for tool_package in ["tests/benchmark", "tests/harness/driver"] {
-    run_checked(
-      ["build", "--target", "native", "--release", "--deny-warn", tool_package],
-      root +
-      "/build-" +
-      (if tool_package == "tests/benchmark" { "benchmark" } else { "driver" }) +
-      ".log",
-    )
-  }
+  run_checked(
+    [
+      "build", "--target", "native", "--release", "--deny-warn", "tests/benchmark",
+      "tests/harness/driver",
+    ],
+    root + "/build-tools.log",
+  )
   let manifest = @fs.realpath("tests/benchmark/real.json")
   guard field(@json.parse(@fs.read_file(manifest).text()), "schema") == Json(3) else {
     fail("performance requires real.json schema3")

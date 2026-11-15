@@ -6,7 +6,7 @@ on:
       profile:
         description: Resource profile
         type: choice
-        options: [all, records, long, mixed-synthetic, kernel-rss-linux, performance, literal-planner]
+        options: [all, records, long, mixed-synthetic, kernel-rss-linux, performance]
         default: all
       commands:
         description: Optional comma-separated command names

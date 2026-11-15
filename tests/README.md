@@ -20,8 +20,8 @@ files fail. Error propagation remains covered beside the engine and each command
 
 | Command | Responsibility |
 | --- | --- |
-| `check` | Wasm products, Native tools and every standalone `.mbtx` script |
-| `prepare` | Build product Wasm and Native execution tools once |
+| `check` / `check inputs` | Complete type checking, or only standalone scripts and generated data |
+| `prepare` / `prepare published` | Build product Wasm and Native execution tools, or release-profile acceptance tools once |
 | `test packages` / `test tools` / `test all` | Wasm package tests and Native infrastructure regressions |
 | `format --check` | Packages and all standalone scripts |
 | `metadata check` / `metadata update` | Verify or regenerate parser, help, README and catalog artifacts |
@@ -33,11 +33,14 @@ files fail. Error propagation remains covered beside the engine and each command
 | `resources`, `resource-profiles` | Separate manual [resource observations](resources/README.md) |
 
 Tools default to debug, products and package tests to release. Published tools
-use release. Standalone commands build their required tools. CI runs `prepare`
+use release. Standalone commands build their required tools. Development CI runs `prepare`
 first and sets `CMD_TEST_PREPARED=1` for later commands; missing artifacts fail.
 Choose a fresh absolute `CMD_TEST_REPORT_ROOT` for each execution. Linux correctness
-exports prepared Wasm and Native tools to the upstream job, bound to the commit,
-toolchain and complete artifact inventory. Diagnostic subsets
+exports prepared Wasm and Native tools before its test stages, bound to the commit,
+toolchain and complete artifact inventory. The upstream job consumes only the
+latest producer attempt's artifact within the same run and overlaps image preparation/comparison with
+correctness. Missing producer artifacts and failed, cancelled or incomplete jobs
+fail the final Linux gate. Diagnostic subsets
 do not qualify complete development or published acceptance.
 
 ## Ownership and assertions

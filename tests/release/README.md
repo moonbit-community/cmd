@@ -20,6 +20,8 @@ The entry builds `tools/release` and invokes the same driver used for
 workspace validation. All product children resolve exact MoonX coordinates;
 startup probes and acceptance execute serially. On Linux, prepare the pinned
 oracle into the same report root first. The manual release workflow runs the
+`prepare published` entry once and shares release-profile tools between oracle
+setup and acceptance through `CMD_TEST_PREPARED=1`. It runs the
 full applicable suite on Linux, macOS and Windows and pinned comparisons on
 Linux. It does not publish or modify committed files.
 

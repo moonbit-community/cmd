@@ -35,6 +35,8 @@ jobs:
       TZ: UTC
       DOCKER_BUILD_RECORD_RETENTION_DAYS: 30
       CMD_RELEASE_MANIFEST: tests/release/${{ inputs.manifest }}.json
+      CMD_TEST_PROFILE: release
+      CMD_TEST_PREPARED: '1'
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -45,6 +47,8 @@ jobs:
           mkdir -p test-reports
           moon version --all | tee test-reports/toolchain.log
           moon update
+      - name: Prepare published execution tools once
+        run: moon run tools/run.mbtx -- prepare published
       - name: Linux listener and socket fixture tools
         if: runner.os == 'Linux'
         run: (command -v lsof && test -x /usr/bin/nc) || (sudo apt-get update && sudo apt-get install --yes lsof netcat-openbsd)

@@ -19,6 +19,11 @@ Development candidates; no new package publication.
 - Remove architecture/naming scanners, generated-version source checks and the
   separate candidate-consistency CI gate. Generate release candidates explicitly;
   retain registry validation during execution and the existing behavior assertions.
+- Retire the issue #34 jq/HTTP collectors and the October grep resource launcher;
+  preserve captured expectations and product regressions. Consolidate validation
+  entry points, check generated inputs once on Linux, share prepared artifacts
+  before tests, and reuse publication/resource tool builds. Keep cache writes on
+  main and require both Linux correctness and applicable upstream comparisons.
 - Restructure all 82 command roots as entries into `internal/driver`; move
   substantive parsing, formatting and ordering domains into owned packages,
   relocate package corpora and separate development tools from real-command

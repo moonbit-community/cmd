@@ -4,6 +4,7 @@ import {
   "moonbitlang/async@0.22.9/fs",
   "moonbitlang/async@0.22.9/shell",
   "moonbitlang/core/env",
+  "moonbitlang/core/json",
   "moonbitlang/x@0.5.7/path",
 }
 ----
@@ -65,15 +66,101 @@ fn tool_arguments(profile : String, packages : Array[String]) -> Array[String] {
 }
 
 ///|
+async fn validate(root : String, published : Bool, profile : String) -> Unit {
+  let mode = if published { "published" } else { "functional" }
+  let report_root = @env.get_env_var("CMD_TEST_REPORT_ROOT").unwrap_or(
+    root + "/test-reports",
+  )
+  guard @path.Path(report_root).is_absolute() else {
+    fail("CMD_TEST_REPORT_ROOT must be absolute")
+  }
+  @fs.mkdir(report_root, recursive=true, allow_exist=true)
+  let program = root +
+    "/_build/native/" +
+    profile +
+    "/build/mooxCLI/" +
+    (if published {
+      "cmd-tools/release/release.exe"
+    } else {
+      "cmd-tests/harness/driver/driver.exe"
+    })
+  let arguments = [
+    "--suite",
+    if published && @async.platform is Linux {
+      "all"
+    } else {
+      "functional"
+    },
+    "--jobs",
+    if published {
+      "1"
+    } else {
+      "4"
+    },
+    "--report-dir",
+    report_root + "/" + mode,
+  ]
+  if published {
+    arguments.append([
+      "--manifest",
+      @env.get_env_var("CMD_RELEASE_MANIFEST").unwrap_or(
+        "tests/release/latest.json",
+      ),
+    ])
+  }
+  if published && @async.platform is Linux {
+    let image = @fs.read_file(report_root + "/oracle-image.txt")
+      .text()
+      .trim()
+      .to_owned()
+    arguments.append([
+      "--oracle-image",
+      image,
+      "--oracle-profile",
+      report_root + "/oracle-profile/profile.json",
+    ])
+  }
+  let started = @async.now()
+  let status = @shell.Cmd(
+    program,
+    arguments,
+    cwd=root,
+    env=Map([("CMD_TEST_PROFILE", profile)]),
+    stdout=Inherit,
+    stderr=Inherit,
+  ).status()
+  let timing : Json = {
+    "mode": mode,
+    "tool_profile": profile,
+    "duration_ms": @async.now() - started,
+    "status": status,
+  }
+  @fs.write_file(
+    report_root + "/execution.json",
+    timing.stringify(indent=2) + "\n",
+  )
+  if @env.get_env_var("GITHUB_STEP_SUMMARY") is Some(path) {
+    @fs.write_file(
+      path,
+      "Command validation: " + timing.stringify() + "\n",
+      append=true,
+    )
+  }
+  guard status == 0 else {
+    fail("command validation failed with status \{status}")
+  }
+}
+
+///|
 async fn main {
   let args = @env.args()[1:]
   if args.is_empty() || args is ["--help"] {
     let help =
       #|Usage: moon run tools/run.mbtx -- COMMAND [ARGS]
-      #|  check                         Check products, tools, and all standalone scripts
+      #|  check [inputs]                Check all code, or only scripts and generated inputs
       #|  test tools|packages|all        Run Native tools, Wasm packages, or both
       #|  format [--check]              Format packages and every standalone script
-      #|  prepare                       Build Wasm products and Native execution tools once
+      #|  prepare [published]           Build workspace products/tools or published tools once
       #|  functional                    Run workspace correctness and validate complete results
       #|  published                     Run exact-coordinate published acceptance
       #|  list|validate [DRIVER_ARGS]    Inspect the current functional selection
@@ -101,15 +188,27 @@ async fn main {
   let rest = args[1:].to_owned()
   let prepared = @env.get_env_var("CMD_TEST_PREPARED") == Some("1")
   match args[0] {
-    "prepare" => {
-      guard rest.is_empty() else { fail("prepare takes no arguments") }
-      moon(root, ["build", "--target", "wasm", "--release", "--deny-warn"])
-      moon(root, tool_arguments(profile, ["tests/harness/driver"]))
-    }
+    "prepare" =>
+      match rest {
+        [] => {
+          moon(root, ["build", "--target", "wasm", "--release", "--deny-warn"])
+          moon(root, tool_arguments(profile, ["tests/harness/driver"]))
+        }
+        ["published"] =>
+          moon(
+            root,
+            tool_arguments("release", ["tests/harness/driver", "tools/release"]),
+          )
+        _ => fail("prepare accepts only published")
+      }
     "check" => {
-      guard rest.is_empty() else { fail("check takes no arguments") }
-      moon(root, ["check", "--target", "wasm", "--deny-warn"])
-      moon(root, ["check", "--target", "native", "--deny-warn", ..tools])
+      guard rest.is_empty() || rest == ["inputs"] else {
+        fail("check accepts only inputs")
+      }
+      if rest.is_empty() {
+        moon(root, ["check", "--target", "wasm", "--deny-warn"])
+        moon(root, ["check", "--target", "native", "--deny-warn", ..tools])
+      }
       let scripts : Array[String] = []
       scripts_in(root + "/tests", scripts)
       scripts_in(root + "/tools", scripts)
@@ -184,32 +283,17 @@ async fn main {
       guard rest.is_empty() else {
         fail("use list/validate or the driver for diagnostic selections")
       }
-      if args[0] == "published" {
+      let published = args[0] == "published"
+      if published && !prepared {
         moon(
           root,
           tool_arguments("release", ["tests/harness/driver", "tools/release"]),
         )
-      } else if !prepared {
+      } else if !published && !prepared {
         moon(root, ["build", "--target", "wasm", "--release", "--deny-warn"])
         moon(root, tool_arguments(profile, ["tests/harness/driver"]))
       }
-      @shell.Cmd(
-        "moon",
-        ["run", "tools/validate.mbtx", "--", args[0]],
-        cwd=root,
-        env=Map([
-          (
-            "CMD_TEST_PROFILE",
-            if args[0] == "published" {
-              "release"
-            } else {
-              profile
-            },
-          ),
-        ]),
-        stdout=Inherit,
-        stderr=Inherit,
-      ).run()
+      validate(root, published, if published { "release" } else { profile })
     }
     "resources" => {
       moon(root, tool_arguments(profile, ["tests/resources"]))
