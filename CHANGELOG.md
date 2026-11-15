@@ -16,6 +16,25 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development candidates; no new package publication.
 
+- Restructure all 82 command roots as entries into `internal/driver`; move
+  substantive parsing, formatting and ordering domains into owned packages,
+  relocate package corpora and separate development tools from real-command
+  tests. Preserve the initial jq/jqlog candidate work and published versions.
+- Generate parser bindings, structured help, fixed defaults, README option
+  tables and catalog metadata from each command's `options.json`. Resolve
+  selected publication coordinates once from `moon.mod`, retaining independent
+  frozen expectations and refusing missing versions without fallback. All 183
+  saved help/version observations remain byte-identical.
+- Restructuring validation passes 2,720 Wasm package tests, 246 Native tool
+  tests and 4,091 macOS command checks (3,990 semantic passes), with 40 declared
+  platform skips. Of 83 isolated product modules, 82 build and test; jqlog
+  requires the unpublished jq 0.2.10 candidate, while their isolated two-module
+  workspace passes 588 tests. Linux differential remains failed: 2,756 passes,
+  97 failures reproduced with identical diagnostics by original artifacts, and
+  41 infrastructure-unavailable cases. The final six-domain rerun retains only
+  the pre-existing od EOF failure. Preserve the intermittent touch snapshot
+  failure reproduced with both old and new artifacts; see ADR-0003. These results
+  do not replace required CI, publication acceptance or performance qualification.
 - Prepare jq 0.2.10 with a small public value-filter engine and jqlog 0.2.8
   consuming it. Maintain one parser/evaluator and one jq-owned AST adaptation;
   preserve both command entries and jqlog's JSONL admission and per-line output.

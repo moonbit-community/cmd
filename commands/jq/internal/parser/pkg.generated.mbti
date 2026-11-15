@@ -57,7 +57,7 @@ pub(all) struct Program {
   body : @ast.Expr
 }
 
-#derive(Eq, @debug.Debug)
+#derive(Eq)
 pub(all) enum Token {
   TNumber(Double)
   TString(String)
@@ -75,12 +75,12 @@ pub(all) enum Token {
   TColon
   TSemicolon
   TQuestion
-  TLParen
-  TRParen
-  TLBracket
-  TRBracket
-  TLBrace
-  TRBrace
+  TLeftParen
+  TRightParen
+  TLeftBracket
+  TRightBracket
+  TLeftBrace
+  TRightBrace
   TPlus
   TMinus
   TStar
@@ -123,6 +123,7 @@ pub fn Token::output(Self, &Logger) -> Unit
 pub fn Token::to_repr(Self) -> @debug.Repr
 pub fn Token::to_string(Self) -> String
 pub impl Show for Token
+pub impl @debug.Debug for Token
 
 // Type aliases
 

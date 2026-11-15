@@ -2,7 +2,7 @@
 
 ## Find: observe only what the expression needs
 
-[walk_find](../../commands/find/walk.mbt) traverses an explicit stack and derives
+[walk_find](../../commands/find/internal/driver/walk.mbt) traverses an explicit stack and derives
 metadata requirements from the expression. Each directory visit starts `Unread`;
 `names()` transitions to `Read(names)` or `Failed` only when descent or an
 evaluated emptiness predicate needs enumeration. Descent can reuse that listing;
@@ -11,7 +11,7 @@ enumeration error. Short-circuited predicates, pruned directories and depth
 limits do not trigger an unnecessary directory read.
 
 A postorder visit creates fresh directory-listing state after child effects,
-but retains the entry's pre-descent stat fields. [FindEntry](../../commands/find/metadata.mbt)
+but retains the entry's pre-descent stat fields. [FindEntry](../../commands/find/internal/driver/metadata.mbt)
 loads the expression's required size/a/m/c fields before directory reads,
 actions or children. A failed metadata load stays a typed cached error until
 its predicate is evaluated; a skipped predicate does not emit a diagnostic.
@@ -23,22 +23,22 @@ constant-memory traversal. Shared [fswalk](../../core/fswalk/) owns directory
 handle lifetime and requested metadata, while each command owns ordering and
 link policy. Rg's ignore walker retains its separate matching rules.
 
-[FindBatch](../../commands/find/batch.mbt) runs completed `-exec ... +` batches
+[FindBatch](../../commands/find/internal/driver/batch.mbt) runs completed `-exec ... +` batches
 during traversal instead of retaining all paths until EOF. Its UTF-8 argv-byte
 accounting is shared with xargs through [core/process](../../core/process/).
 The shared mechanism counts bytes; it does not own either command's grammar,
 termination rules or exit aggregation.
 
-[Expression optimization](../../commands/find/optimize.mbt) promotes cheap
+[Expression optimization](../../commands/find/internal/expression/optimize.mbt) promotes cheap
 name/path/constants only within the left operator chain. Right compound groups
-and action barriers preserve error and effect ordering. [Actions](../../commands/find/actions.mbt)
+and action barriers preserve error and effect ordering. [Actions](../../commands/find/internal/driver/actions.mbt)
 execute inline; a failed single `-exec` is false, while failed grouped batches
 affect the command's final status. The finite one-action/final-exec grammar
 remains unchanged. Reintroducing deferred actions, flattening every group or
 refreshing postorder stat fields would violate the registered filesystem cases.
 
 Size rounding uses division/remainder with UInt64 thresholds, so unit scaling
-cannot overflow a signed byte count. [Time windows](../../commands/find/time.mbt)
+cannot overflow a signed byte count. [Time windows](../../commands/find/internal/expression/time.mbt)
 retain file nanoseconds and the fixed GNU binary64 conversion/window rules,
 with explicit finite signed-64-bit bounds. Standalone test uses its own argc
 precedence and followed-target metadata; neither predicate implementation opens
@@ -48,10 +48,10 @@ workloads retain their independent performance scope.
 
 ## Xargs: one producer and bounded child slots
 
-The current path is [stream input](../../commands/xargs/stream_input.mbt) and
-[delimiter parsing](../../commands/xargs/delimited.mbt), then
-[BatchReader](../../commands/xargs/batches.mbt), then the
-[scheduler](../../commands/xargs/main.mbt).
+The current path is [stream input](../../commands/xargs/internal/driver/stream_input.mbt) and
+[delimiter parsing](../../commands/xargs/internal/driver/delimited.mbt), then
+[BatchReader](../../commands/xargs/internal/driver/batches.mbt), then the
+[scheduler](../../commands/xargs/internal/driver/main.mbt).
 
 Tokenization retains only an incomplete item and its parsing state. Complete
 literal items decode from borrowed chunk views; spanning items accumulate owned
@@ -103,29 +103,29 @@ between conversions; individual formatted fields can be larger and width/precisi
 is bounded at 1,000,000. Buffer allocation state is separate from occupancy to
 preserve warning order at exact boundaries. Empty conversions do not warm it.
 
-Make resolves [secondary prerequisites](../../commands/make/prerequisites.mbt)
-before [planning the dependency graph](../../commands/make/scheduler.mbt).
+Make resolves [secondary prerequisites](../../commands/make/internal/driver/prerequisites.mbt)
+before [planning the dependency graph](../../commands/make/internal/driver/scheduler.mbt).
 The graph retains target/dependency tasks and schedules each shared target once.
-The [recipe adapter](../../commands/make/recipes.mbt) expands every recipe for a
+The [recipe adapter](../../commands/make/internal/driver/recipes.mbt) expands every recipe for a
 target before executing its first command. Its environment is evaluated lazily
 once per target; empty/colon/dry-run lines avoid export side effects. These phases
 hold a mutex; child execution does not. `$?` uses a single pre-recipe snapshot,
 including virtual -W timestamps. Fatal variable expansion prevents queued targets
 from starting even under `-k`; ordinary recipe failures retain keep-going policy.
 
-[Export policy](../../commands/make/exports.mbt) separates explicit decisions,
+[Export policy](../../commands/make/internal/driver/exports.mbt) separates explicit decisions,
 initial environment/command-line origin and default export. Shell-valued recursive
 exports use the original environment; names are snapshotted before evaluation
 because `.SHELLSTATUS` can mutate the variable map. Make's private
-[argument construction](../../commands/make/shell_source.mbt) evaluates selectors
+[argument construction](../../commands/make/internal/syntax/shell_source.mbt) evaluates selectors
 before constructing an environment and preserves GNU's direct-argv versus shell
 handling of LF and continuation. It retains O(source plus argv bytes), and quoted
 argv is interpreted by the pure MoonBit shell. No-command calls skip the
-environment entirely. [Capture](../../commands/make/shell_capture.mbt) retains
+environment entirely. [Capture](../../commands/make/internal/driver/shell_capture.mbt) retains
 stdout bytes, truncates at the first NUL and decodes only that prefix; its storage
 still grows with total captured output. Actual shell-language errors retain their
 status and prior output, while nonlanguage transfer errors propagate.
-The [FIFO jobserver](../../commands/make/jobserver.mbt) has one implicit slot and
+The [FIFO jobserver](../../commands/make/internal/driver/jobserver.mbt) has one implicit slot and
 borrows exact bytes for additional work. A mutex admits one reader at a time;
 racing implicit-slot acquisition prevents waiting forever for a token after a
 local task completes. Both completed acquisitions are accounted for before

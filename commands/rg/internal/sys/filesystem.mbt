@@ -164,8 +164,8 @@ pub async fn file_times(path : String) -> FileTimes {
 }
 
 ///|
-pub fn read_link(_path : String) -> String raise IOError {
-  raise IOError::other(
+pub fn read_link(_path : String) -> String raise IoError {
+  raise IoError::other(
     Unsupported,
     "readlink requires a released public MoonBit API",
   )

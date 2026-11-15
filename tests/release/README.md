@@ -2,15 +2,19 @@
 
 `policy.json` owns release selection and support metadata. `candidate.json` is
 derived from that policy, current versions and `../cases/manifest.json` through
-`tests/run.mbtx -- index update`. `latest.json` owns published coordinates and
+`tools/run.mbtx -- index update`. `latest.json` records historical published coordinates and
 points to the independent frozen `latest-cases.json` expectations. Neither
-index generation nor acceptance rewrites those published inputs.
+index generation nor acceptance rewrites those published inputs. At startup,
+acceptance reads each selected command's current `moon.mod` once and fixes that
+exact coordinate for the invocation. The manifest's historical version table
+is not a launch input. Missing registry versions and wrong `--version` output
+fail without fallback. `resolved-coordinates.json` records the fixed targets.
 
 ```sh
-MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-report moon run tests/run.mbtx -- published
+MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-report moon run tools/run.mbtx -- published
 ```
 
-The entry builds release test tools and invokes the same driver used for
+The entry builds `tools/release` and invokes the same driver used for
 workspace validation. All product children resolve exact MoonX coordinates;
 startup probes and acceptance execute serially. On Linux, prepare the pinned
 oracle into the same report root first. The manual release workflow runs the

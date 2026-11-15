@@ -1,13 +1,7 @@
 ///|
 async test "stream events retain frozen jq paths and prefixes across chunk boundaries" {
-  let mut root = @fs.realpath(".")
-  while !@fs.exists(root + "/moon.work") {
-    let parent = @fs.realpath(root + "/..")
-    guard parent != root else { fail("jq stream corpus workspace is missing") }
-    root = parent
-  }
   guard @json.parse(
-      @fs.read_file(root + "/tests/fixtures/jq/stream.json").text(),
+      @fs.read_file("internal/driver/fixtures/stream.json").text(),
     )
     is { "cases": Array(cases), .. } else {
     fail("missing stream cases")

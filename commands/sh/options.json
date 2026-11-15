@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "command": "sh",
+  "help": "Usage: sh [-i] [-c SOURCE [NAME [ARG...]] | -s [ARG...] | FILE [ARG...]]\n{{help:c:0}}\n{{help:s:0}}\n{{help:i:0}}\n{{help:help:0}}\n{{help:version:0}}\nSupports arithmetic assignment, backticks, expanded here-documents, stdout/stderr copies, loop control and printf/test builtins.\nTerminal job control, descriptor import/closure and complete POSIX/Bash grammar remain unavailable.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nMalformed shell command lists reject before execution; complete EOF continuations execute.\nOn POSIX, every file-test operand ending in a slash must name a directory.\n",
+  "catalog_options": [
+    "command",
+    "stdin-script",
+    "interactive"
+  ],
+  "options": [
+    {
+      "name": "c",
+      "aliases": [
+        "-c"
+      ],
+      "value": "required",
+      "description": "Execute source text.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -c SOURCE   execute shell source"
+      ]
+    },
+    {
+      "name": "s",
+      "aliases": [
+        "-s"
+      ],
+      "value": "none",
+      "description": "Read commands from stdin.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s          read commands from standard input"
+      ]
+    },
+    {
+      "name": "i",
+      "aliases": [
+        "-i"
+      ],
+      "value": "none",
+      "description": "Enable explicit interactive prompts and ENV startup.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -i          enable a persistent line-oriented interactive session"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ],
+  "adapter_match": true
+}

@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "command": "rmdir",
+  "help": "Usage: rmdir [-p] [-I] [-v] DIRECTORY...\n{{help:help:0}}\n{{help:version:0}}\n{{help:parents:0}}\n{{help:verbose:0}}\n{{help:ignore-fail-on-non-empty:0}}\n{{help:ignore-fail-on-non-empty:1}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "ignore-fail-on-non-empty",
+    "parents",
+    "verbose"
+  ],
+  "options": [
+    {
+      "short": "p",
+      "name": "parents",
+      "description": "Remove empty parents after the operand.",
+      "aliases": [
+        "-p",
+        "--parents"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -p, --parents                  remove empty parents, stopping at the first failure"
+      ]
+    },
+    {
+      "short": "I",
+      "name": "ignore-fail-on-non-empty",
+      "description": "Ignore failures caused only by nonempty directories.",
+      "aliases": [
+        "-I",
+        "--ignore-fail-on-non-empty"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --ignore-fail-on-non-empty  suppress only failures attributable to nonemptiness",
+        "  -I is a project short alias of --ignore-fail-on-non-empty, not a GNU option."
+      ]
+    },
+    {
+      "short": "v",
+      "name": "verbose",
+      "description": "Show removals.",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -v, --verbose                  report each removal attempt before it runs"
+      ]
+    },
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "argparse",
+      "options": [
+        "parents",
+        "ignore-fail-on-non-empty",
+        "verbose",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/protection.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

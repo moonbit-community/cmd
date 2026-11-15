@@ -816,7 +816,7 @@ async fn read_first_line(path : String) -> String? {
     return None
   }
   let line = @utf8.decode(lines[0]) catch {
-    _ => raise @sys.IOError::other(Other, "stream did not contain valid UTF-8")
+    _ => raise @sys.IoError::other(Other, "stream did not contain valid UTF-8")
   }
   Some(line)
 }

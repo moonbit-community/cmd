@@ -1,0 +1,399 @@
+{
+  "schema": 1,
+  "command": "find",
+  "help": "Usage: find [PATH...] [EXPRESSION]\n{{help:help:0}}\n{{help:version:0}}\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n{{help:size:0}}\nTime arguments accept finite decimal, exponent and hexadecimal numbers within signed 64-bit seconds.\nDirectory names are read only for descent or an evaluated -empty; stat fields precede directory reads and child effects.\nActions execute at their expression position; -delete with -prune requires explicit -depth.\n{{help:exec:0}}\nUnavailable size/timestamp metadata is an error, not a nonmatch.\n",
+  "catalog_options": [
+    "expression-language",
+    "amin",
+    "atime",
+    "cmin",
+    "ctime",
+    "mmin",
+    "anewer",
+    "cnewer",
+    "newerXY",
+    "used",
+    "readable",
+    "writable",
+    "executable",
+    "xtype"
+  ],
+  "options": [
+    {
+      "name": "name",
+      "aliases": [
+        "-name"
+      ],
+      "value": "required",
+      "description": "Match names / paths with shell patterns.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "path",
+      "aliases": [
+        "-path",
+        "-wholename"
+      ],
+      "value": "required",
+      "description": "Match names / paths with shell patterns.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "type",
+      "aliases": [
+        "-type"
+      ],
+      "value": "required",
+      "description": "Test entry type, emptiness or size.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "xtype",
+      "aliases": [
+        "-xtype"
+      ],
+      "value": "required",
+      "description": "Test entry type, emptiness or size.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "empty",
+      "aliases": [
+        "-empty"
+      ],
+      "value": "none",
+      "description": "Test entry type, emptiness or size.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "size",
+      "aliases": [
+        "-size"
+      ],
+      "value": "required",
+      "description": "Test entry type, emptiness or size.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-size rounds up in b/c/w/k/M/G units (default b); K is a project alias for k."
+      ]
+    },
+    {
+      "name": "amin",
+      "aliases": [
+        "-amin"
+      ],
+      "value": "required",
+      "description": "Test access, status-change or modification age.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "atime",
+      "aliases": [
+        "-atime"
+      ],
+      "value": "required",
+      "description": "Test access, status-change or modification age.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "cmin",
+      "aliases": [
+        "-cmin"
+      ],
+      "value": "required",
+      "description": "Test access, status-change or modification age.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ctime",
+      "aliases": [
+        "-ctime"
+      ],
+      "value": "required",
+      "description": "Test access, status-change or modification age.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "mmin",
+      "aliases": [
+        "-mmin"
+      ],
+      "value": "required",
+      "description": "Test access, status-change or modification age.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "mtime",
+      "aliases": [
+        "-mtime"
+      ],
+      "value": "required",
+      "description": "Test access, status-change or modification age.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "newer",
+      "aliases": [
+        "-newer"
+      ],
+      "value": "required",
+      "description": "Compare timestamps; X/Y support a, c and m.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "anewer",
+      "aliases": [
+        "-anewer"
+      ],
+      "value": "required",
+      "description": "Compare timestamps; X/Y support a, c and m.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "cnewer",
+      "aliases": [
+        "-cnewer"
+      ],
+      "value": "required",
+      "description": "Compare timestamps; X/Y support a, c and m.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "newerXY",
+      "aliases": [
+        "-newerXY"
+      ],
+      "value": "required",
+      "description": "Compare timestamps; X/Y support a, c and m.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "used",
+      "aliases": [
+        "-used"
+      ],
+      "value": "required",
+      "description": "Compare timestamps; X/Y support a, c and m.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "readable",
+      "aliases": [
+        "-readable"
+      ],
+      "value": "none",
+      "description": "Query the public filesystem access checks.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "writable",
+      "aliases": [
+        "-writable"
+      ],
+      "value": "none",
+      "description": "Query the public filesystem access checks.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "executable",
+      "aliases": [
+        "-executable"
+      ],
+      "value": "none",
+      "description": "Query the public filesystem access checks.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "mindepth",
+      "aliases": [
+        "-mindepth"
+      ],
+      "value": "required",
+      "description": "Control traversal.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "maxdepth",
+      "aliases": [
+        "-maxdepth"
+      ],
+      "value": "required",
+      "description": "Control traversal.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "depth",
+      "aliases": [
+        "-depth"
+      ],
+      "value": "none",
+      "description": "Control traversal.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "prune",
+      "aliases": [
+        "-prune"
+      ],
+      "value": "none",
+      "description": "Control traversal.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "print",
+      "aliases": [
+        "-print"
+      ],
+      "value": "none",
+      "description": "Print newline / NUL-delimited paths.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "print0",
+      "aliases": [
+        "-print0"
+      ],
+      "value": "none",
+      "description": "Print newline / NUL-delimited paths.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "exec",
+      "aliases": [
+        "-exec"
+      ],
+      "value": "adapter",
+      "description": "Execute per match / in batches.",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "-exec ... + runs completed batches during traversal with a 64 KiB UTF-8 argument budget."
+      ]
+    },
+    {
+      "name": "delete",
+      "aliases": [
+        "-delete"
+      ],
+      "value": "none",
+      "description": "Delete matches in postorder.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    },
+    {
+      "name": "true",
+      "aliases": [
+        "-true"
+      ],
+      "value": "none",
+      "description": "Evaluate to true.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "false",
+      "aliases": [
+        "-false"
+      ],
+      "value": "none",
+      "description": "Evaluate to false.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "not",
+      "aliases": [
+        "-not"
+      ],
+      "value": "adapter",
+      "description": "Negate the following expression; ! is the equivalent expression operator.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "and",
+      "aliases": [
+        "-a",
+        "-and"
+      ],
+      "value": "adapter",
+      "description": "Combine expressions with logical AND.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "or",
+      "aliases": [
+        "-o",
+        "-or"
+      ],
+      "value": "adapter",
+      "description": "Combine expressions with logical OR.",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [],
+  "adapter_sources": [
+    "internal/driver/actions.mbt",
+    "internal/driver/batch.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/metadata.mbt",
+    "internal/expression/optimize.mbt",
+    "internal/expression/time.mbt",
+    "internal/driver/version.mbt",
+    "internal/driver/walk.mbt"
+  ]
+}

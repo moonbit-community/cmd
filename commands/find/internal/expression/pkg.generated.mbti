@@ -1,0 +1,76 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/find/internal/expression"
+
+import {
+  "cli/core/fsops",
+  "moonbitlang/core/string",
+}
+
+// Values
+pub fn size_units(Int64, UInt64) -> UInt64
+
+// Errors
+pub(all) suberror ParseError {
+  ParseError(String)
+}
+
+// Types and methods
+pub(all) enum Action {
+  Print(Bool)
+  Exec(Array[String], Bool)
+  Delete
+}
+
+pub(all) enum Comparison {
+  Exact
+  Less
+  Greater
+}
+
+pub(all) enum Expression {
+  Always(Bool)
+  Name(@string.Regex)
+  Path(@string.Regex)
+  Kind(Char)
+  Empty
+  Size(Comparison, UInt64, UInt64)
+  TimeAge(@fsops.TimestampKind, TimeTest)
+  Newer(@fsops.TimestampKind, @fsops.TimestampKind, String)
+  Used(TimeTest)
+  Readable
+  Writable
+  Executable
+  XKind(Char)
+  Action(Action)
+  Prune
+  Not(Expression)
+  And(Expression, Expression)
+  Or(Expression, Expression)
+}
+pub fn Expression::contains_prune(Self) -> Bool
+pub fn Expression::optimize(Self) -> Self
+
+pub(all) struct Parser {
+  tokens : Array[String]
+  now : @fsops.FileTimestamp
+  mut pos : Int32
+  mut min_depth : Int32
+  mut max_depth : Int32
+  mut depth_first : Bool
+  mut explicit_depth : Bool
+  mut action : Action?
+}
+pub fn Parser::parse_or(Self) -> Expression raise ParseError
+pub fn Parser::peek(Self) -> String?
+
+pub(all) struct TimeTest {
+  comparison : Comparison
+  reference : @fsops.FileTimestamp
+  window : Int64
+}
+pub fn TimeTest::matches(Self, @fsops.FileTimestamp) -> Bool
+pub fn TimeTest::matches_used(Self, @fsops.FileTimestamp, @fsops.FileTimestamp) -> Bool raise ParseError
+
+// Type aliases
+
+// Traits

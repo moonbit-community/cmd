@@ -1,5 +1,5 @@
 ///|
-priv struct JSONConfig {
+priv struct JsonConfig {
   pretty : Bool
   always_begin_end : Bool
   replacement : Bytes?
@@ -8,13 +8,13 @@ priv struct JSONConfig {
 
 ///|
 /// Configure once before emitting JSON lines. Pretty output is for debugging.
-pub fn JSON::new(
+pub fn JsonPrinter::new(
   wtr : &@termcolor.Write,
   pretty~ : Bool = false,
   always_begin_end~ : Bool = false,
   replacement~ : Bytes? = None,
   clock~ : () -> Int64 = zero_clock,
-) -> JSON {
+) -> JsonPrinter {
   {
     config: { pretty, always_begin_end, replacement, clock, },
     wtr: CounterWriter::new(@termcolor.NoColor::new(wtr)),
@@ -28,8 +28,8 @@ pub fn JSON::new(
 ///
 /// The message types are `begin`, `end`, `match` and `context`, in the
 /// exact format emitted by ripgrep's `--json` flag.
-pub struct JSON {
-  priv config : JSONConfig
+pub struct JsonPrinter {
+  priv config : JsonConfig
   priv wtr : CounterWriter
   priv matches : Array[@matcher.Match]
   priv msg : @termcolor.ByteVec
@@ -37,7 +37,10 @@ pub struct JSON {
 
 ///|
 /// Return an implementation of `Sink` for the JSON printer.
-pub fn JSON::sink(self : JSON, matcher : &@matcher.Matcher) -> JSONSink {
+pub fn JsonPrinter::sink(
+  self : JsonPrinter,
+  matcher : &@matcher.Matcher,
+) -> JsonSink {
   {
     matcher,
     replacer: Replacer::new(),
@@ -52,11 +55,11 @@ pub fn JSON::sink(self : JSON, matcher : &@matcher.Matcher) -> JSONSink {
 
 ///|
 /// Return an implementation of `Sink` associated with a file path.
-pub fn JSON::sink_with_path(
-  self : JSON,
+pub fn JsonPrinter::sink_with_path(
+  self : JsonPrinter,
   matcher : &@matcher.Matcher,
   path : String,
-) -> JSONSink {
+) -> JsonSink {
   {
     matcher,
     replacer: Replacer::new(),
@@ -71,7 +74,10 @@ pub fn JSON::sink_with_path(
 
 ///|
 /// Write the given message followed by a new line.
-async fn JSON::write_message(self : JSON, message : Message) -> Unit {
+async fn JsonPrinter::write_message(
+  self : JsonPrinter,
+  message : Message,
+) -> Unit {
   self.msg.clear()
   let w = JsonWriter::new(self.msg, pretty=self.config.pretty)
   message.write_json(w)
@@ -81,17 +87,17 @@ async fn JSON::write_message(self : JSON, message : Message) -> Unit {
 
 ///|
 /// Return the underlying writer (wrapped in `NoColor`).
-pub fn JSON::get_mut(self : JSON) -> &@termcolor.WriteColor {
+pub fn JsonPrinter::get_mut(self : JsonPrinter) -> &@termcolor.WriteColor {
   self.wtr.get_mut()
 }
 
 ///|
 /// An implementation of `Sink` associated with a matcher and an optional
 /// file path for the JSON printer.
-pub struct JSONSink {
+pub struct JsonSink {
   priv matcher : &@matcher.Matcher
   priv replacer : Replacer
-  priv json : JSON
+  priv json : JsonPrinter
   priv path : String?
   priv mut start_time : Int64
   priv mut match_count : Int64
@@ -102,22 +108,22 @@ pub struct JSONSink {
 ///|
 /// Returns true if and only if this printer received a match in the
 /// previous search.
-pub fn JSONSink::has_match(self : JSONSink) -> Bool {
+pub fn JsonSink::has_match(self : JsonSink) -> Bool {
   self.match_count > 0
 }
 
 ///|
 /// Return a reference to the stats produced by the printer for all
 /// searches executed on this sink.
-pub fn JSONSink::stats(self : JSONSink) -> Stats {
+pub fn JsonSink::stats(self : JsonSink) -> Stats {
   self.stats
 }
 
 ///|
 /// Execute the matcher over the given bytes and record the match locations
 /// if the current configuration demands match granularity.
-fn JSONSink::record_matches(
-  self : JSONSink,
+fn JsonSink::record_matches(
+  self : JsonSink,
   searcher : @searcher.Searcher,
   hay : FixedArray[Byte],
   hs : Int32,
@@ -151,8 +157,8 @@ fn JSONSink::record_matches(
 ///|
 /// If the configuration specifies a replacement, then this executes the
 /// replacement, lazily allocating memory if necessary.
-fn JSONSink::replace(
-  self : JSONSink,
+fn JsonSink::replace(
+  self : JsonSink,
   searcher : @searcher.Searcher,
   hay : FixedArray[Byte],
   hs : Int32,
@@ -177,7 +183,7 @@ fn JSONSink::replace(
 
 ///|
 /// Write the "begin" message.
-async fn JSONSink::write_begin_message(self : JSONSink) -> Unit {
+async fn JsonSink::write_begin_message(self : JsonSink) -> Unit {
   if self.begin_printed {
     return
   }
@@ -186,7 +192,7 @@ async fn JSONSink::write_begin_message(self : JSONSink) -> Unit {
 }
 
 ///|
-pub impl @searcher.Sink for JSONSink with fn matched(self, searcher, mat) {
+pub impl @searcher.Sink for JsonSink with fn matched(self, searcher, mat) {
   self.match_count += 1
   self.write_begin_message()
   let hs = mat.buf_start
@@ -223,7 +229,7 @@ pub impl @searcher.Sink for JSONSink with fn matched(self, searcher, mat) {
 }
 
 ///|
-pub impl @searcher.Sink for JSONSink with fn context(self, searcher, ctx) {
+pub impl @searcher.Sink for JsonSink with fn context(self, searcher, ctx) {
   self.write_begin_message()
   self.json.matches.clear()
   let submatches = if searcher.invert_match() {
@@ -254,7 +260,7 @@ pub impl @searcher.Sink for JSONSink with fn context(self, searcher, ctx) {
 }
 
 ///|
-pub impl @searcher.Sink for JSONSink with fn binary_data(
+pub impl @searcher.Sink for JsonSink with fn binary_data(
   _self,
   _searcher,
   _binary_byte_offset,
@@ -263,7 +269,7 @@ pub impl @searcher.Sink for JSONSink with fn binary_data(
 }
 
 ///|
-pub impl @searcher.Sink for JSONSink with fn begin(self, _searcher) {
+pub impl @searcher.Sink for JsonSink with fn begin(self, _searcher) {
   self.json.wtr.reset_count()
   self.start_time = (self.json.config.clock)()
   self.match_count = 0
@@ -275,7 +281,7 @@ pub impl @searcher.Sink for JSONSink with fn begin(self, _searcher) {
 }
 
 ///|
-pub impl @searcher.Sink for JSONSink with fn finish(self, _searcher, finish) {
+pub impl @searcher.Sink for JsonSink with fn finish(self, _searcher, finish) {
   self.stats.add_elapsed((self.json.config.clock)() - self.start_time)
   self.stats.add_searches(1)
   if self.match_count > 0 {

@@ -147,7 +147,7 @@ async fn run_driver() -> Unit {
   report_dir = workspace_output(report_dir)
   let published = match published_manifest {
     Some(path) =>
-      Some(load_published_commands(workspace_input(project_root, path), moonx))
+      Some(load_published_commands(workspace_input(project_root, path)))
     None => {
       @harness.configure_commands(Map([]), "moonrun")
       None
@@ -206,7 +206,13 @@ async fn run_driver() -> Unit {
       ..metadata_cases(),
     ]
     let selected = @harness.select_cases(available, commands, ids).filter(item => {
-      case_in_suites(item, suites) && @harness.command_available(item.command)
+      case_in_suites(item, suites) &&
+      (
+        published is None ||
+        registry.release_commands.any(row => {
+          row.name == item.command && row.releasable
+        })
+      )
     })
     if selected.is_empty() {
       fail("empty selection for requested suites")
@@ -229,6 +235,14 @@ async fn run_driver() -> Unit {
       @sys.exit(2)
       return
     }
+  }
+  let published_names = if published is Some(_) {
+    published_case_commands(selected)
+  } else {
+    []
+  }
+  if published is Some(_) {
+    @harness.configure_commands(published_coordinates(published_names), moonx)
   }
   if list {
     for fixture in selected {
@@ -263,12 +277,24 @@ async fn run_driver() -> Unit {
       } : Json).stringify(indent=2) +
     "\n"
   @fs.write_file(report_dir + "/selected-cases.json", definition_text)
+  if published is Some(_) {
+    let coordinates : Map[String, String] = Map([])
+    for contract in @catalog.commands() {
+      if @harness.command_version(contract.name) is Some(version) {
+        coordinates[contract.name] = "cli/" + contract.name + "@" + version
+      }
+    }
+    @fs.write_file(
+      report_dir + "/resolved-coordinates.json",
+      Json(coordinates).stringify(indent=2) + "\n",
+    )
+  }
   let run_started = @async.now()
   let reports : Array[@harness.CaseReport] = []
   let stage_durations : Map[String, Int64] = Map([])
   retain_execution_failure(reports, backend, run_started, () => {
     if published is Some(_) {
-      prime_published_commands(commands, reports)
+      prime_published_commands(published_names, reports)
     }
     for suite in suites {
       let started = @async.now()

@@ -736,7 +736,7 @@ captures do not establish this property. All 80 workspace commands are selected.
 From the repository root:
 
 ```text
-MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-functional moon run tests/run.mbtx -- functional
+MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-functional moon run tools/run.mbtx -- functional
 ```
 
 Use a fresh report directory. `contract`, `metadata`, `scenarios`, `policy`,
@@ -768,7 +768,7 @@ uses the same selected coordinate map; startup and acceptance run serially.
 combines them. Retired suite aliases are rejected.
 
 ```text
-MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-published moon run tests/run.mbtx -- published
+MOON_HOME="$HOME/.moon-accounts/cli" CMD_TEST_REPORT_ROOT=/absolute/fresh-published moon run tools/run.mbtx -- published
 ```
 
 The wrapper inserts `--` after the exact MoonX coordinate. Candidate

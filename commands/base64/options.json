@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "command": "base64",
+  "help": "Usage: base64 [-d|-D] [-i] [-w COLS] [FILE]\n{{help:help:0}}\n{{help:version:0}}\nProject alias: -D selects -d/--decode; -D is not a GNU coreutils option.\nDecoding retains determined bytes before invalid input, checks canonical tail bits,\nand accepts missing final padding or concatenated padded groups (GNU 9.11).\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "decode",
+    "ignore-garbage",
+    "wrap"
+  ],
+  "options": [
+    {
+      "name": "decode",
+      "aliases": [
+        "-d",
+        "--decode"
+      ],
+      "value": "none",
+      "description": "Decode input; embedded newlines are accepted.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-garbage",
+      "aliases": [
+        "-i",
+        "--ignore-garbage"
+      ],
+      "value": "none",
+      "description": "Discard non-alphabet bytes while decoding.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "wrap",
+      "aliases": [
+        "-w",
+        "--wrap"
+      ],
+      "value": "required",
+      "description": "Set output width; 0 disables wrapping and the final newline.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "76",
+      "default_binding": {
+        "name": "DEFAULT_WRAP",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    },
+    {
+      "name": "decode-short-D",
+      "parser_name": "decode",
+      "aliases": [
+        "-D"
+      ],
+      "value": "none",
+      "description": "Decode input; embedded newlines are accepted.",
+      "short": "D",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "decode",
+        "decode-short-D",
+        "ignore-garbage",
+        "wrap",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/encode.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

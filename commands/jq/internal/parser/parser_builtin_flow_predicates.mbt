@@ -10,21 +10,21 @@ fn Parser::parse_builtin_flow_predicates(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "any" =>
-      if self.consume(TLParen) {
+      if self.consume(TLeftParen) {
         let gen_expr = self.parse_pipe()
         self.expect(TSemicolon)
         let cond_expr = self.parse_pipe()
-        self.expect(TRParen)
+        self.expect(TRightParen)
         Some(AnyGen(gen_expr, cond_expr))
       } else {
         Some(Any)
       }
     "all" =>
-      if self.consume(TLParen) {
+      if self.consume(TLeftParen) {
         let gen_expr = self.parse_pipe()
         self.expect(TSemicolon)
         let cond_expr = self.parse_pipe()
-        self.expect(TRParen)
+        self.expect(TRightParen)
         Some(AllGen(gen_expr, cond_expr))
       } else {
         Some(All)

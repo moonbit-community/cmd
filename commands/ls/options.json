@@ -1,0 +1,451 @@
+{
+  "schema": 1,
+  "command": "ls",
+  "help": "Usage: ls [-aAdF1RCxmrtucSbqNQ] [-w WIDTH] [-T TABSIZE] [-H|-L|-P] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\n{{help:columns:0}}\n{{help:width:0}}\n{{help:escape:0}}\n{{help:quoting-style:0}}\n{{help:show-control-chars:0}}\n{{help:color:0}}\n  Active su/sg/ex/ca/mh or tw/ow/st colors require unavailable metadata.\n{{help:dereference-command-line:0}}\n{{help:access-time:0}}\n{{help:sort-size:0}}\nProject aliases: --one = -1; --columns = -C; --across = -x; --commas = -m.\n{{help:sort-time:0}}\n-P/--no-dereference is a project no-follow extension.\n-Q/--quote-name select C quotes; --quote is the accepted abbreviated spelling.\nOption values and operands after -- remain literal during alias normalization.\n",
+  "catalog_options": [
+    "all",
+    "almost-all",
+    "classify",
+    "directory",
+    "recursive",
+    "sort-time",
+    "access-time",
+    "change-time",
+    "reverse",
+    "sort-size",
+    "dereference-command-line",
+    "dereference",
+    "no-dereference",
+    "time",
+    "columns",
+    "across",
+    "commas",
+    "one",
+    "width",
+    "tabsize",
+    "quoting-style",
+    "escape",
+    "literal",
+    "quote",
+    "hide-control-chars",
+    "show-control-chars",
+    "color"
+  ],
+  "options": [
+    {
+      "name": "all",
+      "aliases": [
+        "-a",
+        "--all"
+      ],
+      "value": "none",
+      "description": "Include all dot entries / exclude . and ...",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "almost-all",
+      "aliases": [
+        "-A",
+        "--almost-all"
+      ],
+      "value": "none",
+      "description": "Include hidden entries except dot and dot-dot.",
+      "short": "A",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "directory",
+      "aliases": [
+        "-d",
+        "--directory"
+      ],
+      "value": "none",
+      "description": "List directory operands themselves / recurse.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "classify",
+      "aliases": [
+        "-F",
+        "--classify"
+      ],
+      "value": "none",
+      "description": "Append file-type indicators.",
+      "short": "F",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "recursive",
+      "aliases": [
+        "-R",
+        "--recursive"
+      ],
+      "value": "none",
+      "description": "List subdirectories recursively.",
+      "short": "R",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "one",
+      "aliases": [
+        "-1",
+        "--one"
+      ],
+      "value": "none",
+      "description": "Line / column / row / comma layout.",
+      "short": "1",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "columns",
+      "aliases": [
+        "-C",
+        "--columns"
+      ],
+      "value": "none",
+      "description": "Line / column / row / comma layout.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -C lists down columns; -x across rows; -m uses commas; -1 uses lines."
+      ]
+    },
+    {
+      "name": "across",
+      "aliases": [
+        "-x",
+        "--across"
+      ],
+      "value": "none",
+      "description": "Line / column / row / comma layout.",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "commas",
+      "aliases": [
+        "-m",
+        "--commas"
+      ],
+      "value": "none",
+      "description": "Separate entries with commas.",
+      "short": "m",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "width",
+      "aliases": [
+        "-w",
+        "--width"
+      ],
+      "value": "required",
+      "description": "Set layout width / tab width.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -w, --width=COLS sets line width (0 unlimited); -T, --tabsize=COLS sets tabs."
+      ]
+    },
+    {
+      "name": "tabsize",
+      "aliases": [
+        "-T",
+        "--tabsize"
+      ],
+      "value": "required",
+      "description": "Set layout width / tab width.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "escape",
+      "aliases": [
+        "-b",
+        "--escape"
+      ],
+      "value": "none",
+      "description": "Choose escaping / literal / C / named quoting.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b escapes names; -N is literal; -Q uses C quotes; -q replaces control bytes."
+      ]
+    },
+    {
+      "name": "literal",
+      "aliases": [
+        "-N",
+        "--literal"
+      ],
+      "value": "none",
+      "description": "Choose escaping / literal / C / named quoting.",
+      "short": "N",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "quote",
+      "aliases": [
+        "-Q",
+        "--quote"
+      ],
+      "value": "none",
+      "description": "Choose escaping / literal / C / named quoting.",
+      "short": "Q",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "hide-control-chars",
+      "aliases": [
+        "-q",
+        "--hide-control-chars"
+      ],
+      "value": "none",
+      "description": "Replace / retain control bytes after quoting.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "show-control-chars",
+      "aliases": [
+        "--show-control-chars"
+      ],
+      "value": "none",
+      "description": "Replace / retain control bytes after quoting.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --show-control-chars displays remaining control bytes."
+      ]
+    },
+    {
+      "name": "quoting-style",
+      "aliases": [
+        "--quoting-style"
+      ],
+      "value": "required",
+      "description": "Choose escaping / literal / C / named quoting.",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --quoting-style=STYLE selects GNU C-locale quoting."
+      ]
+    },
+    {
+      "name": "color",
+      "aliases": [
+        "--color"
+      ],
+      "value": "required",
+      "description": "Explicit always or never color; bare flag means always.",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --color=always,never controls explicit type/extension colors."
+      ]
+    },
+    {
+      "name": "sort-time",
+      "aliases": [
+        "-t",
+        "--sort-time"
+      ],
+      "value": "none",
+      "description": "Reverse / time / regular-file-size sorting.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "--sort-time = -t; --access-time = -u; --change-time = -c; --sort-size = -S."
+      ]
+    },
+    {
+      "name": "access-time",
+      "aliases": [
+        "-u",
+        "--access-time"
+      ],
+      "value": "none",
+      "description": "Choose access / status-change / selected timestamp.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -u, -c and --time select and imply time sorting unless -S or -t selects a sort."
+      ]
+    },
+    {
+      "name": "change-time",
+      "aliases": [
+        "-c",
+        "--change-time"
+      ],
+      "value": "none",
+      "description": "Choose access / status-change / selected timestamp.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "reverse",
+      "aliases": [
+        "-r",
+        "--reverse"
+      ],
+      "value": "none",
+      "description": "Reverse / time / regular-file-size sorting.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "sort-size",
+      "aliases": [
+        "-S",
+        "--sort-size"
+      ],
+      "value": "none",
+      "description": "Sort by file size.",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -S requires regular files; metadata-rich long listing is not supported."
+      ]
+    },
+    {
+      "name": "dereference-command-line",
+      "aliases": [
+        "-H",
+        "--dereference-command-line"
+      ],
+      "value": "none",
+      "description": "Follow command-line links / all links / no links.",
+      "short": "H",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -H follows command-line links; -L follows all links; -P follows none (extension)."
+      ]
+    },
+    {
+      "name": "dereference",
+      "aliases": [
+        "-L",
+        "--dereference"
+      ],
+      "value": "none",
+      "description": "Follow command-line links / all links / no links.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-dereference",
+      "aliases": [
+        "-P",
+        "--no-dereference"
+      ],
+      "value": "none",
+      "description": "Inspect symbolic links without following their targets.",
+      "short": "P",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "time",
+      "aliases": [
+        "--time"
+      ],
+      "value": "required",
+      "description": "Choose access / status-change / selected timestamp.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "all",
+        "almost-all",
+        "directory",
+        "classify",
+        "recursive",
+        "one",
+        "columns",
+        "across",
+        "commas",
+        "width",
+        "tabsize",
+        "escape",
+        "literal",
+        "quote",
+        "hide-control-chars",
+        "show-control-chars",
+        "quoting-style",
+        "color",
+        "sort-time",
+        "access-time",
+        "change-time",
+        "reverse",
+        "sort-size",
+        "dereference-command-line",
+        "dereference",
+        "no-dereference",
+        "time",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/color.mbt",
+    "internal/driver/display.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

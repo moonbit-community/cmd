@@ -1,0 +1,185 @@
+{
+  "schema": 1,
+  "command": "strings",
+  "help": "Usage: strings [OPTION]... [FILE]...\nPrint the sequences of printable characters in each FILE.\n{{help:all:0}}\n{{help:print-file-name:0}}\n{{help:bytes:0}}\n{{help:octal:0}}\n{{help:radix:0}}\n{{help:encoding:0}}\n                        wide encodings b/l/B/L are unsupported\n{{help:output-separator:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nProject alias: --octal selects -o; it is not a binutils long option.\n\nUnknown encoding selectors exit 1; recognized unsupported wide encodings explicitly exit 2.\n",
+  "catalog_options": [
+    "all",
+    "bytes",
+    "encoding",
+    "octal",
+    "print-file-name",
+    "radix",
+    "output-separator",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "all",
+      "aliases": [
+        "-a",
+        "--all"
+      ],
+      "value": "none",
+      "description": "scan the whole file",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -a, --all             scan the whole file"
+      ]
+    },
+    {
+      "name": "print-file-name",
+      "aliases": [
+        "-f",
+        "--print-file-name"
+      ],
+      "value": "none",
+      "description": "print the file name before each string",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -f, --print-file-name print the file name before each string"
+      ]
+    },
+    {
+      "name": "bytes",
+      "aliases": [
+        "-n",
+        "--bytes"
+      ],
+      "value": "required",
+      "description": "print sequences at least N bytes long",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -n, --bytes=N         print sequences at least N bytes long"
+      ],
+      "default_value": "4",
+      "default_binding": {
+        "name": "DEFAULT_BYTES",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "octal",
+      "aliases": [
+        "-o",
+        "--octal"
+      ],
+      "value": "none",
+      "description": "Print each string's byte offset in octal.",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -o                    display offsets in octal"
+      ]
+    },
+    {
+      "name": "radix",
+      "aliases": [
+        "-t",
+        "--radix"
+      ],
+      "value": "required",
+      "description": "display offsets in d, o, or x radix",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -t, --radix=RADIX     display offsets in d, o, or x radix"
+      ],
+      "default_value": "",
+      "default_binding": {
+        "name": "DEFAULT_RADIX",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "encoding",
+      "aliases": [
+        "-e",
+        "--encoding"
+      ],
+      "value": "required",
+      "description": "s: 7-bit bytes (default); S: 8-bit bytes",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -e, --encoding=ENC    s: 7-bit bytes (default); S: 8-bit bytes"
+      ]
+    },
+    {
+      "name": "output-separator",
+      "aliases": [
+        "-s",
+        "--output-separator"
+      ],
+      "value": "required",
+      "description": "separate accepted strings with STR",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -s, --output-separator=STR  separate accepted strings with STR"
+      ],
+      "default_value": "\n",
+      "default_binding": {
+        "name": "DEFAULT_OUTPUT_SEPARATOR",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help            display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version         display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "all",
+        "print-file-name",
+        "bytes",
+        "octal",
+        "radix",
+        "encoding",
+        "output-separator",
+        "help",
+        "version"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

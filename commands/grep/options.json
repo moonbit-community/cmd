@@ -1,0 +1,466 @@
+{
+  "schema": 1,
+  "command": "grep",
+  "help": "Usage: grep [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\n{{help:recursive:0}}\n",
+  "catalog_options": [
+    "after-context",
+    "before-context",
+    "basic-regexp",
+    "binary-files",
+    "byte-offset",
+    "context",
+    "count",
+    "exclude",
+    "extended-regexp",
+    "file",
+    "files-with-matches",
+    "files-without-match",
+    "fixed-strings",
+    "ignore-case",
+    "include",
+    "invert-match",
+    "line-number",
+    "line-regexp",
+    "no-filename",
+    "no-messages",
+    "null-data",
+    "only-matching",
+    "quiet",
+    "recursive",
+    "regexp",
+    "text",
+    "with-filename",
+    "word-regexp"
+  ],
+  "options": [
+    {
+      "name": "fixed-strings",
+      "aliases": [
+        "-F",
+        "--fixed-strings"
+      ],
+      "value": "none",
+      "description": "Extended regex / fixed strings / basic regex (default).",
+      "short": "F",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "extended-regexp",
+      "aliases": [
+        "-E",
+        "--extended-regexp"
+      ],
+      "value": "none",
+      "description": "Extended regex / fixed strings / basic regex (default).",
+      "short": "E",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "basic-regexp",
+      "aliases": [
+        "-G",
+        "--basic-regexp"
+      ],
+      "value": "none",
+      "description": "Use basic regular expressions.",
+      "short": "G",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "only-matching",
+      "aliases": [
+        "-o",
+        "--only-matching"
+      ],
+      "value": "none",
+      "description": "Print each nonempty matched part separately.",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-case",
+      "aliases": [
+        "-i",
+        "--ignore-case"
+      ],
+      "value": "none",
+      "description": "Ignore ASCII case / invert / whole record / whole word.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "invert-match",
+      "aliases": [
+        "-v",
+        "--invert-match"
+      ],
+      "value": "none",
+      "description": "Ignore ASCII case / invert / whole record / whole word.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "line-number",
+      "aliases": [
+        "-n",
+        "--line-number"
+      ],
+      "value": "none",
+      "description": "Show record numbers / byte offsets / nonempty matches.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "byte-offset",
+      "aliases": [
+        "-b",
+        "--byte-offset"
+      ],
+      "value": "none",
+      "description": "Show record numbers / byte offsets / nonempty matches.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "count",
+      "aliases": [
+        "-c",
+        "--count"
+      ],
+      "value": "none",
+      "description": "Counts / matching filenames / nonmatching filenames / status only.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "files-with-matches",
+      "aliases": [
+        "-l",
+        "--files-with-matches"
+      ],
+      "value": "none",
+      "description": "Counts / matching filenames / nonmatching filenames / status only.",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "files-without-match",
+      "aliases": [
+        "-L",
+        "--files-without-match"
+      ],
+      "value": "none",
+      "description": "Counts / matching filenames / nonmatching filenames / status only.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "Suppress output and stop after selecting a match.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "with-filename",
+      "aliases": [
+        "-H",
+        "--with-filename"
+      ],
+      "value": "none",
+      "description": "Always / never show filenames.",
+      "short": "H",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-filename",
+      "aliases": [
+        "-h",
+        "--no-filename"
+      ],
+      "value": "none",
+      "description": "Suppress filename prefixes.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "line-regexp",
+      "aliases": [
+        "-x",
+        "--line-regexp"
+      ],
+      "value": "none",
+      "description": "Ignore ASCII case / invert / whole record / whole word.",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "word-regexp",
+      "aliases": [
+        "-w",
+        "--word-regexp"
+      ],
+      "value": "none",
+      "description": "Require word boundaries around a match.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "recursive",
+      "aliases": [
+        "-r",
+        "--recursive"
+      ],
+      "value": "none",
+      "description": "Recurse without following links.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-r and -R recurse without following symbolic links."
+      ]
+    },
+    {
+      "name": "no-messages",
+      "aliases": [
+        "-s",
+        "--no-messages"
+      ],
+      "value": "none",
+      "description": "Suppress file-open diagnostics.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "null-data",
+      "aliases": [
+        "-z",
+        "--null-data"
+      ],
+      "value": "none",
+      "description": "Use NUL-delimited input records.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "text",
+      "aliases": [
+        "-a",
+        "--text"
+      ],
+      "value": "none",
+      "description": "Binary policy: binary, text or without-match.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "after-context",
+      "aliases": [
+        "-A",
+        "--after-context"
+      ],
+      "value": "required",
+      "description": "After / before / surrounding context.",
+      "short": "A",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_AFTER_CONTEXT",
+        "type_": "Int32"
+      }
+    },
+    {
+      "name": "before-context",
+      "aliases": [
+        "-B",
+        "--before-context"
+      ],
+      "value": "required",
+      "description": "After / before / surrounding context.",
+      "short": "B",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_BEFORE_CONTEXT",
+        "type_": "Int32"
+      }
+    },
+    {
+      "name": "context",
+      "aliases": [
+        "-C",
+        "--context"
+      ],
+      "value": "required",
+      "description": "After / before / surrounding context.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "include",
+      "aliases": [
+        "--include"
+      ],
+      "value": "required",
+      "description": "Filter recursive basenames using * and ?.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "exclude",
+      "aliases": [
+        "--exclude"
+      ],
+      "value": "required",
+      "description": "Filter recursive basenames using * and ?.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "binary-files",
+      "aliases": [
+        "--binary-files"
+      ],
+      "value": "required",
+      "description": "Binary policy: binary, text or without-match.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "regexp",
+      "aliases": [
+        "-e",
+        "--regexp"
+      ],
+      "value": "required",
+      "description": "Add patterns directly / from a file.",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "file",
+      "aliases": [
+        "-f",
+        "--file"
+      ],
+      "value": "required",
+      "description": "Add patterns directly / from a file.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    },
+    {
+      "name": "recursive-short-R",
+      "parser_name": "recursive",
+      "aliases": [
+        "-R"
+      ],
+      "value": "none",
+      "description": "Recurse without following links.",
+      "short": "R",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "fixed-strings",
+        "extended-regexp",
+        "basic-regexp",
+        "only-matching",
+        "ignore-case",
+        "invert-match",
+        "line-number",
+        "byte-offset",
+        "count",
+        "files-with-matches",
+        "files-without-match",
+        "quiet",
+        "with-filename",
+        "no-filename",
+        "line-regexp",
+        "word-regexp",
+        "recursive",
+        "recursive-short-R",
+        "no-messages",
+        "null-data",
+        "text",
+        "after-context",
+        "before-context",
+        "context",
+        "include",
+        "exclude",
+        "binary-files",
+        "regexp",
+        "file",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/execution.mbt",
+    "internal/driver/literal.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/prefilter.mbt",
+    "internal/driver/record_output.mbt",
+    "internal/driver/streaming.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

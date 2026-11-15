@@ -1,7 +1,7 @@
 ///|
 test "Unicode dot self loops retain every byte that changes state" {
   let nfa = compile_nfa(@syntax.parse("[0-9]{4}.*Q|ZZ"))
-  let compact = LazyDFA::new(nfa).record_boolean().unwrap()
+  let compact = LazyDfa::new(nfa).record_boolean().unwrap()
   let plan = compact.wide_plan()
   let mut state = plan.start
   for byte in b"0001xxxxxxxx" {

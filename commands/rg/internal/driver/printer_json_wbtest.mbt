@@ -21,7 +21,7 @@ async test "binary_detection" {
   let binary : Bytes = b"For the Doctor Watsons of this world, as opposed to the Sherlock\nHolmeses, success in the province of detective work must always\nbe, to a very large extent, the result of luck. Sherlock Holmes\ncan extract a clew \x00 from a wisp of straw or a flake of cigar ash;\nbut Doctor Watson has to have it taken out for him and dusted,\nand exhibited clearly, with a label attached."
   let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .binary_detection(@searcher.BinaryDetection::BinaryQuit(b'\x00'))
   .heap_limit(Some(80))
@@ -38,7 +38,7 @@ async test "binary_detection" {
 async test "max_matches" {
   let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .max_matches(Some(1))
   .build()
@@ -64,7 +64,7 @@ async test "max_matches_after_context" {
     #|
   let matcher = SearchMatcher::new(["d"])
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .after_context(2)
   .max_matches(Some(1))
@@ -78,7 +78,7 @@ async test "max_matches_after_context" {
 async test "no_match" {
   let matcher = SearchMatcher::new(["DOES NOT MATCH"])
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(matcher, reader(json_sherlock), printer.sink(matcher))
@@ -90,7 +90,7 @@ async test "no_match" {
 async test "always_begin_end_no_match" {
   let matcher = SearchMatcher::new(["DOES NOT MATCH"])
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out, always_begin_end=true)
+  let printer = @printer.JsonPrinter::new(out, always_begin_end=true)
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(matcher, reader(json_sherlock), printer.sink(matcher))
@@ -104,7 +104,7 @@ async test "missing_crlf" {
   let haystack = str_bytes("test\r\n")
   let matcher = SearchMatcher::new(["test"])
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .build()
   .search_reader(matcher, reader(haystack), printer.sink(matcher))
@@ -117,7 +117,7 @@ async test "missing_crlf" {
     line_terminator=Some(@matcher.LineTerminator::crlf()),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .line_terminator(@matcher.LineTerminator::crlf())
   .build()
@@ -133,7 +133,7 @@ async test "non_utf8_path" {
   // base64 bytes, like ripgrep's `json::notutf8` test expects.
   let matcher = SearchMatcher::new(["Watson"])
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   let path = @osstr.decode(b"foo\xFFbar")
   @searcher.SearcherBuilder::new()
   .build()
@@ -155,7 +155,7 @@ async test "multi_line_max_matches_keeps_submatches_within_lines" {
   // reported lines are clipped or dropped (ripgrep 15.2.0 panics here).
   let matcher = SearchMatcher::new(["(?s:.*)"], multi_line=true)
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .multi_line(true)
   .max_matches(Some(1))

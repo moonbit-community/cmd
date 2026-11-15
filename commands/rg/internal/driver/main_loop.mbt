@@ -1,7 +1,7 @@
 ///|
 fn is_broken_pipe(e : Error) -> Bool {
   match e {
-    @sys.IOError(kind=BrokenPipe, ..) => true
+    @sys.IoError(kind=BrokenPipe, ..) => true
     _ => false
   }
 }
@@ -270,7 +270,7 @@ async fn print_stats(
   wtr : &@termcolor.WriteColor,
 ) -> Unit {
   let elapsed = @sys.now_nanos() - started
-  let text = if mode is JSON {
+  let text = if mode is Json {
     let buf = @termcolor.ByteVec::new()
     let w = @printer.JsonWriter::new(buf)
     // serde_json's `json!` uses a sorted map, so keys are sorted.

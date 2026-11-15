@@ -28,7 +28,7 @@ pub fn unescape(String) -> Bytes
 // Errors
 #derive(@debug.Debug)
 pub suberror CommandError {
-  CommandIo(@sys.IOError)
+  CommandIo(@sys.IoError)
   CommandStderr(Bytes)
 }
 pub fn CommandError::to_string(Self) -> String

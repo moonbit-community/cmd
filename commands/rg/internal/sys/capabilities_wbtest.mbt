@@ -8,7 +8,7 @@ test "unavailable system detection remains explicit" {
       ignore(read_link("unread-link"))
       false
     } catch {
-      IOError(kind=Unsupported, ..) => true
+      IoError(kind=Unsupported, ..) => true
       _ => false
     },
   )

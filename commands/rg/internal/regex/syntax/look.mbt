@@ -4,10 +4,10 @@
 pub(all) enum Look {
   Start
   End
-  StartLF
-  EndLF
-  StartCRLF
-  EndCRLF
+  StartLf
+  EndLf
+  StartCrlf
+  EndCrlf
   WordAscii
   WordAsciiNegate
   WordUnicode
@@ -27,10 +27,10 @@ pub fn Look::as_bit(self : Look) -> UInt32 {
   let i = match self {
     Start => 0
     End => 1
-    StartLF => 2
-    EndLF => 3
-    StartCRLF => 4
-    EndCRLF => 5
+    StartLf => 2
+    EndLf => 3
+    StartCrlf => 4
+    EndCrlf => 5
     WordAscii => 6
     WordAsciiNegate => 7
     WordUnicode => 8
@@ -53,10 +53,10 @@ pub fn Look::reversed(self : Look) -> Look {
   match self {
     Start => End
     End => Start
-    StartLF => EndLF
-    EndLF => StartLF
-    StartCRLF => EndCRLF
-    EndCRLF => StartCRLF
+    StartLf => EndLf
+    EndLf => StartLf
+    StartCrlf => EndCrlf
+    EndCrlf => StartCrlf
     WordAscii => WordAscii
     WordAsciiNegate => WordAsciiNegate
     WordUnicode => WordUnicode
@@ -126,15 +126,15 @@ pub fn LookSet::contains_anchor_haystack(self : LookSet) -> Bool {
 
 ///|
 pub fn LookSet::contains_anchor_line(self : LookSet) -> Bool {
-  self.contains(StartLF) ||
-  self.contains(EndLF) ||
-  self.contains(StartCRLF) ||
-  self.contains(EndCRLF)
+  self.contains(StartLf) ||
+  self.contains(EndLf) ||
+  self.contains(StartCrlf) ||
+  self.contains(EndCrlf)
 }
 
 ///|
 pub fn LookSet::contains_anchor_crlf(self : LookSet) -> Bool {
-  self.contains(StartCRLF) || self.contains(EndCRLF)
+  self.contains(StartCrlf) || self.contains(EndCrlf)
 }
 
 ///|

@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "command": "hexdump",
+  "help": "Usage: hexdump [OPTION]... [FILE]...\nDisplay concatenated files as numbers and characters; no FILE reads stdin.\n{{help:one-byte-octal:0}}\n{{help:one-byte-char:0}}\n{{help:canonical:0}}\n{{help:two-bytes-decimal:0}}\n{{help:two-bytes-octal:0}}\n{{help:two-bytes-hex:0}}\n{{help:one-byte-hex:0}}\n{{help:format:0}}\n{{help:format-file:0}}\n  -L, --color[=WHEN]      enable _L colors: always, auto, or never\n{{help:length:0}}\n{{help:skip:0}}\n{{help:no-squeezing:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nProject extension: forward -s/--skip on stdin discards bytes without seeking.\nThe util-linux 2.40 pipe-input seek rejection is not claimed compatible.\n",
+  "catalog_options": [
+    "one-byte-octal",
+    "one-byte-char",
+    "canonical",
+    "two-bytes-decimal",
+    "two-bytes-octal",
+    "two-bytes-hex",
+    "one-byte-hex",
+    "length",
+    "skip",
+    "no-squeezing",
+    "format",
+    "format-file",
+    "color",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "one-byte-octal",
+      "aliases": [
+        "-b",
+        "--one-byte-octal"
+      ],
+      "value": "none",
+      "description": "one-byte octal",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b, --one-byte-octal     one-byte octal"
+      ]
+    },
+    {
+      "name": "one-byte-char",
+      "aliases": [
+        "-c",
+        "--one-byte-char"
+      ],
+      "value": "none",
+      "description": "escaped characters",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --one-byte-char      escaped characters"
+      ]
+    },
+    {
+      "name": "canonical",
+      "aliases": [
+        "-C",
+        "--canonical"
+      ],
+      "value": "none",
+      "description": "hexadecimal bytes with ASCII",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -C, --canonical         hexadecimal bytes with ASCII"
+      ]
+    },
+    {
+      "name": "two-bytes-decimal",
+      "aliases": [
+        "-d",
+        "--two-bytes-decimal"
+      ],
+      "value": "none",
+      "description": "two-byte unsigned decimal",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -d, --two-bytes-decimal  two-byte unsigned decimal"
+      ]
+    },
+    {
+      "name": "two-bytes-octal",
+      "aliases": [
+        "-o",
+        "--two-bytes-octal"
+      ],
+      "value": "none",
+      "description": "two-byte octal",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -o, --two-bytes-octal    two-byte octal"
+      ]
+    },
+    {
+      "name": "two-bytes-hex",
+      "aliases": [
+        "-x",
+        "--two-bytes-hex"
+      ],
+      "value": "none",
+      "description": "two-byte hexadecimal",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -x, --two-bytes-hex      two-byte hexadecimal"
+      ]
+    },
+    {
+      "name": "one-byte-hex",
+      "aliases": [
+        "-X",
+        "--one-byte-hex"
+      ],
+      "value": "none",
+      "description": "one-byte hexadecimal",
+      "short": "X",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -X, --one-byte-hex       one-byte hexadecimal"
+      ]
+    },
+    {
+      "name": "format",
+      "aliases": [
+        "-e",
+        "--format"
+      ],
+      "value": "required",
+      "description": "add a custom format",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -e, --format=FORMAT     add a custom format"
+      ]
+    },
+    {
+      "name": "format-file",
+      "aliases": [
+        "-f",
+        "--format-file"
+      ],
+      "value": "required",
+      "description": "add formats from a file",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -f, --format-file=FILE  add formats from a file"
+      ]
+    },
+    {
+      "name": "color",
+      "aliases": [
+        "--color"
+      ],
+      "value": "required",
+      "description": "enable _L colors: always, auto, or never",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "length",
+      "aliases": [
+        "-n",
+        "--length"
+      ],
+      "value": "required",
+      "description": "display at most N input bytes",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -n, --length=N          display at most N input bytes"
+      ]
+    },
+    {
+      "name": "skip",
+      "aliases": [
+        "-s",
+        "--skip"
+      ],
+      "value": "required",
+      "description": "skip N input bytes",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -s, --skip=N            skip N input bytes"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_SKIP",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "no-squeezing",
+      "aliases": [
+        "-v",
+        "--no-squeezing"
+      ],
+      "value": "none",
+      "description": "display duplicate blocks",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -v, --no-squeezing      display duplicate blocks"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "-h",
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -h, --help              display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "-V",
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "short": "V",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -V, --version           display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "one-byte-octal",
+        "one-byte-char",
+        "canonical",
+        "two-bytes-decimal",
+        "two-bytes-octal",
+        "two-bytes-hex",
+        "one-byte-hex",
+        "format",
+        "format-file",
+        "color",
+        "length",
+        "skip",
+        "no-squeezing",
+        "help",
+        "version"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/custom_program.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/stream.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

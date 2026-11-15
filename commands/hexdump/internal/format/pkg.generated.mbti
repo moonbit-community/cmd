@@ -1,0 +1,44 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/hexdump/internal/format"
+
+// Values
+pub fn compile_format(BytesView, Bool) -> Format raise FormatError
+
+pub fn compile_lines(Bytes, Bool) -> Array[Format] raise FormatError
+
+pub fn finish_program(Array[Entry]) -> Program raise FormatError
+
+pub fn render_custom(Format, BytesView, Int64, Int32) -> Bytes
+
+pub fn render_final(UnitSpec, Int64) -> Bytes
+
+pub fn render_row(Bytes, Int64, String) -> String
+
+// Errors
+pub suberror FormatError {
+  FormatError(String)
+}
+
+// Types and methods
+pub(all) enum Entry {
+  Builtin(String)
+  Custom(Format)
+}
+
+pub struct Format {
+  // private fields
+}
+
+pub struct Program {
+  entries : Array[Entry]
+  block_size : Int32
+  final_unit : UnitSpec?
+}
+
+pub struct UnitSpec {
+  // private fields
+}
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,87 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/sed/internal/program"
+
+import {
+  "cli/core/bytere",
+}
+
+// Values
+pub fn compile(String, Bool) -> Array[Command] raise
+
+pub fn substitute(@bytere.Pattern, String, String, Bool, Int32) -> (String, Bool) raise
+
+// Errors
+pub(all) suberror SedError {
+  SedError(String)
+}
+
+pub(all) suberror SedLabelError {
+  SedLabelError(String)
+}
+
+// Types and methods
+pub(all) enum Action {
+  Print
+  Delete
+  Quit
+  Number
+  Substitute(PatternRef, String, Bool, Int32, Bool)
+  HoldCopy
+  HoldAppend
+  Get
+  GetAppend
+  Exchange
+  Label
+  Jump(Int32)
+  TestJump(Int32, Bool)
+  Group(Int32)
+  EndGroup
+  Next
+  Join
+  PrintFirst
+  DeleteFirst
+  Append(String)
+  Insert(String)
+  Change(String)
+}
+
+pub(all) enum Address {
+  Number(Int32)
+  Last
+  Search(PatternRef)
+}
+
+pub(all) struct Command {
+  first : Address?
+  last : Address?
+  invert : Bool
+  mut action : Action
+  mut inside : Bool
+  mut closed : Bool
+}
+
+pub(all) enum PatternRef {
+  Explicit(PreparedPattern)
+  Previous
+}
+
+pub(all) struct PreparedPattern {
+  pattern : @bytere.Pattern
+  required : Bytes
+}
+pub fn PreparedPattern::matches(Self, Space) -> Bool
+pub fn PreparedPattern::rejects(Self, Space) -> Bool
+
+pub(all) struct Space {
+  mut decoded : String?
+  data : BytesView?
+  terminated : Bool
+}
+pub fn Space::append(Self, Self) -> Self
+pub fn Space::from_bytes(BytesView, Bool) -> Self
+pub fn Space::from_text(String, Bool) -> Self
+pub fn Space::text(Self) -> String
+
+// Type aliases
+
+// Traits

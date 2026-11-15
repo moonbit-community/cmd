@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "command": "patch",
+  "help": "Usage: patch [OPTION]... [ORIGINALFILE [PATCHFILE]]\nApply unified or context patches with offsets, fuzz and rejected hunks.\n{{help:strip:0}}\n{{help:input:0}}\n{{help:output:0}}\n{{help:reject-file:0}}\n{{help:directory:0}}\n{{help:reverse:0}}\n{{help:dry-run:0}}\n{{help:quiet:0}}\n{{help:unified:0}}\n{{help:context:0}}\n{{help:batch:0}}\n{{help:fuzz:0}}\n{{help:no-backup-if-mismatch:0}}\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "strip",
+    "input",
+    "output",
+    "directory",
+    "reverse",
+    "dry-run",
+    "quiet",
+    "unified",
+    "context",
+    "batch",
+    "fuzz",
+    "reject-file",
+    "no-backup-if-mismatch",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "strip",
+      "aliases": [
+        "-p",
+        "--strip"
+      ],
+      "value": "required",
+      "description": "remove N leading file-name components",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -p, --strip=N       remove N leading file-name components"
+      ]
+    },
+    {
+      "name": "input",
+      "aliases": [
+        "-i",
+        "--input"
+      ],
+      "value": "required",
+      "description": "read the patch from FILE instead of stdin",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -i, --input=FILE    read the patch from FILE instead of stdin"
+      ]
+    },
+    {
+      "name": "output",
+      "aliases": [
+        "-o",
+        "--output"
+      ],
+      "value": "required",
+      "description": "write patched files to stdout",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -o, --output=-      write patched files to stdout"
+      ]
+    },
+    {
+      "name": "reject-file",
+      "aliases": [
+        "-r",
+        "--reject-file"
+      ],
+      "value": "required",
+      "description": "write rejected hunks to a new FILE; - discards",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -r, --reject-file=FILE  write rejected hunks to a new FILE; - discards"
+      ]
+    },
+    {
+      "name": "directory",
+      "aliases": [
+        "-d",
+        "--directory"
+      ],
+      "value": "required",
+      "description": "resolve target paths relative to DIR",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -d, --directory=DIR resolve target paths relative to DIR"
+      ],
+      "default_value": ".",
+      "default_binding": {
+        "name": "DEFAULT_DIRECTORY",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "reverse",
+      "aliases": [
+        "-R",
+        "--reverse"
+      ],
+      "value": "none",
+      "description": "apply additions as removals and vice versa",
+      "short": "R",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -R, --reverse       apply additions as removals and vice versa"
+      ]
+    },
+    {
+      "name": "dry-run",
+      "aliases": [
+        "--dry-run"
+      ],
+      "value": "none",
+      "description": "check without writing or deleting files",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --dry-run       check without writing or deleting files"
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-s",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "suppress routine file messages",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --quiet         suppress routine file messages"
+      ]
+    },
+    {
+      "name": "unified",
+      "aliases": [
+        "-u",
+        "--unified"
+      ],
+      "value": "none",
+      "description": "require unified input",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -u, --unified       require unified input"
+      ]
+    },
+    {
+      "name": "context",
+      "aliases": [
+        "-c",
+        "--context"
+      ],
+      "value": "none",
+      "description": "require context input",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --context       require context input"
+      ]
+    },
+    {
+      "name": "batch",
+      "aliases": [
+        "-t",
+        "--batch"
+      ],
+      "value": "none",
+      "description": "select a detected reverse without prompting",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -t, --batch         select a detected reverse without prompting"
+      ]
+    },
+    {
+      "name": "fuzz",
+      "aliases": [
+        "-F",
+        "--fuzz"
+      ],
+      "value": "required",
+      "description": "ignore up to N outer context lines (default 2)",
+      "short": "F",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -F, --fuzz=N        ignore up to N outer context lines (default 2)"
+      ],
+      "default_value": "2",
+      "default_binding": {
+        "name": "DEFAULT_FUZZ",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "no-backup-if-mismatch",
+      "aliases": [
+        "--no-backup-if-mismatch"
+      ],
+      "value": "none",
+      "description": "accept the no-backup strict profile",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --no-backup-if-mismatch  accept the no-backup strict profile"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help          display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version       display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "strip",
+        "input",
+        "output",
+        "reject-file",
+        "directory",
+        "reverse",
+        "dry-run",
+        "quiet",
+        "unified",
+        "context",
+        "batch",
+        "fuzz",
+        "no-backup-if-mismatch",
+        "help",
+        "version"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/hunks/apply.mbt",
+    "internal/hunks/bytes.mbt",
+    "internal/driver/main.mbt",
+    "internal/hunks/parse.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "command": "chmod",
+  "help": "Usage: chmod [-R] [-v] MODE FILE...\n{{help:help:0}}\n{{help:version:0}}\nWindows permission changes and --reference are unsupported. Symbolic assignments must cover u/g/o explicitly and apply only to regular files.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "recursive",
+    "reference",
+    "verbose",
+    "symbolic-assignment"
+  ],
+  "options": [
+    {
+      "short": "R",
+      "name": "recursive",
+      "description": "Process directory contents recursively.",
+      "aliases": [
+        "-R",
+        "--recursive"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "short": "v",
+      "name": "verbose",
+      "description": "Describe processed entries.",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "parser_action": "Append",
+      "allow_hyphen_values": true,
+      "name": "reference",
+      "description": "Use the mode of the reference file.",
+      "aliases": [
+        "--reference"
+      ],
+      "value": "required",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "argparse",
+      "options": [
+        "recursive",
+        "verbose",
+        "help"
+      ]
+    },
+    {
+      "kind": "options",
+      "function_name": "command_options",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "argparse",
+      "options": [
+        "reference"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/mode.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

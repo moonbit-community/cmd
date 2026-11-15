@@ -17,7 +17,7 @@ pub(all) suberror IgnoreError {
   WithPath(path~ : String, err~ : IgnoreError)
   WithDepth(depth~ : Int32, err~ : IgnoreError)
   Loop(ancestor~ : String, child~ : String)
-  Io(@sys.IOError)
+  Io(@sys.IoError)
   Glob(glob~ : String?, err~ : String)
   UnrecognizedFileType(String)
   InvalidDefinition

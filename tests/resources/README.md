@@ -10,7 +10,7 @@ Build the release Wasm artifacts first. The public entry builds the observer:
 
 ```sh
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release --deny-warn
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- resources \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- resources \
   --wasm-root /absolute/current-artifacts \
   --moonrun /absolute/moonrun \
   --oracle-bin /absolute/pinned-oracle/bin \
@@ -67,7 +67,7 @@ package/contract assertions.
 
 ## Manual profiles and timing
 
-`tests/run.mbtx -- resource-profiles --image sha256:ID` exports the pinned image's
+`tools/run.mbtx -- resource-profiles --image sha256:ID` exports the pinned image's
 oracle prefix and runs the selected profiles serially: `records`, `long`,
 `mixed-synthetic`, `kernel-rss-linux`, `performance`, and `literal-planner`.
 `CMD_RESOURCE_PROFILE` and `CMD_RESOURCE_COMMANDS` narrow the selection.

@@ -50,7 +50,7 @@ async test "released filesystem operations preserve files links and error bounda
       ignore(@sys.read_link(dir + "/link"))
       false
     } catch {
-      @sys.IOError(kind=Unsupported, ..) => true
+      @sys.IoError(kind=Unsupported, ..) => true
       _ => false
     },
   )

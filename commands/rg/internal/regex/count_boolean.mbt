@@ -1,7 +1,7 @@
 ///|
 // This regex-local representation threshold deliberately does not import the
 // command adapter's eligibility/density policy.
-let compact_boolean_block_bytes : Int32 = 262144
+const COMPACT_BOOLEAN_BLOCK_BYTES : Int32 = 262144
 
 ///|
 priv enum BooleanCountRoute {
@@ -11,7 +11,7 @@ priv enum BooleanCountRoute {
 
 ///|
 fn boolean_count_route(bytes : Int32) -> BooleanCountRoute {
-  if bytes > compact_boolean_block_bytes {
+  if bytes > COMPACT_BOOLEAN_BLOCK_BYTES {
     Wide
   } else {
     Compact

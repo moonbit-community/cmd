@@ -24,15 +24,15 @@ fn SearcherConfig::stream_count_term(self : SearcherConfig) -> Byte? {
 }
 
 ///|
-let bulk_read_bytes : Int32 = 262144
+const BULK_READ_BYTES : Int32 = 262144
 
 ///|
 // Reuse ordinary buffers, but do not retain a previous file's exceptional
 // record allocation while the next file or stdin is idle.
-let maximum_retained_buffer_bytes : Int32 = 1048576
+const MAXIMUM_RETAINED_BUFFER_BYTES : Int32 = 1048576
 
 ///|
-let maximum_record_read_bytes : Int32 = 1048576
+const MAXIMUM_RECORD_READ_BYTES : Int32 = 1048576
 
 ///|
 fn Searcher::reader_capacity(self : Searcher, sink : &Sink) -> Int32 {
@@ -43,7 +43,7 @@ fn Searcher::reader_capacity(self : Searcher, sink : &Sink) -> Int32 {
       sink.bulk_scan() ||
       (sink.coalesce_matches() && config.binary is BinaryNone)
     ) {
-    bulk_read_bytes
+    BULK_READ_BYTES
   } else {
     DEFAULT_BUFFER_CAPACITY
   }

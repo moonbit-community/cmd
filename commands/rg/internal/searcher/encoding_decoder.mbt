@@ -78,8 +78,8 @@ fn LegacyDecoder::new(
   // Only the UTF encodings have a BOM to remove.
   let bom : FixedArray[Int32] = match kind {
     Utf8 if bom_removal => [0xEF, 0xBB, 0xBF]
-    Utf16LE if bom_removal => [0xFF, 0xFE]
-    Utf16BE if bom_removal => [0xFE, 0xFF]
+    Utf16Le if bom_removal => [0xFF, 0xFE]
+    Utf16Be if bom_removal => [0xFE, 0xFF]
     _ => []
   }
   {
@@ -245,8 +245,8 @@ fn LegacyDecoder::handle(self : LegacyDecoder, b : Int32, out : Buffer) -> Bool 
         false
       }
     Utf8 => self.handle_utf8(b, out)
-    Utf16LE => self.handle_utf16(b, false, out)
-    Utf16BE => self.handle_utf16(b, true, out)
+    Utf16Le => self.handle_utf16(b, false, out)
+    Utf16Be => self.handle_utf16(b, true, out)
   }
 }
 

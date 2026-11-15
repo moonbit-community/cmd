@@ -1,5 +1,5 @@
 ///|
-const StreamParserBufferBytes = 4091
+const STREAM_PARSER_BUFFER_BYTES = 4091
 
 ///|
 priv suberror StreamError {
@@ -51,7 +51,7 @@ fn StreamInput::pull(
     line: 1,
     column: 0,
     buffer_position: 0,
-    buffer_limit: StreamParserBufferBytes,
+    buffer_limit: STREAM_PARSER_BUFFER_BYTES,
     utf8_remaining: 0,
     buffer_end: false,
     frames: [],
@@ -76,7 +76,7 @@ async fn StreamInput::peek(self : StreamInput) -> Byte? {
   }
   if self.file_boundaries.contains(self.offset) {
     self.buffer_position = 0
-    self.buffer_limit = StreamParserBufferBytes
+    self.buffer_limit = STREAM_PARSER_BUFFER_BYTES
     self.utf8_remaining = 0
     self.buffer_end = true
   }
@@ -103,7 +103,7 @@ async fn StreamInput::take(self : StreamInput) -> Byte? {
 ///|
 fn StreamInput::advance_buffer(self : StreamInput, byte : Byte) -> Unit {
   self.buffer_position += 1
-  if self.buffer_position <= StreamParserBufferBytes {
+  if self.buffer_position <= STREAM_PARSER_BUFFER_BYTES {
     self.utf8_remaining = if byte >= b'\x80' && byte <= b'\xbf' {
       (self.utf8_remaining - 1).max(0)
     } else if byte >= b'\xc2' && byte <= b'\xdf' {
@@ -115,17 +115,17 @@ fn StreamInput::advance_buffer(self : StreamInput, byte : Byte) -> Unit {
     } else {
       0
     }
-    if self.buffer_position == StreamParserBufferBytes {
+    if self.buffer_position == STREAM_PARSER_BUFFER_BYTES {
       self.buffer_limit += self.utf8_remaining
     }
   }
   self.buffer_end = (
-      byte == b'\n' && self.buffer_position <= StreamParserBufferBytes
+      byte == b'\n' && self.buffer_position <= STREAM_PARSER_BUFFER_BYTES
     ) ||
     self.buffer_position == self.buffer_limit
   if self.buffer_end {
     self.buffer_position = 0
-    self.buffer_limit = StreamParserBufferBytes
+    self.buffer_limit = STREAM_PARSER_BUFFER_BYTES
     self.utf8_remaining = 0
   }
 }

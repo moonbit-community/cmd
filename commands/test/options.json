@@ -1,0 +1,318 @@
+{
+  "schema": 1,
+  "command": "test",
+  "help": "Usage: test EXPRESSION\n{{help:help:0}}\n{{help:version:0}}\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n{{help:s:0}}\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
+  "catalog_options": [
+    "expression-language",
+    "file-kinds",
+    "access-checks",
+    "size",
+    "timestamps"
+  ],
+  "options": [
+    {
+      "name": "n",
+      "aliases": [
+        "-n"
+      ],
+      "value": "required",
+      "description": "Test nonempty / empty strings.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "z",
+      "aliases": [
+        "-z"
+      ],
+      "value": "required",
+      "description": "Test nonempty / empty strings.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "e",
+      "aliases": [
+        "-e",
+        "-a"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "f",
+      "aliases": [
+        "-f"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "d",
+      "aliases": [
+        "-d"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "L",
+      "aliases": [
+        "-L"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "h",
+      "aliases": [
+        "-h"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "p",
+      "aliases": [
+        "-p"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "S",
+      "aliases": [
+        "-S"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "b",
+      "aliases": [
+        "-b"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "c",
+      "aliases": [
+        "-c"
+      ],
+      "value": "required",
+      "description": "Test existence or file type.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "r",
+      "aliases": [
+        "-r"
+      ],
+      "value": "required",
+      "description": "Test access, nonempty size or modification since access.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "w",
+      "aliases": [
+        "-w"
+      ],
+      "value": "required",
+      "description": "Test access, nonempty size or modification since access.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "x",
+      "aliases": [
+        "-x"
+      ],
+      "value": "required",
+      "description": "Test access, nonempty size or modification since access.",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "s",
+      "aliases": [
+        "-s"
+      ],
+      "value": "required",
+      "description": "Test access, nonempty size or modification since access.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-s reads followed target metadata without opening the file; unavailable metadata exits 2."
+      ]
+    },
+    {
+      "name": "N",
+      "aliases": [
+        "-N"
+      ],
+      "value": "required",
+      "description": "Test access, nonempty size or modification since access.",
+      "short": "N",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "nt",
+      "aliases": [
+        "-nt"
+      ],
+      "value": "adapter",
+      "description": "Compare file modification times.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ot",
+      "aliases": [
+        "-ot"
+      ],
+      "value": "adapter",
+      "description": "Compare file modification times.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    },
+    {
+      "name": "eq",
+      "aliases": [
+        "-eq"
+      ],
+      "value": "adapter",
+      "description": "Compare integer operands for equality.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ne",
+      "aliases": [
+        "-ne"
+      ],
+      "value": "adapter",
+      "description": "Compare integer operands for inequality.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "lt",
+      "aliases": [
+        "-lt"
+      ],
+      "value": "adapter",
+      "description": "Compare integer operands using less than.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "le",
+      "aliases": [
+        "-le"
+      ],
+      "value": "adapter",
+      "description": "Compare integer operands using less than or equal.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "gt",
+      "aliases": [
+        "-gt"
+      ],
+      "value": "adapter",
+      "description": "Compare integer operands using greater than.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ge",
+      "aliases": [
+        "-ge"
+      ],
+      "value": "adapter",
+      "description": "Compare integer operands using greater than or equal.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "o",
+      "aliases": [
+        "-o"
+      ],
+      "value": "adapter",
+      "description": "Combine expressions using logical OR.",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [],
+  "adapter_sources": [
+    "internal/driver/arity.mbt",
+    "internal/driver/files.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ],
+  "adapter_match": true
+}

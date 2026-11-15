@@ -1,0 +1,8 @@
+import {
+  "cli/sort/internal/decimal",
+  "moonbitlang/core/string",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/x/crypto",
+}
+
+supported_targets = "native+wasm"

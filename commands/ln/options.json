@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "command": "ln",
+  "help": "Usage: ln -s [-f|-i] [-r] [-n] [-T] [-b|--backup[=CONTROL]] [-S SUFFIX] TARGET... LINK_NAME\n       ln -s [-f|-i] [-r] [-n] [-b|--backup[=CONTROL]] [-S SUFFIX] -t DIRECTORY TARGET...\n{{help:help:0}}\n{{help:version:0}}\nThe last -f/--force or -i/--interactive selects overwrite behavior.\nDeclining an interactive overwrite returns status 1 without replacing the link.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\nFailed backup recovery reports both errors and destination/backup paths.\n",
+  "catalog_options": [
+    "force",
+    "no-target-directory",
+    "symbolic",
+    "verbose",
+    "interactive",
+    "relative",
+    "no-dereference-target",
+    "target-directory",
+    "backup",
+    "backup-control",
+    "suffix"
+  ],
+  "options": [
+    {
+      "name": "symbolic",
+      "aliases": [
+        "-s",
+        "--symbolic"
+      ],
+      "value": "none",
+      "description": "Create a symbolic link; required.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "force",
+      "aliases": [
+        "-f",
+        "--force"
+      ],
+      "value": "none",
+      "description": "Replace existing targets / ask first.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "interactive",
+      "aliases": [
+        "-i",
+        "--interactive"
+      ],
+      "value": "none",
+      "description": "Replace existing targets / ask first.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "relative",
+      "aliases": [
+        "-r",
+        "--relative"
+      ],
+      "value": "none",
+      "description": "Use a relative symbolic-link target.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-dereference",
+      "aliases": [
+        "-n",
+        "--no-dereference"
+      ],
+      "value": "none",
+      "description": "Do not follow a destination directory symlink.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-target-directory",
+      "aliases": [
+        "-T",
+        "--no-target-directory"
+      ],
+      "value": "none",
+      "description": "Treat destination as the complete link path.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "target-directory",
+      "aliases": [
+        "-t",
+        "--target-directory"
+      ],
+      "value": "required",
+      "description": "Create links in DIR.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "backup",
+      "aliases": [
+        "-b",
+        "--backup"
+      ],
+      "value": "none",
+      "description": "Back up replaced targets / choose backup suffix.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "backup-control",
+      "aliases": [
+        "--backup=CONTROL"
+      ],
+      "value": "required",
+      "description": "Select the documented backup naming policy.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "suffix",
+      "aliases": [
+        "-S",
+        "--suffix"
+      ],
+      "value": "required",
+      "description": "Back up replaced targets / choose backup suffix.",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "~",
+      "default_binding": {
+        "name": "DEFAULT_SUFFIX",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "Show created links.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "symbolic",
+        "force",
+        "interactive",
+        "relative",
+        "no-dereference",
+        "no-target-directory",
+        "target-directory",
+        "backup",
+        "backup-control",
+        "suffix",
+        "verbose",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

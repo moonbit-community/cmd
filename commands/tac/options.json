@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "command": "tac",
+  "help": "Usage: tac [OPTION]... [FILE]...\n{{help:help:0}}\n{{help:version:0}}\n\nWrite each FILE to standard output, last line first.\nWith no FILE, or when FILE is -, read standard input.\n\n{{help:before:0}}\n{{help:separator:0}}\n{{help:regex:0}}\n\nNonseekable input and regex mode require temporary-directory write access.\nA cleanup failure is reported unless an earlier operation already failed.\nRegex mode retains the complete input for arbitrary-span byte matching.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "before",
+    "regex",
+    "separator"
+  ],
+  "options": [
+    {
+      "name": "before",
+      "aliases": [
+        "-b",
+        "--before"
+      ],
+      "value": "none",
+      "description": "Attach separators to the following record.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b, --before             Attach the separator before records."
+      ]
+    },
+    {
+      "name": "separator",
+      "aliases": [
+        "-s",
+        "--separator"
+      ],
+      "value": "required",
+      "description": "Set a separator; empty fixed separator means NUL.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -s, --separator=STRING   Use STRING instead of newline."
+      ],
+      "default_value": "\n",
+      "default_binding": {
+        "name": "DEFAULT_SEPARATOR",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "regex",
+      "aliases": [
+        "-r",
+        "--regex"
+      ],
+      "value": "none",
+      "description": "Interpret the separator using GNU Emacs byte regex syntax.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -r, --regex              Use an Emacs-style byte regular expression."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "before",
+        "separator",
+        "regex",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/range.mbt",
+    "internal/driver/reverse.mbt",
+    "internal/driver/reverse_fixed.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

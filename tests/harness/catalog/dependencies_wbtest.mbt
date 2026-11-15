@@ -79,17 +79,19 @@ async test "workspace dependency manifests keep one async baseline and the selec
   let independent = [
     "echo", "false", "jqlog", "serve", "sleep", "true", "typst",
   ]
-  let modules = ["core", "tests"]
+  let modules = ["core", "tests", "tools"]
   for command in commands {
     modules.push("commands/" + command)
   }
-  assert_eq(modules.length(), 84)
+  assert_eq(modules.length(), 85)
   for directory in modules {
     let text = @fs.read_file(root + directory + "/moon.mod").text()
     let expected_name = if directory == "core" {
       "cli/core"
     } else if directory == "tests" {
       "mooxCLI/cmd-tests"
+    } else if directory == "tools" {
+      "mooxCLI/cmd-tools"
     } else {
       "cli/" + directory.strip_prefix("commands/").unwrap().to_owned()
     }

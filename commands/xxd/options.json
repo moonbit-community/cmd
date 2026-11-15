@@ -1,0 +1,300 @@
+{
+  "schema": 1,
+  "command": "xxd",
+  "help": "Usage: xxd [OPTION]... [INFILE [OUTFILE]]\nDisplay bytes or reverse an addressed, plain, or binary dump.\n{{help:autoskip:0}}\n{{help:bits:0}}\n{{help:little:0}}\n{{help:ebcdic:0}}\n{{help:group:0}}\n{{help:upper:0}}\n{{help:offset:0}}\n{{help:plain:0}}\n{{help:include:0}}\n{{help:reverse:0}}\n{{help:cols:0}}\n{{help:len:0}}\n{{help:seek:0}}\n{{help:name:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nProject aliases: --little/-littleendian select -e; --ebcdic/-ebcdic select -E.\nProject long-option syntax also accepts =VALUE for --cols, --group, --len,\n{{help:name:1}}\n-h/--help use the project metadata contract: stdout and status 0.\n\nUsage errors exit 1; runtime errors retain their command-specific statuses.\nOption values and operands after -- remain literal.\n",
+  "catalog_options": [
+    "autoskip",
+    "bits",
+    "cols",
+    "ebcdic",
+    "little",
+    "group",
+    "include",
+    "len",
+    "name",
+    "offset",
+    "plain",
+    "reverse",
+    "revert",
+    "seek",
+    "upper"
+  ],
+  "options": [
+    {
+      "name": "autoskip",
+      "aliases": [
+        "-a",
+        "--autoskip"
+      ],
+      "value": "none",
+      "description": "toggle suppression of zero lines",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -a, --autoskip       toggle suppression of zero lines"
+      ]
+    },
+    {
+      "name": "bits",
+      "aliases": [
+        "-b",
+        "--bits"
+      ],
+      "value": "none",
+      "description": "binary digit display",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b, --bits           binary digit display"
+      ]
+    },
+    {
+      "name": "little",
+      "aliases": [
+        "-e",
+        "--little"
+      ],
+      "value": "none",
+      "description": "little-endian groups",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -e, --little         little-endian groups"
+      ]
+    },
+    {
+      "name": "ebcdic",
+      "aliases": [
+        "-E",
+        "--ebcdic"
+      ],
+      "value": "none",
+      "description": "EBCDIC character display",
+      "short": "E",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -E, --ebcdic         EBCDIC character display"
+      ]
+    },
+    {
+      "name": "upper",
+      "aliases": [
+        "-u",
+        "--upper"
+      ],
+      "value": "none",
+      "description": "uppercase hexadecimal digits",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -u, --upper          uppercase hexadecimal digits"
+      ]
+    },
+    {
+      "name": "plain",
+      "aliases": [
+        "-p",
+        "--plain"
+      ],
+      "value": "none",
+      "description": "plain hexadecimal display",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -p, -ps, --plain     plain hexadecimal display"
+      ]
+    },
+    {
+      "name": "include",
+      "aliases": [
+        "-i",
+        "--include"
+      ],
+      "value": "none",
+      "description": "C include display",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -i, --include        C include display"
+      ]
+    },
+    {
+      "name": "reverse",
+      "aliases": [
+        "-r",
+        "--reverse"
+      ],
+      "value": "none",
+      "description": "reverse a dump",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -r, --reverse        reverse a dump"
+      ]
+    },
+    {
+      "name": "group",
+      "aliases": [
+        "-g",
+        "--group"
+      ],
+      "value": "required",
+      "description": "bytes per group",
+      "short": "g",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -g, --group=N        bytes per group"
+      ]
+    },
+    {
+      "name": "offset",
+      "aliases": [
+        "-o",
+        "--offset"
+      ],
+      "value": "required",
+      "description": "add N to displayed offsets",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -o, --offset=N       add N to displayed offsets"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_OFFSET",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "cols",
+      "aliases": [
+        "-c",
+        "--cols"
+      ],
+      "value": "required",
+      "description": "bytes per line",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -c, --cols=N         bytes per line"
+      ]
+    },
+    {
+      "name": "len",
+      "aliases": [
+        "-l",
+        "--len"
+      ],
+      "value": "required",
+      "description": "maximum input bytes",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -l, --len=N          maximum input bytes"
+      ]
+    },
+    {
+      "name": "seek",
+      "aliases": [
+        "-s",
+        "--seek"
+      ],
+      "value": "required",
+      "description": "input seek or reverse address adjustment",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -s, --seek=[+][-]N   input seek or reverse address adjustment"
+      ]
+    },
+    {
+      "name": "name",
+      "aliases": [
+        "-n",
+        "--name"
+      ],
+      "value": "required",
+      "description": "C include symbol",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -n, --name=NAME      C include symbol",
+        "--name, --offset and --seek; these forms are not Vim xxd argument equivalence."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "-h",
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help           display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version        display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "autoskip",
+        "bits",
+        "little",
+        "ebcdic",
+        "upper",
+        "plain",
+        "include",
+        "reverse",
+        "group",
+        "offset",
+        "cols",
+        "len",
+        "seek",
+        "name",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/format.mbt",
+    "internal/driver/input.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/options.mbt",
+    "internal/driver/reverse.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

@@ -60,13 +60,13 @@ corpus and a fixed native reference directory containing gzip and all selected
 timing-command references:
 
 ```text
-MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- corpus \
+MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- corpus \
   /absolute/new-corpus --download
 MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release
 MOON_HOME="$HOME/.moon-accounts/cli" \
   CMD_BENCH_CORPUS_ROOT=/absolute/prepared-corpus \
   CMD_BENCH_ORACLE_BIN=/absolute/native-oracle/bin \
-  moon run tests/run.mbtx -- protect /absolute/frozen-baseline-cli /absolute/new-evidence
+  moon run tools/run.mbtx -- protect /absolute/frozen-baseline-cli /absolute/new-evidence
 ```
 
 The launcher takes two arguments. Its former generated-fixture argument is

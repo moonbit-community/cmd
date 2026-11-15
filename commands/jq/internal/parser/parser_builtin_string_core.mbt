@@ -10,51 +10,51 @@ fn Parser::parse_builtin_string_core(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "split" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(sep)) else {
         raise InvalidSyntax("split expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Split(sep))
     }
     "join" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(sep)) else {
         raise InvalidSyntax("join expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Join(sep))
     }
     "startswith" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(prefix)) else {
         raise InvalidSyntax("startswith expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(StartsWith(prefix))
     }
     "endswith" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(suffix)) else {
         raise InvalidSyntax("endswith expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(EndsWith(suffix))
     }
     "contains" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Contains(expr))
     }
     "inside" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Inside(expr))
     }
     _ => None

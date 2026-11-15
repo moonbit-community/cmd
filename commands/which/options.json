@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "command": "which",
+  "help": "Usage: which [-as] NAME...\nFind executable regular files in PATH. Windows uses PATHEXT.\n{{help:all:0}}\n{{help:silent:0}}\n{{help:help:0}}\n{{help:version:0}}\n-s/--silent follows this project's explicit quiet-status profile; it does not\nclaim the option surface of every GNU/BSD which implementation.\n",
+  "catalog_options": [
+    "all",
+    "silent",
+    "version"
+  ],
+  "options": [
+    {
+      "short": "a",
+      "name": "all",
+      "description": "Print every match instead of the first.",
+      "aliases": [
+        "-a",
+        "--all"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -a, --all     print all matches"
+      ]
+    },
+    {
+      "short": "s",
+      "name": "silent",
+      "description": "Suppress output and missing-command diagnostics.",
+      "aliases": [
+        "-s",
+        "--silent"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --silent  return status without output"
+      ]
+    },
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help    display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "argparse",
+      "options": [
+        "all",
+        "silent",
+        "help",
+        "version"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

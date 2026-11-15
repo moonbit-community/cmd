@@ -12,7 +12,7 @@ import {
 #derive(@debug.Debug)
 pub suberror SearchError {
   ConfigError(String)
-  SearchIOError(String)
+  IoError(String)
 }
 pub fn SearchError::to_string(Self) -> String
 pub impl Show for SearchError

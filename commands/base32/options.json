@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "command": "base32",
+  "help": "Usage: base32 [-d] [-i] [-w COLS] [FILE]\n{{help:help:0}}\n{{help:version:0}}\nEncoding emits complete groups before EOF; later input errors may leave partial output.\nDecoding checks canonical tail bits and preserves complete-block failure prefixes.\nMissing final padding is accepted; incomplete explicit padding rejects (GNU 9.11).\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "decode",
+    "ignore-garbage",
+    "wrap"
+  ],
+  "options": [
+    {
+      "name": "decode",
+      "aliases": [
+        "-d",
+        "--decode"
+      ],
+      "value": "none",
+      "description": "Decode input.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-garbage",
+      "aliases": [
+        "-i",
+        "--ignore-garbage"
+      ],
+      "value": "none",
+      "description": "Ignore non-alphabet bytes when decoding.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "wrap",
+      "aliases": [
+        "-w",
+        "--wrap"
+      ],
+      "value": "required",
+      "description": "Set output width; 0 disables wrapping and the final newline.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "76",
+      "default_binding": {
+        "name": "DEFAULT_WRAP",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "decode",
+        "ignore-garbage",
+        "wrap",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/encode.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

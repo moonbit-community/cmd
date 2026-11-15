@@ -48,7 +48,7 @@ pub fn parse_program(source : String, library~ : Bool = false) -> Program raise 
     } else {
       None
     }
-    let metadata = if parser.current() == Some(TLBrace) {
+    let metadata = if parser.current() == Some(TLeftBrace) {
       parser.parse_metadata()
     } else {
       Json::object(Map([]))

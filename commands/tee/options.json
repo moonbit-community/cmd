@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "command": "tee",
+  "help": "Usage: tee [-ap] [--output-error[=MODE]] [FILE...]\n{{help:append:0}}\n{{help:output-error-short-p:0}}\n      --output-error[=MODE] warn, warn-nopipe, exit, exit-nopipe\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "append",
+    "output-error"
+  ],
+  "options": [
+    {
+      "name": "append",
+      "aliases": [
+        "-a",
+        "--append"
+      ],
+      "value": "none",
+      "description": "Append instead of truncating files.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -a, --append             append instead of truncating output files"
+      ]
+    },
+    {
+      "name": "output-error",
+      "aliases": [
+        "--output-error"
+      ],
+      "value": "required",
+      "description": "Modes: warn, warn-nopipe, exit, exit-nopipe; bare flag selects warn-nopipe.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help               display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version            display version and exit"
+      ]
+    },
+    {
+      "name": "output-error-short-p",
+      "parser_name": "output-error",
+      "aliases": [
+        "-p"
+      ],
+      "value": "none",
+      "description": "Modes: warn, warn-nopipe, exit, exit-nopipe; bare flag selects warn-nopipe.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -p                       ignore broken output pipes; continue other sinks"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "append",
+        "output-error",
+        "output-error-short-p",
+        "help",
+        "version"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

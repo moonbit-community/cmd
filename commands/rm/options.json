@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "command": "rm",
+  "help": "Usage: rm [OPTION]... FILE...\n{{help:force:0}}\n  -i                      prompt for each removal using stdin\n  -I                      prompt once for recursion or more than three operands\n      --interactive[=WHEN] never, once or always (default with option)\n{{help:recursive:0}}\n                          reject symbolic links with trailing separators\n{{help:dir:0}}\n{{help:verbose:0}}\n{{help:preserve-root:0}}\n{{help:no-preserve-root:0}}\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "dir",
+    "force",
+    "interactive",
+    "preserve-root",
+    "no-preserve-root",
+    "recursive",
+    "verbose"
+  ],
+  "options": [
+    {
+      "name": "recursive",
+      "aliases": [
+        "-r",
+        "--recursive"
+      ],
+      "value": "none",
+      "description": "Remove directory trees.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -r, -R, --recursive     remove directory trees without following symlinks"
+      ]
+    },
+    {
+      "name": "force",
+      "aliases": [
+        "-f",
+        "--force"
+      ],
+      "value": "none",
+      "description": "Ignore missing files and disable prompts.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -f, --force             ignore missing files; never prompt"
+      ]
+    },
+    {
+      "name": "dir",
+      "aliases": [
+        "-d",
+        "--dir"
+      ],
+      "value": "none",
+      "description": "Remove empty directories.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -d, --dir               remove empty directories"
+      ]
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "Show removals.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -v, --verbose           print removed paths"
+      ]
+    },
+    {
+      "name": "interactive",
+      "aliases": [
+        "--interactive"
+      ],
+      "value": "required",
+      "description": "Ask always / once / always, once or never.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "preserve-root",
+      "aliases": [
+        "--preserve-root"
+      ],
+      "value": "none",
+      "description": "Enable / disable root protection.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --preserve-root     protect filesystem roots (default)"
+      ]
+    },
+    {
+      "name": "no-preserve-root",
+      "aliases": [
+        "--no-preserve-root"
+      ],
+      "value": "none",
+      "description": "Enable / disable root protection.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --no-preserve-root  disable root protection"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help              display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version           display version and exit"
+      ]
+    },
+    {
+      "name": "recursive-short-R",
+      "parser_name": "recursive",
+      "aliases": [
+        "-R"
+      ],
+      "value": "none",
+      "description": "Remove directory trees.",
+      "short": "R",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "recursive",
+        "recursive-short-R",
+        "force",
+        "dir",
+        "verbose",
+        "interactive",
+        "preserve-root",
+        "no-preserve-root",
+        "help",
+        "version"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/protection.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

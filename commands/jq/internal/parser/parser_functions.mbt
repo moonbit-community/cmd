@@ -12,8 +12,8 @@ fn Parser::parse_function_def(self : Parser) -> @ast.Expr raise ParseError {
   self.advance()
   let params : Array[String] = []
   // Optional parameters
-  if self.consume(TLParen) {
-    if self.current() != Some(TRParen) {
+  if self.consume(TLeftParen) {
+    if self.current() != Some(TRightParen) {
       while true {
         let param = match self.current() {
           Some(TIdentifier(name)) => name
@@ -27,7 +27,7 @@ fn Parser::parse_function_def(self : Parser) -> @ast.Expr raise ParseError {
         }
       }
     }
-    self.expect(TRParen)
+    self.expect(TRightParen)
   }
   self.expect(TColon)
   let visible = self.functions.copy()

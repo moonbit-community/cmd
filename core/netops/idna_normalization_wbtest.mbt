@@ -16,13 +16,7 @@ fn normalization_literal(value : StringView) -> String raise {
 
 ///|
 async test "released NFC primitive preserves the complete Unicode 15 corpus" {
-  let mut root = @fs.realpath(".")
-  while !@fs.exists(root + "/moon.work") {
-    let parent = @path.Path(root).dirname().to_string()
-    guard parent != root else { fail("normalization corpus workspace missing") }
-    root = parent
-  }
-  let bytes = @fs.read_file(root + "/tests/fixtures/idna/NormalizationTest.txt").binary()
+  let bytes = @fs.read_file("netops/fixtures/idna/NormalizationTest.txt").binary()
   assert_eq(
     @crypto.bytes_to_hex_string(@crypto.sha256(bytes)),
     "fb9ac8cc154a80cad6caac9897af55a4e75176af6f4e2bb6edc2bf8b1d57f326",

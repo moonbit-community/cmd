@@ -42,7 +42,7 @@ test "minimized plans preserve immediate and EOF acceptance on every transition"
         utf8: false,
       }),
     )
-    let plan = LazyDFA::new(nfa).record_boolean().unwrap()
+    let plan = LazyDfa::new(nfa).record_boolean().unwrap()
     let old = plan.wide_rows()
     let alphabet : Array[Int32] = []
     let seen = FixedArray::make(plan.stride, false)
@@ -68,7 +68,7 @@ test "minimized plans preserve immediate and EOF acceptance on every transition"
 ///|
 test "minimized repetition no longer exits on equivalent digit histories" {
   let nfa = compile_nfa(@syntax.parse("[0-9]{4}.*Q|ZZ"))
-  let plan = LazyDFA::new(nfa).record_boolean().unwrap().wide_plan()
+  let plan = LazyDfa::new(nfa).record_boolean().unwrap().wide_plan()
   let mut state = plan.start
   for byte in b"0123456789 alpha beta gamma " {
     state = plan.transitions[state + byte.to_int()]
@@ -92,7 +92,7 @@ test "a deep refinement chain declines at its iteration budget" {
     })
     let eof = FixedArray::makei(states, i => i == states - 1)
     let result = minimize_boolean_rows(table, eof, 0, accept, [0])
-    assert_eq(result is Some(_), states <= boolean_refinement_round_limit + 1)
+    assert_eq(result is Some(_), states <= BOOLEAN_REFINEMENT_ROUND_LIMIT + 1)
     if result is Some(result) {
       assert_boolean_rows_equivalent((table, eof, 0, accept), result)
     }
@@ -105,7 +105,7 @@ test "a deep refinement chain declines at its iteration budget" {
 ///|
 test "a broad exit set still accelerates a homogeneous long haystack" {
   let nfa = compile_nfa(@syntax.parse("[ab]{32}Q"))
-  let compact = LazyDFA::new(nfa).record_boolean().unwrap()
+  let compact = LazyDfa::new(nfa).record_boolean().unwrap()
   let plan = compact.wide_plan()
   let mut state = plan.start
   for byte in b"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" {

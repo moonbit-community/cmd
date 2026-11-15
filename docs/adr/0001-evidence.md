@@ -17,7 +17,7 @@ but retain independent expectations. Keep private-state/injected tests beside
 their packages, CLI contracts in the existing registry and static corpora in
 `tests/fixtures`. Missing fixtures fail; do not expose product APIs to move tests.
 
-Use `tests/run.mbtx` as the public test entry for local work and CI. It discovers
+Use `tools/run.mbtx` as the public test entry for local work and CI. It discovers
 the workspace, normalizes execution to its root, and checks/formats standalone
 scripts explicitly. Generic infrastructure belongs to `tests/harness`, concrete
 stateful assertions to `tests/scenarios`, and current CLI data to `tests/cases`.
@@ -62,7 +62,7 @@ version is exactly `<command> <package-version>\n`. Both end with a newline.
 
 ## Verification and reconsideration
 
-The [test entry](../../tests/run.mbtx), [driver](../../tests/harness/driver/) and
+The [test entry](../../tools/run.mbtx), [driver](../../tests/harness/driver/) and
 [oracle verifier](../../tests/harness/oracle.mbt) implement these rules.
 Owned children/containers must be cancelled, waited for and cleaned up;
 missing cleanup remains an infrastructure failure. Host programs observe tests

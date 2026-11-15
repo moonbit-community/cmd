@@ -63,8 +63,8 @@ priv enum Frame {
 ///|
 /// A PikeVM: an NFA simulation that supports capture groups and runs in
 /// time linear in the size of the haystack.
-pub struct PikeVM {
-  nfa : NFA
+pub struct PikeVm {
+  nfa : Nfa
   priv mut hs : Int32
   priv mut he : Int32
   priv mut curr : ActiveStates
@@ -74,7 +74,7 @@ pub struct PikeVM {
 }
 
 ///|
-pub fn PikeVM::new(nfa : NFA) -> PikeVM {
+pub fn PikeVm::new(nfa : Nfa) -> PikeVm {
   let n = nfa.states.length()
   let slots = nfa.group_len * 2
   {
@@ -93,8 +93,8 @@ pub fn PikeVM::new(nfa : NFA) -> PikeVM {
 /// the haystack is `hay[hs:he]`. Capture positions are written into
 /// `slots` (which may be shorter than the number of slots in the regex).
 /// Returns true if a match was found.
-pub fn PikeVM::search_slots(
-  self : PikeVM,
+pub fn PikeVm::search_slots(
+  self : PikeVm,
   hay : FixedArray[Byte],
   hs : Int32,
   he : Int32,
@@ -161,8 +161,8 @@ pub fn PikeVM::search_slots(
 }
 
 ///|
-fn PikeVM::nexts(
-  self : PikeVM,
+fn PikeVm::nexts(
+  self : PikeVm,
   hay : FixedArray[Byte],
   end : Int32,
   at : Int32,
@@ -208,8 +208,8 @@ fn PikeVM::nexts(
 }
 
 ///|
-fn PikeVM::closure_from_state(
-  self : PikeVM,
+fn PikeVm::closure_from_state(
+  self : PikeVm,
   sid : Int32,
   hay : FixedArray[Byte],
   at : Int32,
@@ -227,8 +227,8 @@ fn PikeVM::closure_from_state(
 }
 
 ///|
-fn PikeVM::epsilon_closure(
-  self : PikeVM,
+fn PikeVm::epsilon_closure(
+  self : PikeVm,
   slots : FixedArray[Int32],
   target : ActiveStates,
   hay : FixedArray[Byte],

@@ -22,7 +22,7 @@ struct InputQuery {
 }
 
 ///|
-fn InputQuery::InputQuery(query~ : String, input~ : String) -> InputQuery {
+fn InputQuery::new(query~ : String, input~ : String) -> InputQuery {
   { query, input, }
 }
 

@@ -67,9 +67,9 @@ jobs:
           cache-to: ${{ github.ref == 'refs/heads/main' && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
       - name: Record pinned oracle
         if: runner.os == 'Linux'
-        run: moon run tests/run.mbtx -- oracle --image '${{ steps.oracle.outputs.imageid }}'
+        run: moon run tools/run.mbtx -- oracle --image '${{ steps.oracle.outputs.imageid }}'
       - name: Exact-version functional acceptance
-        run: moon run tests/run.mbtx -- published 2>&1 | tee test-reports/published.log
+        run: moon run tools/run.mbtx -- published 2>&1 | tee test-reports/published.log
       - name: Preserve acceptance results
         id: upload_results
         if: ${{ always() && !cancelled() }}

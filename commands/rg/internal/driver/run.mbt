@@ -67,7 +67,7 @@ async fn special(mode : SpecialMode) -> Int32 {
     HelpLong => generate_help_long()
     VersionShort => generate_version_short()
     VersionLong => generate_version_long()
-    VersionPCRE2 => {
+    VersionPcre2 => {
       let (output, available) = generate_version_pcre2()
       if !available {
         exit = 1
@@ -106,7 +106,7 @@ pub async fn run_main(cli_args : Array[String]) -> Int32 {
   }
   let result = try run(cli_args) catch {
     RgError(msg) => Err(msg)
-    @sys.IOError(kind~, ..) as e =>
+    @sys.IoError(kind~, ..) as e =>
       if kind is BrokenPipe {
         Ok(0)
       } else {

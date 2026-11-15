@@ -1,0 +1,9 @@
+import {
+  "moonbitlang/core/buffer",
+}
+
+supported_targets = "native+wasm"
+
+import {
+  "moonbitlang/core/encoding/utf8",
+} for "wbtest"

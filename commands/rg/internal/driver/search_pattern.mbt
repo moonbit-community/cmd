@@ -65,7 +65,7 @@ fn SearchMatcher::new(
   }
   let edges : (@syntax.Look, @syntax.Look)? = match boundary {
     Some(Line) =>
-      Some(if crlf { (StartCRLF, EndCRLF) } else { (StartLF, EndLF) })
+      Some(if crlf { (StartCrlf, EndCrlf) } else { (StartLf, EndLf) })
     Some(Word) =>
       Some(
         if unicode {

@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "command": "pwd",
+  "help": "Usage: pwd [-L|-P]\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "logical",
+    "physical"
+  ],
+  "options": [
+    {
+      "name": "logical",
+      "aliases": [
+        "-L",
+        "--logical"
+      ],
+      "value": "none",
+      "description": "Use a valid logical PWD path.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "physical",
+      "aliases": [
+        "-P",
+        "--physical"
+      ],
+      "value": "none",
+      "description": "Resolve the physical directory path.",
+      "short": "P",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "logical",
+        "physical",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

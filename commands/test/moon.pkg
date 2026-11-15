@@ -1,21 +1,8 @@
 import {
-  "cli/core/fsops",
+  "cli/test/internal/driver",
   "moonbitlang/async",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/os_error",
-  "moonbitlang/async/stdio",
-  "moonbitlang/core/env",
-  "moonbitlang/core/string",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "native+wasm"
 
 pkgtype(kind: "executable")
-
-rule(
-  name: "gen_version",
-  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
-)
-
-dev_build(rule: "gen_version", input: "moon.mod", output: "version.mbt")

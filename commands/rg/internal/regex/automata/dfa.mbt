@@ -1,6 +1,6 @@
 ///|
 /// A state in the lazy DFA.
-priv struct DState {
+priv struct DfaState {
   nfa_ids : Array[Int32]
   look_have : UInt32
   look_need : UInt32
@@ -10,7 +10,7 @@ priv struct DState {
 }
 
 ///|
-fn DState::key(self : DState) -> String {
+fn DfaState::key(self : DfaState) -> String {
   let buf = StringBuilder()
   buf.write_string(self.look_have.to_string())
   buf.write_char(':')
@@ -33,10 +33,10 @@ const DFA_NO_MATCH : Int32 = -1
 pub const DFA_FAILED : Int32 = -2
 
 ///|
-let dead_id : Int32 = 0
+const DEAD_ID : Int32 = 0
 
 ///|
-let quit_id : Int32 = 1
+const QUIT_ID : Int32 = 1
 
 ///|
 /// The kind of look-behind context at the start of a search.
@@ -63,16 +63,16 @@ let look_bits_start : UInt32 = @syntax.Look::Start.as_bit()
 let look_bits_end : UInt32 = @syntax.Look::End.as_bit()
 
 ///|
-let look_bits_start_lf : UInt32 = @syntax.Look::StartLF.as_bit()
+let look_bits_start_lf : UInt32 = @syntax.Look::StartLf.as_bit()
 
 ///|
-let look_bits_end_lf : UInt32 = @syntax.Look::EndLF.as_bit()
+let look_bits_end_lf : UInt32 = @syntax.Look::EndLf.as_bit()
 
 ///|
-let look_bits_start_crlf : UInt32 = @syntax.Look::StartCRLF.as_bit()
+let look_bits_start_crlf : UInt32 = @syntax.Look::StartCrlf.as_bit()
 
 ///|
-let look_bits_end_crlf : UInt32 = @syntax.Look::EndCRLF.as_bit()
+let look_bits_end_crlf : UInt32 = @syntax.Look::EndCrlf.as_bit()
 
 ///|
 let look_bits_word : UInt32 = @syntax.Look::WordAscii.as_bit() |
@@ -100,15 +100,15 @@ let look_bits_word_end_half : UInt32 = @syntax.Look::WordEndHalfAscii.as_bit() |
 
 ///|
 /// A lazy DFA: a DFA whose states are computed on demand from an NFA.
-pub struct LazyDFA {
-  priv nfa : NFA
+pub struct LazyDfa {
+  priv nfa : Nfa
   priv match_all : Bool
   priv quit_non_ascii : Bool
   priv lineterm : Int32
   priv classes : FixedArray[Int32]
   priv stride : Int32
   priv mut trans : Array[Int32]
-  priv mut states : Array[DState]
+  priv mut states : Array[DfaState]
   priv mut map : Map[String, Int32]
   priv starts : FixedArray[Int32]
   priv stack : Array[Int32]
@@ -121,13 +121,13 @@ pub struct LazyDFA {
 ///|
 /// Creates a new lazy DFA. When `match_all` is true, the DFA reports all
 /// matches (used for reverse searches finding the start of a match).
-pub fn LazyDFA::new(
-  nfa : NFA,
+pub fn LazyDfa::new(
+  nfa : Nfa,
   match_all~ : Bool = false,
   state_limit~ : Int32 = 10000,
-) -> LazyDFA {
+) -> LazyDfa {
   let n = nfa.states.length()
-  let dfa : LazyDFA = {
+  let dfa : LazyDfa = {
     nfa,
     match_all,
     quit_non_ascii: nfa.look_set_any.contains_word_unicode(),
@@ -149,7 +149,7 @@ pub fn LazyDFA::new(
 }
 
 ///|
-fn LazyDFA::reset(self : LazyDFA) -> Unit {
+fn LazyDfa::reset(self : LazyDfa) -> Unit {
   self.trans = []
   self.states = []
   self.map = {}
@@ -157,7 +157,7 @@ fn LazyDFA::reset(self : LazyDFA) -> Unit {
     self.starts[i] = -1
   }
   // Dead state.
-  let dead : DState = {
+  let dead : DfaState = {
     nfa_ids: [],
     look_have: 0,
     look_need: 0,
@@ -169,10 +169,10 @@ fn LazyDFA::reset(self : LazyDFA) -> Unit {
   // Quit state (never interned).
   self.states.push(dead)
   for _ in 0..<self.stride {
-    self.trans.push(quit_id * self.stride)
+    self.trans.push(QUIT_ID * self.stride)
   }
   for i in 0..<self.stride {
-    self.trans[i] = dead_id * self.stride
+    self.trans[i] = DEAD_ID * self.stride
   }
 }
 
@@ -186,7 +186,7 @@ const MATCH_TAG : Int32 = 0x40000000
 const ID_MASK : Int32 = 0x3FFFFFFF
 
 ///|
-fn LazyDFA::tag(self : LazyDFA, sid : Int32) -> Int32 {
+fn LazyDfa::tag(self : LazyDfa, sid : Int32) -> Int32 {
   let pid = sid * self.stride
   if self.states[sid].is_match {
     pid | MATCH_TAG
@@ -196,7 +196,7 @@ fn LazyDFA::tag(self : LazyDFA, sid : Int32) -> Int32 {
 }
 
 ///|
-fn LazyDFA::add_state(self : LazyDFA, s : DState) -> Int32 {
+fn LazyDfa::add_state(self : LazyDfa, s : DfaState) -> Int32 {
   let key = s.key()
   match self.map.get(key) {
     Some(id) => id
@@ -216,8 +216,8 @@ fn LazyDFA::add_state(self : LazyDFA, s : DState) -> Int32 {
 }
 
 ///|
-fn LazyDFA::epsilon_closure(
-  self : LazyDFA,
+fn LazyDfa::epsilon_closure(
+  self : LazyDfa,
   start : Int32,
   look_have : UInt32,
   set : SparseSet,
@@ -264,8 +264,8 @@ fn LazyDFA::epsilon_closure(
 
 ///|
 /// Builds a DFA state from the NFA states in `set`.
-fn LazyDFA::build_state(
-  self : LazyDFA,
+fn LazyDfa::build_state(
+  self : LazyDfa,
   set : SparseSet,
   look_have : UInt32,
   is_match : Bool,
@@ -300,9 +300,9 @@ fn LazyDFA::build_state(
 ///|
 /// Computes the transition from state `sid` on `unit`, where `unit` is a
 /// byte or 256 for the end-of-input sentinel.
-fn LazyDFA::compute_next(self : LazyDFA, sid : Int32, unit : Int32) -> Int32 {
+fn LazyDfa::compute_next(self : LazyDfa, sid : Int32, unit : Int32) -> Int32 {
   if self.quit_non_ascii && unit >= 0x80 && unit < 256 {
-    return quit_id
+    return QUIT_ID
   }
   let state = self.states[sid]
   let nfa = self.nfa
@@ -420,15 +420,15 @@ fn LazyDFA::compute_next(self : LazyDFA, sid : Int32, unit : Int32) -> Int32 {
 /// Whether a search can't start after (or, in reverse, before) `byte`: like
 /// upstream's quit set, a non-ASCII byte is a quit byte when Unicode word
 /// boundaries are involved, so the caller must fall back to the PikeVM.
-fn LazyDFA::start_quits(self : LazyDFA, byte : Int32) -> Bool {
+fn LazyDfa::start_quits(self : LazyDfa, byte : Int32) -> Bool {
   self.quit_non_ascii && byte >= 0x80
 }
 
 ///|
 /// Returns the start state for a search, given the byte preceding the
 /// search (or -1 at the beginning of the haystack).
-fn LazyDFA::start_state(
-  self : LazyDFA,
+fn LazyDfa::start_state(
+  self : LazyDfa,
   anchored : Bool,
   prev_byte : Int32,
 ) -> Int32 {
@@ -514,7 +514,7 @@ fn LazyDFA::start_state(
 ///|
 /// Returns the next state, computing it if necessary. Returns -1 if the
 /// cache had to be cleared (and the search must be abandoned).
-fn LazyDFA::next_state(self : LazyDFA, sid : Int32, unit : Int32) -> Int32 {
+fn LazyDfa::next_state(self : LazyDfa, sid : Int32, unit : Int32) -> Int32 {
   let class = if unit == 256 { self.stride - 1 } else { self.classes[unit] }
   let idx = sid * self.stride + class
   let t = self.trans[idx]
@@ -533,8 +533,8 @@ fn LazyDFA::next_state(self : LazyDFA, sid : Int32, unit : Int32) -> Int32 {
 ///|
 /// Searches forward in `hay[start:end]` for the end of the leftmost-first
 /// match. Returns the end offset, `DFA_NO_MATCH` or `DFA_FAILED`.
-pub fn LazyDFA::find_fwd(
-  self : LazyDFA,
+pub fn LazyDfa::find_fwd(
+  self : LazyDfa,
   hay : FixedArray[Byte],
   hs : Int32,
   he : Int32,
@@ -566,7 +566,7 @@ pub fn LazyDFA::find_fwd(
   let mut mat = DFA_NO_MATCH
   let stride = self.stride
   let classes = self.classes
-  let quit_pid = quit_id * stride
+  let quit_pid = QUIT_ID * stride
   let has_pre = pre is Some(_)
   let mut cur = sid * stride
   while at < end {
@@ -603,8 +603,8 @@ pub fn LazyDFA::find_fwd(
     } else {
       self.next_state(cur / stride, b)
     }
-    if sid <= quit_id {
-      if sid == dead_id {
+    if sid <= QUIT_ID {
+      if sid == DEAD_ID {
         return self.finish_search(mat, at - start)
       }
       return self.finish_search(DFA_FAILED, at - start)
@@ -641,7 +641,7 @@ pub fn LazyDFA::find_fwd(
     if sid < 0 {
       return self.finish_search(DFA_FAILED, at - start)
     }
-    if sid == quit_id {
+    if sid == QUIT_ID {
       return self.finish_search(
         if mat >= 0 {
           mat
@@ -670,8 +670,8 @@ pub fn LazyDFA::find_fwd(
 /// Searches backward in `hay[start:end]` from `end`, returning the start
 /// offset of the match (or `DFA_NO_MATCH`/`DFA_FAILED`). This is used with a
 /// reverse NFA to find the start of a match whose end is known.
-pub fn LazyDFA::find_rev(
-  self : LazyDFA,
+pub fn LazyDfa::find_rev(
+  self : LazyDfa,
   hay : FixedArray[Byte],
   hs : Int32,
   he : Int32,
@@ -698,8 +698,8 @@ pub fn LazyDFA::find_rev(
     let b = hay[at].to_int()
     let t = self.trans[sid * stride + classes[b]]
     sid = if t >= 0 { (t & ID_MASK) / stride } else { self.next_state(sid, b) }
-    if sid <= quit_id {
-      if sid == dead_id {
+    if sid <= QUIT_ID {
+      if sid == DEAD_ID {
         return self.finish_search(mat, end - at)
       }
       return self.finish_search(DFA_FAILED, end - at)
@@ -716,7 +716,7 @@ pub fn LazyDFA::find_rev(
     if sid < 0 {
       return self.finish_search(DFA_FAILED, end - at)
     }
-    if sid == quit_id {
+    if sid == QUIT_ID {
       return self.finish_search(
         if mat >= 0 {
           mat

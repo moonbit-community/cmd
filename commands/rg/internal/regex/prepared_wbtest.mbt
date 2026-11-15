@@ -5,7 +5,7 @@ test "reverse cache pressure falls back over the original full span" {
     abort("unexpected reverse preparation")
   }
   regex.rev = Prepared(
-    @automata.LazyDFA::new(nfa, match_all=true, state_limit=3),
+    @automata.LazyDfa::new(nfa, match_all=true, state_limit=3),
   )
   let hay = b"!abc123 tail9!".to_fixedarray()
   for _ in 0..<5 {

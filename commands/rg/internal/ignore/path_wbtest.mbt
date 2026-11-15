@@ -157,7 +157,7 @@ test "path/compare_utf8" {
 
 ///|
 test "error/display" {
-  let io = @sys.IOError::from_errno(2)
+  let io = @sys.IoError::from_errno(2)
   let e = IgnoreError::Io(io).tagged("/a/.gitignore", 3)
   inspect(
     e,

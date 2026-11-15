@@ -14,30 +14,30 @@ fn Parser::parse_builtin_numeric(
     "sqrt" => Some(Sqrt)
     "min" => Some(Min)
     "min_by" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(MinBy(expr))
     }
     "max" => Some(Max)
     "max_by" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(MaxBy(expr))
     }
     "round" => Some(Round)
     "ceil" => Some(Ceil)
     "abs" => Some(Abs)
     "pow" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let base = self.parse_pipe()
       if self.consume(TSemicolon) {
         let exponent = self.parse_pipe()
-        self.expect(TRParen)
+        self.expect(TRightParen)
         Some(Pipe(base, Pow(exponent)))
       } else {
-        self.expect(TRParen)
+        self.expect(TRightParen)
         Some(Pow(base))
       }
     }

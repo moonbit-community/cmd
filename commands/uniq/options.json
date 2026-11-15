@@ -1,0 +1,208 @@
+{
+  "schema": 1,
+  "command": "uniq",
+  "help": "Usage: uniq [-cduDiz] [--all-repeated[=METHOD]] [--group[=METHOD]] [-f FIELDS] [-s CHARS] [-w CHARS] [FILE]\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "all-repeated",
+    "check-chars",
+    "count",
+    "group",
+    "ignore-case",
+    "repeated",
+    "skip-chars",
+    "skip-fields",
+    "unique",
+    "zero-terminated"
+  ],
+  "options": [
+    {
+      "name": "count",
+      "aliases": [
+        "-c",
+        "--count"
+      ],
+      "value": "none",
+      "description": "Count occurrences / repeated records only / singletons only.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "repeated",
+      "aliases": [
+        "-d",
+        "--repeated"
+      ],
+      "value": "none",
+      "description": "Count occurrences / repeated records only / singletons only.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "all-repeated",
+      "aliases": [
+        "--all-repeated"
+      ],
+      "value": "required",
+      "description": "Print all duplicates; none, prepend or separate separators.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "group",
+      "aliases": [
+        "--group"
+      ],
+      "value": "required",
+      "description": "Print all groups; separate (default), prepend, append or both.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "unique",
+      "aliases": [
+        "-u",
+        "--unique"
+      ],
+      "value": "none",
+      "description": "Print only groups that occur once.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore-case",
+      "aliases": [
+        "-i",
+        "--ignore-case"
+      ],
+      "value": "none",
+      "description": "Ignore ASCII case when comparing adjacent records.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "skip-fields",
+      "aliases": [
+        "-f",
+        "--skip-fields"
+      ],
+      "value": "required",
+      "description": "Skip fields, then bytes before comparing.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_SKIP_FIELDS",
+        "type_": "Int32"
+      }
+    },
+    {
+      "name": "skip-chars",
+      "aliases": [
+        "-s",
+        "--skip-chars"
+      ],
+      "value": "required",
+      "description": "Skip fields, then bytes before comparing.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_SKIP_CHARS",
+        "type_": "Int32"
+      }
+    },
+    {
+      "name": "check-chars",
+      "aliases": [
+        "-w",
+        "--check-chars"
+      ],
+      "value": "required",
+      "description": "Limit compared bytes.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "zero-terminated",
+      "aliases": [
+        "-z",
+        "--zero-terminated"
+      ],
+      "value": "none",
+      "description": "Use NUL-delimited records.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    },
+    {
+      "name": "all-repeated-short-D",
+      "parser_name": "all-repeated",
+      "aliases": [
+        "-D"
+      ],
+      "value": "none",
+      "description": "Print all duplicates; none, prepend or separate separators.",
+      "short": "D",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "count",
+        "repeated",
+        "all-repeated",
+        "all-repeated-short-D",
+        "group",
+        "unique",
+        "ignore-case",
+        "skip-fields",
+        "skip-chars",
+        "check-chars",
+        "zero-terminated",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

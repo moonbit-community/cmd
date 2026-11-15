@@ -230,7 +230,7 @@ pub(all) enum Flag {
   DotMatchesNewLine
   SwapGreed
   Unicode
-  CRLF
+  Crlf
   IgnoreWhitespace
 }
 

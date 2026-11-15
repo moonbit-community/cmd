@@ -10,22 +10,22 @@ pub struct RecordBoolean {
 }
 
 ///|
-pub fn LazyDFA::record_boolean(self : LazyDFA) -> RecordBoolean? {
-  self.record_boolean_with_table_limit(boolean_table_entry_limit)
+pub fn LazyDfa::record_boolean(self : LazyDfa) -> RecordBoolean? {
+  self.record_boolean_with_table_limit(BOOLEAN_TABLE_ENTRY_LIMIT)
 }
 
 ///|
 // The private builder keeps the fixed production limit independently testable
 // from the state bound; transition-cell counts and state counts are not bytes.
-fn LazyDFA::record_boolean_with_table_limit(
-  self : LazyDFA,
+fn LazyDfa::record_boolean_with_table_limit(
+  self : LazyDfa,
   table_limit : Int32,
 ) -> RecordBoolean? {
   if !self.nfa.look_set_any.is_empty() ||
-    self.nfa.states.length() > boolean_nfa_state_limit {
+    self.nfa.states.length() > BOOLEAN_NFA_STATE_LIMIT {
     return None
   }
-  let dfa = LazyDFA::new(self.nfa, state_limit=boolean_dfa_state_limit + 1)
+  let dfa = LazyDfa::new(self.nfa, state_limit=BOOLEAN_DFA_STATE_LIMIT + 1)
   let start = dfa.start_state(false, -1)
   let empty = dfa.next_state(start, 256)
   if empty < 0 || dfa.states[empty].is_match {
@@ -38,7 +38,7 @@ fn LazyDFA::record_boolean_with_table_limit(
   representatives[dfa.stride - 1] = 256
   let mut sid = 2
   while sid < dfa.states.length() {
-    if dfa.states.length() > boolean_dfa_state_limit ||
+    if dfa.states.length() > BOOLEAN_DFA_STATE_LIMIT ||
       dfa.states.length() * dfa.stride > table_limit {
       return None
     }
@@ -47,8 +47,8 @@ fn LazyDFA::record_boolean_with_table_limit(
         if unit >= 0 {
           let next = dfa.next_state(sid, unit)
           if next < 0 ||
-            next == quit_id ||
-            dfa.states.length() > boolean_dfa_state_limit {
+            next == QUIT_ID ||
+            dfa.states.length() > BOOLEAN_DFA_STATE_LIMIT {
             return None
           }
         }

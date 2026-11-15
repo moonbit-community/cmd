@@ -3,13 +3,13 @@ test "compact and wide routing observes both sides of its exact threshold" {
   let regex = Regex::new("[0-9]+Q")
   for
     size in [
-      compact_boolean_block_bytes - 1,
-      compact_boolean_block_bytes,
-      compact_boolean_block_bytes + 1,
+      COMPACT_BOOLEAN_BLOCK_BYTES - 1,
+      COMPACT_BOOLEAN_BLOCK_BYTES,
+      COMPACT_BOOLEAN_BLOCK_BYTES + 1,
     ] {
     assert_eq(
       boolean_count_route(size) is Wide,
-      size > compact_boolean_block_bytes,
+      size > COMPACT_BOOLEAN_BLOCK_BYTES,
     )
     let hay = (b"12Q\n" + Bytes::make(size - 4, b'x')).to_fixedarray()
     assert_eq(regex.count_boolean_lines(hay, 0, size, b'\n'), Some(1L))

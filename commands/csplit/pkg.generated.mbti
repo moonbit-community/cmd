@@ -6,11 +6,6 @@ package "cli/csplit"
 // Errors
 
 // Types and methods
-type Control
-
-type Output
-
-type Pattern
 
 // Type aliases
 

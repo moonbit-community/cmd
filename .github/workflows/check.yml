@@ -71,34 +71,34 @@ jobs:
       - name: Dependencies
         run: moon update
       - name: Check products and test tools
-        run: moon run tests/run.mbtx -- check
+        run: moon run tools/run.mbtx -- check
       - name: Architecture and strategy registry
-        run: moon run tests/run.mbtx -- architecture test-reports/architecture.json
+        run: moon run tools/run.mbtx -- architecture test-reports/architecture.json
       - name: Prepare products and execution tools
-        run: moon run tests/run.mbtx -- prepare
+        run: moon run tools/run.mbtx -- prepare
       - name: Check case registry and candidate
-        run: moon run tests/run.mbtx -- index check
+        run: moon run tools/run.mbtx -- index check
       - name: Wasm package tests
         timeout-minutes: 5
-        run: moon run tests/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log
+        run: moon run tools/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log
       - name: Native test-tool regressions
-        run: moon run tests/run.mbtx -- test tools 2>&1 | tee test-reports/packages-harness.log
+        run: moon run tools/run.mbtx -- test tools 2>&1 | tee test-reports/packages-harness.log
       - name: Complete Wasm functional checks
-        run: moon run tests/run.mbtx -- functional 2>&1 | tee test-reports/functional.log
+        run: moon run tools/run.mbtx -- functional 2>&1 | tee test-reports/functional.log
       - name: Interfaces and harness formatting
         if: runner.os == 'Linux'
         run: |
           moon info
-          moon run tests/run.mbtx -- format --check
+          moon run tools/run.mbtx -- format --check
           git diff --exit-code
       - name: Select required upstream comparisons
         if: runner.os == 'Linux'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: moon run tests/run.mbtx -- ci select "$BASE_SHA" "$GITHUB_SHA"
+        run: moon run tools/run.mbtx -- ci select "$BASE_SHA" "$GITHUB_SHA"
       - name: Export prepared Linux inputs
         if: runner.os == 'Linux'
-        run: moon run tests/run.mbtx -- ci export
+        run: moon run tools/run.mbtx -- ci export
       - name: Share prepared Linux inputs
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v7.0.2
@@ -109,7 +109,7 @@ jobs:
           if-no-files-found: error
       - name: Record report footprint
         if: ${{ always() && !cancelled() }}
-        run: moon run tests/run.mbtx -- ci metrics
+        run: moon run tools/run.mbtx -- ci metrics
       - name: Preserve results and failure diagnostics
         id: upload_results
         if: ${{ always() && !cancelled() }}
@@ -196,23 +196,23 @@ jobs:
       - name: Dependencies
         run: moon update
       - name: Check products and test tools
-        run: moon run tests/run.mbtx -- check
+        run: moon run tools/run.mbtx -- check
       - name: Architecture and strategy registry
-        run: moon run tests/run.mbtx -- architecture test-reports/architecture.json
+        run: moon run tools/run.mbtx -- architecture test-reports/architecture.json
       - name: Prepare products and execution tools
-        run: moon run tests/run.mbtx -- prepare
+        run: moon run tools/run.mbtx -- prepare
       - name: Check case registry and candidate
-        run: moon run tests/run.mbtx -- index check
+        run: moon run tools/run.mbtx -- index check
       - name: Wasm package tests
         timeout-minutes: 5
-        run: moon run tests/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log
+        run: moon run tools/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log
       - name: Native test-tool regressions
-        run: moon run tests/run.mbtx -- test tools 2>&1 | tee test-reports/packages-harness.log
+        run: moon run tools/run.mbtx -- test tools 2>&1 | tee test-reports/packages-harness.log
       - name: Complete Wasm functional checks
-        run: moon run tests/run.mbtx -- functional 2>&1 | tee test-reports/functional.log
+        run: moon run tools/run.mbtx -- functional 2>&1 | tee test-reports/functional.log
       - name: Record report footprint
         if: ${{ always() && !cancelled() }}
-        run: moon run tests/run.mbtx -- ci metrics
+        run: moon run tools/run.mbtx -- ci metrics
       - name: Preserve results and failure diagnostics
         id: upload_results
         if: ${{ always() && !cancelled() }}
@@ -282,7 +282,7 @@ jobs:
         run: moon update
       - name: Verify prepared inputs and selection
         id: inputs
-        run: moon run tests/run.mbtx -- ci import
+        run: moon run tools/run.mbtx -- ci import
       - name: Install loopback observation tools
         if: steps.inputs.outputs.required == 'true'
         run: (command -v lsof && test -x /usr/bin/nc) || (sudo apt-get update && sudo apt-get install --yes lsof netcat-openbsd)
@@ -305,14 +305,14 @@ jobs:
           cache-to: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_dispatch' || inputs.use_cache) && 'type=gha,mode=max,scope=mooncmd-oracle' || '' }}
       - name: Record pinned oracle
         if: steps.inputs.outputs.required == 'true'
-        run: moon run tests/run.mbtx -- oracle --image '${{ steps.oracle.outputs.imageid }}'
+        run: moon run tools/run.mbtx -- oracle --image '${{ steps.oracle.outputs.imageid }}'
       - name: Run required differential
         id: compare
         if: steps.inputs.outputs.required == 'true'
-        run: moon run tests/run.mbtx -- ci differential 2>&1 | tee test-reports/differential.log
+        run: moon run tools/run.mbtx -- ci differential 2>&1 | tee test-reports/differential.log
       - name: Record report footprint
         if: ${{ always() && !cancelled() }}
-        run: moon run tests/run.mbtx -- ci metrics
+        run: moon run tools/run.mbtx -- ci metrics
       - name: Preserve differential results
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v7.0.2
@@ -339,4 +339,4 @@ jobs:
           ORACLE_RESULT: ${{ needs.differential.result }}
           ORACLE_REQUIRED: ${{ needs.differential.outputs.required }}
           ORACLE_EXECUTED: ${{ needs.differential.outputs.executed }}
-        run: moon run tests/run.mbtx -- ci gate
+        run: moon run tools/run.mbtx -- ci gate

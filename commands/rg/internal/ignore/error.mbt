@@ -36,7 +36,7 @@ pub(all) suberror IgnoreError {
   /// symbolic links.
   Loop(ancestor~ : String, child~ : String)
   /// An error that occurs when doing I/O, such as reading an ignore file.
-  Io(@sys.IOError)
+  Io(@sys.IoError)
   /// An error that occurs when trying to parse a glob. `glob` is the
   /// original glob as written by the end user (when available) and `err` is
   /// the underlying glob error rendered as a string.

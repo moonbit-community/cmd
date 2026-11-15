@@ -150,11 +150,11 @@ pub(all) enum Dot {
   AnyChar
   AnyByte
   AnyCharExcept(Int32)
-  AnyCharExceptLF
-  AnyCharExceptCRLF
+  AnyCharExceptLf
+  AnyCharExceptCrlf
   AnyByteExcept(Int32)
-  AnyByteExceptLF
-  AnyByteExceptCRLF
+  AnyByteExceptLf
+  AnyByteExceptCrlf
 }
 
 #derive(Eq, @debug.Debug)
@@ -224,7 +224,7 @@ pub(all) enum Flag {
   DotMatchesNewLine
   SwapGreed
   Unicode
-  CRLF
+  Crlf
   IgnoreWhitespace
 }
 
@@ -325,10 +325,10 @@ pub(all) enum LiteralKind {
 pub(all) enum Look {
   Start
   End
-  StartLF
-  EndLF
-  StartCRLF
-  EndCRLF
+  StartLf
+  EndLf
+  StartCrlf
+  EndCrlf
   WordAscii
   WordAsciiNegate
   WordUnicode

@@ -1,0 +1,249 @@
+{
+  "schema": 1,
+  "command": "nl",
+  "help": "Usage: nl [-b STYLE] [-h STYLE] [-f STYLE] [-v NUMBER] [-i NUMBER] [-l NUMBER] [-n FORMAT] [-w NUMBER] [-s STRING] [-d STRING] [-p] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "body-numbering",
+    "footer-numbering",
+    "header-numbering",
+    "line-increment",
+    "join-blank-lines",
+    "no-renumber",
+    "number-format",
+    "number-separator",
+    "number-width",
+    "section-delimiter",
+    "starting-line-number"
+  ],
+  "options": [
+    {
+      "name": "body-numbering",
+      "aliases": [
+        "-b",
+        "--body-numbering"
+      ],
+      "value": "required",
+      "description": "Set body / header / footer style: a (all), t (nonempty), n (none).",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "t",
+      "default_binding": {
+        "name": "DEFAULT_BODY_NUMBERING",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "header-numbering",
+      "aliases": [
+        "-h",
+        "--header-numbering"
+      ],
+      "value": "required",
+      "description": "Set body / header / footer style: a (all), t (nonempty), n (none).",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "n",
+      "default_binding": {
+        "name": "DEFAULT_HEADER_NUMBERING",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "footer-numbering",
+      "aliases": [
+        "-f",
+        "--footer-numbering"
+      ],
+      "value": "required",
+      "description": "Set body / header / footer style: a (all), t (nonempty), n (none).",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "n",
+      "default_binding": {
+        "name": "DEFAULT_FOOTER_NUMBERING",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "number-width",
+      "aliases": [
+        "-w",
+        "--number-width"
+      ],
+      "value": "required",
+      "description": "Set number width / separator.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "6",
+      "default_binding": {
+        "name": "DEFAULT_NUMBER_WIDTH",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "number-separator",
+      "aliases": [
+        "-s",
+        "--number-separator"
+      ],
+      "value": "required",
+      "description": "Set number width / separator.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "\t",
+      "default_binding": {
+        "name": "DEFAULT_NUMBER_SEPARATOR",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "starting-line-number",
+      "aliases": [
+        "-v",
+        "--starting-line-number"
+      ],
+      "value": "required",
+      "description": "Set starting number / increment.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "1",
+      "default_binding": {
+        "name": "DEFAULT_STARTING_LINE_NUMBER",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "line-increment",
+      "aliases": [
+        "-i",
+        "--line-increment"
+      ],
+      "value": "required",
+      "description": "Set starting number / increment.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "1",
+      "default_binding": {
+        "name": "DEFAULT_LINE_INCREMENT",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "join-blank-lines",
+      "aliases": [
+        "-l",
+        "--join-blank-lines"
+      ],
+      "value": "required",
+      "description": "Number the last line of each N blank lines in style a.",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "1",
+      "default_binding": {
+        "name": "DEFAULT_JOIN_BLANK_LINES",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "number-format",
+      "aliases": [
+        "-n",
+        "--number-format"
+      ],
+      "value": "required",
+      "description": "Left-align / right-align / zero-pad numbers.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "rn",
+      "default_binding": {
+        "name": "DEFAULT_NUMBER_FORMAT",
+        "type_": "String"
+      }
+    },
+    {
+      "name": "section-delimiter",
+      "aliases": [
+        "-d",
+        "--section-delimiter"
+      ],
+      "value": "required",
+      "description": "Set section delimiter; default \\:; empty disables markers.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "no-renumber",
+      "aliases": [
+        "-p",
+        "--no-renumber"
+      ],
+      "value": "none",
+      "description": "Continue line numbering across logical pages.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "body-numbering",
+        "header-numbering",
+        "footer-numbering",
+        "number-width",
+        "number-separator",
+        "starting-line-number",
+        "line-increment",
+        "join-blank-lines",
+        "number-format",
+        "section-delimiter",
+        "no-renumber",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/numbering.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

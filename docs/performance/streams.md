@@ -39,10 +39,10 @@ by themselves establish a measured speedup or reduced peak RSS.
 
 | Consumer | Work kept synchronous | Boundary that remains command-owned |
 | --- | --- | --- |
-| [nl](../../commands/nl/numbering.mbt) | Cached record admission and coalesced number/record output | Sections, blank groups, number advancement and empty-input allocation |
-| [sed](../../commands/sed/execute.mbt) | Cached records, address-free selection and coalesced output | Flush before external input, completion or a later script error; n/N and append ordering |
+| [nl](../../commands/nl/internal/driver/numbering.mbt) | Cached record admission and coalesced number/record output | Sections, blank groups, number advancement and empty-input allocation |
+| [sed](../../commands/sed/internal/driver/execute.mbt) | Cached records, address-free selection and coalesced output | Flush before external input, completion or a later script error; n/N and append ordering |
 | [join](../../commands/join/output.mbt) | Complete joined-record output | Duplicate-key products, unpaired records and separators |
-| [comm](../../commands/comm/merge.mbt) | Merge already available immutable records until I/O is needed | Ordering diagnostics, column selection and ownership across refills |
+| [comm](../../commands/comm/internal/driver/merge.mbt) | Merge already available immutable records until I/O is needed | Ordering diagnostics, column selection and ownership across refills |
 | [rg](search.md) / grep | Complete record or span admission | Match accounting, context, early stop and explicit line buffering |
 
 Coalescing can allocate one extra record-sized buffer. Removing that allocation
@@ -52,7 +52,7 @@ write assertions and qualify both hit and miss workloads.
 
 ## Tail suffix retention
 
-[TailWindow](../../commands/tail/window.mbt) stores immutable chunks in a deque,
+[TailWindow](../../commands/tail/internal/driver/window.mbt) stores immutable chunks in a deque,
 with a start offset and delimiter count. Byte mode removes the excess prefix;
 line mode also reserves a selected slot for an unfinished final record. Boundary
 search starts from the side requiring fewer delimiter crossings, avoiding a
@@ -74,9 +74,9 @@ Use the `real-tail-*` rows and private window/lifetime regressions together.
 
 | Owner | Algorithm and storage | Important limit |
 | --- | --- | --- |
-| [csplit](../../commands/csplit/snapshot.mbt) | One data snapshot and signed 64-bit line offsets; synchronous newline/index-page encoding and cached record matching | Disk holds input plus eight bytes per boundary; bounded pages do not bound the longest regex record or cleanup paths |
-| [column](../../commands/column/spool.mbt) | Snapshot displayed records once, retain widths and bounded data/index pages | Longest record and width state remain; field-plan caches are admitted only when their bounded cost is worthwhile |
-| [tac](../../commands/tac/reverse_fixed.mbt) | Reverse fixed-separator scans in 64 KiB blocks with overlap; spool nonseekable input first | Regex reversal still retains contiguous input and has signed 32-bit matcher indices |
+| [csplit](../../commands/csplit/internal/driver/snapshot.mbt) | One data snapshot and signed 64-bit line offsets; synchronous newline/index-page encoding and cached record matching | Disk holds input plus eight bytes per boundary; bounded pages do not bound the longest regex record or cleanup paths |
+| [column](../../commands/column/internal/driver/spool.mbt) | Snapshot displayed records once, retain widths and bounded data/index pages | Longest record and width state remain; field-plan caches are admitted only when their bounded cost is worthwhile |
+| [tac](../../commands/tac/internal/driver/reverse_fixed.mbt) | Reverse fixed-separator scans in 64 KiB blocks with overlap; spool nonseekable input first | Regex reversal still retains contiguous input and has signed 32-bit matcher indices |
 | [sort](ordering.md) | Accounted runs and bounded merge fan-in | Active oversized records and runtime storage remain outside the budget |
 | [split](../../commands/split/) | Direct streaming where layout permits; owned spools for total-dependent or long-pending layouts | Round-robin path state and filter sessions grow with visited pieces |
 

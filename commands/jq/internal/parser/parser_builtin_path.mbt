@@ -10,38 +10,38 @@ fn Parser::parse_builtin_path(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "paths" =>
-      if self.consume(TLParen) {
+      if self.consume(TLeftParen) {
         let expr = self.parse_pipe()
-        self.expect(TRParen)
+        self.expect(TRightParen)
         Some(PathsWithFilter(expr))
       } else {
         Some(Paths)
       }
     "leaf_paths" => Some(LeafPaths)
     "path" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Path(expr))
     }
     "getpath" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(GetPath(expr))
     }
     "setpath" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let path = self.parse_pipe()
       self.expect(TSemicolon)
       let value = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(SetPath(path, value))
     }
     "delpaths" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(DelPaths(expr))
     }
     _ => None

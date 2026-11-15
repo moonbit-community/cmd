@@ -12,7 +12,7 @@ test "wide endpoint count and stream kernels agree at every chunk phase" {
       b"55Q"
     for pattern in ["[0-9]+Q|Z+", "a+Q", "Z+", "[0-9]{2}Q"] {
       let nfa = compile_nfa(@syntax.parse(pattern))
-      let plan = LazyDFA::new(nfa).record_boolean().unwrap()
+      let plan = LazyDfa::new(nfa).record_boolean().unwrap()
       for offset in 0..<16 {
         let hay = (Bytes::make(offset, b'!') + body).to_fixedarray()
         let expected = plan.count_lines(hay, offset, hay.length(), term)
@@ -20,7 +20,7 @@ test "wide endpoint count and stream kernels agree at every chunk phase" {
           plan.count_long_lines(hay, offset, hay.length(), term),
           expected,
         )
-        let reference = LazyDFA::new(nfa).find_fwd(
+        let reference = LazyDfa::new(nfa).find_fwd(
           hay,
           offset,
           hay.length(),

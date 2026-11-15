@@ -18,9 +18,9 @@ The searcher owns decoding, record lifetime and sink events; the adapter owns
 command-specific matcher eligibility. Regex automata and byte kernels do not
 import the driver.
 
-Grep's [execution plan](../../commands/grep/execution.mbt) selects full output,
+Grep's [execution plan](../../commands/grep/internal/driver/execution.mbt) selects full output,
 span output or summary behavior before its
-[streaming loop](../../commands/grep/streaming.mbt). Required context, binary
+[streaming loop](../../commands/grep/internal/driver/streaming.mbt). Required context, binary
 detection, selected-line accounting and early exits remain command-owned.
 
 ## Negative filters and exact engines

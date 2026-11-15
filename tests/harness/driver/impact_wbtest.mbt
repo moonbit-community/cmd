@@ -1,4 +1,25 @@
 ///|
+test "tool dependency and package configuration changes require differential execution" {
+  for
+    path in [
+      "tools/moon.mod", "tools/metadata/moon.pkg", "tools/release/moon.pkg",
+    ] {
+    let (scope, reason, selected) = oracle_impact(
+      Some([path]),
+      ["cat", "sort"],
+      [],
+    )
+    assert_eq(scope, "all")
+    assert_eq(reason, "shared or unclassified execution input: " + path)
+    assert_eq(selected, ["cat", "sort"])
+  }
+  assert_eq(
+    oracle_impact(Some(["tools/README.md"]), ["cat", "sort"], []),
+    ("none", "no functional changes", []),
+  )
+}
+
+///|
 async test "selected differential preserves the pinned image through both option parsers" {
   let root = @fs.tmpdir(prefix="cmd-selection-options-")
   defer @fs.rmdir(root, recursive=true)
@@ -12,7 +33,7 @@ async test "selected differential preserves the pinned image through both option
     "reason": "test selection",
     "commands": ["cat"],
     "case_ids": ["selected-cat"],
-    "changed_paths": ["commands/cat/main.mbt"],
+    "changed_paths": ["commands/cat/internal/driver/main.mbt"],
   }
   let path = root + "/selection.json"
   @fs.write_file(path, selection.stringify())

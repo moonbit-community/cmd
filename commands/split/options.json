@@ -1,0 +1,248 @@
+{
+  "schema": 1,
+  "command": "split",
+  "help": "Usage: split [OPTION]... [FILE [PREFIX]]\nSplit FILE (or stdin) into byte-preserving pieces; default PREFIX is x.\n{{help:lines:0}}\n{{help:bytes:0}}\n{{help:line-bytes:0}}\n{{help:number:0}}\n{{help:suffix-length:0}}\n{{help:numeric-suffixes-short-d:0}}\n{{help:hex-suffixes-short-x:0}}\n{{help:additional-suffix:0}}\n{{help:elide-empty-files:0}}\n{{help:filter:0}}\n{{help:help:0}}\n{{help:version:0}}\nExisting named outputs are refused; filters own their explicit file writes.\nFilters support shared shell arithmetic assignment, backticks and expanded here-documents.\nLine-byte and unknown-size partition layouts require temporary write access.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nShell test -s follows target metadata; unavailable target sizes are rejected.\nMalformed shell command lists reject before execution; complete EOF continuations execute.\nOn POSIX, every file-test operand ending in a slash must name a directory.\n",
+  "catalog_options": [
+    "bytes",
+    "lines",
+    "number",
+    "line-bytes",
+    "numeric-suffixes",
+    "hex-suffixes",
+    "suffix-length",
+    "additional-suffix",
+    "elide-empty-files",
+    "filter"
+  ],
+  "options": [
+    {
+      "name": "lines",
+      "aliases": [
+        "-l",
+        "--lines"
+      ],
+      "value": "required",
+      "description": "put NUMBER records in each piece (default 1000)",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -l, --lines=NUMBER        put NUMBER records in each piece (default 1000)"
+      ],
+      "default_value": "1000",
+      "default_binding": {
+        "name": "DEFAULT_LINES",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "bytes",
+      "aliases": [
+        "-b",
+        "--bytes"
+      ],
+      "value": "required",
+      "description": "put SIZE bytes in each piece",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -b, --bytes=SIZE          put SIZE bytes in each piece"
+      ]
+    },
+    {
+      "name": "line-bytes",
+      "aliases": [
+        "-C",
+        "--line-bytes"
+      ],
+      "value": "required",
+      "description": "put at most SIZE bytes of records in each piece",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -C, --line-bytes=SIZE     put at most SIZE bytes of records in each piece"
+      ]
+    },
+    {
+      "name": "number",
+      "aliases": [
+        "-n",
+        "--number"
+      ],
+      "value": "required",
+      "description": "N, K/N, l/N, l/K/N, r/N or r/K/N",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -n, --number=CHUNKS       N, K/N, l/N, l/K/N, r/N or r/K/N"
+      ]
+    },
+    {
+      "name": "suffix-length",
+      "aliases": [
+        "-a",
+        "--suffix-length"
+      ],
+      "value": "required",
+      "description": "fixed suffix width; zero selects automatic width",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -a, --suffix-length=N     fixed suffix width; zero selects automatic width"
+      ]
+    },
+    {
+      "name": "additional-suffix",
+      "aliases": [
+        "--additional-suffix"
+      ],
+      "value": "required",
+      "description": "append SUFFIX to generated names",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --additional-suffix=SUFFIX  append SUFFIX to generated names"
+      ]
+    },
+    {
+      "name": "numeric-suffixes",
+      "aliases": [
+        "--numeric-suffixes"
+      ],
+      "value": "required",
+      "description": "numeric suffixes",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "hex-suffixes",
+      "aliases": [
+        "--hex-suffixes"
+      ],
+      "value": "required",
+      "description": "hexadecimal suffixes",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "elide-empty-files",
+      "aliases": [
+        "-e",
+        "--elide-empty-files"
+      ],
+      "value": "none",
+      "description": "omit empty outputs",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -e, --elide-empty-files   omit empty outputs"
+      ]
+    },
+    {
+      "name": "filter",
+      "aliases": [
+        "--filter"
+      ],
+      "value": "required",
+      "description": "run pure shell source per piece with FILE set",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --filter=COMMAND     run pure shell source per piece with FILE set"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help               display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version            display version and exit"
+      ]
+    },
+    {
+      "name": "numeric-suffixes-short-d",
+      "parser_name": "numeric-suffixes",
+      "aliases": [
+        "-d"
+      ],
+      "value": "none",
+      "description": "numeric suffixes",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -d, --numeric-suffixes[=FROM]  numeric suffixes"
+      ]
+    },
+    {
+      "name": "hex-suffixes-short-x",
+      "parser_name": "hex-suffixes",
+      "aliases": [
+        "-x"
+      ],
+      "value": "none",
+      "description": "hexadecimal suffixes",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -x, --hex-suffixes[=FROM]      hexadecimal suffixes"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/options.mbt",
+      "import_alias": "cli",
+      "options": [
+        "lines",
+        "bytes",
+        "line-bytes",
+        "number",
+        "suffix-length",
+        "additional-suffix",
+        "numeric-suffixes",
+        "numeric-suffixes-short-d",
+        "hex-suffixes",
+        "hex-suffixes-short-x",
+        "elide-empty-files",
+        "filter",
+        "help",
+        "version"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/options.mbt",
+    "internal/driver/output.mbt",
+    "internal/driver/stream.mbt",
+    "internal/driver/suffix.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

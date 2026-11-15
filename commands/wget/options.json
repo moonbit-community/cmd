@@ -1,0 +1,803 @@
+{
+  "schema": 1,
+  "command": "wget",
+  "help": "Usage: wget [OPTION]... [URL]...\n{{help:help:0}}\n{{help:version:0}}\n{{help:quiet:0}}\n{{help:output-document:0}}\n{{help:output-file:0}}\n{{help:append-output:0}}\n{{help:input-file:0}}\n{{help:continue:0}}\n{{help:timestamping:0}}\n{{help:tries:0}}\n{{help:retry-connrefused:0}}\n{{help:retry-on-http-error:0}}\n{{help:waitretry:0}}\n                                 partial bytes survive retries and failures\n{{help:max-redirect:0}}\n{{help:content-disposition:0}}\n{{help:header:0}}\n{{help:config:0}}\n{{help:no-config:0}}\n{{help:execute:0}}\n{{help:user:0}}\n{{help:password:0}}\n{{help:http-user:0}}\n{{help:http-password:0}}\n      --auth-no-challenge[=on|off] send Basic credentials before a challenge when enabled\n{{help:load-cookies:0}}\n{{help:header:1}}\n{{help:save-cookies:0}}\n{{help:keep-session-cookies:0}}\n{{help:no-cookies:0}}\n{{help:method:0}}\n{{help:body-data:0}}\n{{help:body-file:0}}\n{{help:no-check-certificate:0}}\n{{help:no-proxy:0}}\n{{help:local-encoding:0}}\n{{help:timeout:0}}\n{{help:connect-timeout:0}}\n{{help:read-timeout:0}}\n{{help:idle-timeout:0}}\n\nCompatibility limits: HTTP/HTTPS only; --method accepts GET, HEAD, POST,\nPUT, DELETE, CONNECT, OPTIONS, TRACE, and PATCH. Timer values are bounded\nby the runtime millisecond timer range.\nThe passive_ftp configuration boolean is accepted without affecting HTTP.\nContent-coding bytes remain encoded; Accept-Encoding defaults to identity.\nRaw space/TAB/CR/LF/DEL in URL paths or queries uses uppercase percent escapes.\nRedirect spaces use %20 and TAB uses %09; existing escapes remain encoded.\nSet-Cookie without '=' or a valid Max-Age numeric prefix is ignored.\nWget expiry accepts decimal/hex floating prefixes; exactly -1 rejects an update.\nZero requests deletion; nonzero negative values retain stale domain-chain entries.\nOverflow follows the fixed Linux/amd64 profile; saved expiry digits round via binary64.\nExpires uses four C-locale date formats, UTC normalization and the 69 year pivot.\nMissing/GMT/signed-digit timezone tails are accepted without applying offsets.\nGNU chunk payload/trailer EOF rules apply; missing size lines or CRLF fail.\nHTTP 416 succeeds without opening transfer output; -O is initialized first.\nUnsolicited 304 exits 8. Continued GET with --content-disposition selects\nthe filename with HEAD before choosing that file's resume offset.\nMultiple URL failures retain the lowest nonzero transfer exit code.\nBasic challenges are recognized across repeated fields and quoted comma lists.\nURL credentials take field-wise precedence; omitted and empty passwords differ.\nURL credentials wait for each hop's challenge; global credentials cache by hostname.\nHTTP 401 returns 6, including missing or unsupported challenges; other HTTP errors return 8.\nASCII response cookie domains use the complete pinned ICANN/PRIVATE suffix list.\nNon-ASCII domains/hosts use the fixed non-NLS Wget label/byte-length heuristic.\nAdmission strips leading dots separately from stored Domain identity.\nRejected domains discard a matching stored cookie after request-path validation.\nCookie request paths use raw prefix matching; missing Path uses the URL directory.\nImported cookie files retain Wget's separate admission policy.\nHost-only cookies isolate nondefault ports and preserve them in saved jars.\nCookie parameters accept quoted values; Secure ignores its value, HttpOnly is ignored.\nJar lookup skips single-label parent domains and hosts with more than 32 labels.\nUTF-8 URL hosts use pinned Unicode 15 IDNA with whole-host transitional fallback.\nHost brackets mapped colons and omits the scheme's default port.\nFailed conversion retains the raw host; other input encodings are unsupported.\n",
+  "catalog_options": [
+    "append-output",
+    "body-data",
+    "body-file",
+    "connect-timeout",
+    "continue",
+    "content-disposition",
+    "header",
+    "input-file",
+    "max-redirect",
+    "method",
+    "no-check-certificate",
+    "no-proxy",
+    "output-document",
+    "output-file",
+    "quiet",
+    "read-timeout",
+    "retry-connrefused",
+    "retry-on-http-error",
+    "timeout",
+    "timestamping",
+    "tries",
+    "waitretry",
+    "idle-timeout",
+    "user",
+    "password",
+    "http-user",
+    "http-password",
+    "auth-no-challenge",
+    "load-cookies",
+    "save-cookies",
+    "keep-session-cookies",
+    "no-cookies",
+    "local-encoding",
+    "config",
+    "no-config",
+    "execute"
+  ],
+  "options": [
+    {
+      "name": "config",
+      "aliases": [
+        "--config"
+      ],
+      "value": "required",
+      "description": "read startup settings from FILE",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --config=FILE               use this configuration file"
+      ]
+    },
+    {
+      "name": "no-config",
+      "aliases": [
+        "--no-config"
+      ],
+      "value": "none",
+      "description": "suppress startup configuration discovery",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --no-config                 skip startup configuration"
+      ]
+    },
+    {
+      "name": "execute",
+      "aliases": [
+        "-e",
+        "--execute"
+      ],
+      "value": "required",
+      "description": "apply a supported configuration setting",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -e, --execute=COMMAND           apply a configuration setting"
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "quiet (no output)",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -q, --quiet                     quiet (no output)"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_QUIET",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "output-document",
+      "aliases": [
+        "-O",
+        "--output-document"
+      ],
+      "value": "required",
+      "description": "write documents to FILE",
+      "short": "O",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -O, --output-document=FILE      write documents to FILE"
+      ]
+    },
+    {
+      "name": "output-file",
+      "aliases": [
+        "-o",
+        "--output-file"
+      ],
+      "value": "required",
+      "description": "log messages to FILE",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -o, --output-file=FILE          log messages to FILE"
+      ]
+    },
+    {
+      "name": "append-output",
+      "aliases": [
+        "-a",
+        "--append-output"
+      ],
+      "value": "required",
+      "description": "append messages to FILE",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -a, --append-output=FILE        append messages to FILE"
+      ]
+    },
+    {
+      "name": "input-file",
+      "aliases": [
+        "-i",
+        "--input-file"
+      ],
+      "value": "required",
+      "description": "download URLs found in FILE",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -i, --input-file=FILE           download URLs found in FILE"
+      ]
+    },
+    {
+      "name": "continue",
+      "aliases": [
+        "-c",
+        "--continue"
+      ],
+      "value": "none",
+      "description": "resume after the already written prefix",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --continue                  resume after the already written prefix"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_CONTINUE_DOWNLOAD",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "timestamping",
+      "aliases": [
+        "-N",
+        "--timestamping"
+      ],
+      "value": "none",
+      "description": "do not re-retrieve unchanged files",
+      "short": "N",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -N, --timestamping              do not re-retrieve unchanged files"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_TIMESTAMPING",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "tries",
+      "aliases": [
+        "-t",
+        "--tries"
+      ],
+      "value": "required",
+      "description": "set number of retries (0 means unlimited)",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -t, --tries=NUMBER              set number of retries (0 means unlimited)"
+      ],
+      "default_value": "20",
+      "default_binding": {
+        "name": "DEFAULT_TRIES",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "retry-connrefused",
+      "aliases": [
+        "--retry-connrefused"
+      ],
+      "value": "none",
+      "description": "retry even if the connection is refused",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --retry-connrefused         retry even if the connection is refused"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_RETRY_CONNECTION_REFUSED",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "retry-on-http-error",
+      "aliases": [
+        "--retry-on-http-error"
+      ],
+      "value": "required",
+      "description": "retry comma-separated HTTP status codes",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --retry-on-http-error=CODES retry comma-separated HTTP status codes"
+      ]
+    },
+    {
+      "name": "waitretry",
+      "aliases": [
+        "--waitretry"
+      ],
+      "value": "required",
+      "description": "wait between retries",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --waitretry=SECONDS         wait between retries"
+      ],
+      "default_value": "0",
+      "default_binding": {
+        "name": "DEFAULT_RETRY_DELAY_MS",
+        "type_": "Int32",
+        "scale": 1000
+      }
+    },
+    {
+      "name": "max-redirect",
+      "aliases": [
+        "--max-redirect"
+      ],
+      "value": "required",
+      "description": "maximum redirects (default 20)",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --max-redirect=NUMBER       maximum redirects (default 20)"
+      ],
+      "default_value": "20",
+      "default_binding": {
+        "name": "DEFAULT_MAX_REDIRECTS",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "content-disposition",
+      "aliases": [
+        "--content-disposition"
+      ],
+      "value": "none",
+      "description": "honor Content-Disposition filenames",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --content-disposition       honor Content-Disposition filenames"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_CONTENT_DISPOSITION",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "header",
+      "aliases": [
+        "--header"
+      ],
+      "value": "required",
+      "description": "set a request header; last same-name value wins",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --header=STRING             set a request header; last same-name value wins",
+        "      --header='Cookie: ...'      override jar cookies, including on redirects"
+      ]
+    },
+    {
+      "name": "user",
+      "aliases": [
+        "--user"
+      ],
+      "value": "required",
+      "description": "HTTP Basic user name",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --user=USER                 HTTP Basic user name"
+      ]
+    },
+    {
+      "name": "password",
+      "aliases": [
+        "--password"
+      ],
+      "value": "required",
+      "description": "HTTP Basic password",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --password=PASSWORD         HTTP Basic password"
+      ]
+    },
+    {
+      "name": "http-user",
+      "aliases": [
+        "--http-user"
+      ],
+      "value": "required",
+      "description": "HTTP-specific credentials, before general option fallback",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --http-user=USER            HTTP-specific user, before --user fallback"
+      ]
+    },
+    {
+      "name": "http-password",
+      "aliases": [
+        "--http-password"
+      ],
+      "value": "required",
+      "description": "HTTP-specific credentials, before general option fallback",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --http-password=PASSWORD    HTTP-specific password, before --password fallback"
+      ]
+    },
+    {
+      "name": "auth-no-challenge",
+      "aliases": [
+        "--auth-no-challenge"
+      ],
+      "value": "required",
+      "description": "control preemptive Basic, including redirects",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_AUTH_NO_CHALLENGE",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "load-cookies",
+      "aliases": [
+        "--load-cookies"
+      ],
+      "value": "required",
+      "description": "load a Netscape cookie jar",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --load-cookies=FILE         load a Netscape cookie jar"
+      ]
+    },
+    {
+      "name": "save-cookies",
+      "aliases": [
+        "--save-cookies"
+      ],
+      "value": "required",
+      "description": "save persistent cookies",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --save-cookies=FILE         save persistent cookies"
+      ]
+    },
+    {
+      "name": "keep-session-cookies",
+      "aliases": [
+        "--keep-session-cookies"
+      ],
+      "value": "none",
+      "description": "also save session cookies",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --keep-session-cookies      also save session cookies"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_KEEP_SESSION_COOKIES",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-cookies",
+      "aliases": [
+        "--no-cookies"
+      ],
+      "value": "none",
+      "description": "disable cookie storage",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --no-cookies                disable cookie storage"
+      ]
+    },
+    {
+      "name": "method",
+      "aliases": [
+        "--method"
+      ],
+      "value": "required",
+      "description": "use a supported HTTP method",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --method=HTTPMethod         use a supported HTTP method"
+      ]
+    },
+    {
+      "name": "body-data",
+      "aliases": [
+        "--body-data"
+      ],
+      "value": "required",
+      "description": "send STRING with an explicit --method",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --body-data=STRING          send STRING with an explicit --method"
+      ]
+    },
+    {
+      "name": "body-file",
+      "aliases": [
+        "--body-file"
+      ],
+      "value": "required",
+      "description": "send FILE with an explicit --method",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --body-file=FILE            send FILE with an explicit --method"
+      ]
+    },
+    {
+      "name": "no-check-certificate",
+      "aliases": [
+        "--no-check-certificate"
+      ],
+      "value": "none",
+      "description": "disable TLS certificate verification",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --no-check-certificate      disable TLS certificate verification"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_CHECK_CERTIFICATE",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "no-proxy",
+      "aliases": [
+        "--no-proxy"
+      ],
+      "value": "none",
+      "description": "do not use proxy environment variables",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --no-proxy                  do not use proxy environment variables"
+      ],
+      "default_value": "false",
+      "default_binding": {
+        "name": "DEFAULT_NO_PROXY",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "local-encoding",
+      "aliases": [
+        "--local-encoding"
+      ],
+      "value": "required",
+      "description": "Select UTF-8 or ASCII URL-host input.",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --local-encoding=ENCODING   URL host input: UTF-8 or ASCII (default ASCII)"
+      ]
+    },
+    {
+      "name": "timeout",
+      "aliases": [
+        "-T",
+        "--timeout"
+      ],
+      "value": "required",
+      "description": "set connect and read timeouts",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -T, --timeout=SECONDS           set connect and read timeouts"
+      ]
+    },
+    {
+      "name": "connect-timeout",
+      "aliases": [
+        "--connect-timeout"
+      ],
+      "value": "required",
+      "description": "set connection timeout",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --connect-timeout=SECONDS   set connection timeout"
+      ],
+      "default_value": "900",
+      "default_binding": {
+        "name": "DEFAULT_CONNECT_TIMEOUT_MS",
+        "type_": "Int32",
+        "scale": 1000
+      }
+    },
+    {
+      "name": "read-timeout",
+      "aliases": [
+        "--read-timeout"
+      ],
+      "value": "required",
+      "description": "set response inactivity timeout",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --read-timeout=SECONDS      set response inactivity timeout"
+      ],
+      "default_value": "900",
+      "default_binding": {
+        "name": "DEFAULT_READ_TIMEOUT_MS",
+        "type_": "Int32",
+        "scale": 1000
+      }
+    },
+    {
+      "name": "idle-timeout",
+      "aliases": [
+        "--idle-timeout"
+      ],
+      "value": "required",
+      "description": "extension: response inactivity timeout",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --idle-timeout=SECONDS      extension: response inactivity timeout"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "cookies",
+      "aliases": [
+        "--cookies"
+      ],
+      "value": "none",
+      "description": "Enable or disable the command's Cookie handling.",
+      "repeatable": true,
+      "allow_attached": false,
+      "default_value": "true",
+      "default_binding": {
+        "name": "DEFAULT_COOKIES",
+        "type_": "Bool"
+      }
+    },
+    {
+      "name": "check-certificate",
+      "aliases": [
+        "--check-certificate"
+      ],
+      "value": "none",
+      "description": "Enable or disable TLS certificate verification.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "proxy",
+      "aliases": [
+        "--proxy"
+      ],
+      "value": "none",
+      "description": "Enable or disable configured proxies.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    },
+    {
+      "name": "no-quiet",
+      "aliases": [
+        "--no-quiet"
+      ],
+      "value": "none",
+      "description": "Disable --quiet.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-continue",
+      "aliases": [
+        "--no-continue"
+      ],
+      "value": "none",
+      "description": "Disable --continue.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-timestamping",
+      "aliases": [
+        "--no-timestamping"
+      ],
+      "value": "none",
+      "description": "Disable --timestamping.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-retry-connrefused",
+      "aliases": [
+        "--no-retry-connrefused"
+      ],
+      "value": "none",
+      "description": "Disable --retry-connrefused.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-content-disposition",
+      "aliases": [
+        "--no-content-disposition"
+      ],
+      "value": "none",
+      "description": "Disable --content-disposition.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-keep-session-cookies",
+      "aliases": [
+        "--no-keep-session-cookies"
+      ],
+      "value": "none",
+      "description": "Disable --keep-session-cookies.",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "transfer_option_specs",
+      "source": "internal/driver/options.mbt",
+      "import_alias": "cli",
+      "options": [
+        "config",
+        "no-config",
+        "execute",
+        "quiet",
+        "output-document",
+        "output-file",
+        "append-output",
+        "input-file",
+        "continue",
+        "timestamping",
+        "tries",
+        "retry-connrefused",
+        "retry-on-http-error",
+        "waitretry",
+        "max-redirect",
+        "content-disposition",
+        "header",
+        "user",
+        "password",
+        "http-user",
+        "http-password",
+        "auth-no-challenge",
+        "load-cookies",
+        "save-cookies",
+        "keep-session-cookies",
+        "no-cookies",
+        "method",
+        "body-data",
+        "body-file",
+        "no-check-certificate",
+        "no-proxy",
+        "local-encoding",
+        "timeout",
+        "connect-timeout",
+        "read-timeout",
+        "idle-timeout",
+        "help"
+      ]
+    },
+    {
+      "function_name": "enabled_option_specs",
+      "source": "internal/driver/options.mbt",
+      "import_alias": "cli",
+      "options": [
+        "cookies",
+        "check-certificate",
+        "proxy"
+      ]
+    },
+    {
+      "function_name": "negative_option_specs",
+      "source": "internal/driver/options.mbt",
+      "import_alias": "cli",
+      "options": [
+        "no-quiet",
+        "no-continue",
+        "no-timestamping",
+        "no-retry-connrefused",
+        "no-content-disposition",
+        "no-keep-session-cookies"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/auth_arguments.mbt",
+    "internal/driver/config.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/options.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

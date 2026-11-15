@@ -76,7 +76,7 @@ fn Parser::parse_primary(self : Parser) -> @ast.Expr raise ParseError {
           self.advance()
           Key(name)
         }
-        Some(TLBracket) => {
+        Some(TLeftBracket) => {
           self.advance()
           self.parse_index_or_slice(Identity)
         }
@@ -95,23 +95,23 @@ fn Parser::parse_primary(self : Parser) -> @ast.Expr raise ParseError {
       self.advance()
       Format(name)
     }
-    Some(TLParen) => {
+    Some(TLeftParen) => {
       self.advance()
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       expr
     }
-    Some(TLBracket) => {
+    Some(TLeftBracket) => {
       self.advance()
-      if self.consume(TRBracket) {
+      if self.consume(TRightBracket) {
         ArrayConstruct(None)
       } else {
         let expr = self.parse_pipe()
-        self.expect(TRBracket)
+        self.expect(TRightBracket)
         ArrayConstruct(Some(expr))
       }
     }
-    Some(TLBrace) => {
+    Some(TLeftBrace) => {
       self.advance()
       self.parse_object()
     }

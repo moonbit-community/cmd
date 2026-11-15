@@ -1,0 +1,108 @@
+///|
+fn parse_duration(value : String) -> Int32 raise {
+  let mut multiplier = 1000
+  let mut number = value
+  if value.has_suffix("ms") {
+    multiplier = 1
+    number = value[:value.length() - 2].to_owned()
+  } else if value.has_suffix("s") {
+    number = value[:value.length() - 1].to_owned()
+  } else if value.has_suffix("m") {
+    multiplier = 60 * 1000
+    number = value[:value.length() - 1].to_owned()
+  } else if value.has_suffix("h") {
+    multiplier = 60 * 60 * 1000
+    number = value[:value.length() - 1].to_owned()
+  } else if value.has_suffix("d") {
+    multiplier = 24 * 60 * 60 * 1000
+    number = value[:value.length() - 1].to_owned()
+  }
+  let parsed = @string.parse_double(number)
+  if parsed < 0.0 ||
+    parsed != parsed ||
+    parsed > 2147483647.0 / multiplier.to_double() {
+    fail("duration out of range")
+  }
+  (parsed * multiplier.to_double()).ceil().to_int()
+}
+
+///|
+pub async fn run_main() -> Unit {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("timeout \{MODULE_VERSION}\n")
+    return
+  }
+  let args = @env.args()[1:]
+  let mut duration : Int32? = None
+  let command : Array[String] = []
+  let mut options = true
+  let mut i = 0
+  while i < args.length() {
+    let arg = args[i]
+    if duration is Some(_) {
+      command.push(arg)
+    } else if options && arg == "--" {
+      options = false
+    } else if options && arg == "--help" {
+      @stdio.stdout.write(metadata_help())
+      return
+    } else if options && (arg == "--preserve-status" || arg == "--foreground") {
+      @stdio.stderr.write("timeout: unsupported option: \{arg}\n")
+      @sys.exit(125)
+      return
+    } else if options && arg.has_prefix("-") && arg != "-" {
+      @stdio.stderr.write("timeout: unsupported option: \{arg}\n")
+      @sys.exit(125)
+      return
+    } else {
+      duration = Some(
+        parse_duration(arg) catch {
+          _ => {
+            @stdio.stderr.write("timeout: invalid duration: \{arg}\n")
+            @sys.exit(125)
+            return
+          }
+        },
+      )
+    }
+    i += 1
+  }
+  let milliseconds = match duration {
+    Some(value) => value
+    None => {
+      @stdio.stderr.write("timeout: missing duration\n")
+      @sys.exit(125)
+      return
+    }
+  }
+  if command.is_empty() {
+    @stdio.stderr.write("timeout: missing command\n")
+    @sys.exit(125)
+    return
+  }
+  let context = @process.ExecutionContext::current()
+  let result = @async.with_timeout_opt(milliseconds, () => {
+    @process.run(@process.child(command[0], command[1:].to_owned(), context~))
+  }) catch {
+    err => {
+      @stdio.stderr.write("timeout: cannot run '\{command[0]}': \{err}\n")
+      @sys.exit(
+        @process.launch_failure_status(
+          match err {
+            @os_error.OSError(_) as os if os.is_ENOENT() => CommandNotFound
+            _ => CommandNotInvokable
+          },
+        ),
+      )
+      return
+    }
+  }
+  match result {
+    Some(code) => if code != 0 { @sys.exit(code) }
+    None => {
+      @stdio.stderr.write("timeout: command timed out\n")
+      @sys.exit(124)
+    }
+  }
+}

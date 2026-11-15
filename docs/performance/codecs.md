@@ -75,11 +75,11 @@ and evaluated host requests; jq's CLI supplies those effects separately.
 ## Base32 and base64 encoding
 
 Base32 follows `main -> convert -> encode_stream -> Base32Encoder::encode/finish`
-in [main.mbt](../../commands/base32/main.mbt) and
-[encode.mbt](../../commands/base32/encode.mbt). Encoding reads at most 64 KiB,
+in [main.mbt](../../commands/base32/internal/driver/main.mbt) and
+[encode.mbt](../../commands/base32/internal/driver/encode.mbt). Encoding reads at most 64 KiB,
 encodes complete groups with the byte kernel, then applies wrapping while
 carrying the current output column. Base64 uses the analogous byte-group loop
-in [encode.mbt](../../commands/base64/encode.mbt).
+in [encode.mbt](../../commands/base64/internal/driver/encode.mbt).
 
 | Encoder | Complete group | State between reads |
 | --- | --- | --- |

@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "command": "expand",
+  "help": "Usage: expand [OPTION]... [FILE]...\n{{help:help:0}}\n{{help:version:0}}\n\nConvert tabs in each FILE to spaces, writing to standard output.\nWith no FILE, or when FILE is -, read standard input.\n\n{{help:initial:0}}\n{{help:tabs:0}}\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "initial",
+    "tabs"
+  ],
+  "options": [
+    {
+      "name": "initial",
+      "aliases": [
+        "-i",
+        "--initial"
+      ],
+      "value": "none",
+      "description": "Convert only leading blanks.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -i, --initial       do not convert tabs after nonblank characters"
+      ]
+    },
+    {
+      "name": "tabs",
+      "aliases": [
+        "-t",
+        "--tabs"
+      ],
+      "value": "required",
+      "description": "Select ascending tab stops.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -t, --tabs=LIST     use ascending tab stops; /N repeats absolute, +N relative"
+      ],
+      "default_value": "8",
+      "default_binding": {
+        "name": "DEFAULT_TABS",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "initial",
+        "tabs",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/tabs.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

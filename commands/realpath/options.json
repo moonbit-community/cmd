@@ -1,0 +1,194 @@
+{
+  "schema": 1,
+  "command": "realpath",
+  "help": "Usage: realpath [OPTION]... NAME...\n{{help:canonicalize-existing:0}}\n{{help:canonicalize:0}}\n{{help:canonicalize-missing:0}}\n{{help:strip:0}}\n{{help:relative-to:0}}\n{{help:relative-base:0}}\n{{help:quiet:0}}\n{{help:zero:0}}\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "canonicalize",
+    "canonicalize-existing",
+    "canonicalize-missing",
+    "quiet",
+    "relative-base",
+    "relative-to",
+    "strip",
+    "no-symlinks",
+    "zero"
+  ],
+  "options": [
+    {
+      "name": "canonicalize-existing",
+      "aliases": [
+        "-e",
+        "--canonicalize-existing"
+      ],
+      "value": "none",
+      "description": "require every component to exist",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -e, --canonicalize-existing  require every component to exist"
+      ]
+    },
+    {
+      "name": "canonicalize-missing",
+      "aliases": [
+        "-m",
+        "--canonicalize-missing"
+      ],
+      "value": "none",
+      "description": "allow missing or non-directory components",
+      "short": "m",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -m, --canonicalize-missing   allow missing or non-directory components"
+      ]
+    },
+    {
+      "name": "canonicalize",
+      "aliases": [
+        "-E",
+        "--canonicalize"
+      ],
+      "value": "none",
+      "description": "allow a missing final component (default)",
+      "short": "E",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -E, --canonicalize           allow a missing final component (default)"
+      ]
+    },
+    {
+      "name": "strip",
+      "aliases": [
+        "-s",
+        "--strip"
+      ],
+      "value": "none",
+      "description": "do not expand symbolic links",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --strip, --no-symlinks   do not expand symbolic links"
+      ]
+    },
+    {
+      "name": "no-symlinks",
+      "aliases": [
+        "--no-symlinks"
+      ],
+      "value": "none",
+      "description": "do not expand symbolic links",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q",
+        "--quiet"
+      ],
+      "value": "none",
+      "description": "suppress operand errors",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -q, --quiet                 suppress operand errors"
+      ]
+    },
+    {
+      "name": "zero",
+      "aliases": [
+        "-z",
+        "--zero"
+      ],
+      "value": "none",
+      "description": "terminate output with NUL",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -z, --zero                  terminate output with NUL"
+      ]
+    },
+    {
+      "name": "relative-to",
+      "aliases": [
+        "--relative-to"
+      ],
+      "value": "required",
+      "description": "print relative to DIR",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --relative-to=DIR        print relative to DIR"
+      ]
+    },
+    {
+      "name": "relative-base",
+      "aliases": [
+        "--relative-base"
+      ],
+      "value": "required",
+      "description": "use relative output only inside DIR",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --relative-base=DIR      use relative output only inside DIR"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help                  display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version               display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "canonicalize-existing",
+        "canonicalize-missing",
+        "canonicalize",
+        "strip",
+        "no-symlinks",
+        "quiet",
+        "zero",
+        "relative-to",
+        "relative-base",
+        "help",
+        "version"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

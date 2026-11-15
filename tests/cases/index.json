@@ -48181,6 +48181,39 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:diff-failure-diagnostic-source-name",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/diff.json",
+      "case_id": "diff-failure-diagnostic-source-name",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fmt-failure-diagnostic-source-name",
+      "command": "fmt",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/fmt.json",
+      "case_id": "fmt-failure-diagnostic-source-name",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:serve-failure-diagnostic-source-name",
+      "command": "serve",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/serve.json",
+      "case_id": "serve-failure-diagnostic-source-name",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
     }
   ]
 }

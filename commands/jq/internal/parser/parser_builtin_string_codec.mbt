@@ -23,12 +23,12 @@ fn Parser::parse_builtin_string_codec(
       )
     "fromjson" => Some(FromJsonString)
     "scan" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       guard self.current() is Some(TString(s)) else {
         raise InvalidSyntax("scan expects string argument")
       }
       self.advance()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Scan(s))
     }
     _ => None

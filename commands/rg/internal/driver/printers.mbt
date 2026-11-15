@@ -3,7 +3,7 @@
 pub enum Printer {
   Standard(@printer.Standard)
   Summary(@printer.Summary)
-  JSON(@printer.JSON)
+  Json(@printer.JsonPrinter)
 }
 
 ///|
@@ -11,7 +11,7 @@ fn Printer::get_mut(self : Printer) -> &@termcolor.WriteColor {
   match self {
     Standard(p) => p.get_mut()
     Summary(p) => p.get_mut()
-    JSON(p) => p.get_mut()
+    Json(p) => p.get_mut()
   }
 }
 
@@ -77,7 +77,7 @@ fn ExecutionPlan::printer(
       FilesWithoutMatch => PathWithoutMatch
       Count => Count
       CountMatches => CountMatches
-      JSON => return JSON(self.printer_json(wtr))
+      Json => return Json(self.printer_json(wtr))
       Standard => return Standard(self.printer_standard(wtr))
     }
   }
@@ -88,8 +88,12 @@ fn ExecutionPlan::printer(
 fn ExecutionPlan::printer_json(
   self : ExecutionPlan,
   wtr : &@termcolor.WriteColor,
-) -> @printer.JSON {
-  @printer.JSON::new(wtr, replacement=self.output.replace, clock=@sys.now_nanos)
+) -> @printer.JsonPrinter {
+  @printer.JsonPrinter::new(
+    wtr,
+    replacement=self.output.replace,
+    clock=@sys.now_nanos,
+  )
 }
 
 ///|

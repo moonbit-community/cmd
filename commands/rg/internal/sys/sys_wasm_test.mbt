@@ -14,7 +14,7 @@ async test "wasm: unsupported operations" {
       ignore(@sys.read_link(root + "/link"))
       false
     } catch {
-      @sys.IOError(kind=Unsupported, ..) => true
+      @sys.IoError(kind=Unsupported, ..) => true
       _ => false
     },
   )

@@ -112,7 +112,7 @@ fn without_terminator(
   line_term : @matcher.LineTerminator,
 ) -> Int32 {
   match line_term {
-    CRLF =>
+    Crlf =>
       if end - start >= 2 && buf[end - 2] == b'\r' && buf[end - 1] == b'\n' {
         end - 2
       } else {

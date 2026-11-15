@@ -1,0 +1,17 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/sort/internal/decimal"
+
+// Values
+pub fn compare(Bytes, Bytes) -> Int32
+
+pub fn compare_encoded(Bytes, Bytes) -> Int32
+
+pub fn encode(BytesView) -> Bytes
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

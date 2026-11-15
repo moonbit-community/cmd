@@ -535,7 +535,7 @@ fn required_ext_matches_into(
 ///|
 /// The number of regexes grouped together under one combined regex in a
 /// `RegexSetStrategy`.
-let regex_chunk_size : Int32 = 16
+const REGEX_CHUNK_SIZE : Int32 = 16
 
 ///|
 /// A group of regexes along with a combined regex that matches if any of
@@ -670,8 +670,8 @@ fn MultiStrategyBuilder::regex_set(
 ) -> RegexSetStrategy raise GlobError {
   let chunks = []
   let n = self.literals.length()
-  for start = 0; start < n; start = start + regex_chunk_size {
-    let end = @cmp.minimum(start + regex_chunk_size, n)
+  for start = 0; start < n; start = start + REGEX_CHUNK_SIZE {
+    let end = @cmp.minimum(start + REGEX_CHUNK_SIZE, n)
     let regexes = []
     for i in start..<end {
       regexes.push(new_regex(self.literals[i]))

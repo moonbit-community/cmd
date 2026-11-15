@@ -1,0 +1,179 @@
+{
+  "schema": 1,
+  "command": "comm",
+  "help": "Usage: comm [-123] [-z] FILE1 FILE2\n{{help:help:0}}\n{{help:version:0}}\n\nCompare two sorted files line by line, producing three columns:\nlines only in FILE1, lines only in FILE2, and lines in both.\n\nOptions:\n{{help:suppress-1:0}}\n{{help:suppress-2:0}}\n{{help:suppress-3:0}}\n{{help:output-delimiter:0}}\n{{help:total:0}}\n{{help:check-order:0}}\n{{help:nocheck-order:0}}\n{{help:zero-terminated:0}}\n\nUse '-' as a file name to read stdin.\n\nProject aliases: --suppress-1 = -1; --suppress-2 = -2; --suppress-3 = -3.\n{{help:help:1}}\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "catalog_options": [
+    "1",
+    "2",
+    "3",
+    "check-order",
+    "nocheck-order",
+    "help",
+    "output-delimiter",
+    "total",
+    "zero-terminated"
+  ],
+  "options": [
+    {
+      "name": "suppress-1",
+      "aliases": [
+        "-1"
+      ],
+      "value": "none",
+      "description": "Suppress lines unique to the first input.",
+      "short": "1",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -1  Suppress column 1 (lines unique to FILE1)."
+      ]
+    },
+    {
+      "name": "suppress-2",
+      "aliases": [
+        "-2"
+      ],
+      "value": "none",
+      "description": "Suppress lines unique to the second input.",
+      "short": "2",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -2  Suppress column 2 (lines unique to FILE2)."
+      ]
+    },
+    {
+      "name": "suppress-3",
+      "aliases": [
+        "-3"
+      ],
+      "value": "none",
+      "description": "Suppress lines common to both inputs.",
+      "short": "3",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -3  Suppress column 3 (lines in both files)."
+      ]
+    },
+    {
+      "name": "output-delimiter",
+      "aliases": [
+        "--output-delimiter"
+      ],
+      "value": "required",
+      "description": "Separate columns with STR (empty means NUL).",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --output-delimiter=STR  Separate columns with STR (empty means NUL)."
+      ]
+    },
+    {
+      "name": "total",
+      "aliases": [
+        "--total"
+      ],
+      "value": "none",
+      "description": "Print counts for all three columns and a total label.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --total  Print counts for all three columns and a total label."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "-h",
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "short": "h",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -h, --help      display this help and exit",
+        "-h is a project alias of --help."
+      ]
+    },
+    {
+      "name": "check-order",
+      "aliases": [
+        "--check-order"
+      ],
+      "value": "none",
+      "description": "Diagnose unsorted input.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --check-order  Diagnose unsorted input."
+      ]
+    },
+    {
+      "name": "nocheck-order",
+      "aliases": [
+        "--nocheck-order"
+      ],
+      "value": "none",
+      "description": "Do not diagnose unsorted input.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --nocheck-order  Do not diagnose unsorted input."
+      ]
+    },
+    {
+      "name": "zero-terminated",
+      "aliases": [
+        "-z",
+        "--zero-terminated"
+      ],
+      "value": "none",
+      "description": "End records with NUL instead of newline.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -z, --zero-terminated  End records with NUL instead of newline."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "suppress-1",
+        "suppress-2",
+        "suppress-3",
+        "output-delimiter",
+        "total",
+        "help",
+        "check-order",
+        "nocheck-order",
+        "zero-terminated"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/merge.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

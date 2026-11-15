@@ -108,7 +108,7 @@ pub fn RecordBoolean::search_long_half(
     at += 4
     if accelerating &&
       state == previous &&
-      end - at >= boolean_probe_window_bytes {
+      end - at >= BOOLEAN_PROBE_WINDOW_BYTES {
       let probe = plan.probe_exit(hay, at, end, state, true)
       at = probe.offset
       accelerating = probe.accelerating
@@ -163,7 +163,7 @@ pub fn RecordBoolean::count_long_lines(
       i += 4
       if accelerating &&
         state == previous &&
-        line_end - i >= boolean_probe_window_bytes {
+        line_end - i >= BOOLEAN_PROBE_WINDOW_BYTES {
         let probe = plan.probe_exit(hay, i, line_end, state, true)
         i = probe.offset
         accelerating = probe.accelerating

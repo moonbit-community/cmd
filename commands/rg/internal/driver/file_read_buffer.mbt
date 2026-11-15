@@ -10,16 +10,16 @@ fn ExecutionPlan::buffer_file_reads(self : ExecutionPlan) -> Bool {
   self.search.max_count is None &&
   !self.search.stop_on_nonmatch &&
   (match self.mode {
-    Search(Standard | Count | CountMatches | JSON) => true
+    Search(Standard | Count | CountMatches | Json) => true
     _ => false
   })
 }
 
 ///|
-let initial_file_read_bytes : Int32 = 65536
+const INITIAL_FILE_READ_BYTES : Int32 = 65536
 
 ///|
-let maximum_file_read_bytes : Int32 = 1048576
+const MAXIMUM_FILE_READ_BYTES : Int32 = 1048576
 
 ///|
 /// Keep physical reads separate from the decoder's BOM and chunk requests.
@@ -65,7 +65,7 @@ impl @searcher.Reader for FileReadBuffer with fn read(self, buf, start, len) {
   let capacity = if self.expanded {
     self.buffer.length()
   } else {
-    self.buffer.length().min(initial_file_read_bytes)
+    self.buffer.length().min(INITIAL_FILE_READ_BYTES)
   }
   let count = try {
     if refill {

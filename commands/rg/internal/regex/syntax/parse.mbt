@@ -28,13 +28,13 @@ fn Primitive::into_ast(self : Primitive) -> Ast {
 }
 
 ///|
-priv struct ConcatB {
+priv struct ConcatBuilder {
   mut span : Span
   asts : Array[Ast]
 }
 
 ///|
-fn ConcatB::into_ast(self : ConcatB) -> Ast {
+fn ConcatBuilder::into_ast(self : ConcatBuilder) -> Ast {
   match self.asts.length() {
     0 => Empty(self.span)
     1 => self.asts[0]
@@ -43,13 +43,13 @@ fn ConcatB::into_ast(self : ConcatB) -> Ast {
 }
 
 ///|
-priv struct AltB {
+priv struct AlternationBuilder {
   mut span : Span
   asts : Array[Ast]
 }
 
 ///|
-fn AltB::into_ast(self : AltB) -> Ast {
+fn AlternationBuilder::into_ast(self : AlternationBuilder) -> Ast {
   match self.asts.length() {
     0 => Empty(self.span)
     1 => self.asts[0]
@@ -58,13 +58,13 @@ fn AltB::into_ast(self : AltB) -> Ast {
 }
 
 ///|
-priv struct UnionB {
+priv struct UnionBuilder {
   mut span : Span
   items : Array[ClassSetItem]
 }
 
 ///|
-fn UnionB::push(self : UnionB, item : ClassSetItem) -> Unit {
+fn UnionBuilder::push(self : UnionBuilder, item : ClassSetItem) -> Unit {
   if self.items.is_empty() {
     self.span = { start: item.span().start, end: self.span.end, }
   }
@@ -73,7 +73,7 @@ fn UnionB::push(self : UnionB, item : ClassSetItem) -> Unit {
 }
 
 ///|
-fn UnionB::into_item(self : UnionB) -> ClassSetItem {
+fn UnionBuilder::into_item(self : UnionBuilder) -> ClassSetItem {
   match self.items.length() {
     0 => Empty(self.span)
     1 => self.items[0]
@@ -83,14 +83,14 @@ fn UnionB::into_item(self : UnionB) -> ClassSetItem {
 
 ///|
 priv enum GroupState {
-  GSGroup(ConcatB, Group, Bool)
-  GSAlternation(AltB)
+  NestedGroup(ConcatBuilder, Group, Bool)
+  Alternation(AlternationBuilder)
 }
 
 ///|
 priv enum ClassState {
-  CSOpen(UnionB, ClassBracketed)
-  CSOp(ClassSetBinaryOpKind, ClassSet)
+  Open(UnionBuilder, ClassBracketed)
+  Operation(ClassSetBinaryOpKind, ClassSet)
 }
 
 ///|
@@ -323,7 +323,10 @@ fn Parser::add_capture_name(
 }
 
 ///|
-fn Parser::push_alternate(self : Parser, concat : ConcatB) -> ConcatB {
+fn Parser::push_alternate(
+  self : Parser,
+  concat : ConcatBuilder,
+) -> ConcatBuilder {
   concat.span = concat.span.with_end(self.pos)
   self.push_or_add_alternation(concat)
   ignore(self.bump())
@@ -331,13 +334,16 @@ fn Parser::push_alternate(self : Parser, concat : ConcatB) -> ConcatB {
 }
 
 ///|
-fn Parser::push_or_add_alternation(self : Parser, concat : ConcatB) -> Unit {
-  if self.stack_group.last() is Some(GSAlternation(alts)) {
+fn Parser::push_or_add_alternation(
+  self : Parser,
+  concat : ConcatBuilder,
+) -> Unit {
+  if self.stack_group.last() is Some(Alternation(alts)) {
     alts.asts.push(concat.into_ast())
     return
   }
   self.stack_group.push(
-    GSAlternation({
+    Alternation({
       span: Span::new(concat.span.start, self.pos),
       asts: [concat.into_ast()],
     }),
@@ -347,8 +353,8 @@ fn Parser::push_or_add_alternation(self : Parser, concat : ConcatB) -> Unit {
 ///|
 fn Parser::push_group(
   self : Parser,
-  concat : ConcatB,
-) -> ConcatB raise SyntaxError {
+  concat : ConcatBuilder,
+) -> ConcatBuilder raise SyntaxError {
   match self.parse_group() {
     Left((span, flags)) => {
       if flags.flag_state(IgnoreWhitespace) is Some(v) {
@@ -367,7 +373,7 @@ fn Parser::push_group(
           }
         _ => old
       }
-      self.stack_group.push(GSGroup(concat, group, old))
+      self.stack_group.push(NestedGroup(concat, group, old))
       self.ignore_whitespace = new_ws
       { span: self.span(), asts: [], }
     }
@@ -377,13 +383,13 @@ fn Parser::push_group(
 ///|
 fn Parser::pop_group(
   self : Parser,
-  group_concat : ConcatB,
-) -> ConcatB raise SyntaxError {
+  group_concat : ConcatBuilder,
+) -> ConcatBuilder raise SyntaxError {
   let (prior_concat, group, ignore_ws, alt) = match self.stack_group.pop() {
-    Some(GSGroup(c, g, ws)) => (c, g, ws, None)
-    Some(GSAlternation(alt)) =>
+    Some(NestedGroup(c, g, ws)) => (c, g, ws, None)
+    Some(Alternation(alt)) =>
       match self.stack_group.pop() {
-        Some(GSGroup(c, g, ws)) => (c, g, ws, Some(alt))
+        Some(NestedGroup(c, g, ws)) => (c, g, ws, Some(alt))
         _ => raise self.error(self.span_char(), GroupUnopened)
       }
     None => raise self.error(self.span_char(), GroupUnopened)
@@ -407,44 +413,46 @@ fn Parser::pop_group(
 ///|
 fn Parser::pop_group_end(
   self : Parser,
-  concat : ConcatB,
+  concat : ConcatBuilder,
 ) -> Ast raise SyntaxError {
   concat.span = concat.span.with_end(self.pos)
   let ast = match self.stack_group.pop() {
     None => concat.into_ast()
-    Some(GSAlternation(alt)) => {
+    Some(Alternation(alt)) => {
       alt.span = alt.span.with_end(self.pos)
       alt.asts.push(concat.into_ast())
       Alternation(alt.span, alt.asts)
     }
-    Some(GSGroup(_, group, _)) => raise self.error(group.span, GroupUnclosed)
+    Some(NestedGroup(_, group, _)) =>
+      raise self.error(group.span, GroupUnclosed)
   }
   match self.stack_group.pop() {
     None => ast
-    Some(GSAlternation(_)) => abort("unreachable")
-    Some(GSGroup(_, group, _)) => raise self.error(group.span, GroupUnclosed)
+    Some(Alternation(_)) => abort("unreachable")
+    Some(NestedGroup(_, group, _)) =>
+      raise self.error(group.span, GroupUnclosed)
   }
 }
 
 ///|
 fn Parser::push_class_open(
   self : Parser,
-  parent_union : UnionB,
-) -> UnionB raise SyntaxError {
+  parent_union : UnionBuilder,
+) -> UnionBuilder raise SyntaxError {
   let (nested_set, nested_union) = self.parse_set_class_open()
-  self.stack_class.push(CSOpen(parent_union, nested_set))
+  self.stack_class.push(Open(parent_union, nested_set))
   nested_union
 }
 
 ///|
 fn Parser::pop_class(
   self : Parser,
-  nested_union : UnionB,
-) -> Either[UnionB, ClassBracketed] {
+  nested_union : UnionBuilder,
+) -> Either[UnionBuilder, ClassBracketed] {
   let item = ClassSet::Item(nested_union.into_item())
   let prevset = self.pop_class_op(item)
   match self.stack_class.pop() {
-    Some(CSOpen(union, set)) => {
+    Some(Open(union, set)) => {
       ignore(self.bump())
       set.span = set.span.with_end(self.pos)
       set.kind = prevset
@@ -462,7 +470,7 @@ fn Parser::pop_class(
 ///|
 fn Parser::unclosed_class_error(self : Parser) -> SyntaxError {
   for i = self.stack_class.length() - 1; i >= 0; i = i - 1 {
-    if self.stack_class[i] is CSOpen(_, set) {
+    if self.stack_class[i] is Open(_, set) {
       return self.error(set.span, ClassUnclosed)
     }
   }
@@ -473,18 +481,18 @@ fn Parser::unclosed_class_error(self : Parser) -> SyntaxError {
 fn Parser::push_class_op(
   self : Parser,
   next_kind : ClassSetBinaryOpKind,
-  next_union : UnionB,
-) -> UnionB {
+  next_union : UnionBuilder,
+) -> UnionBuilder {
   let item = ClassSet::Item(next_union.into_item())
   let new_lhs = self.pop_class_op(item)
-  self.stack_class.push(CSOp(next_kind, new_lhs))
+  self.stack_class.push(Operation(next_kind, new_lhs))
   { span: self.span(), items: [], }
 }
 
 ///|
 fn Parser::pop_class_op(self : Parser, rhs : ClassSet) -> ClassSet {
   match self.stack_class.pop() {
-    Some(CSOp(kind, lhs)) => {
+    Some(Operation(kind, lhs)) => {
       let span = Span::new(lhs.span().start, rhs.span().end)
       BinaryOp(span, kind, lhs, rhs)
     }
@@ -498,7 +506,7 @@ fn Parser::pop_class_op(self : Parser, rhs : ClassSet) -> ClassSet {
 
 ///|
 fn Parser::parse(self : Parser) -> Ast raise SyntaxError {
-  let mut concat : ConcatB = { span: self.span(), asts: [], }
+  let mut concat : ConcatBuilder = { span: self.span(), asts: [], }
   while true {
     self.bump_space()
     if self.is_eof() {
@@ -527,9 +535,9 @@ fn Parser::parse(self : Parser) -> Ast raise SyntaxError {
 ///|
 fn Parser::parse_uncounted_repetition(
   self : Parser,
-  concat : ConcatB,
+  concat : ConcatBuilder,
   kind : RepetitionKind,
-) -> ConcatB raise SyntaxError {
+) -> ConcatBuilder raise SyntaxError {
   let op_start = self.pos
   let ast = match concat.asts.pop() {
     Some(ast) => ast
@@ -555,8 +563,8 @@ fn Parser::parse_uncounted_repetition(
 ///|
 fn Parser::parse_counted_repetition(
   self : Parser,
-  concat : ConcatB,
-) -> ConcatB raise SyntaxError {
+  concat : ConcatBuilder,
+) -> ConcatBuilder raise SyntaxError {
   let start = self.pos
   let ast = match concat.asts.pop() {
     Some(ast) => ast
@@ -782,7 +790,7 @@ fn Parser::parse_flag(self : Parser) -> Flag raise SyntaxError {
     's' => DotMatchesNewLine
     'U' => SwapGreed
     'u' => Unicode
-    'R' => CRLF
+    'R' => Crlf
     'x' => IgnoreWhitespace
     _ => raise self.error(self.span_char(), FlagUnrecognized)
   }
@@ -1103,7 +1111,7 @@ fn Parser::parse_decimal(self : Parser) -> Int32 raise SyntaxError {
 
 ///|
 fn Parser::parse_set_class(self : Parser) -> ClassBracketed raise SyntaxError {
-  let mut union : UnionB = { span: self.span(), items: [], }
+  let mut union : UnionBuilder = { span: self.span(), items: [], }
   while true {
     self.bump_space()
     if self.is_eof() {
@@ -1207,7 +1215,7 @@ fn Parser::parse_set_class_item(self : Parser) -> Primitive raise SyntaxError {
 ///|
 fn Parser::parse_set_class_open(
   self : Parser,
-) -> (ClassBracketed, UnionB) raise SyntaxError {
+) -> (ClassBracketed, UnionBuilder) raise SyntaxError {
   let start = self.pos
   if !self.bump_and_bump_space() {
     raise self.error(Span::new(start, self.pos), ClassUnclosed)
@@ -1220,7 +1228,7 @@ fn Parser::parse_set_class_open(
     }
     true
   }
-  let union : UnionB = { span: self.span(), items: [], }
+  let union : UnionBuilder = { span: self.span(), items: [], }
   while self.char() == '-' {
     union.push(Literal({ span: self.span_char(), kind: Verbatim, c: '-', }))
     if !self.bump_and_bump_space() {

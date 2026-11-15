@@ -3,8 +3,8 @@
 #derive(Eq)
 priv enum EncKind {
   Utf8
-  Utf16LE
-  Utf16BE
+  Utf16Le
+  Utf16Be
   /// A single-byte encoding, indexing `single_byte_names`.
   SingleByte(Int32)
   Gbk
@@ -22,8 +22,8 @@ priv enum EncKind {
 fn EncKind::name(self : EncKind) -> String {
   match self {
     Utf8 => "UTF-8"
-    Utf16LE => "UTF-16LE"
-    Utf16BE => "UTF-16BE"
+    Utf16Le => "UTF-16LE"
+    Utf16Be => "UTF-16BE"
     SingleByte(i) => single_byte_names[i]
     Gbk => "GBK"
     Gb18030 => "gb18030"
@@ -107,9 +107,9 @@ fn sniff_bom(
     buf[start + 2] == b'\xBF' {
     Some((Utf8, 3))
   } else if n >= 2 && buf[start] == b'\xFF' && buf[start + 1] == b'\xFE' {
-    Some((Utf16LE, 2))
+    Some((Utf16Le, 2))
   } else if n >= 2 && buf[start] == b'\xFE' && buf[start + 1] == b'\xFF' {
-    Some((Utf16BE, 2))
+    Some((Utf16Be, 2))
   } else {
     None
   }

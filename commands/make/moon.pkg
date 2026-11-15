@@ -1,29 +1,8 @@
 import {
-  "cli/core/process",
-  "cli/core/shell",
+  "cli/make/internal/driver",
   "moonbitlang/async",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/io",
-  "moonbitlang/async/semaphore",
-  "moonbitlang/async/stdio",
-  "moonbitlang/core/env",
-  "moonbitlang/core/encoding/utf8",
-  "moonbitlang/core/string",
-  "moonbitlang/x/path",
-  "moonbitlang/x/sys",
 }
-
-import {
-  "moonbitlang/async/pipe",
-} for "wbtest"
 
 supported_targets = "native+wasm"
 
 pkgtype(kind: "executable")
-
-rule(
-  name: "gen_version",
-  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
-)
-
-dev_build(rule: "gen_version", input: "moon.mod", output: "version.mbt")

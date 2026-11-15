@@ -143,6 +143,7 @@ fn oracle_impact(
     if source ||
       path.has_prefix("core/") ||
       path.has_prefix("tests/") ||
+      path.has_prefix("tools/") ||
       path.has_prefix(".github/workflows/") ||
       path.has_prefix(".github/actions/") ||
       ["moon.work", "moon.mod", "moon.pkg", ".gitmodules"].contains(path) {

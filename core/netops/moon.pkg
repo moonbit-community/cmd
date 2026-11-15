@@ -15,7 +15,6 @@ import {
 
 import {
   "moonbitlang/async/cond_var",
-  "moonbitlang/x/path",
   "moonbitlang/x/crypto",
 } for "wbtest"
 

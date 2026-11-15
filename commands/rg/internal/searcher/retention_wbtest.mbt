@@ -119,7 +119,7 @@ async test "regex count admission is independent of match and record positions" 
         if plan {
           assert_eq(reader.maximum_capacity, DEFAULT_BUFFER_CAPACITY)
         } else {
-          assert_true(reader.maximum_capacity > maximum_retained_buffer_bytes)
+          assert_true(reader.maximum_capacity > MAXIMUM_RETAINED_BUFFER_BYTES)
         }
         assert_eq(searcher.line_buffer.buf.length(), DEFAULT_BUFFER_CAPACITY)
       }
@@ -152,10 +152,10 @@ async test "oversized buffers are released after errors and successful multiline
       }
       assert_eq(failed, fail_at_end)
       assert_true(
-        searcher.line_buffer.buf.length() <= maximum_retained_buffer_bytes,
+        searcher.line_buffer.buf.length() <= MAXIMUM_RETAINED_BUFFER_BYTES,
       )
       assert_true(
-        searcher.multi_line_buffer.length() <= maximum_retained_buffer_bytes,
+        searcher.multi_line_buffer.length() <= MAXIMUM_RETAINED_BUFFER_BYTES,
       )
       assert_eq(sink.matches, 0L)
       let next : RetentionCount = { matches: 0L, finished: None, }

@@ -20,25 +20,7 @@ priv enum CliParseResult {
 
 ///|
 fn help_message() -> String {
-  let message =
-    #|Usage: jqlog [options] <query> [input]
-    #|  -h, --help      display this help and exit
-    #|      --version   display version and exit
-    #|
-    #|Options:
-    #|  -f, --file <path>   Read input text from a file.
-    #|
-    #|Notes:
-    #|  - Input is treated as JSONL/NDJSON with possible non-JSON lines.
-    #|  - Non-JSON lines are skipped.
-    #|  - Filters use the shared jq engine; modules and input/inputs are unavailable.
-    #|  - Results from each valid line are written only if its filter succeeds.
-    #|  - If [input] is omitted, stdin is used.
-    #|  - If [input] is provided without --file, it is treated as raw text.
-    #|
-    #|Examples:
-    #|  cat logs.ndjson | jqlog '.message'
-    #|  jqlog -f output.txt '.a'
+  let message = metadata_help().strip_suffix("\n").unwrap().to_owned()
   message + "\n"
 }
 
@@ -48,10 +30,10 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
   let mut index = 0
   while index < args.length() {
     let arg = args[index]
-    if arg == "-h" || arg == "--help" {
+    if metadata_option_matches("help", arg) {
       return Help
     }
-    if arg == "-f" || arg == "--file" {
+    if metadata_option_matches("file", arg) {
       if index + 1 >= args.length() {
         return Error("Missing path after --file")
       }

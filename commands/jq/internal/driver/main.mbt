@@ -46,32 +46,7 @@ priv suberror ArgError {
 
 ///|
 fn help_message() -> String {
-  let help =
-    #|Usage: jq [OPTION]... [FILTER] [FILE...]
-    #|      --help      display this help and exit
-    #|      --version   display version and exit
-    #|  -c, --compact-output    print compact JSON
-    #|  -r, --raw-output        print strings without JSON quotes
-    #|  -j, --join-output       raw output without result separators
-    #|  -n, --null-input        evaluate once with null; input/inputs may still read
-    #|  -s, --slurp             collect input values in an array
-    #|  -R, --raw-input         read text lines; -Rs reads all text
-    #|  -l, --logs              skip non-JSON lines (project extension)
-    #|      --stream            emit path/value leaves and container-end events
-    #|      --stream-errors     emit parse errors as stream events and recover
-    #|  -S, --sort-keys         sort object keys recursively
-    #|  -e, --exit-status       return 1 for false/null, 4 for no result
-    #|  -f, --from-file         read the first positional argument as a filter file
-    #|      --arg NAME VALUE   bind a string variable
-    #|      --argjson NAME JSON bind a JSON variable
-    #|  -L DIRECTORY           search modules here; replaces the default paths
-    #|      --indent N         indentation -1 (tabs) through 7
-    #|      --tab              indent with tabs
-    #|  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)
-    #|  -M, --monochrome-output disable colors, including when -C is present
-    #|
-    #|Option values and operands after -- remain literal during alias normalization.
-    #|-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename.
+  let help = metadata_help().strip_suffix("\n").unwrap().to_owned()
   help
 }
 
@@ -138,28 +113,7 @@ fn parse_cli(args : ArrayView[String]) -> CliParseResult {
     ArgError(message) =>
       return Error("jq: argument preparation failed: \{message}")
   }
-  let parsed = @cli.parse(normalized, [
-    @cli.flag("compact-output", short='c'),
-    @cli.flag("join-output", short='j'),
-    @cli.flag("logs", short='l'),
-    @cli.flag("stream"),
-    @cli.flag("stream-errors"),
-    @cli.flag("null-input", short='n'),
-    @cli.flag("slurp", short='s'),
-    @cli.flag("raw-output", short='r'),
-    @cli.flag("raw-input", short='R'),
-    @cli.flag("sort-keys", short='S'),
-    @cli.flag("exit-status", short='e'),
-    @cli.flag("color-output", short='C'),
-    @cli.flag("monochrome-output", short='M'),
-    @cli.flag("from-file", short='f'),
-    @cli.option("indent"),
-    @cli.flag("tab"),
-    @cli.option("arg"),
-    @cli.option("argjson"),
-    @cli.option("library-path", short='L'),
-    @cli.flag("help"),
-  ]) catch {
+  let parsed = @cli.parse(normalized, option_specs()) catch {
     @cli.CliError(option~, message~, ..) =>
       return Error("jq: \{message}: '\{option}'\n\{help_message()}")
   }

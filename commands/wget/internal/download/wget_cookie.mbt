@@ -1,5 +1,5 @@
 ///|
-const MaxWgetCookieHostLabels = 32
+const MAX_WGET_COOKIE_HOST_LABELS = 32
 
 ///|
 fn wget_cookie_host_allowed(host : String) -> Bool {
@@ -9,7 +9,7 @@ fn wget_cookie_host_allowed(host : String) -> Bool {
       labels += 1
     }
   }
-  labels <= MaxWgetCookieHostLabels
+  labels <= MAX_WGET_COOKIE_HOST_LABELS
 }
 
 ///|

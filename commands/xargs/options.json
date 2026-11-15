@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "command": "xargs",
+  "help": "Usage: xargs [-0prt] [-d BYTE] [-n N] [-L N] [-s BYTES] [-P N] [-E EOF] [-I REPLACE] [COMMAND [ARG...]]\n{{help:delimiter:0}}\n{{help:interactive:0}}\nComplete -n/-L batches can execute before EOF; later input errors preserve completed child effects.\n{{help:P:0}}\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "max-args",
+    "max-lines",
+    "max-chars",
+    "eof",
+    "no-run-if-empty",
+    "null",
+    "delimiter",
+    "replace",
+    "verbose",
+    "show-limits",
+    "interactive"
+  ],
+  "options": [
+    {
+      "name": "0",
+      "aliases": [
+        "-0",
+        "--null"
+      ],
+      "value": "none",
+      "description": "Read NUL-delimited / selected-byte items.",
+      "short": "0",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "delimiter",
+      "aliases": [
+        "-d",
+        "--delimiter"
+      ],
+      "value": "required",
+      "description": "Read NUL-delimited / selected-byte items.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -d, --delimiter=BYTE  separate literal input items with BYTE or an escape"
+      ]
+    },
+    {
+      "name": "max-args",
+      "aliases": [
+        "-n",
+        "--max-args"
+      ],
+      "value": "required",
+      "description": "Limit arguments / input lines per invocation.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "max-lines",
+      "aliases": [
+        "-L",
+        "--max-lines"
+      ],
+      "value": "required",
+      "description": "Limit arguments / input lines per invocation.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "max-chars",
+      "aliases": [
+        "-s",
+        "--max-chars"
+      ],
+      "value": "required",
+      "description": "Limit argument bytes; default 64 KiB.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "default_value": "65536",
+      "default_binding": {
+        "name": "DEFAULT_MAX_CHARS",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "eof",
+      "aliases": [
+        "-E",
+        "--eof"
+      ],
+      "value": "required",
+      "description": "Stop at the selected logical EOF in whitespace mode.",
+      "short": "E",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "no-run-if-empty",
+      "aliases": [
+        "-r",
+        "--no-run-if-empty"
+      ],
+      "value": "none",
+      "description": "Do not invoke the command for empty input.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "replace",
+      "aliases": [
+        "-I",
+        "--replace"
+      ],
+      "value": "required",
+      "description": "Replace TEXT using logical input lines.",
+      "short": "I",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "P",
+      "aliases": [
+        "-P",
+        "--max-procs"
+      ],
+      "value": "required",
+      "description": "Run at most N batches concurrently.",
+      "short": "P",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "-P N replenishes individual free slots; --show-limits leaves stdin untouched."
+      ],
+      "default_value": "1",
+      "default_binding": {
+        "name": "DEFAULT_P",
+        "type_": "Int32",
+        "scale": 1
+      }
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-t",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "Print commands / confirm through a separate console.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "interactive",
+      "aliases": [
+        "-p",
+        "--interactive"
+      ],
+      "value": "none",
+      "description": "Print commands / confirm through a separate console.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -p, --interactive     confirm each invocation through an independent console"
+      ]
+    },
+    {
+      "name": "show-limits",
+      "aliases": [
+        "--show-limits"
+      ],
+      "value": "none",
+      "description": "Show argument limits.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [],
+  "adapter_sources": [
+    "internal/driver/batches.mbt",
+    "internal/driver/delimited.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/stream_input.mbt",
+    "internal/driver/version.mbt"
+  ],
+  "adapter_match": true
+}

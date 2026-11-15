@@ -1,0 +1,368 @@
+{
+  "schema": 1,
+  "command": "jq",
+  "help": "Usage: jq [OPTION]... [FILTER] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\n{{help:compact-output:0}}\n{{help:raw-output:0}}\n{{help:join-output:0}}\n{{help:null-input:0}}\n{{help:slurp:0}}\n{{help:raw-input:0}}\n{{help:logs:0}}\n{{help:stream:0}}\n{{help:stream-errors:0}}\n{{help:sort-keys:0}}\n{{help:exit-status:0}}\n{{help:from-file:0}}\n{{help:arg:0}}\n{{help:argjson:0}}\n{{help:library-path:0}}\n{{help:indent:0}}\n{{help:tab:0}}\n{{help:color-output:0}}\n{{help:monochrome-output:0}}\n\nOption values and operands after -- remain literal during alias normalization.\n{{help:from-file:1}}\n",
+  "catalog_options": [
+    "color-output",
+    "monochrome-output",
+    "compact-output",
+    "exit-status",
+    "from-file",
+    "indent",
+    "join-output",
+    "logs",
+    "null-input",
+    "raw-input",
+    "sort-keys",
+    "slurp",
+    "tab",
+    "raw-output",
+    "arg",
+    "argjson",
+    "stream",
+    "stream-errors",
+    "library-path"
+  ],
+  "options": [
+    {
+      "name": "compact-output",
+      "aliases": [
+        "-c",
+        "--compact-output"
+      ],
+      "value": "none",
+      "description": "print compact JSON",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --compact-output    print compact JSON"
+      ]
+    },
+    {
+      "name": "join-output",
+      "aliases": [
+        "-j",
+        "--join-output"
+      ],
+      "value": "none",
+      "description": "raw output without result separators",
+      "short": "j",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -j, --join-output       raw output without result separators"
+      ]
+    },
+    {
+      "name": "logs",
+      "aliases": [
+        "-l",
+        "--logs"
+      ],
+      "value": "none",
+      "description": "skip non-JSON lines (project extension)",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -l, --logs              skip non-JSON lines (project extension)"
+      ]
+    },
+    {
+      "name": "stream",
+      "aliases": [
+        "--stream"
+      ],
+      "value": "none",
+      "description": "emit incremental path/leaf and container-end events",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --stream            emit path/value leaves and container-end events"
+      ]
+    },
+    {
+      "name": "stream-errors",
+      "aliases": [
+        "--stream-errors"
+      ],
+      "value": "none",
+      "description": "emit parse-error events and resume at the next parser buffer",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --stream-errors     emit parse errors as stream events and recover"
+      ]
+    },
+    {
+      "name": "null-input",
+      "aliases": [
+        "-n",
+        "--null-input"
+      ],
+      "value": "none",
+      "description": "evaluate once with null; `input`/`inputs` can still read",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -n, --null-input        evaluate once with null; input/inputs may still read"
+      ]
+    },
+    {
+      "name": "slurp",
+      "aliases": [
+        "-s",
+        "--slurp"
+      ],
+      "value": "none",
+      "description": "collect input values in an array",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --slurp             collect input values in an array"
+      ]
+    },
+    {
+      "name": "raw-output",
+      "aliases": [
+        "-r",
+        "--raw-output"
+      ],
+      "value": "none",
+      "description": "print strings without JSON quotes",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -r, --raw-output        print strings without JSON quotes"
+      ]
+    },
+    {
+      "name": "raw-input",
+      "aliases": [
+        "-R",
+        "--raw-input"
+      ],
+      "value": "none",
+      "description": "read text lines; -Rs reads all text",
+      "short": "R",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -R, --raw-input         read text lines; -Rs reads all text"
+      ]
+    },
+    {
+      "name": "sort-keys",
+      "aliases": [
+        "-S",
+        "--sort-keys"
+      ],
+      "value": "none",
+      "description": "sort object keys recursively",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -S, --sort-keys         sort object keys recursively"
+      ]
+    },
+    {
+      "name": "exit-status",
+      "aliases": [
+        "-e",
+        "--exit-status"
+      ],
+      "value": "none",
+      "description": "return 1 for false/null, 4 for no result",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -e, --exit-status       return 1 for false/null, 4 for no result"
+      ]
+    },
+    {
+      "name": "color-output",
+      "aliases": [
+        "-C",
+        "--color-output"
+      ],
+      "value": "none",
+      "description": "emit ANSI colors (JQ_COLORS customizes the palette)",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -C, --color-output      emit ANSI colors (JQ_COLORS customizes the palette)"
+      ]
+    },
+    {
+      "name": "monochrome-output",
+      "aliases": [
+        "-M",
+        "--monochrome-output"
+      ],
+      "value": "none",
+      "description": "disable colors, including when -C is present",
+      "short": "M",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -M, --monochrome-output disable colors, including when -C is present"
+      ]
+    },
+    {
+      "name": "from-file",
+      "aliases": [
+        "-f",
+        "--from-file"
+      ],
+      "value": "none",
+      "description": "read the first positional argument as a filter file",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -f, --from-file         read the first positional argument as a filter file",
+        "-f is a mode flag; other options may precede the filter filename. Use -- for a leading-dash filename."
+      ]
+    },
+    {
+      "name": "indent",
+      "aliases": [
+        "--indent"
+      ],
+      "value": "required",
+      "description": "indentation -1 (tabs) through 7",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --indent N         indentation -1 (tabs) through 7"
+      ]
+    },
+    {
+      "name": "tab",
+      "aliases": [
+        "--tab"
+      ],
+      "value": "none",
+      "description": "indent with tabs",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --tab              indent with tabs"
+      ]
+    },
+    {
+      "name": "arg",
+      "aliases": [
+        "--arg"
+      ],
+      "value": "required",
+      "description": "bind a string variable",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --arg NAME VALUE   bind a string variable"
+      ]
+    },
+    {
+      "name": "argjson",
+      "aliases": [
+        "--argjson"
+      ],
+      "value": "required",
+      "description": "bind a JSON variable",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "      --argjson NAME JSON bind a JSON variable"
+      ]
+    },
+    {
+      "name": "library-path",
+      "aliases": [
+        "-L",
+        "--library-path"
+      ],
+      "value": "required",
+      "description": "replace default module paths; repeated paths are searched in order",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -L DIRECTORY           search modules here; replaces the default paths"
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "compact-output",
+        "join-output",
+        "logs",
+        "stream",
+        "stream-errors",
+        "null-input",
+        "slurp",
+        "raw-output",
+        "raw-input",
+        "sort-keys",
+        "exit-status",
+        "color-output",
+        "monochrome-output",
+        "from-file",
+        "indent",
+        "tab",
+        "arg",
+        "argjson",
+        "library-path",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/cursor.mbt",
+    "internal/driver/diagnostics.mbt",
+    "internal/driver/evaluation.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/modules.mbt",
+    "internal/driver/render.mbt",
+    "internal/driver/stream_input.mbt",
+    "internal/driver/stream_number.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

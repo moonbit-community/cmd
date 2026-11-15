@@ -23,14 +23,14 @@ pub suberror SearchError {
   /// A configuration error.
   ConfigError(String)
   /// A generic I/O-like error (e.g. the heap limit was exceeded).
-  SearchIOError(String)
+  IoError(String)
 }
 
 ///|
 pub fn SearchError::to_string(self : SearchError) -> String {
   match self {
     ConfigError(s) => s
-    SearchIOError(s) => s
+    IoError(s) => s
   }
 }
 
@@ -41,7 +41,7 @@ pub impl Show for SearchError with fn output(self, logger) {
 
 ///|
 fn alloc_error(limit : Int32) -> SearchError {
-  SearchIOError("configured allocation limit (\{limit}) exceeded")
+  IoError("configured allocation limit (\{limit}) exceeded")
 }
 
 ///|
@@ -171,7 +171,7 @@ async fn LineBuffer::fill(self : LineBuffer, rdr : &Reader) -> Bool {
     let readlen = rdr.read(
       self.buf,
       self.end,
-      (self.buf.length() - self.end).min(maximum_record_read_bytes),
+      (self.buf.length() - self.end).min(MAXIMUM_RECORD_READ_BYTES),
     )
     if readlen == 0 {
       self.last_lineterm = self.end

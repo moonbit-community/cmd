@@ -21,7 +21,9 @@ priv struct CorpusCase {
 /// Repository-owned corpus data; this package is imported only by tests.
 /// Moon runs these tests with the cli/rg module as their working directory.
 async fn load() -> Array[TestCase] {
-  let source = @fs.read_file("../../tests/fixtures/rg/regex-corpus.jsonl").text()
+  let source = @fs.read_file(
+    "internal/regex/internal/testdata/fixtures/regex_corpus.jsonl",
+  ).text()
   let cases : Array[TestCase] = []
   let names : Set[String] = Set([])
   for line in source.split("\n") {

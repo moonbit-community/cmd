@@ -1,0 +1,57 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/diff/internal/compare"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn compare_options(ignore_case? : Bool, ignore_all_space? : Bool, ignore_space_change? : Bool, ignore_trailing_space? : Bool, strip_trailing_cr? : Bool, ignore_blank_lines? : Bool) -> CompareOptions
+
+pub fn edit_script(Array[Line], Array[Line], options? : CompareOptions, context? : Int32) -> EditScript
+
+pub fn lines(Bytes) -> Array[Line]
+
+pub fn meaningful(Edit, CompareOptions) -> Bool
+
+pub fn normal(Array[Edit], options? : CompareOptions, offset? : Int32) -> Bytes
+
+pub fn unified(Array[Edit], Int32, String, String, context_format? : Bool, options? : CompareOptions, offset? : Int32) -> Bytes
+
+// Errors
+
+// Types and methods
+pub struct CompareOptions {
+  ignore_case : Bool
+  ignore_all_space : Bool
+  ignore_space_change : Bool
+  ignore_trailing_space : Bool
+  strip_trailing_cr : Bool
+  ignore_blank_lines : Bool
+}
+
+pub enum Edit {
+  Equal(Line)
+  Remove(Line)
+  Add(Line)
+}
+
+pub(all) struct EditScript {
+  changes : Array[Edit]
+  prefix : Int32
+}
+
+#derive(Eq, Hash, @debug.Debug)
+pub struct Line {
+  value : BytesView
+  terminated : Bool
+}
+pub fn Line::equal(Self, Self) -> Bool
+pub fn Line::hash(Self) -> Int32
+pub fn Line::hash_combine(Self, Hasher) -> Unit
+pub fn Line::not_equal(Self, Self) -> Bool
+pub fn Line::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

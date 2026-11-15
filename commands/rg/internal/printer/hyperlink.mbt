@@ -345,7 +345,7 @@ fn FormatBuilder::append_var(
 ) -> Unit raise HyperlinkFormatError {
   let part = match name {
     "host" => Host
-    "wslprefix" => WSLPrefix
+    "wslprefix" => WslPrefix
     "path" => Path
     "line" => Line
     "column" => Column
@@ -424,7 +424,7 @@ priv enum Part {
   /// Placeholder for the host name.
   Host
   /// Placeholder for a WSL path prefix.
-  WSLPrefix
+  WslPrefix
   /// Placeholder for the file path.
   Path
   /// Placeholder for the line number.
@@ -443,7 +443,7 @@ fn Part::interpolate_to(
   match self {
     Text(text) => dest.extend_string(text)
     Host => if env.host is Some(h) { dest.extend_string(h) }
-    WSLPrefix => if env.wsl_prefix is Some(p) { dest.extend_string(p) }
+    WslPrefix => if env.wsl_prefix is Some(p) { dest.extend_string(p) }
     Path => dest.extend_bytes(values.path.bytes)
     Line => {
       let line = match values.line {
@@ -467,7 +467,7 @@ impl Show for Part with fn output(self, logger) {
   match self {
     Text(text) => logger.write_string(text)
     Host => logger.write_string("{host}")
-    WSLPrefix => logger.write_string("{wslprefix}")
+    WslPrefix => logger.write_string("{wslprefix}")
     Path => logger.write_string("{path}")
     Line => logger.write_string("{line}")
     Column => logger.write_string("{column}")

@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "command": "printenv",
+  "help": "Usage: printenv [-0] [NAME...]\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "null"
+  ],
+  "options": [
+    {
+      "short": "0",
+      "name": "null",
+      "description": "End values with NUL instead of newline.",
+      "aliases": [
+        "-0",
+        "--null"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "description": "Show help / package version.",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "kind": "flags",
+      "function_name": "command_flags",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "argparse",
+      "options": [
+        "null",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

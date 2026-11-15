@@ -45,14 +45,14 @@ fn BooleanRecordStream::scan(
     at += 4
     if self.accelerating &&
       state == previous &&
-      end - at >= boolean_probe_window_bytes {
+      end - at >= BOOLEAN_PROBE_WINDOW_BYTES {
       // A truncated chunk prefix is not evidence of record exit density.
       let probe = plan.probe_exit(
         hay,
         at,
         end,
         state,
-        at - start >= boolean_probe_window_bytes,
+        at - start >= BOOLEAN_PROBE_WINDOW_BYTES,
       )
       at = probe.offset
       self.accelerating = probe.accelerating

@@ -297,11 +297,11 @@ pub async fn Searcher::search_reader(
 
 ///|
 fn Searcher::release_oversized_buffers(self : Searcher) -> Unit {
-  if self.line_buffer.buf.length() > maximum_retained_buffer_bytes {
+  if self.line_buffer.buf.length() > MAXIMUM_RETAINED_BUFFER_BYTES {
     self.line_buffer.buf = FixedArray::make(self.line_buffer.capacity, b'\x00')
     self.line_buffer.clear()
   }
-  if self.multi_line_buffer.length() > maximum_retained_buffer_bytes {
+  if self.multi_line_buffer.length() > MAXIMUM_RETAINED_BUFFER_BYTES {
     self.multi_line_buffer = FixedArray::make(0, b'\x00')
     self.multi_line_len = 0
   }
@@ -368,7 +368,7 @@ fn Searcher::check_config(
 ///|
 fn line_term_debug(lt : @matcher.LineTerminator) -> String {
   match lt {
-    CRLF => "LineTerminator(CRLF)"
+    Crlf => "LineTerminator(CRLF)"
     Byte(b) => "LineTerminator(Byte(\{b.to_int()}))"
   }
 }

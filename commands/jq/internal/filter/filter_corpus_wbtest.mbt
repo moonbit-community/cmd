@@ -1,13 +1,7 @@
 ///|
 async test "complete shared jq adapter corpus preserves independent expectations" {
-  let mut root = @fs.realpath(".")
-  while !@fs.exists(root + "/moon.work") {
-    let parent = @fs.realpath(root + "/..")
-    guard parent != root else { fail("jq corpus workspace is missing") }
-    root = parent
-  }
   let value = @json.parse(
-    @fs.read_file(root + "/tests/fixtures/jq/adapter.json").text(),
+    @fs.read_file("internal/filter/fixtures/adapter.json").text(),
   )
   guard value
     is {

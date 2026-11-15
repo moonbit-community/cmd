@@ -1,14 +1,14 @@
 ///|
-const MaxResponseHeaderBytes = 1048576L
+const MAX_RESPONSE_HEADER_BYTES = 1048576L
 
 ///|
-const MaxHttpLineBytes = 65536
+const MAX_HTTP_LINE_BYTES = 65536
 
 ///|
-const MaxHttpFieldCount = 1024
+const MAX_HTTP_FIELD_COUNT = 1024
 
 ///|
-const MaxInterimResponses = 128
+const MAX_INTERIM_RESPONSES = 128
 
 ///|
 priv enum WireBody {
@@ -87,7 +87,7 @@ async fn HttpWire::line_bytes(
     self.position += 1
     if header {
       self.header_bytes += 1L
-      guard self.header_bytes <= MaxResponseHeaderBytes else {
+      guard self.header_bytes <= MAX_RESPONSE_HEADER_BYTES else {
         raise transfer_error(
           ReceiveFailure,
           "HTTP response headers exceed 1048576 bytes",
@@ -107,7 +107,7 @@ async fn HttpWire::line_bytes(
     }
     bytes.push(byte)
     // Bound untrusted protocol metadata independently of streamed body size.
-    guard bytes.length() <= MaxHttpLineBytes else {
+    guard bytes.length() <= MAX_HTTP_LINE_BYTES else {
       raise transfer_error(ReceiveFailure, "HTTP line exceeds 65536 bytes")
     }
   }
@@ -189,7 +189,7 @@ async fn HttpWire::response(
   receive_header? : async (ResponseLine) -> HttpHeader?,
 ) -> ResponseHead {
   for interim = 0; ; interim = interim + 1 {
-    guard interim <= MaxInterimResponses else {
+    guard interim <= MAX_INTERIM_RESPONSES else {
       raise transfer_error(ReceiveFailure, "too many informational responses")
     }
     let status_bytes = self.line_bytes(
@@ -235,7 +235,7 @@ async fn HttpWire::response(
         bytes.is_empty() ||
         bytes == b"\r\n" ||
         bytes == b"\n"
-      guard end || fields < MaxHttpFieldCount else {
+      guard end || fields < MAX_HTTP_FIELD_COUNT else {
         raise transfer_error(
           ReceiveFailure,
           "HTTP response headers exceed limits",
@@ -387,7 +387,7 @@ async fn HttpWire::read_some(self : HttpWire, max_len~ : Int32) -> Bytes? {
             self.body = Finished
             return None
           }
-          guard fields < MaxHttpFieldCount else {
+          guard fields < MAX_HTTP_FIELD_COUNT else {
             raise transfer_error(ReceiveFailure, "too many HTTP trailer fields")
           }
           let (name, _) = wire_field(line)

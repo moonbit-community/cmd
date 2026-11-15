@@ -61,7 +61,7 @@ async fn Walk::iter(self : Walk) -> Array[Result[DirEntry, IgnoreError]] {
 }
 
 ///|
-fn IgnoreError::io_error(self : IgnoreError) -> @sys.IOError? {
+fn IgnoreError::io_error(self : IgnoreError) -> @sys.IoError? {
   match self {
     Partial(errs) => if errs.length() == 1 { errs[0].io_error() } else { None }
     WithLineNumber(err~, ..) | WithPath(err~, ..) | WithDepth(err~, ..) =>

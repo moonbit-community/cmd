@@ -355,7 +355,7 @@ async test "rg_compat_json_basic" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -382,7 +382,7 @@ async test "rg_compat_json_pretty_context" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out, pretty=true)
+  let printer = @printer.JsonPrinter::new(out, pretty=true)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -411,7 +411,7 @@ async test "rg_compat_json_pretty_non_utf8" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out, pretty=true)
+  let printer = @printer.JsonPrinter::new(out, pretty=true)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -438,7 +438,7 @@ async test "rg_compat_json_context" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -467,7 +467,7 @@ async test "rg_compat_json_replace" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out, replacement=Some(b"<$0>"))
+  let printer = @printer.JsonPrinter::new(out, replacement=Some(b"<$0>"))
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -494,7 +494,7 @@ async test "rg_compat_json_invert" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -522,7 +522,7 @@ async test "rg_compat_json_non_utf8" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -549,7 +549,7 @@ async test "rg_compat_json_binary" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .binary_detection(@searcher.BinaryDetection::BinaryConvert(b'\x00'))
@@ -575,7 +575,7 @@ async test "rg_compat_json_multiline" {
     ban=Some(b'\x00'),
   )
   let out = @termcolor.ByteVec::new()
-  let printer = @printer.JSON::new(out)
+  let printer = @printer.JsonPrinter::new(out)
   @searcher.SearcherBuilder::new()
   .line_number(true)
   .multi_line(true)

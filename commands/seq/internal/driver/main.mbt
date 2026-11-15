@@ -1,0 +1,333 @@
+///|
+const MAX_NUMBER_CHARACTERS = 4096
+
+///|
+const MAX_DECIMAL_EXPONENT = 4096
+
+///|
+const MAX_DECIMAL_SCALE = 4096
+
+///|
+priv suberror SeqError {
+  SeqError(String)
+}
+
+///|
+priv struct Decimal {
+  coefficient : BigInt
+  scale : Int32
+}
+
+///|
+fn pow10(exponent : Int32) -> BigInt {
+  let mut value = BigInt::from_int(1)
+  for _ in 0..<exponent {
+    value = value * BigInt::from_int(10)
+  }
+  value
+}
+
+///|
+fn Decimal::normalize(self : Decimal) -> Decimal {
+  let ten = BigInt::from_int(10)
+  let mut coefficient = self.coefficient
+  let mut scale = self.scale
+  while scale > 0 && (coefficient % ten).is_zero() {
+    coefficient = coefficient / ten
+    scale -= 1
+  }
+  { coefficient, scale, }
+}
+
+///|
+fn parse_decimal(text : String) -> Decimal raise SeqError {
+  if text == "" || text.contains("_") || text.length() > MAX_NUMBER_CHARACTERS {
+    raise SeqError("invalid number: '\{text}'")
+  }
+  let chars : Array[Char] = text.iter().collect()
+  let mut start = 0
+  let mut negative = false
+  if chars[0] == '+' || chars[0] == '-' {
+    negative = chars[0] == '-'
+    start = 1
+  }
+  if start == chars.length() {
+    raise SeqError("invalid number: '\{text}'")
+  }
+  let mut exponent_index = -1
+  for index in start..<chars.length() {
+    if chars[index] == 'e' || chars[index] == 'E' {
+      if exponent_index >= 0 {
+        raise SeqError("invalid number: '\{text}'")
+      }
+      exponent_index = index
+    }
+  }
+  let mantissa_end = if exponent_index < 0 {
+    chars.length()
+  } else {
+    exponent_index
+  }
+  let exponent = if exponent_index < 0 {
+    0
+  } else {
+    let exponent_text = text[exponent_index + 1:].to_owned()
+    @string.parse_int(exponent_text) catch {
+      _ => raise SeqError("invalid exponent: '\{text}'")
+    }
+  }
+  if exponent > MAX_DECIMAL_EXPONENT || exponent < -MAX_DECIMAL_EXPONENT {
+    raise SeqError("exponent out of supported range: '\{text}'")
+  }
+  let digits = StringBuilder()
+  let mut decimal_seen = false
+  let mut fractional_digits = 0
+  for index in start..<mantissa_end {
+    match chars[index] {
+      '0'..<='9' as digit => {
+        digits.write_char(digit)
+        if decimal_seen {
+          fractional_digits += 1
+        }
+      }
+      '.' if !decimal_seen => decimal_seen = true
+      _ => raise SeqError("invalid number: '\{text}'")
+    }
+  }
+  if digits.is_empty() {
+    raise SeqError("invalid number: '\{text}'")
+  }
+  let mut coefficient = @string.parse_bigint(digits.to_string()) catch {
+    _ => raise SeqError("number out of range: '\{text}'")
+  }
+  if negative {
+    coefficient = -coefficient
+  }
+  let scale = fractional_digits - exponent
+  if scale > MAX_DECIMAL_SCALE || scale < -MAX_DECIMAL_SCALE {
+    raise SeqError("number precision exceeds the supported limit: '\{text}'")
+  }
+  if scale < 0 {
+    coefficient = coefficient * pow10(-scale)
+    return ({ coefficient, scale: 0, } : Decimal).normalize()
+  }
+  ({ coefficient, scale, } : Decimal).normalize()
+}
+
+///|
+fn Decimal::at_scale(self : Decimal, scale : Int32) -> BigInt {
+  if scale == self.scale {
+    self.coefficient
+  } else {
+    self.coefficient * pow10(scale - self.scale)
+  }
+}
+
+///|
+fn Decimal::compare(self : Decimal, other : Decimal) -> Int32 {
+  let scale = if self.scale > other.scale { self.scale } else { other.scale }
+  self.at_scale(scale).compare(other.at_scale(scale))
+}
+
+///|
+fn Decimal::add(self : Decimal, other : Decimal) -> Decimal {
+  let scale = if self.scale > other.scale { self.scale } else { other.scale }
+  (
+    { coefficient: self.at_scale(scale) + other.at_scale(scale), scale, } :
+    Decimal).normalize()
+}
+
+///|
+fn Decimal::render(self : Decimal) -> String {
+  let negative = self.coefficient.compare_int(0) < 0
+  let absolute = if negative { -self.coefficient } else { self.coefficient }
+  let digits = absolute.to_string()
+  let body = if self.scale == 0 {
+    digits
+  } else if digits.length() <= self.scale {
+    "0." + "0".repeat(self.scale - digits.length()) + digits
+  } else {
+    let split = digits.length() - self.scale
+    digits[:split].to_owned() + "." + digits[split:].to_owned()
+  }
+  if negative {
+    "-" + body
+  } else {
+    body
+  }
+}
+
+///|
+fn zero_pad(text : String, width : Int32) -> String {
+  if text.length() >= width {
+    return text
+  }
+  let zeros = "0".repeat(width - text.length())
+  if text.has_prefix("-") {
+    "-" + zeros + text[1:].to_owned()
+  } else {
+    zeros + text
+  }
+}
+
+///|
+pub async fn run_main() -> Unit {
+  let metadata_args = @env.args()[1:]
+  if metadata_args.length() == 1 && metadata_args[0] == "--version" {
+    @stdio.stdout.write("seq \{MODULE_VERSION}\n")
+    return
+  }
+  let args = @env.args()[1:]
+  let operands : Array[String] = []
+  let mut separator = "\n"
+  let mut equal_width = false
+  let mut format : String? = None
+  let mut options = true
+  let mut i = 0
+  while i < args.length() {
+    let arg = args[i]
+    if options && arg == "--" {
+      options = false
+    } else if options && metadata_option_matches("equal-width", arg) {
+      equal_width = true
+    } else if options && metadata_option_matches("format", arg) {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write(
+          "seq: option '\{arg}' requires an argument\nTry 'seq --help' for more information.\n",
+        )
+        @sys.exit(1)
+        return
+      }
+      i += 1
+      format = Some(args[i])
+    } else if options && arg.has_prefix("--format=") {
+      format = Some(arg[9:].to_owned())
+    } else if options && arg.has_prefix("-f") && arg.length() > 2 {
+      format = Some(arg[2:].to_owned())
+    } else if options && metadata_option_matches("separator", arg) {
+      if i + 1 >= args.length() {
+        @stdio.stderr.write("seq: missing separator\n")
+        @sys.exit(1)
+        return
+      }
+      i += 1
+      separator = args[i]
+    } else if options && arg.has_prefix("-s") && arg.length() > 2 {
+      separator = arg[2:].to_owned()
+    } else if options && arg.has_prefix("--separator=") {
+      separator = arg[12:].to_owned()
+    } else if options && metadata_option_matches("help", arg) {
+      @stdio.stdout.write(metadata_help())
+      return
+    } else if options && metadata_option_matches("version", arg) {
+      @stdio.stdout.write("seq \{MODULE_VERSION}\n")
+      return
+    } else if options &&
+      arg.has_prefix("-") &&
+      arg.length() > 1 &&
+      !(arg[1] is ('0'..<='9' | '.')) {
+      @stdio.stderr.write("seq: invalid option: '\{arg}'\n")
+      @sys.exit(1)
+      return
+    } else {
+      operands.push(arg)
+      options = false
+    }
+    i += 1
+  }
+  if operands.length() < 1 || operands.length() > 3 {
+    @stdio.stderr.write("seq: expected one to three operands\n")
+    @sys.exit(1)
+    return
+  }
+  if format is Some(text) {
+    try {
+      let descriptor = parse_float_format(text)
+      if equal_width {
+        raise SeqError(
+          "format string may not be specified when printing equal width strings\nTry 'seq --help' for more information.",
+        )
+      }
+      print_formatted(operands, descriptor, separator)
+    } catch {
+      SeqError(message) => {
+        @stdio.stderr.write("seq: \{message}\n")
+        @sys.exit(1)
+      }
+      error => {
+        @stdio.stderr.write("seq: \{error}\n")
+        @sys.exit(1)
+      }
+    }
+    return
+  }
+  let parsed : Array[Decimal] = []
+  for operand in operands {
+    let number = parse_decimal(operand) catch {
+      SeqError(message) => {
+        @stdio.stderr.write("seq: \{message}\n")
+        @sys.exit(1)
+        return
+      }
+    }
+    parsed.push(number)
+  }
+  let (first, step, last) = match parsed {
+    [last] => (parse_decimal("1"), parse_decimal("1"), last)
+    [first, last] => (first, parse_decimal("1"), last)
+    [first, step, last] => (first, step, last)
+    _ => abort("unreachable")
+  }
+  let step_direction = step.coefficient.compare_int(0)
+  if step_direction == 0 {
+    @stdio.stderr.write("seq: zero increment\n")
+    @sys.exit(1)
+    return
+  }
+  let first_text = first.render()
+  let last_text = last.render()
+  let width = if first_text.length() > last_text.length() {
+    first_text.length()
+  } else {
+    last_text.length()
+  }
+  let separator_bytes = @utf8.encode(separator)
+  match
+    (first.bounded_integer(), step.bounded_integer(), last.bounded_integer()) {
+    (Some(first), Some(step), Some(last)) if separator_bytes.length() <= 65515 => {
+      print_integers(
+        IntegerSequence::new(
+          first,
+          step,
+          last,
+          separator_bytes,
+          if equal_width {
+            width
+          } else {
+            0
+          },
+        ),
+        @stdio.stdout,
+      )
+      return
+    }
+    _ => ()
+  }
+  let mut current = first
+  let mut emitted = false
+  let output = @io.BufferedWriter::new(@stdio.stdout, size=65536)
+  while (step_direction > 0 && current.compare(last) <= 0) ||
+        (step_direction < 0 && current.compare(last) >= 0) {
+    if emitted {
+      output.write(separator)
+    }
+    let rendered = current.render()
+    output.write(if equal_width { zero_pad(rendered, width) } else { rendered })
+    emitted = true
+    current = current.add(step)
+  }
+  if emitted {
+    output.write("\n")
+  }
+  output.flush()
+}

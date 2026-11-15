@@ -1,0 +1,295 @@
+{
+  "schema": 1,
+  "command": "cp",
+  "help": "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n{{help:help:0}}\n{{help:version:0}}\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\nTree validation finishes before copying; existing empty directories report no copy.\nProject alias: --dereference-command-line selects -H; GNU cp exposes only the short spelling.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
+  "catalog_options": [
+    "archive",
+    "force",
+    "no-clobber",
+    "no-target-directory",
+    "no-preserve",
+    "preserve",
+    "recursive",
+    "verbose",
+    "interactive",
+    "update",
+    "update-mode",
+    "backup",
+    "backup-control",
+    "suffix",
+    "dereference-command-line",
+    "dereference",
+    "no-dereference"
+  ],
+  "options": [
+    {
+      "name": "recursive",
+      "aliases": [
+        "-R",
+        "--recursive"
+      ],
+      "value": "none",
+      "description": "Copy directory trees.",
+      "short": "R",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "force",
+      "aliases": [
+        "-f",
+        "--force"
+      ],
+      "value": "none",
+      "description": "Retry a failed destination open after removing that destination.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-clobber",
+      "aliases": [
+        "-n",
+        "--no-clobber"
+      ],
+      "value": "none",
+      "description": "Skip existing targets.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "interactive",
+      "aliases": [
+        "-i",
+        "--interactive"
+      ],
+      "value": "none",
+      "description": "Prompt before replacing an existing destination.",
+      "short": "i",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "update",
+      "aliases": [
+        "-u",
+        "--update"
+      ],
+      "value": "none",
+      "description": "Update selection: all, older, none or none-fail.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "update-mode",
+      "aliases": [
+        "--update=MODE"
+      ],
+      "value": "required",
+      "description": "Select the documented destination update policy.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "backup",
+      "aliases": [
+        "-b",
+        "--backup"
+      ],
+      "value": "none",
+      "description": "Create backups of replaced destinations.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "backup-control",
+      "aliases": [
+        "--backup=CONTROL"
+      ],
+      "value": "required",
+      "description": "Select the documented backup naming policy.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "suffix",
+      "aliases": [
+        "-S",
+        "--suffix"
+      ],
+      "value": "required",
+      "description": "Set the suffix for simple backups.",
+      "short": "S",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "dereference-command-line",
+      "aliases": [
+        "-H",
+        "--dereference-command-line"
+      ],
+      "value": "none",
+      "description": "Select source-link traversal.",
+      "short": "H",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "dereference",
+      "aliases": [
+        "-L",
+        "--dereference"
+      ],
+      "value": "none",
+      "description": "Select source-link traversal.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-dereference",
+      "aliases": [
+        "-P",
+        "--no-dereference"
+      ],
+      "value": "none",
+      "description": "Copy a symbolic link itself.",
+      "short": "P",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-target-directory",
+      "aliases": [
+        "-T",
+        "--no-target-directory"
+      ],
+      "value": "none",
+      "description": "Treat destination as a complete path.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "preserve",
+      "aliases": [
+        "-p",
+        "--preserve"
+      ],
+      "value": "none",
+      "description": "Preserve the supported file attributes.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "no-preserve",
+      "aliases": [
+        "--no-preserve"
+      ],
+      "value": "required",
+      "description": "Required for copying to a new destination.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "archive",
+      "aliases": [
+        "-a",
+        "--archive"
+      ],
+      "value": "none",
+      "description": "Select the command's documented archive-copy profile.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "Show copied paths.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show help / package version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    },
+    {
+      "name": "recursive-short-r",
+      "parser_name": "recursive",
+      "aliases": [
+        "-r"
+      ],
+      "value": "none",
+      "description": "Copy directory trees.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "source": "internal/driver/main.mbt",
+      "import_alias": "cli",
+      "options": [
+        "recursive",
+        "recursive-short-r",
+        "force",
+        "no-clobber",
+        "interactive",
+        "update",
+        "update-mode",
+        "backup",
+        "backup-control",
+        "suffix",
+        "dereference-command-line",
+        "dereference",
+        "no-dereference",
+        "no-target-directory",
+        "preserve",
+        "no-preserve",
+        "archive",
+        "verbose",
+        "help"
+      ]
+    }
+  ],
+  "adapter_sources": [
+    "internal/driver/copy.mbt",
+    "internal/driver/main.mbt",
+    "internal/driver/version.mbt"
+  ]
+}

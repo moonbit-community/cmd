@@ -10,20 +10,20 @@ fn Parser::parse_builtin_flow_range(
 ) -> @ast.Expr? raise ParseError {
   match name {
     "range" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let first_expr = self.parse_pipe()
       if self.consume(TSemicolon) {
         let second_expr = self.parse_pipe()
         if self.consume(TSemicolon) {
           let third_expr = self.parse_pipe()
-          self.expect(TRParen)
+          self.expect(TRightParen)
           Some(RangeWithStep(first_expr, second_expr, third_expr))
         } else {
-          self.expect(TRParen)
+          self.expect(TRightParen)
           Some(RangeFromTo(first_expr, second_expr))
         }
       } else {
-        self.expect(TRParen)
+        self.expect(TRightParen)
         guard first_expr is Literal(Number(n)) else {
           raise InvalidSyntax("range(n) expects literal number")
         }
@@ -31,25 +31,25 @@ fn Parser::parse_builtin_flow_range(
       }
     }
     "first" =>
-      if self.consume(TLParen) {
+      if self.consume(TLeftParen) {
         let expr = self.parse_pipe()
-        self.expect(TRParen)
+        self.expect(TRightParen)
         Some(FirstGen(expr))
       } else {
         Some(First)
       }
     "last" =>
-      if self.consume(TLParen) {
+      if self.consume(TLeftParen) {
         let expr = self.parse_pipe()
-        self.expect(TRParen)
+        self.expect(TRightParen)
         Some(LastGen(expr))
       } else {
         Some(Last)
       }
     "repeat" => {
-      self.expect(TLParen)
+      self.expect(TLeftParen)
       let expr = self.parse_pipe()
-      self.expect(TRParen)
+      self.expect(TRightParen)
       Some(Repeat(expr))
     }
     _ => None

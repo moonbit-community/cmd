@@ -30,9 +30,9 @@ test "count selection revisits dense sparse and dense inputs on the same matcher
 test "literal streaming eligibility has an exact retained suffix bound" {
   for
     size in [
-      literal_stream_max_bytes - 1,
-      literal_stream_max_bytes,
-      literal_stream_max_bytes + 1,
+      LITERAL_STREAM_MAX_BYTES - 1,
+      LITERAL_STREAM_MAX_BYTES,
+      LITERAL_STREAM_MAX_BYTES + 1,
     ] {
     let matcher = SearchMatcher::new(
       ["a".repeat(size)],
@@ -40,7 +40,7 @@ test "literal streaming eligibility has an exact retained suffix bound" {
     )
     assert_eq(
       @matcher.Matcher::literal_overlap(matcher, b'\n'),
-      if size <= literal_stream_max_bytes {
+      if size <= LITERAL_STREAM_MAX_BYTES {
         Some(size - 1)
       } else {
         None
@@ -129,19 +129,19 @@ test "boolean count adapter selects direct byte rows for oversized records" {
   let hay = (prefix + Bytes::make(262145 - prefix.length(), b'x')).to_fixedarray()
   for
     size in [
-      boolean_min_block_bytes - 1,
-      boolean_min_block_bytes,
-      boolean_min_block_bytes + 1,
-      boolean_ordinary_block_bytes - 1,
-      boolean_ordinary_block_bytes,
-      boolean_ordinary_block_bytes + 1,
+      BOOLEAN_MIN_BLOCK_BYTES - 1,
+      BOOLEAN_MIN_BLOCK_BYTES,
+      BOOLEAN_MIN_BLOCK_BYTES + 1,
+      BOOLEAN_ORDINARY_BLOCK_BYTES - 1,
+      BOOLEAN_ORDINARY_BLOCK_BYTES,
+      BOOLEAN_ORDINARY_BLOCK_BYTES + 1,
     ] {
     let count = @matcher.Matcher::count_matching_lines(
       matcher, hay, 0, size, b'\n',
     )
     assert_eq(
       count,
-      if size < boolean_min_block_bytes {
+      if size < BOOLEAN_MIN_BLOCK_BYTES {
         None
       } else {
         Some(32L)

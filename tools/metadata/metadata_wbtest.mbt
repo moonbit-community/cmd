@@ -1,0 +1,218 @@
+///|
+test "help variants consume declared lines and reject missing or unused bindings" {
+  let metadata = sample()
+  let option = {
+    ..metadata.options[0],
+    help_lines: Some(["  --help  Show help."]),
+  }
+  let variant : HelpVariant = {
+    command: "sub",
+    long: false,
+    text: "Usage: sample sub\n{{help:help:0}}\n",
+  }
+  let metadata = {
+    ..metadata,
+    options: [option, ..metadata.options[1:]],
+    help_variants: Some([variant]),
+  }
+  validate_help(metadata)
+  assert_eq(
+    render_help_text(metadata, variant.text),
+    "Usage: sample sub\n  --help  Show help.\n",
+  )
+  for
+    invalid in [
+      { ..metadata, help_variants: None, },
+      { ..metadata, help_variants: Some([variant, variant]), },
+    ] {
+    try validate_help(invalid) catch {
+      _ => ()
+    } noraise {
+      _ => fail("invalid help binding accepted")
+    }
+  }
+  try render_help_text(metadata, "{{help:missing:0}}") catch {
+    _ => ()
+  } noraise {
+    _ => fail("missing help binding accepted")
+  }
+}
+
+///|
+test "generated defaults reject nonliteral values and invalid constant names" {
+  let metadata = sample()
+  let option = {
+    ..metadata.options[2],
+    default_value: Some("10"),
+    default_binding: Some({
+      name: "DEFAULT_OUTPUT",
+      type_: "Int32",
+      scale: Some(1000),
+      variant: None,
+    }),
+  }
+  validate({ ..metadata, options: [..metadata.options[:2], option], })
+  for
+    invalid in [
+      { ..option, default_value: Some("10; abort()"), },
+      { ..option, default_value: None, },
+      {
+        ..option,
+        default_binding: Some({
+          name: "default_output",
+          type_: "Int32",
+          scale: None,
+          variant: None,
+        }),
+      },
+    ] {
+    try
+      validate({ ..metadata, options: [..metadata.options[:2], invalid], })
+    catch {
+      _ => ()
+    } noraise {
+      _ => fail("invalid default accepted")
+    }
+  }
+}
+
+///|
+test "negative rg aliases do not inherit the positive option value requirement" {
+  let option : OptionMetadata = @json.from_json({
+    "name": "encoding",
+    "aliases": ["--encoding", "-E", "--no-encoding"],
+    "value": "required",
+    "description": "Select an encoding.",
+    "repeatable": true,
+    "allow_attached": true,
+    "rg": {
+      "negated": "no-encoding",
+      "category": "Search",
+      "long_help": "Select an encoding.",
+      "choices": [],
+      "completion": "Encoding",
+    },
+  })
+  let table = option_table([option])
+  assert_true(
+    table.contains("| `--encoding` / `-E` | required | Select an encoding. |\n"),
+  )
+  assert_true(
+    table.contains("| `--no-encoding` | none | Disable `--encoding`. |\n"),
+  )
+  assert_false(table.contains("`--no-encoding` | required"))
+}
+
+///|
+fn sample() -> Metadata raise {
+  @json.from_json({
+    "schema": 1,
+    "command": "sample",
+    "help": "Usage: sample\n",
+    "catalog_options": ["output"],
+    "adapter_sources": ["internal/driver/main.mbt"],
+    "options": [
+      {
+        "name": "help",
+        "aliases": ["--help"],
+        "value": "none",
+        "description": "Show help.",
+        "repeatable": false,
+        "allow_attached": false,
+      },
+      {
+        "name": "version",
+        "aliases": ["--version"],
+        "value": "none",
+        "description": "Show version.",
+        "repeatable": false,
+        "allow_attached": false,
+      },
+      {
+        "name": "output",
+        "aliases": ["-o", "--output"],
+        "short": "o",
+        "value": "required",
+        "description": "Output path.",
+        "repeatable": true,
+        "allow_attached": false,
+      },
+    ],
+    "tables": [
+      {
+        "function_name": "option_specs",
+        "source": "internal/driver/main.mbt",
+        "import_alias": "cli",
+        "options": ["output", "help"],
+      },
+    ],
+  })
+}
+
+///|
+test "metadata rejects duplicate options missing parser bindings and adapted grammars" {
+  let metadata = sample()
+  validate(metadata)
+  for
+    invalid in [
+      { ..metadata, options: [..metadata.options, metadata.options[0]], },
+      { ..metadata, options: metadata.options[:2].to_owned(), },
+      { ..metadata, tables: [..metadata.tables, metadata.tables[0]], },
+      {
+        ..metadata,
+        options: [
+          metadata.options[0],
+          metadata.options[1],
+          { ..metadata.options[2], value: "optional", },
+        ],
+      },
+    ] {
+    try validate(invalid) catch {
+      _ => ()
+    } noraise {
+      _ => fail("invalid declaration accepted")
+    }
+  }
+}
+
+///|
+test "generated parser order repetition and attached value policy remain explicit" {
+  let metadata = sample()
+  assert_eq(
+    parser_table(metadata.tables[0], metadata.options),
+    "///|\nfn option_specs() -> Array[@cli.OptionSpec] {\n  [\n    @cli.option(\"output\", short='o', allow_attached=false),\n    @cli.flag(\"help\", repeatable=false),\n  ]\n}\n",
+  )
+}
+
+///|
+test "generated drift comparison preserves literal whitespace and ignores formatting only" {
+  assert_eq(
+    tokens("[option(\"reference\", allow_hyphen_values=true),]").map(token => {
+      token.text
+    }),
+    tokens("[option(\"reference\", allow_hyphen_values=true)]").map(token => {
+      token.text
+    }),
+  )
+  assert_false(
+    tokens("[option(\"reference\", allow_hyphen_values=true)]").map(token => {
+      token.text
+    }) ==
+    tokens("[option(\"reference\", allow_hyphen_values=false)]").map(token => {
+      token.text
+    }),
+  )
+  assert_eq(
+    tokens("fn a() { \"a b\" }").map(token => token.text),
+    tokens("fn a ( ) {\n\"a b\"\n}").map(token => token.text),
+  )
+  assert_false(
+    tokens("\"a b\"").map(token => token.text) ==
+    tokens("\"ab\"").map(token => token.text),
+  )
+  try tokens("\"unterminated") catch {
+    _ => ()
+  } noraise {
+    _ => fail("malformed literal accepted")
+  }
+}

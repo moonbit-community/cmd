@@ -1,6 +1,6 @@
 ///|
 test "real successful scans amortize pressure before a later unproductive window" {
-  let dfa = LazyDFA::new(compile_nfa(@syntax.parse("abcdef")), state_limit=5)
+  let dfa = LazyDfa::new(compile_nfa(@syntax.parse("abcdef")), state_limit=5)
   let pressure = b"abcdef".to_fixedarray()
   for _ in 0..<2 {
     assert_eq(dfa.find_fwd(pressure, 0, 6, 0, 6, false, false), DFA_FAILED)
@@ -33,11 +33,11 @@ test "real successful scans amortize pressure before a later unproductive window
 test "DFA cache capacity preserves known rows exactly at the construction limit" {
   let nfa = compile_nfa(@syntax.parse("abcdef"))
   let hay = b"abcdef".to_fixedarray()
-  let reference = LazyDFA::new(nfa)
+  let reference = LazyDfa::new(nfa)
   assert_eq(reference.find_fwd(hay, 0, 6, 0, 6, false, false), 6)
   let required = reference.states.length()
   for limit in [required - 1, required, required + 1] {
-    let dfa = LazyDFA::new(nfa, state_limit=limit)
+    let dfa = LazyDfa::new(nfa, state_limit=limit)
     assert_eq(
       dfa.find_fwd(hay, 0, 6, 0, 6, false, false),
       if limit < required {
@@ -60,19 +60,19 @@ test "DFA cache capacity preserves known rows exactly at the construction limit"
 test "repeated cache pressure retires an unproductive DFA without retrying rows" {
   for reverse in [false, true] {
     let nfa = compile_nfa(@syntax.parse("abcdef"), config={
-      ..NFAConfig::default(),
+      ..NfaConfig::default(),
       reverse,
     })
-    let dfa = LazyDFA::new(nfa, match_all=reverse, state_limit=5)
+    let dfa = LazyDfa::new(nfa, match_all=reverse, state_limit=5)
     let hay = b"abcdef".to_fixedarray()
-    for attempt in 1..<=dfa_pressure_clear_limit {
+    for attempt in 1..<=DFA_PRESSURE_CLEAR_LIMIT {
       let result = if reverse {
         dfa.find_rev(hay, 0, 6, 0, 6, true, false)
       } else {
         dfa.find_fwd(hay, 0, 6, 0, 6, false, false)
       }
       assert_eq(result, DFA_FAILED)
-      assert_eq(dfa.health is Retired, attempt == dfa_pressure_clear_limit)
+      assert_eq(dfa.health is Retired, attempt == DFA_PRESSURE_CLEAR_LIMIT)
       if dfa.health is Measuring(work) {
         assert_eq(work.clears, attempt)
         // The synthetic quit row is not constructed through the interner.
@@ -97,7 +97,7 @@ test "repeated cache pressure retires an unproductive DFA without retrying rows"
 
 ///|
 test "Unicode quits never retire later ASCII searches" {
-  let dfa = LazyDFA::new(compile_nfa(@syntax.parse("\\bword\\b")))
+  let dfa = LazyDfa::new(compile_nfa(@syntax.parse("\\bword\\b")))
   let unicode = b"\xc3\xa9word".to_fixedarray()
   for _ in 0..<8 {
     assert_eq(
@@ -124,9 +124,9 @@ test "Unicode quits never retire later ASCII searches" {
 ///|
 test "productive cache windows restart accounting at the exact cost boundary" {
   for bytes in [29, 30, 31] {
-    let dfa = LazyDFA::new(compile_nfa(@syntax.parse("a")))
+    let dfa = LazyDfa::new(compile_nfa(@syntax.parse("a")))
     dfa.health = Measuring({
-      clears: dfa_pressure_clear_limit,
+      clears: DFA_PRESSURE_CLEAR_LIMIT,
       constructed: 3L,
       searched: 0L,
     })

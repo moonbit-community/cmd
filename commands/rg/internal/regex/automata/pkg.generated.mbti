@@ -12,7 +12,7 @@ pub const DFA_FAILED : Int32 = -2
 
 pub const NO_SPAN : Int64 = -1
 
-pub fn compile_nfa(@syntax.Hir, config? : NFAConfig) -> NFA raise BuildError
+pub fn compile_nfa(@syntax.Hir, config? : NfaConfig) -> Nfa raise BuildError
 
 pub fn span_end(Int64) -> Int32
 
@@ -25,15 +25,15 @@ pub suberror BuildError {
 }
 
 // Types and methods
-pub struct LazyDFA {
+pub struct LazyDfa {
   // private fields
 }
-pub fn LazyDFA::find_fwd(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool, pre? : Prefilter) -> Int32
-pub fn LazyDFA::find_rev(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool) -> Int32
-pub fn LazyDFA::new(NFA, match_all? : Bool, state_limit? : Int32) -> Self
-pub fn LazyDFA::record_boolean(Self) -> RecordBoolean?
+pub fn LazyDfa::find_fwd(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool, pre? : Prefilter) -> Int32
+pub fn LazyDfa::find_rev(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool) -> Int32
+pub fn LazyDfa::new(Nfa, match_all? : Bool, state_limit? : Int32) -> Self
+pub fn LazyDfa::record_boolean(Self) -> RecordBoolean?
 
-pub struct NFA {
+pub struct Nfa {
   states : Array[State]
   start_anchored : Int32
   start_unanchored : Int32
@@ -45,25 +45,25 @@ pub struct NFA {
   byte_classes : FixedArray[Int32]
   byte_class_len : Int32
 }
-pub fn NFA::group_len(Self) -> Int32
-pub fn NFA::group_names(Self) -> Array[String?]
-pub fn NFA::states(Self) -> Array[State]
-pub fn NFA::to_string(Self) -> String
+pub fn Nfa::group_len(Self) -> Int32
+pub fn Nfa::group_names(Self) -> Array[String?]
+pub fn Nfa::states(Self) -> Array[State]
+pub fn Nfa::to_string(Self) -> String
 
-pub(all) struct NFAConfig {
+pub(all) struct NfaConfig {
   reverse : Bool
   captures : Bool
   unanchored_prefix : Bool
   size_limit : Int32?
 }
-pub fn NFAConfig::default() -> Self
+pub fn NfaConfig::default() -> Self
 
-pub struct PikeVM {
-  nfa : NFA
+pub struct PikeVm {
+  nfa : Nfa
   // private fields
 }
-pub fn PikeVM::new(NFA) -> Self
-pub fn PikeVM::search_slots(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool, FixedArray[Int32], pre? : Prefilter) -> Bool
+pub fn PikeVm::new(Nfa) -> Self
+pub fn PikeVm::search_slots(Self, FixedArray[Byte], Int32, Int32, Int32, Int32, Bool, Bool, FixedArray[Int32], pre? : Prefilter) -> Bool
 
 pub(all) enum Prefilter {
   Byte(Byte)

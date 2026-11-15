@@ -1,6 +1,6 @@
 # Command validation
 
-Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tests/run.mbtx -- COMMAND`.
+Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- COMMAND`.
 Keep the current PATH toolchain. CI installs MoonBit and its matching core through
 the official Unix/PowerShell installers in `.github/actions/setup-moonbit`, with
 bounded retries for installer and archive downloads. Setup does not require Nu or
@@ -10,7 +10,7 @@ serially. Product acceptance targets Wasm; Native is only for test tools.
 
 Command policies and their private tests live together. Jq's shared filter
 adaptation and jqlog's public-engine consumer
-consume all 28 records in `fixtures/jq/adapter.json`, including the original
+consume all 28 records in their module-owned `fixtures/adapter.json` copies, including the original
 3,000-member stable-order inputs and independent expected arrays. This fixture
 was extracted from the previous tests without evaluating either implementation.
 Readers require the exact count, unique nonempty IDs and valid records; missing
@@ -25,6 +25,7 @@ files fail. Error propagation remains covered beside the engine and each command
 | `test packages` / `test tools` / `test all` | Wasm package tests and Native infrastructure regressions |
 | `format --check` | Packages and all standalone scripts |
 | `index check` / `index update` | Validate cases and bindings; check or update the derived candidate |
+| `metadata check` / `metadata update` | Verify or regenerate parser, help, README and catalog artifacts |
 | `list --command sort` / `validate` | Inspect or validate selection without product execution |
 | `functional` | Run applicable workspace assertions and verify complete results |
 | `architecture /absolute/fresh.json` | Validate package and strategy dependencies |
@@ -44,7 +45,7 @@ do not qualify complete development or published acceptance.
 ## Ownership and assertions
 
 Package tests own parser tables, numeric boundaries and private state. Keep
-large original corpora in `fixtures/`, preserve their independent expected
+large original corpora in the owning package's `fixtures/`, preserve their independent expected
 values, and fail on missing files. Command scenarios own argument mapping,
 diagnostics and real file, network, stream and child-process effects. Do not
 expose product internals to relocate tests.
@@ -72,12 +73,13 @@ and timestamp formatting. These are compatibility checks, not timing evidence.
 
 | Location | Responsibility |
 | --- | --- |
-| `run.mbtx`, `tools/` | Public entry and internal MoonBit orchestration |
+| `../tools/run.mbtx`, `../tools/` | Development entry, generation and CI orchestration |
 | `harness/`, `harness/driver/` | Execution, observation, selection and reporting |
 | `harness/catalog/`, `cases/` | Current command declarations, identities and cases |
 | `scenarios/` | Concrete events and resource lifetimes |
-| `fixtures/` | Original corpora and immutable oracle inputs |
-| `release/` | Candidate generation and independent published expectations |
+| `fixtures/` | Integration/oracle inputs and independent historical corpus copies |
+| `release/` | Versionless release policy, candidate selection and frozen published expectations |
+| `../tools/release/` | Candidate generation and exact-coordinate acceptance launcher |
 | `benchmark/`, `resources/` | Manual timing and resource programs |
 
 Assertions execute directly. Registration checks inspect the case expectations

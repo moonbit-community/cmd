@@ -1,0 +1,40 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/xxd/internal/codec"
+
+// Values
+pub fn dump_line(ArrayView[Byte], Spec, Int64) -> Bytes
+
+pub fn write_hex_byte(StringBuilder, Byte, upper? : Bool) -> Unit
+
+// Errors
+pub suberror DecodeError {
+  DecodeError(String)
+}
+
+// Types and methods
+pub struct Decoder {
+  // private fields
+}
+pub fn Decoder::feed(Self, Byte) -> (Int64, Byte?)? raise DecodeError
+pub fn Decoder::new(Style, Int32, Int64) -> Self
+
+pub(all) struct Spec {
+  style : Style
+  cols : Int32
+  group : Int32
+  upper : Bool
+  ebcdic : Bool
+  display_offset : UInt64
+}
+
+pub(all) enum Style {
+  Normal
+  Plain
+  Include
+  Bits
+  Little
+}
+
+// Type aliases
+
+// Traits
