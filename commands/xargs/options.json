@@ -15,6 +15,7 @@
     "show-limits",
     "interactive"
   ],
+  "readme_options": ["0","max-args","P","replace","delimiter","no-run-if-empty","help","version"],
   "options": [
     {
       "name": "0",
@@ -23,7 +24,7 @@
         "--null"
       ],
       "value": "none",
-      "description": "Read NUL-delimited / selected-byte items.",
+      "description": "Read NUL-delimited items without quote or backslash processing.",
       "short": "0",
       "repeatable": true,
       "allow_attached": false
@@ -35,7 +36,7 @@
         "--delimiter"
       ],
       "value": "required",
-      "description": "Read NUL-delimited / selected-byte items.",
+      "description": "Separate input items with the selected byte.",
       "short": "d",
       "repeatable": true,
       "allow_attached": true,
@@ -50,7 +51,7 @@
         "--max-args"
       ],
       "value": "required",
-      "description": "Limit arguments / input lines per invocation.",
+      "description": "Limit arguments per invocation.",
       "short": "n",
       "repeatable": true,
       "allow_attached": true

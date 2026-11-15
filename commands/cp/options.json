@@ -21,6 +21,7 @@
     "dereference",
     "no-dereference"
   ],
+  "readme_options": ["no-preserve","recursive","no-clobber","update-mode","dereference","no-target-directory","verbose","help","version"],
   "options": [
     {
       "name": "recursive",

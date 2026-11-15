@@ -19,6 +19,7 @@
     "seek",
     "upper"
   ],
+  "readme_options": ["reverse","plain","cols","len","seek","group","help","version"],
   "options": [
     {
       "name": "autoskip",

@@ -12,6 +12,7 @@
     "output-separator",
     "version"
   ],
+  "readme_options": ["bytes","radix","print-file-name","encoding","help","version"],
   "options": [
     {
       "name": "all",

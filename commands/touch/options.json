@@ -11,6 +11,7 @@
     "stamp",
     "time"
   ],
+  "readme_options": ["no-create","help","version"],
   "options": [
     {
       "short": "c",

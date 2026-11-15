@@ -15,6 +15,7 @@
     "section-delimiter",
     "starting-line-number"
   ],
+  "readme_options": ["body-numbering","number-width","number-separator","starting-line-number","line-increment","help","version"],
   "options": [
     {
       "name": "body-numbering",
@@ -23,7 +24,7 @@
         "--body-numbering"
       ],
       "value": "required",
-      "description": "Set body / header / footer style: a (all), t (nonempty), n (none).",
+      "description": "Select body style: a (all), t (nonempty), n (none) or pBRE (matching).",
       "short": "b",
       "repeatable": true,
       "allow_attached": true,
@@ -74,7 +75,7 @@
         "--number-width"
       ],
       "value": "required",
-      "description": "Set number width / separator.",
+      "description": "Set the minimum number field width.",
       "short": "w",
       "repeatable": true,
       "allow_attached": true,
@@ -91,7 +92,7 @@
         "--number-separator"
       ],
       "value": "required",
-      "description": "Set number width / separator.",
+      "description": "Set the text between the number and line.",
       "short": "s",
       "repeatable": true,
       "allow_attached": true,
@@ -108,7 +109,7 @@
         "--starting-line-number"
       ],
       "value": "required",
-      "description": "Set starting number / increment.",
+      "description": "Set the initial line number.",
       "short": "v",
       "repeatable": true,
       "allow_attached": true,
@@ -125,7 +126,7 @@
         "--line-increment"
       ],
       "value": "required",
-      "description": "Set starting number / increment.",
+      "description": "Set the line-number increment.",
       "short": "i",
       "repeatable": true,
       "allow_attached": true,

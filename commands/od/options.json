@@ -23,6 +23,7 @@
     "traditional",
     "version"
   ],
+  "readme_options": ["address-radix","format","read-bytes","skip-bytes","width","help","version"],
   "options": [
     {
       "name": "address-radix",
@@ -119,7 +120,7 @@
         "--width"
       ],
       "value": "required",
-      "description": "bytes per line (default 16, bare option 32)",
+      "description": "Set bytes per line; a bare option selects 32.",
       "short": "w",
       "repeatable": true,
       "allow_attached": true,

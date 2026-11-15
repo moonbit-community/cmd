@@ -12,6 +12,7 @@
     "suffix-format",
     "suppress-matched"
   ],
+  "readme_options": ["prefix","digits","silent","keep-files","elide-empty-files","suppress-matched","help","version"],
   "options": [
     {
       "name": "prefix",
@@ -20,7 +21,7 @@
         "--prefix"
       ],
       "value": "required",
-      "description": "Use PREFIX instead of xx.",
+      "description": "Set the output filename prefix.",
       "short": "f",
       "repeatable": true,
       "allow_attached": true,
@@ -40,7 +41,7 @@
         "--digits"
       ],
       "value": "required",
-      "description": "Use at least NUMBER suffix digits (default 2).",
+      "description": "Set the minimum suffix width.",
       "short": "n",
       "repeatable": true,
       "allow_attached": true,

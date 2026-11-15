@@ -13,7 +13,7 @@ import {
 
 warnings = "-alert_experimental"
 
-supported_targets = "native+wasm"
+supported_targets = "wasm"
 
 import {
   "cli/core/stream",

@@ -62,7 +62,7 @@
         "--width"
       ],
       "value": "required",
-      "description": "use WIDTH columns instead of 80",
+      "description": "Set the output width.",
       "short": "w",
       "repeatable": true,
       "allow_attached": true,

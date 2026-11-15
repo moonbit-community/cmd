@@ -80,6 +80,7 @@ priv struct Metadata {
   help : String
   catalog_options : Array[String]
   options : Array[OptionMetadata]
+  readme_options : Array[String]?
   tables : Array[Table]
   help_variants : Array[HelpVariant]?
   adapter_match : Bool?
@@ -168,6 +169,11 @@ fn validate(metadata : Metadata) -> Unit raise {
   }
   guard names.contains("help") && names.contains("version") else {
     fail("missing metadata options")
+  }
+  if metadata.readme_options is Some(selected) {
+    for name in selected {
+      guard names.contains(name) else { fail("missing README option: " + name) }
+    }
   }
   let functions : Set[String] = Set([])
   for table in metadata.tables {

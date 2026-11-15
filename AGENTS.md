@@ -1,359 +1,153 @@
-# Project Agents.md Guide
+# AGENTS.md
 
-This is a [MoonBit](https://docs.moonbitlang.com) project.
+## Permission to modify this file
 
-You can browse and install extra skills here:
-<https://github.com/moonbitlang/skills>
+- Changes to this file require explicit human approval in advance. Authorization
+  for ordinary development, refactoring or documentation work does not grant
+  permission to modify this file.
 
-## Project Structure
+## Project structure and responsibilities
 
-- MoonBit packages are organized per directory; each directory contains a
-  `moon.pkg` file listing its dependencies. Each package has its files and
-  blackbox test files (ending in `_test.mbt`) and whitebox test files (ending in
-  `_wbtest.mbt`).
+- The workspace root uses `moon.work`. Each publishable module maintains its
+  own `moon.mod`; each package declares dependencies in `moon.pkg`.
+- Command roots contain the entry point, configuration, generated interfaces
+  and documentation. The entry delegates to `internal/driver`, which owns
+  argument parsing, diagnostics, exit status and I/O orchestration.
+- Place command implementations outside the driver in
+  `commands/<cmd>/internal/<responsibility>/`, such as parsing, formatting,
+  searching or encoding. Package names describe their responsibility; avoid
+  vague names such as utils, common and helpers.
+- Organize small features as files within an existing package. Create a
+  separate package when it needs its own responsibility, interface or dependency
+  boundary, not for every step, function or type.
+- Put mechanisms shared across commands in `core/<responsibility>/`. Public
+  libraries belonging to a module live in that module's public packages.
+  Keep public types with the APIs that provide their behavior.
 
-- The toplevel directory contains `moon.work`; publishable modules have their
-  own `moon.mod`, including `core/moon.mod` and each `commands/<cmd>/moon.mod`.
+## Implementation and code style
 
-- Every command root contains only its executable entry, module/package
-  configuration, generated interface and documentation. The entry delegates to
-  `internal/driver`, including small commands and checksum wrappers. The driver
-  owns argument policy, diagnostics, exit status and I/O orchestration; domain
-  implementations live in responsibility-named internal packages when a separate
-  boundary is useful. Public library types belong to their public package.
+- Use pure MoonBit for product code, test tools and automation; automation
+  scripts use `.mbtx`. Do not add implementations in other languages, FFI or
+  native stubs. Host programs are limited to reference comparisons, test
+  observation, CI setup and diagnostics.
+- When a required public MoonBit API is unavailable, document the limitation
+  in the applicable ADR and compatibility guide, and add a regression test
+  for the rejection behavior.
 
-## Coding convention
+- Use clear, direct control flow and data flow. Prefer pattern matching,
+  guards and necessary early returns; avoid pointless nesting, state flags
+  and intermediate conversions.
+- Parse, validate and normalize external input at its owning entry boundary.
+  Subsequent internal calls use the established result without repeatedly
+  checking, parsing or normalizing the same stable data at each layer.
+- Express constraints through types and explicit states. Avoid representing
+  a known state with multiple booleans, arbitrary strings or unnecessary
+  optional values. Do not pile up defensive branches for unreachable states.
+- Files, networks, permissions and cancellation can change during execution.
+  Handle failures at the actual operation; repeated prechecks do not replace
+  error handling for the operation itself.
+- Propagate errors directly to the layer that can handle them. Catch only to
+  recover, add useful context or translate a public diagnostic. Avoid repeated
+  wrapping or printing, swallowed errors and defaults that conceal failure.
+- Implement current requirements; introduce abstractions when there is clear
+  reuse or a responsibility boundary. Do not add generic frameworks,
+  configuration layers, strategy objects or forwarding layers for hypothetical
+  extensions.
+- Prefer inline expressions for simple conditions, field access, short
+  expressions and pure forwarding. Extract functions when they provide clear
+  meaning, reuse or isolation. Split by responsibility, not mechanical line
+  counts.
+- Keep small private types, errors and helpers near the implementation that
+  uses them. Do not create files or packages containing only fragments of logic
+  for the sake of visual uniformity.
+- Prefer existing capabilities and avoid unnecessary allocation, copying,
+  encoding conversion and repeated traversal. Use views where borrowing fits;
+  do not sacrifice readability or increase processing costs merely to shorten
+  the code.
+- After replacing an implementation, remove dead branches, temporary switches,
+  unnecessary wrappers and duplicate implementations. Comments explain useful
+  reasons and constraints rather than restating the code line by line.
 
-- Internal simplification preserves the `moonx cli/<cmd>` contract: arguments,
-  output/status, error and effect ordering, and performance. Internal source APIs
-  and package layouts may break without compatibility shims. Verify both product
-  and test-tool consumers; retain imported corpus records and independent frozen
-  published expectations. Name policy constants locally, validate stable inputs
-  at their owning boundary, and retain checks for dynamic I/O and cancellation.
-  For the 2026-11-08 repository simplification, the maintainer explicitly deferred
-  performance qualification and optimization to a separate stage. Correctness,
-  architecture and required development CI govern this stage; retain benchmark
-  failures and baselines without claiming performance acceptance. See ADR-0003.
-
-- Prefer short names within the owning package: `Options`, `Entry`, `exit_code`.
-  Name files and tests for their responsibility or observable behavior, not an
-  implementation phase, historical audit number or retired backend. Keep common
-  parser cases with that parser; command tests cover argument mapping, error
-  translation and effects. Preserve command-specific exit codes and diagnostics.
-
-- Use `snake_case` for packages, files, functions, variables and fields,
-  `PascalCase` for types, traits and variants (including `HttpClient` and `Url`),
-  and `SCREAMING_SNAKE_CASE` for constants. Common local abbreviations such as
-  `args`, `env`, `buf`, `len`, `pos`, `src`, `dst`, `ctx`, `req` and `resp` are
-  acceptable. Single-letter names belong only to small mathematical or loop
-  scopes. Name units and coordinates explicitly, such as `byte_offset` and
-  `char_index`. Test names describe behavior, conditions and results in English;
-  preserve upstream record identifiers and attribution.
-
-- Repository documentation, issue titles/bodies, PR descriptions and new
-  explanatory comments must be written in English. Historical document
-  translations preserve recorded versions, results and limitations; language
-  revisions must not turn old evidence into current acceptance claims.
-
-- MoonBit code is organized in block style, each block is separated by `///|`,
-  the order of each block is irrelevant. In some refactorings, you can process
-  block by block independently.
-
-- Try to keep deprecated blocks in file called `deprecated.mbt` in each
-  directory.
+- Use `snake_case` for packages, files, functions, variables and fields;
+  `PascalCase` for types, traits and enum variants; and `SCREAMING_SNAKE_CASE`
+  for constants.
+- Keep names short within their owning package and name files by responsibility.
+  Common abbreviations are acceptable. Limit single-letter names to small loops
+  or mathematical expressions; make units and coordinate meanings explicit.
+- Test names describe behavior, conditions and results in English. Preserve
+  upstream case identifiers and attribution.
+- Separate code blocks with `///|`; prefer `deprecated.mbt` for deprecated code.
 
 ## Tooling
 
-### Moon tooling and publishing
+- Prefix every local Moon and MoonX command with
+  `MOON_HOME="$HOME/.moon-accounts/cli"`. Keep the current PATH; CI uses its own
+  toolchain and environment. Do not commit credentials or toolchain caches.
+- Use `moon ide` to inspect definitions, references and interfaces.
+- Use the shared test entry:
+  `MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- COMMAND`.
+- Serialize check, test, build, info and fmt commands that share a build
+  directory.
+- After code changes, run relevant tests, `moon info` and `moon fmt`. Check
+  that generated interface changes are expected.
 
-Use `MOON_HOME="$HOME/.moon-accounts/cli" moon xxx` for every local Moon
-command. Keep the current PATH toolchain; do not prepend the account's older
-`bin` directory or change the global PATH. Local published-consumer checks use
-`MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/<cmd>@<version>` and inherit this
-account setting in child launchers. CI uses its own installed toolchain and
-environment, without developer account credentials. Never commit
-credentials or toolchain cache contents to this repository. The shared
-published module is `cli/core`, and command modules are `cli/<cmd>`; verify the
-module and version before any release operation.
+## Tests and generated content
 
-- `MOON_HOME="$HOME/.moon-accounts/cli" moon fmt` is used to format
-  your code properly.
+- Blackbox tests verify public behavior; whitebox tests verify internal state,
+  failure paths and resource lifetimes. Do not widen product APIs to move tests.
+- Package test inputs belong in the owning package's `fixtures` directory and
+  are resolved from the module directory. Central integration tests may use
+  package inputs; package tests must not depend on central test directories.
+- Central integration tests verify real processes, streams, exit codes, side
+  effects, cancellation and cleanup. Put cases in `tests/cases`, infrastructure
+  in `tests/harness` and specialized assertions in `tests/scenarios`.
+- Prefer explicit assertions for stable results. Use `Debug` and `debug_inspect`
+  for debug snapshots. Update snapshots only when the output actually changes.
+- Declare module names and versions only in `moon.mod`. Generated version
+  constants ship with the source; runtime commands do not read source metadata.
+- Every functional fix, feature addition or performance fix increments the
+  affected module's patch version by one (an increase of `0.0.1`), for example
+  `0.2.9` to `0.2.10`.
+- Option declarations generate argument tables, help and documentation.
+  Command adapters own command-specific syntax, precedence and error ordering.
 
-- `MOON_HOME="$HOME/.moon-accounts/cli" moon ide` provides project
-  navigation helpers like `peek-def`, `outline`, and `find-references`. See
-  $moonbit-agent-guide for details.
+## Documentation
 
-- `MOON_HOME="$HOME/.moon-accounts/cli" moon info` is used to update the
-  generated interface of the package, each package has a generated interface
-  file `.mbti`, it is a brief formal description of the package. If nothing in
-  `.mbti` changes, this means your change does not bring the visible changes to
-  the external package users, it is typically a safe refactoring.
+- Write concise paragraphs about current purpose, behavior, usage and necessary
+  limits. Avoid experiment reports, development diaries and long accounts of
+  test procedures.
+- Package READMEs follow `docs/readme_template.md`: a short structure covering
+  purpose, examples, common options and necessary notes.
+- Every functional change must update `docs/compatibility.md` and the affected
+  package's README. Changes to arguments, help or output also update the
+  relevant help text, option metadata and regression tests.
+- Put detailed algorithm explanations in `docs/performance/`, organized by
+  topic. Explain the approach, key steps, complexity and implementation
+  tradeoffs, and link the relevant source and tests.
+- ADRs briefly describe current decisions, reasons, consequences and conditions
+  for reconsideration. Keep CHANGELOG entries short and dated, distinguishing
+  development changes from published releases.
+- Prefer updating existing documents over adding a summary report for every
+  implementation, test or refactoring effort. Preserve history through Git.
 
-- In the last step, run `MOON_HOME="$HOME/.moon-accounts/cli" moon info` and
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon fmt` to update the interface
-  and format the code. Check the diffs of `.mbti` file to see if the changes are
-  expected.
+## CI and Git
 
-- Run `MOON_HOME="$HOME/.moon-accounts/cli" moon test` to check tests
-  pass. MoonBit supports snapshot testing; when changes affect outputs, run
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon test --update` to refresh
-  snapshots.
-
-- Package tests own their static inputs in a package `fixtures` directory and
-  resolve them from the module directory, without searching for the workspace
-  or reading central `tests/` inputs. Shared inputs within a module have one
-  explicit owner; independent modules may retain attributed identical upstream
-  inputs with independently maintained expectations. Central Wasm integration
-  tests may consume current package fixtures in one direction. Historical
-  publication inputs and expectations remain frozen and independent.
-- Blackbox tests verify public behavior; whitebox tests verify private state,
-  invariants, injected failures and resource lifetimes. Do not widen product APIs
-  to relocate tests. Keep real-process stream, exit, side-effect, cancellation
-  and cleanup assertions in the central integration runner. Preserve original
-  bytes, expected values and corpus records; missing fixtures fail. Remove
-  duplicate execution only after checking the actual verification obligations.
-- Module names and versions are declared only in `moon.mod`. Generated version
-  constants ship in published source; runtime commands never read source metadata.
-  Declarative command options supply generated tables and structured help/docs;
-  command-specific syntax, precedence and error ordering remain explicit adapters.
-  Independent expectations must not call the generator to compute their answers.
-- The 2026-11-15 restructuring is local only: preserve the existing jq/jqlog
-  candidate versions, do not bump versions for moves, and do not push or publish.
-  Record pre-existing defects separately from migration regressions. Structural
-  completion and resolution of all behavior defects are separate outcomes.
-
-- Prefer `assert_eq` or `assert_true(pattern is Pattern(...))` for results that
-  are stable or very unlikely to change. For snapshot tests that record
-  structured debugging output, derive `Debug` and use `debug_inspect`, rather
-  than deriving `Show` for debugging. For solid, well-defined results (e.g.
-  scientific computations), prefer assertion tests. You can use
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon coverage analyze > uncovered.log` to see which parts of your code are
-  not covered by tests.
-
-- Use the same prefix for registry updates, checks, builds, runs and releases:
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon update`,
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon check --target wasm --deny-warn`,
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon build --target wasm --release`,
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon run <package>`, and
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon publish` from the verified module.
-  Preparing a candidate does not authorize publication.
-  Package publication uses `moon publish` only. Do not add separate release
-  packaging, archive uploads, or another package publication mechanism.
-
-- Serialize workspace check/test/build/info/fmt commands: they share the build
-  directory. Agent-authored automation must use pure MoonBit `.mbtx` files.
-- Use `MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- COMMAND`
-  for test orchestration and CI. `check` includes all standalone scripts;
-  development CI uses `check inputs` once on Linux and relies on builds/tests
-  with `--deny-warn` for product and tool type checking on all three platforms.
-  `format --check` checks them explicitly. Entry arguments resolve from the
-  repository root, and execution uses a fresh absolute `CMD_TEST_REPORT_ROOT`.
-  Current cases and identity bindings belong to `tests/cases`, reusable
-  infrastructure to `tests/harness`, and specialized assertions to
-  `tests/scenarios`. Do not add retired-path wrappers or historical modes.
-- Keep direct assertions beside the behavior they verify. Preserve original
-  corpus records and expected values. The driver validates the registry during
-  execution; generate the candidate with `tools/release` when preparing a
-  release, as documented in `tools/README.md`. The per-assertion review/descriptor/proof
-  chain and assertion-source sealing are retired. Validate complete selected
-  results, explicit platform skips, deadlines, cleanup and report writes.
-  Keep fresh execution reports without backfill. Published coordinates and
-  expectations in `tests/release/latest*.json` remain independent inputs.
-
-- Shared high-performance changes follow `tests/benchmark/PROTECTION.md` and
-  the boundary/workload registry in `tests/benchmark/protection.json`. New
-  timing uses one schema-3 inventory in `tests/benchmark/real.json`; its
-  complete hash-pinned genuine sources are limited to 16 MiB each and 64 MiB
-  unique bytes. Command-specific timing pipelines and generated-size timing
-  inputs are retired. Independent local regression assertions run before
-  timing; Linux differential evidence is additional. Save the
-  current optimized source and Wasm artifacts before editing. Every changed
-  command artifact needs a registered workload; missing coverage, incomplete
-  windows and unstable results cannot pass. Keep specialized command loops and
-  explicit borrowing, output-failure and temporary-cleanup contracts. Record
-  accepted small timing costs separately from noise and resource observations
-  in ADR-0003. A local timing result does not replace required CI or publication
-  acceptance, and this workflow does not run automatically on ordinary pushes.
-
-- Internal architecture changes follow command adaptation -> domain
-  implementation -> runtime mechanisms and algorithms. Review dependency
-  direction and ownership with the implementation; do not add architecture,
-  naming, fixed-inventory-count or generated-version source scanners.
-  Keep module dispositions
-  in ADR-0003, not another report hierarchy. New shared mechanisms need two
-  actual consumers; catalog/contract metadata has validation consumers rather
-  than runtime command consumers. Preserve dialects, error ordering and fast
-  loops instead of forcing them into a generic command framework.
-
-- Keep copy/removal/mode policies, tac range copying, seq arithmetic, jq AST
-  adaptations and expand/unexpand grids in their owning commands. Jq owns the
-  shared parser/evaluator and adaptations; jqlog consumes `cli/jq/engine` and
-  retains its JSONL command policy. Keep the engine's API limited to compiled
-  value filters; jq CLI effects do not become jqlog options. Do not import
-  another command's internal packages. Small identical adaptations may remain
-  local when their dialects evolve independently; share independent test inputs
-  rather than widening runtime APIs. The jq adapter corpus retains the original
-  28 positive expectations, including stable-order and deep-key records.
-
-- Keep curl/wget Cookie, authentication, redirect, retry, resume and output
-  policies in each command's `internal/download`. Core netops performs one
-  request through a scoped streaming response and owns transport/URL/IDNA/PSL
-  mechanisms. Do not restore profile switches or command-aware transfer options.
-  Preserve raw EOF observations, upload/read counts, output commit boundaries
-  and connection closure on return, error and cancellation. Complete original
-  Cookie and authentication corpora run beside their owners; real command events
-  and full required differential remain independent checks.
-- Use released public x/time APIs for equivalent TZif conversion and reject
-  ambiguous/nonexistent local times explicitly. Keep timezone file selection,
-  POSIX strings and documented legacy compatibility in `core/time_zone`; never
-  import x/internal or assume system local-zone APIs exist on Wasm. Declare the
-  required public API release in core/moon.mod; another workspace module must
-  not supply a newer dependency implicitly. Check standalone core when changing
-  that dependency boundary.
-
-- rg search policy and its concrete matcher adapter are private to `driver`.
-  Keep regex syntax/automata in `internal/regex` and reusable byte mechanisms
-  in `core/bytesearch`; `matcher` and `searcher` must not import the driver.
-  Tests requiring the command adapter belong to driver integration tests;
-  retain private buffer/capacity tests with the searcher and its test matcher.
-- A behavior or option change must update the command README, help, shared
-  catalog, compatibility record and relevant regression together. Record
-  tradeoffs in the existing canonical ADR with an Updated date, evidence and
-  conditions for lifting limitations. Keep dated delivery summaries in
-  CHANGELOG.md; preserve historical claims and recover full reports from Git.
-- Keep ADRs focused on current decisions, rationale, consequences and reopening
-  conditions. Keep CHANGELOG.md to a few outcome-oriented bullets per date,
-  distinguishing development from publication. Maintain algorithm explanations
-  in docs/performance by topic: source call paths, admission rules, invariants,
-  resource costs, fallbacks and useful rejected approaches with retry conditions.
-  Update existing topics instead of appending experiment reports. Link the
-  authoritative tests/workloads and pinned historical evidence; do not duplicate
-  registries, create another report archive or broaden old acceptance claims.
-- Product delivery and required correctness acceptance target Wasm through MoonX.
-  Development CI runs the complete applicable Wasm suite on Linux, macOS and
-  Windows. Native is retained only for test tools and their own regressions.
-- Linux upstream comparison is a required separate job. Command and registered
-  fixture changes select their consumers; shared or unclassified execution inputs
-  and missing Git baselines select all. `ubuntu-24.04` aggregates correctness and
-  the required comparison, failing on missing, cancelled or unexpected skips.
-  Reuse only same-run source/toolchain-bound build artifacts from the selected
-  producer attempt, never dynamic
-  candidate observations. Fixture paths belong to existing case `inputs` fields;
-  unsupported oracle profiles require explicit policy boundaries.
-  Apply change-selection rules to functionality, dependencies, executable tests,
-  actual test inputs and CI execution configuration. Plain documentation, license
-  notices and document assets do not require upstream comparison. Do not add
-  parallel text-review rules or ownership records for ordinary prose.
-  Export Linux artifacts before test execution so upstream image preparation
-  and comparison can overlap correctness. Keep compilation and Docker cache
-  writes restricted to main. Retire completed one-time collection and experiment
-  launchers; preserve their captured expectations, regressions and Git history.
-- Mainline changes use a PR and the required ubuntu-24.04, macos-15 and
-  windows-2025 checks, followed by actual-main validation. Do not bypass branch
-  protection. The former C1 coverage audit, change declaration, source/artifact
-  sealing and audit-before-push wrapper are retired by the 2026-10-26 CI plan.
-  Run relevant local correctness checks before a normal non-force branch push.
-- Resource observations and exact-version MoonX acceptance are separate manual
-  workflows. Neither runs implicitly on ordinary PRs or main pushes. Publishing
-  still requires passing development checks, followed by complete three-platform
-  acceptance of the uploaded exact coordinates and Linux upstream comparison.
-- Keep current candidate and published expectations separate. latest.json is the
-  historical published-coordinate authority. Acceptance resolves the selected
-  current moon.mod coordinates once and records them, without fallback to that
-  historical table; acceptance never rewrites the repository.
-  Do not republish unchanged commands or generate new historical snapshot chains.
-- Retain concise results, stage durations and failure diagnostics. Preserve
-  historical evidence in Git without backfill. Missing artifacts, empty required
-  selections, deadlines and cleanup/report failures cannot count as success.
-- Upstream differential evidence must use a verified immutable oracle profile
-  containing the image digest, tool-version inventory, and source or
-  distribution checksums. A mutable Docker tag, host PATH tool, handwritten
-  source label, availability result, or ordinary contract expectation cannot
-  establish upstream parity.
-- Standalone `--version` prints exactly `<command> <package-version>` and one
-  newline, without an implementation banner. Standalone `--help` starts with
-  `Usage: <command>`, includes both metadata options, and ends with a newline.
-  Both write to stdout, leave stdin untouched, and exit 0. Preserve frozen
-  published expectations when changing workspace metadata contracts.
-
-#### Version evolution and publication order
-
-- Keep an unchanged published command at its current registry version. Bump a
-  command only when its source behavior, public API, dependency resolution, or
-  documented support profile changes. Do not republish unchanged commands just
-  to synchronize another package.
-- A newly migrated command with no registry release starts at `0.1.0`, unless
-  the release decision explicitly selects another version. Later changes use
-  the next unused semantic version. Update `moon.mod`, any package version
-  declaration, the package README, help/version output, active and candidate
-  manifests, the compatibility record, and the relevant regressions together.
-- Publish `cli/core` only when its public API or shared behavior changed. If
-  core is unchanged, keep its existing published version and make command
-  packages depend on that coordinate. Never create a core release solely to
-  force unchanged commands to new versions.
-- Before a release, verify the account and exact registry state with
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon whoami`, the package version
-  listing, and the candidate manifest. A first release must be absent before
-  publishing; registry versions are immutable and must never be overwritten.
-- Serialize the release pipeline. Commit source, tests, and docs first and
-  push that commit once. Wait for the required Linux, macOS, and Windows CI
-  checks to pass. Publish `cli/core` first only when core changed, then publish
-  changed command packages one at a time in lexical command-name order. After
-  every upload require `Server status: 200 OK` and verify the exact registry
-  version before moving to the next package. Never run publishes in parallel.
-- Refresh the registry index after publishing a new core version. Before MoonX
-  acceptance, wait for the selected command versions' registry builds to succeed.
-- After all uploads, run exact published-consumer smoke and contract checks
-  with `MOON_HOME="$HOME/.moon-accounts/cli" moonx cli/<cmd>@<version> ...`.
-  Update the published manifest and CHANGELOG.md with those results, then
-  commit and push the documentation. Do not publish from a failing or
-  unverified candidate.
-- Current registry baseline after the 2026-11-14 issue #34 release:
-  core is 0.11.0; curl, jqlog and wget are 0.2.7, jq is 0.2.9 and serve is 0.1.3.
-  The other 76 command coordinates are unchanged. The inventory contains 81
-  published commands; timeout remains local-only among 82 command modules.
-  Curl/Wget select core 0.11.0; the other 72 published core consumers retain
-  0.10.0. Echo, false, jqlog, serve, sleep, true and typst do not depend on core.
-  Exact coordinates and independent expectations are in tests/release/latest.json
-  and latest-cases.json. Source `88ae2f4` passed
-  [required development CI](https://github.com/moonbit-community/cmd/actions/runs/43600816824)
-  before the first five uploads; serve source `af26ce8` passed
-  [required development CI](https://github.com/moonbit-community/cmd/actions/runs/43603224438)
-  before its upload. All six uploads succeeded without retries, and registry
-  builds and source archive checksums were verified.
-  Local complete exact-version MoonX passes 3,709 semantic checks, with zero
-  failures and 40 declared platform skips. The
-  [three-platform publication gate](https://github.com/moonbit-community/cmd/actions/runs/43609556174)
-  exercises all 81 coordinates and pinned Linux comparisons; merge requires its
-  complete success. The frozen baseline has 3,999 definitions and 3,754 selected
-  IDs, retaining all 3,828 previous IDs, adding 171 and updating 18 specified
-  expectations or fixture bindings. Unchanged commands retain their original
-  expectations, including three independent Linux oracle scenarios.
-  The first local acceptance failure against serve 0.1.2 is preserved; the
-  separately authorized 0.1.3 publication releases connection reuse, followed
-  by a fresh complete rerun. Historical release counts and failure scopes remain
-  in CHANGELOG.md under their original dates. This does not establish full
-  upstream parity or formal performance acceptance; general GNU/POSIX grammar
-  limits remain in ADR-0007.
-  Current latest/candidate snapshots remain independent. Retired published and
-  historical archives are preserved in Git at 234f960, rather than duplicated
-  in the active checkout. Prior acceptance results retain their dated scope
-  in CHANGELOG.md.
-  Update this baseline whenever a later release changes it.
-
-### Mandatory pure MoonBit boundary
-
-- All product code, shared runtime code, command implementations, test runners,
-  fixtures, and agent-authored automation in this repository must be written in
-  pure MoonBit. Do not add project-owned C, C++, Rust, JavaScript, TypeScript,
-  shell, Python, or other language implementations, and do not add FFI or
-  native stubs as a workaround for a missing public MoonBit API.
-- Host programs are allowed only outside the product boundary for fixed-version
-  oracle comparison, test observation, CI setup, and diagnostic collection.
-  They must never be delegated to as the implementation of `cli/<cmd>`.
-- If a required behavior cannot be implemented through released public MoonBit
-  APIs, keep the command or option in an explicit boundary state, record the
-  missing API and unlock condition in the applicable canonical ADR and the
-  support record, and add a rejection regression test. Historical API-gap
-  reports remain immutable; record current unlock conditions in the applicable
-  canonical ADR and `docs/compatibility.md`.
+- Product validation targets MoonX/Wasm and runs the complete applicable tests
+  on Linux, macOS and Windows. Native is used only for test tools and their
+  regressions.
+- Run `check inputs` once on Linux. Builds and tests with `--deny-warn` provide
+  type checking on all three platforms.
+- Linux upstream comparison runs in a separate job. Command and input changes
+  select their relevant consumers; shared or unclassified execution inputs and
+  missing comparison baselines select all. Ordinary documentation, licenses
+  and document assets do not require upstream comparison.
+- Share Linux build artifacts early within the same run so upstream preparation
+  and comparison can overlap correctness tests. Only main may write compilation
+  and Docker caches.
+- Change main through PRs with passing `ubuntu-24.04`, `macos-15` and
+  `windows-2025` checks, then validate the actual main commit after merging.
+  Run relevant local checks before a normal, non-force push. Do not bypass
+  branch protection.
+- Do not restore retired specialized scanners, audit chains or old entry points.
+  Remove one-time collection or experiment scripts after they have served their
+  purpose.

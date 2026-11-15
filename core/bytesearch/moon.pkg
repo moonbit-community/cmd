@@ -6,3 +6,5 @@ import {
 // point of this package.
 
 warnings = "-implicit_impl_as_method-alert_experimental"
+
+supported_targets = "wasm"

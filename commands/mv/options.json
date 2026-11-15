@@ -14,6 +14,7 @@
     "backup-control",
     "suffix"
   ],
+  "readme_options": ["force","no-clobber","interactive","update-mode","backup-control","no-target-directory","verbose","help","version"],
   "options": [
     {
       "name": "force",

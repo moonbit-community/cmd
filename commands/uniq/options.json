@@ -14,6 +14,7 @@
     "unique",
     "zero-terminated"
   ],
+  "readme_options": ["count","repeated","unique","ignore-case","skip-fields","skip-chars","zero-terminated","help","version"],
   "options": [
     {
       "name": "count",
@@ -22,7 +23,7 @@
         "--count"
       ],
       "value": "none",
-      "description": "Count occurrences / repeated records only / singletons only.",
+      "description": "Prefix each record with its occurrence count.",
       "short": "c",
       "repeatable": true,
       "allow_attached": false
@@ -34,7 +35,7 @@
         "--repeated"
       ],
       "value": "none",
-      "description": "Count occurrences / repeated records only / singletons only.",
+      "description": "Print only repeated records.",
       "short": "d",
       "repeatable": true,
       "allow_attached": false

@@ -11,6 +11,7 @@
     "tagged-paragraph",
     "prefix"
   ],
+  "readme_options": ["width","goal","split-only","uniform-spacing","prefix","help","version"],
   "options": [
     {
       "name": "width",

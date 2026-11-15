@@ -8,6 +8,7 @@
     "verbose",
     "symbolic-assignment"
   ],
+  "readme_options": ["recursive","verbose","help","version"],
   "options": [
     {
       "short": "R",

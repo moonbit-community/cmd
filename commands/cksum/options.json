@@ -19,6 +19,7 @@
     "strict",
     "warn"
   ],
+  "readme_options": ["algorithm","length","untagged","check","quiet","status","help","version"],
   "options": [
     {
       "name": "algorithm",

@@ -13,6 +13,7 @@
     "no-symlinks",
     "zero"
   ],
+  "readme_options": ["canonicalize-existing","canonicalize-missing","strip","relative-to","zero","help","version"],
   "options": [
     {
       "name": "canonicalize-existing",

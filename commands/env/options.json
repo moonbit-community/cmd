@@ -11,6 +11,7 @@
     "help",
     "version"
   ],
+  "readme_options": ["ignore-environment","unset","null","chdir","split-string","help","version"],
   "options": [
     {
       "name": "ignore-environment",

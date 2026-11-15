@@ -23,6 +23,7 @@
     "stream-errors",
     "library-path"
   ],
+  "readme_options": ["compact-output","null-input","slurp","raw-output","raw-input","exit-status","from-file","help","version"],
   "options": [
     {
       "name": "compact-output",

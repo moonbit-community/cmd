@@ -22,6 +22,7 @@
     "update",
     "completions"
   ],
+  "readme_options": ["root","input","font-path","ignore-system-fonts","format-compile","pages","features","help","version"],
   "options": [
     {
       "name": "root",

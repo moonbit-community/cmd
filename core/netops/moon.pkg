@@ -18,4 +18,4 @@ import {
   "moonbitlang/x/crypto",
 } for "wbtest"
 
-supported_targets = "native+wasm"
+supported_targets = "wasm"

@@ -11,6 +11,7 @@
     "recursive",
     "verbose"
   ],
+  "readme_options": ["recursive","force","dir","interactive","verbose","help","version"],
   "options": [
     {
       "name": "recursive",
@@ -78,7 +79,7 @@
         "--interactive"
       ],
       "value": "required",
-      "description": "Ask always / once / always, once or never.",
+      "description": "Select always, once or never; a bare flag selects always.",
       "repeatable": true,
       "allow_attached": true
     },

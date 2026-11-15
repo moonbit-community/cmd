@@ -8,3 +8,5 @@ import {
   "moonbitlang/async/fs",
   "moonbitlang/core/json",
 } for "wbtest"
+
+supported_targets = "wasm"

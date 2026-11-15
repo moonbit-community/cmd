@@ -18,6 +18,7 @@
     "executable",
     "xtype"
   ],
+  "readme_options": ["name","type","maxdepth","print","print0","help","version"],
   "options": [
     {
       "name": "name",
@@ -25,7 +26,7 @@
         "-name"
       ],
       "value": "required",
-      "description": "Match names / paths with shell patterns.",
+      "description": "Match entry names with a shell pattern.",
       "repeatable": true,
       "allow_attached": true
     },
@@ -269,7 +270,7 @@
         "-print"
       ],
       "value": "none",
-      "description": "Print newline / NUL-delimited paths.",
+      "description": "Print paths followed by a newline.",
       "repeatable": true,
       "allow_attached": false
     },
@@ -279,7 +280,7 @@
         "-print0"
       ],
       "value": "none",
-      "description": "Print newline / NUL-delimited paths.",
+      "description": "Print paths followed by a NUL byte.",
       "repeatable": true,
       "allow_attached": false
     },

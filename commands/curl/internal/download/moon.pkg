@@ -12,7 +12,7 @@ import {
   "moonbitlang/x/time",
 }
 
-supported_targets = "native+wasm"
+supported_targets = "wasm"
 
 import {
   "moonbitlang/core/json",

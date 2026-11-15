@@ -10,3 +10,5 @@ import {
 import {
   "cli/jq/internal/parser",
 } for "test"
+
+supported_targets = "wasm"

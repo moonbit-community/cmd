@@ -11,6 +11,7 @@
     "total",
     "words"
   ],
+  "readme_options": ["lines","words","bytes","chars","max-line-length","files0-from","help","version"],
   "options": [
     {
       "short": "l",

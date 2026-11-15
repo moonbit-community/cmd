@@ -29,6 +29,7 @@
     "version-sort",
     "zero-terminated"
   ],
+  "readme_options": ["numeric-sort","reverse","unique","stable","key","field-separator","output","buffer-size","help","version"],
   "options": [
     {
       "name": "reverse",
@@ -37,7 +38,7 @@
         "--reverse"
       ],
       "value": "none",
-      "description": "Reverse / unique keys / stable key ties.",
+      "description": "Reverse the comparison order.",
       "short": "r",
       "repeatable": true,
       "allow_attached": false
@@ -49,7 +50,7 @@
         "--numeric-sort"
       ],
       "value": "none",
-      "description": "Numeric / general numeric / human numeric / month / version order.",
+      "description": "Compare numeric values.",
       "short": "n",
       "repeatable": true,
       "allow_attached": false,
@@ -214,7 +215,7 @@
         "--unique"
       ],
       "value": "none",
-      "description": "Reverse / unique keys / stable key ties.",
+      "description": "Keep one record per equal comparison key.",
       "short": "u",
       "repeatable": true,
       "allow_attached": false
@@ -310,7 +311,7 @@
         "--key"
       ],
       "value": "required",
-      "description": "Select comparison keys / field separator.",
+      "description": "Select the comparison field or range.",
       "short": "k",
       "repeatable": true,
       "allow_attached": true
@@ -322,7 +323,7 @@
         "--field-separator"
       ],
       "value": "required",
-      "description": "Select comparison keys / field separator.",
+      "description": "Use this byte as the field separator.",
       "short": "t",
       "repeatable": true,
       "allow_attached": true

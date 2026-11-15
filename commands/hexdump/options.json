@@ -18,6 +18,7 @@
     "color",
     "version"
   ],
+  "readme_options": ["canonical","length","skip","format","no-squeezing","help","version"],
   "options": [
     {
       "name": "one-byte-octal",
