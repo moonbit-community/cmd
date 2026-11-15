@@ -16,6 +16,9 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 Development candidates; no new package publication.
 
+- Remove architecture/naming scanners, generated-version source checks and the
+  separate candidate-consistency CI gate. Generate release candidates explicitly;
+  retain registry validation during execution and the existing behavior assertions.
 - Restructure all 82 command roots as entries into `internal/driver`; move
   substantive parsing, formatting and ordering domains into owned packages,
   relocate package corpora and separate development tools from real-command

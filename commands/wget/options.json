@@ -727,7 +727,6 @@
   "tables": [
     {
       "function_name": "transfer_option_specs",
-      "source": "internal/driver/options.mbt",
       "import_alias": "cli",
       "options": [
         "config",
@@ -771,7 +770,6 @@
     },
     {
       "function_name": "enabled_option_specs",
-      "source": "internal/driver/options.mbt",
       "import_alias": "cli",
       "options": [
         "cookies",
@@ -781,7 +779,6 @@
     },
     {
       "function_name": "negative_option_specs",
-      "source": "internal/driver/options.mbt",
       "import_alias": "cli",
       "options": [
         "no-quiet",
@@ -792,12 +789,5 @@
         "no-keep-session-cookies"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/auth_arguments.mbt",
-    "internal/driver/config.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/options.mbt",
-    "internal/driver/version.mbt"
   ]
 }

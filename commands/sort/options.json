@@ -357,7 +357,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/invocation.mbt",
       "import_alias": "cli",
       "options": [
         "reverse",
@@ -388,19 +387,5 @@
         "help"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/order/compare.mbt",
-    "internal/driver/external.mbt",
-    "internal/driver/input.mbt",
-    "internal/driver/invocation.mbt",
-    "internal/order/keys.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/options.mbt",
-    "internal/driver/output.mbt",
-    "internal/driver/random.mbt",
-    "internal/driver/resources.mbt",
-    "internal/order/types.mbt",
-    "internal/driver/version.mbt"
   ]
 }

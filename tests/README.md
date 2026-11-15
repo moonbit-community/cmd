@@ -24,11 +24,9 @@ files fail. Error propagation remains covered beside the engine and each command
 | `prepare` | Build product Wasm and Native execution tools once |
 | `test packages` / `test tools` / `test all` | Wasm package tests and Native infrastructure regressions |
 | `format --check` | Packages and all standalone scripts |
-| `index check` / `index update` | Validate cases and bindings; check or update the derived candidate |
 | `metadata check` / `metadata update` | Verify or regenerate parser, help, README and catalog artifacts |
 | `list --command sort` / `validate` | Inspect or validate selection without product execution |
 | `functional` | Run applicable workspace assertions and verify complete results |
-| `architecture /absolute/fresh.json` | Validate package and strategy dependencies |
 | `oracle --image sha256:ID` | Prepare and verify the immutable Linux oracle |
 | `published` | Validate independent exact published coordinates and expectations |
 | `corpus`, `benchmark`, `protect` | Separate [performance protection](benchmark/PROTECTION.md) |
@@ -89,9 +87,11 @@ generated quality/coverage catalogs and assertion-source sealing are retired.
 Their historical content is preserved in Git at `aa65c57`. This does not retire
 original cases, corpus records, immutable oracle identity or performance baselines.
 
-`index check` validates current bindings and assertion routes before platform
-filtering, then checks the candidate. `index update` changes only the candidate
-after validation. Neither rewrites `release/latest.json` or `latest-cases.json`.
+The driver validates current bindings and assertion routes before platform
+filtering during execution. Generate a release candidate explicitly with
+[`tools/release`](../tools/README.md) when preparing a release; ordinary CI does
+not compare this derived version table. Generation never rewrites
+`release/latest.json` or `latest-cases.json`.
 Case aliases do not cause duplicate execution.
 The same rule covers network, filesystem metadata/umask, tee, mktemp and printf
 state events: current registrations select one scenario, and differential mode

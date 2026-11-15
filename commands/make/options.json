@@ -143,18 +143,5 @@
     }
   ],
   "tables": [],
-  "adapter_sources": [
-    "internal/driver/boundaries.mbt",
-    "internal/driver/expansion.mbt",
-    "internal/driver/exports.mbt",
-    "internal/driver/jobserver.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/prerequisites.mbt",
-    "internal/driver/recipes.mbt",
-    "internal/driver/scheduler.mbt",
-    "internal/driver/shell_capture.mbt",
-    "internal/syntax/shell_source.mbt",
-    "internal/driver/version.mbt"
-  ],
   "adapter_match": true
 }

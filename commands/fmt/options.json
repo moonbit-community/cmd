@@ -148,7 +148,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "width",
@@ -162,10 +161,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/reflow/format.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
   ]
 }

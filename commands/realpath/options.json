@@ -170,7 +170,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "canonicalize-existing",
@@ -186,9 +185,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
   ]
 }

@@ -70,27 +70,6 @@ fn quoted(value : String) -> String {
 }
 
 ///|
-fn string_literal(value : String) -> String raise {
-  guard @json.parse(value) is String(text) else {
-    fail("expected string literal")
-  }
-  text
-}
-
-///|
-async fn module_field(path : String, key : String) -> String {
-  let values = @fs.read_file(path)
-    .text()
-    .split("\n")
-    .filter_map(line => {
-      line.trim().strip_prefix(key + " = ").map(StringView::to_owned)
-    })
-    .collect()
-  guard values is [value] else { fail("expected one " + key + " in " + path) }
-  string_literal(value)
-}
-
-///|
 async fn output(path : String, content : String, check : Bool) -> Unit {
   if @fs.exists(path) {
     let current = @fs.read_file(path).text()

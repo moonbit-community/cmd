@@ -385,15 +385,5 @@
       "allow_attached": false
     }
   ],
-  "tables": [],
-  "adapter_sources": [
-    "internal/driver/actions.mbt",
-    "internal/driver/batch.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/metadata.mbt",
-    "internal/expression/optimize.mbt",
-    "internal/expression/time.mbt",
-    "internal/driver/version.mbt",
-    "internal/driver/walk.mbt"
-  ]
+  "tables": []
 }

@@ -306,7 +306,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "all",
@@ -333,11 +332,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/display.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/structured.mbt",
-    "internal/driver/version.mbt"
   ]
 }

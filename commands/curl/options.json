@@ -760,7 +760,6 @@
   "tables": [
     {
       "function_name": "transfer_option_specs",
-      "source": "internal/driver/options.mbt",
       "import_alias": "cli",
       "options": [
         "disable",
@@ -803,7 +802,6 @@
     },
     {
       "function_name": "negative_option_specs",
-      "source": "internal/driver/options.mbt",
       "import_alias": "cli",
       "options": [
         "no-silent",
@@ -819,12 +817,5 @@
         "no-remove-on-error"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/config.mbt",
-    "internal/driver/host_encoding.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/options.mbt",
-    "internal/driver/version.mbt"
   ]
 }

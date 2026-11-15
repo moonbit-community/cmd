@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-09
+Updated: 2026-11-15
 
 ## Decision
 
@@ -26,8 +26,9 @@ bindings. Retire old paths and modes without forwarding wrappers.
 
 Direct executable assertions and original corpus expectations are authoritative.
 Retire per-assertion reviews, descriptors, proofs and assertion-source sealing.
-`index check` validates current case bindings, executing assertion routes and the
-derived candidate; `index update` updates only that candidate after validation.
+The driver validates current case bindings and assertion routes during execution.
+Candidate generation belongs to explicit release preparation through `tools/release`;
+ordinary development CI does not compare that derived version table.
 Published coordinates and frozen cases remain independent inputs. Historical
 definitions and evidence remain in Git without replay adapters.
 

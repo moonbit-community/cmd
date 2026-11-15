@@ -223,7 +223,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "body-numbering",
@@ -240,10 +239,5 @@
         "help"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/numbering.mbt",
-    "internal/driver/version.mbt"
   ]
 }

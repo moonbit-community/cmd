@@ -220,11 +220,6 @@ async fn main {
       msg="product source changed during build: " + path,
     )
   }
-  run_checked(
-    "moon",
-    ["run", "tools/architecture.mbtx", "--", evidence + "/architecture.json"],
-    evidence + "/architecture.log",
-  )
   for tool_package in ["tests/benchmark", "tests/harness/driver"] {
     run_checked(
       "moon",

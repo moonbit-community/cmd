@@ -72,10 +72,6 @@ async fn main {
       } : Json).stringify(indent=2) +
     "\n",
   )
-  run_checked(
-    ["run", "tools/architecture.mbtx", "--", root + "/architecture.json"],
-    root + "/architecture.log",
-  )
   for tool_package in ["tests/benchmark", "tests/harness/driver"] {
     run_checked(
       ["build", "--target", "native", "--release", "--deny-warn", tool_package],

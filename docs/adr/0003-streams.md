@@ -501,7 +501,7 @@ exit-priority correction is recorded in [ADR-0005](0005-transfer.md).
 These are development changes, not publication or performance acceptance. On
 2026-11-08 the maintainer explicitly deferred performance qualification and
 optimization to a separate stage. This simplification stage is accepted through
-CLI correctness, architecture checks and required three-platform development CI;
+CLI correctness, architecture review and required three-platform development CI;
 incomplete timing coverage does not block its integration. No benchmark threshold
 or historical result changes with this scoped decision.
 
@@ -548,8 +548,15 @@ mount layouts keep invocation-owned containers and are counted separately.
 Actual container/launch counts and complete-gate timings determine subsequent
 optimization, not the size of a split fast job.
 
-Use [architecture validation](../../tools/architecture.mbtx), private ownership
-tests and independent CLI contracts. Strategy/source/test/workload bindings live
+Review dependency direction and ownership with the implementation, using private
+ownership tests and independent CLI contracts. On 2026-11-15 the maintainer
+removed architecture/naming scanners, fixed command/help counts, generated-version
+source checks and the separate candidate-consistency gate. Versions remain
+generated from `moon.mod`; registry validation remains in actual execution.
+These removals reduce parallel policy machinery without changing CLI assertions
+or measurement requirements. Add a dedicated check only if a concrete recurring
+defect is not covered at its owning boundary.
+Strategy/source/test/workload bindings live
 in [protection.json](../../tests/benchmark/protection.json); measurement gates
 live in [PROTECTION.md](../../tests/benchmark/PROTECTION.md). New sharing must
 preserve bytes, error order and real consumer contracts before timing.

@@ -197,7 +197,6 @@
     {
       "kind": "flags",
       "function_name": "command_flags",
-      "source": "internal/driver/main.mbt",
       "import_alias": "argparse",
       "options": [
         "number",
@@ -213,9 +212,5 @@
         "help"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
   ]
 }

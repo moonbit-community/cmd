@@ -16,13 +16,7 @@ async fn generate_shared(declarations : Array[Metadata], check : Bool) -> Unit {
     function_name : String,
   ) -> String {
     parser_table(
-      {
-        kind: None,
-        function_name,
-        source: "shared",
-        import_alias: "args",
-        options: names,
-      },
+      { kind: None, function_name, import_alias: "args", options: names, },
       options,
     )
   }

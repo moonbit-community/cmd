@@ -72,12 +72,8 @@ jobs:
         run: moon update
       - name: Check products and test tools
         run: moon run tools/run.mbtx -- check
-      - name: Architecture and strategy registry
-        run: moon run tools/run.mbtx -- architecture test-reports/architecture.json
       - name: Prepare products and execution tools
         run: moon run tools/run.mbtx -- prepare
-      - name: Check case registry and candidate
-        run: moon run tools/run.mbtx -- index check
       - name: Wasm package tests
         timeout-minutes: 5
         run: moon run tools/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log
@@ -197,12 +193,8 @@ jobs:
         run: moon update
       - name: Check products and test tools
         run: moon run tools/run.mbtx -- check
-      - name: Architecture and strategy registry
-        run: moon run tools/run.mbtx -- architecture test-reports/architecture.json
       - name: Prepare products and execution tools
         run: moon run tools/run.mbtx -- prepare
-      - name: Check case registry and candidate
-        run: moon run tools/run.mbtx -- index check
       - name: Wasm package tests
         timeout-minutes: 5
         run: moon run tools/run.mbtx -- test packages 2>&1 | tee test-reports/packages-wasm.log

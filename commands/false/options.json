@@ -34,9 +34,5 @@
       ]
     }
   ],
-  "tables": [],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
-  ]
+  "tables": []
 }

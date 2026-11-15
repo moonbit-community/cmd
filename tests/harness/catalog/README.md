@@ -10,8 +10,7 @@ Validation rejects duplicate or empty identities, invalid selections, unknown
 platforms and malformed release policy. Moon discovers package tests directly;
 there is no second inventory of individual package-test names.
 
-`index check` validates the current case registry and candidate manifest.
-The driver checks actual assertion routes before platform filtering; it does
+The driver validates the registry and actual assertion routes before platform filtering; it does
 not generate or consume a parallel assertion-quality catalog.
 Duplicate-stimulus checks preserve argument order, input bytes, fixtures,
 environment and timing. Consolidation must preserve original assertions,

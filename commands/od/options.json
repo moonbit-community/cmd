@@ -362,7 +362,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "address-radix",
@@ -390,12 +389,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/stream.mbt",
-    "internal/driver/strings.mbt",
-    "internal/driver/traditional.mbt",
-    "internal/driver/version.mbt"
   ]
 }

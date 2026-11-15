@@ -71,8 +71,7 @@ MOON_HOME="$HOME/.moon-accounts/cli" \
 
 The launcher takes two arguments. Its former generated-fixture argument is
 retired and rejected. It preserves the existing candidate artifacts, rebuilds
-current release Wasm, checks product-source identities across that build,
-validates the architecture inventory and rebuilds
+current release Wasm, checks product-source identities across that build and rebuilds
 the Native benchmark observer and local correctness driver in release mode
 before the timing windows. These are test tools; product behavior still runs
 through the frozen release Wasm artifacts. Serialize all workspace builds and

@@ -105,7 +105,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "bytes",
@@ -116,10 +115,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/fold.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
   ]
 }

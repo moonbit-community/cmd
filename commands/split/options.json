@@ -217,7 +217,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/options.mbt",
       "import_alias": "cli",
       "options": [
         "lines",
@@ -236,13 +235,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/options.mbt",
-    "internal/driver/output.mbt",
-    "internal/driver/stream.mbt",
-    "internal/driver/suffix.mbt",
-    "internal/driver/version.mbt"
   ]
 }

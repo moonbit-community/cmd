@@ -152,7 +152,6 @@ fn sample() -> Metadata raise {
     "command": "sample",
     "help": "Usage: sample\n",
     "catalog_options": ["output"],
-    "adapter_sources": ["internal/driver/main.mbt"],
     "options": [
       {
         "name": "help",

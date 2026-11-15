@@ -150,8 +150,9 @@ module and version before any release operation.
   infrastructure to `tests/harness`, and specialized assertions to
   `tests/scenarios`. Do not add retired-path wrappers or historical modes.
 - Keep direct assertions beside the behavior they verify. Preserve original
-  corpus records and expected values; use `index update` then `index check`
-  for the candidate and registry. The per-assertion review/descriptor/proof
+  corpus records and expected values. The driver validates the registry during
+  execution; generate the candidate with `tools/release` when preparing a
+  release, as documented in `tools/README.md`. The per-assertion review/descriptor/proof
   chain and assertion-source sealing are retired. Validate complete selected
   results, explicit platform skips, deadlines, cleanup and report writes.
   Keep fresh execution reports without backfill. Published coordinates and
@@ -173,9 +174,10 @@ module and version before any release operation.
   acceptance, and this workflow does not run automatically on ordinary pushes.
 
 - Internal architecture changes follow command adaptation -> domain
-  implementation -> runtime mechanisms and algorithms. Run
-  `MOON_HOME="$HOME/.moon-accounts/cli" moon run tools/run.mbtx -- architecture /absolute/new-inventory.json`
-  from the repository root after updating interfaces. Keep module dispositions
+  implementation -> runtime mechanisms and algorithms. Review dependency
+  direction and ownership with the implementation; do not add architecture,
+  naming, fixed-inventory-count or generated-version source scanners.
+  Keep module dispositions
   in ADR-0003, not another report hierarchy. New shared mechanisms need two
   actual consumers; catalog/contract metadata has validation consumers rather
   than runtime command consumers. Preserve dialects, error ordering and fast

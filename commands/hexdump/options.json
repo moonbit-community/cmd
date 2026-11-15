@@ -248,7 +248,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "one-byte-octal",
@@ -268,11 +267,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/custom_program.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/stream.mbt",
-    "internal/driver/version.mbt"
   ]
 }

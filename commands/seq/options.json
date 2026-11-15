@@ -82,12 +82,5 @@
     }
   ],
   "tables": [],
-  "adapter_sources": [
-    "internal/driver/arithmetic.mbt",
-    "internal/driver/format.mbt",
-    "internal/driver/integer.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
-  ],
   "adapter_match": true
 }

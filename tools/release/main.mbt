@@ -12,7 +12,6 @@ async fn main {
 async fn run() -> Unit {
   let args = @env.args()[1:]
   if args is ["--generate-candidate", "--output", output] {
-    guard !@fs.exists(output) else { fail("choose a fresh candidate output") }
     generate_candidate(output)
     return
   }

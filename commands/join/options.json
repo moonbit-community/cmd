@@ -230,7 +230,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "field1",
@@ -248,10 +247,5 @@
         "zero-terminated"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/input.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
   ]
 }

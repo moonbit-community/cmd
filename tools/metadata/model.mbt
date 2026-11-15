@@ -68,7 +68,6 @@ priv struct RgMetadata {
 priv struct Table {
   kind : String?
   function_name : String
-  source : String
   import_alias : String
   options : Array[String]
 }
@@ -82,7 +81,6 @@ priv struct Metadata {
   catalog_options : Array[String]
   options : Array[OptionMetadata]
   tables : Array[Table]
-  adapter_sources : Array[String]
   help_variants : Array[HelpVariant]?
   adapter_match : Bool?
 }
@@ -173,9 +171,7 @@ fn validate(metadata : Metadata) -> Unit raise {
   }
   let functions : Set[String] = Set([])
   for table in metadata.tables {
-    guard !table.options.is_empty() &&
-      !table.function_name.is_empty() &&
-      !table.source.is_empty() else {
+    guard !table.options.is_empty() && !table.function_name.is_empty() else {
       fail("empty parser table")
     }
     guard !functions.contains(table.function_name) else {

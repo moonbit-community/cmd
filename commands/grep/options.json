@@ -418,7 +418,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "fixed-strings",
@@ -453,14 +452,5 @@
         "help"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/execution.mbt",
-    "internal/driver/literal.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/prefilter.mbt",
-    "internal/driver/record_output.mbt",
-    "internal/driver/streaming.mbt",
-    "internal/driver/version.mbt"
   ]
 }

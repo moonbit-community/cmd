@@ -2,9 +2,11 @@
 
 `policy.json` owns release selection and support metadata. `candidate.json` is
 derived from that policy, current versions and `../cases/manifest.json` through
-`tools/run.mbtx -- index update`. `latest.json` records historical published coordinates and
+`tools/release -- --generate-candidate --output tests/release/candidate.json`
+(run with `MOON_HOME="$HOME/.moon-accounts/cli" moon run --target native` from
+the repository root). `latest.json` records historical published coordinates and
 points to the independent frozen `latest-cases.json` expectations. Neither
-index generation nor acceptance rewrites those published inputs. At startup,
+candidate generation nor acceptance rewrites those published inputs. At startup,
 acceptance reads each selected command's current `moon.mod` once and fixes that
 exact coordinate for the invocation. The manifest's historical version table
 is not a launch input. Missing registry versions and wrong `--version` output

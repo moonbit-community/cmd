@@ -207,12 +207,5 @@
     }
   ],
   "tables": [],
-  "adapter_sources": [
-    "internal/driver/batches.mbt",
-    "internal/driver/delimited.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/stream_input.mbt",
-    "internal/driver/version.mbt"
-  ],
   "adapter_match": true
 }

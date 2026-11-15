@@ -103,10 +103,5 @@
     }
   ],
   "tables": [],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/split.mbt",
-    "internal/driver/version.mbt"
-  ],
   "adapter_match": true
 }

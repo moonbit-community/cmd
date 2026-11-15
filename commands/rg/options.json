@@ -2596,9 +2596,5 @@
       ]
     }
   ],
-  "tables": [],
-  "adapter_sources": [
-    "internal/driver/parse.mbt",
-    "internal/driver/flag_defs_data.mbt"
-  ]
+  "tables": []
 }

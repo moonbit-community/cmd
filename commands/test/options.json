@@ -308,11 +308,5 @@
     }
   ],
   "tables": [],
-  "adapter_sources": [
-    "internal/driver/arity.mbt",
-    "internal/driver/files.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
-  ],
   "adapter_match": true
 }

@@ -6,7 +6,7 @@ immutable diagnostic Linux image and source-build checksums recorded inside
 each file. They retain 414 actual process phases, raw request/response bytes,
 stdout/stderr/status and complete request-time/final file inventories. These
 captures do not reconstruct the missing historical 157/8-case artifacts.
-`tests/tools/http_cookie.mbtx` creates new captures only in a fresh directory;
+`tools/http_cookie.mbtx` creates new captures only in a fresh directory;
 its named containers, execution deadlines and protected bounded cleanup retain
 failure evidence. The existing replay checks the complete record and only
 normalizes the explicitly validated generated Wget jar preamble. Fixed Linux

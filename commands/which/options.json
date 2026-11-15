@@ -69,7 +69,6 @@
     {
       "kind": "flags",
       "function_name": "command_flags",
-      "source": "internal/driver/main.mbt",
       "import_alias": "argparse",
       "options": [
         "all",
@@ -78,9 +77,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/version.mbt"
   ]
 }

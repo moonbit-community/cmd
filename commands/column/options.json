@@ -121,7 +121,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "table",
@@ -133,14 +132,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/fields.mbt",
-    "internal/driver/ingest.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/policy.mbt",
-    "internal/driver/spool.mbt",
-    "internal/driver/table.mbt",
-    "internal/driver/version.mbt"
   ]
 }

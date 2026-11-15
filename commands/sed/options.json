@@ -111,7 +111,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "quiet",
@@ -124,13 +123,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/execute.mbt",
-    "internal/driver/main.mbt",
-    "internal/program/parser.mbt",
-    "internal/program/pattern.mbt",
-    "internal/program/space.mbt",
-    "internal/driver/version.mbt"
   ]
 }

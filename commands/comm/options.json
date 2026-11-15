@@ -156,7 +156,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "suppress-1",
@@ -170,10 +169,5 @@
         "zero-terminated"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/main.mbt",
-    "internal/driver/merge.mbt",
-    "internal/driver/version.mbt"
   ]
 }

@@ -265,7 +265,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "brief",
@@ -289,12 +288,5 @@
         "version"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/compare/compare.mbt",
-    "internal/compare/discard.mbt",
-    "internal/driver/main.mbt",
-    "internal/compare/output.mbt",
-    "internal/driver/version.mbt"
   ]
 }

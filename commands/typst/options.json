@@ -1781,27 +1781,6 @@
     }
   ],
   "tables": [],
-  "adapter_sources": [
-    "internal/driver/args.mbt",
-    "internal/driver/clap.mbt",
-    "internal/driver/compile.mbt",
-    "internal/driver/deps.mbt",
-    "internal/driver/eval.mbt",
-    "internal/driver/fonts.mbt",
-    "internal/driver/greet.mbt",
-    "internal/driver/help.mbt",
-    "internal/driver/help_gen.mbt",
-    "internal/driver/info.mbt",
-    "internal/driver/init.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/query.mbt",
-    "internal/driver/semver.mbt",
-    "internal/driver/terminal.mbt",
-    "internal/driver/version.mbt",
-    "internal/driver/watch.mbt",
-    "internal/driver/watch_status.mbt",
-    "internal/driver/world.mbt"
-  ],
   "help_variants": [
     {
       "command": "",

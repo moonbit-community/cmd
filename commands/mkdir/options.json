@@ -74,7 +74,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "parents",
@@ -83,11 +82,5 @@
         "help"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/create.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/mode.mbt",
-    "internal/driver/version.mbt"
   ]
 }

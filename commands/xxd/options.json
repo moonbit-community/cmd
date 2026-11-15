@@ -268,7 +268,6 @@
   "tables": [
     {
       "function_name": "option_specs",
-      "source": "internal/driver/main.mbt",
       "import_alias": "cli",
       "options": [
         "autoskip",
@@ -288,13 +287,5 @@
         "help"
       ]
     }
-  ],
-  "adapter_sources": [
-    "internal/driver/format.mbt",
-    "internal/driver/input.mbt",
-    "internal/driver/main.mbt",
-    "internal/driver/options.mbt",
-    "internal/driver/reverse.mbt",
-    "internal/driver/version.mbt"
   ]
 }
