@@ -154,6 +154,12 @@ never normalize these diagnostics, replace expectations or count unavailable
 observations as parity. Local differential acceptance still does not replace
 required three-platform CI or performance qualification.
 
+The [native Linux rerun at `7f69162a`](https://github.com/moonbit-community/cmd/actions/runs/43682839998)
+passes all 2,894 selected comparisons, including the original 97 failed and 41
+unavailable records, with the original network deadlines. This establishes the
+registered reference-environment observations; it does not broaden the supported
+command dialects or resolve the separate intermittent macOS touch observer.
+
 The issue #34 release assigns byte-preserving HTTP headers,
 physical response-line callbacks and explicit payload chunking to core 0.11.0.
 Curl and Wget are its two real consumers. Header admission, Cookie storage,
