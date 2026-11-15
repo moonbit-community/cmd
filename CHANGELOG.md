@@ -14,21 +14,23 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-16
 
-Published packages; the gzip 0.1.8 documentation correction is awaiting release.
+Published packages.
 
 - Publish core 0.11.1 and all 81 releasable Wasm commands through `moon publish`,
   including jq 0.2.10 and jqlog 0.2.8 with the shared engine. Verify every
   uploaded coordinate, source archive checksum and registry build; timeout
   remains local-only.
-- The [three-platform MoonX gate](https://github.com/moonbit-community/cmd/actions/runs/43735702891)
-  passes with no failures: Linux 3,900 checks and 37 declared skips, macOS
-  3,890 and 40, Windows 3,317 and 613. Linux includes the pinned upstream
-  comparison. Local full acceptance also passes 3,890 checks with 40 skips;
-  the initial typst download timeout remains recorded separately.
-- Verify command README examples, metadata and the core/jq public API examples
-  against published packages. Correct gzip's named-input example to include
-  `-n`, expose that existing option in its README, remove stale jq/jqlog
-  candidate wording and explain registry-index refresh for unversioned MoonX.
+- Final-coordinate local MoonX acceptance passes 3,890 checks with 40 declared
+  skips and no failures. Freeze 4,045 independent case definitions and 3,849
+  selected IDs, retaining every historical ID and alias. Required development
+  checks and the final three-platform gate, including the pinned Linux
+  comparison, are linked from [PR #132](https://github.com/moonbit-community/cmd/pull/132).
+  The initial typst download timeout remains recorded separately.
+- Verify 508 command README/metadata checks and two core/jq public API examples
+  against published packages. Publish gzip 0.1.8 to correct its named-input
+  example to include `-n` and expose that existing option in its README. Remove
+  stale jq/jqlog candidate wording and explain registry-index refresh for
+  unversioned MoonX.
 
 ## 2026-11-15
 

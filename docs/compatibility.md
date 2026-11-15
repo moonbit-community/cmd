@@ -20,14 +20,15 @@ run `moon update` to refresh it, or append `@<version>` to pin a release.
 The frozen [published inventory](../tests/release/latest.json) records the 81
 published coordinates; it is independent of current workspace behavior.
 
-This refresh was checked against source and freshly built Wasm artifacts on
-2026-11-15: the complete macOS functional suite passed 4,091 checks with 40
-declared platform skips and no failures. The earlier product baseline at
-`885b80d` also passed
-[three-platform development CI and the selected Linux upstream comparison](https://github.com/moonbit-community/cmd/actions/runs/43710405714).
-These results do not establish new publication acceptance, complete upstream
-parity or performance qualification. See [validation](../tests/README.md) for
-reproduction and [CHANGELOG](../CHANGELOG.md) for dated release results.
+The published coordinates were checked through MoonX on 2026-11-16. Complete
+local macOS acceptance passed 3,890 checks with 40 declared platform skips and
+no failures; 508 help/version and README checks covered exact and unversioned
+calls. The core and jq engine public API examples also compiled and passed.
+[Release PR #132](https://github.com/moonbit-community/cmd/pull/132) records the
+development checks and three-platform publication gate, including the pinned
+Linux upstream comparison. These checks cover the declared profile, not full
+upstream parity or performance qualification. See [validation](../tests/README.md)
+for reproduction and [CHANGELOG](../CHANGELOG.md) for dated release results.
 
 ## Command support
 

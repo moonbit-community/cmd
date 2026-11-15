@@ -150,7 +150,7 @@
         "version"
       ],
       "source_version": "workspace cli/base32@0.1.6 metadata contract",
-      "expected_stdout_text": "base32 0.1.7\n",
+      "expected_stdout_text": "base32 0.1.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -553,7 +553,7 @@
         "version"
       ],
       "source_version": "workspace cli/cksum@0.1.5 metadata contract",
-      "expected_stdout_text": "cksum 0.1.6\n",
+      "expected_stdout_text": "cksum 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -2248,7 +2248,7 @@
         "version"
       ],
       "source_version": "workspace cli/expand@0.1.5 metadata contract",
-      "expected_stdout_text": "expand 0.1.6\n",
+      "expected_stdout_text": "expand 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -3057,7 +3057,7 @@
         "version"
       ],
       "source_version": "workspace cli/cp@0.2.5 metadata contract",
-      "expected_stdout_text": "cp 0.2.6\n",
+      "expected_stdout_text": "cp 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -4711,7 +4711,7 @@
         "version"
       ],
       "source_version": "workspace cli/jq@0.2.7 metadata contract",
-      "expected_stdout_text": "jq 0.2.9\n",
+      "expected_stdout_text": "jq 0.2.10\n",
       "expected_stderr_text": ""
     },
     {
@@ -6190,7 +6190,7 @@
         "version"
       ],
       "source_version": "workspace cli/ln@0.2.5 metadata contract",
-      "expected_stdout_text": "ln 0.2.6\n",
+      "expected_stdout_text": "ln 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -8313,7 +8313,7 @@
         "version"
       ],
       "source_version": "workspace cli/ls@0.2.5 metadata contract",
-      "expected_stdout_text": "ls 0.2.6\n",
+      "expected_stdout_text": "ls 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -15051,6 +15051,7 @@
     {
       "id": "mv-windows-wasm-links-boundary",
       "command": "mv",
+      "isolated": true,
       "args": [],
       "stdin_text": "",
       "files": [],
@@ -16078,7 +16079,7 @@
         "version"
       ],
       "source_version": "workspace cli/mv@0.2.7 metadata contract",
-      "expected_stdout_text": "mv 0.2.8\n",
+      "expected_stdout_text": "mv 0.2.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -16554,7 +16555,7 @@
         "version"
       ],
       "source_version": "workspace cli/nl@0.2.6 metadata contract",
-      "expected_stdout_text": "nl 0.2.7\n",
+      "expected_stdout_text": "nl 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -17030,7 +17031,7 @@
         "version"
       ],
       "source_version": "workspace cli/rm@0.2.5 metadata contract",
-      "expected_stdout_text": "rm 0.2.6\n",
+      "expected_stdout_text": "rm 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -18826,7 +18827,7 @@
         "version"
       ],
       "source_version": "workspace cli/sh@0.2.5 metadata contract",
-      "expected_stdout_text": "sh 0.2.10\n",
+      "expected_stdout_text": "sh 0.2.11\n",
       "expected_stderr_text": ""
     },
     {
@@ -20842,23 +20843,10 @@
       "normalizations": [],
       "comparison": "scenario",
       "timeout_ms": 120000,
-      "oracle": false
-    },
-    {
-      "id": "f31-sh-printf-state-oracle",
-      "command": "sh",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 120000,
-      "oracle": false
+      "oracle": true,
+      "aliases": [
+        "f31-sh-printf-state-oracle"
+      ]
     },
     {
       "id": "f31-sh-boundary-additional-descriptor",
@@ -24337,7 +24325,7 @@
         "version"
       ],
       "source_version": "workspace cli/tr@0.2.5 metadata contract",
-      "expected_stdout_text": "tr 0.2.6\n",
+      "expected_stdout_text": "tr 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -24761,7 +24749,7 @@
         "version"
       ],
       "source_version": "workspace cli/wc@0.2.6 metadata contract",
-      "expected_stdout_text": "wc 0.2.7\n",
+      "expected_stdout_text": "wc 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -25807,7 +25795,7 @@
         "version"
       ],
       "source_version": "workspace cli/cat@0.2.5 metadata contract",
-      "expected_stdout_text": "cat 0.2.6\n",
+      "expected_stdout_text": "cat 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -26175,7 +26163,7 @@
         "version"
       ],
       "source_version": "workspace cli/cmp@0.2.4 metadata contract",
-      "expected_stdout_text": "cmp 0.2.5\n",
+      "expected_stdout_text": "cmp 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -26620,7 +26608,7 @@
         "version"
       ],
       "source_version": "workspace cli/cut@0.2.6 metadata contract",
-      "expected_stdout_text": "cut 0.2.7\n",
+      "expected_stdout_text": "cut 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -27218,7 +27206,7 @@
         "version"
       ],
       "source_version": "workspace cli/env@0.2.3 metadata contract",
-      "expected_stdout_text": "env 0.2.4\n",
+      "expected_stdout_text": "env 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -28087,7 +28075,7 @@
         "version"
       ],
       "source_version": "workspace cli/pwd@0.2.4 metadata contract",
-      "expected_stdout_text": "pwd 0.2.5\n",
+      "expected_stdout_text": "pwd 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -28137,7 +28125,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "seq 0.2.6\n",
+      "expected_stdout_text": "seq 0.2.7\n",
       "expected_stderr_text": "",
       "source_version": "workspace cli/seq@0.2.5 metadata contract",
       "aliases": [
@@ -29293,7 +29281,7 @@
         "version"
       ],
       "source_version": "workspace cli/tee@0.2.4 metadata contract",
-      "expected_stdout_text": "tee 0.2.5\n",
+      "expected_stdout_text": "tee 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -29837,34 +29825,16 @@
       "expected_status": 0,
       "normalizations": [],
       "comparison": "scenario",
-      "timeout_ms": 60000,
-      "coverage": [
-        "output-error",
-        "pipe-errors"
-      ],
-      "source_version": "Five explicit output-error modes with an actually closed stdout pipe and later file sink",
-      "oracle": false
-    },
-    {
-      "id": "tee-output-errors-oracle",
-      "command": "tee",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
       "timeout_ms": 120000,
       "coverage": [
         "output-error",
         "pipe-errors"
       ],
-      "source_version": "GNU coreutils 9.11 immutable oracle with the same pure MoonBit pipe observer",
-      "oracle": false
+      "source_version": "Five explicit output-error modes with an actually closed stdout pipe and later file sink",
+      "oracle": true,
+      "aliases": [
+        "tee-output-errors-oracle"
+      ]
     },
     {
       "id": "tee-default-pipe-boundary",
@@ -30100,7 +30070,7 @@
         "version"
       ],
       "source_version": "workspace cli/xxd@0.2.5 metadata contract",
-      "expected_stdout_text": "xxd 0.2.6\n",
+      "expected_stdout_text": "xxd 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -32403,7 +32373,7 @@
         "version"
       ],
       "source_version": "workspace cli/comm@0.2.6 metadata contract",
-      "expected_stdout_text": "comm 0.2.7\n",
+      "expected_stdout_text": "comm 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -33091,26 +33061,10 @@
       "timeout_ms": 120000,
       "source_version": "Raw HTTP transfer framing, partial output and retry contract",
       "oracle": true,
-      "aliases": [],
+      "aliases": [
+        "network-transfer-boundaries-oracle"
+      ],
       "isolated": true
-    },
-    {
-      "id": "network-transfer-boundaries-oracle",
-      "command": "curl",
-      "related_commands": [
-        "wget"
-      ],
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
-      "timeout_ms": 240000,
-      "source_version": "curl 8.22.0 and wget 1.25.0 in sealed oracle image; exact failure statuses are measured"
     },
     {
       "id": "transfer-curl-fixed-complete",
@@ -33193,7 +33147,7 @@
       "expected_stderr_text": ""
     },
     {
-      "id": "network-auth-cookie-oracle",
+      "id": "network-auth-cookie",
       "command": "curl",
       "related_commands": [
         "wget"
@@ -33203,12 +33157,13 @@
       "environment": {},
       "expected_status": 0,
       "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "oracle": true,
+      "aliases": [
+        "network-auth-cookie-oracle"
       ],
-      "timeout_ms": 120000,
-      "source_version": "curl 8.22.0 and wget 1.25.0 in pinned oracle image"
+      "isolated": true
     },
     {
       "id": "phase2-curl-does-not-follow",
@@ -33489,23 +33444,6 @@
       "expected_stderr_text": ""
     },
     {
-      "id": "network-auth-cookie",
-      "command": "curl",
-      "related_commands": [
-        "wget"
-      ],
-      "args": [],
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "scenario",
-      "timeout_ms": 60000,
-      "oracle": true,
-      "aliases": [],
-      "isolated": true
-    },
-    {
       "id": "repair-final-curl-basic",
       "command": "curl",
       "args": [
@@ -33756,7 +33694,7 @@
         "version"
       ],
       "source_version": "workspace cli/curl@0.2.5 metadata contract",
-      "expected_stdout_text": "curl 0.2.7\n",
+      "expected_stdout_text": "curl 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -33845,7 +33783,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "echo 0.2.4\n",
+      "expected_stdout_text": "echo 0.2.5\n",
       "expected_stderr_text": "",
       "source_version": "workspace cli/echo@0.2.4 metadata contract",
       "aliases": [
@@ -34243,7 +34181,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "echo 0.2.4\n",
+      "expected_stdout_text": "echo 0.2.5\n",
       "expected_stderr_text": "",
       "source_version": "workspace cli/echo@0.2.4 metadata contract",
       "aliases": [],
@@ -34446,7 +34384,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/find@0.2.5 metadata contract",
+      "source_version": "workspace cli/find@0.2.6 metadata contract",
       "expected_stdout_text": "Usage: find [PATH...] [EXPRESSION]\n      --help      display this help and exit\n      --version   display version and exit\nPredicates include names, portable kinds, size, a/c/m times, newerXY, access checks, -used, -xtype, depth controls, actions, and boolean operators.\n-size rounds up in b/c/w/k/M/G units (default b); K is a project alias for k.\nTime arguments accept finite decimal, exponent and hexadecimal numbers within signed 64-bit seconds.\nDirectory names are read only for descent or an evaluated -empty; stat fields precede directory reads and child effects.\nActions execute at their expression position; -delete with -prune requires explicit -depth.\n-exec ... + runs completed batches during traversal with a 64 KiB UTF-8 argument budget.\nUnavailable size/timestamp metadata is an error, not a nonmatch.\n",
       "expected_stderr_text": "",
       "aliases": [
@@ -34470,8 +34408,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/find@0.2.5 metadata contract",
-      "expected_stdout_text": "find 0.2.6\n",
+      "source_version": "workspace cli/find@0.2.6 metadata contract",
+      "expected_stdout_text": "find 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -35027,7 +34965,7 @@
         "version"
       ],
       "source_version": "workspace cli/grep@0.3.3 metadata contract",
-      "expected_stdout_text": "grep 0.3.4\n",
+      "expected_stdout_text": "grep 0.3.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -35568,7 +35506,7 @@
         "version"
       ],
       "source_version": "workspace cli/head@0.2.5 metadata contract",
-      "expected_stdout_text": "head 0.2.6\n",
+      "expected_stdout_text": "head 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -35983,7 +35921,7 @@
         "version"
       ],
       "source_version": "workspace cli/join@0.2.6 metadata contract",
-      "expected_stdout_text": "join 0.2.7\n",
+      "expected_stdout_text": "join 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -37206,7 +37144,7 @@
         "version"
       ],
       "source_version": "workspace cli/make@0.2.4 metadata contract",
-      "expected_stdout_text": "make 0.2.9\n",
+      "expected_stdout_text": "make 0.2.10\n",
       "expected_stderr_text": ""
     },
     {
@@ -46104,7 +46042,7 @@
         "version"
       ],
       "source_version": "workspace cli/sort@0.2.7 metadata contract",
-      "expected_stdout_text": "sort 0.2.8\n",
+      "expected_stdout_text": "sort 0.2.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -48863,7 +48801,7 @@
         "version"
       ],
       "source_version": "workspace cli/tail@0.2.5 metadata contract",
-      "expected_stdout_text": "tail 0.2.6\n",
+      "expected_stdout_text": "tail 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -49416,7 +49354,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/test@0.2.3 metadata contract",
+      "source_version": "workspace cli/test@0.2.4 metadata contract",
       "expected_stdout_text": "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n-s reads followed target metadata without opening the file; unavailable metadata exits 2.\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
       "expected_stderr_text": "",
       "aliases": [
@@ -49440,8 +49378,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/test@0.2.3 metadata contract",
-      "expected_stdout_text": "test 0.2.4\n",
+      "source_version": "workspace cli/test@0.2.4 metadata contract",
+      "expected_stdout_text": "test 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -49459,7 +49397,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "true 0.2.4\n",
+      "expected_stdout_text": "true 0.2.5\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-754",
@@ -49728,7 +49666,7 @@
         "version"
       ],
       "source_version": "workspace cli/uniq@0.2.6 metadata contract",
-      "expected_stdout_text": "uniq 0.2.7\n",
+      "expected_stdout_text": "uniq 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -50865,7 +50803,7 @@
         "version"
       ],
       "source_version": "workspace cli/wget@0.2.5 metadata contract",
-      "expected_stdout_text": "wget 0.2.7\n",
+      "expected_stdout_text": "wget 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -51072,7 +51010,7 @@
         "version"
       ],
       "source_version": "workspace cli/chmod@0.2.5 metadata contract",
-      "expected_stdout_text": "chmod 0.2.6\n",
+      "expected_stdout_text": "chmod 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -51176,7 +51114,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "false 0.2.4\n",
+      "expected_stdout_text": "false 0.2.5\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-762",
@@ -51254,7 +51192,7 @@
       "coverage": [
         "help"
       ],
-      "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
+      "expected_stdout_text": "Usage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - Filters use the shared jq engine; modules and input/inputs are unavailable.\n  - Results from each valid line are written only if its filter succeeds.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-jqlog-help-newline",
@@ -51281,7 +51219,7 @@
         "error"
       ],
       "expected_stdout_text": "",
-      "expected_stderr_text": "Error: Unknown option: \"--bad\"\nUsage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
+      "expected_stderr_text": "Error: Unknown option: \"--bad\"\nUsage: jqlog [options] <query> [input]\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nOptions:\n  -f, --file <path>   Read input text from a file.\n\nNotes:\n  - Input is treated as JSONL/NDJSON with possible non-JSON lines.\n  - Non-JSON lines are skipped.\n  - Filters use the shared jq engine; modules and input/inputs are unavailable.\n  - Results from each valid line are written only if its filter succeeds.\n  - If [input] is omitted, stdin is used.\n  - If [input] is provided without --file, it is treated as raw text.\n\nExamples:\n  cat logs.ndjson | jqlog '.message'\n  jqlog -f output.txt '.a'\n",
       "aliases": [
         "compat-text-jqlog-error-newline"
       ]
@@ -51391,7 +51329,7 @@
         "version"
       ],
       "source_version": "workspace cli/jqlog@0.2.5 metadata contract",
-      "expected_stdout_text": "jqlog 0.2.7\n",
+      "expected_stdout_text": "jqlog 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -51523,7 +51461,7 @@
       "coverage": [
         "help"
       ],
-      "source_version": "workspace cli/mkdir@0.2.6 metadata contract",
+      "source_version": "workspace cli/mkdir@0.2.7 metadata contract",
       "expected_stdout_text": "Usage: mkdir [-p] [-m MODE] [-v] DIRECTORY...\n      --help      display this help and exit\n      --version   display version and exit\nMODE accepts octal or symbolic permissions (rwxXst, copied classes and comma clauses).\nSticky-only +t yields 1755 on Linux and 1777 on macOS; a=rwx,+t yields 1777.\nOmitted-who expressions requiring the process umask are unavailable.\nNew POSIX parents failing public write/search checks cause status 2; created parents remain.\nPassing access checks does not establish GNU parent-mode parity under restrictive umasks or ACLs.\nWindows explicit modes reject before creation; -p existing directories remain no-ops.\nOrdinary option/operand errors exit 1; capability refusals exit 2.\n",
       "expected_stderr_text": "",
       "aliases": [
@@ -51547,8 +51485,8 @@
       "coverage": [
         "version"
       ],
-      "source_version": "workspace cli/mkdir@0.2.6 metadata contract",
-      "expected_stdout_text": "mkdir 0.2.7\n",
+      "source_version": "workspace cli/mkdir@0.2.7 metadata contract",
+      "expected_stdout_text": "mkdir 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -52600,7 +52538,7 @@
         "version"
       ],
       "source_version": "workspace cli/paste@0.2.5 metadata contract",
-      "expected_stdout_text": "paste 0.2.6\n",
+      "expected_stdout_text": "paste 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -52793,7 +52731,7 @@
         "version"
       ],
       "source_version": "workspace cli/rmdir@0.2.4 metadata contract",
-      "expected_stdout_text": "rmdir 0.2.5\n",
+      "expected_stdout_text": "rmdir 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -53418,7 +53356,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "sleep 0.2.4\n",
+      "expected_stdout_text": "sleep 0.2.5\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-text-line-736",
@@ -53630,7 +53568,7 @@
         "version"
       ],
       "source_version": "workspace cli/touch@0.2.4 metadata contract",
-      "expected_stdout_text": "touch 0.2.5\n",
+      "expected_stdout_text": "touch 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -53957,7 +53895,7 @@
         "version"
       ],
       "source_version": "workspace cli/xargs@0.2.4 metadata contract",
-      "expected_stdout_text": "xargs 0.2.5\n",
+      "expected_stdout_text": "xargs 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -54901,7 +54839,7 @@
         "version"
       ],
       "source_version": "workspace cli/base64@0.2.6 metadata contract",
-      "expected_stdout_text": "base64 0.2.7\n",
+      "expected_stdout_text": "base64 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -55335,7 +55273,7 @@
         "version"
       ],
       "source_version": "workspace cli/printf@0.2.3 metadata contract",
-      "expected_stdout_text": "printf 0.2.4\n",
+      "expected_stdout_text": "printf 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -55979,7 +55917,7 @@
         "version"
       ],
       "source_version": "workspace cli/dirname@0.2.4 metadata contract",
-      "expected_stdout_text": "dirname 0.2.5\n",
+      "expected_stdout_text": "dirname 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -56153,7 +56091,7 @@
         "version"
       ],
       "source_version": "workspace cli/basename@0.2.4 metadata contract",
-      "expected_stdout_text": "basename 0.2.5\n",
+      "expected_stdout_text": "basename 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -56367,7 +56305,7 @@
         "version"
       ],
       "source_version": "workspace cli/printenv@0.2.3 metadata contract",
-      "expected_stdout_text": "printenv 0.2.4\n",
+      "expected_stdout_text": "printenv 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -56665,7 +56603,7 @@
         "version"
       ],
       "source_version": "workspace cli/sha256sum@0.2.4 metadata contract",
-      "expected_stdout_text": "sha256sum 0.2.5\n",
+      "expected_stdout_text": "sha256sum 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -56772,7 +56710,7 @@
         "version"
       ],
       "source_version": "workspace cli/mktemp@0.1.4 metadata contract",
-      "expected_stdout_text": "mktemp 0.1.5\n",
+      "expected_stdout_text": "mktemp 0.1.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -57015,36 +56953,17 @@
         "linux",
         "macos"
       ],
-      "timeout_ms": 60000,
-      "coverage": [
-        "tmpdir",
-        "suffix",
-        "directory"
-      ],
-      "source_version": "GNU coreutils 9.11 generated-name and private file/directory relations",
-      "oracle": false
-    },
-    {
-      "id": "mktemp-option-effects-oracle",
-      "command": "mktemp",
-      "args": [],
-      "stdin_text": "",
-      "files": [],
-      "environment": {},
-      "expected_status": 0,
-      "normalizations": [],
-      "comparison": "oracle-scenario",
-      "host_platforms": [
-        "linux"
-      ],
       "timeout_ms": 120000,
       "coverage": [
         "tmpdir",
         "suffix",
         "directory"
       ],
-      "source_version": "GNU coreutils 9.11 immutable oracle generated-name/effect relations",
-      "oracle": false
+      "source_version": "GNU coreutils 9.11 generated-name and private file/directory relations",
+      "oracle": true,
+      "aliases": [
+        "mktemp-option-effects-oracle"
+      ]
     },
     {
       "id": "mktemp-option-effects-windows",
@@ -57108,7 +57027,7 @@
         "version"
       ],
       "source_version": "workspace cli/realpath@0.1.5 metadata contract",
-      "expected_stdout_text": "realpath 0.1.6\n",
+      "expected_stdout_text": "realpath 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -58963,7 +58882,7 @@
         "version"
       ],
       "source_version": "workspace cli/rev@0.1.7 metadata contract",
-      "expected_stdout_text": "rev 0.1.8\n",
+      "expected_stdout_text": "rev 0.1.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -59282,7 +59201,7 @@
         "version"
       ],
       "source_version": "workspace cli/tac@0.1.7 metadata contract",
-      "expected_stdout_text": "tac 0.1.8\n",
+      "expected_stdout_text": "tac 0.1.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -60575,7 +60494,7 @@
         "version"
       ],
       "source_version": "workspace cli/tree@0.1.6 metadata contract",
-      "expected_stdout_text": "tree 0.1.7\n",
+      "expected_stdout_text": "tree 0.1.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -66157,7 +66076,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e37223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e373c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e38223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e383c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html"
@@ -66203,7 +66122,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e37223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e373c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e38223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e383c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html",
@@ -66250,7 +66169,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e37223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f7375622f223e7375623c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e373c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e38223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120636c6173733d224449522220687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f7375622f223e7375623c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e383c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "color",
@@ -66286,7 +66205,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e37223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a095b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b335d266e6273703b266e6273703b266e6273703b266e6273703b3c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f706c61696e223e706c61696e3c2f613e20205b6572726f72206f70656e696e67206469725d3c62723e0a3c62723e3c62723e3c703e0a0a30206469726563746f726965732c20312066696c650a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e373c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e38223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a095b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b266e6273703b335d266e6273703b266e6273703b266e6273703b266e6273703b3c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f706c61696e223e706c61696e3c2f613e20205b6572726f72206f70656e696e67206469725d3c62723e0a3c62723e3c62723e3c703e0a0a30206469726563746f726965732c20312066696c650a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e383c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html",
@@ -66334,7 +66253,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Selected safe HTML contract: escaped title/base/names and URL path bytes, UTF-8 and real cli/tree metadata/stylesheet/footer. Complete upstream page-byte parity is deliberately not claimed; safe fixture body comparison is retained independently.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e37223e0a203c7469746c653e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e373c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e38223e0a203c7469746c653e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e383c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html",
@@ -66371,7 +66290,7 @@
       "host_platforms": [
         "posix"
       ],
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e37223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f223e2e3c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f612532322533432532362e747874223e612671756f743b266c743b26616d703b2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a31206469726563746f72792c20312066696c650a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e373c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e38223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f223e2e3c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f2e2f612532322533432532362e747874223e612671756f743b266c743b26616d703b2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a31206469726563746f72792c20312066696c650a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e383c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html"
@@ -67704,7 +67623,7 @@
         "TREE_COLORS": "di=34:fi=0:ln=36"
       },
       "expected_status": 0,
-      "expected_stdout_text": "<!DOCTYPE html>\n<html>\n<head>\n <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n <meta name=\"Author\" content=\"Made by 'tree'\">\n <meta name=\"GENERATOR\" content=\"cli/tree 0.1.7\">\n <title>Directory Tree</title>\n <style>body{font-family:monospace,sans-serif;color:black}p{margin:0;white-space:pre-wrap}a{text-decoration:none}a:hover{text-decoration:underline;background:yellow}.VERSION{font:small sans-serif}.NORM{color:black}.FIFO{color:purple}.CHAR,.BLOCK{color:yellow}.DIR{color:blue}.LINK{color:aqua}.SOCK{color:fuchsia}.EXEC{color:green}</style>\n</head>\n<body>\n\t<h1>Directory Tree</h1><p>\n\t<a class=\"LINK\" href=\"https://example.invalid/project/broken\">project/broken</a><br>\n\t<hr>\n\t<p class=\"VERSION\">cli/tree 0.1.7</p>\n</body>\n</html>\n",
+      "expected_stdout_text": "<!DOCTYPE html>\n<html>\n<head>\n <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n <meta name=\"Author\" content=\"Made by 'tree'\">\n <meta name=\"GENERATOR\" content=\"cli/tree 0.1.8\">\n <title>Directory Tree</title>\n <style>body{font-family:monospace,sans-serif;color:black}p{margin:0;white-space:pre-wrap}a{text-decoration:none}a:hover{text-decoration:underline;background:yellow}.VERSION{font:small sans-serif}.NORM{color:black}.FIFO{color:purple}.CHAR,.BLOCK{color:yellow}.DIR{color:blue}.LINK{color:aqua}.SOCK{color:fuchsia}.EXEC{color:green}</style>\n</head>\n<body>\n\t<h1>Directory Tree</h1><p>\n\t<a class=\"LINK\" href=\"https://example.invalid/project/broken\">project/broken</a><br>\n\t<hr>\n\t<p class=\"VERSION\">cli/tree 0.1.8</p>\n</body>\n</html>\n",
       "expected_stderr_text": "",
       "oracle": false,
       "comparison": "contract",
@@ -69050,7 +68969,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-html-default; project spellings have no upstream-invocation parity claim.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e37223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e373c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e38223e0a203c7469746c653e4469726563746f727920547265653c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e4469726563746f727920547265653c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f726f6f742e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e383c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "html"
@@ -69098,7 +69017,7 @@
       "oracle": false,
       "comparison": "contract",
       "source_version": "Issue #22 actual argv alias contract. Exact output, status and effects are inherited unchanged from independently specified o12-html-safe-title-base; project spellings have no upstream-invocation parity claim.",
-      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e37223e0a203c7469746c653e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e373c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
+      "expected_stdout_hex": "3c21444f43545950452068746d6c3e0a3c68746d6c3e0a3c686561643e0a203c6d65746120687474702d65717569763d22436f6e74656e742d547970652220636f6e74656e743d22746578742f68746d6c3b20636861727365743d5554462d38223e0a203c6d657461206e616d653d22417574686f722220636f6e74656e743d224d61646520627920277472656527223e0a203c6d657461206e616d653d2247454e455241544f522220636f6e74656e743d22636c692f7472656520302e312e38223e0a203c7469746c653e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f7469746c653e0a203c7374796c653e626f64797b666f6e742d66616d696c793a6d6f6e6f73706163652c73616e732d73657269663b636f6c6f723a626c61636b7d707b6d617267696e3a303b77686974652d73706163653a7072652d777261707d617b746578742d6465636f726174696f6e3a6e6f6e657d613a686f7665727b746578742d6465636f726174696f6e3a756e6465726c696e653b6261636b67726f756e643a79656c6c6f777d2e56455253494f4e7b666f6e743a736d616c6c2073616e732d73657269667d2e4e4f524d7b636f6c6f723a626c61636b7d2e4649464f7b636f6c6f723a707572706c657d2e434841522c2e424c4f434b7b636f6c6f723a79656c6c6f777d2e4449527b636f6c6f723a626c75657d2e4c494e4b7b636f6c6f723a617175617d2e534f434b7b636f6c6f723a667563687369617d2e455845437b636f6c6f723a677265656e7d3c2f7374796c653e0a3c2f686561643e0a3c626f64793e0a093c68313e266c743b7363726970742667743b4126616d703b2671756f743b7469746c65266c743b2f7363726970742667743b3c2f68313e3c703e0a093c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f223e2e3c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f6125323662223e6126616d703b623c2f613e3c62723e0a097c2d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f656d7074792f223e656d7074793c2f613e3c62723e0a09602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f223e7375623c2f613e3c62723e0a09266e6273703b266e6273703b266e6273703b20602d2d203c6120687265663d2268747470733a2f2f6578616d706c652e696e76616c69642f3f763d2671756f743b26616d703b2e2f7375622f7a2e747874223e7a2e7478743c2f613e3c62723e0a3c62723e3c62723e3c703e0a0a33206469726563746f726965732c20322066696c65730a0a3c2f703e0a093c68723e0a093c7020636c6173733d2256455253494f4e223e636c692f7472656520302e312e383c2f703e0a3c2f626f64793e0a3c2f68746d6c3e0a",
       "normalizations": [],
       "coverage": [
         "title"
@@ -69625,7 +69544,7 @@
         "version"
       ],
       "source_version": "workspace cli/unexpand@0.1.5 metadata contract",
-      "expected_stdout_text": "unexpand 0.1.6\n",
+      "expected_stdout_text": "unexpand 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -70451,7 +70370,7 @@
         "version"
       ],
       "source_version": "workspace cli/unlink@0.1.5 metadata contract",
-      "expected_stdout_text": "unlink 0.1.6\n",
+      "expected_stdout_text": "unlink 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -70494,7 +70413,7 @@
         "version"
       ],
       "source_version": "workspace cli/yes@0.1.4 metadata contract",
-      "expected_stdout_text": "yes 0.1.5\n",
+      "expected_stdout_text": "yes 0.1.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -70754,7 +70673,7 @@
         "version"
       ],
       "source_version": "workspace cli/fold@0.1.4 metadata contract",
-      "expected_stdout_text": "fold 0.1.5\n",
+      "expected_stdout_text": "fold 0.1.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -71040,7 +70959,7 @@
         "version"
       ],
       "source_version": "workspace cli/od@0.1.4 metadata contract",
-      "expected_stdout_text": "od 0.1.5\n",
+      "expected_stdout_text": "od 0.1.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -72831,7 +72750,7 @@
         "version"
       ],
       "source_version": "workspace cli/hexdump@0.1.4 metadata contract",
-      "expected_stdout_text": "hexdump 0.1.5\n",
+      "expected_stdout_text": "hexdump 0.1.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -74047,7 +73966,7 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "md5sum 0.1.5\n",
+      "expected_stdout_text": "md5sum 0.1.6\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "source_version": "workspace cli/md5sum@0.1.4 metadata contract",
@@ -74517,7 +74436,7 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "sha1sum 0.1.5\n",
+      "expected_stdout_text": "sha1sum 0.1.6\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "source_version": "workspace cli/sha1sum@0.1.4 metadata contract",
@@ -74690,7 +74609,7 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "sha512sum 0.1.5\n",
+      "expected_stdout_text": "sha512sum 0.1.6\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "source_version": "workspace cli/sha512sum@0.1.4 metadata contract",
@@ -75139,7 +75058,7 @@
         "version"
       ],
       "source_version": "workspace cli/sed@0.2.4 metadata contract",
-      "expected_stdout_text": "sed 0.2.5\n",
+      "expected_stdout_text": "sed 0.2.6\n",
       "expected_stderr_text": ""
     },
     {
@@ -77984,7 +77903,7 @@
         "version"
       ],
       "source_version": "workspace cli/diff@0.2.5 metadata contract",
-      "expected_stdout_text": "diff 0.2.6\n",
+      "expected_stdout_text": "diff 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -80311,7 +80230,7 @@
         "version"
       ],
       "source_version": "workspace cli/patch@0.2.3 metadata contract",
-      "expected_stdout_text": "patch 0.2.4\n",
+      "expected_stdout_text": "patch 0.2.5\n",
       "expected_stderr_text": ""
     },
     {
@@ -81459,7 +81378,7 @@
         "version"
       ],
       "source_version": "workspace cli/split@0.1.6 metadata contract",
-      "expected_stdout_text": "split 0.1.11\n",
+      "expected_stdout_text": "split 0.1.12\n",
       "expected_stderr_text": ""
     },
     {
@@ -86118,7 +86037,7 @@
         "version"
       ],
       "source_version": "workspace cli/csplit@0.2.5 metadata contract",
-      "expected_stdout_text": "csplit 0.2.6\n",
+      "expected_stdout_text": "csplit 0.2.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -88086,7 +88005,7 @@
         "version"
       ],
       "source_version": "workspace cli/expr@0.2.2 metadata contract",
-      "expected_stdout_text": "expr 0.2.3\n",
+      "expected_stdout_text": "expr 0.2.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -88420,7 +88339,7 @@
         "version"
       ],
       "source_version": "workspace cli/fmt@0.1.5 metadata contract",
-      "expected_stdout_text": "fmt 0.1.6\n",
+      "expected_stdout_text": "fmt 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -89320,7 +89239,7 @@
         "version"
       ],
       "source_version": "workspace cli/gzip@0.1.5 metadata contract",
-      "expected_stdout_text": "gzip 0.1.6\n",
+      "expected_stdout_text": "gzip 0.1.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -89526,7 +89445,7 @@
         "version"
       ],
       "source_version": "workspace cli/gunzip@0.1.5 metadata contract",
-      "expected_stdout_text": "gunzip 0.1.6\n",
+      "expected_stdout_text": "gunzip 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -89697,7 +89616,7 @@
         "version"
       ],
       "source_version": "workspace cli/zcat@0.1.5 metadata contract",
-      "expected_stdout_text": "zcat 0.1.6\n",
+      "expected_stdout_text": "zcat 0.1.7\n",
       "expected_stderr_text": ""
     },
     {
@@ -89772,7 +89691,7 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "strings 0.1.6\n",
+      "expected_stdout_text": "strings 0.1.7\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
@@ -90425,7 +90344,7 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "column 0.1.7\n",
+      "expected_stdout_text": "column 0.1.8\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
@@ -90783,7 +90702,7 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "which 0.1.6\n",
+      "expected_stdout_text": "which 0.1.7\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
@@ -91296,7 +91215,7 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "date 0.1.6\n",
+      "expected_stdout_text": "date 0.1.7\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
@@ -93208,7 +93127,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "rg 0.1.2\n",
+      "expected_stdout_text": "rg 0.1.3\n",
       "expected_stderr_text": ""
     },
     {
@@ -94866,7 +94785,7 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": false,
-      "expected_stdout_text": "typst 0.1.1\n",
+      "expected_stdout_text": "typst 0.1.2\n",
       "expected_stderr_text": "",
       "timeout_ms": 120000
     },
@@ -94883,7 +94802,7 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": false,
-      "expected_stdout_text": "typst 0.1.1\n",
+      "expected_stdout_text": "typst 0.1.2\n",
       "expected_stderr_text": "",
       "timeout_ms": 120000
     },
@@ -143084,7 +143003,7 @@
         }
       ],
       "expected_status": 1,
-      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.7\n",
+      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.9\n",
       "expected_files": [
         {
           "path": "existing",
@@ -143117,7 +143036,7 @@
         "posix"
       ],
       "expected_status": 1,
-      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.7\n",
+      "expected_stderr_text": "touch: cannot update 'existing': timestamp setters are unavailable in moonbitlang/async 0.22.9\n",
       "expected_files": [
         {
           "path": "created",
@@ -146122,7 +146041,7 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": false,
-      "expected_stdout_text": "serve 0.1.3\n",
+      "expected_stdout_text": "serve 0.1.4\n",
       "expected_stderr_text": ""
     },
     {
@@ -151146,6 +151065,889 @@
       "normalizations": [],
       "comparison": "contract",
       "oracle": true
+    },
+    {
+      "id": "tr-help-rejects-attached-value",
+      "command": "tr",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tr: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "tr-unknown-option-retains-newline",
+      "command": "tr",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tr: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "tr-help-does-not-hide-invalid-option",
+      "command": "tr",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tr: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "tr-complement-short-alias-cluster",
+      "command": "tr",
+      "args": [
+        "-dcC",
+        "a"
+      ],
+      "stdin_text": "ab\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "a",
+      "expected_stderr_text": "",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "tr-short-alias-has-no-long-spelling",
+      "command": "tr",
+      "args": [
+        "--complement-short"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tr: unknown option: 'complement-short'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "wc-help-rejects-attached-value",
+      "command": "wc",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "wc: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "wc-unknown-option-retains-newline",
+      "command": "wc",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "wc: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "wc-help-does-not-hide-invalid-option",
+      "command": "wc",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "wc: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "wc-repeated-total-keeps-last-value",
+      "command": "wc",
+      "args": [
+        "-c",
+        "--total=always",
+        "--total=only"
+      ],
+      "stdin_text": "abc",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "3\n",
+      "expected_stderr_text": "",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "cat-help-rejects-attached-value",
+      "command": "cat",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cat: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "cat-unknown-option-retains-newline",
+      "command": "cat",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cat: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "cat-help-does-not-hide-invalid-option",
+      "command": "cat",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cat: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "chmod-help-rejects-attached-value",
+      "command": "chmod",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "chmod: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "chmod-unknown-option-retains-newline",
+      "command": "chmod",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "chmod: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "chmod-help-does-not-hide-invalid-option",
+      "command": "chmod",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "chmod: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "jqlog-engine-lexical-filter-parameters",
+      "command": "jqlog",
+      "args": [
+        "def twice(x): x + x; twice(.n)"
+      ],
+      "stdin_text": "noise\n{\"n\":3}\n{\"n\":7}\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "6\n14\n",
+      "expected_stderr_text": "",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-elif",
+      "command": "jqlog",
+      "args": [
+        "if . < 0 then -1 elif . == 0 then 0 else 1 end"
+      ],
+      "stdin_text": "-2\n0\n5\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "-1\n0\n1\n",
+      "expected_stderr_text": "",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-boolean-results",
+      "command": "jqlog",
+      "args": [
+        "1 and 2, false or 2"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "true\ntrue\n",
+      "expected_stderr_text": "",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-lexical-capture",
+      "command": "jqlog",
+      "args": [
+        "2 as $x | def f: $x; 10 as $x | f"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-foreach-empty-extract",
+      "command": "jqlog",
+      "args": [
+        "foreach .[] as $x (0; . + $x; empty)"
+      ],
+      "stdin_text": "[1,2]\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-line-output-commit",
+      "command": "jqlog",
+      "args": [
+        "., (10 / .)"
+      ],
+      "stdin_text": "2\nnoise\n0\n5\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 2,
+      "expected_stdout_text": "2\n5\n",
+      "expected_stderr_text": "Error: DivisionByZero\n",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-input-boundary",
+      "command": "jqlog",
+      "args": [
+        "input"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "Error: EvalError(\"input/inputs is unavailable for a supplied JSON value\")\n",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-inputs-boundary",
+      "command": "jqlog",
+      "args": [
+        "inputs"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "Error: EvalError(\"input/inputs is unavailable for a supplied JSON value\")\n",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-module-boundary",
+      "command": "jqlog",
+      "args": [
+        "include \"missing\"; ."
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "Error: EvalError(\"Module loading is unavailable for a supplied JSON value\")\n",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "jqlog-engine-input-short-circuit",
+      "command": "jqlog",
+      "args": [
+        "limit(0; inputs)"
+      ],
+      "stdin_text": "null\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "Shared jq value-filter contract; JSONL admission and per-record output are command-owned"
+    },
+    {
+      "id": "rmdir-help-rejects-attached-value",
+      "command": "rmdir",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rmdir: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "rmdir-unknown-option-retains-newline",
+      "command": "rmdir",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rmdir: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "rmdir-help-does-not-hide-invalid-option",
+      "command": "rmdir",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rmdir: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "touch-help-rejects-attached-value",
+      "command": "touch",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "touch: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "touch-unknown-option-retains-newline",
+      "command": "touch",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "touch: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "touch-help-does-not-hide-invalid-option",
+      "command": "touch",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "touch: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "dirname-help-rejects-attached-value",
+      "command": "dirname",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "dirname: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "dirname-unknown-option-retains-newline",
+      "command": "dirname",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "dirname: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "dirname-help-does-not-hide-invalid-option",
+      "command": "dirname",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "dirname: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "compat-catalog-line-277",
+      "command": "timeout",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "source_version": "workspace 0.2.0 retained compat assertions",
+      "expected_stdout_contains": "Usage:",
+      "expected_stderr_text": "",
+      "diagnostic_reason": "The help contract preserves the Usage heading across command-specific prose; exit status and empty stderr are exact."
+    },
+    {
+      "id": "timeout-child-lifecycle",
+      "command": "timeout",
+      "comparison": "scenario",
+      "timeout_ms": 60000,
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "printenv-help-rejects-attached-value",
+      "command": "printenv",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "printenv: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "printenv-unknown-option-retains-newline",
+      "command": "printenv",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "printenv: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "printenv-help-does-not-hide-invalid-option",
+      "command": "printenv",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "printenv: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "rev-help-rejects-attached-value",
+      "command": "rev",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rev: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "rev-unknown-option-retains-newline",
+      "command": "rev",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rev: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "rev-help-does-not-hide-invalid-option",
+      "command": "rev",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "rev: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "unlink-help-rejects-attached-value",
+      "command": "unlink",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "unlink: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "unlink-unknown-option-retains-newline",
+      "command": "unlink",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "unlink: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "unlink-help-does-not-hide-invalid-option",
+      "command": "unlink",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "unlink: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "diff-failure-diagnostic-source-name",
+      "command": "diff",
+      "args": [],
+      "stdin_text": "unread input",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 2,
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_contains_all": [
+        "diff: Failure(main.mbt:",
+        "@cli/diff FAILED: expected two file operands)\n"
+      ],
+      "diagnostic_reason": "Preserve the existing command-level source name and complete failure message; source line and column numbers vary with formatting.",
+      "source_version": "Independent pre-migration Wasm observation; source-before and wasm-before archives retained outside the checkout."
+    },
+    {
+      "id": "fmt-failure-diagnostic-source-name",
+      "command": "fmt",
+      "args": [
+        "-w",
+        "-1"
+      ],
+      "stdin_text": "unread input",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_contains_all": [
+        "fmt: Failure(main.mbt:",
+        "@cli/fmt FAILED: width must be between 0 and 2500)\n"
+      ],
+      "diagnostic_reason": "Preserve the existing command-level source name and complete failure message; source line and column numbers vary with formatting.",
+      "source_version": "Independent pre-migration Wasm observation; source-before and wasm-before archives retained outside the checkout."
+    },
+    {
+      "id": "which-help-rejects-attached-value",
+      "command": "which",
+      "args": [
+        "--help=unused"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "which: flag does not accept a value: 'help'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "which-unknown-option-retains-newline",
+      "command": "which",
+      "args": [
+        "--unknown\noption=value"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "which: unknown option: 'unknown\noption'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "which-help-does-not-hide-invalid-option",
+      "command": "which",
+      "args": [
+        "--help",
+        "--unknown-option"
+      ],
+      "stdin_text": "unconsumed\n",
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "which: unknown option: 'unknown-option'\n",
+      "source_version": "Independently specified command argument and diagnostic contract; no upstream parity claim."
+    },
+    {
+      "id": "serve-failure-diagnostic-source-name",
+      "command": "serve",
+      "args": [
+        "file"
+      ],
+      "stdin_text": "unread input",
+      "files": [
+        {
+          "path": "file",
+          "content_text": "regular file"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "expected_status": 1,
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_contains_all": [
+        "serve: Failure(main.mbt:",
+        "@cli/serve FAILED: not a directory: file)\n"
+      ],
+      "diagnostic_reason": "Preserve the existing command-level source name and complete failure message; source line and column numbers vary with formatting.",
+      "source_version": "Independent pre-migration Wasm observation; source-before and wasm-before archives retained outside the checkout."
     }
   ]
 }
