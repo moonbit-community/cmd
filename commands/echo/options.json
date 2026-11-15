@@ -27,7 +27,7 @@
         "-e"
       ],
       "value": "none",
-      "description": "Enable / disable backslash escapes.",
+      "description": "Enable backslash escapes.",
       "short": "e",
       "repeatable": true,
       "allow_attached": false
@@ -38,7 +38,7 @@
         "-E"
       ],
       "value": "none",
-      "description": "Enable / disable backslash escapes.",
+      "description": "Disable backslash escapes.",
       "short": "E",
       "repeatable": true,
       "allow_attached": false

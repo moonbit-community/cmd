@@ -56,6 +56,7 @@
     "pre-glob",
     "no-config"
   ],
+  "readme_options": ["regexp","fixed-strings","glob","ignore-case","line-number","hidden","files","json","help","version"],
   "options": [
     {
       "name": "regexp",

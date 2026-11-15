@@ -38,6 +38,7 @@
     "disable",
     "url"
   ],
+  "readme_options": ["location","output","request","header","data","data-binary","user","cookie-jar","help","version"],
   "options": [
     {
       "name": "disable",

@@ -19,7 +19,7 @@ import {
 
 warnings = "-implicit_impl_as_method"
 
-supported_targets = "native+wasm"
+supported_targets = "wasm"
 
 import {
   "cli/rg/internal/osstr",

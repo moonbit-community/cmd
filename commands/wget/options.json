@@ -40,6 +40,7 @@
     "no-config",
     "execute"
   ],
+  "readme_options": ["output-document","input-file","continue","timestamping","tries","quiet","load-cookies","save-cookies","help","version"],
   "options": [
     {
       "name": "config",

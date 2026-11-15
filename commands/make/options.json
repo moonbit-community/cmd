@@ -12,6 +12,7 @@
     "silent",
     "what-if"
   ],
+  "readme_options": ["file","C","just-print","j","k","always-make","help","version"],
   "options": [
     {
       "name": "file",

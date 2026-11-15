@@ -21,6 +21,7 @@
     "new-file",
     "unidirectional-new-file"
   ],
+  "readme_options": ["unified","context","recursive","brief","ignore-all-space","ignore-case","help","version"],
   "options": [
     {
       "name": "brief",
@@ -29,7 +30,7 @@
         "--brief"
       ],
       "value": "none",
-      "description": "Report differences briefly / report equal files.",
+      "description": "Report only whether inputs differ.",
       "short": "q",
       "repeatable": true,
       "allow_attached": false,
@@ -68,7 +69,7 @@
         "--unified"
       ],
       "value": "none",
-      "description": "Select unified / context output.",
+      "description": "Select unified output.",
       "short": "u",
       "repeatable": true,
       "allow_attached": false
@@ -92,7 +93,7 @@
         "--context"
       ],
       "value": "none",
-      "description": "Print context-format differences.",
+      "description": "Select context output.",
       "short": "c",
       "repeatable": true,
       "allow_attached": false
@@ -126,7 +127,7 @@
         "--ignore-case"
       ],
       "value": "none",
-      "description": "Ignore ASCII case / whitespace / whitespace amount / trailing whitespace / blank-only changes.",
+      "description": "Ignore ASCII case differences.",
       "short": "i",
       "repeatable": true,
       "allow_attached": false,
@@ -141,7 +142,7 @@
         "--ignore-all-space"
       ],
       "value": "none",
-      "description": "Ignore ASCII case / whitespace / whitespace amount / trailing whitespace / blank-only changes.",
+      "description": "Ignore whitespace differences.",
       "short": "w",
       "repeatable": true,
       "allow_attached": false
@@ -205,7 +206,7 @@
         "--recursive"
       ],
       "value": "none",
-      "description": "Recurse / treat missing files as empty.",
+      "description": "Compare directories recursively.",
       "short": "r",
       "repeatable": true,
       "allow_attached": false,

@@ -13,6 +13,13 @@ stable. Custom validators and option precedence stay in command code. Generated
 catalog IDs retain their existing semantic bindings and do not establish
 upstream compatibility. Support limits and rationale remain manually reviewed.
 
+README tables use the two-column layout in
+[`docs/readme_template.md`](../docs/readme_template.md). Optional
+`readme_options` selects common option IDs from the complete declaration;
+omitting it includes all options. This only affects the README, preserving
+parser tables, help output and catalog bindings. Run `metadata update` after
+changing the selection or wording, then `metadata check`.
+
 Command versions come from `moon.mod`. Each driver's `moon.pkg` uses
 `dev_build` with `moonbit-community/gen_version@0.0.2` to generate `version.mbt`.
 The generated constant ships with the source for published builds; edit the

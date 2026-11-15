@@ -5,4 +5,4 @@ import {
   "moonbitlang/x/crypto",
 }
 
-supported_targets = "native+wasm"
+supported_targets = "wasm"

@@ -4,3 +4,5 @@ import {
   "moonbitlang/core/buffer",
   "moonbitlang/core/encoding/utf8",
 }
+
+supported_targets = "wasm"

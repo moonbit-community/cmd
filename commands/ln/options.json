@@ -15,6 +15,7 @@
     "backup-control",
     "suffix"
   ],
+  "readme_options": ["symbolic","relative","force","interactive","no-dereference","target-directory","backup-control","help","version"],
   "options": [
     {
       "name": "symbolic",
@@ -35,7 +36,7 @@
         "--force"
       ],
       "value": "none",
-      "description": "Replace existing targets / ask first.",
+      "description": "Replace an existing destination without prompting.",
       "short": "f",
       "repeatable": true,
       "allow_attached": false
@@ -47,7 +48,7 @@
         "--interactive"
       ],
       "value": "none",
-      "description": "Replace existing targets / ask first.",
+      "description": "Ask before replacing an existing destination.",
       "short": "i",
       "repeatable": true,
       "allow_attached": false

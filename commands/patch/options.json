@@ -18,6 +18,7 @@
     "no-backup-if-mismatch",
     "version"
   ],
+  "readme_options": ["strip","input","output","reverse","dry-run","fuzz","reject-file","help","version"],
   "options": [
     {
       "name": "strip",
@@ -194,7 +195,7 @@
         "--fuzz"
       ],
       "value": "required",
-      "description": "ignore up to N outer context lines (default 2)",
+      "description": "Ignore up to this many outer context lines.",
       "short": "F",
       "repeatable": true,
       "allow_attached": true,

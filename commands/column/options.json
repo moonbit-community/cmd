@@ -10,6 +10,7 @@
     "fillrows",
     "version"
   ],
+  "readme_options": ["table","separator","output-separator","output-width","fillrows","help","version"],
   "options": [
     {
       "name": "table",
@@ -48,7 +49,7 @@
         "--output-separator"
       ],
       "value": "required",
-      "description": "table separator (default: two spaces)",
+      "description": "Set the table column separator.",
       "short": "o",
       "repeatable": true,
       "allow_attached": true,

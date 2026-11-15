@@ -17,6 +17,7 @@
     "ignore-case",
     "zero-terminated"
   ],
+  "readme_options": ["field1","field2","separator","after","empty","output","ignore-case","help","version"],
   "options": [
     {
       "name": "field1",
@@ -70,7 +71,7 @@
         "--after"
       ],
       "value": "required",
-      "description": "Include / select only unpairable rows.",
+      "description": "Include unpaired rows from file 1 or 2.",
       "short": "a",
       "repeatable": true,
       "allow_attached": true,

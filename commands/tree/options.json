@@ -24,6 +24,7 @@
     "color",
     "no-color"
   ],
+  "readme_options": ["all","dirs-only","level","json","pattern","ignore","prune","help","version"],
   "options": [
     {
       "name": "all",
@@ -32,7 +33,7 @@
         "--all"
       ],
       "value": "none",
-      "description": "Include hidden entries / directories only / full paths.",
+      "description": "Include hidden entries.",
       "short": "a",
       "repeatable": true,
       "allow_attached": false
@@ -44,7 +45,7 @@
         "--dirs-only"
       ],
       "value": "none",
-      "description": "Include hidden entries / directories only / full paths.",
+      "description": "List directories only.",
       "short": "d",
       "repeatable": true,
       "allow_attached": false
@@ -90,7 +91,7 @@
         "--json"
       ],
       "value": "none",
-      "description": "JSON / HTML / HTML title.",
+      "description": "Write JSON output.",
       "short": "J",
       "repeatable": true,
       "allow_attached": false,
@@ -135,7 +136,7 @@
         "--pattern"
       ],
       "value": "required",
-      "description": "Include files / exclude names and subtrees.",
+      "description": "Include files matching a pattern.",
       "short": "P",
       "repeatable": true,
       "allow_attached": true,
@@ -150,7 +151,7 @@
         "--ignore"
       ],
       "value": "required",
-      "description": "Include files / exclude names and subtrees.",
+      "description": "Exclude matching names and subtrees.",
       "short": "I",
       "repeatable": true,
       "allow_attached": true
@@ -184,7 +185,7 @@
         "--prune"
       ],
       "value": "none",
-      "description": "ASCII-insensitive matching / match directories / prune empty selections.",
+      "description": "Omit directories left empty by filtering.",
       "repeatable": true,
       "allow_attached": false
     },

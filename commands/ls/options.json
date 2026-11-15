@@ -31,6 +31,7 @@
     "show-control-chars",
     "color"
   ],
+  "readme_options": ["all","almost-all","directory","recursive","one","classify","color","help","version"],
   "options": [
     {
       "name": "all",
@@ -39,7 +40,7 @@
         "--all"
       ],
       "value": "none",
-      "description": "Include all dot entries / exclude . and ...",
+      "description": "Include hidden entries, including dot and dot-dot.",
       "short": "a",
       "repeatable": true,
       "allow_attached": false
@@ -63,7 +64,7 @@
         "--directory"
       ],
       "value": "none",
-      "description": "List directory operands themselves / recurse.",
+      "description": "List directory operands themselves.",
       "short": "d",
       "repeatable": true,
       "allow_attached": false
@@ -99,7 +100,7 @@
         "--one"
       ],
       "value": "none",
-      "description": "Line / column / row / comma layout.",
+      "description": "Print one entry per line.",
       "short": "1",
       "repeatable": true,
       "allow_attached": false

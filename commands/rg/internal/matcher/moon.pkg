@@ -3,3 +3,5 @@ warnings = "-implicit_impl_as_method"
 import {
   "moonbitlang/core/encoding/utf8",
 } for "test"
+
+supported_targets = "wasm"

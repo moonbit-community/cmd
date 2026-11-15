@@ -9,4 +9,4 @@ import {
   "moonbitlang/core/encoding/hex",
 } for "wbtest"
 
-supported_targets = "native+wasm"
+supported_targets = "wasm"

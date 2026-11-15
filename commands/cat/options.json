@@ -12,6 +12,7 @@
     "squeeze-blank",
     "unbuffered"
   ],
+  "readme_options": ["number","number-nonblank","squeeze-blank","show-all","help","version"],
   "options": [
     {
       "short": "n",

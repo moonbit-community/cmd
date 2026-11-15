@@ -9,6 +9,7 @@
     "rfc-email",
     "version"
   ],
+  "readme_options": ["utc","date","iso","rfc-email","help","version"],
   "options": [
     {
       "name": "utc",

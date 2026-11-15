@@ -19,7 +19,7 @@
         "--quiet"
       ],
       "value": "none",
-      "description": "Suppress / always print headers.",
+      "description": "Suppress file headers.",
       "short": "q",
       "repeatable": true,
       "allow_attached": false
@@ -31,7 +31,7 @@
         "--verbose"
       ],
       "value": "none",
-      "description": "Suppress / always print headers.",
+      "description": "Always print file headers.",
       "short": "v",
       "repeatable": true,
       "allow_attached": false

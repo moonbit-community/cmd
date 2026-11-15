@@ -9,6 +9,7 @@
     "size",
     "timestamps"
   ],
+  "readme_options": ["n","z","e","f","d","eq","lt","help","version"],
   "options": [
     {
       "name": "n",
@@ -16,7 +17,7 @@
         "-n"
       ],
       "value": "required",
-      "description": "Test nonempty / empty strings.",
+      "description": "True when the string is nonempty.",
       "short": "n",
       "repeatable": true,
       "allow_attached": false
@@ -27,7 +28,7 @@
         "-z"
       ],
       "value": "required",
-      "description": "Test nonempty / empty strings.",
+      "description": "True when the string is empty.",
       "short": "z",
       "repeatable": true,
       "allow_attached": true

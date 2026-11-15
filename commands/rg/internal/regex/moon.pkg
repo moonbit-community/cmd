@@ -9,3 +9,5 @@ import {
 } for "test"
 
 warnings = "-implicit_impl_as_method"
+
+supported_targets = "wasm"

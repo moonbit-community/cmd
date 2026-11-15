@@ -13,7 +13,7 @@ import {
   "moonbitlang/core/json",
 } for "wbtest"
 
-supported_targets = "native+wasm"
+supported_targets = "wasm"
 
 rule(
   name: "gen_version",

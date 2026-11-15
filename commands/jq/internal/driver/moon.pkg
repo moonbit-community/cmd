@@ -15,7 +15,7 @@ import {
   "moonbitlang/x/path",
 }
 
-supported_targets = "native+wasm"
+supported_targets = "wasm"
 
 import {
   "moonbitlang/async",

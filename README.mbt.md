@@ -1,55 +1,38 @@
 # cmd
 
-Pure-MoonBit command-line utilities delivered as Wasm through MoonX. Each published
-command is an independent `cli/<command>` MoonX module. The support listed here
-is a measured subset of the corresponding upstream command; it does not claim
-complete GNU/POSIX compatibility. See the [support record](docs/compatibility.md)
-for exact versions, observed behavior and boundaries.
+Command-line utilities implemented in pure MoonBit, running as Wasm through
+MoonX on Linux, macOS and Windows.
 
-Development acceptance runs current Wasm commands on Linux, macOS and Windows.
-Native is used for test tools. Resource observations and exact-version MoonX
-acceptance have separate manual workflows; see [tests](tests/README.md).
-
-Each command's `moon.mod` is the source of its package version. A `dev_build`
-pre-build rule runs the pinned `moonbit-community/gen_version@0.0.2` tool through
-MoonX to regenerate `version.mbt` and its `MODULE_VERSION` constant. The rule
-lives in the package that renders version metadata (`internal/driver` for `rg`
-and `typst`, the root package for other commands). Keep the generated source in
-Git so published dependencies can build without running development rules.
+Each published command is available as an independent `cli/<command>` module,
+ready to use without building the entire repository.
 
 ## Features
 
-- [x] Text, data and archives: `base32`, `base64`, `cat`, `cksum`, `cmp`,
-  `column`, `comm`, `cut`, `date`, `diff`, `echo`, `expand`, `expr`, `fmt`,
-  `fold`, `grep`, `gunzip`, `gzip`, `head`, `hexdump`, `join`, `jq`, `jqlog`,
-  `md5sum`, `nl`, `od`, `paste`, `printf`, `rev`, `rg`, `sed`, `seq`, `sha1sum`,
-  `sha256sum`, `sha512sum`, `sort`, `strings`, `tac`, `tail`, `tr`, `uniq`,
-  `wc`, `xxd`, and `zcat`.
-- [x] Files and paths: `basename`, `chmod`, `cp`, `csplit`, `dirname`, `find`,
-  `ln`, `ls`, `mkdir`, `mktemp`, `mv`, `patch`, `realpath`, `rm`, `rmdir`,
-  `split`, `tee`, `touch`, `tree`, `unexpand`, and `unlink`.
-- [x] Environment, execution and network: `curl`, `env`, `false`, `make`,
-  `printenv`, `pwd`, `sh`, `sleep`, `test`, `true`, `wget`, `which`, `xargs`,
-  and `yes`.
+- [x] Text processing: `cat`, `column`, `comm`, `cut`, `echo`, `expand`, `fmt`,
+  `fold`, `grep`, `head`, `join`, `nl`, `paste`, `printf`, `rev`, `rg`, `sed`,
+  `sort`, `tac`, `tail`, `tee`, `tr`, `unexpand`, `uniq`, and `wc`.
+- [x] Comparison and splitting: `cmp`, `csplit`, `diff`, `patch`, and `split`.
+- [x] Data and encoding: `base32`, `base64`, `hexdump`, `jq`, `jqlog`, `od`,
+  `strings`, and `xxd`.
+- [x] Files and paths: `basename`, `chmod`, `cp`, `dirname`, `find`, `ln`, `ls`,
+  `mkdir`, `mktemp`, `mv`, `pwd`, `realpath`, `rm`, `rmdir`, `touch`, `tree`,
+  and `unlink`.
+- [x] Checksums and compression: `cksum`, `md5sum`, `sha1sum`, `sha256sum`,
+  `sha512sum`, `gzip`, `gunzip`, and `zcat`.
+- [x] Numbers and time: `date`, `expr`, `seq`, and `sleep`.
+- [x] Environment and execution: `env`, `false`, `make`, `printenv`, `sh`,
+  `test`, `true`, `which`, `xargs`, and `yes`.
+- [x] Network and serving: `curl`, `wget`, and `serve`.
 - [x] Typesetting: `typst`.
-- [x] Local static HTTP server: [`serve`](commands/serve/README.md)
-  (available through `moonx cli/serve@latest`).
-- [ ] Planned command modules: `awk`, `chgrp`, `chown`, `clear`, `df`, `du`,
-  `free`, `groups`, `hostname`, `id`, `install`, `kill`, `link`, `nproc`,
-  `ps`, `readlink`, `stat`, `stty`, `tar`, `truncate`, `tput`, `tty`, `uname`,
-  `unzip`, `uptime`, `watch`, `whoami`, and `zip`. These are planned work only;
-  no published module or support claim exists for them yet.
 
-The `timeout` package is local-only while a portable public process-group
-interface is unavailable. Its status is recorded in the support record and it
-is not a published MoonX feature.
+See each command's README for its supported behavior and limitations. The
+project does not guarantee complete GNU/POSIX or upstream compatibility.
+`timeout` is currently local-only and has not been published.
 
-The [Typst command](commands/typst/README.md) is published as `cli/typst@0.1.1`.
-It migrates the CLI and platform adaptation while depending on the
-external MoonBit typesetting engine; PDF/PNG/SVG compilation and watch run as
-Wasm. It does not invoke an installed Typst executable.
+## Documentation
 
-Dated delivery milestones are in [CHANGELOG.md](CHANGELOG.md); current design
-decisions are in [docs/adr](docs/adr/README.md). The
-[performance guide](docs/performance/README.md) explains algorithm selection,
-resource ownership, fallback paths and useful rejected approaches.
+- [Command list and compatibility](docs/compatibility.md)
+- [Development and testing](tests/README.md)
+- [Design decisions](docs/adr/README.md)
+- [Algorithms and performance](docs/performance/README.md)
+- [Changelog](CHANGELOG.md)

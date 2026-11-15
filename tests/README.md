@@ -7,6 +7,8 @@ bounded retries for installer and archive downloads. Setup does not require Nu o
 GitHub release assets. The entry discovers the workspace and resolves
 its arguments from that root. Moon commands sharing a build directory run
 serially. Product acceptance targets Wasm; Native is only for test tools.
+All command packages declare Wasm only. The Native tools also use
+`core/platform` and `core/gzipops`; these two shared packages retain both targets.
 
 Command policies and their private tests live together. Jq's shared filter
 adaptation and jqlog's public-engine consumer
