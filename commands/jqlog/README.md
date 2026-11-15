@@ -27,6 +27,6 @@ Apply the filter to each valid JSON line and emit compact JSON. Read stdin by de
 ## Notes
 
 - Invalid JSON lines are skipped. A failed filter emits no results for that line, preserves earlier successful output and exits 2.
-- Module loading and input/inputs are unavailable. The workspace now uses jq's shared value-filter engine; these changes are not yet the published baseline.
+- Module loading and input/inputs are unavailable. Filters use jq's shared value-filter engine.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

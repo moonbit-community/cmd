@@ -12,7 +12,35 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-16
+
+Published packages.
+
+- Publish core 0.11.1 and all 81 releasable Wasm commands through `moon publish`,
+  including jq 0.2.10 and jqlog 0.2.8 with the shared engine. Verify every
+  uploaded coordinate, source archive checksum and registry build; timeout
+  remains local-only.
+- Final-coordinate local MoonX acceptance passes 3,890 checks with 40 declared
+  skips and no failures. Freeze 4,045 independent case definitions and 3,849
+  selected IDs, retaining every historical ID and alias. Required development
+  checks and the final three-platform gate, including the pinned Linux
+  comparison, are linked from [PR #132](https://github.com/moonbit-community/cmd/pull/132).
+  The initial typst download timeout remains recorded separately.
+- Verify 508 command README/metadata checks and two core/jq public API examples
+  against published packages. Publish gzip 0.1.8 to correct its named-input
+  example to include `-n` and expose that existing option in its README. Remove
+  stale jq/jqlog candidate wording and explain registry-index refresh for
+  unversioned MoonX.
+
 ## 2026-11-15
+
+Release preparation; publication results are recorded under 2026-11-16.
+
+- Prepare core 0.11.1 and new coordinates for all 81 releasable commands,
+  including the jq 0.2.10 / jqlog 0.2.8 shared-engine candidates. Bind published
+  core consumers to 0.11.1, update independent version expectations, and retain
+  timeout as local-only. This batch delivers the command restructuring,
+  Wasm-only product targets and refreshed usage documentation.
 
 Development candidates; no new package publication.
 

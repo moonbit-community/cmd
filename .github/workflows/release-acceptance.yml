@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       manifest:
-        description: Exact published coordinates to verify; no packages are uploaded
+        description: Acceptance cases; exact versions come from this ref's moon.mod files
         type: choice
         options: [latest, candidate]
         default: latest
