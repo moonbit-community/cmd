@@ -46,6 +46,9 @@ Development candidates; no new package publication.
   pass 248 tests; the candidate retains every original assertion and deadline.
   Product sources, versions and frozen published expectations are unchanged by
   these repairs; retain the failed runs and require native Linux acceptance.
+- Preserve README line endings during metadata generation and retain imported
+  package fixture bytes on Windows checkouts. The CRLF checkout check verifies
+  all 82 metadata declarations and 21 byte-identical package fixture files.
 - Prepare jq 0.2.10 with a small public value-filter engine and jqlog 0.2.8
   consuming it. Maintain one parser/evaluator and one jq-owned AST adaptation;
   preserve both command entries and jqlog's JSONL admission and per-line output.

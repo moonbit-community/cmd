@@ -1,6 +1,10 @@
 # Imported fixtures include deliberate CRLF and trailing blank lines.
 commands/rg/internal/**/testdata/** -text -whitespace
 
+# Package-owned corpora retain the imported bytes on Windows checkouts too.
+commands/**/fixtures/** -text
+core/**/fixtures/** -text
+
 # Definitions and generated indexes must have identical bytes on every host.
 # Raw fixtures retain their own byte and line-ending contracts.
 tests/cases/*.json text eol=lf

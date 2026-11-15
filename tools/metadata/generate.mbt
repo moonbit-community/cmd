@@ -247,27 +247,41 @@ async fn generate(metadata : Metadata, check : Bool) -> Unit {
   }
   let readme_path = root + "/README.md"
   let readme = @fs.read_file(readme_path).text()
-  let marker = "<!-- BEGIN GENERATED OPTIONS -->\n"
-  if readme.find(marker) is Some(start) {
-    let content_start = start + marker.length()
-    let end = match
-      readme[content_start:].find("<!-- END GENERATED OPTIONS -->") {
-      Some(offset) => content_start + offset
-      None => fail("missing generated options end marker")
-    }
-    let updated = readme[:content_start].to_owned() +
-      option_table(metadata.options) +
-      readme[end:].to_owned()
-    output(readme_path, updated, check)
-  } else {
-    fail("missing generated options markers: " + readme_path)
-  }
+  output(readme_path, readme_with_options(readme, metadata.options), check)
   // The build rule remains authoritative for compilation; this check catches
   // stale shipped constants without reading source metadata at runtime.
   let version_source = @fs.read_file(root + "/internal/driver/version.mbt").text()
   guard version_source.contains(quoted(version)) else {
     fail("generated version drift: " + metadata.command)
   }
+}
+
+///|
+fn readme_with_options(
+  readme : String,
+  options : Array[OptionMetadata],
+) -> String raise {
+  let marker = "<!-- BEGIN GENERATED OPTIONS -->"
+  guard readme.find(marker) is Some(start) else {
+    fail("missing generated options start marker")
+  }
+  let after_marker = start + marker.length()
+  let newline = if readme[after_marker:].has_prefix("\r\n") {
+    "\r\n"
+  } else if readme[after_marker:].has_prefix("\n") {
+    "\n"
+  } else {
+    fail("generated options start marker must end its line")
+  }
+  let content_start = after_marker + newline.length()
+  guard readme[content_start:].find("<!-- END GENERATED OPTIONS -->")
+    is Some(offset) else {
+    fail("missing generated options end marker")
+  }
+  let end = content_start + offset
+  readme[:content_start].to_owned() +
+  option_table(options).replace_all(old="\n", new=newline) +
+  readme[end:].to_owned()
 }
 
 ///|
