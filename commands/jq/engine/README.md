@@ -25,6 +25,5 @@ assert_eq(results, [@json.parse("\"Moon\"")])
   requests fail explicitly; the engine does not read files or consume later
   records. The jq CLI supplies its own module loader and shared input cursor.
 - The language and numeric limits are shared with
-  [jq](../README.md). This public engine is part of the current workspace
-  candidate; consult the [compatibility guide](../../../docs/compatibility.md)
-  before selecting a published dependency.
+  [jq](../README.md). Use cli/jq 0.2.10 or later for this API; see the
+  [compatibility guide](../../../docs/compatibility.md) for its supported profile.

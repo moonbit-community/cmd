@@ -14,6 +14,14 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-15
 
+Release preparation; uploads and exact-version acceptance are pending.
+
+- Prepare core 0.11.1 and new coordinates for all 81 releasable commands,
+  including the jq 0.2.10 / jqlog 0.2.8 shared-engine candidates. Bind published
+  core consumers to 0.11.1, update independent version expectations, and retain
+  timeout as local-only. This batch delivers the command restructuring,
+  Wasm-only product targets and refreshed usage documentation.
+
 Development candidates; no new package publication.
 
 - Remove architecture/naming scanners, generated-version source checks and the

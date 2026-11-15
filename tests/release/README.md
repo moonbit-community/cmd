@@ -25,6 +25,11 @@ setup and acceptance through `CMD_TEST_PREPARED=1`. It runs the
 full applicable suite on Linux, macOS and Windows and pinned comparisons on
 Linux. It does not publish or modify committed files.
 
+In GitHub Actions, select [release acceptance](https://github.com/moonbit-community/cmd/actions/workflows/release-acceptance.yml)
+and **Run workflow**. Choose the ref whose `moon.mod` versions have been uploaded.
+`latest` selects frozen published expectations; `candidate` selects the current
+candidate cases. This choice does not override the ref's package versions.
+
 `CMD_RELEASE_MANIFEST` selects another manifest, for example the candidate
 after its selected versions have been uploaded. The internal release runner
 accepts `functional`, `oracle` and `all`; it has no legacy suite aliases.

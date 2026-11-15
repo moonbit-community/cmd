@@ -14,9 +14,8 @@ Use `moonx cli/<command>` for published commands. `timeout` is local-only;
 its README shows the repository invocation. Module versions come from
 `moon.mod` and are reported by standalone `--version`.
 
-The workspace's jq and jqlog candidates use the shared `cli/jq/engine` value
-filter API. Their engine and evaluator changes are newer than the published
-baseline. Unversioned MoonX examples resolve registry packages, not this checkout.
+Jq and jqlog use the shared `cli/jq/engine` value-filter API introduced in
+cli/jq 0.2.10. Unversioned MoonX examples resolve registry packages, not this checkout.
 The frozen [published inventory](../tests/release/latest.json) records the 81
 published coordinates; it is independent of current workspace behavior.
 

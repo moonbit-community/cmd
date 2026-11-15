@@ -38,6 +38,6 @@ Use `--help` for the complete option list.
 
 - Use -f with a positional filter filename. --arg NAME VALUE and --argjson NAME JSON each consume two arguments.
 - The implemented language is a subset of jq; exact numeric ordering at or above 2^53 and complete upstream diagnostics are not claimed. Invalid later input may follow already-written results.
-- Color requires -C. -l/--logs skips invalid JSON lines. Workspace engine changes are newer than the published baseline; see the compatibility guide.
+- Color requires -C. -l/--logs skips invalid JSON lines. The value-filter engine is also available as cli/jq/engine.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.
