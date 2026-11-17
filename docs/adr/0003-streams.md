@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-15
+Updated: 2026-11-17
 
 ## Decision
 
@@ -389,7 +389,13 @@ through exact-version MoonX before its release is accepted.
 
 `commands/serve` declares its CLI with `moonbitlang/core/argparse`, which owns
 option syntax, help and syntax diagnostics. The command validates the listen
-address and owns URL-to-file mapping, MIME types and the bounded file-copy loop.
+address and owns listener orchestration. The public `cli/serve/static_files`
+package owns URL-to-file mapping, MIME types and the bounded file-copy loop.
+Each `Directory::Directory(path)` validates and stores a private canonical root;
+`Directory::serve` handles one request. Caller-owned listeners and routing can
+select any number of instances without changing the CLI or sharing request
+buffers. An optional still-encoded route-relative URL path supports mounted
+directories while redirects retain the original public prefix and query.
 Use released `moonbitlang/async@0.22.9` HTTP and filesystem
 APIs without another server framework or shared core mechanism. GET/HEAD,
 index.html and explicit error responses are the complete initial scope.

@@ -1,11 +1,10 @@
 import {
-  "moonbitlang/async",
+  "cli/serve/static_files",
   "moonbitlang/async/fs",
   "moonbitlang/async/http",
   "moonbitlang/async/socket",
   "moonbitlang/async/stdio",
   "moonbitlang/core/argparse",
-  "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
   "moonbitlang/x/sys",

@@ -1,0 +1,12 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/http",
+  "moonbitlang/core/encoding/utf8",
+}
+
+supported_targets = "wasm"
+
+import {
+  "moonbitlang/async/socket",
+} for "test"

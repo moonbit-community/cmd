@@ -93,7 +93,7 @@ identify the principal refusals and platform differences.
 | [rmdir](../commands/rmdir/README.md) | Empty-directory removal and upward parent removal. | POSIX symlink and Windows junction behavior differ. |
 | [sed](../commands/sed/README.md) | BRE/ERE substitution, addresses, hold space, branches and multiline editing. | No -i or full GNU grammar; script-dependent memory. |
 | [seq](../commands/seq/README.md) | Numeric ranges, custom separators, equal width and printf formatting. | Fixed numeric profile and bounded precision/exponents. |
-| [serve](../commands/serve/README.md) | Static GET/HEAD, index files, MIME types and persistent HTTP connections. | Trusted stable roots; no TLS/ranges/listing or race-free confinement. |
+| [serve](../commands/serve/README.md) | Static GET/HEAD, index files, MIME types, persistent connections and public directory handlers. | Trusted stable roots; no TLS/ranges/listing or race-free confinement. |
 | [sh](../commands/sh/README.md) | Persistent shell state, expansions, pipelines, control flow and builtins. | Partial shell grammar and descriptor/terminal/filesystem API boundaries. |
 | [sha1sum](../commands/sha1sum/README.md) | Streaming SHA-1 and checksum manifest verification. | Binary/text modes do not translate bytes. |
 | [sha256sum](../commands/sha256sum/README.md) | Streaming SHA-256 and checksum manifest verification. | Binary/text modes do not translate bytes. |
@@ -122,6 +122,13 @@ identify the principal refusals and platform differences.
 | [xxd](../commands/xxd/README.md) | Hex/binary/C styles, EBCDIC, autoskip, seek and reverse conversion. | No backward stdin seek; existing-output identity/mode boundaries. |
 | [yes](../commands/yes/README.md) | Repeated output until interruption or output failure. | No exact signal-status parity. |
 | [zcat](../commands/zcat/README.md) | Gzip decompression to stdout across files and members. | Partial output can precede a corruption error. |
+
+The unpublished serve candidate adds `cli/serve/static_files` for Wasm library
+users. `Directory::Directory(path)` validates and stores one canonical root;
+`Directory::serve` handles one request with optional route-relative URL path
+mapping. Multiple instances may serve concurrently through one or several
+caller-owned listeners, with independent path checks and preserved redirect
+prefixes and queries. CLI arguments and single-directory serving are unchanged.
 
 ## Shared boundaries
 
