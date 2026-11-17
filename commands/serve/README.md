@@ -25,6 +25,14 @@ Default to the current directory on 127.0.0.1:8000. Serve regular files with GET
 | `-p VALUE`, `--port VALUE` | Listen port. Use 0 to choose an available port. Default: `8000`. |
 <!-- END GENERATED OPTIONS -->
 
+## Library
+
+The unpublished candidate adds the Wasm package `cli/serve/static_files`.
+Construct a `Directory::Directory(path)` for each site, then call its `serve`
+method from your HTTP handler. Instances may share a listener or use separate
+listeners; routing, access policy and cancellation belong to the caller.
+See the [library example](static_files/README.md).
+
 ## Notes
 
 - Every readable file under the selected root, including hidden files, can be served. Use a trusted, stable directory; path checks do not guarantee confinement against concurrent filesystem replacement.

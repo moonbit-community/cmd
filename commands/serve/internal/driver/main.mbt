@@ -62,13 +62,14 @@ pub async fn run_main() -> Unit {
     guard @fs.kind(root) is Directory else {
       fail("not a directory: " + directory)
     }
+    let files = @static_files.Directory::Directory(root)
     let server = @http.Server(address)
     defer server.close()
     @stdio.stderr.write(
       "Serving " + root + " on http://" + server.addr.to_string() + "\n",
     )
     server.run_forever(
-      (request, _body, connection) => serve_file(root, request, connection),
+      (request, _body, connection) => files.serve(request, connection),
       max_connections=64,
     )
   } catch {

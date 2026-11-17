@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-10
+Updated: 2026-11-17
 
 ## Decision
 
@@ -18,7 +18,10 @@ observers, private APIs and FFI do not expand the product's capabilities.
 Serve decodes URL paths once and rejects traversal, invalid UTF-8, control bytes
 and Windows path aliases before filesystem access. Canonical file/index targets
 must remain inside the canonical service root with a component boundary;
-only regular files are opened. Launcher-supplied Wasm policy can separately
+only regular files are opened. Each public `static_files.Directory` instance
+stores its own immutable canonical root. Sharing a listener or process read
+permissions never relaxes the selected instance's containment checks.
+Launcher-supplied Wasm policy can separately
 grant root-only reads and loopback bind, without writes or outbound connections.
 It does not replace URL containment checks when the caller grants broader reads.
 Path canonicalization and open remain separate operations: released async 0.22.9

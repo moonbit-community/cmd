@@ -108,11 +108,20 @@ async fn empty_response(
 }
 
 ///|
-async fn serve_file(
-  root : String,
+/// Respond to one request under this directory's root.
+/// The caller owns the listener, routing, access policy and cancellation.
+/// For a mounted route, `path` is the slash-prefixed URL path after removing
+/// the mount prefix, still percent-encoded. It defaults to `request.path`.
+/// Redirects preserve the original request target's prefix and query.
+/// Serve a trusted, stable directory: canonicalization and open are separate
+/// operations and cannot prevent hostile concurrent filesystem replacement.
+pub async fn Directory::serve(
+  self : Directory,
   request : @http.Request,
   connection : @http.ServerConnection,
+  path? : String,
 ) -> Unit {
+  let root = self.root
   guard request.meth is (Get | Head) else {
     connection.send_response(405, "Method Not Allowed", extra_headers={
       "Content-Length": "0",
@@ -120,7 +129,7 @@ async fn serve_file(
     })
     return
   }
-  guard request_path(request.path) is Some(relative) else {
+  guard request_path(path.unwrap_or(request.path)) is Some(relative) else {
     empty_response(connection, 400, "Bad Request")
     return
   }

@@ -1,0 +1,21 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/serve/static_files"
+
+import {
+  "moonbitlang/async/http",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct Directory {
+  // private fields
+}
+pub async fn Directory::Directory(String) -> Self
+pub async fn Directory::serve(Self, @http.Request, @http.ServerConnection, path? : String) -> Unit
+
+// Type aliases
+
+// Traits
