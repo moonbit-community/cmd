@@ -36,6 +36,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Compatible with the MoonBit 2026-11-17 toolchain.
+
 - Packages and templates must already be installed locally. Network downloads, self-update, viewer opening, completion generation and timing traces are unsupported.
 - HTML needs --features html; HTML watch also needs --no-serve. Compilation is single-threaded and watch performs full recompilation.
 - Inputs, fonts and output may remain in memory. Canonicalization is lexical, local time defaults to UTC and full Rust Typst parity is not claimed. See LICENSE and NOTICE for upstream attribution.

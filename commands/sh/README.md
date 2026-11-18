@@ -28,6 +28,8 @@ Execute a command string, a script file or stdin. Supports variables, redirectio
 
 ## Notes
 
+Compatible with the MoonBit 2026-11-17 toolchain.
+
 - This is not a complete POSIX shell or Bash implementation. Descriptor, terminal, permission and file-identity operations have explicit limits.
 - External commands require launcher permission; shell evaluation itself uses the MoonBit implementation.
 

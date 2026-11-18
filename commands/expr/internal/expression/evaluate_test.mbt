@@ -1,4 +1,22 @@
 ///|
+test "integer parsing preserves signed zero large operands and decimal leading zeros" {
+  assert_false(@expression.truth("-000"))
+  assert_true(@expression.truth("000000000000000000000000000001"))
+  assert_true(@expression.truth("+0"))
+  assert_true(@expression.truth("0x0"))
+  assert_eq(@expression.evaluate(["0008", "+", "0002"]), "10")
+  assert_eq(@expression.evaluate(["-999999999999999999999999", "<", "-1"]), "1")
+  assert_eq(
+    @expression.evaluate([
+      "substr", "abcdef", "0002", "999999999999999999999999",
+    ]),
+    "bcdef",
+  )
+  assert_eq(@expression.evaluate(["substr", "abcdef", "0x2", "3"]), "")
+  assert_eq(@expression.evaluate(["+0", "=", "0"]), "0")
+}
+
+///|
 test "expr precedence arbitrary integers and comparison" {
   assert_eq(@expression.evaluate(["2", "+", "3", "*", "4"]), "14")
   assert_eq(@expression.evaluate(["(", "2", "+", "3", ")", "*", "4"]), "20")

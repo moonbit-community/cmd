@@ -35,7 +35,7 @@ async test "stream events retain frozen jq paths and prefixes across chunk bound
         let bytes : Array[Byte] = []
         for offset = 0; offset < hex.length(); offset = offset + 2 {
           bytes.push(
-            @string.parse_int(hex[offset:offset + 2], base=16).to_byte(),
+            @string.parse_int(hex[offset:offset + 2], radix=16).to_byte(),
           )
         }
         Bytes::from_array(bytes)

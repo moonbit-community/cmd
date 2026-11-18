@@ -360,7 +360,7 @@ async fn HttpWire::read_some(self : HttpWire, max_len~ : Int32) -> Bytes? {
             raise transfer_error(ReceiveFailure, "invalid HTTP chunk size")
           }
         }
-        let length = @string.parse_int64(raw, base=16) catch {
+        let length = @string.parse_int64(raw, radix=16) catch {
           _ =>
             raise transfer_error(ReceiveFailure, "HTTP chunk size is too large")
         }

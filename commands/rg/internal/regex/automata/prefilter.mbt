@@ -24,7 +24,7 @@ pub(all) enum Prefilter {
     FixedArray[Byte],
     @memchr.ByteSetFinder,
     Array[Array[FixedArray[Byte]]],
-    Int32
+    Int32,
   )
 }
 

@@ -23,7 +23,7 @@ fn test_integer(value : String) -> Int64 raise ShellError {
       raise ShellError("test: integer expected")
     }
   }
-  @string.parse_int64(String::from_array(chars[start:end]), base=10) catch {
+  @string.parse_int64(String::from_array(chars[start:end]), radix=10) catch {
     _ => raise ShellError("test: integer expected")
   }
 }

@@ -11,8 +11,8 @@ priv struct SpoolBatch {
 ///|
 fn SpoolBatch::new() -> SpoolBatch {
   {
-    data: @buffer.Buffer(size_hint=SPOOL_BATCH_BYTES),
-    index: @buffer.Buffer(size_hint=SPOOL_BATCH_BYTES),
+    data: @buffer.Buffer(capacity=SPOOL_BATCH_BYTES),
+    index: @buffer.Buffer(capacity=SPOOL_BATCH_BYTES),
     deferred: None,
   }
 }

@@ -1,6 +1,6 @@
 name = "cli/typst"
 
-version = "0.1.2"
+version = "0.1.3"
 
 readme = "README.md"
 
@@ -14,7 +14,7 @@ description = "Typst typesetting command for MoonX."
 
 import {
   "moonbitlang/typst@0.1.10",
-  "moonbitlang/pdflite@0.4.1",
+  "moonbitlang/pdflite@0.4.2",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.7",
 }

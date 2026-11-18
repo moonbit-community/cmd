@@ -22,7 +22,7 @@ fn integer(s : String) -> Bool {
 
 ///|
 pub fn truth(s : String) -> Bool {
-  s != "" && (!integer(s) || !BigInt::from_string(s).is_zero())
+  s != "" && (!integer(s) || !(try! @string.parse_bigint(s)).is_zero())
 }
 
 ///|
@@ -97,8 +97,8 @@ fn Parser::atom(self : Parser, active : Bool) -> String raise {
       if !active || !integer(offset) || !integer(length) {
         return ""
       }
-      let start = BigInt::from_string(offset)
-      let count = BigInt::from_string(length)
+      let start = @string.parse_bigint(offset)
+      let count = @string.parse_bigint(length)
       if start <= BigInt::from_int(0) ||
         count <= BigInt::from_int(0) ||
         start > BigInt::from_int(value.length()) {
@@ -140,7 +140,7 @@ fn binary(op : String, left : String, right : String) -> String raise {
   }
   if ["=", "==", "!=", "<", ">", "<=", ">="].contains(op) {
     let cmp = if integer(left) && integer(right) {
-      BigInt::from_string(left).compare(BigInt::from_string(right))
+      @string.parse_bigint(left).compare(@string.parse_bigint(right))
     } else {
       left.compare(right)
     }
@@ -155,8 +155,8 @@ fn binary(op : String, left : String, right : String) -> String raise {
     return if yes { "1" } else { "0" }
   }
   guard integer(left) && integer(right) else { fail("non-integer argument") }
-  let a = BigInt::from_string(left)
-  let b = BigInt::from_string(right)
+  let a = @string.parse_bigint(left)
+  let b = @string.parse_bigint(right)
   if (op == "/" || op == "%") && b.is_zero() {
     fail("division by zero")
   }

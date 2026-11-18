@@ -49,7 +49,7 @@ async fn reverse_file(
   let writer = @io.BufferedWriter::new(writer, size=BLOCK_SIZE)
   let scan = FixedArray::make(size, b'\x00')
   let output = FixedArray::make(size, b'\x00')
-  let batch = @buffer.Buffer(size_hint=size)
+  let batch = @buffer.Buffer(capacity=size)
   let matches : Array[Int32] = []
   let failure = reverse_failure(separator)
   let mut past_end = length
@@ -128,7 +128,7 @@ async fn reverse_byte_file(
   let writer = @io.BufferedWriter::new(writer, size=BLOCK_SIZE)
   let scan = FixedArray::make(size, b'\x00')
   let range = FixedArray::make(size, b'\x00')
-  let batch = @buffer.Buffer(size_hint=size)
+  let batch = @buffer.Buffer(capacity=size)
   let mut past_end = length
   let mut block_end = length
   let mut first = true

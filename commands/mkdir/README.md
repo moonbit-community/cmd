@@ -28,6 +28,8 @@ Attempt all operands, preserving existing directory modes with -p. Explicit mode
 
 ## Notes
 
+Compatible with the MoonBit 2026-11-17 toolchain.
+
 - Symbolic modes that depend on the current umask are rejected. Restrictive parent permissions may leave already-created parents and return status 2.
 - Windows rejects -m when creation is needed; -p on existing directories remains a successful no-op.
 

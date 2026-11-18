@@ -63,7 +63,7 @@ fn split_lines(text : String) -> Array[String] {
 
 ///|
 fn bytes_as_string(bytes : BytesView) -> String {
-  let output = StringBuilder(size_hint=bytes.length())
+  let output = StringBuilder(capacity=bytes.length())
   for byte in bytes {
     output.write_char(byte.to_int().unsafe_to_char())
   }

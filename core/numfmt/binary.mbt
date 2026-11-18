@@ -238,7 +238,8 @@ pub fn parse_prefix(text : String, profile : Profile) -> (Value, Int32, Bool) {
       exponent = 0
     }
   }
-  let mut coefficient = BigInt::from_string(digits.to_string(), radix~)
+  // The scanner collects only digits valid in this radix.
+  let mut coefficient = try! @string.parse_bigint(digits.to_string(), radix~)
   if coefficient.is_zero() {
     return (zero(negative~), index, false)
   }

@@ -25,7 +25,7 @@ async fn filesystem_mode(path : String) -> (Int32, String) {
     )
   }
   let raw = @harness.scenario_text(result.stdout).trim().to_owned()
-  let mode = @string.parse_int(raw.split(":").nth(0).unwrap(), base=8) & 0o7777
+  let mode = @string.parse_int(raw.split(":").nth(0).unwrap(), radix=8) & 0o7777
   (mode, raw)
 }
 

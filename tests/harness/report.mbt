@@ -453,7 +453,7 @@ fn mode_observation_matches(
     text.iter().all(c => c >= '0' && c <= '7') else {
     return false
   }
-  let parsed = @string.parse_int(text, base=8) catch { _ => return false }
+  let parsed = @string.parse_int(text, radix=8) catch { _ => return false }
   (parsed & bits) == expected
 }
 

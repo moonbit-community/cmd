@@ -89,19 +89,25 @@ async test "var_ansi_write_rgb" {
   let spec = @termcolor.ColorSpec::new()
     .set_reset(false)
     .set_fg(Some(Rgb(254, 253, 255)))
-  assert_eq(ansi_bytes(w => w.set_color(spec)), b"\x1b[38;2;254;253;255m")
+  assert_eq(
+    ansi_bytes(w => @termcolor.WriteColor::set_color(w, spec)),
+    b"\x1b[38;2;254;253;255m",
+  )
 }
 
 ///|
 async test "reset" {
   let spec = @termcolor.ColorSpec::new()
-  assert_eq(ansi_bytes(w => w.set_color(spec)), b"\x1b[0m")
+  assert_eq(
+    ansi_bytes(w => @termcolor.WriteColor::set_color(w, spec)),
+    b"\x1b[0m",
+  )
 }
 
 ///|
 async test "no_reset" {
   let spec = @termcolor.ColorSpec::new().set_reset(false)
-  assert_eq(ansi_bytes(w => w.set_color(spec)), b"")
+  assert_eq(ansi_bytes(w => @termcolor.WriteColor::set_color(w, spec)), b"")
 }
 
 ///|
@@ -109,15 +115,24 @@ async test "var_ansi_write_256" {
   let spec = @termcolor.ColorSpec::new()
     .set_reset(false)
     .set_bg(Some(Ansi256(7)))
-  assert_eq(ansi_bytes(w => w.set_color(spec)), b"\x1b[48;5;7m")
+  assert_eq(
+    ansi_bytes(w => @termcolor.WriteColor::set_color(w, spec)),
+    b"\x1b[48;5;7m",
+  )
   let spec = @termcolor.ColorSpec::new()
     .set_reset(false)
     .set_bg(Some(Ansi256(208)))
-  assert_eq(ansi_bytes(w => w.set_color(spec)), b"\x1b[48;5;208m")
+  assert_eq(
+    ansi_bytes(w => @termcolor.WriteColor::set_color(w, spec)),
+    b"\x1b[48;5;208m",
+  )
   let spec = @termcolor.ColorSpec::new()
     .set_reset(false)
     .set_fg(Some(Ansi256(0)))
-  assert_eq(ansi_bytes(w => w.set_color(spec)), b"\x1b[38;5;0m")
+  assert_eq(
+    ansi_bytes(w => @termcolor.WriteColor::set_color(w, spec)),
+    b"\x1b[38;5;0m",
+  )
 }
 
 ///|
@@ -131,7 +146,7 @@ async test "ansi styles and intense colors" {
     .set_underline(true)
     .set_strikethrough(true)
   assert_eq(
-    ansi_bytes(w => w.set_color(spec)),
+    ansi_bytes(w => @termcolor.WriteColor::set_color(w, spec)),
     b"\x1b[0m\x1b[1m\x1b[2m\x1b[3m\x1b[4m\x1b[9m\x1b[31m\x1b[44m",
   )
   let spec = @termcolor.ColorSpec::new()
@@ -139,7 +154,7 @@ async test "ansi styles and intense colors" {
     .set_bg(Some(White))
     .set_intense(true)
   assert_eq(
-    ansi_bytes(w => w.set_color(spec)),
+    ansi_bytes(w => @termcolor.WriteColor::set_color(w, spec)),
     b"\x1b[0m\x1b[38;5;13m\x1b[48;5;15m",
   )
 }
@@ -198,9 +213,12 @@ test "clear" {
 ///|
 async test "ansi_hyperlink" {
   let got = ansi_bytes(w => {
-    w.set_hyperlink(@termcolor.HyperlinkSpec::open(b"https://example.com"))
-    w.write_bytes(b"label")
-    w.set_hyperlink(@termcolor.HyperlinkSpec::close())
+    @termcolor.WriteColor::set_hyperlink(
+      w,
+      @termcolor.HyperlinkSpec::open(b"https://example.com"),
+    )
+    @termcolor.Write::write_bytes(w, b"label")
+    @termcolor.WriteColor::set_hyperlink(w, @termcolor.HyperlinkSpec::close())
   })
   assert_eq(got, b"\x1b]8;;https://example.com\x1b\\label\x1b]8;;\x1b\\")
 }
@@ -208,23 +226,32 @@ async test "ansi_hyperlink" {
 ///|
 async test "buffer and no color" {
   let buf = @termcolor.Buffer::ansi()
-  buf.set_color(@termcolor.ColorSpec::new().set_fg(Some(Green)))
-  buf.write_bytes(b"x")
-  buf.reset()
+  @termcolor.WriteColor::set_color(
+    buf,
+    @termcolor.ColorSpec::new().set_fg(Some(Green)),
+  )
+  @termcolor.Write::write_bytes(buf, b"x")
+  @termcolor.WriteColor::reset(buf)
   assert_eq(buf.to_bytes(), b"\x1b[0m\x1b[32mx\x1b[0m")
-  assert_true(buf.supports_color())
+  assert_true(@termcolor.WriteColor::supports_color(buf))
   let buf = @termcolor.Buffer::no_color()
-  buf.set_color(@termcolor.ColorSpec::new().set_fg(Some(Green)))
-  buf.write_bytes(b"x")
-  buf.reset()
+  @termcolor.WriteColor::set_color(
+    buf,
+    @termcolor.ColorSpec::new().set_fg(Some(Green)),
+  )
+  @termcolor.Write::write_bytes(buf, b"x")
+  @termcolor.WriteColor::reset(buf)
   assert_eq(buf.to_bytes(), b"x")
-  assert_false(buf.supports_color())
+  assert_false(@termcolor.WriteColor::supports_color(buf))
   let v = @termcolor.ByteVec::new(capacity=1)
   let w = @termcolor.NoColor::new(v)
-  w.set_color(@termcolor.ColorSpec::new().set_fg(Some(Green)))
-  w.write_bytes(b"hello ")
-  w.write_slice([b'a', b'b', b'c', b'd'], 1, 3)
-  w.reset()
+  @termcolor.WriteColor::set_color(
+    w,
+    @termcolor.ColorSpec::new().set_fg(Some(Green)),
+  )
+  @termcolor.Write::write_bytes(w, b"hello ")
+  @termcolor.Write::write_slice(w, [b'a', b'b', b'c', b'd'], 1, 3)
+  @termcolor.WriteColor::reset(w)
   assert_eq(v.to_bytes(), b"hello bc")
-  assert_false(w.supports_hyperlinks())
+  assert_false(@termcolor.WriteColor::supports_hyperlinks(w))
 }

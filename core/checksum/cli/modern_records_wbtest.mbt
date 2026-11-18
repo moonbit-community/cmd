@@ -15,7 +15,7 @@ test "tagged and untagged checksum records select exact algorithms" {
   assert_true(
     tagged
     is Some(
-      { spec: { algorithm: Fixed(Md5), bits: 128, }, name: "payload", .. }
+      { spec: { algorithm: Fixed(Md5), bits: 128, }, name: "payload", .. },
     ),
   )
   assert_eq(tagged.map(r => @hex.encode(r.expected)), Some(md5))

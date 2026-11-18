@@ -79,7 +79,7 @@ fn parse_colors(
         let hexadecimal = bytes.length() > 1 && bytes[1] is (b'x' | b'X')
         let number = @string.parse_uint64(
           format_text(if hexadecimal { bytes[2:] } else { bytes }),
-          base=if hexadecimal { 16 } else { 8 },
+          radix=if hexadecimal { 16 } else { 8 },
         ) catch {
           _ => {
             bad_format(data)

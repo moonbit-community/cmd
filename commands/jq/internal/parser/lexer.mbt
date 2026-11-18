@@ -76,7 +76,7 @@ fn Lexer::starts_operand(self : Lexer) -> Bool {
       | TRightBracket
       | TRightBrace
       | TQuestion
-      | TNot
+      | TNot,
     ) => false
     _ => true
   }

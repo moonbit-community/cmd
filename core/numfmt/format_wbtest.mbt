@@ -1,4 +1,24 @@
 ///|
+test "numeric prefix parsing keeps explicit radices and signed zero" {
+  for
+    (text, expected, consumed) in [
+      ("0008rest", "8", 4),
+      ("0x00f.rest", "15", 6),
+      ("0x", "0", 1),
+      ("000.125e2rest", "12.5", 9),
+    ] {
+    let (value, length, range_error) = parse_prefix(text, Binary64)
+    assert_eq(length, consumed)
+    assert_false(range_error)
+    assert_eq(format_magnitude(value, 'g', None, false, Binary64), expected)
+  }
+  let (value, consumed, range_error) = parse_prefix("-000.0rest", Binary64)
+  assert_true(value.is_negative())
+  assert_eq(consumed, 6)
+  assert_false(range_error)
+}
+
+///|
 test "binary profiles round hexadecimal midpoint inputs to even" {
   for
     (profile, midpoint, above, expected) in [

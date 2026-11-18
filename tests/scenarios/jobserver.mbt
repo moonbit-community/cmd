@@ -167,7 +167,7 @@ async fn jobserver_bridge(work : String) -> Unit {
   }
   let status = @string.parse_int(
     @fs.read_file(work + "/bridge.ack").text(),
-    base=10,
+    radix=10,
   )
   @sys.exit(status)
 }

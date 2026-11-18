@@ -67,7 +67,7 @@ fn arithmetic_number(value : String) -> Int64 raise ShellError {
   } else {
     (unsigned, 10)
   }
-  @string.parse_int64((if negative { "-" } else { "" }) + digits, base~) catch {
+  @string.parse_int64((if negative { "-" } else { "" }) + digits, radix=base) catch {
     _ => raise ShellError("invalid arithmetic value: '\{value}'")
   }
 }

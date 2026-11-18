@@ -12,6 +12,17 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-18
+
+Development candidates; publication follows validation.
+
+- Update buffer capacity labels, integer parsing and rg trait calls for the
+  MoonBit 2026-11-17 toolchain. Prepare core 0.11.2 and patch versions of the
+  26 affected commands, retaining numeric grammar and output behavior. Upgrade
+  Typst's pdflite dependency to 0.4.2 for the compiler's trait-method rules.
+- Use the current MoonRun test-range argument for wget's isolated timeout
+  regression and regenerate JSON decoding interfaces for the test harness.
+
 ## 2026-11-17
 
 Development candidate; no package publication.

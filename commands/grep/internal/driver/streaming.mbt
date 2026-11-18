@@ -315,7 +315,7 @@ async fn process_reader(
   let output = @io.BufferedWriter::new(stdout, size=65536)
   // Record output owns BufferedWriter; span output owns reset-before-write
   // storage. Only the input-error boundary flushes BufferedWriter after failure.
-  let spans = @buffer.Buffer(size_hint=@stream.chunk_size)
+  let spans = @buffer.Buffer(capacity=@stream.chunk_size)
   defer @stream.flush_buffer(stdout, spans)
   let before : @deque.Deque[Record] = @deque.Deque([])
   let mut selected_count = 0UL

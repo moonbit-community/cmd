@@ -131,7 +131,7 @@ async test "natural workload preparation rejects missing changed truncated and e
     is {
       "blind_holdout": False,
       "transformation": String(
-        "none; complete original file copied byte-for-byte"
+        "none; complete original file copied byte-for-byte",
       ),
       ..
     },

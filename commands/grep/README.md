@@ -36,6 +36,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Compatible with the MoonBit 2026-11-17 toolchain.
+
 - Matching uses C-locale byte classes and ASCII case folding, not Unicode locale rules. Backreferences may require additional work and memory.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

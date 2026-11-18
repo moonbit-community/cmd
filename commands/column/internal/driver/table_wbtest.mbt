@@ -73,7 +73,7 @@ async test "column table cursors bound expanded rows and resume inside UTF-8 out
     snapshot.finish()
     for limit in [1, 7, 65536] {
       let actual = @buffer.Buffer()
-      let chunk = @buffer.Buffer(size_hint=limit)
+      let chunk = @buffer.Buffer(capacity=limit)
       for line in lines {
         let row = snapshot.test_row(line, @utf8.encode(separator))
         for ;; {

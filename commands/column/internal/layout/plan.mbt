@@ -7,7 +7,7 @@ pub fn Separator::observe_fields(
 ) -> Bytes? {
   let capacity = budget.unwrap_or(0)
   let mut plan = if capacity >= FIELD_PLAN_ENTRY_BYTES {
-    Some(@buffer.Buffer(size_hint=capacity.min(FIELD_PLAN_INITIAL_BYTES)))
+    Some(@buffer.Buffer(capacity=capacity.min(FIELD_PLAN_INITIAL_BYTES)))
   } else {
     None
   }

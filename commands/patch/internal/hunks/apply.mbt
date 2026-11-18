@@ -154,7 +154,7 @@ pub fn apply_hunks(
   max_fuzz : Int32,
 ) -> AppliedPatch {
   let input = raw_lines(data)
-  let output = @buffer.Buffer(size_hint=data.length())
+  let output = @buffer.Buffer(capacity=data.length())
   let results : Array[HunkResult] = []
   let mut cursor = 0
   let mut offset = 0

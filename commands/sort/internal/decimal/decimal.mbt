@@ -79,7 +79,7 @@ pub fn compare(left : Bytes, right : Bytes) -> Int32 {
 pub fn encode(key : BytesView) -> Bytes {
   let number = decimal_key(key)
   let output = @buffer.Buffer(
-    size_hint=5 + number.integer.length() + number.fraction.length(),
+    capacity=5 + number.integer.length() + number.fraction.length(),
   )
   output.write_byte(if number.negative { b'\x01' } else { b'\x00' })
   output.write_int_le(number.integer.length())

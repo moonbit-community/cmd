@@ -131,7 +131,7 @@ pub(all) suberror TransferError {
     kind~ : TransferErrorKind,
     message~ : String,
     status~ : Int32?,
-    context~ : TransferFailureContext?
+    context~ : TransferFailureContext?,
   )
 }
 
