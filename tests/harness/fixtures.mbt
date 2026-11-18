@@ -357,7 +357,7 @@ async fn snapshot_into(
           let observed = @utf8.decode(result.stdout).trim().to_owned()
           metadata[dimension] = if @async.platform is MacOS &&
             dimension == "mode" {
-            (@string.parse_int(observed, base=8) & 0o7777).to_string(radix=8)
+            (@string.parse_int(observed, radix=8) & 0o7777).to_string(radix=8)
           } else {
             observed
           }

@@ -22,7 +22,7 @@ pub(all) enum TransferOutput {
     path~ : String,
     mode~ : TransferFileMode,
     content_disposition~ : Bool,
-    remove_on_error~ : Bool
+    remove_on_error~ : Bool,
   )
 }
 
@@ -99,7 +99,7 @@ pub(all) enum TransferEvent {
     status~ : Int32,
     reason~ : String,
     headers~ : Array[HttpHeader],
-    content_length~ : Int64?
+    content_length~ : Int64?,
   )
   Redirected(status~ : Int32, from~ : String, to~ : String)
   OutputStarted(path~ : String?, response_offset~ : Int64)

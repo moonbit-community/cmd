@@ -35,6 +35,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Compatible with the MoonBit 2026-11-17 toolchain.
+
 - The supported GNU make subset includes secondary expansion and selected jobserver behavior, not the complete language or every jobserver transport.
 - -n can still execute recursive and plus-prefixed recipes. External commands require launcher permission; unsupported submake jobserver inheritance falls back to serial execution.
 

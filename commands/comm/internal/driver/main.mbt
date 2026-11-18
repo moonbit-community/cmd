@@ -11,7 +11,7 @@ fn help_message() -> String {
 
 ///|
 fn comm_record(prefix : Bytes, line : Bytes, delimiter : Byte) -> Bytes {
-  let output = @buffer.Buffer(size_hint=prefix.length() + line.length() + 1)
+  let output = @buffer.Buffer(capacity=prefix.length() + line.length() + 1)
   output.write_bytes(prefix)
   output.write_bytes(line)
   output.write_byte(delimiter)
@@ -54,7 +54,7 @@ async fn merge_readers(
     count1: 0,
     count2: 0,
     count3: 0,
-    output: @buffer.Buffer(size_hint=65536),
+    output: @buffer.Buffer(capacity=65536),
   }
   defer @stream.flush_buffer(writer, merger.output)
   for ;; {

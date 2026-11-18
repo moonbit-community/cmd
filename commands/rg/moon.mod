@@ -1,6 +1,6 @@
 name = "cli/rg"
 
-version = "0.1.3"
+version = "0.1.4"
 
 readme = "README.md"
 
@@ -13,7 +13,7 @@ preferred_target = "wasm"
 description = "Recursive text search for MoonX."
 
 import {
-  "cli/core@0.11.1",
+  "cli/core@0.11.2",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.7",
 }

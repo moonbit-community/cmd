@@ -279,7 +279,7 @@ async fn Input::next(self : Input) -> @stream.RecordView? {
   let first = self.position
   // Complete records borrow the immutable chunk. A spanning record uses one buffer,
   // so fragmented readers do not retain one allocation per input fragment.
-  let pending = @buffer.Buffer(size_hint=self.buffer.length() - first)
+  let pending = @buffer.Buffer(capacity=self.buffer.length() - first)
   pending.write_bytes(self.buffer[first:])
   self.position = self.buffer.length()
   let mut terminated = false

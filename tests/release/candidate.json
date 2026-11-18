@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "candidate": true,
-  "core_version": "0.11.1",
+  "core_version": "0.11.2",
   "base_manifest": "../cases/manifest.json",
   "commands": [
     {
@@ -99,7 +99,7 @@
     {
       "name": "column",
       "package_name": "cli/column",
-      "version": "0.1.8",
+      "version": "0.1.9",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -116,7 +116,7 @@
     {
       "name": "comm",
       "package_name": "cli/comm",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -168,7 +168,7 @@
     {
       "name": "curl",
       "package_name": "cli/curl",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -180,7 +180,7 @@
     {
       "name": "cut",
       "package_name": "cli/cut",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -297,7 +297,7 @@
     {
       "name": "expr",
       "package_name": "cli/expr",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -321,7 +321,7 @@
     {
       "name": "find",
       "package_name": "cli/find",
-      "version": "0.2.7",
+      "version": "0.2.8",
       "published": false,
       "compare_profile": "findutils",
       "supported_options": [
@@ -360,7 +360,7 @@
     {
       "name": "grep",
       "package_name": "cli/grep",
-      "version": "0.3.5",
+      "version": "0.3.6",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -408,7 +408,7 @@
     {
       "name": "hexdump",
       "package_name": "cli/hexdump",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -448,7 +448,7 @@
     {
       "name": "jq",
       "package_name": "cli/jq",
-      "version": "0.2.10",
+      "version": "0.2.11",
       "published": false,
       "compare_profile": "jq",
       "supported_options": [
@@ -460,7 +460,7 @@
     {
       "name": "jqlog",
       "package_name": "cli/jqlog",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "jqlog",
       "supported_options": [
@@ -509,7 +509,7 @@
     {
       "name": "make",
       "package_name": "cli/make",
-      "version": "0.2.10",
+      "version": "0.2.11",
       "published": false,
       "compare_profile": "make",
       "supported_options": [
@@ -534,7 +534,7 @@
     {
       "name": "mkdir",
       "package_name": "cli/mkdir",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -587,7 +587,7 @@
     {
       "name": "od",
       "package_name": "cli/od",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -620,7 +620,7 @@
     {
       "name": "patch",
       "package_name": "cli/patch",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -657,7 +657,7 @@
     {
       "name": "printf",
       "package_name": "cli/printf",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -711,7 +711,7 @@
     {
       "name": "rg",
       "package_name": "cli/rg",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "published": false,
       "compare_profile": "ripgrep",
       "supported_options": [
@@ -754,7 +754,7 @@
     {
       "name": "sed",
       "package_name": "cli/sed",
-      "version": "0.2.6",
+      "version": "0.2.7",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -766,7 +766,7 @@
     {
       "name": "seq",
       "package_name": "cli/seq",
-      "version": "0.2.7",
+      "version": "0.2.8",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -795,7 +795,7 @@
     {
       "name": "sh",
       "package_name": "cli/sh",
-      "version": "0.2.11",
+      "version": "0.2.12",
       "published": false,
       "compare_profile": "posix",
       "supported_options": [
@@ -860,7 +860,7 @@
     {
       "name": "sort",
       "package_name": "cli/sort",
-      "version": "0.2.9",
+      "version": "0.2.10",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -897,7 +897,7 @@
     {
       "name": "split",
       "package_name": "cli/split",
-      "version": "0.1.12",
+      "version": "0.1.13",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -938,7 +938,7 @@
     {
       "name": "tac",
       "package_name": "cli/tac",
-      "version": "0.1.9",
+      "version": "0.1.10",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -979,7 +979,7 @@
     {
       "name": "test",
       "package_name": "cli/test",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1054,7 +1054,7 @@
     {
       "name": "typst",
       "package_name": "cli/typst",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "published": false,
       "compare_profile": "typst",
       "supported_options": [
@@ -1096,7 +1096,7 @@
     {
       "name": "uniq",
       "package_name": "cli/uniq",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -1149,7 +1149,7 @@
     {
       "name": "wget",
       "package_name": "cli/wget",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [

@@ -39,7 +39,7 @@ fn traditional_offset(text : String) -> Int64? raise OdError {
     }) {
     return None
   }
-  let value = @string.parse_int64(body, base=radix) catch {
+  let value = @string.parse_int64(body, radix~) catch {
     _ => raise OdError("\{text}: Numerical result out of range")
   }
   if value > 9223372036854775807L / multiplier {

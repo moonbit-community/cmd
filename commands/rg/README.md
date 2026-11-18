@@ -40,6 +40,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Compatible with the MoonBit 2026-11-17 toolchain.
+
 - PCRE2, compressed search (-z), one-filesystem traversal and byte-based DFA cache limits are unsupported.
 - Search runs on one thread without memory mapping. Multiline mode may retain the complete input.
 - Automatic terminal detection is unavailable: color, headings and line numbers require explicit options. Use --help for the full option list.

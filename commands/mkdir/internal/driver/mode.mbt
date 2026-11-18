@@ -14,7 +14,9 @@ fn octal_mode(text : String) -> Int32 raise ModeError {
   guard !digits.is_empty() && digits.iter().all(char => char is ('0'..<='7')) else {
     raise InvalidMode
   }
-  let value = @string.parse_int(digits, base=8) catch { _ => raise InvalidMode }
+  let value = @string.parse_int(digits, radix=8) catch {
+    _ => raise InvalidMode
+  }
   guard value <= 0o7777 else { raise InvalidMode }
   value
 }

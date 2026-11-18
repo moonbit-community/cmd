@@ -10,7 +10,7 @@ priv enum Message {
     end~ : Int32,
     line_number~ : Int64?,
     absolute_offset~ : Int64,
-    submatches~ : Array[SubMatch]
+    submatches~ : Array[SubMatch],
   )
   Context(
     path~ : String?,
@@ -19,7 +19,7 @@ priv enum Message {
     end~ : Int32,
     line_number~ : Int64?,
     absolute_offset~ : Int64,
-    submatches~ : Array[SubMatch]
+    submatches~ : Array[SubMatch],
   )
 }
 
@@ -75,7 +75,7 @@ fn Message::write_json(self : Message, w : JsonWriter) -> Unit {
       end~,
       line_number~,
       absolute_offset~,
-      submatches~
+      submatches~,
     ) => {
       w.key("type")
       w.write_escaped_string("match")
@@ -93,7 +93,7 @@ fn Message::write_json(self : Message, w : JsonWriter) -> Unit {
       end~,
       line_number~,
       absolute_offset~,
-      submatches~
+      submatches~,
     ) => {
       w.key("type")
       w.write_escaped_string("context")

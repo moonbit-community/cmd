@@ -81,7 +81,7 @@ pub(all) struct Registry {
   entries : Array[RegistryEntry]
   release_commands : Array[ReleaseCommandMetadata]
 }
-pub fn Registry::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Registry::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn Registry::to_json(Self) -> @json.Json
 pub fn Registry::to_repr(Self) -> @debug.Repr
 
@@ -97,7 +97,7 @@ pub(all) struct RegistryEntry {
   platforms : Array[String]
   oracle_profile : String
 }
-pub fn RegistryEntry::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn RegistryEntry::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn RegistryEntry::is_case(Self) -> Bool
 pub fn RegistryEntry::to_json(Self) -> @json.Json
 pub fn RegistryEntry::to_repr(Self) -> @debug.Repr
@@ -113,7 +113,7 @@ pub(all) struct ReleaseCommandMetadata {
   case_ids : Array[String]?
   oracle_boundary : String?
 }
-pub fn ReleaseCommandMetadata::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ReleaseCommandMetadata::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn ReleaseCommandMetadata::to_json(Self) -> @json.Json
 pub fn ReleaseCommandMetadata::to_repr(Self) -> @debug.Repr
 

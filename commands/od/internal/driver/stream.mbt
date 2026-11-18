@@ -115,7 +115,7 @@ fn parse_count(text : String) -> Int64 raise OdError {
   if radix == 16 {
     digits = digits[2:].to_owned()
   }
-  let value = @string.parse_int64(digits, base=radix) catch {
+  let value = @string.parse_int64(digits, radix~) catch {
     _ => raise OdError("invalid byte count '\{text}'")
   }
   if value < 0L || value > 9223372036854775807L / multiplier {

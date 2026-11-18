@@ -1,5 +1,6 @@
 import {
   "cli/core/bytere",
+  "moonbitlang/core/string",
 }
 
 supported_targets = "wasm"

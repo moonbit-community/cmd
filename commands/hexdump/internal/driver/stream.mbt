@@ -135,7 +135,7 @@ fn parse_count(text : String) -> Int64 raise HexdumpError {
   if radix == 16 {
     digits = digits[2:].to_owned()
   }
-  let n = @string.parse_int64(digits, base=radix) catch {
+  let n = @string.parse_int64(digits, radix~) catch {
     _ => raise HexdumpError("invalid byte count '\{text}'")
   }
   if n < 0L || n > 9223372036854775807L / multiplier {

@@ -32,6 +32,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Compatible with the MoonBit 2026-11-17 toolchain.
+
 - Numeric formats use the fixed Linux profile and C locale. Forward offsets on non-seekable stdin are a project extension.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

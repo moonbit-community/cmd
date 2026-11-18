@@ -222,7 +222,7 @@ pub(all) struct Case {
   expected_stdout_json : @json.Json?
   stdout_json_lines : Bool?
 }
-pub fn Case::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Case::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn Case::input(Self, root? : String, http_base? : String) -> Bytes raise Failure
 pub fn Case::platform_applies(Self) -> Bool
 pub fn Case::to_json(Self) -> @json.Json
@@ -268,7 +268,7 @@ pub(all) struct ExpectedFile {
   same_mode_as : String?
   mode_mask : Int32?
 }
-pub fn ExpectedFile::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ExpectedFile::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn ExpectedFile::to_json(Self) -> @json.Json
 pub fn ExpectedFile::to_repr(Self) -> @debug.Repr
 
@@ -284,7 +284,7 @@ pub(all) struct FixtureFile {
   mtime : String?
   readable : Bool?
 }
-pub fn FixtureFile::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FixtureFile::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn FixtureFile::to_json(Self) -> @json.Json
 pub fn FixtureFile::to_repr(Self) -> @debug.Repr
 
@@ -303,7 +303,7 @@ pub(all) struct Normalization {
   rule : String
   comment : String
 }
-pub fn Normalization::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Normalization::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn Normalization::to_json(Self) -> @json.Json
 pub fn Normalization::to_repr(Self) -> @debug.Repr
 
@@ -334,7 +334,7 @@ pub(all) struct OracleProfile {
   versions_script_sha256 : String
   sources : Array[OracleSource]
 }
-pub fn OracleProfile::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OracleProfile::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn OracleProfile::to_json(Self) -> @json.Json
 
 #derive(@json.FromJson, @json.ToJson)
@@ -343,7 +343,7 @@ pub(all) struct OracleSource {
   version : String
   sha256 : String
 }
-pub fn OracleSource::from_json(@json.Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OracleSource::from_json(@json.Json, @json.DecodeContext) -> Self raise @json.JsonDecodeError
 pub fn OracleSource::to_json(Self) -> @json.Json
 
 pub(all) struct RunResult {

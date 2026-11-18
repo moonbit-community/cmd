@@ -23,10 +23,7 @@ async test "transfer timeouts identify stalled request headers and body phases" 
     environment[marker_name] = directory
     let wasm = artifact.has_suffix(".wasm")
     let args = if wasm {
-      [
-        "--test-args", "{\"package\":\"cli/wget/internal/download\",\"file_and_index\":[[\"phase_wbtest.mbt\",[{\"start\":0,\"end\":1}]]]}",
-        artifact, "--",
-      ]
+      ["--test-args", "phase_wbtest.mbt:0-1", artifact, "--"]
     } else {
       ["phase_wbtest.mbt:0-1"]
     }

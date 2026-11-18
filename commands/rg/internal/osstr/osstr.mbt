@@ -9,7 +9,7 @@
 ///|
 /// Decodes OS bytes into a string, escaping invalid UTF-8 bytes.
 pub fn decode(b : BytesView) -> String {
-  let sb = StringBuilder(size_hint=b.length())
+  let sb = StringBuilder(capacity=b.length())
   let n = b.length()
   let mut i = 0
   while i < n {
@@ -67,7 +67,7 @@ fn decode_at(b : BytesView, i : Int32, len : Int32, min : Int32) -> Int32 {
 /// everything else is encoded as UTF-8 (other lone surrogates become
 /// U+FFFD).
 pub fn encode(s : String) -> Bytes {
-  let buf = Buffer(size_hint=s.length())
+  let buf = Buffer(capacity=s.length())
   let n = s.length()
   let mut i = 0
   while i < n {

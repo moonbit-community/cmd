@@ -313,7 +313,7 @@ async fn process_reader(
   }
   let scanner = @stream.RecordReader::new(reader, delimiter=record_delimiter)
   let field_delimiter = Bytes::from_array([delimiter])
-  let output = @buffer.Buffer(size_hint=@stream.chunk_size)
+  let output = @buffer.Buffer(capacity=@stream.chunk_size)
   defer @stream.flush_buffer(writer, output)
   let consume_record : (BytesView, Bool) -> Bool = match
     (field_ranges, char_ranges) {

@@ -5,7 +5,7 @@ fn normalization_literal(value : StringView) -> String raise {
     if scalar.is_empty() {
       continue
     }
-    let code = @string.parse_int(scalar, base=16)
+    let code = @string.parse_int(scalar, radix=16)
     guard code.to_char() is Some(character) else {
       fail("invalid normalization corpus scalar")
     }

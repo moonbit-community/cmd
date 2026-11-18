@@ -73,7 +73,7 @@ fn makelevel(variables : Map[String, Variable]) -> Int32 {
   if raw.is_empty() || raw.iter().any(char => char < '0' || char > '9') {
     return 0
   }
-  let value = @string.parse_int(raw, base=10) catch { _ => return 0 }
+  let value = @string.parse_int(raw, radix=10) catch { _ => return 0 }
   if value == 2147483647 {
     0
   } else {

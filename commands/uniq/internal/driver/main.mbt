@@ -257,7 +257,7 @@ async fn process_reader(
 ) -> Unit {
   let scanner = @stream.RecordReader::new(reader, delimiter~)
   let destination = writer
-  let writer = @buffer.Buffer(size_hint=@stream.chunk_size)
+  let writer = @buffer.Buffer(capacity=@stream.chunk_size)
   defer @stream.flush_buffer(destination, writer)
   let mut previous : BytesView? = None
   let mut previous_key : BytesView? = None

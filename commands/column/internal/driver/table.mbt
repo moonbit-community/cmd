@@ -66,7 +66,7 @@ async fn Snapshot::render_table(
     record: 0L,
     row: None,
   }
-  let batch = @buffer.Buffer(size_hint=TABLE_BATCH_SIZE)
+  let batch = @buffer.Buffer(capacity=TABLE_BATCH_SIZE)
   for ;; {
     match renderer.fill(batch) {
       MissingPage(record) =>

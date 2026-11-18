@@ -13,12 +13,12 @@ import {
 ///|
 fn range(text : StringView) -> (Int32, Int32) raise {
   let parts = text.trim().split("..").to_array()
-  let first = @string.parse_int(parts[0], base=16)
+  let first = @string.parse_int(parts[0], radix=16)
   let last = if parts.length() == 1 {
     first
   } else {
     assert_eq(parts.length(), 2)
-    @string.parse_int(parts[1], base=16)
+    @string.parse_int(parts[1], radix=16)
   }
   assert_true(first >= 0 && first <= last && last <= 0x10ffff)
   (first, last)
@@ -42,7 +42,7 @@ fn mapped(text : String) -> String raise {
     if part.is_empty() {
       continue
     }
-    let code = @string.parse_int(part, base=16)
+    let code = @string.parse_int(part, radix=16)
     guard code.to_char() is Some(character) else {
       fail("invalid mapped scalar")
     }
@@ -171,7 +171,7 @@ async fn main {
       continue
     }
     assert_eq(parts.length(), 15)
-    let code = @string.parse_int(parts[0], base=16)
+    let code = @string.parse_int(parts[0], radix=16)
     let bidi = match parts[4] {
       "L" => "Left"
       "R" => "Right"

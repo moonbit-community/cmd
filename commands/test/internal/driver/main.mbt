@@ -81,7 +81,7 @@ fn parse_integer(text : String) -> Int64 raise TestError {
       raise TestError("integer expression expected: '\{text}'")
     }
   }
-  @string.parse_int64(text[start:end], base=10) catch {
+  @string.parse_int64(text[start:end], radix=10) catch {
     _ => raise TestError("integer expression expected: '\{text}'")
   }
 }

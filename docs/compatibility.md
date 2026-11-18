@@ -10,6 +10,10 @@ test-tool consumers. The execution tools under `tests` and `tools` remain Native
 
 ## Workspace and published packages
 
+The workspace supports the MoonBit 2026-11-17 toolchain. Buffer capacity labels,
+explicit trait calls and integer parsing use its current APIs; numeric input
+grammar, output and exit-status behavior remain unchanged.
+
 Use `moonx cli/<command>` for published commands. `timeout` is local-only;
 its README shows the repository invocation. Module versions come from
 `moon.mod` and are reported by standalone `--version`.

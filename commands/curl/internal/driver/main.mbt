@@ -11,7 +11,7 @@ fn has_header(headers : ArrayView[@netops.HttpHeader], name : String) -> Bool {
 
 ///|
 fn without_line_endings(data : Bytes) -> Bytes {
-  let output = @buffer.Buffer(size_hint=data.length())
+  let output = @buffer.Buffer(capacity=data.length())
   for byte in data {
     if byte != b'\r' && byte != b'\n' && byte != b'\x00' {
       output.write_byte(byte)
@@ -22,7 +22,7 @@ fn without_line_endings(data : Bytes) -> Bytes {
 
 ///|
 fn url_encode(data : Bytes) -> Bytes {
-  let output = @buffer.Buffer(size_hint=data.length())
+  let output = @buffer.Buffer(capacity=data.length())
   let digits = b"0123456789ABCDEF"
   for byte in data {
     let value = byte.to_int()

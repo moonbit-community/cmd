@@ -157,7 +157,7 @@ async fn Snapshot::record_bytes(self : Snapshot, record : Int64) -> BytesView {
   if length <= first.length() - start {
     return first[start:start + length]
   }
-  let line = Buffer(size_hint=length)
+  let line = Buffer(capacity=length)
   for copied = 0; copied < length; {
     let offset = position + copied.to_int64()
     let bytes = self.data.get(offset / 65536, self.size)

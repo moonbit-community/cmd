@@ -34,6 +34,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Compatible with the MoonBit 2026-11-17 toolchain.
+
 - Field handling and case folding use C-locale byte semantics.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -6,7 +6,7 @@ async fn Snapshot::append(
   separator~ : String? = None,
 ) -> Unit {
   let bytes = @utf8.encode(line)
-  let entry = Buffer(size_hint=16)
+  let entry = Buffer(capacity=16)
   entry.write_int64_le(self.size)
   entry.write_int64_le(bytes.length().to_int64())
   self.data_writer.write(bytes)

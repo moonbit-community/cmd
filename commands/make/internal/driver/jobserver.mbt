@@ -42,7 +42,7 @@ fn apply_makefile_flags(
         if !positive_job_count(count) {
           raise MakeError("MAKEFLAGS jobs requires a positive integer")
         }
-        jobs = @string.parse_int(count, base=10) catch {
+        jobs = @string.parse_int(count, radix=10) catch {
           _ => raise MakeError("MAKEFLAGS jobs requires a positive integer")
         }
       }
