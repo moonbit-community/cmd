@@ -9,6 +9,9 @@ on:
         options: [latest, candidate]
         default: latest
 
+env:
+  MOON_SEPARATE_COMPILATION: "1"
+
 permissions:
   contents: read
 
