@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n  -t, --table                 create a table\n  -s, --separator=CHARS       table delimiters (default: space and TAB)\n  -o, --output-separator=SEP  table separator (default: two spaces)\n  -c, --output-width=WIDTH    output width (default: COLUMNS or 80)\n  -x, --fillrows              fill rows before columns\n      --help                 display this help and exit\n      --version              display version and exit\nLayout uses the C locale. Bytes above ASCII are printed as \\xHH.\nLayout uses temporary files and requires filesystem write access.\n"
+  "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n  -t, --table                 create a table\n  -s, --separator=CHARS       table delimiters (default: space and TAB)\n  -o, --output-separator=SEP  table separator (default: two spaces)\n  -c, --output-width=WIDTH    output width (default: COLUMNS or 80)\n  -x, --fillrows              fill rows before columns\n      --help                 display this help and exit\n      --version              display version and exit\nC.UTF-8 measures Unicode cells. C escapes bytes above ASCII.\nLayout uses temporary files and requires filesystem write access.\n"
 }
 
 ///|

@@ -1,0 +1,270 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "fs-readlink-existing",
+      "command": "readlink",
+      "args": [
+        "-e",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the fixture directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Use a common path separator for comparison."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/sample\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "canonicalize-existing"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-readlink-missing-last",
+      "command": "readlink",
+      "args": [
+        "-fn",
+        "new"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the fixture directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Use a common path separator for comparison."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/new",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "canonicalize",
+        "no-newline"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-readlink-missing-tree",
+      "command": "readlink",
+      "args": [
+        "-mz",
+        "absent/child"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the fixture directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Use a common path separator for comparison."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/absent/child\u0000",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "canonicalize-missing",
+        "zero"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-readlink-resolved-link",
+      "command": "readlink",
+      "args": [
+        "-e",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [
+        {
+          "field": "stdout",
+          "rule": "working-directory",
+          "comment": "Compare the fixture directory with the oracle mount."
+        },
+        {
+          "field": "stdout",
+          "rule": "path-separator",
+          "comment": "Use a common path separator for comparison."
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "<WORK>/sample\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "canonicalize-existing"
+      ],
+      "oracle": true,
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "fs-readlink-stored-target",
+      "command": "readlink",
+      "args": [
+        "link"
+      ],
+      "files": [
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "readlink: stored symbolic-link target unavailable\n",
+      "comparison": "contract",
+      "coverage": [],
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "fs-readlink-ordinary-quiet",
+      "command": "readlink",
+      "args": [
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [],
+      "oracle": true
+    },
+    {
+      "id": "fs-readlink-verbose-missing",
+      "command": "readlink",
+      "args": [
+        "-ve",
+        "missing"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "readlink: missing: No such file or directory\n",
+      "comparison": "contract",
+      "coverage": [
+        "canonicalize-existing",
+        "verbose"
+      ]
+    },
+    {
+      "id": "fs-readlink-help",
+      "command": "readlink",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Usage: readlink -e|-f|-m [-nzv] FILE...\n  -f, --canonicalize  Allow a missing final component.\n  -e, --canonicalize-existing  Require every component to exist.\n  -m, --canonicalize-missing  Allow missing components.\n  -z, --zero  Terminate paths with NUL.\n  -n, --no-newline  Omit the newline for a single operand.\n  -v, --verbose  Report lookup errors.\n  --help  Show command help.\n  --version  Show the package version.\n\nPhysical canonicalization can resolve existing links. Reading stored link text, including the spelling of a dangling target, requires a public Wasm binding.\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ]
+    },
+    {
+      "id": "fs-readlink-version",
+      "command": "readlink",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "readlink 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ]
+    }
+  ]
+}

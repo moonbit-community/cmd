@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: fold [OPTION]... [FILE]...\nWrap each input line, reading stdin with no FILE or FILE -.\n  -b, --bytes          count bytes rather than columns\n  -c, --characters     count characters in the C-locale byte profile\n  -s, --spaces         break after the last available blank\n  -w, --width=WIDTH    use WIDTH columns instead of 80\n      --help           display this help and exit\n      --version        display version and exit\n"
+  "Usage: fold [OPTION]... [FILE]...\nWrap each input line, reading stdin with no FILE or FILE -.\n  -b, --bytes          count bytes rather than columns\n  -c, --characters     count characters in the selected locale profile\n  -s, --spaces         break after the last available blank\n  -w, --width=WIDTH    use WIDTH columns instead of 80\n      --help           display this help and exit\n      --version        display version and exit\n"
 }
 
 ///|

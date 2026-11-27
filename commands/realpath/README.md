@@ -2,6 +2,8 @@
 
 Resolve and normalize paths through MoonX.
 
+Readlink also uses this command's physical and lexical resolver for its canonicalization modes.
+
 ## Usage
 
 ```sh

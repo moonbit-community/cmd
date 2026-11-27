@@ -14,10 +14,22 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-28
 
+- Add Wasm tput, clear, redirected-input tty, signal-name lookup and the standalone test -t redirection predicate.
+- Add C.UTF-8 matching to grep and apply GNU uppercase byte order in join -i.
+- Extend the system-query profiles with the local identity report, GNU operating-system label and process table fields.
+
+- Add Wasm development profiles for uname, hostname, id, whoami, groups, nproc, ps, uptime and free.
+- Add C.UTF-8 character counting and display widths to wc, fold, expand, unexpand and column.
 - Add POSIX file identity comparisons to the development version of `test`.
 - Use the Windows GNU default binary marker for untagged checksum records.
 
 ## 2026-11-27
+
+- Add Wasm development profiles for stat, du, df, readlink, install and
+  truncate. Share the realpath resolver with readlink.
+- Add development candidates for tar, zip and unzip. They read and create
+  ustar/gzip or stored/deflated ZIP archives using the bounded archive filesystem
+  routines in cli/core.
 
 - Migrate eleven command drivers to standard-library asynchronous I/O on MoonBit
   1.0 RC1. These patch versions are development candidates.

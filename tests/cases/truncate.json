@@ -1,0 +1,358 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "fs-truncate-zero",
+      "command": "truncate",
+      "args": [
+        "-s",
+        "0",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "size"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "sample",
+          "content_hex": ""
+        }
+      ]
+    },
+    {
+      "id": "fs-truncate-extend",
+      "command": "truncate",
+      "args": [
+        "-s",
+        "+3",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "size"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff000000"
+        }
+      ]
+    },
+    {
+      "id": "fs-truncate-create",
+      "command": "truncate",
+      "args": [
+        "-s",
+        "4",
+        "new"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "size"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "new",
+          "content_hex": "00000000"
+        }
+      ]
+    },
+    {
+      "id": "fs-truncate-no-create",
+      "command": "truncate",
+      "args": [
+        "-cs",
+        "8",
+        "missing"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "size",
+        "no-create"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "missing",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "fs-truncate-hardlink",
+      "command": "truncate",
+      "args": [
+        "-s",
+        "0",
+        "alias"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "size"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "sample",
+          "content_hex": ""
+        },
+        {
+          "path": "alias",
+          "same_identity_as": "sample"
+        }
+      ]
+    },
+    {
+      "id": "fs-truncate-reject-shrink",
+      "command": "truncate",
+      "args": [
+        "-s",
+        "2",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "truncate: sample: shrinking this open file requires handle truncation\n",
+      "comparison": "contract",
+      "coverage": [
+        "size"
+      ],
+      "expected_files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ]
+    },
+    {
+      "id": "fs-truncate-help",
+      "command": "truncate",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Usage: truncate -s SIZE|-r REFERENCE [-c] FILE...\n  -s, --size VALUE  Set a size or apply a signed adjustment.\n  -c, --no-create  Skip a missing file.\n  -r, --reference FILE  Use the length of a regular reference file.\n  --help  Show command help.\n  --version  Show the package version.\n\nZeroing and creation use filesystem open modes. Positive sizes can create or extend a regular file by writing its last byte. Shrinking an existing file to a nonzero size requires handle truncation. Growth requires exclusive access to the file while adjusting its length.\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ]
+    },
+    {
+      "id": "fs-truncate-version",
+      "command": "truncate",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "truncate 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "fs-truncate-reference",
+      "command": "truncate",
+      "args": [
+        "-r",
+        "sample",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "reference"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "dest",
+          "content_hex": "00000000"
+        }
+      ]
+    },
+    {
+      "id": "fs-truncate-relative-reference",
+      "command": "truncate",
+      "args": [
+        "-r",
+        "sample",
+        "-s",
+        "+2",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "reference",
+        "size"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "dest",
+          "content_hex": "000000000000"
+        }
+      ]
+    },
+    {
+      "id": "fs-truncate-absolute-reference",
+      "command": "truncate",
+      "args": [
+        "-r",
+        "sample",
+        "-s",
+        "2",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "truncate: --reference requires a relative --size\n",
+      "comparison": "contract",
+      "coverage": [
+        "reference",
+        "size"
+      ],
+      "expected_files": [
+        {
+          "path": "dest",
+          "exists": false
+        }
+      ]
+    }
+  ]
+}

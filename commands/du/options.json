@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "command": "du",
+  "help": "Usage: du {-b|-A|--inodes} [-asclL0] [FILE...]\n{{help:bytes:0}}\n{{help:apparent-size:0}}\n{{help:block-size:0}}\n{{help:kilobytes:0}}\n{{help:all:0}}\n{{help:summarize:0}}\n{{help:inodes:0}}\n{{help:total:0}}\n{{help:count-links:0}}\n{{help:dereference:0}}\n{{help:null:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nUse -b for apparent bytes or --inodes for entry counts. Directories contribute zero apparent bytes. POSIX file identities suppress duplicate names. On Windows, multiple operands and directory trees require -l, and directory trees require physical traversal. Allocated blocks need additional metadata.\n",
+  "catalog_options": [
+    "bytes",
+    "apparent-size",
+    "block-size",
+    "kilobytes",
+    "all",
+    "summarize",
+    "inodes",
+    "total",
+    "count-links",
+    "dereference",
+    "null",
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "bytes",
+      "aliases": [
+        "-b",
+        "--bytes"
+      ],
+      "value": "none",
+      "description": "Show apparent sizes in bytes.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -b, --bytes  Show apparent sizes in bytes."
+      ]
+    },
+    {
+      "name": "apparent-size",
+      "aliases": [
+        "-A",
+        "--apparent-size"
+      ],
+      "value": "none",
+      "description": "Measure logical bytes with the specified block size.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -A, --apparent-size  Measure logical bytes with the specified block size."
+      ],
+      "short": "A"
+    },
+    {
+      "name": "block-size",
+      "aliases": [
+        "-B",
+        "--block-size"
+      ],
+      "value": "required",
+      "description": "Round output up to this positive byte unit.",
+      "short": "B",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -B, --block-size VALUE  Round output up to this positive byte unit."
+      ]
+    },
+    {
+      "name": "kilobytes",
+      "aliases": [
+        "-k",
+        "--kilobytes"
+      ],
+      "value": "none",
+      "description": "Use units of 1024 bytes.",
+      "short": "k",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -k, --kilobytes  Use units of 1024 bytes."
+      ]
+    },
+    {
+      "name": "all",
+      "aliases": [
+        "-a",
+        "--all"
+      ],
+      "value": "none",
+      "description": "Show files as well as directories.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -a, --all  Show files as well as directories."
+      ]
+    },
+    {
+      "name": "summarize",
+      "aliases": [
+        "-s",
+        "--summarize"
+      ],
+      "value": "none",
+      "description": "Print one total for each operand.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --summarize  Print one total for each operand."
+      ]
+    },
+    {
+      "name": "inodes",
+      "aliases": [
+        "--inodes"
+      ],
+      "value": "none",
+      "description": "Count filesystem entries.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --inodes  Count filesystem entries."
+      ]
+    },
+    {
+      "name": "total",
+      "aliases": [
+        "-c",
+        "--total"
+      ],
+      "value": "none",
+      "description": "Print a final total.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --total  Print a final total."
+      ]
+    },
+    {
+      "name": "count-links",
+      "aliases": [
+        "-l",
+        "--count-links"
+      ],
+      "value": "none",
+      "description": "Count each operand, including hard-link aliases.",
+      "short": "l",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -l, --count-links  Count each operand, including hard-link aliases."
+      ]
+    },
+    {
+      "name": "dereference",
+      "aliases": [
+        "-L",
+        "--dereference"
+      ],
+      "value": "none",
+      "description": "Follow symbolic links.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -L, --dereference  Follow symbolic links."
+      ]
+    },
+    {
+      "name": "null",
+      "aliases": [
+        "-0",
+        "--null"
+      ],
+      "value": "none",
+      "description": "Terminate each record with NUL.",
+      "short": "0",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -0, --null  Terminate each record with NUL."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "bytes",
+        "apparent-size",
+        "block-size",
+        "kilobytes",
+        "all",
+        "summarize",
+        "inodes",
+        "total",
+        "count-links",
+        "dereference",
+        "null",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

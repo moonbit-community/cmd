@@ -1,0 +1,7 @@
+import {
+  "cli/du/internal/driver",
+}
+
+supported_targets = "wasm"
+
+pkgtype(kind: "executable")

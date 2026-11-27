@@ -1,0 +1,213 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "archive-unzip-version",
+      "command": "unzip",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "unzip 0.1.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "archive-unzip-names",
+      "command": "unzip",
+      "args": [
+        "-Z1",
+        "reference.zip"
+      ],
+      "files": [
+        {
+          "path": "reference.zip",
+          "content_hex": "504b03040a00000000005d097c5dd2a917d804000000040000000600000073616d706c65610062ff504b01021e030a00000000005d097c5dd2a917d80400000004000000060000000000000000000000a4810000000073616d706c65504b0506000000000100010034000000280000000000"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "names"
+      ],
+      "expected_stdout_text": "sample\n",
+      "expected_stderr_text": "",
+      "oracle": true
+    },
+    {
+      "id": "archive-unzip-binary-pipe",
+      "command": "unzip",
+      "args": [
+        "-p",
+        "reference.zip",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "reference.zip",
+          "content_hex": "504b03040a00000000005d097c5dd2a917d804000000040000000600000073616d706c65610062ff504b01021e030a00000000005d097c5dd2a917d80400000004000000060000000000000000000000a4810000000073616d706c65504b0506000000000100010034000000280000000000"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "pipe"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "expected_stdout_hex": "610062ff"
+    },
+    {
+      "id": "archive-unzip-extract",
+      "command": "unzip",
+      "args": [
+        "-q",
+        "reference.zip",
+        "-d",
+        "out"
+      ],
+      "files": [
+        {
+          "path": "reference.zip",
+          "content_hex": "504b03040a00000000005d097c5dd2a917d804000000040000000600000073616d706c65610062ff504b01021e030a00000000005d097c5dd2a917d80400000004000000060000000000000000000000a4810000000073616d706c65504b0506000000000100010034000000280000000000"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "quiet",
+        "directory"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "out/sample",
+          "content_hex": "610062ff"
+        }
+      ]
+    },
+    {
+      "id": "archive-unzip-skip-existing",
+      "command": "unzip",
+      "args": [
+        "-qn",
+        "reference.zip"
+      ],
+      "files": [
+        {
+          "path": "reference.zip",
+          "content_hex": "504b03040a00000000005d097c5dd2a917d804000000040000000600000073616d706c65610062ff504b01021e030a00000000005d097c5dd2a917d80400000004000000060000000000000000000000a4810000000073616d706c65504b0506000000000100010034000000280000000000"
+        },
+        {
+          "path": "sample",
+          "content_hex": "00"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "quiet",
+        "never-overwrite"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "sample",
+          "content_hex": "00"
+        }
+      ]
+    },
+    {
+      "id": "archive-unzip-crc",
+      "command": "unzip",
+      "args": [
+        "-tq",
+        "reference.zip"
+      ],
+      "files": [
+        {
+          "path": "reference.zip",
+          "content_hex": "504b03040a00000000005d097c5dd2a917d804000000040000000600000073616d706c65610062ff504b01021e030a00000000005d097c5dd2a917d80400000004000000060000000000000000000000a4810000000073616d706c65504b0506000000000100010034000000280000000000"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "test",
+        "quiet"
+      ],
+      "expected_stdout_text": "No errors detected in compressed data of reference.zip.\n",
+      "expected_stderr_text": "",
+      "oracle": true
+    },
+    {
+      "id": "archive-unzip-invalid",
+      "command": "unzip",
+      "args": [
+        "-q",
+        "bad.zip",
+        "-d",
+        "out"
+      ],
+      "files": [
+        {
+          "path": "bad.zip",
+          "content_hex": "616263"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "quiet",
+        "directory"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "unzip: MissingEndOfCentral: zip: end of central directory not found\n",
+      "expected_files": [
+        {
+          "path": "out",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "archive-unzip-help",
+      "command": "unzip",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: unzip [-Z1|-p|-t] [-qn] [-d DIRECTORY] ARCHIVE [MEMBER...]\n  -Z1  List archive member names.\n  -p  Write selected file contents to stdout.\n  -t  Verify entry data and checksums.\n  -q  Suppress extraction progress.\n  -n  Skip existing output files.\n  -d  Choose the extraction directory.\n  --help  Show command help.\n  --version  Show the package version.\n\nExtract new regular files in a caller-controlled directory. Exact selections and payloads up to 64 MiB are supported.\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

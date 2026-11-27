@@ -1,6 +1,6 @@
 name = "cli/fold"
 
-version = "0.1.7"
+version = "0.1.8"
 
 readme = "README.md"
 
@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "fold command for MoonX."
 
 import {
-  "cli/core@0.11.3",
+  "cli/core@0.11.4",
 }

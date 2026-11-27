@@ -142,6 +142,9 @@ fn Matcher::matches_record(
   ignore_case : Bool,
 ) -> Bool {
   match self {
+    Unicode(pattern, whole, word) =>
+      pattern.find_span(@bytere.Utf8Record::new(record), whole~, word~)
+      is Some(_)
     ManyFixed(set) =>
       set.matches(if ignore_case { folded_bytes(record)[:] } else { record })
     Fixed(patterns, whole, word) => {
@@ -174,6 +177,10 @@ fn MatchEmitter::new(
   options : GrepOptions,
 ) -> MatchEmitter {
   let next : (Int32) -> (Int32, Int32)? = match matcher {
+    Unicode(pattern, whole, word) => {
+      let input = @bytere.Utf8Record::new(record.data)
+      start => pattern.find_span(input, start~, whole~, word~)
+    }
     ManyFixed(set) => {
       let line = if options.ignore_case {
         folded_bytes(record.data)[:]
@@ -322,13 +329,37 @@ async fn process_reader(
   let mut emitted_through = 0L
   let mut after = 0
   let mut binary_reported = false
+  let require_text = matcher is Unicode(_, _, _) && options.binary_mode != Text
+  async fn report_binary() {
+    if !binary_reported && options.binary_mode == Report {
+      @stream.flush_binary(stdout, spans)
+      output.flush()
+      let name = if path == "-" { "(standard input)" } else { path }
+      stderr.write(@utf8.encode("grep: \{name}: binary file matches\n"))
+      binary_reported = true
+    }
+  }
+  async fn print_line(record : Record, selected : Bool) {
+    if require_text {
+      for i = 0; i < record.data.length(); {
+        let (c, n) = @textwidth.Profile::Utf8.next(record.data, i)
+        if c is None {
+          report_binary()
+          return
+        }
+        continue i + n
+      }
+    }
+    write_record(record, path, options, prefix_filename, selected, output)
+  }
   let execution = options.execution(prefix_filename)
   let emit_records = !(execution is Summary(_))
   for ;; {
     if !options.invert && !options.context_enabled {
       input.skip_nonmatching(matcher, options.ignore_case)
     }
-    if execution is BatchedRecords &&
+    if !require_text &&
+      execution is BatchedRecords &&
       (!input.binary || options.binary_mode != Report) {
       selected_count += input.collect_records(matcher, options, spans)
       @stream.flush_binary(output, spans)
@@ -380,12 +411,8 @@ async fn process_reader(
       continue
     }
     if input.binary && options.binary_mode == Report {
-      if keep && !binary_reported {
-        @stream.flush_binary(stdout, spans)
-        output.flush()
-        let name = if path == "-" { "(standard input)" } else { path }
-        stderr.write(@utf8.encode("grep: \{name}: binary file matches\n"))
-        binary_reported = true
+      if keep {
+        report_binary()
       }
       continue
     }
@@ -404,15 +431,15 @@ async fn process_reader(
       }
       while before.pop_front() is Some(context) {
         if context.number > emitted_through {
-          write_record(context, path, options, prefix_filename, false, output)
+          print_line(context, false)
           emitted_through = context.number
         }
       }
-      write_record(record, path, options, prefix_filename, true, output)
+      print_line(record, true)
       emitted_through = record.number
       after = options.after_context
     } else if after > 0 {
-      write_record(record, path, options, prefix_filename, false, output)
+      print_line(record, false)
       emitted_through = record.number
       after -= 1
     }

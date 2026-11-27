@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "command": "column",
-  "help": "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n{{help:table:0}}\n{{help:separator:0}}\n{{help:output-separator:0}}\n{{help:output-width:0}}\n{{help:fillrows:0}}\n{{help:help:0}}\n{{help:version:0}}\nLayout uses the C locale. Bytes above ASCII are printed as \\xHH.\nLayout uses temporary files and requires filesystem write access.\n",
+  "help": "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n{{help:table:0}}\n{{help:separator:0}}\n{{help:output-separator:0}}\n{{help:output-width:0}}\n{{help:fillrows:0}}\n{{help:help:0}}\n{{help:version:0}}\nC.UTF-8 measures Unicode cells. C escapes bytes above ASCII.\nLayout uses temporary files and requires filesystem write access.\n",
   "catalog_options": [
     "table",
     "separator",

@@ -1,12 +1,37 @@
 # Compatibility
 
 This guide describes the current workspace's supported command behavior.
-It covers 82 command modules implemented in pure MoonBit for MoonX/Wasm.
+The workspace command modules use pure MoonBit on MoonX/Wasm.
 Support means the documented profile, not complete GNU, POSIX or upstream parity.
 
 All command packages declare Wasm as their only build target. Core packages
 do the same except `platform` and `gzipops`, which retain Native support for
 test-tool consumers. The execution tools under `tests` and `tools` remain Native.
+
+## Terminal and signal queries
+
+| Command | Supported behavior |
+| --- | --- |
+| [clear](../commands/clear/README.md) | Reads the directory-format ncurses database selected by TERM, TERMINFO or TERMINFO_DIRS. Redirected stdout receives the same bytes. Padding-dependent commands are rejected. Windows requires an explicitly installed directory database. |
+| [tput](../commands/tput/README.md) | Supports boolean, numeric and byte-string capabilities, longname, clear and up to nine numeric parameters. Missing standard values retain ncurses status and output. Use -T for database dimensions. Live size, string parameters, terminal reinitialization and padding require additional terminal support. |
+| [tty](../commands/tty/README.md) | A regular file, directory, pipe, socket or block device produces not a tty and status 1. Character devices require a terminal ioctl, and Windows descriptor queries require a public console API; these cases return status 2. |
+| [kill](../commands/kill/README.md) | Uses the released async signal API for host signal numbers on Linux and macOS. Arbitrary PID signal delivery and other signal names are unsupported. |
+
+The standalone `test -t` reports false for redirected POSIX standard descriptors. `stty` and interactive `watch` require Wasm terminal attribute, resize and lifecycle APIs.
+
+## System information
+
+| Command | Supported host observations |
+| --- | --- |
+| [uname](../commands/uname/README.md) | Linux reads kernel fields from procfs. `-o` emits the GNU operating-system label on Linux and macOS. macOS also supports the Darwin kernel name. Windows, machine architecture and the full `-a` form are unavailable. |
+| [hostname](../commands/hostname/README.md) | Reads `/proc/sys/kernel/hostname` in the current namespace. Name changes, resolver-derived aliases and other operating systems are unsupported. |
+| [id](../commands/id/README.md) | Linux reads real and effective IDs and supplementary groups from procfs. The default report resolves local account names. It requires matching real/effective groups and either POSIXLY_CORRECT or a kernel without SELinux/SMACK filesystems. Named-user and external directory lookups remain unsupported. |
+| [whoami](../commands/whoami/README.md) | Reads process credentials from Linux procfs. Names must resolve from the first configured local files source in /etc/nsswitch.conf. External directory lookups and named operands are unsupported. |
+| [groups](../commands/groups/README.md) | Reads process credentials from Linux procfs. Names must resolve from the first configured local files source in /etc/nsswitch.conf. External directory lookups and named operands are unsupported. |
+| [uptime](../commands/uptime/README.md) | Reads the first value of /proc/uptime, including suspend time. Calendar boot time, load averages and logged-in user counts are outside this profile. |
+| [free](../commands/free/README.md) | Uses a single /proc/meminfo snapshot with MemAvailable and SReclaimable. Reports kernel-wide RAM, including reclaimable slab, and swap. Values are independent of cgroup memory limits. |
+| [ps](../commands/ps/README.md) | Reads one `/proc/PID/stat` record for each selection. No-heading fields include `comm`, `pid`, `ppid`, `pgid`, `sid`, `tpgid`, `state`, `nice` and `nlwp`. Repeat `-o FIELD=` or use comma-separated fields. Names must be printable ASCII. A missing process returns status 1 with empty output. |
+| [nproc](../commands/nproc/README.md) | The default follows the current process affinity, OpenMP thread settings and the CPU quota hierarchy on a standard cgroup v2 mount. Realtime scheduling policies ignore quotas. --all counts configured CPU directories from sysfs. Nonstandard cgroup v2 mounts are rejected. |
 
 ## Workspace and published packages
 
@@ -55,6 +80,15 @@ identify the principal refusals and platform differences.
 
 | Command | Supported behavior | Limits |
 | --- | --- | --- |
+| [df](../commands/df/README.md) | Linux mount source, type and mount point for named paths. | Requires procfs. Capacity needs filesystem statistics. |
+| [du](../commands/du/README.md) | Recursive apparent bytes and inode counts, per-file or summary output, rounded units, totals and POSIX duplicate suppression. | Allocated sizes unavailable. Windows trees require physical traversal and -l. |
+| [stat](../commands/stat/README.md) | File types, names, entry sizes, integer timestamps and dereference. | Requires a selected format. macOS directory size is unavailable. |
+| [readlink](../commands/readlink/README.md) | Existing, all-but-last and missing-component canonicalization, NUL and no-newline output. | Stored targets and unresolved symbolic links need readlink. |
+| [install](../commands/install/README.md) | POSIX file installation, including unlinking and recreating distinct regular destinations, numeric modes and directories. | Caller-controlled directories. Equal or unavailable identities, destination links and Windows modes excluded. |
+| [truncate](../commands/truncate/README.md) | Path-based zero truncation, sparse creation and extension, relative size and rounding. | Reducing an already-open file needs handle truncation. Growth assumes exclusive access. |
+| [tar](../commands/tar/README.md) | GNU tar create, list, extract and stdout profiles for ustar and gzip. | UTF-8 names, regular files and directories, fixed archive metadata, new files only. |
+| [zip](../commands/zip/README.md) | Info-ZIP recursive archive creation, stored entries and Deflate levels 1–9. | New archives, relative names, synthetic metadata. |
+| [unzip](../commands/unzip/README.md) | Info-ZIP name listing, verification, stdout and named-directory extraction. | Exact selections, regular files and directories, no overwrite or metadata restoration. |
 | [base32](../commands/base32/README.md) | RFC 4648 Base32 encoding and decoding; wrapping and garbage filtering. | Uppercase alphabet; decoding retains the whole input. |
 | [base64](../commands/base64/README.md) | Streaming Base64 encoding and decoding; wrapping and garbage filtering. | Standard alphabet and canonical tail bits; malformed padding fails. |
 | [basename](../commands/basename/README.md) | Lexical basename and literal suffix removal; multiple and NUL-separated output. | No filesystem lookup. |
@@ -62,8 +96,8 @@ identify the principal refusals and platform differences.
 | [chmod](../commands/chmod/README.md) | POSIX numeric modes and closed symbolic assignments on regular files. | No Windows, reference or incremental symbolic modes. |
 | [cksum](../commands/cksum/README.md) | POSIX CRC and selected digest families; modern digest manifests. | No legacy-algorithm manifest checks; raw output is single-input. |
 | [cmp](../commands/cmp/README.md) | Byte comparison with skip/limit, quiet and list modes. | C-byte diagnostics. |
-| [column](../commands/column/README.md) | Grid/table layout, ANSI-aware width and temporary spooling. | No automatic terminal width or full util-linux grammar. |
-| [comm](../commands/comm/README.md) | Three-column sorted comparison, order checks, custom delimiters and totals. | C-locale byte ordering. |
+| [column](../commands/column/README.md) | Grid/table layout, C.UTF-8 cell widths, ANSI-aware table fields and temporary spooling. | No automatic terminal width or full util-linux grammar. |
+| [comm](../commands/comm/README.md) | Three-column sorted comparison, order checks, custom delimiters and totals. | C and C.UTF-8 byte ordering. |
 | [cp](../commands/cp/README.md) | New file/tree copies with --no-preserve=mode; explicit skip policies. | No mode-preserving, archive or existing-file replacement copies. |
 | [csplit](../commands/csplit/README.md) | Numeric/regex splits, repeats, suffixes and fragment cleanup. | No overwrite; Windows path-name and temporary-storage boundaries. |
 | [curl](../commands/curl/README.md) | HTTP(S), Basic auth, cookies, redirects, retry, upload and resume. | No other protocols/non-Basic auth; finite config/IRI/Cookie profile. |
@@ -73,18 +107,18 @@ identify the principal refusals and platform differences.
 | [dirname](../commands/dirname/README.md) | Lexical parent paths for multiple operands; NUL-separated output. | No physical path resolution. |
 | [echo](../commands/echo/README.md) | Argument joining, byte escapes and POSIXLY_CORRECT behavior. | No ordinary -- terminator; metadata options are standalone-only. |
 | [env](../commands/env/README.md) | Environment listing/replacement, unset, chdir and split-string child launch. | Launcher permissions and supported split grammar. |
-| [expand](../commands/expand/README.md) | Tab expansion with fixed/custom stops and initial-only mode. | C-byte column semantics. |
+| [expand](../commands/expand/README.md) | Tab expansion with fixed/custom stops and initial-only mode. | C-byte and C.UTF-8 cell positions. |
 | [expr](../commands/expr/README.md) | Integer/string expressions and BRE matching/captures. | Finite expression grammar and C-byte semantics. |
 | [false](../commands/false/README.md) | Silent status 1. | Standalone metadata options exit 0. |
 | [find](../commands/find/README.md) | Traversal, name/path/type/size/time/access predicates and selected actions. | Limited action grammar and filesystem identity/owner metadata. |
 | [fmt](../commands/fmt/README.md) | Paragraph reflow, goal/width, indentation, prefixes and spacing modes. | C-locale bytes. |
-| [fold](../commands/fold/README.md) | Byte/control-column wrapping and whitespace breaks. | C-locale width. |
-| [grep](../commands/grep/README.md) | BRE/ERE/literal search, context, recursion and binary policies. | C-byte matching and ASCII case folding. |
+| [fold](../commands/fold/README.md) | Byte/control-column wrapping and whitespace breaks. | C-byte and C.UTF-8 scalar widths. |
+| [grep](../commands/grep/README.md) | BRE/ERE/literal search, context, recursion and binary policies. | C-byte and C.UTF-8 scalar matching with original byte offsets. |
 | [gunzip](../commands/gunzip/README.md) | Streaming multi-member gzip decompression and integrity checks. | Partial output on corruption; named-file metadata/replacement limits. |
 | [gzip](../commands/gzip/README.md) | Streaming gzip levels 1–9 and checked multi-member decompression. | Named compression requires -nc; no saved metadata or file replacement. |
 | [head](../commands/head/README.md) | Line/byte prefixes, negative counts, headers and NUL records. | Finite Int64 counts. |
 | [hexdump](../commands/hexdump/README.md) | Canonical/custom dumps, offsets, duplicate suppression and colors. | Fixed numeric profile; forward stdin discard is an extension. |
-| [join](../commands/join/README.md) | Field joins, unpaired rows, headers, output selection and order checks. | Sorted C-byte input; no locale collation. |
+| [join](../commands/join/README.md) | Field joins, unpaired rows, headers, output selection and order checks. | C and C.UTF-8 byte ordering, with ASCII uppercase keys for -i. |
 | [jq](../commands/jq/README.md) | JSON filters, lexical functions, modules, shared input cursor and stream events. | Subset language; exact numeric ordering at or above 2^53 is not claimed. |
 | [jqlog](../commands/jqlog/README.md) | JSONL filtering with compact results and per-line evaluation. | Skips invalid JSON; no module/input effects. |
 | [ln](../commands/ln/README.md) | POSIX symbolic links, relative targets, replacement and backups. | No hard links or Windows creation. |
@@ -114,7 +148,7 @@ identify the principal refusals and platform differences.
 | [sha256sum](../commands/sha256sum/README.md) | Streaming SHA-256 and checksum manifest verification. | Binary/text modes do not translate bytes. |
 | [sha512sum](../commands/sha512sum/README.md) | Streaming SHA-512 and checksum manifest verification. | Binary/text modes do not translate bytes. |
 | [sleep](../commands/sleep/README.md) | Summed fractional second/minute/hour/day delays. | Host signal parity is outside the supported profile. |
-| [sort](../commands/sort/README.md) | Keyed sort, exact numeric order, stable ties, merge/check and external runs. | C locale; accounted buffer is not an RSS bound; output-identity limits. |
+| [sort](../commands/sort/README.md) | Keyed sort, exact numeric order, stable ties, merge/check and external runs. | C/C.UTF-8 byte order, accounted buffer and output-identity limits. |
 | [split](../commands/split/README.md) | Line/byte/record/chunk splitting, suffixes and shell filters. | No existing-output replacement; spooling and child permissions may apply. |
 | [strings](../commands/strings/README.md) | Printable 7-bit/8-bit runs, minimum lengths, offsets and names. | No wide encodings, Unicode classes or object-section parsing. |
 | [tac](../commands/tac/README.md) | Reverse records with fixed or regex separators. | Regex mode uses whole-input memory; stdin may need temporary storage. |
@@ -123,14 +157,14 @@ identify the principal refusals and platform differences.
 | [test](../commands/test/README.md) | String/integer/file predicates, Boolean forms and POSIX `-ef` identity comparison. | Windows `-ef` and unavailable terminal, owner and mode predicates reject. |
 | [timeout](../commands/timeout/README.md) | Local-only child deadline and exit-status mapping. | Unpublished; no process-group or signal-option profile. |
 | [touch](../commands/touch/README.md) | Create missing files or skip them with -c. | No timestamp updates; existing files fail. |
-| [tr](../commands/tr/README.md) | Byte translation, deletion, squeezing, complement and truncation. | C-locale byte semantics. |
+| [tr](../commands/tr/README.md) | Byte translation, deletion, squeezing, complement and truncation. | C/C.UTF-8 byte classes. |
 | [tree](../commands/tree/README.md) | Text/JSON/HTML trees, filtering, pruning, limits and supported sizes. | Link leaves; no target display/mode colors; platform size boundaries. |
 | [true](../commands/true/README.md) | Silent status 0. | Standalone metadata options are handled separately. |
 | [typst](../commands/typst/README.md) | Compilation/export, watch, eval/query, fonts, config and local templates. | Local packages, one thread, lexical paths; no network/self-update/HTML server. |
-| [unexpand](../commands/unexpand/README.md) | Leading/all-blank tab conversion with custom stops. | C-byte column semantics. |
+| [unexpand](../commands/unexpand/README.md) | Leading/all-blank tab conversion with custom stops. | C-byte and C.UTF-8 cell positions. |
 | [uniq](../commands/uniq/README.md) | Adjacent deduplication, counts, groups and selected comparison fields. | No global deduplication; C-locale bytes. |
 | [unlink](../commands/unlink/README.md) | One file or symlink removal. | No directories or multiple operands. |
-| [wc](../commands/wc/README.md) | Counts, C-byte display width, totals and NUL-separated file lists. | -m is not Unicode character counting; stdin position boundary. |
+| [wc](../commands/wc/README.md) | Counts, C/C.UTF-8 character and display widths, totals and NUL-separated file lists. | Stdin position boundary. |
 | [wget](../commands/wget/README.md) | HTTP(S) downloads, Basic auth, cookies, config, retry and resume. | No FTP/mirroring/HSTS; stdin authentication replay unavailable. |
 | [which](../commands/which/README.md) | PATH/direct executable lookup, all matches and quiet mode. | No shell aliases, functions or builtins. |
 | [xargs](../commands/xargs/README.md) | Argument batching, replacement, delimiters, confirmation and concurrency. | Host argument transport and process permissions. |
@@ -154,7 +188,12 @@ after Ctrl-Z. MSYS2 GNU coreutils 9.0 produced these records for named files,
 redirected file handles and pipes on Windows Server 2025.
 
 - **Text and numbers:** most traditional text commands use C-locale byte
-  semantics. This includes wc character counting, cut, tr, grep and sort.
+  semantics. This includes cut, tr and sort. For wc, fold, expand, unexpand and
+  column, C.UTF-8 or C.utf8 in the first nonempty LC_ALL, LC_CTYPE or LANG
+  selects Unicode 16.0 scalar widths with narrow ambiguous characters.
+  Grep uses the same locale precedence and Unicode 18.0 character properties
+  for C.UTF-8 matching. Sort, comm and join use byte collation in C and
+  C.UTF-8. Regional language collations require additional locale data.
   The Unicode regex profile in rg and JSON string handling in jq are separate.
   Numeric tools with extended-precision formatting use the documented fixed
   Linux amd64 profile, not an arbitrary host ABI.

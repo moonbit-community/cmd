@@ -1,0 +1,9 @@
+import {
+  "cli/core/platform",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/os_error",
+  "moonbitlang/x/path",
+  "moonbitlang/x/path/win32" @winpath,
+}
+
+supported_targets = "wasm"

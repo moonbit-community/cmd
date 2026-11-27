@@ -2,6 +2,8 @@
 
 Shared MoonBit libraries for command parsing, byte streams, filesystem access,
 HTTP transport and command-language execution.
+The `procfs` package reads Linux kernel fields for system queries.
+The `terminal` package reads compiled ncurses directory entries and classifies POSIX standard descriptors redirected to files, pipes or sockets.
 
 ## Usage
 
@@ -30,7 +32,10 @@ gzip codecs accept standard binary readers and writers.
 | cli | Option parsing and structured argument errors. |
 | stream, tempio | Bounded binary reads, record scanning, buffered output and temporary-file I/O. |
 | fsops, fswalk, platform | Path/filesystem mechanisms, traversal and host capabilities. |
-| bytesearch, bytere | Byte searching and the supported byte-regex engine. |
+| pathresolve | Physical and lexical canonicalization with explicit component-existence policies. |
+| bytesearch, bytere | Byte searching and the C-byte and C.UTF-8 grep regex engines. |
+| archivefs | Bounded regular-file and directory collection and extraction for tar and ZIP. |
+| textwidth | Incremental UTF-8 decoding, scalar cell widths and horizontal blanks for C.UTF-8. |
 | numfmt, quoting | Numeric parsing/formatting and byte/path quoting. |
 | checksum, checksum/cli | Digest algorithms and shared checksum command handling. |
 | gzipops, gzipops/cli | Gzip streams and shared codec command handling. |
@@ -58,3 +63,8 @@ Build from source with the MoonBit 1.0 RC1 toolchain.
   [compatibility guide](../docs/compatibility.md). Release history belongs in
   [CHANGELOG](../CHANGELOG.md), and algorithm details in
   [docs/performance](../docs/performance/).
+
+
+Archive extraction requires a caller-controlled destination tree. Another
+process must not rename or replace a parent between the directory check and
+file creation. A filesystem error can leave earlier extracted files in place.

@@ -1,0 +1,7 @@
+import {
+  "cli/readlink/internal/driver",
+}
+
+supported_targets = "wasm"
+
+pkgtype(kind: "executable")

@@ -34,7 +34,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-- Inputs must be sorted by the selected join fields. Comparison uses C-locale bytes and optional ASCII case folding.
+- Inputs must be sorted by the selected join fields. C and C.UTF-8 compare bytes. With -i, GNU uppercase-byte order puts Z before [ and keeps non-ASCII bytes distinct.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 

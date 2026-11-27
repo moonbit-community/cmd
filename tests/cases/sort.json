@@ -2,6 +2,82 @@
   "schema": 2,
   "cases": [
     {
+      "id": "sort-locale-c-byte-collation",
+      "command": "sort",
+      "args": [],
+      "stdin_hex": "7a0ac3840a610ac3a40a5b210a410aff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "410a5b210a610a7a0ac3840ac3a40aff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-locale-utf8-byte-collation",
+      "command": "sort",
+      "args": [],
+      "stdin_hex": "7a0ac3840a610ac3a40a5b210a410aff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "410a5b210a610a7a0ac3840ac3a40aff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-locale-c-fold-dictionary",
+      "command": "sort",
+      "args": [
+        "-s",
+        "-f",
+        "-d"
+      ],
+      "stdin_hex": "7a0ac3840a610ac3a40a5b210a410aff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c3840ac3a40a5b210aff0a610a410a7a0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "sort-locale-utf8-fold-dictionary",
+      "command": "sort",
+      "args": [
+        "-s",
+        "-f",
+        "-d"
+      ],
+      "stdin_hex": "7a0ac3840a610ac3a40a5b210a410aff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c3840ac3a40a5b210aff0a610a410a7a0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
       "id": "phase3-sort-basic",
       "command": "sort",
       "args": [],

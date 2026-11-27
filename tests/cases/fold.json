@@ -2,6 +2,164 @@
   "schema": 2,
   "cases": [
     {
+      "id": "fold-width-c-columns",
+      "command": "fold",
+      "args": [
+        "-w4"
+      ],
+      "stdin_hex": "e4b8ad65cc81c2a14142ff0a4142095a0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad650acc81c2a10a4142ff0a41420a090a5a0a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "fold-width-utf8-columns",
+      "command": "fold",
+      "args": [
+        "-w4"
+      ],
+      "stdin_hex": "e4b8ad65cc81c2a14142ff0a4142095a0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad65cc81c2a10a4142ff0a41420a090a5a0a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "fold-width-c-characters",
+      "command": "fold",
+      "args": [
+        "-c",
+        "-w2"
+      ],
+      "stdin_hex": "e4b8ad65cc81c2a1410a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b80aad650acc810ac2a10a410a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "fold-width-utf8-characters",
+      "command": "fold",
+      "args": [
+        "-c",
+        "-w2"
+      ],
+      "stdin_hex": "e4b8ad65cc81c2a1410a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad650acc81c2a10a410a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "fold-width-c-bytes",
+      "command": "fold",
+      "args": [
+        "-b",
+        "-w4"
+      ],
+      "stdin_hex": "e4b8ad65cc81c2a1410a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad650acc81c2a10a410a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "fold-width-utf8-bytes",
+      "command": "fold",
+      "args": [
+        "-b",
+        "-w4"
+      ],
+      "stdin_hex": "e4b8ad65cc81c2a1410a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad650acc81c2a10a410a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "fold-width-c-blank-wrap",
+      "command": "fold",
+      "args": [
+        "-s",
+        "-w5"
+      ],
+      "stdin_hex": "e4b8ade38080616263640a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ade3800a80616263640a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "fold-width-utf8-blank-wrap",
+      "command": "fold",
+      "args": [
+        "-s",
+        "-w5"
+      ],
+      "stdin_hex": "e4b8ade38080616263640a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ade380800a616263640a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
       "id": "fold-width-newline",
       "command": "fold",
       "args": [
@@ -239,7 +397,7 @@
         "help"
       ],
       "source_version": "workspace cli/fold@0.1.4 metadata contract",
-      "expected_stdout_text": "Usage: fold [OPTION]... [FILE]...\nWrap each input line, reading stdin with no FILE or FILE -.\n  -b, --bytes          count bytes rather than columns\n  -c, --characters     count characters in the C-locale byte profile\n  -s, --spaces         break after the last available blank\n  -w, --width=WIDTH    use WIDTH columns instead of 80\n      --help           display this help and exit\n      --version        display version and exit\n",
+      "expected_stdout_text": "Usage: fold [OPTION]... [FILE]...\nWrap each input line, reading stdin with no FILE or FILE -.\n  -b, --bytes          count bytes rather than columns\n  -c, --characters     count characters in the selected locale profile\n  -s, --spaces         break after the last available blank\n  -w, --width=WIDTH    use WIDTH columns instead of 80\n      --help           display this help and exit\n      --version        display version and exit\n",
       "expected_stderr_text": ""
     },
     {
@@ -258,7 +416,7 @@
         "version"
       ],
       "source_version": "workspace cli/fold@0.1.4 metadata contract",
-      "expected_stdout_text": "fold 0.1.7\n",
+      "expected_stdout_text": "fold 0.1.8\n",
       "expected_stderr_text": ""
     },
     {

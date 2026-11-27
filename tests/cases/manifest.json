@@ -2,6 +2,45 @@
   "schema": 2,
   "commands": [
     {
+      "name": "clear"
+    },
+    {
+      "name": "tput"
+    },
+    {
+      "name": "tty"
+    },
+    {
+      "name": "kill"
+    },
+    {
+      "name": "uname"
+    },
+    {
+      "name": "hostname"
+    },
+    {
+      "name": "id"
+    },
+    {
+      "name": "whoami"
+    },
+    {
+      "name": "groups"
+    },
+    {
+      "name": "uptime"
+    },
+    {
+      "name": "free"
+    },
+    {
+      "name": "ps"
+    },
+    {
+      "name": "nproc"
+    },
+    {
       "name": "base32"
     },
     {
@@ -246,10 +285,50 @@
     },
     {
       "name": "serve"
+    },
+    {
+      "name": "tar"
+    },
+    {
+      "name": "zip"
+    },
+    {
+      "name": "unzip"
+    },
+    {
+      "name": "df"
+    },
+    {
+      "name": "du"
+    },
+    {
+      "name": "install"
+    },
+    {
+      "name": "readlink"
+    },
+    {
+      "name": "stat"
+    },
+    {
+      "name": "truncate"
     }
   ],
   "cases": [],
   "case_files": [
+    "clear.json",
+    "tput.json",
+    "tty.json",
+    "kill.json",
+    "uname.json",
+    "hostname.json",
+    "id.json",
+    "whoami.json",
+    "groups.json",
+    "uptime.json",
+    "free.json",
+    "ps.json",
+    "nproc.json",
     "base32.json",
     "cksum.json",
     "expand.json",
@@ -331,6 +410,15 @@
     "date.json",
     "rg.json",
     "typst.json",
-    "serve.json"
+    "serve.json",
+    "tar.json",
+    "zip.json",
+    "unzip.json",
+    "df.json",
+    "du.json",
+    "install.json",
+    "readlink.json",
+    "stat.json",
+    "truncate.json"
   ]
 }

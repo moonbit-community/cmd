@@ -71,6 +71,35 @@ pub async fn execute_scenario(
         | "sha256sum-windows-checksum-modes"
         | "sha512sum-windows-checksum-modes" =>
           windows_checksum_scenario(root, fixture.command, work)
+        "tty-linux-pty" => tty_pty(work, root)
+        "kill-linux-reference"
+        | "tput-linux-reference"
+        | "clear-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "uname-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "id-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "ps-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "uname-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "hostname-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "id-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "whoami-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "groups-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "uptime-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "free-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "ps-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "nproc-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
         "serve-static" => serve_static_scenario(root, work, false)
         "serve-policy" => serve_static_scenario(root, work, true)
         "typst-artifacts" => typst_artifacts_scenario(root, work)

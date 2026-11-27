@@ -1,0 +1,258 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "tput-position",
+      "command": "tput",
+      "args": [
+        "cup",
+        "2",
+        "3"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "\u001b[3;4H",
+      "expected_stderr_text": "",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-numeric",
+      "command": "tput",
+      "args": [
+        "-T",
+        "cmdterm",
+        "cols"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "73\n",
+      "expected_stderr_text": "",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-absent-number",
+      "command": "tput",
+      "args": [
+        "colors"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "-1\n",
+      "expected_stderr_text": "",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-boolean",
+      "command": "tput",
+      "args": [
+        "am"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-absent-boolean",
+      "command": "tput",
+      "args": [
+        "xenl"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-absent-string",
+      "command": "tput",
+      "args": [
+        "bold"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-unknown",
+      "command": "tput",
+      "args": [
+        "xyz42"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 4,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tput: unknown terminfo capability 'xyz42'\n",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-longname",
+      "command": "tput",
+      "args": [
+        "longname"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "Command fixture",
+      "expected_stderr_text": "",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-termcap-spelling",
+      "command": "tput",
+      "args": [
+        "cl"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 4,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tput: unknown terminfo capability 'cl'\n",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-live-size",
+      "command": "tput",
+      "args": [
+        "cols"
+      ],
+      "files": [
+        {
+          "path": "db/c/cmdterm",
+          "content_hex": "1a011800020001000b001900636d647465726d7c436f6d6d616e6420666978747572650000014900ffffffffffffffffffff0000ffffffffffffffff08001b5b481b5b324a001b5b256925703125643b257032256448000000000000010002000800000000001b5b334a00453300"
+        }
+      ],
+      "environment": {
+        "TERMINFO": "db",
+        "TERM": "cmdterm"
+      },
+      "expected_status": 4,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tput: live terminal dimensions require an explicit -T database query\n",
+      "source_version": "ncurses tic -x; am, cols#73, clear, cup and extended E3"
+    },
+    {
+      "id": "tput-linux-reference",
+      "command": "tput",
+      "args": [
+        "-T",
+        "xterm",
+        "cup",
+        "7",
+        "3"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    }
+  ]
+}

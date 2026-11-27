@@ -1,0 +1,499 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "fs-du-bytes",
+      "command": "du",
+      "args": [
+        "-b",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\tsample\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-null-total",
+      "command": "du",
+      "args": [
+        "-bcl0",
+        "sample",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\tsample\u00004\tsample\u00008\ttotal\u0000",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "total",
+        "count-links",
+        "null"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-block-size",
+      "command": "du",
+      "args": [
+        "--apparent-size",
+        "-B",
+        "3",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "2\tsample\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "apparent-size",
+        "block-size"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-kilobyte",
+      "command": "du",
+      "args": [
+        "--apparent-size",
+        "-k",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "1\tsample\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "apparent-size",
+        "kilobytes"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-hardlinks",
+      "command": "du",
+      "args": [
+        "-bc",
+        "sample",
+        "alias"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\tsample\n4\ttotal\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "total"
+      ],
+      "oracle": true,
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "fs-du-symlink",
+      "command": "du",
+      "args": [
+        "-bL",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\tlink\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "dereference"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-allocated",
+      "command": "du",
+      "args": [
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "du: allocated block counts are unavailable; use --apparent-size or -b\n",
+      "comparison": "contract",
+      "coverage": []
+    },
+    {
+      "id": "fs-du-directory",
+      "command": "du",
+      "args": [
+        "-bl",
+        "out"
+      ],
+      "files": [
+        {
+          "path": "out",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "0\tout\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "count-links"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-help",
+      "command": "du",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Usage: du {-b|-A|--inodes} [-asclL0] [FILE...]\n  -b, --bytes  Show apparent sizes in bytes.\n  -A, --apparent-size  Measure logical bytes with the specified block size.\n  -B, --block-size VALUE  Round output up to this positive byte unit.\n  -k, --kilobytes  Use units of 1024 bytes.\n  -a, --all  Show files as well as directories.\n  -s, --summarize  Print one total for each operand.\n  --inodes  Count filesystem entries.\n  -c, --total  Print a final total.\n  -l, --count-links  Count each operand, including hard-link aliases.\n  -L, --dereference  Follow symbolic links.\n  -0, --null  Terminate each record with NUL.\n  --help  Show command help.\n  --version  Show the package version.\n\nUse -b for apparent bytes or --inodes for entry counts. Directories contribute zero apparent bytes. POSIX file identities suppress duplicate names. On Windows, multiple operands and directory trees require -l, and directory trees require physical traversal. Allocated blocks need additional metadata.\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ]
+    },
+    {
+      "id": "fs-du-version",
+      "command": "du",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "du 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "fs-du-tree",
+      "command": "du",
+      "args": [
+        "-bsl",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/sub",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/sub/data",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\ttree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "summarize",
+        "count-links"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-all",
+      "command": "du",
+      "args": [
+        "-bal",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/sub",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/sub/data",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\ttree/sub/data\n4\ttree/sub\n4\ttree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "all",
+        "count-links"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-inode-hardlinks",
+      "command": "du",
+      "args": [
+        "--inodes",
+        "-s",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/sub",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/sub/data",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "tree/alias",
+          "kind": "hardlink",
+          "target": "tree/sub/data"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "3\ttree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "inodes",
+        "summarize"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-link-bytes",
+      "command": "du",
+      "args": [
+        "-b",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "7\tlink\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-follow-cycle",
+      "command": "du",
+      "args": [
+        "-bLsl",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/sub",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/sub/data",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "tree/sub/up",
+          "kind": "symlink",
+          "target": "."
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\ttree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "dereference",
+        "summarize",
+        "count-links"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-short-apparent",
+      "command": "du",
+      "args": [
+        "-Asl",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree/sub",
+          "kind": "directory"
+        },
+        {
+          "path": "tree/sub/data",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "1\ttree\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "apparent-size",
+        "summarize",
+        "count-links"
+      ],
+      "oracle": true
+    }
+  ]
+}

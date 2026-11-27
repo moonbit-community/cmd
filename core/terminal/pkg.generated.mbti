@@ -1,0 +1,26 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/terminal"
+
+import {
+  "cstoooo/terminfo",
+}
+
+// Values
+pub fn capability(@terminfo.Entry, String, ArrayView[String], Bool) -> Bytes raise
+
+pub fn clear(@terminfo.Entry, Bool) -> Bytes raise
+
+pub async fn lookup(String?) -> @terminfo.Entry
+
+pub fn require_redirected(Int32) -> Unit raise
+
+// Errors
+pub(all) suberror TerminalError {
+  TerminalError(Int32, String)
+}
+
+// Types and methods
+
+// Type aliases
+
+// Traits

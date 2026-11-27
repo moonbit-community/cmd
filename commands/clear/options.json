@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "command": "clear",
+  "help": "Usage: clear [-x] [-T TYPE]\nEmit the clear sequence from a compiled terminal description.\n  -T  Use the specified terminal description.\n  -x  Preserve scrollback.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "terminal",
+    "keep-scrollback"
+  ],
+  "options": [
+    {
+      "name": "terminal",
+      "aliases": [
+        "-T"
+      ],
+      "value": "required",
+      "description": "Use the specified terminal description.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "keep-scrollback",
+      "aliases": [
+        "-x"
+      ],
+      "value": "none",
+      "description": "Preserve scrollback.",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "terminal",
+        "keep-scrollback",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

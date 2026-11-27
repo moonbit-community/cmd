@@ -1,0 +1,113 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "fs-df-mount-type",
+      "command": "df",
+      "args": [
+        "--output=source,fstype,target",
+        "/proc"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Filesystem Type Mounted on\nproc       proc /proc\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "output"
+      ],
+      "oracle": true,
+      "host_platforms": [
+        "linux"
+      ]
+    },
+    {
+      "id": "fs-df-capacity",
+      "command": "df",
+      "args": [
+        "."
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "df: capacity fields are unavailable; select --output=source,fstype,target\n",
+      "comparison": "contract",
+      "coverage": []
+    },
+    {
+      "id": "fs-df-other-host",
+      "command": "df",
+      "args": [
+        "--output=fstype",
+        "."
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "df: mount information requires Linux procfs\n",
+      "comparison": "contract",
+      "coverage": [
+        "output"
+      ],
+      "host_platforms": [
+        "macos",
+        "windows"
+      ]
+    },
+    {
+      "id": "fs-df-help",
+      "command": "df",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Usage: df --output=FIELDS FILE...\n  --output=FIELDS  Print source, fstype or target columns.\n  --help  Show command help.\n  --version  Show the package version.\n\nLinux --output=source,fstype,target reads /proc/self/mountinfo. Choose one or more unique columns and supply at least one path. Capacity, allocation and non-Linux mounts require a filesystem-statistics API.\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ]
+    },
+    {
+      "id": "fs-df-version",
+      "command": "df",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "df 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ]
+    }
+  ]
+}

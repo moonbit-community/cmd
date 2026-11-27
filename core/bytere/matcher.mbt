@@ -135,7 +135,13 @@ fn Pattern::search(
     for left in start..<=value.length() {
       if self.prefix_at(value, left) {
         match
-          self.reference_result(value, left, whole, word, restore_registers) {
+          self.reference_result(
+            ByteText(value),
+            left,
+            whole,
+            word,
+            restore_registers,
+          ) {
           Matched(hit) => return Some(hit)
           InvalidSelection => return None
           Miss => ()
