@@ -73,6 +73,7 @@ async fn execute(options : Invocation, host : @streams.Host) -> Int32 {
   let pull = options.csv ||
     separator ||
     main_getline ||
+    redirect_stdin ||
     options.assignments.any(pair => pair.0 == "RS" || pair.0 == "INPUTMODE") ||
     options.operands.any(arg => {
       arg.has_prefix("RS=") || arg.has_prefix("INPUTMODE=")

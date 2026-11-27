@@ -2,6 +2,28 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "case:awk-dynamic-getline-with-main-stdin",
+      "command": "awk",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/awk.json",
+      "case_id": "awk-dynamic-getline-with-main-stdin",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:awk-dynamic-getline-from-stdin",
+      "command": "awk",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/awk.json",
+      "case_id": "awk-dynamic-getline-from-stdin",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
       "behavior_id": "case:cat-show-ends-split-crlf",
       "command": "cat",
       "status": "supported",

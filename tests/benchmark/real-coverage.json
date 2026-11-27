@@ -27,6 +27,14 @@
   "correctness_only_command_count": 2,
   "commands": [
     {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
       "command": "clear",
       "disposition": "not-timed",
       "reason": "Short capability or descriptor query with byte-exact correctness checks.",
@@ -1444,6 +1452,14 @@
   "remaining_facets": [
     {
       "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
         "gunzip",
         "zcat"
       ],
@@ -1451,24 +1467,56 @@
     },
     {
       "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
         "diff"
       ],
       "scope": "Distinct equal files and genuinely different complete modules are timed. Synthetic sparse/distributed edits are not natural workload evidence; future real revision pairs need their own registered source identities."
     },
     {
       "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
         "join"
       ],
       "scope": "Natural airport/routes shared and unpaired keys are timed. Two-sided duplicate Cartesian expansion has no declared real-source timing witness and remains a finite correctness/next-corpus gap."
     },
     {
       "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
         "jq"
       ],
       "scope": "The real JSON registry activates selection, missing-property nulls, per-document slurp, numeric aggregation, sorting and grouping. Several independent top-level real documents and exceptionally large JSON objects are not implied."
     },
     {
       "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
         "rg",
         "grep"
       ],
@@ -1476,6 +1524,14 @@
     },
     {
       "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
         "curl",
         "wget"
       ],
@@ -1483,6 +1539,14 @@
     },
     {
       "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
         "find",
         "tree",
         "ln"
@@ -1491,6 +1555,14 @@
     },
     {
       "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
         "base32",
         "base64",
         "cat",
@@ -4032,5 +4104,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 46
+  "not_timed_command_count": 47
 }

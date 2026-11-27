@@ -2,6 +2,49 @@
   "schema": 2,
   "cases": [
     {
+      "id": "awk-dynamic-getline-with-main-stdin",
+      "command": "awk",
+      "args": [
+        "-v",
+        "path=names",
+        "{ if ((getline extra < path) > 0) print $0, extra }"
+      ],
+      "stdin_text": "one\ntwo\n",
+      "files": [
+        {
+          "path": "names",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "one a\ntwo b\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-dynamic-getline-from-stdin",
+      "command": "awk",
+      "args": [
+        "-v",
+        "path=/dev/stdin",
+        "BEGIN { getline first < path; print first }"
+      ],
+      "stdin_text": "first\nsecond\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "first\n",
+      "expected_stderr_text": ""
+    },
+    {
       "id": "awk-rules-fields-and-counters",
       "command": "awk",
       "args": [
