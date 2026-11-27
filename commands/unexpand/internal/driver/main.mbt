@@ -4,6 +4,7 @@ fn unexpand_bytes(
   all_blanks : Bool,
   first_only : Bool,
   stops : TabStops,
+  profile~ : @textwidth.Profile = CBytes,
 ) -> Bytes raise TabError {
   let output : Array[Byte] = []
   let pending : Array[Byte] = []
@@ -19,10 +20,13 @@ fn unexpand_bytes(
     pending.clear()
     one_blank_before_stop = false
   }
-  for byte in data {
+  for i = 0; i < data.length(); {
+    let (ch, len) = profile.next(data[:], i)
+    let raw = data[i:i + len]
+    let byte = raw[0]
     let mut emit_byte = true
     if convert {
-      let blank = byte is (b' ' | b'\t')
+      let blank = @textwidth.is_blank(ch)
       if blank {
         match next_tab(column, stops) {
           None => convert = false
@@ -33,14 +37,16 @@ fn unexpand_bytes(
                 pending[0] = b'\t'
               }
             } else {
-              column += 1
+              column += @textwidth.cells(ch, fallback=1).to_int64()
               if !(previous_blank && column == stop) {
                 if column == stop {
                   one_blank_before_stop = true
                 }
-                pending.push(byte)
+                for b in raw {
+                  pending.push(b)
+                }
                 previous_blank = true
-                continue
+                continue i + len
               }
               output.push(b'\t')
               emit_byte = false
@@ -60,23 +66,31 @@ fn unexpand_bytes(
           column -= 1
         }
       } else if byte != b'\x00' {
-        if column == 9223372036854775807L {
+        let width = if profile == CBytes {
+          1L
+        } else {
+          @textwidth.cells(ch, fallback=1).to_int64()
+        }
+        if 9223372036854775807L - column < width {
           raise TabError("input line is too long")
         }
-        column += 1
+        column += width
       }
       flush_pending()
       previous_blank = blank
       convert = convert && ((all_blanks && !first_only) || blank)
     }
     if emit_byte {
-      output.push(byte)
+      for b in raw {
+        output.push(b)
+      }
     }
     if byte == b'\n' {
       column = 0
       convert = true
       previous_blank = true
     }
+    continue i + len
   }
   flush_pending()
   Bytes::from_array(output)
@@ -128,6 +142,7 @@ pub async fn run_main() -> Unit {
   } else {
     parsed.operands
   }
+  let profile = @textwidth.current()
   let mut failed = false
   for path in sources {
     let data = read_input(path) catch {
@@ -142,6 +157,7 @@ pub async fn run_main() -> Unit {
       all_blanks,
       parsed.contains("first-only"),
       stops,
+      profile~,
     ) catch {
       TabError(message) => {
         @stdio.stderr.text.write("unexpand: \{message}\n")

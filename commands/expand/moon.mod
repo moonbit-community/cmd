@@ -1,6 +1,6 @@
 name = "cli/expand"
 
-version = "0.1.8"
+version = "0.1.9"
 
 readme = "README.md"
 
@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "expand command for MoonX."
 
 import {
-  "cli/core@0.11.3",
+  "cli/core@0.11.4",
 }
