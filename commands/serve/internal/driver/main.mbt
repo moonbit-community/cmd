@@ -1,10 +1,8 @@
 ///|
 fn diagnostic(error : Error) -> String {
-  let text = error.to_string()
-  // Preserve the command-level source name in existing Failure diagnostics.
-  match text.strip_prefix("Failure(internal/driver/") {
-    Some(location) => "Failure(" + location.to_owned()
-    None => text
+  match error {
+    Failure(message) => "Failure(" + message.strip_prefix("internal/driver/").unwrap_or(message[:]).to_owned() + ")"
+    _ => error.to_string()
   }
 }
 
