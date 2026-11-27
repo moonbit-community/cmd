@@ -147,6 +147,12 @@ prefixes and queries. CLI arguments and single-directory serving are unchanged.
 
 ## Shared boundaries
 
+For untagged checksum records, the Windows default marker is `*`. POSIX uses
+a space. Explicit `-b` and `-t` select the marker on both platforms. All
+three modes hash the original bytes, including CRLF, invalid UTF-8 and data
+after Ctrl-Z. MSYS2 GNU coreutils 9.0 produced these records for named files,
+redirected file handles and pipes on Windows Server 2025.
+
 - **Text and numbers:** most traditional text commands use C-locale byte
   semantics. This includes wc character counting, cut, tr, grep and sort.
   The Unicode regex profile in rg and JSON string handling in jq are separate.

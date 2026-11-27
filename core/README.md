@@ -5,6 +5,9 @@ HTTP transport and command-language execution.
 
 ## Usage
 
+The checksum command adapter selects the default untagged record marker for
+the host and hashes the original input bytes.
+
 Declare a released cli/core dependency in your module and import the packages
 you need. For example, import cli/core/cli as cli:
 

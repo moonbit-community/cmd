@@ -34,6 +34,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Windows uses the binary marker (`*`) by default for untagged records. Use `-t` for the space marker. Both modes hash the input bytes unchanged, including CRLF and Ctrl-Z.
+
 - Binary/text flags select manifest markers without translating input bytes. --ignore-missing still requires a successfully checked file.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.

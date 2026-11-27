@@ -26,7 +26,7 @@
     {
       "id": "phase3-sha256sum-stdin",
       "command": "sha256sum",
-      "args": [],
+      "args": ["-t"],
       "stdin_text": "hello\n",
       "files": [],
       "environment": {},
@@ -215,7 +215,7 @@
     {
       "id": "compat-stdin-sha256sum",
       "command": "sha256sum",
-      "args": [],
+      "args": ["-t"],
       "files": [],
       "environment": {},
       "expected_status": 0,
@@ -270,7 +270,7 @@
         "help"
       ],
       "source_version": "workspace cli/sha256sum@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: sha256sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
+      "expected_stdout_text": "Usage: sha256sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (POSIX default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-226"
@@ -294,7 +294,7 @@
         "version"
       ],
       "source_version": "workspace cli/sha256sum@0.2.4 metadata contract",
-      "expected_stdout_text": "sha256sum 0.2.7\n",
+      "expected_stdout_text": "sha256sum 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -365,6 +365,7 @@
       "id": "coverage-sha256sum-zero-record",
       "command": "sha256sum",
       "args": [
+        "-t",
         "-z",
         "payload"
       ],
