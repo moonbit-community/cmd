@@ -21,16 +21,40 @@ impl @searcher.Reader for SpanInput with fn read(self, buf, start, len) {
 
 ///|
 priv struct SpanOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   limit : Int32
   budget : Int32
 }
 
 ///|
-impl @io.Writer for SpanOutput with fn write_once(self, bytes, offset~, len~) {
+impl @io.BinaryWriter for SpanOutput
+
+///|
+impl @io.BinaryWriterImpl for SpanOutput with fn name(_) {
+  "SpanOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for SpanOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for SpanOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for SpanOutput with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
   let remaining = self.budget - self.bytes.length()
   if remaining == 0 {
-    raise @os_error.OSError(32, context="injected output failure")
+    raise @os_error.from_errno(32, context="injected output failure")
   }
   let count = len.min(remaining).min(self.limit)
   for index in offset..<(offset + count) {
@@ -67,10 +91,15 @@ async fn span_output(
   heading~ : Bool = false,
   path_terminator~ : Byte? = None,
 ) -> (Bytes, Bool, Bool, Int64?) {
-  let destination : SpanOutput = { bytes: [], limit: partial, budget, }
+  let destination : SpanOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    limit: partial,
+    budget,
+  }
   let output : StdoutWriter = {
-    output: @stream.BlockWriter::new(
-      StdoutSink::{ writer: destination, },
+    output: @stream.BlockWriter::from_binary(
+      destination,
       size=8192,
       line_buffered~,
     ),

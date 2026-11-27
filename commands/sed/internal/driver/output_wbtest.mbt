@@ -1,26 +1,54 @@
 ///|
-fn sed_test_runtime(writer : &@io.Writer) -> Runtime {
+fn sed_test_runtime(writer : &@io.BinaryWriter) -> Runtime {
   {
     previous: None,
     missing_newline: false,
-    output: @stream.BlockWriter::new(writer),
+    output: @stream.BlockWriter::from_binary(writer),
   }
 }
 
 ///|
-fn sed_test_input(reader : &@io.Reader, runtime : Runtime) -> Input {
-  { ..sed_address_input(0), reader: Some(reader), output: runtime.output, }
+fn sed_test_input(reader : &@io.BinaryReader, runtime : Runtime) -> Input {
+  {
+    ..sed_address_input(0),
+    reader: Some(@stream.ChunkReader::new(reader)),
+    output: runtime.output,
+  }
 }
 
 ///|
 priv struct SedOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut calls : Int32
   mut budget : Int32
 }
 
 ///|
-impl @io.Writer for SedOutput with fn write_once(self, bytes, offset~, len~) {
+impl @io.BinaryWriter for SedOutput
+
+///|
+impl @io.BinaryWriterImpl for SedOutput with fn name(_) {
+  "SedOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for SedOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for SedOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for SedOutput with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
   self.calls += 1
   guard self.budget > 0 else { fail("injected sed output failure") }
   let count = len.min(self.budget)
@@ -33,10 +61,15 @@ impl @io.Writer for SedOutput with fn write_once(self, bytes, offset~, len~) {
 
 ///|
 async test "sed synchronous output admission preserves slow path newline ownership" {
-  let output : SedOutput = { bytes: [], calls: 0, budget: 100, }
+  let output : SedOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    budget: 100,
+  }
   let runtime = {
     ..sed_test_runtime(output),
-    output: @stream.BlockWriter::new(output, size=8),
+    output: @stream.BlockWriter::from_binary(output, size=8),
   }
   assert_true(runtime.buffer_space(Space::from_bytes(b"abc"[:], false)) is None)
   assert_true(runtime.missing_newline)
@@ -71,7 +104,12 @@ test "sed cached record admission never consumes a spanning record" {
 
 ///|
 async test "sed delivers completed output before waiting for another input chunk" {
-  let output : SedOutput = { bytes: [], calls: 0, budget: 1000, }
+  let output : SedOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    budget: 1000,
+  }
   let runtime = sed_test_runtime(output)
   let reader = @io.MemoryReader(writer => {
     writer.write(b"one\n")
@@ -91,7 +129,12 @@ async test "sed delivers completed output before waiting for another input chunk
 ///|
 async test "sed buffered output failure precedes a later script error without replay" {
   for budget in [1, 1000] {
-    let output : SedOutput = { bytes: [], calls: 0, budget, }
+    let output : SedOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      calls: 0,
+      budget,
+    }
     let runtime = sed_test_runtime(output)
     let reader = @io.MemoryReader(writer => writer.write(b"one\n"))
     defer reader.close()
@@ -131,7 +174,12 @@ async test "sed buffered output failure precedes a later script error without re
 
 ///|
 async test "sed buffered output failure precedes a failing input read" {
-  let output : SedOutput = { bytes: [], calls: 0, budget: 2, }
+  let output : SedOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    budget: 2,
+  }
   let runtime = sed_test_runtime(output)
   let reader = @io.MemoryReader(writer => {
     writer.write(b"one\n")
@@ -161,7 +209,12 @@ async test "sed buffered output retains n N append and unterminated boundaries" 
       ("p;p", true, b"one", b"one\none"),
       ("a\\\nA\nq", false, b"one", b"one\nA\n"),
     ] {
-    let output : SedOutput = { bytes: [], calls: 0, budget: 1000, }
+    let output : SedOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      calls: 0,
+      budget: 1000,
+    }
     let runtime = sed_test_runtime(output)
     let reader = @io.MemoryReader(writer => writer.write(bytes))
     defer reader.close()
@@ -190,6 +243,7 @@ async test "sed record scanning preserves all bytes and fragmented final records
     })
     defer reader.close()
     let output : SedOutput = {
+      controller: @io.BinaryWriterController(),
       bytes: [],
       calls: 0,
       budget: input_bytes.length() + 1,
@@ -206,7 +260,12 @@ async test "sed record scanning preserves all bytes and fragmented final records
 async test "sed raw spaces preserve bytes without decoding and retain independent hold contents" {
   let data = Bytes::makei(256, i => i.to_byte())
   let space = Space::from_bytes(data[:], false)
-  let output : SedOutput = { bytes: [], calls: 0, budget: 1000, }
+  let output : SedOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    budget: 1000,
+  }
   let runtime = sed_test_runtime(output)
   assert_true(
     @program.compile("2p", false)[0].selected(
@@ -252,6 +311,7 @@ async test "sed raw spaces survive refills substitutions hold exchange and multi
       })
       defer reader.close()
       let output : SedOutput = {
+        controller: @io.BinaryWriterController(),
         bytes: [],
         calls: 0,
         budget: expected.length() + 1,
@@ -278,6 +338,7 @@ async test "sed record output preserves separators and termination across buffer
           bytes +
           (if terminated { b"\n" } else { b"" })
         let output : SedOutput = {
+          controller: @io.BinaryWriterController(),
           bytes: [],
           calls: 0,
           budget: expected.length() + 1,

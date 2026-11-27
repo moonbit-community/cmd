@@ -1,6 +1,11 @@
 ///|
 async test "sed byte rejection updates executed pattern history without decoding a miss" {
-  let output : SedOutput = { bytes: [], calls: 0, budget: 100, }
+  let output : SedOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    budget: 100,
+  }
   let runtime = sed_test_runtime(output)
   let space = Space::from_bytes(b"plain", true)
   let commands = @program.compile("/absent/!p", false)
@@ -25,7 +30,12 @@ async test "sed byte rejection preserves previous regex errors branches captures
     ] {
     let reader = @io.MemoryReader(writer => writer.write(data))
     defer reader.close()
-    let output : SedOutput = { bytes: [], calls: 0, budget: 100, }
+    let output : SedOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      calls: 0,
+      budget: 100,
+    }
     let runtime = sed_test_runtime(output)
     execute(
       @program.compile(script, false),
@@ -42,7 +52,12 @@ async test "sed byte rejection preserves previous regex errors branches captures
     ] {
     let reader = @io.MemoryReader(writer => writer.write(b"ab\n"))
     defer reader.close()
-    let output : SedOutput = { bytes: [], calls: 0, budget: 100, }
+    let output : SedOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      calls: 0,
+      budget: 100,
+    }
     let runtime = sed_test_runtime(output)
     try
       execute(

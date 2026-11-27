@@ -22,6 +22,7 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 - Use standard child processes for env, timeout, xargs and shell redirections.
 - Migrate checksum and gzip codecs, binary comparison, numeric output and
   byte-formatting commands to standard async I/O.
+- Move grep, sed and sort record processing and rg stdout to standard binary I/O.
 - Migrate fourteen stream consumers to standard binary readers and writers,
   preserving bounded reads, record ownership and partial-write behavior.
 - Update the workspace for RC1's implicit async runtime, standard SIMD package,

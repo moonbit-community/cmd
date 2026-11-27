@@ -29,8 +29,8 @@ async test "adaptive fixed counts preserve folding inversion and partial LF or N
           patterns[1]
         let input = @io.MemoryReader(writer => writer.write(data))
         defer input.close()
-        let output : CapturedOutput = { bytes: [], }
-        let errors : CapturedOutput = { bytes: [], }
+        let output = CapturedOutput::new()
+        let errors = CapturedOutput::new()
         let options = {
           ..streaming_options(),
           count: true,
@@ -86,8 +86,8 @@ async test "adaptive span output retains longest ties byte offsets and chunk bou
     writer.write(patterns[0][6:].to_owned() + b"a\n" + patterns[1])
   })
   defer input.close()
-  let output : CapturedOutput = { bytes: [], }
-  let errors : CapturedOutput = { bytes: [], }
+  let output = CapturedOutput::new()
+  let errors = CapturedOutput::new()
   assert_true(
     process_reader(
       input,
@@ -124,8 +124,8 @@ async test "adaptive sets containing delimiters cannot count cross-record matche
       )
     })
     defer input.close()
-    let output : CapturedOutput = { bytes: [], }
-    let errors : CapturedOutput = { bytes: [], }
+    let output = CapturedOutput::new()
+    let errors = CapturedOutput::new()
     let options = {
       ..streaming_options(),
       count: true,

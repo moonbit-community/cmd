@@ -1,7 +1,7 @@
 ///|
 // Strategy: grep-span-output
 priv struct GrepInput {
-  reader : &@io.Reader
+  reader : @stream.ChunkReader
   delimiter : Bytes
   binary_mode : BinaryMode
   mut bytes : Bytes
@@ -16,12 +16,12 @@ priv struct GrepInput {
 
 ///|
 fn GrepInput::new(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   delimiter : Byte,
   binary_mode : BinaryMode,
 ) -> GrepInput {
   {
-    reader,
+    reader: @stream.ChunkReader::new(reader),
     delimiter: Bytes::from_array([delimiter]),
     binary_mode,
     bytes: b"",
@@ -64,9 +64,9 @@ async fn GrepInput::next(self : GrepInput) -> Record? {
   let mut pending : @buffer.Buffer? = None
   for ;; {
     if self.position == self.bytes.length() {
-      let chunk = self.reader.read_some(max_len=65536) catch {
+      let chunk = self.reader.read() catch {
         error => {
-          self.error = Some(error)
+          self.error = Some(@stream.transport_cause(error))
           None
         }
       }
@@ -291,13 +291,13 @@ fn GrepInput::emit_buffered(
 // Deferred output remains cancellable if the downstream writer stalls.
 #warnings("-cancellable_defer")
 async fn process_reader(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   path : String,
   matcher : Matcher,
   options : GrepOptions,
   prefix_filename : Bool,
-  stdout~ : &@io.Writer = @stdio.stdout,
-  stderr~ : &@io.Writer = @stdio.stderr,
+  stdout~ : &@io.BinaryWriter = @stdio.stdout,
+  stderr~ : &@io.BinaryWriter = @stdio.stderr,
 ) -> Bool {
   let input = GrepInput::new(
     reader,
@@ -312,11 +312,11 @@ async fn process_reader(
       options.binary_mode
     },
   )
-  let output = @io.BufferedWriter::new(stdout, size=65536)
+  let output = @io.BufferedWriter(stdout, size=65536)
   // Record output owns BufferedWriter; span output owns reset-before-write
   // storage. Only the input-error boundary flushes BufferedWriter after failure.
   let spans = @buffer.Buffer(capacity=@stream.chunk_size)
-  defer @stream.flush_buffer(stdout, spans)
+  defer @stream.flush_binary(stdout, spans)
   let before : @deque.Deque[Record] = @deque.Deque([])
   let mut selected_count = 0UL
   let mut emitted_through = 0L
@@ -331,7 +331,7 @@ async fn process_reader(
     if execution is BatchedRecords &&
       (!input.binary || options.binary_mode != Report) {
       selected_count += input.collect_records(matcher, options, spans)
-      @stream.flush_buffer(output, spans)
+      @stream.flush_binary(output, spans)
     }
     if execution is MatchSpans &&
       (!input.binary || options.binary_mode != Report) {
@@ -339,7 +339,7 @@ async fn process_reader(
         path, matcher, options, prefix_filename, spans,
       )
       if spans.length() >= @stream.chunk_size {
-        @stream.flush_buffer(stdout, spans)
+        @stream.flush_binary(stdout, spans)
         continue
       }
     }
@@ -371,7 +371,7 @@ async fn process_reader(
         return true
       }
       if !options.count && options.files_with_matches {
-        output.write(path + "\n")
+        output.write(@utf8.encode(path + "\n"))
         output.flush()
         return true
       }
@@ -381,10 +381,10 @@ async fn process_reader(
     }
     if input.binary && options.binary_mode == Report {
       if keep && !binary_reported {
-        @stream.flush_buffer(stdout, spans)
+        @stream.flush_binary(stdout, spans)
         output.flush()
         let name = if path == "-" { "(standard input)" } else { path }
-        stderr.write("grep: \{name}: binary file matches\n")
+        stderr.write(@utf8.encode("grep: \{name}: binary file matches\n"))
         binary_reported = true
       }
       continue
@@ -400,7 +400,7 @@ async fn process_reader(
       if options.context_enabled &&
         emitted_through > 0L &&
         first > emitted_through + 1L {
-        output.write("--\n")
+        output.write(b"--\n")
       }
       while before.pop_front() is Some(context) {
         if context.number > emitted_through {
@@ -428,9 +428,9 @@ async fn process_reader(
   }
   if options.count {
     let prefix = if prefix_filename { path + ":" } else { "" }
-    output.write("\{prefix}\{selected_count}\n")
+    output.write(@utf8.encode("\{prefix}\{selected_count}\n"))
   } else if options.files_without_match && selected_count == 0UL {
-    output.write(path + "\n")
+    output.write(@utf8.encode(path + "\n"))
   }
   output.flush()
   if options.files_without_match {

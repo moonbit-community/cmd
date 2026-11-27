@@ -2,15 +2,15 @@
 // Strategy: bounded-output
 
 ///|
-/// Bounded output storage. Writes borrow private storage until completion.
-/// Failure consumes the queued prefix and prevents deferred cleanup from
-/// replaying bytes already accepted by the destination.
 priv enum Destination {
   Legacy(&@io.Writer)
   Binary(&@binary.BinaryWriter)
 }
 
 ///|
+/// Bounded output storage. Writes borrow private storage until completion.
+/// Failure consumes the queued prefix and prevents deferred cleanup from
+/// replaying bytes already accepted by the destination.
 struct BlockWriter {
   writer : Destination
   controller : @binary.BinaryWriterController

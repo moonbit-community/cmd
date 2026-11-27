@@ -69,7 +69,7 @@ async test "sed empty patterns use the last executed regular expression" {
   let runtime : Runtime = {
     previous: Some(test_pattern("a")),
     missing_newline: false,
-    output: @stream.BlockWriter::new(@stdio.stdout),
+    output: @stream.BlockWriter::from_binary(@stdio.stdout),
   }
   assert_eq(
     PatternRef::Previous.resolve(runtime).pattern.find("a").unwrap().end,
@@ -148,7 +148,7 @@ fn sed_address_input(number : Int32) -> Input {
     position: 0,
     number,
     status: 0,
-    output: @stream.BlockWriter::new(@stdio.stdout),
+    output: @stream.BlockWriter::from_binary(@stdio.stdout),
   }
 }
 
@@ -168,7 +168,7 @@ async test "sed read failure retains an already buffered partial record" {
   let reader = @io.MemoryReader(_ => fail("injected input failure"))
   defer reader.close()
   let input = sed_address_input(0)
-  input.reader = Some((reader : &@io.Reader))
+  input.reader = Some(@stream.ChunkReader::new(reader))
   input.buffer = b"partial"
   let line = input.next().unwrap()
   assert_eq(line.data, b"partial")

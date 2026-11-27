@@ -3,17 +3,15 @@ import {
 }
 
 import {
-}
-
-import {
+  "moonbitlang/async/fs" @legacy_fs,
   "cli/core/tempio",
   "cli/core/cli",
   "cli/core/stream",
-  "moonbitlang/async",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/io",
-  "moonbitlang/async/os_error",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/io",
+  "moonbitlang/core/async/os_error",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/env",
 }

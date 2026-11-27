@@ -37,6 +37,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Temporary runs use binary I/O and are closed before cleanup.
+
 Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Sorting uses a default 64 MiB accounted buffer and temporary runs; this is not an RSS limit. Nonzero percentage budgets are unsupported.

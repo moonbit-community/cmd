@@ -4,7 +4,7 @@ async test "sort random seed consumes exactly sixteen bytes" {
   let reader = @io.MemoryReader(writer => writer.write(seed + b"tail"))
   defer reader.close()
   assert_eq(read_random_seed(reader, "seed"), seed)
-  assert_eq(reader.read_all().binary(), b"tail")
+  assert_eq(reader.read_all(), b"tail")
   for short in [b"", b"0123456789abcde"] {
     let reader = @io.MemoryReader(writer => writer.write(short))
     defer reader.close()

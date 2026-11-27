@@ -29,7 +29,7 @@ pub async fn Directory::new(
     }
     let path = parent + "/" + prefix + random
     try @fs.mkdir(path, permission=0o700) catch {
-      @os_error.OSError(_) as error if error.is_EEXIST() => ()
+      @os_error.OsError(AlreadyExists, ..) => ()
       error => raise error
     } noraise {
       _ => return { path, closed: false, }
@@ -47,7 +47,7 @@ pub fn Directory::path(self : Directory) -> String {
 /// Idempotent after success. A failed cleanup remains retryable.
 pub async fn Directory::close(self : Directory) -> Unit nocancel {
   if !self.closed {
-    @fs.rmdir(self.path, recursive=true)
+    @legacy_fs.rmdir(self.path, recursive=true)
     self.closed = true
   }
 }

@@ -16,5 +16,4 @@ description = "sed command for MoonX."
 
 import {
   "cli/core@0.11.3",
-  "moonbitlang/async@0.22.9",
 }

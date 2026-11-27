@@ -30,7 +30,7 @@ fn entry_cost(entry : Entry) -> Int64 {
 ///|
 async fn RunReader::refill(self : RunReader) -> Bool {
   if self.position == self.available {
-    self.available = self.file.read(self.buffer)
+    self.available = self.file.read_into(self.buffer.mut_view())
     self.position = 0
   }
   self.available > 0
@@ -162,7 +162,7 @@ fn RunReader::buffered_next(self : RunReader) -> Entry? raise {
 }
 
 ///|
-async fn write_entry(writer : &@io.Writer, entry : Entry) -> Unit {
+async fn write_entry(writer : &@io.BinaryWriter, entry : Entry) -> Unit {
   let header = FixedArray::make(12, b'\x00')
   write_number(header, 0, entry.index, 8)
   write_number(header, 8, entry.record.length().to_int64(), 4)
@@ -204,7 +204,7 @@ async fn MergeReader::next(self : MergeReader) -> Entry? {
     RunInput(reader) => reader.next()
     SourceInput(reader) => {
       let line = reader.scanner.next() catch {
-        @os_error.OSError(_) as error =>
+        @io.ReaderError::TransportError(@os_error.OsError(_, ..) as error, ..) =>
           raise @order.CliError(
             "sort: read failed: \{reader.source}: \{os_message(error)}",
           )
@@ -323,8 +323,8 @@ async fn merge_input_sources(
   })
   let heap : Array[HeapEntry] = []
   for index, source in sources {
-    let input : &@io.Reader = if source == "-" {
-      let reader : &@io.Reader = @stdio.stdin
+    let input : &@io.BinaryReader = if source == "-" {
+      let reader : &@io.BinaryReader = @stdio.stdin
       reader
     } else {
       let file = @fs.open(source, mode=ReadOnly)
@@ -332,11 +332,11 @@ async fn merge_input_sources(
       if file.kind() is Directory {
         raise @order.CliError("sort: read failed: \{source}: Is a directory")
       }
-      let reader : &@io.Reader = file
+      let reader : &@io.BinaryReader = file
       reader
     }
     let reader = SourceInput({
-      scanner: @stream.LineScanner::new(input, delimiter~),
+      scanner: @stream.LineScanner::from_binary(input, delimiter~),
       source,
       index: first_index + index.to_int64(),
       specs,
@@ -402,7 +402,7 @@ async fn Spool::write_run(
     permission=0o600,
   )
   defer file.close()
-  let writer = @io.BufferedWriter::new(file, size=65536)
+  let writer = @io.BufferedWriter(file, size=65536)
   let mut largest_entry : Int64 = 0
   for entry in entries {
     largest_entry = largest_entry.max(entry_cost(entry))
@@ -428,7 +428,7 @@ async fn Spool::merge(
       permission=0o600,
     )
     defer file.close()
-    let writer = @io.BufferedWriter::new(file, size=65536)
+    let writer = @io.BufferedWriter(file, size=65536)
     merge_runs(runs, key_count, compare, entry => write_entry(writer, entry))
     writer.flush()
   }
@@ -437,7 +437,7 @@ async fn Spool::merge(
   for run in runs {
     largest_entry = largest_entry.max(run.largest_entry)
     level = level.max(run.level)
-    @fs.remove(run.path)
+    @legacy_fs.remove(run.path)
   }
   { path, largest_entry, level: level + 1, }
 }
@@ -462,7 +462,7 @@ async fn Spool::merge_sources(
     permission=0o600,
   )
   defer file.close()
-  let writer = @io.BufferedWriter::new(file, size=65536)
+  let writer = @io.BufferedWriter(file, size=65536)
   let mut largest_entry : Int64 = 0
   merge_input_sources(
     sources,
@@ -555,20 +555,20 @@ async fn scan_source(
   if file is Some(file) && file.kind() is Directory {
     raise @order.CliError("sort: read failed: \{path}: Is a directory")
   }
-  let reader : &@io.Reader = match file {
+  let reader : &@io.BinaryReader = match file {
     Some(file) => {
-      let reader : &@io.Reader = file
+      let reader : &@io.BinaryReader = file
       reader
     }
     None => {
-      let reader : &@io.Reader = @stdio.stdin
+      let reader : &@io.BinaryReader = @stdio.stdin
       reader
     }
   }
-  let scanner = @stream.RecordReader::new(reader, delimiter~)
+  let scanner = @stream.RecordReader::from_binary(reader, delimiter~)
   for ;; {
     let next = scanner.next_batch() catch {
-      @os_error.OSError(_) as error =>
+      @io.ReaderError::TransportError(@os_error.OsError(_, ..) as error, ..) =>
         raise @order.CliError(
           "sort: read failed: \{path}: \{os_message(error)}",
         )
@@ -585,7 +585,7 @@ async fn scan_source(
 ///|
 async fn sort_sources(
   sources : Array[String],
-  output : &@io.Writer,
+  output : &@io.BinaryWriter,
   delimiter : Byte,
   specs : Array[KeySpec],
   global : Modifiers,
@@ -652,7 +652,7 @@ async fn sort_sources(
             ) {
             if diagnose {
               let record = @utf8.decode(entry.record) catch { _ => "" }
-              @stdio.stderr.write(
+              @stdio.stderr.text.write(
                 "sort: -:\{input.sequence}: disorder: \{record}\n",
               )
             }
@@ -705,14 +705,14 @@ async fn sort_sources(
     None => None
   }
   defer (if target is Some(file) { file.close() })
-  let sink : &@io.Writer = match target {
+  let sink : &@io.BinaryWriter = match target {
     Some(file) => {
-      let writer : &@io.Writer = file
+      let writer : &@io.BinaryWriter = file
       writer
     }
     None => output
   }
-  let writer = @stream.BlockWriter::new(sink)
+  let writer = @stream.BlockWriter::from_binary(sink)
   let emitter : SortedOutput = {
     writer,
     delimiter,

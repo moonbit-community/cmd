@@ -31,8 +31,8 @@ async test "whole record batches preserve inversion, NUL, CRLF and missing termi
     ] {
     let input = @io.MemoryReader(writer => writer.write(data))
     defer input.close()
-    let output : CapturedOutput = { bytes: [], }
-    let errors : CapturedOutput = { bytes: [], }
+    let output = CapturedOutput::new()
+    let errors = CapturedOutput::new()
     let options = {
       ..streaming_options(),
       invert,
@@ -61,8 +61,8 @@ async test "whole record batches preserve cross-chunk records and final tails" {
     Bytes::make(70000, b'a')
   let input = @io.MemoryReader(writer => writer.write(data))
   defer input.close()
-  let output : CapturedOutput = { bytes: [], }
-  let errors : CapturedOutput = { bytes: [], }
+  let output = CapturedOutput::new()
+  let errors = CapturedOutput::new()
   assert_true(
     process_reader(
       input,
@@ -85,8 +85,12 @@ async test "whole record batches do not retry a partial output failure" {
     )
   })
   defer input.close()
-  let output : FailingSpanWriter = { bytes: [], calls: 0, }
-  let errors : CapturedOutput = { bytes: [], }
+  let output : FailingSpanWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+  }
+  let errors = CapturedOutput::new()
   let failed = try {
     ignore(
       process_reader(
@@ -101,7 +105,8 @@ async test "whole record batches do not retry a partial output failure" {
     )
     false
   } catch {
-    error => error.to_string().contains("span write failure")
+    error =>
+      @stream.transport_cause(error).to_string().contains("span write failure")
   }
   assert_true(failed)
   assert_eq(output.calls, 2)

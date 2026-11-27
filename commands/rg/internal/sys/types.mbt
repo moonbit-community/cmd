@@ -127,6 +127,19 @@ pub fn IoError::from_errno(code : Int32) -> IoError {
 pub fn from_error(error : Error) -> IoError {
   match error {
     IoError(..) as e => e
+    @core_os.OsError(kind, raw_code=code, ..) as e => {
+      let kind = match kind {
+        NotFound => NotFound
+        AccessDenied => PermissionDenied
+        AlreadyExists => AlreadyExists
+        NotDirectory => NotADirectory
+        _ if !is_windows() && code == 4 => Interrupted
+        _ if !is_windows() && code == 21 => IsADirectory
+        _ if !is_windows() && code == 32 => BrokenPipe
+        _ => Other
+      }
+      IoError(kind~, code=-1, message=e.to_string())
+    }
     @os_error.OSError(code, ..) as e => {
       let kind = if e.is_ENOENT() {
         NotFound

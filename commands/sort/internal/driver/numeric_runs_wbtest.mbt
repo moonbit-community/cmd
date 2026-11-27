@@ -1,9 +1,9 @@
 ///|
 async test "exact numeric keys survive disk runs stable ties unique and merge" {
   let root = @fs.tmpdir(prefix="sort-exact-runs-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let input = root + "/input"
-  @fs.write_file(
+  @fs.write_text(
     input, "9007199254740993 A\n9007199254740992 B\n09007199254740992 C\n1.000000000000000002 D\n1.000000000000000001 E\n",
   )
   let numeric = test_modifiers()
@@ -21,10 +21,10 @@ async test "exact numeric keys survive disk runs stable ties unique and merge" {
   }
   let left = root + "/left"
   let right = root + "/right"
-  @fs.write_file(
+  @fs.write_text(
     left, "-9007199254740993\n1.000000000000000001\n9007199254740993\n",
   )
-  @fs.write_file(
+  @fs.write_text(
     right, "-9007199254740992\n1.000000000000000002\n9007199254740992\n",
   )
   assert_eq(

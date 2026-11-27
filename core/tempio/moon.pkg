@@ -1,12 +1,13 @@
 import {
-  "moonbitlang/async/fs",
-  "moonbitlang/async/os_error",
+  "moonbitlang/async/fs" @legacy_fs,
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/os_error",
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/hex",
 }
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
 } for "test"
 
 supported_targets = "wasm"

@@ -41,7 +41,9 @@ responses, encoded traversal, POSIX outside-root links, and restrictive policy.
 
 Rmdir retains the directory-only operation in `moonbitlang/async/fs`. The
 standard `core/async/fs.remove` also removes regular files, and `x/fs.remove_dir`
-recursively removes nonempty directories. Neither supplies this command’s contract.
+recursively removes nonempty directories. Temporary directory cleanup also uses
+`async/fs.rmdir` so it rejects a file substituted at the owned path. Sort uses the
+file-only removal operation for individual runs.
 
 Rmdir's ignore-nonempty policy classifies a failed removal, rather than reading
 a directory first and reporting simulated success. Typed OSError values identify

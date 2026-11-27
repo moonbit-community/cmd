@@ -108,11 +108,12 @@ fn compile_matcher(
 
 ///|
 async fn read_text(path : String) -> String {
-  if path == "-" {
-    @stdio.stdin.read_all().text()
+  let bytes = if path == "-" {
+    @stdio.stdin.read_all()
   } else {
-    @fs.read_file(path).text()
+    @fs.read_binary(path)
   }
+  @utf8.decode(bytes)
 }
 
 ///|
@@ -205,7 +206,7 @@ async fn write_record(
   options : GrepOptions,
   prefix_filename : Bool,
   selected : Bool,
-  output : &@io.Writer,
+  output : &@io.BinaryWriter,
 ) -> Unit {
   if prefix_filename || options.line_number || options.byte_offset {
     let separator = if selected { ':' } else { '-' }
@@ -222,7 +223,7 @@ async fn write_record(
       prefix.write_string(record.offset.to_string())
       prefix.write_char(separator)
     }
-    output.write(prefix.to_string())
+    output.write(@utf8.encode(prefix.to_string()))
   }
   if record.terminated {
     let start = record.data.start_offset()
@@ -253,18 +254,18 @@ async fn process_source(
 pub async fn run_main() -> Unit {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("grep \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("grep \{MODULE_VERSION}\n")
     return
   }
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("grep: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("grep: \{message}: '\{option}'\n")
       @env.exit(2)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let (before_context, after_context) = try {
@@ -283,7 +284,7 @@ pub async fn run_main() -> Unit {
     (before, after)
   } catch {
     GrepError(message) => {
-      @stdio.stderr.write(message + "\n")
+      @stdio.stderr.text.write(message + "\n")
       @env.exit(2)
       return
     }
@@ -297,7 +298,7 @@ pub async fn run_main() -> Unit {
       Some("text") => Text
       Some("without-match") => WithoutMatch
       Some(value) => {
-        @stdio.stderr.write("grep: unknown binary-files type '\{value}'\n")
+        @stdio.stderr.text.write("grep: unknown binary-files type '\{value}'\n")
         @env.exit(2)
         return
       }
@@ -340,7 +341,7 @@ pub async fn run_main() -> Unit {
   let files = parsed.operands
   if patterns.is_empty() && pattern_files.is_empty() {
     if files.is_empty() {
-      @stdio.stderr.write("grep: missing pattern\n")
+      @stdio.stderr.text.write("grep: missing pattern\n")
       @env.exit(2)
       return
     }
@@ -350,7 +351,9 @@ pub async fn run_main() -> Unit {
     let text = read_text(pattern_file) catch {
       err => {
         if !options.suppress_messages {
-          @stdio.stderr.write("grep: '\{pattern_file}': \{err}\n")
+          @stdio.stderr.text.write(
+            "grep: '\{pattern_file}': \{@stream.transport_cause(err)}\n",
+          )
         }
         @env.exit(2)
         return
@@ -360,12 +363,12 @@ pub async fn run_main() -> Unit {
   }
   let matcher = compile_matcher(patterns, options) catch {
     @bytere.PatternError(message) => {
-      @stdio.stderr.write("grep: invalid regular expression: \{message}\n")
+      @stdio.stderr.text.write("grep: invalid regular expression: \{message}\n")
       @env.exit(2)
       return
     }
     err => {
-      @stdio.stderr.write("grep: invalid regular expression: \{err}\n")
+      @stdio.stderr.text.write("grep: invalid regular expression: \{err}\n")
       @env.exit(2)
       return
     }
@@ -382,7 +385,7 @@ pub async fn run_main() -> Unit {
       ) catch {
         err => {
           if !options.suppress_messages {
-            @stdio.stderr.write("grep: '\{operand}': \{err}\n")
+            @stdio.stderr.text.write("grep: '\{operand}': \{err}\n")
           }
           failed = true
           continue
@@ -402,7 +405,9 @@ pub async fn run_main() -> Unit {
     let matched = process_source(source, matcher, options, prefix) catch {
       err => {
         if !options.suppress_messages {
-          @stdio.stderr.write("grep: '\{source}': \{err}\n")
+          @stdio.stderr.text.write(
+            "grep: '\{source}': \{@stream.transport_cause(err)}\n",
+          )
         }
         failed = true
         continue

@@ -16,7 +16,8 @@ standard library for asynchronous I/O. The base64, cat, column, comm, cut, fold,
 head, join, nl, paste, rev, tr, uniq and wc drivers also use standard binary
 streams. Base32, cmp, diff, expand, expr, fmt, hexdump, od, seq, strings,
 unexpand, xxd, the checksum family and gzip/gunzip/zcat also use standard
-async I/O. Binary output preserves arbitrary bytes. `env`, `timeout`, `xargs` and
+async I/O. Grep, sed and sort use standard binary streams for records and rg uses
+standard binary stdout. Binary output preserves arbitrary bytes. `env`, `timeout`, `xargs` and
 external commands launched by `sh` use standard async child processes. Shell
 redirections retain the parent-owned pipes until the child exits. Curl and wget
 use standard async TCP and TLS through `cli/core/netops`. Serve exposes a
