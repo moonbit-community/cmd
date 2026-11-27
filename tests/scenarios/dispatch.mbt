@@ -11,7 +11,8 @@ pub async fn execute_scenario(
   // after success as well as failure; a suite-level pass is not that evidence.
   let retain_success = retain_success ||
     @network.supports(fixture.id) ||
-    fixture.id.has_suffix("-windows-checksum-modes")
+    fixture.id.has_suffix("-windows-checksum-modes") ||
+    fixture.id.has_suffix("-windows-text-modes")
   let report_id = "scenario:" + fixture.id
   let device_boundary = fixture.id == "diff-directory-devices-boundary"
   let tee_boundary = fixture.id == "tee-default-pipe-boundary"
@@ -59,6 +60,11 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "grep-windows-text-modes"
+        | "cat-windows-text-modes"
+        | "diff-windows-text-modes"
+        | "rg-windows-text-modes" =>
+          windows_text_scenario(root, fixture.command, work)
         "cksum-windows-checksum-modes"
         | "md5sum-windows-checksum-modes"
         | "sha1sum-windows-checksum-modes"

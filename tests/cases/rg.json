@@ -2,6 +2,24 @@
   "schema": 2,
   "cases": [
     {
+      "id": "rg-windows-text-modes",
+      "command": "rg",
+      "isolated": true,
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "source_version": "ripgrep 15.1.0 Windows MSVC, archive SHA-256 checked during setup",
+      "diagnostic_reason": "Compare raw streams and status for named files, redirected files and pipes with mixed line endings, NUL, invalid UTF-8 and Ctrl-Z."
+    },
+    {
       "id": "rg-boundary-dfa-budget",
       "command": "rg",
       "args": [

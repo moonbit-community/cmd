@@ -1,36 +1,4 @@
 ///|
-async fn windows_checksum_observe(
-  program : String,
-  args : Array[String],
-  source : String,
-  work : String,
-  receipts : String,
-  input : Bytes,
-) -> @harness.RunResult {
-  if source == "redirect" {
-    let status = @process.run(
-      program,
-      args,
-      stdin=@process.redirect_from_file(work + "/payload"),
-      stdout=@process.redirect_to_file(receipts + ".stdout"),
-      stderr=@process.redirect_to_file(receipts + ".stderr"),
-      cwd=work,
-    )
-    @fs.write_file(receipts + ".status", status.to_string())
-    return {
-      status,
-      stdout: @fs.read_file(receipts + ".stdout").binary(),
-      stderr: @fs.read_file(receipts + ".stderr").binary(),
-    }
-  }
-  let result = @harness.run(program, args, stdin=input, cwd=work)
-  @fs.write_file(receipts + ".stdout", result.stdout)
-  @fs.write_file(receipts + ".stderr", result.stderr)
-  @fs.write_file(receipts + ".status", result.status.to_string())
-  result
-}
-
-///|
 async fn windows_checksum_scenario(
   root : String,
   command : String,
@@ -57,7 +25,7 @@ async fn windows_checksum_scenario(
     for source in ["file", "redirect", "pipe"] {
       let args = if source == "file" { [..flags, "payload"] } else { flags }
       let label = mode + "-" + source
-      let reference = windows_checksum_observe(
+      let reference = windows_byte_observe(
         oracle,
         args,
         source,
@@ -70,7 +38,7 @@ async fn windows_checksum_scenario(
       } else {
         args
       }
-      let actual = windows_checksum_observe(
+      let actual = windows_byte_observe(
         @harness.command_program(),
         @harness.command_args(root, command, flags),
         source,

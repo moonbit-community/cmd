@@ -2,6 +2,110 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "case:cat-windows-text-modes",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "cat-windows-text-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:cat-windows-text-modes",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::cat-windows-text-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:grep-windows-text-modes",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "grep-windows-text-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:grep-windows-text-modes",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::grep-windows-text-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:diff-windows-text-modes",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/diff.json",
+      "case_id": "diff-windows-text-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:diff-windows-text-modes",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::diff-windows-text-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rg-windows-text-modes",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-windows-text-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:rg-windows-text-modes",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::rg-windows-text-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:test-ef-hardlink",
       "command": "test",
       "status": "supported",
