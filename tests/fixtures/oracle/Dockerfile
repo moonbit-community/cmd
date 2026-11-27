@@ -7,6 +7,8 @@ ARG DIFFUTILS_VERSION=3.12
 ARG DIFFUTILS_SHA256=7c8b7f9fc8609141fdea9cece85249d308624391ff61dedaf528fcb337727dfd
 ARG FINDUTILS_VERSION=4.10.0
 ARG FINDUTILS_SHA256=1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5
+ARG GAWK_VERSION=5.4.1
+ARG GAWK_SHA256=07f6f7342b7febe4313fc2c2542ad93d64fe20ad8717200109f105a826f5fd37
 ARG GREP_VERSION=3.12
 ARG GREP_SHA256=2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9
 ARG WGET_VERSION=1.25.0
@@ -105,6 +107,18 @@ RUN curl --fail --location --retry 5 \
   && make install-strip \
   && cd /build \
   && rm -rf findutils.tar.xz "findutils-${FINDUTILS_VERSION}"
+
+FROM toolchain AS build-gawk
+
+RUN curl --fail --location --retry 5 \
+      "https://mirrors.kernel.org/gnu/gawk/gawk-${GAWK_VERSION}.tar.xz" \
+      --output gawk.tar.xz \
+  && echo "${GAWK_SHA256}  gawk.tar.xz" | sha256sum --check --strict \
+  && tar --extract --file gawk.tar.xz \
+  && cd "gawk-${GAWK_VERSION}" \
+  && ./configure --disable-nls --without-readline --without-mpfr \
+  && make -j2 \
+  && install -m 0755 gawk /oracle/bin/awk
 
 FROM toolchain AS build-grep
 
@@ -350,6 +364,7 @@ FROM toolchain AS oracle
 COPY --from=build-coreutils /oracle/ /oracle/
 COPY --from=build-diffutils /oracle/ /oracle/
 COPY --from=build-findutils /oracle/ /oracle/
+COPY --from=build-gawk /oracle/ /oracle/
 COPY --from=build-grep /oracle/ /oracle/
 COPY --from=build-wget /oracle/ /oracle/
 COPY --from=build-make /oracle/ /oracle/

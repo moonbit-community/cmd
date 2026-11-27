@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: awk [-F SEP] [-v NAME=VALUE] [-f SCRIPT] [PROGRAM] [NAME=VALUE|FILE]...\nRun a pattern-action program over UTF-8 input. Use - for stdin.\n  -F, --field-separator VALUE  Set the field separator.\n  -v, --assign VALUE  Assign a variable before BEGIN.\n  -f, --file VALUE  Read program text from a file.\n  -e, --source VALUE  Add a program fragment.\n  --help  Show help.\n  --version  Show the version.\n"
+  "Usage: awk [-F SEP] [-v NAME=VALUE] [-f SCRIPT] [PROGRAM] [NAME=VALUE|FILE]...\nRun a pattern-action program over UTF-8 input. Use - for stdin.\n  -F, --field-separator VALUE  Set the field separator.\n  -v, --assign VALUE  Assign a variable before BEGIN.\n  -f, --file VALUE  Read program text from a file.\n  -e, --source VALUE  Add a program fragment.\n  --csv  Read quoted CSV records and fields.\n  --help  Show help.\n  --version  Show the version.\n"
 }
 
 ///|
@@ -12,6 +12,7 @@ fn option_specs() -> Array[@cli.OptionSpec] {
     @cli.option("assign", short='v'),
     @cli.option("file", short='f'),
     @cli.option("source", short='e'),
+    @cli.flag("csv", repeatable=false),
     @cli.flag("help", repeatable=false),
     @cli.flag("version", repeatable=false),
   ]

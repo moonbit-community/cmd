@@ -7,10 +7,14 @@ async fn feed(
   let records = @stream.RecordReader::from_binary(reader)
   while records.next_batch() is Some(batch) {
     while batch.next() is Some(record) {
-      let value = @utf8.decode(record.data, ignore_bom=false) catch { _ => fail("invalid UTF-8 input") }
+      let value = @utf8.decode(record.data, ignore_bom=false) catch {
+        _ => raise Failure("invalid UTF-8 input")
+      }
       session.feed(value)
       host.flush()
-      if session.is_stopped() || session.should_skip_file() { return }
+      if session.is_stopped() || session.should_skip_file() {
+        return
+      }
     }
   }
 }
@@ -22,8 +26,13 @@ async fn feed_files(session : @awk.Session, host : @streams.Host) -> Unit {
   while i < session.argument_count() && !session.is_stopped() {
     let path = session.argument(i)
     i += 1
-    if path.is_empty() { continue }
-    if assignment(path) is Some((key, value)) { session.assign(key, value); continue }
+    if path.is_empty() {
+      continue
+    }
+    if assignment(path) is Some((key, value)) {
+      session.assign(key, value)
+      continue
+    }
     had_file = true
     session.begin_file(path)
     if path == "-" {
@@ -41,32 +50,52 @@ async fn feed_files(session : @awk.Session, host : @streams.Host) -> Unit {
 }
 
 ///|
-fn uses_pull(options : Invocation) -> Bool {
-  ["getline", "RS", "RT", "INPUTMODE"].any(word => options.program.contains(word)) ||
-    options.assignments.any(pair => pair.0 == "RS" || pair.0 == "INPUTMODE") ||
-    options.operands.any(arg => arg.has_prefix("RS=") || arg.has_prefix("INPUTMODE="))
-}
-
-///|
-async fn execute(options : Invocation, host : @streams.Host) -> Int {
-  let session = @awk.new_session(options.program, environment=@env.get_env_vars(), arguments=["awk", ..options.operands], clock_seconds=@env.now().to_double() / 1000.0, input=Some(value => host.input(value)), io=Some(value => host.io(value)), output_sink=Some(value => host.output(value)))
+async fn execute(options : Invocation, host : @streams.Host) -> Int32 {
+  let session = @awk.new_session(
+    options.program,
+    input_mode=if options.csv { "csv" } else { "" },
+    environment=@env.get_env_vars(),
+    arguments=["awk", ..options.operands],
+    clock_seconds=@env.now().to_double() / 1000.0,
+    input=Some(value => host.input(value)),
+    io=Some(value => host.io(value)),
+    output_sink=Some(value => host.output(value)),
+  )
   defer session.close_input()
   defer session.close_io()
   for pair in options.assignments {
     let (key, value) = pair
     session.assign(key, value)
   }
-  let pull = uses_pull(options)
-  let stdin_operand = options.operands.all(arg => arg.is_empty() || assignment(arg) is Some(_)) ||
-    options.operands.contains("-") || options.program.contains("/dev/stdin") || options.program.contains("ARGV")
-  let early_stdin = pull && stdin_operand && options.program.contains("getline")
-  if early_stdin { host.stage_stdin(@stdio.stdin.read_all()) }
+  let (separator, main_getline, redirect_stdin) = input_features(
+    options.program,
+  )
+  let pull = options.csv ||
+    separator ||
+    main_getline ||
+    options.assignments.any(pair => pair.0 == "RS" || pair.0 == "INPUTMODE") ||
+    options.operands.any(arg => {
+      arg.has_prefix("RS=") || arg.has_prefix("INPUTMODE=")
+    })
+  let stdin_operand = options.operands.all(arg => {
+      arg.is_empty() || assignment(arg) is Some(_)
+    }) ||
+    options.operands.contains("-") ||
+    options.program.contains("ARGV")
+  let early_stdin = (stdin_operand && main_getline) || redirect_stdin
+  if early_stdin {
+    host.stage_stdin(@stdio.stdin.read_all())
+  }
   session.begin()
   host.flush()
   if session.needs_input() && !session.is_stopped() {
     if pull {
-      if stdin_operand && !early_stdin { host.stage_stdin(@stdio.stdin.read_all()) }
-      while session.advance() { host.flush() }
+      if stdin_operand && !early_stdin {
+        host.stage_stdin(@stdio.stdin.read_all())
+      }
+      while session.advance() {
+        host.flush()
+      }
     } else {
       feed_files(session, host)
     }
@@ -79,8 +108,14 @@ async fn execute(options : Invocation, host : @streams.Host) -> Int {
 ///|
 pub async fn run_main() -> Unit {
   let args = @env.args()[1:]
-  if args == ["--help"] { @stdio.stdout.text.write(metadata_help()); return }
-  if args == ["--version"] { @stdio.stdout.text.write("awk \{MODULE_VERSION}\n"); return }
+  if args == ["--help"] {
+    @stdio.stdout.text.write(metadata_help())
+    return
+  }
+  if args == ["--version"] {
+    @stdio.stdout.text.write("awk \{MODULE_VERSION}\n")
+    return
+  }
   let host = @streams.Host::new()
   let code = execute(invocation(args), host) catch {
     err => {
@@ -89,5 +124,7 @@ pub async fn run_main() -> Unit {
       2
     }
   }
-  if code != 0 { @env.exit(code) }
+  if code != 0 {
+    @env.exit(code)
+  }
 }

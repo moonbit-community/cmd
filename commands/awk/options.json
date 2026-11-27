@@ -1,18 +1,20 @@
 {
   "schema": 1,
   "command": "awk",
-  "help": "Usage: awk [-F SEP] [-v NAME=VALUE] [-f SCRIPT] [PROGRAM] [NAME=VALUE|FILE]...\nRun a pattern-action program over UTF-8 input. Use - for stdin.\n{{help:field-separator:0}}\n{{help:assign:0}}\n{{help:file:0}}\n{{help:source:0}}\n{{help:help:0}}\n{{help:version:0}}\n",
+  "help": "Usage: awk [-F SEP] [-v NAME=VALUE] [-f SCRIPT] [PROGRAM] [NAME=VALUE|FILE]...\nRun a pattern-action program over UTF-8 input. Use - for stdin.\n{{help:field-separator:0}}\n{{help:assign:0}}\n{{help:file:0}}\n{{help:source:0}}\n{{help:csv:0}}\n{{help:help:0}}\n{{help:version:0}}\n",
   "catalog_options": [
     "field-separator",
     "assign",
     "file",
-    "source"
+    "source",
+    "csv"
   ],
   "readme_options": [
     "field-separator",
     "assign",
     "file",
     "source",
+    "csv",
     "help",
     "version"
   ],
@@ -78,6 +80,19 @@
       ]
     },
     {
+      "name": "csv",
+      "aliases": [
+        "--csv"
+      ],
+      "value": "none",
+      "description": "Read quoted CSV records and fields.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  --csv  Read quoted CSV records and fields."
+      ]
+    },
+    {
       "name": "help",
       "aliases": [
         "--help"
@@ -113,6 +128,7 @@
         "assign",
         "file",
         "source",
+        "csv",
         "help",
         "version"
       ]

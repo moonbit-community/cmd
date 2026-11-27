@@ -1,12 +1,12 @@
 # awk
 
-Run pattern-action programs over UTF-8 records through MoonX.
+Run pattern-action programs over UTF-8 records. This development command runs from the repository on Linux, macOS and Windows.
 
 ## Usage
 
 ```sh
-moonx cli/awk -F : '{ print $1, $3 }' accounts.txt
-moonx cli/awk '{ sum[$1] += $2 } END { for (k in sum) print k, sum[k] }' data.txt
+moon run --target wasm commands/awk -- -F : '{ print $1, $3 }' accounts.txt
+moon run --target wasm commands/awk -- '{ sum[$1] += $2 } END { for (k in sum) print k, sum[k] }' data.txt
 ```
 
 ## Common options
@@ -20,6 +20,7 @@ moonx cli/awk '{ sum[$1] += $2 } END { for (k in sum) print k, sum[k] }' data.tx
 | `-v VALUE`, `--assign VALUE` | Assign a variable before BEGIN. |
 | `-f VALUE`, `--file VALUE` | Read program text from a file. |
 | `-e VALUE`, `--source VALUE` | Add a program fragment. |
+| `--csv` | Read quoted CSV records and fields. |
 | `--help` | Show help. |
 | `--version` | Show the version. |
 <!-- END GENERATED OPTIONS -->
@@ -27,4 +28,15 @@ moonx cli/awk '{ sum[$1] += $2 } END { for (k in sum) print k, sum[k] }' data.tx
 ## Notes
 
 BEGIN runs before input and END follows normal completion or an explicit exit.
-The compatibility guide records the supported language and I/O profile.
+Patterns support expressions, EREs and ranges. Actions can update fields,
+call functions, accumulate associative arrays, use printf, or skip records
+and files. Repeated -e and -f fragments run in command-line order. An
+assignment operand applies when that position in ARGV is reached.
+
+Ordinary LF records stream from standard input and files. Custom RS, CSV and
+main-input getline use the interpreter's pull reader. This reader consumes
+named files in chunks and buffers standard input. Program text and input must
+be valid UTF-8. The interpreter enforces its record, string and execution
+budgets. Local file redirection supports reading, truncation, append and close.
+Process pipes and system() produce a diagnostic and status 2. Explicit exit
+codes are preserved. Native GNU extensions beyond this profile are unverified.

@@ -1,5 +1,5 @@
 import {
-  "zhengming2004/awk" @awk,
+  "zhengming2004/awk",
   "moonbitlang/x/fs",
   "moonbitlang/core/buffer",
   "moonbitlang/core/encoding/utf8",

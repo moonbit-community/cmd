@@ -8,7 +8,7 @@ ready to use without building the entire repository.
 
 ## Features
 
-- [x] Text processing: `cat`, `column`, `comm`, `cut`, `echo`, `expand`, `fmt`,
+- [x] Text processing: `awk`, `cat`, `column`, `comm`, `cut`, `echo`, `expand`, `fmt`,
   `fold`, `grep`, `head`, `join`, `nl`, `paste`, `printf`, `rev`, `rg`, `sed`,
   `sort`, `tac`, `tail`, `tee`, `tr`, `unexpand`, `uniq`, and `wc`.
 - [x] Comparison and splitting: `cmp`, `csplit`, `diff`, `patch`, and `split`.

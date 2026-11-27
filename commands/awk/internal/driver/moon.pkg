@@ -1,5 +1,5 @@
 import {
-  "zhengming2004/awk" @awk,
+  "zhengming2004/awk",
 }
 
 import {

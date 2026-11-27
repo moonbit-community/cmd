@@ -33,6 +33,14 @@ fn contract(
 // diagnostic contracts are recorded in docs/compatibility.md and CLI cases.
 pub fn commands() -> Array[CommandContract] {
   [
+    contract(
+      "awk",
+      Restricted,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      exit_codes=[0, 2],
+    ),
     contract("uname", Extended, NoInput, LineStream, [FileRead], exit_codes=[
       0, 1,
     ]),

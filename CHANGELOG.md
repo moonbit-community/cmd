@@ -14,6 +14,8 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-28
 
+- Add an unpublished Wasm awk command for UTF-8 records, pattern-action programs and local file redirection.
+
 - Add C.UTF-8 matching to grep and apply GNU uppercase byte order in join -i.
 - Extend the system-query profiles with the local identity report, GNU operating-system label and process table fields.
 
