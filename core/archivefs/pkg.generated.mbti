@@ -1,0 +1,42 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/archivefs"
+
+import {
+  "moonbitlang/core/async/io",
+}
+
+// Values
+pub const MAX_BYTES : Int32 = 67108864
+
+pub const MAX_ENTRIES : Int32 = 65535
+
+pub async fn collect(ArrayView[String], recursive~ : Bool) -> Array[Member]
+
+pub async fn extract(ArrayView[Member], String, skip_existing? : Bool, create_root? : Bool) -> Unit
+
+pub async fn read_archive(String) -> Bytes
+
+pub async fn read_bounded(&@io.BinaryReader, Int32) -> Bytes
+
+pub async fn write_archive(String, BytesView) -> Unit
+
+// Errors
+pub(all) suberror ArchiveError {
+  ArchiveError(String)
+}
+
+// Types and methods
+pub(all) enum Content {
+  Regular(BytesView)
+  Directory
+  Special
+}
+
+pub(all) struct Member {
+  name : String
+  content : Content
+}
+
+// Type aliases
+
+// Traits

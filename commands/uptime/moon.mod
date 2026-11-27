@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Print elapsed Linux system uptime."
 
 import {
-  "cli/core@0.11.4",
+  "cli/core@0.11.6",
 }

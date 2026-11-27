@@ -245,6 +245,11 @@ fn command_options(name : String) -> Array[String] {
       [
         "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose", "zero-terminated",
       ]
+    "tar" =>
+      [
+        "create", "list", "extract", "file", "gzip", "to-stdout", "help", "version",
+        "directory",
+      ]
     "tee" => ["append", "output-error"]
     "test" =>
       [
@@ -281,6 +286,11 @@ fn command_options(name : String) -> Array[String] {
         "skip-chars", "skip-fields", "unique", "zero-terminated",
       ]
     "unlink" => []
+    "unzip" =>
+      [
+        "names", "pipe", "test", "quiet", "never-overwrite", "directory", "help",
+        "version",
+      ]
     "uptime" => ["pretty"]
     "wc" =>
       [
@@ -313,6 +323,11 @@ fn command_options(name : String) -> Array[String] {
       [
         "stdout", "decompress", "test", "no-name", "quiet", "fast", "2", "3", "4",
         "5", "6", "7", "8", "best",
+      ]
+    "zip" =>
+      [
+        "recursive", "quiet", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "help",
+        "version", "test",
       ]
     _ => abort("unregistered command option declaration")
   }

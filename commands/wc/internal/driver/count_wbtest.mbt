@@ -104,7 +104,13 @@ async test "wc retains partial counters after a read error" {
     bytes: true,
     max_line_length: true,
   }
-  let (counts, error) = read_counted(reader, "input", selection)
+  let (counts, error) = read_counted(
+    reader,
+    "input",
+    selection,
+    profile=CBytes,
+    posix=false,
+  )
   assert_true(error is Some(_))
   let counts = counts.unwrap()
   assert_eq(

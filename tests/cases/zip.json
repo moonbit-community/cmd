@@ -1,0 +1,409 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "archive-zip-version",
+      "command": "zip",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "zip 0.1.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "archive-zip-verify-system",
+      "command": "zip",
+      "args": [
+        "-T",
+        "reference.zip"
+      ],
+      "files": [
+        {
+          "path": "reference.zip",
+          "content_hex": "504b03040a00000000005d097c5dd2a917d804000000040000000600000073616d706c65610062ff504b01021e030a00000000005d097c5dd2a917d80400000004000000060000000000000000000000a4810000000073616d706c65504b0506000000000100010034000000280000000000"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "test"
+      ],
+      "expected_stdout_text": "test of reference.zip OK\n",
+      "expected_stderr_text": "",
+      "oracle": true
+    },
+    {
+      "id": "archive-zip-deflate",
+      "command": "zip",
+      "args": [
+        "-q9T",
+        "packed",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "9",
+        "quiet",
+        "test"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "packed.zip",
+          "content_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+        }
+      ]
+    },
+    {
+      "id": "archive-zip-directory",
+      "command": "zip",
+      "args": [
+        "-qr0",
+        "packed.zip",
+        "folder"
+      ],
+      "files": [
+        {
+          "path": "folder",
+          "kind": "directory"
+        },
+        {
+          "path": "folder/sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "quiet",
+        "recursive",
+        "0"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "packed.zip",
+          "exists": true,
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "id": "archive-zip-refuse-update",
+      "command": "zip",
+      "args": [
+        "-q",
+        "reference.zip",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "reference.zip",
+          "content_hex": "504b03040a00000000005d097c5dd2a917d804000000040000000600000073616d706c65610062ff504b01021e030a00000000005d097c5dd2a917d80400000004000000060000000000000000000000a4810000000073616d706c65504b0506000000000100010034000000280000000000"
+        },
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "quiet"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "zip: archive already exists: reference.zip\n",
+      "expected_files": [
+        {
+          "path": "reference.zip",
+          "content_hex": "504b03040a00000000005d097c5dd2a917d804000000040000000600000073616d706c65610062ff504b01021e030a00000000005d097c5dd2a917d80400000004000000060000000000000000000000a4810000000073616d706c65504b0506000000000100010034000000280000000000"
+        }
+      ]
+    },
+    {
+      "id": "archive-zip-deflate-1",
+      "command": "zip",
+      "args": [
+        "-q1",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "1",
+        "quiet"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+    },
+    {
+      "id": "archive-zip-deflate-2",
+      "command": "zip",
+      "args": [
+        "-q2",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "2",
+        "quiet"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+    },
+    {
+      "id": "archive-zip-deflate-3",
+      "command": "zip",
+      "args": [
+        "-q3",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "3",
+        "quiet"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+    },
+    {
+      "id": "archive-zip-deflate-4",
+      "command": "zip",
+      "args": [
+        "-q4",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "4",
+        "quiet"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+    },
+    {
+      "id": "archive-zip-deflate-5",
+      "command": "zip",
+      "args": [
+        "-q5",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "5",
+        "quiet"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+    },
+    {
+      "id": "archive-zip-deflate-6",
+      "command": "zip",
+      "args": [
+        "-q6",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "6",
+        "quiet"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+    },
+    {
+      "id": "archive-zip-deflate-7",
+      "command": "zip",
+      "args": [
+        "-q7",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "7",
+        "quiet"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+    },
+    {
+      "id": "archive-zip-deflate-8",
+      "command": "zip",
+      "args": [
+        "-q8",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "8",
+        "quiet"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "504b030414000008080000000000d2a917d806000000040000000600000073616d706c654b6448fa0f00504b0102140014000008080000000000d2a917d8060000000400000006000000000000000000000000000000000073616d706c65504b05060000000001000100340000002a0000000000"
+    },
+    {
+      "id": "archive-zip-help",
+      "command": "zip",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: zip [-q0-9r] ARCHIVE FILE...\n  -r  Include directory contents recursively.\n  -q  Suppress progress messages.\n  -0  Store entries without compression.\n  -1  Use Deflate compression level 1.\n  -2  Use Deflate compression level 2.\n  -3  Use Deflate compression level 3.\n  -4  Use Deflate compression level 4.\n  -5  Use Deflate compression level 5.\n  -6  Use Deflate compression level 6.\n  -7  Use Deflate compression level 7.\n  -8  Use Deflate compression level 8.\n  -9  Use Deflate compression level 9.\n  -T  Verify an existing or newly created archive.\n  --help  Show command help.\n  --version  Show the package version.\n\nCreate new archives of regular files and directories, up to 64 MiB. Use -T to test an existing archive.\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "archive-zip-linked-operand",
+      "command": "zip",
+      "args": [
+        "-qr",
+        "new.zip",
+        "link/"
+      ],
+      "files": [
+        {
+          "path": "folder",
+          "kind": "directory"
+        },
+        {
+          "path": "folder/file",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "folder"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "quiet",
+        "recursive"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "zip: not a directory: link\n",
+      "expected_files": [
+        {
+          "path": "new.zip",
+          "exists": false
+        }
+      ]
+    }
+  ]
+}

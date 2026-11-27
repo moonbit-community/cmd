@@ -2,6 +2,82 @@
   "schema": 2,
   "cases": [
     {
+      "id": "wc-width-c-counts",
+      "command": "wc",
+      "args": [
+        "-lwmcL"
+      ],
+      "stdin_hex": "e4b8ad65cc81c2a1ff097a0a61620d630c64e282",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "2020202020203120202020202020352020202020203230202020202020323020202020202020390a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "wc-width-utf8-counts",
+      "command": "wc",
+      "args": [
+        "-lwmcL"
+      ],
+      "stdin_hex": "e4b8ad65cc81c2a1ff097a0a61620d630c64e282",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "2020202020203120202020202020352020202020203133202020202020323020202020202020390a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "wc-width-c-max-width",
+      "command": "wc",
+      "args": [
+        "-L"
+      ],
+      "stdin_hex": "e4b8ade4b8ad65cc81c2a10a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "310a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "wc-width-utf8-max-width",
+      "command": "wc",
+      "args": [
+        "-L"
+      ],
+      "stdin_hex": "e4b8ade4b8ad65cc81c2a10a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "360a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
       "id": "phase3-wc-lines",
       "command": "wc",
       "args": [
@@ -371,7 +447,7 @@
         "help"
       ],
       "source_version": "workspace cli/wc@0.2.6 metadata contract",
-      "expected_stdout_text": "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nCounting uses the fixed C byte profile; -m counts every byte.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+      "expected_stdout_text": "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nIn C.UTF-8, -m counts valid UTF-8 characters and -L counts display cells.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -390,7 +466,7 @@
         "version"
       ],
       "source_version": "workspace cli/wc@0.2.6 metadata contract",
-      "expected_stdout_text": "wc 0.2.9\n",
+      "expected_stdout_text": "wc 0.2.10\n",
       "expected_stderr_text": ""
     },
     {

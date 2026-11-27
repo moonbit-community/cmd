@@ -1,4 +1,5 @@
 import {
+  "cli/core/textwidth",
   "moonbitlang/core/string",
   "cli/core/cli",
   "moonbitlang/core/async/fs",
