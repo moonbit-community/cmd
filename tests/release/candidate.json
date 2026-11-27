@@ -1823,6 +1823,7 @@
     "compat-stdin-wc",
     "f29-sparse-size",
     "fold-tab-column",
+    "fs-df-proc-host",
     "fs-du-allocated",
     "fs-du-directory",
     "fs-du-hardlinks",
