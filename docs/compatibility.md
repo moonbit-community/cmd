@@ -188,6 +188,21 @@ three modes hash the original bytes, including CRLF, invalid UTF-8 and data
 after Ctrl-Z. MSYS2 GNU coreutils 9.0 produced these records for named files,
 redirected file handles and pipes on Windows Server 2025.
 
+On the same three Windows inputs, MSYS2 GNU `cat` 9.0 copied all bytes by
+default. With `-E`, it displayed CRLF as `^M$` plus LF and bare LF as `$`
+plus LF. A lone CR, NUL, invalid byte and Ctrl-Z followed by data survived.
+MSYS2 GNU `grep` 3.12 with `-a` preserved the selected lines byte for byte.
+On a NUL-containing file, `--binary-files=without-match` returned 1 and
+`--binary-files=binary -q` found a match after Ctrl-Z and returned 0. Both
+binary-policy checks left stdout and stderr empty. The Wasm commands matched
+these outputs and statuses for files, redirected handles and pipes.
+
+With a named input, Windows MSVC ripgrep 15.1.0 and Wasm `rg -a --crlf`
+matched the end-of-line anchor before both CRLF and LF and preserved the
+selected input bytes. On a redirected file or pipe, upstream detects stdin
+automatically. Wasm requires the explicit `-` operand and returns 2 if it
+is omitted.
+
 - **Text and numbers:** most traditional text commands use C-locale byte
   semantics. This includes cut, tr and sort. For wc, fold, expand, unexpand and
   column, C.UTF-8 or C.utf8 in the first nonempty LC_ALL, LC_CTYPE or LANG

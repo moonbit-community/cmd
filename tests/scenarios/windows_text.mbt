@@ -15,7 +15,7 @@ async fn windows_text_scenario(
   let marker = match command {
     "cat" => "GNU coreutils"
     "grep" => "GNU grep"
-    "diff" => "GNU diffutils"
+    "diff" => "GNU diffutils) 3.12"
     _ => "ripgrep 15.1.0"
   }
   assert_true(@harness.scenario_text(version.stdout).contains(marker))
@@ -40,15 +40,26 @@ async fn windows_text_scenario(
         ("quiet-binary", ["--binary-files=binary", "-q", "AFTER"], 0),
       ]
     "diff" => [("strip", ["-a", "--strip-trailing-cr"], 1)]
-    _ => [("crlf", ["-a", "--crlf", "TAG$"], 0)]
+    _ =>
+      [
+        ("crlf", ["-a", "--crlf", "TAG$"], 0),
+        ("implicit-stdin", ["-a", "--crlf", "TAG$"], 0),
+      ]
   }
   let differences = []
   for (label, flags, expected) in modes {
-    for source in ["file", "redirect", "pipe"] {
+    let sources = if label == "implicit-stdin" {
+      ["redirect", "pipe"]
+    } else {
+      ["file", "redirect", "pipe"]
+    }
+    for source in sources {
       let args = if command == "diff" {
         [..flags, if source == "file" { "payload" } else { "-" }, "peer"]
       } else if source == "file" {
         [..flags, "payload"]
+      } else if command == "rg" && label == "crlf" {
+        [..flags, "-"]
       } else {
         flags
       }
@@ -69,11 +80,18 @@ async fn windows_text_scenario(
         work + "/wasm-" + id,
         input,
       )
-      if reference.status != expected ||
-        reference.stderr != b"" ||
-        candidate.status != reference.status ||
-        candidate.stdout != reference.stdout ||
-        candidate.stderr != reference.stderr {
+      let agrees = if label == "implicit-stdin" {
+        reference.stdout == b"TAG\r\nTAG\ninvalid\xffTAG\rX\x1aAFTER\r\n" &&
+        candidate.status == 2 &&
+        candidate.stdout == b"" &&
+        candidate.stderr ==
+        b"rg: stdin type detection requires a released public MoonBit API; specify a path or -\n"
+      } else {
+        candidate.status == reference.status &&
+        candidate.stdout == reference.stdout &&
+        candidate.stderr == reference.stderr
+      }
+      if reference.status != expected || reference.stderr != b"" || !agrees {
         differences.push(id)
       }
     }

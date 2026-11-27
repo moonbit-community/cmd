@@ -164,10 +164,19 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/setup-moonbit
 
-      - name: Install pinned Windows ripgrep reference
+      - name: Install pinned Windows diffutils and ripgrep references
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
+          $diff = 'diffutils-3.12-1-x86_64.pkg.tar.zst'
+          $diffArchive = Join-Path $env:RUNNER_TEMP $diff
+          curl.exe --fail --location --retry 3 --output $diffArchive "https://repo.msys2.org/msys/x86_64/$diff"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ((Get-FileHash -Algorithm SHA256 $diffArchive).Hash.ToLowerInvariant() -ne '7902c8ce3d4dd69a0f5e98dc9d5c83c17b23314ba486169db57ef6e2835ce3b6') { throw 'Windows diffutils archive checksum mismatch' }
+          & C:/msys64/usr/bin/bash.exe -lc 'pacman -U --noconfirm "$(cygpath -u "$RUNNER_TEMP")/diffutils-3.12-1-x86_64.pkg.tar.zst"'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & C:/msys64/usr/bin/diff.exe --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $version = '15.1.0'
           $package = "ripgrep-$version-x86_64-pc-windows-msvc"
           $archive = Join-Path $env:RUNNER_TEMP "$package.zip"
