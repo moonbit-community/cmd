@@ -5,7 +5,7 @@
       "id": "fs-df-mount-type",
       "command": "df",
       "args": [
-        "--output=source,fstype,target",
+        "--output=source,fstype",
         "/proc"
       ],
       "files": [],
@@ -15,7 +15,7 @@
       },
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "Filesystem Type Mounted on\nproc       proc /proc\n",
+      "expected_stdout_text": "Filesystem     Type\nproc           proc\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "coverage": [
@@ -107,6 +107,22 @@
       "comparison": "contract",
       "coverage": [
         "version"
+      ]
+    },
+    {
+      "id": "fs-df-proc-host",
+      "command": "df",
+      "args": [
+        "--output=source,fstype,target",
+        "/proc"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
       ]
     }
   ]

@@ -124,7 +124,13 @@ pub async fn table(
       Target => "Mounted on"
     }
   })
-  let widths = header.map(label => label.length())
+  let widths = fields.map(field => {
+    match field {
+      Source => 14
+      Type => 4
+      Target => 10
+    }
+  })
   let rows = [header]
   for path in paths {
     let mount = locate(mounts, @fs.realpath(path))

@@ -1,5 +1,11 @@
 ///|
 async fn report(path : String, error : Error) -> Unit {
+  if error is @usage.UnreadableDirectory {
+    @stdio.stderr.text.write(
+      "du: cannot read directory '\{path}': Permission denied\n",
+    )
+    return
+  }
   let message = match error {
     Failure(reason) => reason
     @cli.CliError(option~, message~, ..) => message + ": " + option
