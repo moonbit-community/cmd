@@ -57,6 +57,9 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "kill-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "tty-linux-pty" => tty_pty(work, root)
         "clear-linux-reference" | "tput-linux-reference" =>
           system_reference(work, root, fixture.command, fixture.args)
         "uname-linux-reference" =>

@@ -60,6 +60,7 @@
       "releasable": true,
       "case_ids": [
         "tty-pipe",
+        "tty-linux-pty",
         "tty-silent-pipe",
         "tty-windows-refusal"
       ]
@@ -67,6 +68,7 @@
     {
       "name": "kill",
       "package_name": "cli/kill",
+      "oracle_boundary": "The sealed comparison image has no kill executable. Linux correctness also checks procps signal translation on the host.",
       "compare_profile": "contract",
       "supported_options": [
         "help",
@@ -77,6 +79,7 @@
       "releasable": true,
       "case_ids": [
         "kill-int-name",
+        "kill-linux-reference",
         "kill-term-number",
         "kill-delivery-refusal"
       ]

@@ -2,6 +2,58 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "case:kill-linux-reference",
+      "command": "kill",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/kill.json",
+      "case_id": "kill-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:kill-linux-reference",
+      "command": "kill",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::kill-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tty-linux-pty",
+      "command": "tty",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/tty.json",
+      "case_id": "tty-linux-pty",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:tty-linux-pty",
+      "command": "tty",
+      "status": "boundary",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::tty-linux-pty",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "scenario:clear-linux-reference",
       "command": "clear",
       "status": "supported",
@@ -279,7 +331,7 @@
       "platforms": [
         "posix"
       ],
-      "oracle_profile": "pinned-oracle-v1"
+      "oracle_profile": ""
     },
     {
       "behavior_id": "case:kill-term-number",

@@ -17,8 +17,7 @@
       "expected_stderr_text": "",
       "host_platforms": [
         "posix"
-      ],
-      "oracle": true
+      ]
     },
     {
       "id": "kill-term-number",
@@ -51,6 +50,22 @@
       "comparison": "contract",
       "expected_stdout_text": "",
       "expected_stderr_text": "kill: signal delivery is unavailable; use -l SIGNAL\n"
+    },
+    {
+      "id": "kill-linux-reference",
+      "command": "kill",
+      "args": [
+        "-l",
+        "2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
     }
   ]
 }
