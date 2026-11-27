@@ -1,6 +1,4 @@
 import {
-  "moonbitlang/x/fs" @xfs,
-  "cli/core/platform",
   "cli/core/cli",
   "moonbitlang/core/async/stdio",
   "moonbitlang/core/env",

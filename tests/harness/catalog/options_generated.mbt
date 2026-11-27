@@ -64,8 +64,8 @@ fn command_options(name : String) -> Array[String] {
     "dirname" => ["zero"]
     "du" =>
       [
-        "bytes", "apparent-size", "block-size", "kilobytes", "total", "count-links",
-        "dereference", "null", "help", "version",
+        "bytes", "apparent-size", "block-size", "kilobytes", "all", "summarize",
+        "inodes", "total", "count-links", "dereference", "null", "help", "version",
       ]
     "echo" =>
       ["enable-escapes", "disable-escapes", "help", "no-newline", "version"]

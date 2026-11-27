@@ -200,7 +200,7 @@
       },
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "Usage: stat [-L] -c FORMAT FILE...\n  -c, --format VALUE  Print the selected fields and a newline.\n  -L, --dereference  Follow symbolic links.\n  --help  Show command help.\n  --version  Show the package version.\n\nUse --format with %n, %F, %s, %X, %Y, %Z and %%. Size requires a regular file. Raw mode, ownership, inode numbers and allocated blocks require additional metadata.\n",
+      "expected_stdout_text": "Usage: stat [-L] -c FORMAT FILE...\n  -c, --format VALUE  Print the selected fields and a newline.\n  -L, --dereference  Follow symbolic links.\n  --help  Show command help.\n  --version  Show the package version.\n\nUse --format with %n, %F, %s, %X, %Y, %Z and %%. Size uses the host's entry-size observation, including POSIX symbolic links. macOS directory sizes, raw mode, ownership, inode numbers and allocated blocks require additional metadata.\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "coverage": [
@@ -225,6 +225,94 @@
       "comparison": "contract",
       "coverage": [
         "version"
+      ]
+    },
+    {
+      "id": "fs-stat-link-bytes",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%s %F",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "7 symbolic link\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-proc-size",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%s",
+        "/proc"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "host_platforms": [
+        "linux"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-mac-directory-size",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%s",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "stat: tree: entry size is unavailable\n",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "host_platforms": [
+        "macos"
       ]
     }
   ]

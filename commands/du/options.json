@@ -1,12 +1,15 @@
 {
   "schema": 1,
   "command": "du",
-  "help": "Usage: du -b [-clL0] FILE...\n{{help:bytes:0}}\n{{help:apparent-size:0}}\n{{help:block-size:0}}\n{{help:kilobytes:0}}\n{{help:total:0}}\n{{help:count-links:0}}\n{{help:dereference:0}}\n{{help:null:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nUse -b to report logical bytes. Allocated blocks and directory sizes require additional metadata. POSIX file identities suppress duplicate names. Windows requires -l for multiple operands.\n",
+  "help": "Usage: du {-b|-A|--inodes} [-asclL0] [FILE...]\n{{help:bytes:0}}\n{{help:apparent-size:0}}\n{{help:block-size:0}}\n{{help:kilobytes:0}}\n{{help:all:0}}\n{{help:summarize:0}}\n{{help:inodes:0}}\n{{help:total:0}}\n{{help:count-links:0}}\n{{help:dereference:0}}\n{{help:null:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nUse -b for apparent bytes or --inodes for entry counts. Directories contribute zero apparent bytes. POSIX file identities suppress duplicate names. On Windows, multiple operands and directory trees require -l, and directory trees require physical traversal. Allocated blocks need additional metadata.\n",
   "catalog_options": [
     "bytes",
     "apparent-size",
     "block-size",
     "kilobytes",
+    "all",
+    "summarize",
+    "inodes",
     "total",
     "count-links",
     "dereference",
@@ -33,6 +36,7 @@
     {
       "name": "apparent-size",
       "aliases": [
+        "-A",
         "--apparent-size"
       ],
       "value": "none",
@@ -40,8 +44,9 @@
       "repeatable": true,
       "allow_attached": false,
       "help_lines": [
-        "  --apparent-size  Measure logical bytes with the specified block size."
-      ]
+        "  -A, --apparent-size  Measure logical bytes with the specified block size."
+      ],
+      "short": "A"
     },
     {
       "name": "block-size",
@@ -71,6 +76,49 @@
       "allow_attached": false,
       "help_lines": [
         "  -k, --kilobytes  Use units of 1024 bytes."
+      ]
+    },
+    {
+      "name": "all",
+      "aliases": [
+        "-a",
+        "--all"
+      ],
+      "value": "none",
+      "description": "Show files as well as directories.",
+      "short": "a",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -a, --all  Show files as well as directories."
+      ]
+    },
+    {
+      "name": "summarize",
+      "aliases": [
+        "-s",
+        "--summarize"
+      ],
+      "value": "none",
+      "description": "Print one total for each operand.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -s, --summarize  Print one total for each operand."
+      ]
+    },
+    {
+      "name": "inodes",
+      "aliases": [
+        "--inodes"
+      ],
+      "value": "none",
+      "description": "Count filesystem entries.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --inodes  Count filesystem entries."
       ]
     },
     {
@@ -169,6 +217,9 @@
         "apparent-size",
         "block-size",
         "kilobytes",
+        "all",
+        "summarize",
+        "inodes",
         "total",
         "count-links",
         "dereference",

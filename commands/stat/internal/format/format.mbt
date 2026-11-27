@@ -61,18 +61,20 @@ pub async fn render(
   let output = StringBuilder()
   let mut size = None
   for field in fields {
-    if (field is Size || field is Kind) && kind is Regular && size is None {
-      let regular = if follow { @fs.realpath(path) } else { path }
-      size = Some(@fs.file_size(regular))
+    if (field is Size || (field is Kind && kind is Regular)) && size is None {
+      let entry = if follow { @fs.realpath(path) } else { path }
+      size = Some(
+        @fs.file_size(entry) catch {
+          @os_error.OsError(OperationNotSupported, ..) =>
+            raise Failure("entry size is unavailable")
+          error => raise error
+        },
+      )
     }
     match field {
       Name => output.write_string(path)
       Literal(text) => output.write_string(text)
-      Size =>
-        match size {
-          Some(size) => output.write_object(size)
-          None => raise Failure("%s requires a regular file")
-        }
+      Size => output.write_object(size.unwrap())
       Kind =>
         output.write_string(
           match kind {

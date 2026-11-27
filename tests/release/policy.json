@@ -5135,6 +5135,9 @@
         "apparent-size",
         "block-size",
         "kilobytes",
+        "all",
+        "summarize",
+        "inodes",
         "total",
         "count-links",
         "dereference",
@@ -5154,7 +5157,13 @@
         "fs-du-allocated",
         "fs-du-directory",
         "fs-du-help",
-        "fs-du-version"
+        "fs-du-version",
+        "fs-du-tree",
+        "fs-du-all",
+        "fs-du-inode-hardlinks",
+        "fs-du-link-bytes",
+        "fs-du-follow-cycle",
+        "fs-du-short-apparent"
       ]
     },
     {
@@ -5229,7 +5238,10 @@
         "fs-stat-dereference",
         "fs-stat-unavailable",
         "fs-stat-help",
-        "fs-stat-version"
+        "fs-stat-version",
+        "fs-stat-link-bytes",
+        "fs-stat-proc-size",
+        "fs-stat-mac-directory-size"
       ]
     },
     {

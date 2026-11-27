@@ -48493,7 +48493,79 @@
       "implementation": "json-case",
       "source": "tests/cases/du.json",
       "case_id": "fs-du-directory",
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-tree",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-tree",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-all",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-all",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-inode-hardlinks",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-inode-hardlinks",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-link-bytes",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-link-bytes",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-follow-cycle",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-follow-cycle",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-short-apparent",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-short-apparent",
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:fs-du-help",
@@ -48808,6 +48880,45 @@
       "implementation": "json-case",
       "source": "tests/cases/stat.json",
       "case_id": "fs-stat-unavailable",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-stat-link-bytes",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-link-bytes",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-stat-proc-size",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-proc-size",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-stat-mac-directory-size",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "macos"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-mac-directory-size",
       "oracle_profile": ""
     },
     {

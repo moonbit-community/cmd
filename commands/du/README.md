@@ -1,12 +1,12 @@
 # du
 
-Report the apparent size of regular files.
+Summarize apparent bytes or inode counts in filesystem trees.
 
 ## Usage
 
 ```sh
 moonx cli/du -b archive.bin
-moonx cli/du -bcl first.bin second.bin
+moonx cli/du --inodes -s src
 ```
 
 ## Common options
@@ -17,9 +17,12 @@ moonx cli/du -bcl first.bin second.bin
 | Option | Description |
 | --- | --- |
 | `-b`, `--bytes` | Show apparent sizes in bytes. |
-| `--apparent-size` | Measure logical bytes with the specified block size. |
+| `-A`, `--apparent-size` | Measure logical bytes with the specified block size. |
 | `-B VALUE`, `--block-size VALUE` | Round output up to this positive byte unit. |
 | `-k`, `--kilobytes` | Use units of 1024 bytes. |
+| `-a`, `--all` | Show files as well as directories. |
+| `-s`, `--summarize` | Print one total for each operand. |
+| `--inodes` | Count filesystem entries. |
 | `-c`, `--total` | Print a final total. |
 | `-l`, `--count-links` | Count each operand, including hard-link aliases. |
 | `-L`, `--dereference` | Follow symbolic links. |
@@ -30,6 +33,6 @@ moonx cli/du -bcl first.bin second.bin
 
 ## Notes
 
-Use -b to report logical bytes. Allocated blocks and directory sizes require additional metadata. POSIX file identities suppress duplicate names. Windows requires -l for multiple operands.
+Use -b for apparent bytes or --inodes for entry counts. Directories contribute zero apparent bytes. POSIX file identities suppress duplicate names. On Windows, multiple operands and directory trees require -l, and directory trees require physical traversal. Allocated blocks need additional metadata.
 
 See the [compatibility guide](../../docs/compatibility.md).

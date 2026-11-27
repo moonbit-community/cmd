@@ -24,6 +24,6 @@ moonx cli/stat -Lc '%F %Y' current
 
 ## Notes
 
-Use --format with %n, %F, %s, %X, %Y, %Z and %%. Size requires a regular file. Raw mode, ownership, inode numbers and allocated blocks require additional metadata.
+Use --format with %n, %F, %s, %X, %Y, %Z and %%. Size uses the host's entry-size observation, including POSIX symbolic links. macOS directory sizes, raw mode, ownership, inode numbers and allocated blocks require additional metadata.
 
 See the [compatibility guide](../../docs/compatibility.md).

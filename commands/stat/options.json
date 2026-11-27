@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "command": "stat",
-  "help": "Usage: stat [-L] -c FORMAT FILE...\n{{help:format:0}}\n{{help:dereference:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nUse --format with %n, %F, %s, %X, %Y, %Z and %%. Size requires a regular file. Raw mode, ownership, inode numbers and allocated blocks require additional metadata.\n",
+  "help": "Usage: stat [-L] -c FORMAT FILE...\n{{help:format:0}}\n{{help:dereference:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nUse --format with %n, %F, %s, %X, %Y, %Z and %%. Size uses the host's entry-size observation, including POSIX symbolic links. macOS directory sizes, raw mode, ownership, inode numbers and allocated blocks require additional metadata.\n",
   "catalog_options": [
     "format",
     "dereference",

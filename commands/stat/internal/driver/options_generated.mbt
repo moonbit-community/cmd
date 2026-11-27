@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: stat [-L] -c FORMAT FILE...\n  -c, --format VALUE  Print the selected fields and a newline.\n  -L, --dereference  Follow symbolic links.\n  --help  Show command help.\n  --version  Show the package version.\n\nUse --format with %n, %F, %s, %X, %Y, %Z and %%. Size requires a regular file. Raw mode, ownership, inode numbers and allocated blocks require additional metadata.\n"
+  "Usage: stat [-L] -c FORMAT FILE...\n  -c, --format VALUE  Print the selected fields and a newline.\n  -L, --dereference  Follow symbolic links.\n  --help  Show command help.\n  --version  Show the package version.\n\nUse --format with %n, %F, %s, %X, %Y, %Z and %%. Size uses the host's entry-size observation, including POSIX symbolic links. macOS directory sizes, raw mode, ownership, inode numbers and allocated blocks require additional metadata.\n"
 }
 
 ///|

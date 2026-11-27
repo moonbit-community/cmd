@@ -21,18 +21,21 @@ async fn run(args : ArrayView[String]) -> Int32 {
     @stdio.stdout.text.write("du \{MODULE_VERSION}\n")
     return 0
   }
-  guard !parsed.operands.is_empty() else { raise Failure("missing operand") }
-  guard parsed.contains("bytes") || parsed.contains("apparent-size") else {
+  let apparent = parsed.contains("bytes") || parsed.contains("apparent-size")
+  let inodes = parsed.contains("inodes")
+  guard apparent || inodes else {
     raise Failure(
       "allocated block counts are unavailable; use --apparent-size or -b",
     )
   }
-  let deduplicate = parsed.operands.length() > 1 &&
-    !parsed.contains("count-links")
-  if deduplicate && @platform.is_windows() {
-    raise Failure("multiple operands on Windows require -l to count each name")
+  guard !(parsed.contains("all") && parsed.contains("summarize")) else {
+    raise Failure("cannot both summarize and show all entries")
   }
-  let seen : Array[@xfs.FileIdentity] = []
+  if inodes && apparent {
+    @stdio.stderr.text.write(
+      "du: warning: options --apparent-size and -b are ineffective with --inodes\n",
+    )
+  }
   let unit = match
     parsed.last_occurrence(["bytes", "block-size", "kilobytes"]) {
     Some("bytes") => 1L
@@ -41,49 +44,40 @@ async fn run(args : ArrayView[String]) -> Int32 {
     _ => 1024L
   }
   let end = if parsed.contains("null") { "\u0000" } else { "\n" }
-  let mut total = 0L
   let mut status = 0
-  for path in parsed.operands {
-    let size = @usage.apparent(path, follow=parsed.contains("dereference")) catch {
-      error => {
-        report(path, error)
-        status = 1
-        continue
-      }
-    }
-    if deduplicate {
-      let identity = @xfs.identity(
-        path,
-        follow_symlink=parsed.contains("dereference"),
-      ) catch {
-        error => {
-          report(path, error)
-          status = 1
-          continue
-        }
-      }
-      guard identity is Some(id) else {
-        report(path, Failure("file identity unavailable; use -l"))
-        status = 1
-        continue
-      }
-      if seen.contains(id) {
-        continue
-      }
-      seen.push(id)
-    }
-    guard size <= 9223372036854775807L - total else {
-      raise Failure("total size overflow")
-    }
-    total += size
+  let operands = if parsed.operands.is_empty() {
+    ["."]
+  } else {
+    parsed.operands
+  }
+  let print_size : async (String, Int64) -> Unit = (path, size) => {
     @stdio.stdout.text.write(
-      @usage.blocks(size, unit).to_string() + "\t" + path + end,
+      @usage.blocks(size, if inodes { 1L } else { unit }).to_string() +
+      "\t" +
+      path +
+      end,
     )
   }
+  let total = @usage.measure(
+    operands[:],
+    detail=if parsed.contains("all") {
+      All
+    } else if parsed.contains("summarize") {
+      Summary
+    } else {
+      Directories
+    },
+    follow=parsed.contains("dereference"),
+    count_links=parsed.contains("count-links"),
+    inodes~,
+    emit=print_size,
+    report=(path, error) => {
+      status = 1
+      report(path, error)
+    },
+  )
   if parsed.contains("total") {
-    @stdio.stdout.text.write(
-      @usage.blocks(total, unit).to_string() + "\ttotal" + end,
-    )
+    print_size("total", total)
   }
   status
 }

@@ -284,13 +284,18 @@ applicable Wasm-host, alias, mode, error-order and pinned-oracle tests.
 [Compatibility](../compatibility.md) owns command support details.
 Implementation and regressions: [fsops](../../core/fsops/),
 [filesystem scenarios](../../tests/scenarios/scenario_filesystem.mbt).
+
 ## Filesystem command profiles
 
 GNU coreutils is the reference for stat, du, df, readlink, install and truncate.
-The public async filesystem provides file kind, timestamps and regular-file
-sizes. Stat exposes selected format fields. Du reports apparent size and
-uses x identities for POSIX duplicate suppression. Allocated blocks require
-additional metadata. Linux df reports selected mount-table columns from procfs.
+Stat reads entry kind, size and timestamps. The no-follow size of a POSIX
+symbolic link includes the bytes of its stored target. Linux can also return
+directory sizes. MoonRun on macOS reports that operation as unsupported.
+GNU du includes regular files and symbolic links in apparent bytes. Directory
+entries contribute zero bytes and one inode each. Du traverses directory
+trees and uses x identities for POSIX duplicate suppression and cycle checks.
+Windows directory walks require physical traversal and explicit link counting.
+Allocated blocks require additional metadata. Linux df reports selected mount-table columns from procfs.
 Capacity requires a public filesystem-statistics operation.
 
 Readlink and realpath use the same component resolver. A resolved pathname

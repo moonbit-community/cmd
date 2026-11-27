@@ -12,7 +12,7 @@ keywords = [ "command-line", "moonx", "wasm" ]
 
 preferred_target = "wasm"
 
-description = "Report the apparent size of regular files."
+description = "Summarize apparent bytes or inode counts in filesystem trees."
 
 import {
   "moonbitlang/x@0.5.9",
