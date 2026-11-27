@@ -15,13 +15,13 @@ test "base32 fragmented quanta preserve padding and wrap columns" {
         let encoder = Base32Encoder::new(wrap)
         let output = @buffer.Buffer()
         for at = 0; at < input.length(); at = at + size {
-          output.write_bytes(
+          output.write_bytesview(
             encoder.encode(input[at:(at + size).min(input.length())]),
           )
           assert_eq(encoder.encode(b""[:]), b"")
           assert_true(encoder.count < 5)
         }
-        output.write_bytes(encoder.finish())
+        output.write_bytesview(encoder.finish())
         assert_eq(encoder.finish(), b"")
         let expected = @buffer.Buffer()
         for i, byte in raw {

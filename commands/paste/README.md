@@ -27,3 +27,7 @@ Join parallel records with tabs by default. -s processes each file serially; sup
 <!-- END GENERATED OPTIONS -->
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.
+
+## Notes
+
+Workspace builds use the MoonBit 2026-11-26 toolchain.

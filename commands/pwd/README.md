@@ -26,3 +26,7 @@ Default to the physical path unless POSIXLY_CORRECT is set. -L uses a valid logi
 <!-- END GENERATED OPTIONS -->
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.
+
+## Notes
+
+Workspace builds use the MoonBit 2026-11-26 toolchain.

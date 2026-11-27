@@ -193,8 +193,8 @@ fn Seq::keep_last_bytes(self : Seq, len : Int32) -> Unit {
 ///|
 fn concat_bytes(a : Bytes, b : Bytes) -> Bytes {
   let buf = Buffer()
-  buf.write_bytes(a)
-  buf.write_bytes(b)
+  buf.write_bytesview(a)
+  buf.write_bytesview(b)
   buf.to_bytes()
 }
 

@@ -28,6 +28,8 @@ Write each input byte to stdout and every file operand. Files are truncated unle
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Use -p or --output-error with warn, warn-nopipe, exit or exit-nopipe. Default broken-pipe handling reports an unsupported capability with status 2 instead of raising SIGPIPE.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

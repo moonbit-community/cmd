@@ -22,7 +22,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("pwd: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -40,7 +40,7 @@ pub async fn run_main() -> Unit {
   }
   guard @env.current_dir() is Some(current) else {
     @stdio.stderr.write("pwd: cannot determine current directory\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let selected = if logical {
@@ -60,7 +60,7 @@ pub async fn run_main() -> Unit {
     @fs.realpath(current) catch {
       err => {
         @stdio.stderr.write("pwd: \{err}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     }

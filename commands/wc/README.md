@@ -35,6 +35,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - The supported locale is C: -m counts bytes rather than UTF-8 characters. Display width uses the documented C-byte rules.
 - Reading regular-file stdin does not claim GNU physical descriptor-position alignment.
 

@@ -85,7 +85,7 @@ async fn request_body(options : Options) -> @netops.RequestBody {
       if index > 0 {
         output.write_byte(b'&')
       }
-      output.write_bytes(read_data(spec))
+      output.write_bytesview(read_data(spec))
     }
     return @netops.BytesBody(output.to_bytes())
   }
@@ -677,7 +677,7 @@ pub async fn run_main() -> Unit {
         reason +
         "\ncurl: try 'curl --help' or 'curl --manual' for more information\n",
       )
-      @sys.exit(
+      @env.exit(
         if reason == "error encountered when reading a file" {
           26
         } else {
@@ -692,22 +692,22 @@ pub async fn run_main() -> Unit {
         option +
         ": is badly used here\ncurl: try 'curl --help' or 'curl --manual' for more information\n",
       )
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     UsageError(message) => {
       @stdio.stderr.write("curl: option error: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     error => {
       @stdio.stderr.write("curl: option error: " + error.to_string() + "\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
   let status = run(options)
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

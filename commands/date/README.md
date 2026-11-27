@@ -31,6 +31,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Ambiguous or nonexistent local times are rejected. Full GNU relative-date grammar and setting the system clock are unsupported.
 - Timezone file access and local-zone discovery depend on the host and launcher permissions.
 

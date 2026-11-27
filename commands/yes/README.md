@@ -25,6 +25,8 @@ Print y followed by a newline by default, or join supplied arguments with spaces
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Exact host broken-pipe signal behavior is not claimed.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

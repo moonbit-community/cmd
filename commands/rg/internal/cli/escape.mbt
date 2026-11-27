@@ -109,7 +109,7 @@ fn hex_value(c : Char) -> Int32? {
 
 ///|
 fn push_char_utf8(out : Buffer, c : Char) -> Unit {
-  out.write_bytes(@utf8.encode(c.to_string()))
+  out.write_bytesview(@utf8.encode(c.to_string()))
 }
 
 ///|

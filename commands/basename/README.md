@@ -28,6 +28,8 @@ A second operand removes a literal suffix. Use -a for multiple names; -s also en
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Paths are handled lexically; files do not need to exist.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

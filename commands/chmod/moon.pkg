@@ -1,6 +1,5 @@
 import {
   "cli/chmod/internal/driver",
-  "moonbitlang/async",
 }
 
 supported_targets = "wasm"

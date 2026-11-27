@@ -12,7 +12,6 @@ import {
   "moonbitlang/async/process" @child_process,
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"

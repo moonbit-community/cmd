@@ -45,7 +45,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("printenv: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -72,6 +72,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if missing {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

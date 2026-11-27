@@ -34,6 +34,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Existing-file replacement, default mode preservation and archive copies are unsupported. Parsed -f, -i and backup options do not enable these operations.
 - Source-link traversal must be selected explicitly where needed. Cycles and destinations inside the source are rejected.
 

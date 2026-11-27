@@ -60,7 +60,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("touch: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -73,7 +73,7 @@ pub async fn run_main() -> Unit {
   let no_create = parsed.flags.contains("no-create")
   if files.is_empty() {
     @stdio.stderr.write("touch: missing file operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if parsed.flags.contains("access-time") ||
@@ -85,7 +85,7 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "touch: selecting or setting timestamps is unavailable in the portable filesystem API\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let mut failed = false
@@ -122,6 +122,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

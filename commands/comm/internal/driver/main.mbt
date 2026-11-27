@@ -12,8 +12,8 @@ fn help_message() -> String {
 ///|
 fn comm_record(prefix : Bytes, line : Bytes, delimiter : Byte) -> Bytes {
   let output = @buffer.Buffer(capacity=prefix.length() + line.length() + 1)
-  output.write_bytes(prefix)
-  output.write_bytes(line)
+  output.write_bytesview(prefix)
+  output.write_bytesview(line)
   output.write_byte(delimiter)
   output.to_bytes()
 }
@@ -103,7 +103,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("comm: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -125,7 +125,7 @@ pub async fn run_main() -> Unit {
   for index, value in delimiters {
     if index > 0 && value != delimiters[0] {
       @stdio.stderr.write("comm: multiple output delimiters specified\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     column_delimiter = if value == "" { "\u0000" } else { value }
@@ -141,12 +141,12 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "comm: expected exactly two files\n\n" + help_message() + "\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if files[0] == "-" && files[1] == "-" {
     @stdio.stderr.write("comm: both inputs cannot be standard input\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   try {
@@ -177,12 +177,12 @@ pub async fn run_main() -> Unit {
   } catch {
     CommError(message) => {
       @stdio.stderr.write("comm: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     err => {
       @stdio.stderr.write("comm: \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }

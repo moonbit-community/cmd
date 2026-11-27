@@ -28,6 +28,8 @@ Convert leading blanks by default; -a also converts later blanks. The default ta
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Column tracking uses C-locale byte/control-character rules, not Unicode display width.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

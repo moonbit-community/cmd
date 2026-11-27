@@ -5,7 +5,6 @@ import {
   "moonbitlang/core/env",
   "moonbitlang/core/string",
   "moonbitlang/x/time",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"

@@ -156,7 +156,7 @@ async fn decode_to_writer(
 async fn read_input(reader : &@io.Reader) -> Bytes {
   let input = @buffer.Buffer()
   while reader.read_some(max_len=65536) is Some(chunk) {
-    input.write_bytes(chunk)
+    input.write_bytesview(chunk)
   }
   input.to_bytes()
 }
@@ -186,7 +186,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("base32: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -196,20 +196,20 @@ pub async fn run_main() -> Unit {
   }
   if parsed.operands.length() > 1 {
     @stdio.stderr.write("base32: extra operand: '\{parsed.operands[1]}'\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let wrap_text = parsed.last_value("wrap").unwrap_or(DEFAULT_WRAP)
   let wrap = @string.parse_int(wrap_text) catch {
     _ => {
       @stdio.stderr.write("base32: invalid wrap size: '\{wrap_text}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
   if wrap < 0 {
     @stdio.stderr.write("base32: invalid wrap size: '\{wrap_text}'\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let path = if parsed.operands.is_empty() { "-" } else { parsed.operands[0] }
@@ -234,12 +234,12 @@ pub async fn run_main() -> Unit {
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     err => {
       @stdio.stderr.write("base32: \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }

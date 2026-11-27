@@ -10,9 +10,11 @@ test-tool consumers. The execution tools under `tests` and `tools` remain Native
 
 ## Workspace and published packages
 
-The workspace supports the MoonBit 2026-11-17 toolchain. Buffer capacity labels,
-explicit trait calls and integer parsing use its current APIs; numeric input
-grammar, output and exit-status behavior remain unchanged.
+Workspace builds use the MoonBit 2026-11-26 toolchain. Commands use
+`moonbitlang/core/env` to exit with their documented status through WASI.
+Modules that use the path, time, filesystem or cryptography APIs from
+`moonbitlang/x` declare version 0.5.9. Shared runtime code uses the same version
+through `cli/core`.
 
 Use `moonx cli/<command>` for published commands. `timeout` is local-only;
 its README shows the repository invocation. Module versions come from

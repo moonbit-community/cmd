@@ -195,7 +195,7 @@ pub async fn run_main() -> Unit {
         @stdio.stderr.write(
           "seq: option '\{arg}' requires an argument\nTry 'seq --help' for more information.\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -207,7 +207,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("separator", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("seq: missing separator\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -227,7 +227,7 @@ pub async fn run_main() -> Unit {
       arg.length() > 1 &&
       !(arg[1] is ('0'..<='9' | '.')) {
       @stdio.stderr.write("seq: invalid option: '\{arg}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     } else {
       operands.push(arg)
@@ -237,7 +237,7 @@ pub async fn run_main() -> Unit {
   }
   if operands.length() < 1 || operands.length() > 3 {
     @stdio.stderr.write("seq: expected one to three operands\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if format is Some(text) {
@@ -252,11 +252,11 @@ pub async fn run_main() -> Unit {
     } catch {
       SeqError(message) => {
         @stdio.stderr.write("seq: \{message}\n")
-        @sys.exit(1)
+        @env.exit(1)
       }
       error => {
         @stdio.stderr.write("seq: \{error}\n")
-        @sys.exit(1)
+        @env.exit(1)
       }
     }
     return
@@ -266,7 +266,7 @@ pub async fn run_main() -> Unit {
     let number = parse_decimal(operand) catch {
       SeqError(message) => {
         @stdio.stderr.write("seq: \{message}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     }
@@ -281,7 +281,7 @@ pub async fn run_main() -> Unit {
   let step_direction = step.coefficient.compare_int(0)
   if step_direction == 0 {
     @stdio.stderr.write("seq: zero increment\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let first_text = first.render()

@@ -63,7 +63,7 @@ pub async fn run_main() -> Unit {
   }
   if args.is_empty() {
     @stdio.stderr.write("sleep: missing operand\n\n" + usage() + "\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let mut seconds = 0.0
@@ -71,7 +71,7 @@ pub async fn run_main() -> Unit {
     seconds += parse_duration(arg) catch {
       CliError(msg) => {
         @stdio.stderr.write("\{msg}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     }

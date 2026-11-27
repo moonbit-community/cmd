@@ -3,7 +3,7 @@ async fn main {
   run() catch {
     error => {
       @stdio.stderr.write("release acceptance: " + error.to_string() + "\n")
-      @sys.exit(1)
+      @env.exit(1)
     }
   }
 }

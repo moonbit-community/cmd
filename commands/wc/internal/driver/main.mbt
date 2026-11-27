@@ -76,13 +76,13 @@ async fn count_reader(
       let mut lines = 0
       let mut words = 0
       while offset + 16 <= count {
-        let block = @v128.v128_load(buffer, offset)
-        let spaces = @v128.i8x16_bitmask(
-          @v128.v128_or_(
-            @v128.i8x16_eq(block, @v128.i8x16_splat(b' ')),
-            @v128.v128_and_(
-              @v128.i8x16_ge_u(block, @v128.i8x16_splat(b'\t')),
-              @v128.i8x16_le_u(block, @v128.i8x16_splat(b'\r')),
+        let block = @simd.v128_load(buffer, offset)
+        let spaces = @simd.i8x16_bitmask(
+          @simd.v128_or_(
+            @simd.i8x16_eq(block, @simd.i8x16_splat(b' ')),
+            @simd.v128_and_(
+              @simd.i8x16_ge_u(block, @simd.i8x16_splat(b'\t')),
+              @simd.i8x16_le_u(block, @simd.i8x16_splat(b'\r')),
             ),
           ),
         )
@@ -92,8 +92,8 @@ async fn count_reader(
         words += ((spaces ^ 0xFFFF) & ((spaces << 1) | preceding_space)).popcnt()
         in_word = (spaces & 0x8000) == 0
         if selection.lines {
-          lines += @v128.i8x16_bitmask(
-            @v128.i8x16_eq(block, @v128.i8x16_splat(b'\n')),
+          lines += @simd.i8x16_bitmask(
+            @simd.i8x16_eq(block, @simd.i8x16_splat(b'\n')),
           ).popcnt()
         }
         offset += 16
@@ -415,11 +415,11 @@ pub async fn run_main() -> Unit {
         @stdio.stderr.write(
           "wc: option '--total' requires an argument\nTry 'wc --help' for more information.\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       @stdio.stderr.write("wc: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -433,7 +433,7 @@ pub async fn run_main() -> Unit {
   ) catch {
     CliError(message) => {
       @stdio.stderr.write(message + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -459,7 +459,7 @@ pub async fn run_main() -> Unit {
   }
   if parsed.values.contains("files0-from") && !operands.is_empty() {
     @stdio.stderr.write("wc: extra operand with --files0-from\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let files = match parsed.values.get("files0-from").unwrap_or([]).last() {
@@ -467,7 +467,7 @@ pub async fn run_main() -> Unit {
       read_file_list(path) catch {
         err => {
           @stdio.stderr.write("wc: \{err}\n")
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
       }
@@ -528,6 +528,6 @@ pub async fn run_main() -> Unit {
     )
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

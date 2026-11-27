@@ -100,7 +100,7 @@ pub async fn run_main() -> Unit {
           @stdio.stderr.write(
             "env: \{description}\nTry 'env --help' for more information.\n",
           )
-          @sys.exit(125)
+          @core_env.exit(125)
           return
         }
         (args[i + 1], 2)
@@ -112,7 +112,7 @@ pub async fn run_main() -> Unit {
       let words = split_string(value, original_environment) catch {
         SplitError(message) => {
           @stdio.stderr.write("env: \{message}\n")
-          @sys.exit(125)
+          @core_env.exit(125)
           return
         }
       }
@@ -121,7 +121,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("chdir", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("env: option requires an argument: \{arg}\n")
-        @sys.exit(125)
+        @core_env.exit(125)
         return
       }
       i += 1
@@ -136,7 +136,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("unset", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("env: option requires an argument: \{arg}\n")
-        @sys.exit(125)
+        @core_env.exit(125)
         return
       }
       i += 1
@@ -154,11 +154,11 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "env: invalid environment variable assignment: \{arg}\n",
       )
-      @sys.exit(125)
+      @core_env.exit(125)
       return
     } else if arg.has_prefix("-") && options {
       @stdio.stderr.write("env: unsupported option: \{arg}\n")
-      @sys.exit(125)
+      @core_env.exit(125)
       return
     } else {
       command = Some(arg)
@@ -193,7 +193,7 @@ pub async fn run_main() -> Unit {
         @stdio.stderr.write(
           "env: cannot specify --null (-0) with command\nTry 'env --help' for more information.\n",
         )
-        @sys.exit(125)
+        @core_env.exit(125)
         return
       }
       if chdir_requested {
@@ -202,7 +202,7 @@ pub async fn run_main() -> Unit {
             @stdio.stderr.write(
               "env: cannot change directory to '\{cwd}': \{err}\n",
             )
-            @sys.exit(125)
+            @core_env.exit(125)
             return
           }
         }
@@ -212,7 +212,7 @@ pub async fn run_main() -> Unit {
             @stdio.stderr.write(
               "env: cannot change directory to '\{cwd}': not a directory\n",
             )
-            @sys.exit(125)
+            @core_env.exit(125)
             return
           }
         }
@@ -221,7 +221,7 @@ pub async fn run_main() -> Unit {
         @stdio.stderr.write(
           "env: unsupported capability: Windows Native empty child environment\n",
         )
-        @sys.exit(125)
+        @core_env.exit(125)
         return
       }
       let context : @process.ExecutionContext = { cwd, env: variables, }
@@ -241,7 +241,7 @@ pub async fn run_main() -> Unit {
           } else {
             false
           }
-          @sys.exit(
+          @core_env.exit(
             @process.launch_failure_status(
               if missing && !existing_directory {
                 CommandNotFound
@@ -254,7 +254,7 @@ pub async fn run_main() -> Unit {
         }
       }
       if code != 0 {
-        @sys.exit(code)
+        @core_env.exit(code)
       }
     }
   }

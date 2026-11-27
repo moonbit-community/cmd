@@ -33,6 +33,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Child execution requires launcher permission. Arbitrary invalid byte sequences cannot always be transported as host arguments.
 - Default tokenization interprets quoting and backslashes; use -0 for NUL-separated filenames.
 

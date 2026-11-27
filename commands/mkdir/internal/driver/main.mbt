@@ -9,7 +9,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("mkdir: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -30,14 +30,14 @@ pub async fn run_main() -> Unit {
           symbolic_mode(value, creation_retains_sticky~) catch {
             InvalidMode => {
               @stdio.stderr.write("mkdir: invalid mode '\{value}'\n")
-              @sys.exit(1)
+              @env.exit(1)
               return
             }
             NeedsUmask => {
               @stdio.stderr.write(
                 "mkdir: unsupported capability: symbolic mode requires process umask\n",
               )
-              @sys.exit(2)
+              @env.exit(2)
               return
             }
           }
@@ -50,7 +50,7 @@ pub async fn run_main() -> Unit {
   let verbose = parsed.contains("verbose")
   if directories.is_empty() {
     @stdio.stderr.write("mkdir: missing operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if parsed.contains("mode") && !@platform.permission_mutation_supported() {
@@ -64,7 +64,7 @@ pub async fn run_main() -> Unit {
         "directory permission setter"
       }
       @stdio.stderr.write("mkdir: unsupported capability: \{setter}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -105,8 +105,8 @@ pub async fn run_main() -> Unit {
     }
   }
   if unavailable {
-    @sys.exit(2)
+    @env.exit(2)
   } else if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

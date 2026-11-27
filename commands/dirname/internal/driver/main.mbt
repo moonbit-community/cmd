@@ -79,7 +79,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("dirname: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -91,7 +91,7 @@ pub async fn run_main() -> Unit {
   let zero = parsed.flags.contains("zero")
   if operands.is_empty() {
     @stdio.stderr.write("dirname: missing operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let separator = if zero { "\u0000" } else { "\n" }

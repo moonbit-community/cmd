@@ -119,7 +119,7 @@ pub async fn RecordReader::next_batch(self : RecordReader) -> RecordBatch? {
       })
     }
     guard chunk.rev_find(self.delimiter) is Some(last) else {
-      self.pending.write_bytes(chunk)
+      self.pending.write_bytesview(chunk)
       continue
     }
     let mut start = 0
@@ -127,13 +127,13 @@ pub async fn RecordReader::next_batch(self : RecordReader) -> RecordBatch? {
       None
     } else {
       let end = chunk.find(self.delimiter).unwrap()
-      self.pending.write_bytes(chunk[:end])
+      self.pending.write_bytesview(chunk[:end])
       let data = self.pending.to_bytes()
       self.pending.reset()
       start = end + 1
       Some(data)
     }
-    self.pending.write_bytes(chunk[last + 1:])
+    self.pending.write_bytesview(chunk[last + 1:])
     return Some({
       first,
       data: chunk[start:last + 1],

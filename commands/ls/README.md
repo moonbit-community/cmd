@@ -36,6 +36,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Long listings and ownership, inode, permission or capability metadata are unsupported.
 - Automatic terminal color is unavailable; select --color=always or never. -P is a project extension.
 

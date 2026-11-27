@@ -131,7 +131,7 @@ pub fn contract_errors(fixture : Case) -> Array[String] {
       if seen.contains(platform) {
         errors.push("duplicate host platform: " + platform)
       }
-      seen.add(platform)
+      seen.insert(platform)
     }
   }
   for

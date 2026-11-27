@@ -39,7 +39,7 @@ async fn generate_candidate(output : String) -> Unit {
       fail("missing release cases: " + command.name)
     }
     for fixture in @harness.select_cases(cases, [], ids) {
-      selected.add(fixture.id)
+      selected.insert(fixture.id)
     }
   }
   let ids = selected.iter().collect()

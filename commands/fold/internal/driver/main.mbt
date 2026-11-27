@@ -29,7 +29,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("fold: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -48,7 +48,7 @@ pub async fn run_main() -> Unit {
   }
   if width <= 0 || width > 2147483638 {
     @stdio.stderr.write("fold: invalid number of columns\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let sources = if parsed.operands.is_empty() { ["-"] } else { parsed.operands }
@@ -77,6 +77,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

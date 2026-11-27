@@ -28,7 +28,7 @@ pub fn ByteSetFinder::find(
   let membership = self.membership
   let mut pos = start
   while end - pos >= 16 {
-    let bytes = @v128.v128_load(hay, pos)
+    let bytes = @simd.v128_load(hay, pos)
     let hits = membership.mask(bytes)
     if hits != 0 {
       return pos + hits.ctz()

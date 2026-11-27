@@ -28,6 +28,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Checksums are verified. A corrupt later member may fail after earlier decompressed bytes have already been written.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

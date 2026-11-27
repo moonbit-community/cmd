@@ -11,7 +11,7 @@ async test "cut single range preserves clipping byte offsets and final delimiter
       let expected = @buffer.Buffer()
       for length in 0..<32 {
         let line = Bytes::makei(length, index => (32 + index * 3).to_byte())
-        input.write_bytes(line)
+        input.write_bytesview(line)
         input.write_byte(record_delimiter)
         for index in 0..<line.length() {
           if index + 1 >= lo && index + 1 <= hi {
@@ -20,7 +20,7 @@ async test "cut single range preserves clipping byte offsets and final delimiter
         }
         expected.write_byte(record_delimiter)
       }
-      input.write_bytes(b"tail")
+      input.write_bytesview(b"tail")
       for index in 0..<4 {
         if index + 1 >= lo && index + 1 <= hi {
           expected.write_byte(b"tail"[index])
@@ -47,7 +47,7 @@ async test "cut single range preserves clipping byte offsets and final delimiter
 
 ///|
 impl @io.Writer for CapturedBytes with fn write_once(self, bytes, offset~, len~) {
-  self.data.write_bytes(bytes[offset:offset + len])
+  self.data.write_bytesview(bytes[offset:offset + len])
   len
 }
 

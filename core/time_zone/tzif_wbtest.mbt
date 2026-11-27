@@ -15,10 +15,10 @@ fn tzif_fixture(
   let names = Buffer()
   let records = Buffer()
   for (offset, dst, name) in types {
-    records.write_bytes(tzif_integer(offset.to_int64(), 4))
+    records.write_bytesview(tzif_integer(offset.to_int64(), 4))
     records.write_byte(if dst { b'\x01' } else { b'\x00' })
     records.write_byte(names.length().to_byte())
-    names.write_bytes(@utf8.encode(name))
+    names.write_bytesview(@utf8.encode(name))
     names.write_byte(b'\x00')
   }
   let header = fixture_header(
@@ -31,22 +31,22 @@ fn tzif_fixture(
   if version != b'\x00' {
     let first = fixture_header(0, 1, 4).to_array()
     first[4] = version
-    output.write_bytes(Bytes::from_array(first))
-    output.write_bytes(b"\x00\x00\x00\x00\x00\x00UTC\x00")
+    output.write_bytesview(Bytes::from_array(first))
+    output.write_bytesview(b"\x00\x00\x00\x00\x00\x00UTC\x00")
   }
-  output.write_bytes(Bytes::from_array(header))
+  output.write_bytesview(Bytes::from_array(header))
   for (instant, _) in transitions {
-    output.write_bytes(
+    output.write_bytesview(
       tzif_integer(instant, if version == b'\x00' { 4 } else { 8 }),
     )
   }
   for (_, index) in transitions {
     output.write_byte(index.to_byte())
   }
-  output.write_bytes(records.to_bytes())
-  output.write_bytes(names.to_bytes())
+  output.write_bytesview(records.to_bytes())
+  output.write_bytesview(names.to_bytes())
   if version != b'\x00' {
-    output.write_bytes(@utf8.encode("\n" + footer + "\n"))
+    output.write_bytesview(@utf8.encode("\n" + footer + "\n"))
   }
   output.to_bytes()
 }

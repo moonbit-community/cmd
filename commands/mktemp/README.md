@@ -30,6 +30,8 @@ Create exclusively and print the path. Templates need at least three consecutive
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Unsafe -u dry runs are unsupported. Suffixes cannot contain path separators.
 - Without an explicit destination, TMPDIR or /tmp must name an existing directory.
 

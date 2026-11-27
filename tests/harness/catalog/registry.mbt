@@ -65,7 +65,7 @@ pub fn validate(registry : Registry) -> Array[String] {
       if id.is_empty() || ids.contains(id) {
         failures.push("duplicate or empty test ID: " + id)
       }
-      ids.add(id)
+      ids.insert(id)
     }
     if (entry.command.is_empty() && entry.implementation != "policy-test") ||
       entry.source.is_empty() {
@@ -81,7 +81,7 @@ pub fn validate(registry : Registry) -> Array[String] {
     if bindings.contains(binding) {
       failures.push("duplicate test binding: " + binding)
     }
-    bindings.add(binding)
+    bindings.insert(binding)
     if ![
         "json-case", "stateful-scenario", "compatibility-cohort", "policy-test",
         "metadata-probe",

@@ -238,8 +238,8 @@ async fn run_builtin(argv : Array[String], context : Context) -> Int32? {
       context.env["OLDPWD"] = context.cwd
       context.cwd = resolved
       context.env["PWD"] = resolved
-      context.exported.add("OLDPWD")
-      context.exported.add("PWD")
+      context.exported.insert("OLDPWD")
+      context.exported.insert("PWD")
       if args == ["-"] {
         write_output(context, resolved + "\n")
       }
@@ -263,7 +263,7 @@ async fn run_builtin(argv : Array[String], context : Context) -> Int32? {
           match split_assignment(argument) {
             Some((key, value)) => {
               context.env[key] = value
-              context.exported.add(key)
+              context.exported.insert(key)
             }
             None => {
               if !valid_name(argument) {
@@ -271,7 +271,7 @@ async fn run_builtin(argv : Array[String], context : Context) -> Int32? {
                   builtin_error(context, "export: invalid name '\{argument}'"),
                 )
               }
-              context.exported.add(argument)
+              context.exported.insert(argument)
             }
           }
         }

@@ -90,7 +90,7 @@ fn validate_manifest(manifest : Manifest) -> Array[String] {
           fixture.id + ": invalid or duplicate fixture input: " + path,
         )
       }
-      inputs.add(path)
+      inputs.insert(path)
     }
     for file in fixture.files {
       if !safe_relative_path(file.path) {

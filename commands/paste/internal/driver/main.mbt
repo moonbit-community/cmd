@@ -109,7 +109,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("paste: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -128,7 +128,7 @@ pub async fn run_main() -> Unit {
       parse_delimiters(spec) catch {
         DelimiterError(message) => {
           @stdio.stderr.write(message + "\n")
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
       }
@@ -177,7 +177,7 @@ pub async fn run_main() -> Unit {
   } catch {
     err => {
       @stdio.stderr.write("paste: \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }

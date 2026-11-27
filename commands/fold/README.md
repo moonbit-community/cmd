@@ -29,6 +29,8 @@ Wrap at 80 columns by default. -s prefers whitespace breaks; -b counts raw bytes
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Default column handling recognizes byte-level tabs and control characters, not Unicode display width.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -58,17 +58,17 @@ fn probe_summary(
 fn benchmark_observers(workloads : Array[FunctionalWorkload]) -> Set[String] {
   let observers : Set[String] = Set([])
   if workloads.any(row => ["gzip", "gunzip", "zcat"].contains(row.command)) {
-    observers.add("gzip")
+    observers.insert("gzip")
   }
   if workloads.any(row => row.other_source is Some(_)) {
-    observers.add("cut")
-    observers.add("sort")
+    observers.insert("cut")
+    observers.insert("sort")
   }
   if workloads.any(row => row.recipe == Some("real-patch-pair")) {
-    observers.add("diff")
+    observers.insert("diff")
   }
   if workloads.any(row => row.command == "xargs") {
-    observers.add("printf")
+    observers.insert("printf")
   }
   observers
 }
@@ -83,7 +83,7 @@ async fn freeze_functional_artifacts(
   let identities : Array[(String, String)] = []
   let commands : Set[String] = Set([])
   for row in workloads {
-    commands.add(row.command)
+    commands.insert(row.command)
   }
   let manifest_path = options
     .get("--manifest")
@@ -92,7 +92,7 @@ async fn freeze_functional_artifacts(
   if real_field(manifest, "schema") == Json(3) {
     @fs.mkdir(output + "/artifacts/policy", recursive=true)
     for name in real_selected_commands(options, workloads) {
-      commands.add(name)
+      commands.insert(name)
     }
     let typed : FunctionalManifest = @json.from_json(manifest)
     let paths = [
@@ -113,10 +113,10 @@ async fn freeze_functional_artifacts(
   let observers = benchmark_observers(workloads)
   let references : Set[String] = Set([])
   for row in workloads {
-    references.add(row.command)
+    references.insert(row.command)
   }
   for observer in observers {
-    references.add(observer)
+    references.insert(observer)
   }
   for key in ["--wasm-root", "--baseline-wasm-root"] {
     if options.get(key) is Some(root) {

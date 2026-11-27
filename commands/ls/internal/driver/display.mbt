@@ -476,9 +476,9 @@ async fn write_layout(
   let put_color = (palette : Palette, sequence : Bytes) => {
     if !used.val {
       used.val = true
-      out.write_bytes(color_reset(palette)[:])
+      out.write_bytesview(color_reset(palette)[:])
     }
-    out.write_bytes(sequence[:])
+    out.write_bytesview(sequence[:])
   }
   let write_name = (index : Int32, position : Int32) => {
     let name = names[index]
@@ -547,7 +547,7 @@ async fn write_layout(
     let mut position = 0
     for index, name in names {
       if index > 0 {
-        out.write_bytes(b"  ")
+        out.write_bytesview(b"  ")
         position += 2
       }
       write_name(index, position)

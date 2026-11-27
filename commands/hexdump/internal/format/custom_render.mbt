@@ -15,7 +15,7 @@ fn padded_bytes(value : BytesView, width : Int32, minus : Bool) -> Bytes {
   if !minus {
     output.write_string_utf8(spaces(padding))
   }
-  output.write_bytes(value)
+  output.write_bytesview(value)
   if minus {
     output.write_string_utf8(spaces(padding))
   }
@@ -301,11 +301,11 @@ pub fn render_custom(
         if sequence is Some(sequence) {
           output.write_string_utf8(sequence)
         }
-        output.write_bytes(prefix)
+        output.write_bytesview(prefix)
         let blank = data.length() < block_size &&
           position >= data.length() &&
           atom.conversion is Some(_)
-        output.write_bytes(
+        output.write_bytesview(
           atom_value(atom, data, position, offset + position.to_int64(), blank)[:],
         )
         if sequence is Some(_) {
@@ -328,13 +328,13 @@ pub fn render_final(unit : UnitSpec, address : Int64) -> Bytes {
         if sequence is Some(sequence) {
           output.write_string_utf8(sequence)
         }
-        output.write_bytes(atom.prefix[:])
-        output.write_bytes(atom_value(atom, b""[:], 0, address, false)[:])
+        output.write_bytesview(atom.prefix[:])
+        output.write_bytesview(atom_value(atom, b""[:], 0, address, false)[:])
         if sequence is Some(_) {
           output.write_string_utf8("\u001b[0m")
         }
       }
-      None => output.write_bytes(atom.prefix[:])
+      None => output.write_bytesview(atom.prefix[:])
       _ => ()
     }
   }

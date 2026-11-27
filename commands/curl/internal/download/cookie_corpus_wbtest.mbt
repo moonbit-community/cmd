@@ -27,7 +27,7 @@ async fn cookie_corpus(name : String, count : Int32) -> Array[CookieCorpusCase] 
       id != "" && !seen.contains(id),
       msg=name + ": missing or duplicate record ID",
     )
-    seen.add(id)
+    seen.insert(id)
     assert_true(!fixture.hosts.is_empty(), msg=id)
     assert_eq(fixture.hosts.length(), fixture.fields.length(), msg=id)
   }

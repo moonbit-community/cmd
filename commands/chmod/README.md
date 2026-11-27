@@ -29,6 +29,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Windows permission changes and --reference are unsupported.
 - Symbolic modes reject incremental changes, omitted classes, X/s/t, permission copies, directories and symlinks. A command-line directory link changes only its target directory's mode.
 

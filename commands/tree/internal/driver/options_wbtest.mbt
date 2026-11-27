@@ -50,7 +50,7 @@ async test "structured tree escapes names title and URL bytes without ANSI color
   }
   let options = parse_arguments(["-JC"]).options
   let bytes = @buffer.Buffer()
-  let out = TreeOutput::new(chunk => bytes.write_bytes(chunk[:]))
+  let out = TreeOutput::new(chunk => bytes.write_bytesview(chunk[:]))
   render_json([root], options, node_counts(root, root=true), out)
   out.flush()
   let text = @utf8.decode(bytes.to_bytes())
@@ -61,7 +61,7 @@ async test "structured tree escapes names title and URL bytes without ANSI color
   assert_eq(html_escape("A<&\"title"), "A&lt;&amp;&quot;title")
   assert_eq(url_path("a b\"<&/é"), "a%20b%22%3C%26/%C3%A9")
   let html_bytes = @buffer.Buffer()
-  let html = TreeOutput::new(chunk => html_bytes.write_bytes(chunk[:]))
+  let html = TreeOutput::new(chunk => html_bytes.write_bytesview(chunk[:]))
   let html_options = parse_arguments([
       "-H", "https://example.invalid/?q=\"&", "-T", "<script>",
     ]).options

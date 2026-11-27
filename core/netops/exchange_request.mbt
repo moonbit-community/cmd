@@ -78,7 +78,7 @@ async fn HttpWire::start_exchange(
   }
   self.request_chunked = self.request_remaining is None && request.chunked
   let text = Buffer()
-  text.write_bytes(
+  text.write_bytesview(
     @utf8.encode(
       request.request_method.wire_name() +
       " " +
@@ -86,20 +86,20 @@ async fn HttpWire::start_exchange(
       " HTTP/1.1\r\n",
     ),
   )
-  text.write_bytes(@utf8.encode("Host: " + request.host + "\r\n"))
+  text.write_bytesview(@utf8.encode("Host: " + request.host + "\r\n"))
   for field in fields {
-    text.write_bytes(
+    text.write_bytesview(
       @utf8.encode(
         field.name + (if field.bytes().is_empty() { ":" } else { ": " }),
       ),
     )
-    text.write_bytes(field.bytes())
-    text.write_bytes(b"\r\n")
+    text.write_bytesview(field.bytes())
+    text.write_bytesview(b"\r\n")
   }
   if self.request_chunked {
-    text.write_bytes(b"Transfer-Encoding: chunked\r\n")
+    text.write_bytesview(b"Transfer-Encoding: chunked\r\n")
   }
-  text.write_bytes(b"\r\n")
+  text.write_bytesview(b"\r\n")
   self.write_transport(text.to_bytes(), transport)
 }
 
@@ -120,9 +120,9 @@ async fn HttpWire::write_exchange_payload(
   }
   if self.request_chunked {
     let framed = Buffer()
-    framed.write_bytes(@utf8.encode(wire_hex(bytes.length()) + "\r\n"))
-    framed.write_bytes(bytes)
-    framed.write_bytes(b"\r\n")
+    framed.write_bytesview(@utf8.encode(wire_hex(bytes.length()) + "\r\n"))
+    framed.write_bytesview(bytes)
+    framed.write_bytesview(b"\r\n")
     self.write_transport(framed.to_bytes(), transport)
   } else {
     self.write_transport(bytes, transport)

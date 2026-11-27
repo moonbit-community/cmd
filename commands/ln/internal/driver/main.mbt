@@ -171,7 +171,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("ln: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -183,12 +183,12 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "ln: hard links are unavailable in the portable filesystem API; use -s\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if !@platform.symbolic_link_creation_supported() {
     @stdio.stderr.write("ln: unsupported capability: symbolic links\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let operands = parsed.operands
@@ -209,7 +209,7 @@ pub async fn run_main() -> Unit {
     backup: @fsops.parse_backup_control(backup_text) catch {
       @fsops.FsOpError(message) => {
         @stdio.stderr.write("ln: \{message}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     },
@@ -219,12 +219,12 @@ pub async fn run_main() -> Unit {
     Some(directory) => {
       if operands.is_empty() {
         @stdio.stderr.write("ln: missing operand\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       if options.no_target_directory {
         @stdio.stderr.write("ln: -t cannot be combined with -T\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       (operands, Some(directory))
@@ -232,7 +232,7 @@ pub async fn run_main() -> Unit {
     None => {
       if operands.length() < 2 {
         @stdio.stderr.write("ln: missing operand\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       (
@@ -245,7 +245,7 @@ pub async fn run_main() -> Unit {
   let destination_lstat = @fsops.kind_if_exists(destination) catch {
     err => {
       @stdio.stderr.write("ln: cannot inspect '\{destination}': \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -260,14 +260,14 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "ln: target directory is not a directory: '\{destination}'\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if target_directory is None &&
     targets.length() > 1 &&
     !destination_is_directory {
     @stdio.stderr.write("ln: target is not a directory: '\{destination}'\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let mut failed = false
@@ -294,6 +294,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

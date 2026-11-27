@@ -33,6 +33,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Existing output files are refused; input may be spooled. Windows output names ending in a dot or space are rejected.
 - On errors, created fragments are removed unless -k requests keeping them.
 

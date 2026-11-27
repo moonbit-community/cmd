@@ -15,7 +15,7 @@ fn decode_host(value : String) -> String raise TransferError {
       @netops.hex_value(input[index + 2].to_char()) is Some(low) {
       let byte = ((high << 4) | low).to_byte()
       if byte == b'\x00' {
-        output.write_bytes(b"%00")
+        output.write_bytesview(b"%00")
       } else {
         guard byte >= b' ' && byte != b'\x7f' else {
           raise invalid_url("URL host contains an escaped control character")

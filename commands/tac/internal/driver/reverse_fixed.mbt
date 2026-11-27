@@ -48,7 +48,7 @@ fn reverse_matched_ranges(
   let mut end = end
   for index in first..<starts.length() {
     let boundary = starts[index] + offset
-    output.write_bytes(data[boundary:end])
+    output.write_bytesview(data[boundary:end])
     end = boundary
   }
   end

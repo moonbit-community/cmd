@@ -36,7 +36,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Workspace builds use the MoonBit 2026-11-26 toolchain.
 
 - Supports strings, Int64 integers and available file/access/size/time predicates. Terminal, ownership and unavailable mode/identity queries are unsupported.
 - Unary -a is a project alias for file existence.

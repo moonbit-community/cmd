@@ -1,1 +1,1 @@
-const MODULE_VERSION = "0.1.7"
+const MODULE_VERSION = "0.1.8"

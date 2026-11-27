@@ -29,7 +29,7 @@ async test "CONNECT retains tunnel bytes delivered with the final headers" {
       defer connection.close()
       let output = Buffer()
       while connection.read_some(max_len=32) is Some(bytes) {
-        output.write_bytes(bytes)
+        output.write_bytesview(bytes)
       }
       assert_eq(requests[0], "CONNECT a/c.xn--fa-hia.example:8080 HTTP/1.1")
       assert_eq(output.to_bytes(), b"\x00\xfftunnel")

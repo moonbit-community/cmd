@@ -30,7 +30,7 @@ pub fn env_var(name : String) -> String? {
 
 ///|
 pub fn exit(code : Int32) -> Unit {
-  @exit.exit(code)
+  @env.exit(code)
 }
 
 ///|

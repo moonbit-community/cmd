@@ -35,6 +35,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Backward seeks on stdin are unsupported. Existing output-file identity and mode guarantees are limited; use a new output path when possible.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

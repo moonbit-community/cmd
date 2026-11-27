@@ -147,36 +147,36 @@ pub fn Teddy::find_span(
   let o2 = if self.masks > 2 { 2 } else { 0 }
   let mut i = start
   if limit - start >= LANES {
-    let nib = @v128.i8x16_splat(b'\x0f')
-    let zero = @v128.i8x16_splat(b'\x00')
-    let lo0 = @v128.v128_load(lo, 0)
-    let lo1 = @v128.v128_load(lo, 16)
-    let lo2 = @v128.v128_load(lo, 32)
-    let hi0 = @v128.v128_load(hi, 0)
-    let hi1 = @v128.v128_load(hi, 16)
-    let hi2 = @v128.v128_load(hi, 32)
+    let nib = @simd.i8x16_splat(b'\x0f')
+    let zero = @simd.i8x16_splat(b'\x00')
+    let lo0 = @simd.v128_load(lo, 0)
+    let lo1 = @simd.v128_load(lo, 16)
+    let lo2 = @simd.v128_load(lo, 32)
+    let hi0 = @simd.v128_load(hi, 0)
+    let hi1 = @simd.v128_load(hi, 16)
+    let hi2 = @simd.v128_load(hi, 32)
     let scratch = self.scratch
     while i + LANES <= limit {
-      let c0 = @v128.v128_load(hay, i)
-      let c1 = @v128.v128_load(hay, i + o1)
-      let c2 = @v128.v128_load(hay, i + o2)
-      let r0 = @v128.v128_and_(
-        @v128.i8x16_swizzle(lo0, @v128.v128_and_(c0, nib)),
-        @v128.i8x16_swizzle(hi0, @v128.i8x16_shr_u(c0, 4)),
+      let c0 = @simd.v128_load(hay, i)
+      let c1 = @simd.v128_load(hay, i + o1)
+      let c2 = @simd.v128_load(hay, i + o2)
+      let r0 = @simd.v128_and_(
+        @simd.i8x16_swizzle(lo0, @simd.v128_and_(c0, nib)),
+        @simd.i8x16_swizzle(hi0, @simd.i8x16_shr_u(c0, 4)),
       )
-      let r1 = @v128.v128_and_(
-        @v128.i8x16_swizzle(lo1, @v128.v128_and_(c1, nib)),
-        @v128.i8x16_swizzle(hi1, @v128.i8x16_shr_u(c1, 4)),
+      let r1 = @simd.v128_and_(
+        @simd.i8x16_swizzle(lo1, @simd.v128_and_(c1, nib)),
+        @simd.i8x16_swizzle(hi1, @simd.i8x16_shr_u(c1, 4)),
       )
-      let r2 = @v128.v128_and_(
-        @v128.i8x16_swizzle(lo2, @v128.v128_and_(c2, nib)),
-        @v128.i8x16_swizzle(hi2, @v128.i8x16_shr_u(c2, 4)),
+      let r2 = @simd.v128_and_(
+        @simd.i8x16_swizzle(lo2, @simd.v128_and_(c2, nib)),
+        @simd.i8x16_swizzle(hi2, @simd.i8x16_shr_u(c2, 4)),
       )
-      let res = @v128.v128_and_(r0, @v128.v128_and_(r1, r2))
+      let res = @simd.v128_and_(r0, @simd.v128_and_(r1, r2))
       // A cheap "any candidate" test before computing the bitmask.
-      if @v128.v128_any_true(res) {
-        let mut m = @v128.i8x16_bitmask(@v128.i8x16_ne(res, zero))
-        @v128.v128_store(scratch, 0, res)
+      if @simd.v128_any_true(res) {
+        let mut m = @simd.i8x16_bitmask(@simd.i8x16_ne(res, zero))
+        @simd.v128_store(scratch, 0, res)
         while m != 0 {
           let j = m.ctz()
           m = m & (m - 1)

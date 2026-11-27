@@ -33,7 +33,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Workspace builds use the MoonBit 2026-11-26 toolchain.
 
 - Existing output files are refused. Size-dependent stdin modes may spool input to temporary storage.
 - --filter runs the supported pure MoonBit shell profile; external children still require launcher permission.

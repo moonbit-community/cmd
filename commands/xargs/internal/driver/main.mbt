@@ -103,7 +103,7 @@ async fn parse_positive_or_exit(value : String, option : String) -> Int32? {
   try parse_positive(value, option) catch {
     XargsError(message) => {
       @stdio.stderr.write("xargs: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       None
     }
   } noraise {
@@ -215,7 +215,7 @@ pub async fn run_main() -> Unit {
         @stdio.stderr.write(
           "xargs: option requires an argument -- 'd'\nTry 'xargs --help' for more information.\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -242,7 +242,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("max-args", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: -n\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -251,7 +251,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("max-lines", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: -L\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -260,7 +260,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("max-chars", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: -s\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -269,7 +269,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("P", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: -P\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -278,7 +278,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("eof", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: -E\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -290,7 +290,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("replace", arg) {
       if i + 1 >= args.length() {
         @stdio.stderr.write("xargs: option requires an argument: \{arg}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -349,7 +349,7 @@ pub async fn run_main() -> Unit {
       }
       if !valid {
         @stdio.stderr.write("xargs: unsupported option: \{arg}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     } else {
@@ -374,7 +374,7 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "xargs: cannot fit single argument within argument list size limit\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let confirmation : @fs.File? = if interactive {
@@ -385,7 +385,7 @@ pub async fn run_main() -> Unit {
           @stdio.stderr.write(
             "xargs: unsupported capability: independent confirmation channel unavailable\n",
           )
-          @sys.exit(2)
+          @env.exit(2)
           return
         }
       },
@@ -447,22 +447,22 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "xargs: unsupported capability: non-UTF-8 argument transport\n",
       )
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     XargsError(message) => {
       @stdio.stderr.write("xargs: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     error => {
       @stdio.stderr.write("xargs: input or execution failed: \{error}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
     return
   }
 }

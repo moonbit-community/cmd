@@ -191,7 +191,7 @@ pub async fn run_main() -> Unit {
   ) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("tee: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -219,7 +219,7 @@ pub async fn run_main() -> Unit {
           @stdio.stderr.write(
             "Valid arguments are:\n  - 'warn'\n  - 'warn-nopipe'\n  - 'exit'\n  - 'exit-nopipe'\nTry 'tee --help' for more information.\n",
           )
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
       }
@@ -250,7 +250,7 @@ pub async fn run_main() -> Unit {
         )
         opening_failed = true
         if fatal_mode(mode) {
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
         continue
@@ -261,6 +261,6 @@ pub async fn run_main() -> Unit {
   }
   let status = transfer(@stdio.stdin, outputs, mode)
   if status != 0 || opening_failed {
-    @sys.exit(if status == 2 { 2 } else { 1 })
+    @env.exit(if status == 2 { 2 } else { 1 })
   }
 }

@@ -62,7 +62,7 @@ async test "tree rendering uses deterministic C locale branches" {
     limited: false,
   }
   let bytes = @buffer.Buffer()
-  let output = TreeOutput::new(chunk => bytes.write_bytes(chunk[:]))
+  let output = TreeOutput::new(chunk => bytes.write_bytesview(chunk[:]))
   render_node(
     root,
     parse_arguments(["--noreport"]).options,

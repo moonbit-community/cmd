@@ -1,6 +1,5 @@
 import {
   "cli/tac/internal/driver",
-  "moonbitlang/async",
 }
 
 supported_targets = "wasm"

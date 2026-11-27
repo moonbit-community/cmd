@@ -167,7 +167,7 @@ async fn Modules::load(self : Modules, path : String) -> Linked {
   if self.loaded.get(path) is Some(value) {
     return value
   }
-  self.loading.add(path)
+  self.loading.insert(path)
   defer self.loading.remove(path)
   let source = @fs.read_file(path).text() catch {
     error => raise ModuleReadError(error.to_string())

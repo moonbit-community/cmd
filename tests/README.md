@@ -9,6 +9,8 @@ its arguments from that root. Moon commands sharing a build directory run
 serially. Product acceptance targets Wasm; Native is only for test tools.
 All command packages declare Wasm only. The Native tools also use
 `core/platform` and `core/gzipops`; these two shared packages retain both targets.
+The Native harness uses `moonbitlang/core/env` for exit statuses and
+`moonbitlang/x@0.5.9` for path and cryptography APIs.
 
 Command policies and their private tests live together. Jq's shared filter
 adaptation and jqlog's public-engine consumer

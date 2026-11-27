@@ -33,6 +33,8 @@ Report the first difference by default. Exit 0 for equal input, 1 for difference
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - -s suppresses diagnostics; -l lists differing bytes. Skip offsets and comparison limits are byte counts.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

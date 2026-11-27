@@ -133,7 +133,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("rev: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -153,7 +153,7 @@ pub async fn run_main() -> Unit {
           error_message(error) +
           "\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
       }
     }
     return
@@ -185,7 +185,7 @@ pub async fn run_main() -> Unit {
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }
 

@@ -38,7 +38,7 @@ fn execution_groups(cases : ArrayView[TestCase]) -> Array[CorpusGroup] raise {
     guard !tc.name.is_empty() && !names.contains(tc.name) else {
       fail("empty or duplicate original corpus name: " + tc.name)
     }
-    names.add(tc.name)
+    names.insert(tc.name)
     let key = corpus_execution_key(tc)
     match indices.get(key) {
       Some(index) => groups[index].names.push(tc.name)

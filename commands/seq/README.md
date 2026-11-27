@@ -30,7 +30,7 @@ Accept LAST, FIRST LAST or FIRST INCREMENT LAST. The default first value and inc
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Workspace builds use the MoonBit 2026-11-26 toolchain.
 
 - Floating-point behavior follows the fixed Linux amd64 extended-precision profile. Extreme textual precision, exponents and scales are bounded.
 

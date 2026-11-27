@@ -135,7 +135,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(@env.args()[1:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("strings: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -154,26 +154,26 @@ pub async fn run_main() -> Unit {
   }
   if minimum < 1 {
     @stdio.stderr.write("strings: invalid minimum string length\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if parsed
     .values("encoding")
     .any(value => !["s", "S", "b", "l", "B", "L"].contains(value)) {
     @stdio.stderr.write("strings: invalid encoding\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if parsed.values("encoding").any(value => value != "s" && value != "S") {
     @stdio.stderr.write(
       "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n",
     )
-    @sys.exit(2)
+    @env.exit(2)
     return
   }
   if parsed.values("radix").any(value => parse_radix(value) is None) {
     @stdio.stderr.write("strings: invalid radix\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let radix = if parsed.last_occurrence(["octal", "radix"]) == Some("octal") {
@@ -183,7 +183,7 @@ pub async fn run_main() -> Unit {
       Some(value) => Some(value)
       None => {
         @stdio.stderr.write("strings: invalid radix\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     }
@@ -236,6 +236,6 @@ pub async fn run_main() -> Unit {
   }
   writer.flush()
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

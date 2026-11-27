@@ -112,7 +112,7 @@ async fn GrepInput::next(self : GrepInput) -> Record? {
       self.number += 1L
       let data = match pending {
         Some(buffer) => {
-          buffer.write_bytes(part)
+          buffer.write_bytesview(part)
           buffer.write_byte(self.delimiter[0])
           let bytes = buffer.to_bytes()
           bytes[:bytes.length() - 1]
@@ -130,7 +130,7 @@ async fn GrepInput::next(self : GrepInput) -> Record? {
           buffer
         }
       }
-      buffer.write_bytes(part)
+      buffer.write_bytesview(part)
     }
   }
 }
@@ -236,7 +236,7 @@ fn MatchEmitter::consume(
         buffer.write_string_utf8((record.offset + start.to_int64()).to_string())
         buffer.write_byte(b':')
       }
-      buffer.write_bytes(record.data[start:end])
+      buffer.write_bytesview(record.data[start:end])
       buffer.write_byte(if options.zero_terminated { b'\x00' } else { b'\n' })
       end
     } else {

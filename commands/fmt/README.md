@@ -32,6 +32,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Spacing, prefixes and indentation use C-locale byte rules; this is not Unicode-aware typesetting.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

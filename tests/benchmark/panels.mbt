@@ -34,7 +34,7 @@ fn combine_panel_windows(
     if seen.contains(id) {
       passed = false
     }
-    seen.add(id)
+    seen.insert(id)
     let matches = fn(row : Json) {
       row is { "workload": { "id": String(value), .. }, .. } && value == id
     }
@@ -199,10 +199,10 @@ async fn run_panels(options : Map[String, String]) -> Bool {
   )
   let references : Set[String] = Set([])
   for row in rows {
-    references.add(row.command)
+    references.insert(row.command)
   }
   for name in benchmark_observers(rows) {
-    references.add(name)
+    references.insert(name)
   }
   for name in references {
     let suffix = "/" +

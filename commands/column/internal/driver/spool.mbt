@@ -163,7 +163,7 @@ async fn Snapshot::record_bytes(self : Snapshot, record : Int64) -> BytesView {
     let bytes = self.data.get(offset / 65536, self.size)
     let start = (offset % 65536).to_int()
     let count = (length - copied).min(bytes.length() - start)
-    line.write_bytes(bytes[start:start + count])
+    line.write_bytesview(bytes[start:start + count])
     continue copied + count
   }
   line.to_bytes()[:]

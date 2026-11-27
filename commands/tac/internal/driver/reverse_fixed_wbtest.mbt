@@ -9,11 +9,11 @@ fn reverse_fixed_oracle(
   let mut end = data.length()
   while data[:search_end].rev_find(separator) is Some(start) {
     let boundary = start + (if before { 0 } else { separator.length() })
-    output.write_bytes(data[boundary:end])
+    output.write_bytesview(data[boundary:end])
     end = boundary
     search_end = start
   }
-  output.write_bytes(data[:end])
+  output.write_bytesview(data[:end])
   output.to_bytes()
 }
 

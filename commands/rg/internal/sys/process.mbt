@@ -55,7 +55,7 @@ pub async fn Process::spawn(
             if count == 0 {
               break
             }
-            stderr.write_bytes(Bytes::from_array(chunk[:count]))
+            stderr.write_bytesview(Bytes::from_array(chunk[:count]))
           }
         }
         let stdin = match stdin_path {
@@ -174,7 +174,7 @@ pub async fn run_command(
     if count == 0 {
       break
     }
-    stdout.write_bytes(Bytes::from_array(chunk[:count]))
+    stdout.write_bytesview(Bytes::from_array(chunk[:count]))
   }
   let (status, stderr) = child.finish()
   { status, stdout: stdout.to_bytes(), stderr, }

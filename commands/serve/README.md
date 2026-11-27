@@ -35,6 +35,8 @@ See the [library example](static_files/README.md).
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Every readable file under the selected root, including hidden files, can be served. Use a trusted, stable directory; path checks do not guarantee confinement against concurrent filesystem replacement.
 - There is no directory listing, SPA fallback, upload, range, compression or TLS support. Paths and symlink targets must stay under the selected root.
 - Use numeric IP addresses; port 0 selects an available port. Launcher policy must allow reading the directory and binding the address.

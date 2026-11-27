@@ -91,9 +91,9 @@ pub async fn run_test_helper(args : ArrayView[String]) -> Unit {
         @stdio.stdout.write("out-two\n")
         @stdio.stderr.write("err-two\n")
       }
-      @sys.exit(7)
+      @env.exit(7)
     }
-    ["status-124"] => @sys.exit(124)
+    ["status-124"] => @env.exit(124)
     ["read-line"] =>
       for ;; {
         guard @stdio.stdin.read_some(max_len=1) is Some(byte) else { break }

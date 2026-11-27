@@ -386,7 +386,7 @@ async fn execute_prepared(prepared : Prepared, context : Context) -> Int32 {
   let special = special_builtin(prepared.argv[0])
   if !special {
     for name in prepared.assignments.keys() {
-      context.exported.add(name)
+      context.exported.insert(name)
     }
   }
   defer (if !special {

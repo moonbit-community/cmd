@@ -28,6 +28,8 @@ Attempt each operand; -p also removes empty parents until a failure or a protect
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Nonempty trees are not removed. POSIX directory symlinks fail; Windows may remove a junction while leaving its target intact.
 - -I is a project alias for --ignore-fail-on-non-empty.
 

@@ -33,7 +33,7 @@ fn Snapshot::stage_record(
   pending.index.write_int64_le(self.size)
   pending.index.write_int64_le(bytes.length().to_int64())
   if bytes.length() <= SPOOL_BATCH_BYTES - pending.data.length() {
-    pending.data.write_bytes(bytes)
+    pending.data.write_bytesview(bytes)
   } else {
     pending.deferred = Some(bytes)
   }

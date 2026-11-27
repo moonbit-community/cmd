@@ -280,7 +280,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("head: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -297,7 +297,7 @@ pub async fn run_main() -> Unit {
   } catch {
     CliError(message) => {
       @stdio.stderr.write(message + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -334,7 +334,7 @@ pub async fn run_main() -> Unit {
           output.flush() catch {
             write_error => {
               @stdio.stderr.write("head: \{write_error}\n")
-              @sys.exit(1)
+              @env.exit(1)
               return
             }
           }
@@ -348,6 +348,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

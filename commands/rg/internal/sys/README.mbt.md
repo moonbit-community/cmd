@@ -1,9 +1,8 @@
 # Internal public-API system adapter
 
-The rg.mbt system boundary uses released public
-`moonbitlang/async@0.22.9` and `moonbitlang/x@0.5.7` APIs. Both Native development
-observations and the Wasm product run through this adapter. No C stub, custom
-WASI import or dependency-internal package is used.
+The rg.mbt system boundary uses the public `moonbitlang/async@0.22.9` APIs and
+`moonbitlang/core/env` for process exit. The Wasm product runs through this
+adapter.
 
 File/stdio reads and writes, directory advancement, metadata times and
 user-selected child processes are asynchronous. File identity is `None` when

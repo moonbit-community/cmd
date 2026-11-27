@@ -40,7 +40,7 @@ fn reversed_byte_oracle(data : Bytes, separator : Byte, before : Bool) -> Bytes 
   records.push(data[start:])
   let output = @buffer.Buffer()
   for index = records.length() - 1; index >= 0; index = index - 1 {
-    output.write_bytes(records[index])
+    output.write_bytesview(records[index])
   }
   output.to_bytes()
 }

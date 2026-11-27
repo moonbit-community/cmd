@@ -30,6 +30,8 @@ With no file, or with - as the filename, read stdin. Encoding wraps at 76 charac
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Decoding rejects lowercase characters unless -i discards them. Invalid input may produce partial output before an error.
 - Encoding streams input; decoding reads the whole input into memory.
 
