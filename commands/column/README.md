@@ -34,6 +34,7 @@ Use `--help` for the complete option list.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 
+- C.UTF-8 displays Unicode text and accepts Unicode separators. Malformed bytes use hexadecimal escapes.
 - Automatic terminal-width detection and the complete util-linux table grammar are unavailable. Large input may use temporary spool files.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

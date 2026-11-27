@@ -22,10 +22,10 @@ Default output gives line, word and byte counts. Multiple inputs include totals;
 | Option | Description |
 | --- | --- |
 | `-l`, `--lines` | Count newline bytes. |
-| `-w`, `--words` | Count C-byte words. |
-| `-c`, `--bytes` | Count bytes; both are identical in this profile. |
-| `-m`, `--chars` | Count bytes; both are identical in this profile. |
-| `-L`, `--max-line-length` | Report maximum C-profile display width. |
+| `-w`, `--words` | Count whitespace-delimited words. |
+| `-c`, `--bytes` | Count input bytes. |
+| `-m`, `--chars` | Count characters in the selected locale profile. |
+| `-L`, `--max-line-length` | Report maximum line display width. |
 | `--help` | Show help. |
 | `--files0-from VALUE` | Read NUL-delimited filenames; - selects stdin. |
 | `--version` | Show the version. |
@@ -35,7 +35,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-- The supported locale is C: -m counts bytes rather than UTF-8 characters. Display width uses the documented C-byte rules.
+- With C.UTF-8, -m counts valid Unicode scalars and -L measures display cells. The C profile counts each byte as a character.
 - Reading regular-file stdin does not claim GNU physical descriptor-position alignment.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.

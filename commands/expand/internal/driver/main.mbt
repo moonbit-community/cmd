@@ -3,11 +3,15 @@ fn expand_bytes(
   data : Bytes,
   initial_only : Bool,
   stops : TabStops,
+  profile~ : @textwidth.Profile = CBytes,
 ) -> Bytes raise TabError {
   let output : Array[Byte] = []
   let mut column = 0L
   let mut seen_nonblank = false
-  for byte in data {
+  for i = 0; i < data.length(); {
+    let (ch, len) = profile.next(data[:], i)
+    let raw = data[i:i + len]
+    let byte = raw[0]
     if byte == b'\n' {
       output.push(byte)
       column = 0
@@ -32,17 +36,25 @@ fn expand_bytes(
       }
       seen_nonblank = true
     } else {
-      output.push(byte)
+      for b in raw {
+        output.push(b)
+      }
       if byte != b'\x00' {
-        if column == 9223372036854775807L {
+        let width = if profile == CBytes {
+          1L
+        } else {
+          @textwidth.cells(ch, fallback=1).to_int64()
+        }
+        if 9223372036854775807L - column < width {
           raise TabError("input line is too long")
         }
-        column += 1
+        column += width
       }
-      if byte != b' ' && byte != b'\t' {
+      if !@textwidth.is_blank(ch) {
         seen_nonblank = true
       }
     }
+    continue i + len
   }
   Bytes::from_array(output)
 }
@@ -92,6 +104,7 @@ pub async fn run_main() -> Unit {
   } else {
     parsed.operands
   }
+  let profile = @textwidth.current()
   let mut failed = false
   for path in sources {
     let data = read_input(path) catch {
@@ -101,7 +114,12 @@ pub async fn run_main() -> Unit {
         continue
       }
     }
-    let expanded = expand_bytes(data, parsed.contains("initial"), stops) catch {
+    let expanded = expand_bytes(
+      data,
+      parsed.contains("initial"),
+      stops,
+      profile~,
+    ) catch {
       TabError(message) => {
         @stdio.stderr.text.write("expand: \{message}\n")
         @env.exit(1)

@@ -1,25 +1,45 @@
 ///|
 pub struct Separator {
   priv members : FixedArray[Bool]
+  priv wide : Set[Char]
+  priv profile : @textwidth.Profile
   priv preserve_empty : Bool
 }
 
 ///|
-pub fn Separator::new(separator : String?) -> Separator {
+pub fn Separator::new(
+  separator : String?,
+  profile~ : @textwidth.Profile = CBytes,
+) -> Separator {
   let members = FixedArray::make(128, false)
-  // The command rejects non-ASCII input separators before creating a snapshot.
+  let wide = Set([])
   for char in separator.unwrap_or(" \t") {
     if char.to_int() < 128 {
       members[char.to_int()] = true
+    } else {
+      wide.insert(char)
     }
   }
-  { members, preserve_empty: separator is Some(_), }
+  { members, wide, profile, preserve_empty: separator is Some(_), }
 }
 
 ///|
-// Input is converted to the GNU/Linux C-locale byte representation before
-// layout. Control bytes are preserved but occupy no printable cells.
-pub fn display_width(field : String, table~ : Bool = false) -> Int32 {
+// Grid and table layouts treat escape sequences differently.
+pub fn display_width(
+  field : String,
+  table~ : Bool = false,
+  profile~ : @textwidth.Profile = CBytes,
+) -> Int32 {
+  if profile == Utf8 {
+    if table {
+      return table_width(@utf8.encode(field)[:], profile)
+    }
+    let mut width = 0
+    for c in field {
+      width += @textwidth.cells(Some(c), fallback=0)
+    }
+    return width
+  }
   let mut width = 0
   let mut i = 0
   while i < field.length() {
@@ -43,7 +63,10 @@ pub fn display_width(field : String, table~ : Bool = false) -> Int32 {
 }
 
 ///|
-pub fn input_line(data : BytesView) -> String? {
+pub fn input_line(
+  data : BytesView,
+  profile~ : @textwidth.Profile = CBytes,
+) -> String? {
   let end = data.find(b"\x00").unwrap_or(data.length())
   let prefix = data[:end]
   if input_is_ascii(prefix) {
@@ -56,15 +79,30 @@ pub fn input_line(data : BytesView) -> String? {
     return Some(@utf8.decode_lossy(prefix))
   }
   let line = StringBuilder()
-  for byte in prefix {
-    if byte >= 128 {
+  if profile == Utf8 {
+    try @utf8.decode(prefix) catch {
+      @utf8.Malformed(_) => ()
+    } noraise {
+      valid => return Some(valid)
+    }
+  }
+  for i = 0; i < prefix.length(); {
+    let byte = prefix[i]
+    let (ch, len) = profile.next(prefix, i)
+    if ch is None || (profile == CBytes && byte >= 128) {
       let hex = "0123456789abcdef"
       line.write_string("\\x")
       line.write_char(hex[byte.to_int() / 16].to_char().unwrap())
       line.write_char(hex[byte.to_int() % 16].to_char().unwrap())
+    } else if profile == Utf8 &&
+      byte == b'\\' &&
+      i + 1 < prefix.length() &&
+      prefix[i + 1] == b'x' {
+      line.write_string("\\x5c")
     } else {
-      line.write_char(byte.to_int().to_char().unwrap())
+      line.write_char(ch.unwrap())
     }
+    continue i + len
   }
   let value = line.to_string()
   if value

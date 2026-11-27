@@ -2,17 +2,18 @@
 package "cli/column/internal/layout"
 
 import {
+  "cli/core/textwidth",
   "moonbitlang/core/buffer",
 }
 
 // Values
-pub fn display_width(String, table? : Bool) -> Int32
+pub fn display_width(String, table? : Bool, profile? : @textwidth.Profile) -> Int32
 
 pub fn fields_from_plan(BytesView, Bytes) -> Array[Field]
 
 pub fn grid_shape(Int64, Int32, Int32) -> (Int64, Int64, Int64)
 
-pub fn input_line(BytesView) -> String?
+pub fn input_line(BytesView, profile? : @textwidth.Profile) -> String?
 
 // Errors
 
@@ -30,7 +31,7 @@ pub fn Row::new(Array[Field], Array[Int32], Bytes) -> Self
 pub struct Separator {
   // private fields
 }
-pub fn Separator::new(String?) -> Self
+pub fn Separator::new(String?, profile? : @textwidth.Profile) -> Self
 pub fn Separator::observe_fields(Self, BytesView, Array[Int32], Int32?) -> Bytes?
 pub fn Separator::table_fields(Self, BytesView) -> Array[Field]
 
