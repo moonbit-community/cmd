@@ -11,6 +11,9 @@ pub fn blocks(Int64, Int64) -> Int64
 pub async fn measure(ArrayView[String], detail~ : Detail, follow~ : Bool, count_links~ : Bool, inodes~ : Bool, emit~ : async (String, Int64) -> Unit, report~ : async (String, Error) -> Unit) -> Int64
 
 // Errors
+pub(all) suberror WalkError {
+  UnreadableDirectory
+}
 
 // Types and methods
 pub(all) enum Detail {
