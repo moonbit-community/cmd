@@ -1,6 +1,6 @@
 name = "cli/rev"
 
-version = "0.1.9"
+version = "0.1.10"
 
 readme = "README.md"
 
@@ -15,7 +15,6 @@ preferred_target = "wasm"
 description = "rev command for MoonX."
 
 import {
-  "cli/core@0.11.1",
+  "cli/core@0.11.3",
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
 }

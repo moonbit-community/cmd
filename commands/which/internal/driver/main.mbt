@@ -115,7 +115,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("which: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -130,7 +130,7 @@ pub async fn run_main() -> Unit {
   }
   if operands.is_empty() {
     @stdio.stderr.write("which: missing command name\n")
-    @sys.exit(2)
+    @env.exit(2)
     return
   }
   let mut missing = false
@@ -154,6 +154,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if missing {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

@@ -16,7 +16,6 @@ import {
   "moonbitlang/core/string",
   "moonbitlang/x/path",
   "moonbitlang/x/crypto",
-  "moonbitlang/x/sys",
 }
 
 import {

@@ -32,6 +32,8 @@ Print ten lines by default. Use -n for lines or -c for bytes; negative counts om
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Counts and supported size suffixes must fit the command's Int64 range.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

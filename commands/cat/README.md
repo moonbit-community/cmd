@@ -33,6 +33,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - -b takes precedence over -n. Visible-character formatting works on bytes; -u is accepted as a no-op.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

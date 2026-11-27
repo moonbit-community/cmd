@@ -121,7 +121,7 @@ pub async fn run_main() -> Unit {
     Error(msg) => {
       @stdio.stderr.write("Error: " + msg + "\n")
       @stdio.stderr.write(help_message())
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     Run(options) =>
@@ -137,7 +137,7 @@ pub async fn run_main() -> Unit {
       } catch {
         err => {
           @stdio.stderr.write("Error: \{err}\n")
-          @sys.exit(2)
+          @env.exit(2)
           return
         }
       }

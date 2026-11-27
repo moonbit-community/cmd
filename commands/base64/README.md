@@ -31,6 +31,8 @@ Read one file or stdin and write stdout. Encoding wraps at 76 characters by defa
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Decoding streams input and may emit a valid prefix before reporting invalid data. Ignoring garbage does not make invalid padding valid.
 - -D is a project alias for --decode.
 

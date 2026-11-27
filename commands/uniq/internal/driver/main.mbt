@@ -359,7 +359,7 @@ pub async fn run_main() -> Unit {
   let parsed = parse_args(args) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("uniq: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -369,13 +369,13 @@ pub async fn run_main() -> Unit {
   }
   if parsed.operands.length() > 1 {
     @stdio.stderr.write("uniq: extra operand: '\{parsed.operands[1]}'\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let mode = output_mode(parsed) catch {
     CliError(message) => {
       @stdio.stderr.write(message)
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -422,7 +422,7 @@ pub async fn run_main() -> Unit {
   } catch {
     CliError(message) => {
       @stdio.stderr.write(message + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -465,7 +465,7 @@ pub async fn run_main() -> Unit {
   } catch {
     err => {
       @stdio.stderr.write("uniq: \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }

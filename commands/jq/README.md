@@ -36,7 +36,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Workspace builds use the MoonBit 2026-11-26 toolchain.
 
 - Use -f with a positional filter filename. --arg NAME VALUE and --argjson NAME JSON each consume two arguments.
 - The implemented language is a subset of jq; exact numeric ordering at or above 2^53 and complete upstream diagnostics are not claimed. Invalid later input may follow already-written results.

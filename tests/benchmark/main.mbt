@@ -95,7 +95,7 @@ async fn main {
     index += 2
   }
   match args[0] {
-    "panels" => if !run_panels(options) { @sys.exit(1) }
+    "panels" => if !run_panels(options) { @env.exit(1) }
     "inventory" =>
       println(Json(functional_inventory(options)).stringify(indent=2))
     "run" => {
@@ -106,16 +106,16 @@ async fn main {
         )
       }
       if !run_functional(options, sample=true) {
-        @sys.exit(1)
+        @env.exit(1)
       }
     }
-    "baseline" => if !run_functional(options, sample=false) { @sys.exit(1) }
+    "baseline" => if !run_functional(options, sample=false) { @env.exit(1) }
     "probe" => {
       if !options.contains("--probe-pairs") {
         options["--probe-pairs"] = "9"
       }
       if !run_functional(options, sample=true) {
-        @sys.exit(1)
+        @env.exit(1)
       }
     }
     "report" => {

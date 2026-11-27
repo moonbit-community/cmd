@@ -30,6 +30,8 @@ Read stdin and write stdout. Sets support ranges, byte escapes and C-locale char
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Operations are byte-oriented, without Unicode case conversion or multibyte character classes.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

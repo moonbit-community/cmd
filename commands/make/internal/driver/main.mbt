@@ -1081,7 +1081,7 @@ pub async fn run_main() -> Unit {
   run(@env.args()[1:].to_owned()) catch {
     ExpansionFailure(message) => {
       @stdio.stderr.write("make: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
     }
     MakeError(message) => {
       if message == "unexpected endif" {
@@ -1089,11 +1089,11 @@ pub async fn run_main() -> Unit {
       } else {
         @stdio.stderr.write("make: \{message}\n")
       }
-      @sys.exit(2)
+      @env.exit(2)
     }
     err => {
       @stdio.stderr.write("make: \{err}\n")
-      @sys.exit(2)
+      @env.exit(2)
     }
   }
 }

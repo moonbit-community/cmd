@@ -677,7 +677,7 @@ pub async fn run_main() -> Unit {
         reason +
         "\ncurl: try 'curl --help' or 'curl --manual' for more information\n",
       )
-      @sys.exit(
+      @env.exit(
         if reason == "error encountered when reading a file" {
           26
         } else {
@@ -692,22 +692,22 @@ pub async fn run_main() -> Unit {
         option +
         ": is badly used here\ncurl: try 'curl --help' or 'curl --manual' for more information\n",
       )
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     UsageError(message) => {
       @stdio.stderr.write("curl: option error: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     error => {
       @stdio.stderr.write("curl: option error: " + error.to_string() + "\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
   let status = run(options)
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

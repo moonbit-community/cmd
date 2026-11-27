@@ -23,6 +23,8 @@ Remove exactly one file or symbolic link. Removing a link does not remove its ta
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Directories and extra operands are rejected.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

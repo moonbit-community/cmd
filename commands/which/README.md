@@ -27,6 +27,8 @@ Search PATH or inspect an explicit path. Windows also uses PATHEXT.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Shell aliases, functions and builtins are not searched.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

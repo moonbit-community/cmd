@@ -47,7 +47,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("basename: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -61,7 +61,7 @@ pub async fn run_main() -> Unit {
   }
   if operands.is_empty() || (!multiple && operands.length() > 2) {
     @stdio.stderr.write("basename: missing or extra operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if !multiple && operands.length() == 2 {

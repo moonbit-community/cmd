@@ -95,7 +95,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("nl: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -121,7 +121,7 @@ pub async fn run_main() -> Unit {
     let (label, style) = entry
     if !(style is ("a" | "t" | "n")) {
       @stdio.stderr.write("nl: invalid \{label} numbering style: '\{style}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -133,7 +133,7 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "nl: invalid line number field width: '\{width_text}'\n",
       )
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -141,7 +141,7 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "nl: invalid line number field width: '\{width_text}'\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let separator = parsed
@@ -155,7 +155,7 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "nl: invalid starting line number: '\{starting_text}'\n",
       )
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -167,7 +167,7 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "nl: invalid line number increment: '\{increment_text}'\n",
       )
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -179,7 +179,7 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "nl: invalid blank-line group size: '\{join_blank_text}'\n",
       )
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -187,7 +187,7 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "nl: invalid blank-line group size: '\{join_blank_text}'\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let number_format = parsed
@@ -195,7 +195,7 @@ pub async fn run_main() -> Unit {
     .unwrap_or(DEFAULT_NUMBER_FORMAT)
   if !(number_format is ("ln" | "rn" | "rz")) {
     @stdio.stderr.write("nl: invalid line number format: '\{number_format}'\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let section_delimiter = match parsed.last_value("section-delimiter") {
@@ -236,6 +236,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

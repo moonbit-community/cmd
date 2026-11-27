@@ -20,17 +20,17 @@ pub async fn run_main() -> Unit {
   let value = @expression.evaluate(args.map(@bytere.argument)) catch {
     @expression.EvalError(message) | @bytere.PatternError(message) => {
       @stdio.stderr.write("expr: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     err => {
       @stdio.stderr.write("expr: \{err}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
   @stdio.stdout.write(@bytere.bytes(value + "\n"))
   if !@expression.truth(value) {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

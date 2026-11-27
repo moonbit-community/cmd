@@ -1,7 +1,6 @@
 import {
   "cli/typst/internal/driver",
   "moonbitlang/core/env",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"

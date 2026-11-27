@@ -34,6 +34,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Terminal-sensitive write-protection prompts are unavailable. Use an explicit interactive mode when confirmation is needed.
 - Final dot/dot-dot operands and symbolic-link operands ending in a separator are refused. Earlier successful removals are not rolled back.
 

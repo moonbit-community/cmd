@@ -1,7 +1,6 @@
 import {
   "cli/rg/internal/driver",
   "moonbitlang/core/env",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"

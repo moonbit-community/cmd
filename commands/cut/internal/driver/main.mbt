@@ -367,7 +367,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("cut: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -388,7 +388,7 @@ pub async fn run_main() -> Unit {
         @stdio.stderr.write(
           "cut: the delimiter must be a single byte in C locale\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       if encoded.is_empty() {
@@ -409,13 +409,13 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "cut: only one list may be specified\nTry 'cut --help' for more information.\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   } else if mode_count == 0 {
     @stdio.stderr.write(
       "cut: you must specify a list of fields (-f) or characters (-c)\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if fields_spec is None &&
@@ -427,7 +427,7 @@ pub async fn run_main() -> Unit {
         "cut: suppressing non-delimited lines makes sense\n\tonly when operating on fields\nTry 'cut --help' for more information.\n"
       },
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let (field_ranges, char_ranges) = try {
@@ -451,7 +451,7 @@ pub async fn run_main() -> Unit {
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -485,6 +485,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

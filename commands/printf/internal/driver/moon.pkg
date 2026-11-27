@@ -5,7 +5,6 @@ import {
 import {
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"

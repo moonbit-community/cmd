@@ -10,7 +10,6 @@ import {
   "moonbitlang/async/stdio",
   "moonbitlang/async/os_error",
   "moonbitlang/core/env",
-  "moonbitlang/x/sys" @exit,
 }
 
 supported_targets = "wasm"

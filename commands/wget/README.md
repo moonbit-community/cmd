@@ -37,7 +37,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Workspace builds use the MoonBit 2026-11-26 toolchain.
 
 - FTP, recursive mirroring, HSTS and complete upstream configuration/IRI behavior are unsupported.
 - Authentication replay cannot rewind stdin request bodies. Multiple failures retain the lowest nonzero Wget status; partial files can remain after errors.

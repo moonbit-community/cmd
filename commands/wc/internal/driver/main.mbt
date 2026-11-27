@@ -415,11 +415,11 @@ pub async fn run_main() -> Unit {
         @stdio.stderr.write(
           "wc: option '--total' requires an argument\nTry 'wc --help' for more information.\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       @stdio.stderr.write("wc: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -433,7 +433,7 @@ pub async fn run_main() -> Unit {
   ) catch {
     CliError(message) => {
       @stdio.stderr.write(message + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -459,7 +459,7 @@ pub async fn run_main() -> Unit {
   }
   if parsed.values.contains("files0-from") && !operands.is_empty() {
     @stdio.stderr.write("wc: extra operand with --files0-from\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let files = match parsed.values.get("files0-from").unwrap_or([]).last() {
@@ -467,7 +467,7 @@ pub async fn run_main() -> Unit {
       read_file_list(path) catch {
         err => {
           @stdio.stderr.write("wc: \{err}\n")
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
       }
@@ -528,6 +528,6 @@ pub async fn run_main() -> Unit {
     )
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

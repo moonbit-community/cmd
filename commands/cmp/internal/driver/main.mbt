@@ -269,7 +269,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("cmp: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -282,7 +282,7 @@ pub async fn run_main() -> Unit {
   let verbose = parsed.contains("verbose")
   if silent && verbose {
     @stdio.stderr.write("cmp: options -l and -s are incompatible\n")
-    @sys.exit(2)
+    @env.exit(2)
     return
   }
   let limit = match parsed.last_value("bytes") {
@@ -291,7 +291,7 @@ pub async fn run_main() -> Unit {
         parse_count(value, "byte limit") catch {
           CliError(message) => {
             @stdio.stderr.write(message + "\n")
-            @sys.exit(2)
+            @env.exit(2)
             return
           }
         },
@@ -303,7 +303,7 @@ pub async fn run_main() -> Unit {
       parse_skips(value) catch {
         CliError(message) => {
           @stdio.stderr.write(message + "\n")
-          @sys.exit(2)
+          @env.exit(2)
           return
         }
       }
@@ -311,7 +311,7 @@ pub async fn run_main() -> Unit {
   }
   if files.length() < 1 || files.length() > 2 {
     @stdio.stderr.write("cmp: expected two distinct input sources\n")
-    @sys.exit(2)
+    @env.exit(2)
     return
   }
   let sources = if files.length() == 1 { [files[0], "-"] } else { files }
@@ -319,7 +319,7 @@ pub async fn run_main() -> Unit {
   let print_bytes = parsed.contains("print-bytes")
   if sources[0] == "-" && sources[1] == "-" {
     @stdio.stderr.write("cmp: expected two distinct input sources\n")
-    @sys.exit(2)
+    @env.exit(2)
     return
   }
   let different = try {
@@ -377,11 +377,11 @@ pub async fn run_main() -> Unit {
   } catch {
     err => {
       @stdio.stderr.write("cmp: \{err}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
   if different {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

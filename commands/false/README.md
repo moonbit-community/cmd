@@ -23,6 +23,8 @@ Produce no output and exit 1. Ordinary arguments are ignored.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Standalone --help and --version print metadata and exit 0.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

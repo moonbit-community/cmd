@@ -4,7 +4,6 @@ import {
   "moonbitlang/async@0.22.9/shell",
   "moonbitlang/async@0.22.9/fs",
   "moonbitlang/core/env",
-  "moonbitlang/x@0.5.7/sys",
 }
 ----
 
@@ -45,5 +44,5 @@ async fn main {
     stdout=Inherit,
     stderr=Inherit,
   ).status()
-  @sys.exit(status)
+  @env.exit(status)
 }

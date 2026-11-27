@@ -25,7 +25,7 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "printf: missing operand\nTry 'printf --help' for more information.\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let format = operands[0]
@@ -37,12 +37,12 @@ pub async fn run_main() -> Unit {
   match ctx.fatal {
     Some(msg) => {
       @stdio.stderr.write(msg + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     None => ()
   }
   if ctx.exit_error {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

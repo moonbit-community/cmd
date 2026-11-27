@@ -106,7 +106,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("rmdir: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -121,7 +121,7 @@ pub async fn run_main() -> Unit {
   let verbose = parsed.flags.contains("verbose")
   if directories.is_empty() {
     @stdio.stderr.write("rmdir: missing operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let mut failed = false
@@ -147,6 +147,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

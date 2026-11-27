@@ -15,7 +15,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args[:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("hexdump: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -37,19 +37,19 @@ pub async fn run_main() -> Unit {
   } catch {
     HexdumpError(message) => {
       @stdio.stderr.write("hexdump: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
   let program = program(parsed) catch {
     HexdumpError(message) | @format.FormatError(message) => {
       @stdio.stderr.write("hexdump: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     err => {
       @stdio.stderr.write("hexdump: \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -94,6 +94,6 @@ pub async fn run_main() -> Unit {
     @stdio.stdout.write(@format.render_final(unit, state.offset))
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

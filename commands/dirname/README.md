@@ -26,6 +26,8 @@ Print one result per operand. A name without a directory component produces a do
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Paths are handled lexically, without resolving symbolic links or checking existence.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

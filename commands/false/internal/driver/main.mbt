@@ -10,5 +10,5 @@ pub async fn run_main() -> Unit {
     @stdio.stdout.write("false \{MODULE_VERSION}\n")
     return
   }
-  @sys.exit(1)
+  @env.exit(1)
 }

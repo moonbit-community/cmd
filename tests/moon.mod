@@ -1,6 +1,6 @@
 name = "mooxCLI/cmd-tests"
 
-version = "0.2.0"
+version = "0.2.1"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "native"
 description = "Unified compatibility, policy, and pinned-oracle runner for the cmd workspace."
 
 import {
-  "cli/core@0.11.2",
+  "cli/core@0.11.3",
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
+  "moonbitlang/x@0.5.9",
 }

@@ -26,6 +26,8 @@ Print all entries without operands, or each requested value in order. Missing va
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - The launcher controls which environment variables are visible.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -12,6 +12,14 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-27
+
+Development candidates.
+
+- Upgrade `moonbitlang/x` to 0.5.9. Move process exits to the standard library's
+  environment API and remove unused direct dependencies from 62 commands.
+  Prepare core 0.11.3 and patch versions of the 80 commands that migrated exits.
+
 ## 2026-11-18
 
 Development candidates; publication follows validation.

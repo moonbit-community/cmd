@@ -28,6 +28,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Existing files fail even with -c: timestamp updates are unsupported.
 - -a, -m, -d, -r, -t and --time are recognized but rejected before mutation. Earlier successful creates remain after later failures.
 

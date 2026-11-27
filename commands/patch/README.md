@@ -34,7 +34,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Workspace builds use the MoonBit 2026-11-26 toolchain.
 
 - Rewriting existing files and named --output paths are rejected because source mode metadata is unavailable. Use --dry-run or --output=-; creating a new patch target remains supported.
 - Existing reject files cannot be replaced. Binary patches and extended rename/mode patch formats are unsupported.

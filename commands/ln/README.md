@@ -34,6 +34,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Hard links and Windows link creation are unsupported. Declining a replacement, including EOF, returns status 1.
 - If creation and backup restoration both fail, the diagnostic names both paths; inspect them before retrying.
 

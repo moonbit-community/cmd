@@ -14,7 +14,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(@env.args()[1:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("column: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -29,7 +29,7 @@ pub async fn run_main() -> Unit {
   let separator = parsed.last_value("separator")
   if separator is Some(value) && value.iter().any(c => c.to_int() >= 128) {
     @stdio.stderr.write("column: unsupported non-ASCII input separator\n")
-    @sys.exit(2)
+    @env.exit(2)
     return
   }
   let default_width = @string.parse_int(
@@ -44,7 +44,7 @@ pub async fn run_main() -> Unit {
   }
   if width < 0 {
     @stdio.stderr.write("column: invalid output width\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let failed = run_layout(
@@ -63,6 +63,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

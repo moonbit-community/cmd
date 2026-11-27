@@ -1,6 +1,6 @@
 name = "cli/sleep"
 
-version = "0.2.5"
+version = "0.2.6"
 
 readme = "README.md"
 
@@ -16,5 +16,4 @@ description = "sleep command for MoonX."
 
 import {
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
 }

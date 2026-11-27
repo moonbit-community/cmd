@@ -1,7 +1,6 @@
 import {
   "cli/core/checksum/cli" @checksum,
   "moonbitlang/core/env",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"

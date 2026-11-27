@@ -78,7 +78,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("tr: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -95,12 +95,12 @@ pub async fn run_main() -> Unit {
   let sets = operands
   if sets.is_empty() {
     @stdio.stderr.write("tr: missing operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if sets.length() > 2 {
     @stdio.stderr.write("tr: extra operand '\{sets[2]}'\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   try {
@@ -198,12 +198,12 @@ pub async fn run_main() -> Unit {
   } catch {
     @sets.CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     err => {
       @stdio.stderr.write("tr: \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }

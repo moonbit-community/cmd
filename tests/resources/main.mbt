@@ -423,5 +423,5 @@ async fn main {
     }
   }
   println("resource completed failures=\{failures}")
-  @sys.exit(if failures == 0 { 0 } else { 1 })
+  @env.exit(if failures == 0 { 0 } else { 1 })
 }

@@ -36,6 +36,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Supported algorithms include bsd, sysv, crc, crc32b, md5, sha1, sha224, sha256, sha384, sha512, sha2, sha3, blake2b and sm3.
 - Legacy checksum algorithms do not support manifest checking. Raw output requires one input. Binary/text flags select manifest markers without translating file bytes.
 - --ignore-missing still requires at least one successfully checked file.

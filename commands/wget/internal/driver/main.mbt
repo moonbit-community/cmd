@@ -567,22 +567,22 @@ pub async fn run_main() -> Unit {
   let options = parse_options(configured_arguments(@env.args()[1:])) catch {
     UsageError(message) => {
       @stdio.stderr.write("wget: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     ConfigError(status, message) => {
       @stdio.stderr.write("wget: " + message + "\n")
-      @sys.exit(status)
+      @env.exit(status)
       return
     }
     error => {
       @stdio.stderr.write("wget: " + error.to_string() + "\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
   let status = run(options)
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

@@ -16,5 +16,4 @@ description = "true command for MoonX."
 
 import {
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
 }

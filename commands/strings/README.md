@@ -31,6 +31,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Supports the documented 7-bit/8-bit byte profiles, including tabs. Wide encodings, Unicode classification and object-file section parsing are unsupported.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

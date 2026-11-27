@@ -5,8 +5,8 @@ import {
   "moonbitlang/async@0.22.9/process",
   "moonbitlang/core/env",
   "moonbitlang/core/json",
-  "moonbitlang/x@0.5.7/crypto",
-  "moonbitlang/x@0.5.7/path",
+  "moonbitlang/x@0.5.9/crypto",
+  "moonbitlang/x@0.5.9/path",
 }
 ----
 

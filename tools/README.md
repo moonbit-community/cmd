@@ -5,6 +5,9 @@ from the workspace. Keep Moon commands sharing a build directory serial.
 The entry resolves repository paths and requires fresh absolute report roots.
 See [command validation](../tests/README.md) for execution and result contracts.
 
+Standalone scripts that use `moonbitlang/x` pin version 0.5.9. The release tool
+uses `moonbitlang/core/env` for its exit status.
+
 `metadata check|update` owns generated option artifacts. Each command declares
 its options in `options.json`; the generator preserves parser-table order,
 repeatability, attached-value rules and explicit custom adapters. Help layout

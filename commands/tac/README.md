@@ -30,7 +30,7 @@ Use newline separators by default. Fixed-string mode reads backwards from files 
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Workspace builds use the MoonBit 2026-11-26 toolchain.
 
 - Regex separators use the supported C-locale Emacs-style grammar and retain the entire input, subject to Int32 size limits.
 

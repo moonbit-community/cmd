@@ -77,7 +77,7 @@ pub async fn run_main() -> Unit {
   let parsed = parse_args(args) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("xxd: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -87,17 +87,17 @@ pub async fn run_main() -> Unit {
   }
   if parsed.operands.length() > 2 {
     @stdio.stderr.write("xxd: extra operand: '\{parsed.operands[2]}'\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   execute(parsed, options(parsed)) catch {
     CliError(status, message) => {
       @stdio.stderr.write(message + "\n")
-      @sys.exit(status)
+      @env.exit(status)
     }
     error => {
       @stdio.stderr.write("xxd: \{error}\n")
-      @sys.exit(2)
+      @env.exit(2)
     }
   }
 }

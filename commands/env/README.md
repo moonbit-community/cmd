@@ -34,6 +34,8 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - -S splits its argument using the supported quoting and expansion rules; it does not invoke a host shell. Child execution requires launcher permission.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

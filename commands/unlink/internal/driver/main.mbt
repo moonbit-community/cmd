@@ -69,7 +69,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("unlink: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -84,18 +84,18 @@ pub async fn run_main() -> Unit {
   }
   if operands.is_empty() {
     @stdio.stderr.write("unlink: missing operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if operands.length() != 1 {
     @stdio.stderr.write("unlink: extra operand '\{operands[1]}'\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   unlink_one(operands[0]) catch {
     UnlinkError(message) => {
       @stdio.stderr.write("unlink: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
     }
   }
 }

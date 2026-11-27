@@ -259,7 +259,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("grep: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -284,7 +284,7 @@ pub async fn run_main() -> Unit {
   } catch {
     GrepError(message) => {
       @stdio.stderr.write(message + "\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -298,7 +298,7 @@ pub async fn run_main() -> Unit {
       Some("without-match") => WithoutMatch
       Some(value) => {
         @stdio.stderr.write("grep: unknown binary-files type '\{value}'\n")
-        @sys.exit(2)
+        @env.exit(2)
         return
       }
     }
@@ -341,7 +341,7 @@ pub async fn run_main() -> Unit {
   if patterns.is_empty() && pattern_files.is_empty() {
     if files.is_empty() {
       @stdio.stderr.write("grep: missing pattern\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     patterns.push(files.remove(0))
@@ -352,7 +352,7 @@ pub async fn run_main() -> Unit {
         if !options.suppress_messages {
           @stdio.stderr.write("grep: '\{pattern_file}': \{err}\n")
         }
-        @sys.exit(2)
+        @env.exit(2)
         return
       }
     }
@@ -361,12 +361,12 @@ pub async fn run_main() -> Unit {
   let matcher = compile_matcher(patterns, options) catch {
     @bytere.PatternError(message) => {
       @stdio.stderr.write("grep: invalid regular expression: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     err => {
       @stdio.stderr.write("grep: invalid regular expression: \{err}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -416,8 +416,8 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(2)
+    @env.exit(2)
   } else if !matched_any {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

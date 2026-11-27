@@ -169,7 +169,7 @@ async fn jobserver_bridge(work : String) -> Unit {
     @fs.read_file(work + "/bridge.ack").text(),
     radix=10,
   )
-  @sys.exit(status)
+  @env.exit(status)
 }
 
 ///|

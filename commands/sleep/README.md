@@ -25,6 +25,8 @@ Add supplied durations, accepting fractional values and s, m, h or d suffixes.
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Exact host signal and interruption parity is not claimed.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

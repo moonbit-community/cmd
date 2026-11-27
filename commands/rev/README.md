@@ -25,6 +25,8 @@ Read files or stdin, reverse each record and write it with its original record s
 
 ## Notes
 
+Workspace builds use the MoonBit 2026-11-26 toolchain.
+
 - Non-ASCII input is rejected. Memory use grows with the longest record; NUL-delimited records are supported.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

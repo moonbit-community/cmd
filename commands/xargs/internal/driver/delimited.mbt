@@ -99,7 +99,7 @@ async fn delimiter_or_exit(value : String) -> Int32? {
   try delimiter_byte(value) catch {
     XargsError(message) => {
       @stdio.stderr.write("xargs: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       None
     }
   } noraise {
