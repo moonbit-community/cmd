@@ -3025,6 +3025,12 @@
       "releasable": true,
       "case_ids": [
         "phase3-test-string",
+        "test-ef-hardlink",
+        "test-ef-symlink",
+        "test-ef-equal-content",
+        "test-ef-dangling",
+        "test-ef-missing",
+        "test-ef-windows",
         "p8-test-regular-size",
         "p8-test-dangling-link",
         "release-metadata-test-help",
