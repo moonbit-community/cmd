@@ -1,12 +1,10 @@
 import {
   "cli/core/cli",
-  "cli/core/platform",
   "moonbitlang/async/fs",
-  "moonbitlang/async/os_error",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/x/path",
-  "moonbitlang/x/path/win32" @winpath,
+  "cli/core/pathresolve",
 }
 
 supported_targets = "wasm"
@@ -20,4 +18,5 @@ dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")
 
 import {
   "moonbitlang/async",
+  "cli/core/platform",
 } for "wbtest"

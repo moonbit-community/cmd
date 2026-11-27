@@ -1,0 +1,26 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/pathresolve"
+
+// Values
+pub fn error_text(Error) -> String
+
+pub fn inside(String, String) -> Bool
+
+pub async fn resolve_path(String, Existence, Bool) -> String
+
+// Errors
+pub suberror RealpathError {
+  RealpathError(String)
+  ReadlinkBoundary(String)
+}
+
+// Types and methods
+pub(all) enum Existence {
+  Existing
+  AllButLast
+  Missing
+}
+
+// Type aliases
+
+// Traits

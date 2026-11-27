@@ -246,6 +246,24 @@
     },
     {
       "name": "serve"
+    },
+    {
+      "name": "df"
+    },
+    {
+      "name": "du"
+    },
+    {
+      "name": "install"
+    },
+    {
+      "name": "readlink"
+    },
+    {
+      "name": "stat"
+    },
+    {
+      "name": "truncate"
     }
   ],
   "cases": [],
@@ -331,6 +349,12 @@
     "date.json",
     "rg.json",
     "typst.json",
-    "serve.json"
+    "serve.json",
+    "df.json",
+    "du.json",
+    "install.json",
+    "readlink.json",
+    "stat.json",
+    "truncate.json"
   ]
 }

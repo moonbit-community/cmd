@@ -1,6 +1,6 @@
 name = "cli/realpath"
 
-version = "0.1.8"
+version = "0.1.9"
 
 readme = "README.md"
 
@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "realpath command for MoonX."
 
 import {
-  "cli/core@0.11.3",
+  "cli/core@0.11.4",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.9",
 }

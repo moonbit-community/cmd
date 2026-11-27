@@ -57,7 +57,8 @@ fn real_command_scope() -> Set[String] {
     "rg", "rm", "rmdir", "sed", "seq", "serve", "sh", "sha1sum", "sha256sum", "sha512sum",
     "sleep", "sort", "split", "strings", "tac", "tail", "tee", "test", "timeout",
     "touch", "tr", "tree", "true", "typst", "unexpand", "uniq", "unlink", "wc", "wget",
-    "which", "xargs", "xxd", "yes", "zcat",
+    "which", "xargs", "xxd", "yes", "zcat", "df", "du", "install", "readlink", "stat",
+    "truncate",
   ])
 }
 
@@ -66,7 +67,8 @@ fn real_untimed_scope() -> Set[String] {
   Set([
     "basename", "date", "dirname", "echo", "env", "expr", "false", "jqlog", "mkdir",
     "mktemp", "printenv", "printf", "pwd", "realpath", "rmdir", "serve", "sleep",
-    "timeout", "touch", "true", "typst", "unlink", "which", "yes",
+    "timeout", "touch", "true", "typst", "unlink", "which", "yes", "df", "du", "install",
+    "readlink", "stat", "truncate",
   ])
 }
 

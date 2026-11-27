@@ -1,0 +1,97 @@
+{
+  "schema": 1,
+  "command": "install",
+  "help": "Usage: install [-D] [-m MODE] SOURCE DEST\n       install -d [-m MODE] DIRECTORY...\n{{help:directory:0}}\n{{help:leading:0}}\n{{help:mode:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nLinux and macOS support new destination files, existing target directories, -D leading directories and -d directories with numeric modes. Existing file replacement and Windows permission application require additional APIs.\n",
+  "catalog_options": [
+    "directory",
+    "leading",
+    "mode",
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "directory",
+      "aliases": [
+        "-d",
+        "--directory"
+      ],
+      "value": "none",
+      "description": "Create directories.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -d, --directory  Create directories."
+      ]
+    },
+    {
+      "name": "leading",
+      "aliases": [
+        "-D"
+      ],
+      "value": "none",
+      "description": "Create missing leading directories for the destination.",
+      "short": "D",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -D  Create missing leading directories for the destination."
+      ]
+    },
+    {
+      "name": "mode",
+      "aliases": [
+        "-m",
+        "--mode"
+      ],
+      "value": "required",
+      "description": "Set the destination permission bits in octal.",
+      "short": "m",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -m, --mode VALUE  Set the destination permission bits in octal."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "directory",
+        "leading",
+        "mode",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

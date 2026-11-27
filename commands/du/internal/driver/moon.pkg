@@ -1,0 +1,17 @@
+import {
+  "moonbitlang/x/fs" @xfs,
+  "cli/core/platform",
+  "cli/core/cli",
+  "moonbitlang/core/async/stdio",
+  "moonbitlang/core/env",
+  "cli/du/internal/usage",
+}
+
+supported_targets = "wasm"
+
+rule(
+  name: "gen_version",
+  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
+)
+
+dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")

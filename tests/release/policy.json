@@ -5106,6 +5106,153 @@
         "serve-failure-diagnostic-source-name"
       ],
       "oracle_boundary": "Project-specific server; the pinned oracle has no corresponding executable or upstream contract."
+    },
+    {
+      "name": "df",
+      "package_name": "cli/df",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "output",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-df-mount-type",
+        "fs-df-capacity",
+        "fs-df-other-host",
+        "fs-df-help",
+        "fs-df-version"
+      ]
+    },
+    {
+      "name": "du",
+      "package_name": "cli/du",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "bytes",
+        "apparent-size",
+        "block-size",
+        "kilobytes",
+        "total",
+        "count-links",
+        "dereference",
+        "null",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-du-bytes",
+        "fs-du-null-total",
+        "fs-du-block-size",
+        "fs-du-kilobyte",
+        "fs-du-hardlinks",
+        "fs-du-symlink",
+        "fs-du-allocated",
+        "fs-du-directory",
+        "fs-du-help",
+        "fs-du-version"
+      ]
+    },
+    {
+      "name": "install",
+      "package_name": "cli/install",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "directory",
+        "leading",
+        "mode",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-install-file",
+        "fs-install-dirs",
+        "fs-install-leading",
+        "fs-install-existing",
+        "fs-install-windows-mode",
+        "fs-install-help",
+        "fs-install-version"
+      ]
+    },
+    {
+      "name": "readlink",
+      "package_name": "cli/readlink",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "canonicalize",
+        "canonicalize-existing",
+        "canonicalize-missing",
+        "zero",
+        "no-newline",
+        "verbose",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-readlink-existing",
+        "fs-readlink-missing-last",
+        "fs-readlink-missing-tree",
+        "fs-readlink-resolved-link",
+        "fs-readlink-stored-target",
+        "fs-readlink-ordinary-quiet",
+        "fs-readlink-verbose-missing",
+        "fs-readlink-help",
+        "fs-readlink-version"
+      ]
+    },
+    {
+      "name": "stat",
+      "package_name": "cli/stat",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "format",
+        "dereference",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-stat-file",
+        "fs-stat-directory",
+        "fs-stat-timestamp",
+        "fs-stat-symlink",
+        "fs-stat-dereference",
+        "fs-stat-unavailable",
+        "fs-stat-help",
+        "fs-stat-version"
+      ]
+    },
+    {
+      "name": "truncate",
+      "package_name": "cli/truncate",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "size",
+        "no-create",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-truncate-zero",
+        "fs-truncate-extend",
+        "fs-truncate-create",
+        "fs-truncate-no-create",
+        "fs-truncate-hardlink",
+        "fs-truncate-reject-shrink",
+        "fs-truncate-help",
+        "fs-truncate-version"
+      ]
     }
   ]
 }

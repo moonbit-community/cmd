@@ -1,0 +1,284 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "fs-du-bytes",
+      "command": "du",
+      "args": [
+        "-b",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\tsample\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-null-total",
+      "command": "du",
+      "args": [
+        "-bcl0",
+        "sample",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\tsample\u00004\tsample\u00008\ttotal\u0000",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "total",
+        "count-links",
+        "null"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-block-size",
+      "command": "du",
+      "args": [
+        "--apparent-size",
+        "-B",
+        "3",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "2\tsample\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "apparent-size",
+        "block-size"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-kilobyte",
+      "command": "du",
+      "args": [
+        "--apparent-size",
+        "-k",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "1\tsample\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "apparent-size",
+        "kilobytes"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-hardlinks",
+      "command": "du",
+      "args": [
+        "-bc",
+        "sample",
+        "alias"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\tsample\n4\ttotal\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "total"
+      ],
+      "oracle": true,
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "fs-du-symlink",
+      "command": "du",
+      "args": [
+        "-bL",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4\tlink\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "bytes",
+        "dereference"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-du-allocated",
+      "command": "du",
+      "args": [
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "du: allocated block counts are unavailable; use --apparent-size or -b\n",
+      "comparison": "contract",
+      "coverage": []
+    },
+    {
+      "id": "fs-du-directory",
+      "command": "du",
+      "args": [
+        "-b",
+        "out"
+      ],
+      "files": [
+        {
+          "path": "out",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "du: out: apparent size requires a regular file\n",
+      "comparison": "contract",
+      "coverage": [
+        "bytes"
+      ]
+    },
+    {
+      "id": "fs-du-help",
+      "command": "du",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Usage: du -b [-clL0] FILE...\n  -b, --bytes  Show apparent sizes in bytes.\n  --apparent-size  Measure logical bytes with the specified block size.\n  -B, --block-size VALUE  Round output up to this positive byte unit.\n  -k, --kilobytes  Use units of 1024 bytes.\n  -c, --total  Print a final total.\n  -l, --count-links  Count each operand, including hard-link aliases.\n  -L, --dereference  Follow symbolic links.\n  -0, --null  Terminate each record with NUL.\n  --help  Show command help.\n  --version  Show the package version.\n\nUse -b to report logical bytes. Allocated blocks and directory sizes require additional metadata. POSIX file identities suppress duplicate names. Windows requires -l for multiple operands.\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ]
+    },
+    {
+      "id": "fs-du-version",
+      "command": "du",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "du 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "command": "readlink",
+  "help": "Usage: readlink -e|-f|-m [-nzv] FILE...\n{{help:canonicalize:0}}\n{{help:canonicalize-existing:0}}\n{{help:canonicalize-missing:0}}\n{{help:zero:0}}\n{{help:no-newline:0}}\n{{help:verbose:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nPhysical canonicalization can resolve existing links. Reading stored link text, including the spelling of a dangling target, requires a public Wasm binding.\n",
+  "catalog_options": [
+    "canonicalize",
+    "canonicalize-existing",
+    "canonicalize-missing",
+    "zero",
+    "no-newline",
+    "verbose",
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "canonicalize",
+      "aliases": [
+        "-f",
+        "--canonicalize"
+      ],
+      "value": "none",
+      "description": "Allow a missing final component.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -f, --canonicalize  Allow a missing final component."
+      ]
+    },
+    {
+      "name": "canonicalize-existing",
+      "aliases": [
+        "-e",
+        "--canonicalize-existing"
+      ],
+      "value": "none",
+      "description": "Require every component to exist.",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -e, --canonicalize-existing  Require every component to exist."
+      ]
+    },
+    {
+      "name": "canonicalize-missing",
+      "aliases": [
+        "-m",
+        "--canonicalize-missing"
+      ],
+      "value": "none",
+      "description": "Allow missing components.",
+      "short": "m",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -m, --canonicalize-missing  Allow missing components."
+      ]
+    },
+    {
+      "name": "zero",
+      "aliases": [
+        "-z",
+        "--zero"
+      ],
+      "value": "none",
+      "description": "Terminate paths with NUL.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -z, --zero  Terminate paths with NUL."
+      ]
+    },
+    {
+      "name": "no-newline",
+      "aliases": [
+        "-n",
+        "--no-newline"
+      ],
+      "value": "none",
+      "description": "Omit the newline for a single operand.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -n, --no-newline  Omit the newline for a single operand."
+      ]
+    },
+    {
+      "name": "verbose",
+      "aliases": [
+        "-v",
+        "--verbose"
+      ],
+      "value": "none",
+      "description": "Report lookup errors.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -v, --verbose  Report lookup errors."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "canonicalize",
+        "canonicalize-existing",
+        "canonicalize-missing",
+        "zero",
+        "no-newline",
+        "verbose",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

@@ -48320,6 +48320,618 @@
       "aliases": [],
       "platforms": [],
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:df",
+      "command": "df",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-df-mount-type",
+      "command": "df",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/df.json",
+      "case_id": "fs-df-mount-type",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-df-capacity",
+      "command": "df",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/df.json",
+      "case_id": "fs-df-capacity",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-df-other-host",
+      "command": "df",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "macos",
+        "windows"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/df.json",
+      "case_id": "fs-df-other-host",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-df-help",
+      "command": "df",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/df.json",
+      "case_id": "fs-df-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-df-version",
+      "command": "df",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/df.json",
+      "case_id": "fs-df-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:du",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-du-bytes",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-bytes",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-null-total",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-null-total",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-block-size",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-block-size",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-kilobyte",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-kilobyte",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-hardlinks",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-hardlinks",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-symlink",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-symlink",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-du-allocated",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-allocated",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-du-directory",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-directory",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-du-help",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-du-version",
+      "command": "du",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/du.json",
+      "case_id": "fs-du-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:install",
+      "command": "install",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-install-file",
+      "command": "install",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/install.json",
+      "case_id": "fs-install-file",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-install-dirs",
+      "command": "install",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/install.json",
+      "case_id": "fs-install-dirs",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-install-leading",
+      "command": "install",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/install.json",
+      "case_id": "fs-install-leading",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-install-existing",
+      "command": "install",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/install.json",
+      "case_id": "fs-install-existing",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-install-windows-mode",
+      "command": "install",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/install.json",
+      "case_id": "fs-install-windows-mode",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-install-help",
+      "command": "install",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/install.json",
+      "case_id": "fs-install-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-install-version",
+      "command": "install",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/install.json",
+      "case_id": "fs-install-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:readlink",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-readlink-existing",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-existing",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-readlink-missing-last",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-missing-last",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-readlink-missing-tree",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-missing-tree",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-readlink-resolved-link",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-resolved-link",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-readlink-stored-target",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-stored-target",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-readlink-ordinary-quiet",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-ordinary-quiet",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-readlink-verbose-missing",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-verbose-missing",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-readlink-help",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-readlink-version",
+      "command": "readlink",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/readlink.json",
+      "case_id": "fs-readlink-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:stat",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-stat-file",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-file",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-stat-directory",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-directory",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-stat-timestamp",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-timestamp",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-stat-symlink",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-symlink",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-stat-dereference",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-dereference",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-stat-unavailable",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-unavailable",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-stat-help",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-stat-version",
+      "command": "stat",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/stat.json",
+      "case_id": "fs-stat-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:truncate",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-truncate-zero",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-zero",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-truncate-extend",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-extend",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-truncate-create",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-create",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-truncate-no-create",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-no-create",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-truncate-hardlink",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-hardlink",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-truncate-reject-shrink",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-reject-shrink",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-truncate-help",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-truncate-version",
+      "command": "truncate",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-version",
+      "oracle_profile": ""
     }
   ]
 }

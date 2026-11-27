@@ -284,3 +284,27 @@ applicable Wasm-host, alias, mode, error-order and pinned-oracle tests.
 [Compatibility](../compatibility.md) owns command support details.
 Implementation and regressions: [fsops](../../core/fsops/),
 [filesystem scenarios](../../tests/scenarios/scenario_filesystem.mbt).
+## Filesystem command profiles
+
+GNU coreutils is the reference for stat, du, df, readlink, install and truncate.
+The public async filesystem provides file kind, timestamps and regular-file
+sizes. Stat exposes selected format fields. Du reports apparent size and
+uses x identities for POSIX duplicate suppression. Allocated blocks require
+additional metadata. Linux df reports selected mount-table columns from procfs.
+Capacity requires a public filesystem-statistics operation.
+
+Readlink and realpath use the same component resolver. A resolved pathname
+answers canonicalization queries. Relative and dangling link text requires
+a binding that returns the bytes from the runtime. The released Preview 1
+peter-jerry-ye/wasi wrapper returns the byte count as a string. Its raw public
+wrapper frees the temporary output buffer without copying its contents back.
+Preview 2 filesystem interfaces require a different host import namespace.
+Hard-link creation and changing owners or groups also lack released callable
+operations on the supported MoonX host.
+
+Install creates regular files exclusively and sets POSIX modes in a
+caller-controlled destination tree. Input or metadata failures may leave a
+partially installed file. Truncate can open a path with truncation to zero.
+A positioned last-byte write extends a regular file when the caller controls
+concurrent writers. Arbitrary shrinking, or zeroing an already-checked handle
+after a relative-size calculation, needs a handle resize operation.

@@ -73,7 +73,9 @@ async test "workspace dependency manifests keep one async baseline and the selec
       "version",
     )
   // A newer core publication does not upgrade unchanged consumers' exact pins.
-  let retained_core_coordinates = ["cli/core@0.9.5", "cli/core@0.10.0"]
+  let retained_core_coordinates = [
+    "cli/core@0.9.5", "cli/core@0.10.0", "cli/core@0.11.3",
+  ]
   let contracts = commands().map(contract => contract.name)
   contracts.sort()
   let commands = command_names(root + "commands")

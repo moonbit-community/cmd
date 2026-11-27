@@ -1,7 +1,7 @@
 # Compatibility
 
 This guide describes the current workspace's supported command behavior.
-It covers 82 command modules implemented in pure MoonBit for MoonX/Wasm.
+The workspace command modules use pure MoonBit on MoonX/Wasm.
 Support means the documented profile, not complete GNU, POSIX or upstream parity.
 
 All command packages declare Wasm as their only build target. Core packages
@@ -55,6 +55,12 @@ identify the principal refusals and platform differences.
 
 | Command | Supported behavior | Limits |
 | --- | --- | --- |
+| [df](../commands/df/README.md) | Linux mount source, type and mount point for named paths. | Requires procfs. Capacity needs filesystem statistics. |
+| [du](../commands/du/README.md) | Regular-file apparent bytes, rounded units, totals and POSIX duplicate suppression. | Directory and allocated sizes unavailable. Windows needs -l with multiple names. |
+| [stat](../commands/stat/README.md) | File types, names, regular-file sizes, integer timestamps and dereference. | Requires a format selecting supported fields. |
+| [readlink](../commands/readlink/README.md) | Existing, all-but-last and missing-component canonicalization, NUL and no-newline output. | Stored targets and unresolved symbolic links need readlink. |
+| [install](../commands/install/README.md) | New POSIX file copies, numeric modes and leading or explicit directories. | Caller-controlled directories. Existing-file replacement and Windows modes unavailable. |
+| [truncate](../commands/truncate/README.md) | Path-based zero truncation, sparse creation and extension, relative size and rounding. | Reducing an already-open file needs handle truncation. Growth assumes exclusive access. |
 | [base32](../commands/base32/README.md) | RFC 4648 Base32 encoding and decoding; wrapping and garbage filtering. | Uppercase alphabet; decoding retains the whole input. |
 | [base64](../commands/base64/README.md) | Streaming Base64 encoding and decoding; wrapping and garbage filtering. | Standard alphabet and canonical tail bits; malformed padding fails. |
 | [basename](../commands/basename/README.md) | Lexical basename and literal suffix removal; multiple and NUL-separated output. | No filesystem lookup. |
