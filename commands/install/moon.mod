@@ -16,5 +16,5 @@ description = "Copy regular files and create directories with a requested POSIX 
 
 import {
   "moonbitlang/x@0.5.9",
-  "cli/core@0.11.3",
+  "cli/core@0.11.10",
 }

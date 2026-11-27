@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "awk command for MoonX."
 
 import {
-  "cli/core@0.11.3",
+  "cli/core@0.11.10",
   "moonbitlang/x@0.5.9",
   "zhengming2004/awk@0.10.2",
 }

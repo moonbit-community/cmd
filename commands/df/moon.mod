@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Report selected Linux mount fields for existing paths."
 
 import {
-  "cli/core@0.11.3",
+  "cli/core@0.11.10",
 }

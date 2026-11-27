@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Print Linux system RAM and swap statistics."
 
 import {
-  "cli/core@0.11.6",
+  "cli/core@0.11.10",
 }

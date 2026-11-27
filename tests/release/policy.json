@@ -428,6 +428,8 @@
         "o9-sysv",
         "o9-sysv-zero",
         "p0-cksum-stdin",
+        "cksum-posix-default-marker",
+        "cksum-windows-checksum-modes",
         "release-metadata-cksum-help",
         "release-metadata-cksum-version"
       ]
@@ -3117,6 +3119,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "sha256sum-posix-default-marker",
+        "sha256sum-windows-checksum-modes",
         "release-metadata-sha256sum-help",
         "compat-stdin-sha256sum",
         "compat-text-sha256sum-ignore-missing",
@@ -4483,6 +4487,8 @@
         "o9-sum-status-warn",
         "o9-sum-status-wrong",
         "o9-sum-tag-escaped",
+        "md5sum-posix-default-marker",
+        "md5sum-windows-checksum-modes",
         "release-metadata-md5sum-help"
       ]
     },
@@ -4506,6 +4512,8 @@
         "checksum-sha1sum-wrong-length",
         "checksum-sha1sum-zero-check",
         "o9-sha1sum-tag",
+        "sha1sum-posix-default-marker",
+        "sha1sum-windows-checksum-modes",
         "release-metadata-sha1sum-help"
       ]
     },
@@ -4527,6 +4535,8 @@
         "checksum-sha512sum-stdin",
         "checksum-sha512sum-version",
         "o9-sha512sum-tag",
+        "sha512sum-posix-default-marker",
+        "sha512sum-windows-checksum-modes",
         "release-metadata-sha512sum-help"
       ]
     },
