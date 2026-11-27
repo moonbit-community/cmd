@@ -10,6 +10,13 @@ fn Matcher::next_match(
     return None
   }
   match self {
+    Unicode(pattern, whole, word) =>
+      pattern.find_span(
+        @bytere.Utf8Record::new(@bytere.bytes(line)),
+        start=position,
+        whole~,
+        word~,
+      )
     ManyFixed(set) => set.find_span(@bytere.bytes(line), start=position)
     Fixed(patterns, whole, word) => {
       let bytes = Bytes::makei(line.length(), index => {

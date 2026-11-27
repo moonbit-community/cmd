@@ -10,7 +10,7 @@ priv struct ReferenceLimit {
 ///|
 priv struct Sift {
   pattern : Pattern
-  value : StringView
+  value : CaptureInput
   original : Array[Map[Int32, Bool]]
   cache : CandidateCache
   states : Array[Map[Int32, Bool]]
@@ -264,7 +264,7 @@ fn Sift::backward(
 ///|
 fn Pattern::sift_candidates(
   self : Pattern,
-  value : StringView,
+  value : CaptureInput,
   start : Int32,
   end : Int32,
   whole : Bool,
@@ -273,7 +273,7 @@ fn Pattern::sift_candidates(
   log : Array[Map[Int32, Bool]],
 ) -> (Int32, Int32, Array[Map[Int32, Bool]])? {
   for last = end; last >= start; last = last - 1 {
-    if !accepted(value, start, last, whole, word) {
+    if !value.accepts(start, last, whole, word) {
       continue
     }
     let terminals = self

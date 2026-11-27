@@ -88,7 +88,7 @@ fn command_options(name : String) -> Array[String] {
         "files-without-match", "fixed-strings", "ignore-case", "include", "invert-match",
         "line-number", "line-regexp", "no-filename", "no-messages", "null-data",
         "only-matching", "quiet", "recursive", "regexp", "text", "with-filename",
-        "word-regexp",
+        "without-match", "word-regexp",
       ]
     "gunzip" =>
       [

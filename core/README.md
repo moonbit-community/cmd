@@ -27,7 +27,7 @@ gzip codecs accept standard binary readers and writers.
 | cli | Option parsing and structured argument errors. |
 | stream, tempio | Bounded binary reads, record scanning, buffered output and temporary-file I/O. |
 | fsops, fswalk, platform | Path/filesystem mechanisms, traversal and host capabilities. |
-| bytesearch, bytere | Byte searching and the supported byte-regex engine. |
+| bytesearch, bytere | Byte searching and the C-byte and C.UTF-8 grep regex engines. |
 | textwidth | Incremental UTF-8 decoding, scalar cell widths and horizontal blanks for C.UTF-8. |
 | numfmt, quoting | Numeric parsing/formatting and byte/path quoting. |
 | checksum, checksum/cli | Digest algorithms and shared checksum command handling. |
