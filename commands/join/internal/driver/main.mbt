@@ -509,7 +509,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("join: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -522,13 +522,13 @@ pub async fn run_main() -> Unit {
       let number = @string.parse_int(value) catch {
         _ => {
           @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
       }
       if number < 1 {
         @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       number
@@ -540,13 +540,13 @@ pub async fn run_main() -> Unit {
       let number = @string.parse_int(value) catch {
         _ => {
           @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
       }
       if number < 1 {
         @stdio.stderr.write("join: invalid field number: '\{value}'\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       number
@@ -560,7 +560,7 @@ pub async fn run_main() -> Unit {
         @stdio.stderr.write(
           "join: the separator must be a single byte in C locale\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       Some(encoded[0])
@@ -570,14 +570,14 @@ pub async fn run_main() -> Unit {
   let all = parse_file_numbers(parsed, "after") catch {
     err => {
       @stdio.stderr.write("\{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
   let only = parse_file_numbers(parsed, "only") catch {
     err => {
       @stdio.stderr.write("\{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -613,7 +613,7 @@ pub async fn run_main() -> Unit {
               "join: invalid file number in field spec: '\{item}'\n",
             )
           }
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
       }
@@ -629,12 +629,12 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "join: expected exactly two files\n\n" + help_message() + "\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if files[0] == "-" && files[1] == "-" {
     @stdio.stderr.write("join: both inputs cannot be standard input\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   try {
@@ -706,17 +706,17 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     JoinOrderError => {
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     JoinError(message) => {
       @stdio.stderr.write("join: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     err => {
       @stdio.stderr.write("join: \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }

@@ -30,4 +30,6 @@ Convert leading blanks by default; -a also converts later blanks. The default ta
 
 - Column tracking uses C-locale byte/control-character rules, not Unicode display width.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

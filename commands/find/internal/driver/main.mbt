@@ -317,21 +317,21 @@ pub async fn run_main() -> Unit {
     parser.parse_or() catch {
       @expression.ParseError(message) => {
         @stdio.stderr.write("find: \{message}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     }
   }
   if parser.pos != expression_tokens.length() {
     @stdio.stderr.write("find: unexpected expression token\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let references : Array[ReferenceTime] = []
   load_reference_times(expression, references) catch {
     err => {
       @stdio.stderr.write("find: cannot read reference timestamp: \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -341,12 +341,12 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "find: -delete with -prune requires explicit -depth; depth-first traversal makes -prune ineffective\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let context : FindContext = { references, }
   let failed = walk_find(paths, parser, expression, context)
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

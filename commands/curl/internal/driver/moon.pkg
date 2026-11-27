@@ -10,7 +10,6 @@ import {
   "moonbitlang/core/buffer",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
-  "moonbitlang/x/sys",
 }
 
 import {

@@ -36,4 +36,6 @@ Use `--help` for the complete option list.
 
 - Inputs must be sorted by the selected join fields. Comparison uses C-locale bytes and optional ASCII case folding.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

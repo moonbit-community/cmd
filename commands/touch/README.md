@@ -31,4 +31,6 @@ Use `--help` for the complete option list.
 - Existing files fail even with -c: timestamp updates are unsupported.
 - -a, -m, -d, -r, -t and --time are recognized but rejected before mutation. Earlier successful creates remain after later failures.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

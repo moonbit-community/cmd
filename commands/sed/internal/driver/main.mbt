@@ -79,6 +79,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

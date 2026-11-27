@@ -97,7 +97,7 @@ async fn Sources::next_chunk(self : Sources) -> Bytes? {
       match reader.read_some(max_len=65536) {
         None => {
           self.close()
-          self.boundaries.add(self.offset)
+          self.boundaries.insert(self.offset)
           // Logs are independently framed per operand, unlike jq raw input.
           if self.separate_files {
             self.offset += 1L

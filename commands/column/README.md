@@ -32,7 +32,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Automatic terminal-width detection and the complete util-linux table grammar are unavailable. Large input may use temporary spool files.
 

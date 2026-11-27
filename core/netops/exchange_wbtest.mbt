@@ -65,7 +65,7 @@ async test "response scope exposes the exact incomplete framing boundary and del
               match scope.read(max_len=2) {
                 Data(bytes) => {
                   assert_true(bytes.length() <= 2)
-                  delivered.write_bytes(bytes)
+                  delivered.write_bytesview(bytes)
                 }
                 End =>
                   fail(
@@ -214,7 +214,7 @@ async test "body read errors retain framing and delivered byte counts" {
           try {
             for ;; {
               match scope.read(max_len=2) {
-                Data(bytes) => body.write_bytes(bytes)
+                Data(bytes) => body.write_bytesview(bytes)
                 _ => fail("malformed trailer must fail")
               }
             }

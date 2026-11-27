@@ -1,6 +1,6 @@
 name = "cli/timeout"
 
-version = "0.2.1"
+version = "0.2.2"
 
 readme = "README.md"
 
@@ -17,5 +17,4 @@ description = "timeout command for MoonX."
 import {
   "cli/core@0.10.0",
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
 }

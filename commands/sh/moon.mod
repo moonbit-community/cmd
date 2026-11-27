@@ -1,6 +1,6 @@
 name = "cli/sh"
 
-version = "0.2.12"
+version = "0.2.13"
 
 readme = "README.md"
 
@@ -17,5 +17,5 @@ description = "sh command for MoonX."
 import {
   "cli/core@0.11.2",
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
+  "moonbitlang/x@0.5.9",
 }

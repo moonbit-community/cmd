@@ -36,4 +36,6 @@ Use `--help` for the complete option list.
 - Existing output files are refused; input may be spooled. Windows output names ending in a dot or space are rejected.
 - On errors, created fragments are removed unless -k requests keeping them.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

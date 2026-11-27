@@ -34,4 +34,6 @@ Read one file or stdin and write stdout. Encoding wraps at 76 characters by defa
 - Decoding streams input and may emit a valid prefix before reporting invalid data. Ignoring garbage does not make invalid padding valid.
 - -D is a project alias for --decode.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

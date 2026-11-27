@@ -30,4 +30,6 @@ Write each input byte to stdout and every file operand. Files are truncated unle
 
 - Use -p or --output-error with warn, warn-nopipe, exit or exit-nopipe. Default broken-pipe handling reports an unsupported capability with status 2 instead of raising SIGPIPE.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

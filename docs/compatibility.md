@@ -13,6 +13,8 @@ test-tool consumers. The execution tools under `tests` and `tools` remain Native
 The workspace targets MoonBit 1.0 RC1 (2026-11-26). The basename, date, dirname,
 echo, false, printenv, printf, pwd, sleep, true and yes commands use the
 standard library for asynchronous I/O. Binary output preserves arbitrary bytes.
+Workspace commands use the RC1 runtime entry point and the shared byte-search
+code uses the standard library's experimental SIMD package on Wasm.
 
 Use `moonx cli/<command>` for published commands. `timeout` is local-only;
 its README shows the repository invocation. Module versions come from

@@ -38,4 +38,6 @@ Use `--help` for the complete option list.
 - The supported locale is C: -m counts bytes rather than UTF-8 characters. Display width uses the documented C-byte rules.
 - Reading regular-file stdin does not claim GNU physical descriptor-position alignment.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

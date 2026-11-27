@@ -346,7 +346,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(interaction_args(@env.args()[1:]), option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("rm: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -400,7 +400,7 @@ pub async fn run_main() -> Unit {
               "Valid arguments are:\n  - 'never', 'no', 'none'\n  - 'once'\n  - 'always', 'yes'\n",
             )
             @stdio.stderr.write("Try 'rm --help' for more information.\n")
-            @sys.exit(1)
+            @env.exit(1)
             return
           }
         }
@@ -423,7 +423,7 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "rm: missing operand\nTry 'rm --help' for more information.\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if once && (options.recursive || paths.length() > 3) {
@@ -445,6 +445,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

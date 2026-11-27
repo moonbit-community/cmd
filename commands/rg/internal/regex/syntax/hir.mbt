@@ -261,10 +261,10 @@ pub fn Hir::concat(subs : Array[Hir]) -> Hir {
     match h.kind {
       Literal(bytes) =>
         match prior {
-          Some(buf) => buf.write_bytes(bytes)
+          Some(buf) => buf.write_bytesview(bytes)
           None => {
             let buf = Buffer()
-            buf.write_bytes(bytes)
+            buf.write_bytesview(bytes)
             prior = Some(buf)
           }
         }

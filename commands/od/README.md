@@ -32,7 +32,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Numeric interpretation follows a fixed Linux profile, not every host ABI. Locale-dependent character formatting is unsupported.
 

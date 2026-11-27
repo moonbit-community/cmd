@@ -36,7 +36,7 @@ owning command; there is no executable `moonx cli/core` entry.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Product consumers target MoonX/Wasm and use released public MoonBit APIs.
   Host permissions and unavailable filesystem/process metadata remain explicit

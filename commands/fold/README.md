@@ -31,4 +31,6 @@ Wrap at 80 columns by default. -s prefers whitespace breaks; -b counts raw bytes
 
 - Default column handling recognizes byte-level tabs and control characters, not Unicode display width.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

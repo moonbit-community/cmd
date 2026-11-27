@@ -7,7 +7,11 @@ fn interp(
   let dst = Buffer()
   @matcher.interpolate(
     @utf8.encode(rep),
-    (i, dst) => if i < caps.length() { dst.write_bytes(@utf8.encode(caps[i])) },
+    (i, dst) => {
+      if i < caps.length() {
+        dst.write_bytesview(@utf8.encode(caps[i]))
+      }
+    },
     name => {
       for x in map {
         if x.0 == name {

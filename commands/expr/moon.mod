@@ -1,6 +1,6 @@
 name = "cli/expr"
 
-version = "0.2.5"
+version = "0.2.6"
 
 readme = "README.md"
 
@@ -17,5 +17,4 @@ description = "expr command for MoonX."
 import {
   "cli/core@0.11.2",
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
 }

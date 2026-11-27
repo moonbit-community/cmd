@@ -204,28 +204,28 @@ pub async fn run_main() -> Unit {
     return
   }
   if args.is_empty() {
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let parser : Parser = { args, pos: 0, }
   let result = parser.evaluate_count(args.length()) catch {
     TestError(message) => {
       @stdio.stderr.write("test: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     err => {
       @stdio.stderr.write("test: \{err}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
   if parser.pos != args.length() {
     @stdio.stderr.write("test: unexpected argument: '\{args[parser.pos]}'\n")
-    @sys.exit(2)
+    @env.exit(2)
     return
   }
   if !result {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

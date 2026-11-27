@@ -40,4 +40,6 @@ Use `--help` for the complete option list.
 - Legacy checksum algorithms do not support manifest checking. Raw output requires one input. Binary/text flags select manifest markers without translating file bytes.
 - --ignore-missing still requires at least one successfully checked file.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

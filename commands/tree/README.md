@@ -37,4 +37,6 @@ Use `--help` for the complete option list.
 - Link-target display and mode-based colors are unavailable. Selected size operations on links reject explicitly; directory-size behavior depends on the platform.
 - Color must be selected explicitly when needed.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

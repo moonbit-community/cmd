@@ -15,20 +15,20 @@ pub fn Finder::count_lines(
   if n >= 2 && limit - start >= 32 {
     let i1 = self.i1
     let i2 = self.i2
-    let v1 = @v128.i8x16_splat(self.needle[i1])
-    let v2 = @v128.i8x16_splat(self.needle[i2])
+    let v1 = @simd.i8x16_splat(self.needle[i1])
+    let v2 = @simd.i8x16_splat(self.needle[i2])
     while pos + 32 <= limit {
-      let a = @v128.v128_and_(
-        @v128.i8x16_eq(@v128.v128_load(hay, pos + i1), v1),
-        @v128.i8x16_eq(@v128.v128_load(hay, pos + i2), v2),
+      let a = @simd.v128_and_(
+        @simd.i8x16_eq(@simd.v128_load(hay, pos + i1), v1),
+        @simd.i8x16_eq(@simd.v128_load(hay, pos + i2), v2),
       )
-      let b = @v128.v128_and_(
-        @v128.i8x16_eq(@v128.v128_load(hay, pos + 16 + i1), v1),
-        @v128.i8x16_eq(@v128.v128_load(hay, pos + 16 + i2), v2),
+      let b = @simd.v128_and_(
+        @simd.i8x16_eq(@simd.v128_load(hay, pos + 16 + i1), v1),
+        @simd.i8x16_eq(@simd.v128_load(hay, pos + 16 + i2), v2),
       )
       let mut next = pos + 32
-      if @v128.v128_any_true(@v128.v128_or_(a, b)) {
-        let mut mask = @v128.i8x16_bitmask(a) | (@v128.i8x16_bitmask(b) << 16)
+      if @simd.v128_any_true(@simd.v128_or_(a, b)) {
+        let mut mask = @simd.i8x16_bitmask(a) | (@simd.i8x16_bitmask(b) << 16)
         while mask != 0 {
           let at = pos + mask.ctz()
           if self.verify(hay, at) {

@@ -41,7 +41,7 @@
         "version"
       ],
       "source_version": "workspace cli/tree@0.1.6 metadata contract",
-      "expected_stdout_text": "tree 0.1.8\n",
+      "expected_stdout_text": "tree 0.1.9\n",
       "expected_stderr_text": ""
     },
     {

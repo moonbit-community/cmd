@@ -87,7 +87,7 @@ async fn canonicalize_entry(
       if seen.contains(path) {
         return None
       }
-      seen.add(path)
+      seen.insert(path)
     }
     return Some((path, file_type))
   }
@@ -99,7 +99,7 @@ async fn canonicalize_entry(
   if seen.contains(canon) {
     return None
   }
-  seen.add(canon)
+  seen.insert(canon)
   Some((canon, stat))
 }
 

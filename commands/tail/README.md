@@ -36,4 +36,6 @@ Print ten lines by default. A leading + starts at the specified one-based line o
 
 - Follow mode tracks the open descriptor, not a replaced pathname. Rotation-aware -F is unsupported; following stdin ends at EOF.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

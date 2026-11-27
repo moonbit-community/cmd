@@ -34,4 +34,6 @@ Use `--help` for the complete option list.
 
 - Spacing, prefixes and indentation use C-locale byte rules; this is not Unicode-aware typesetting.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

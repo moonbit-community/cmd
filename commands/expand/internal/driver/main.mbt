@@ -72,7 +72,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(@env.args()[1:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("expand: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -83,7 +83,7 @@ pub async fn run_main() -> Unit {
   let stops = parse_tabs(parsed.values("tabs")) catch {
     TabError(message) => {
       @stdio.stderr.write("expand: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -104,13 +104,13 @@ pub async fn run_main() -> Unit {
     let expanded = expand_bytes(data, parsed.contains("initial"), stops) catch {
       TabError(message) => {
         @stdio.stderr.write("expand: \{message}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     }
     @stdio.stdout.write(expanded)
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

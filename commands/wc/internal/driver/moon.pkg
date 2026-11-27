@@ -7,13 +7,16 @@ import {
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
-  "moonbitlang/core/v128",
-  "moonbitlang/x/sys",
+  "moonbitlang/core/simd",
 }
 
 warnings = "-alert_experimental"
 
 supported_targets = "wasm"
+
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/simd" ],
+)
 
 import {
   "cli/core/stream",

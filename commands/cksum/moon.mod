@@ -1,6 +1,6 @@
 name = "cli/cksum"
 
-version = "0.1.7"
+version = "0.1.8"
 
 readme = "README.md"
 
@@ -17,5 +17,4 @@ description = "cksum command for MoonX."
 import {
   "cli/core@0.11.1",
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
 }

@@ -244,7 +244,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(normalized_args(@env.args()[1:]), option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("mv: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -255,7 +255,7 @@ pub async fn run_main() -> Unit {
   let operands = parsed.operands
   if operands.length() < 2 {
     @stdio.stderr.write("mv: missing source or destination operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let update_text = match parsed.last_occurrence(["update", "update-mode"]) {
@@ -266,7 +266,7 @@ pub async fn run_main() -> Unit {
   let update = @fsops.parse_update_mode(update_text) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("mv: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -278,7 +278,7 @@ pub async fn run_main() -> Unit {
   let backup = @fsops.parse_backup_control(backup_text) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("mv: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -297,13 +297,13 @@ pub async fn run_main() -> Unit {
   let sources = operands[0:operands.length() - 1]
   if options.no_target_directory && sources.length() > 1 {
     @stdio.stderr.write("mv: -T cannot be used with multiple sources\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let destination_kind = @fsops.kind_if_exists(destination) catch {
     err => {
       @stdio.stderr.write("mv: cannot inspect '\{destination}': \{err}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -311,7 +311,7 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "mv: destination is not a directory: '\{destination}'\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let mut failed = false
@@ -346,6 +346,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

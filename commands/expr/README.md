@@ -25,7 +25,7 @@ Pass operators and operands as separate arguments. Output the result; status dis
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Uses the documented C-byte expression grammar, not a general-purpose language. Quote operators that the invoking shell would interpret.
 

@@ -31,4 +31,6 @@ Attempt each operand; -p also removes empty parents until a failure or a protect
 - Nonempty trees are not removed. POSIX directory symlinks fail; Windows may remove a junction while leaving its target intact.
 - -I is a project alias for --ignore-fail-on-non-empty.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

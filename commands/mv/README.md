@@ -40,4 +40,6 @@ Use `--help` for the complete option list.
 - -i and -u reject equal source/target timestamps. Same-file moves fail except for explicit skip modes.
 - If both a move and backup restoration fail, inspect the destination and backup paths named in the diagnostic before retrying.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

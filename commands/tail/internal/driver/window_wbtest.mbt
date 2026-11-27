@@ -65,7 +65,7 @@ fn select_bytes(data : Bytes, spec : CountSpec) -> BytesView {
 fn window_bytes(window : TailWindow) -> Bytes {
   let output = @buffer.Buffer()
   for chunk in window.chunks.iter() {
-    output.write_bytes(chunk.data[chunk.start:])
+    output.write_bytesview(chunk.data[chunk.start:])
   }
   output.to_bytes()
 }

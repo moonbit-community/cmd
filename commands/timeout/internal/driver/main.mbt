@@ -49,18 +49,18 @@ pub async fn run_main() -> Unit {
       return
     } else if options && (arg == "--preserve-status" || arg == "--foreground") {
       @stdio.stderr.write("timeout: unsupported option: \{arg}\n")
-      @sys.exit(125)
+      @env.exit(125)
       return
     } else if options && arg.has_prefix("-") && arg != "-" {
       @stdio.stderr.write("timeout: unsupported option: \{arg}\n")
-      @sys.exit(125)
+      @env.exit(125)
       return
     } else {
       duration = Some(
         parse_duration(arg) catch {
           _ => {
             @stdio.stderr.write("timeout: invalid duration: \{arg}\n")
-            @sys.exit(125)
+            @env.exit(125)
             return
           }
         },
@@ -72,13 +72,13 @@ pub async fn run_main() -> Unit {
     Some(value) => value
     None => {
       @stdio.stderr.write("timeout: missing duration\n")
-      @sys.exit(125)
+      @env.exit(125)
       return
     }
   }
   if command.is_empty() {
     @stdio.stderr.write("timeout: missing command\n")
-    @sys.exit(125)
+    @env.exit(125)
     return
   }
   let context = @process.ExecutionContext::current()
@@ -87,7 +87,7 @@ pub async fn run_main() -> Unit {
   }) catch {
     err => {
       @stdio.stderr.write("timeout: cannot run '\{command[0]}': \{err}\n")
-      @sys.exit(
+      @env.exit(
         @process.launch_failure_status(
           match err {
             @os_error.OSError(_) as os if os.is_ENOENT() => CommandNotFound
@@ -99,10 +99,10 @@ pub async fn run_main() -> Unit {
     }
   }
   match result {
-    Some(code) => if code != 0 { @sys.exit(code) }
+    Some(code) => if code != 0 { @env.exit(code) }
     None => {
       @stdio.stderr.write("timeout: command timed out\n")
-      @sys.exit(124)
+      @env.exit(124)
     }
   }
 }

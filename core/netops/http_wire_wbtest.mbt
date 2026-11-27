@@ -69,7 +69,7 @@ async test "wire chunked framing overrides Content-Length and accepts extensions
           let body = Buffer()
           for ;; {
             match scope.read() {
-              Data(bytes) => body.write_bytes(bytes)
+              Data(bytes) => body.write_bytesview(bytes)
               End => break
               Incomplete(_) => fail("complete fixture reported partial framing")
             }

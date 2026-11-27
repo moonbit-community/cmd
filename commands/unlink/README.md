@@ -25,4 +25,6 @@ Remove exactly one file or symbolic link. Removing a link does not remove its ta
 
 - Directories and extra operands are rejected.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

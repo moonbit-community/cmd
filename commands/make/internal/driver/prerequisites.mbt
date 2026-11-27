@@ -39,7 +39,7 @@ fn distinct_words(words : Array[String]) -> Array[String] {
     if seen.contains(word) {
       false
     } else {
-      seen.add(word)
+      seen.insert(word)
       true
     }
   })

@@ -68,7 +68,7 @@ pub async fn run_main() -> Unit {
     } else if options && metadata_option_matches("c", argument) {
       if index + 1 >= arguments.length() {
         @stdio.stderr.write("sh: -c requires a command string\n")
-        @sys.exit(2)
+        @env.exit(2)
       }
       command = Some(arguments[index + 1])
       index += 2
@@ -77,7 +77,7 @@ pub async fn run_main() -> Unit {
       index += 1
     } else if options && argument.has_prefix("-") && argument != "-" {
       @stdio.stderr.write("sh: unsupported option '\{argument}'\n")
-      @sys.exit(2)
+      @env.exit(2)
     } else {
       if stdin_script {
         break
@@ -137,6 +137,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

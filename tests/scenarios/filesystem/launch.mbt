@@ -58,7 +58,7 @@ async fn run_mv(
 ///|
 pub async fn run_helper(args : ArrayView[String]) -> Unit {
   match args {
-    ["status-124"] => @sys.exit(124)
+    ["status-124"] => @env.exit(124)
     ["capture-then-wait"] => {
       @stdio.stdout.write("partial stdout\n")
       @stdio.stderr.write("partial stderr\n")

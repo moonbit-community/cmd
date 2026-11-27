@@ -10,7 +10,7 @@ async test "Cookie jar and explicit header remain separate across redirects" {
           let buffer = Buffer()
           while true {
             let byte = connection.read_exactly(1)
-            buffer.write_bytes(byte)
+            buffer.write_bytesview(byte)
             if byte == b"\n" && buffer.to_bytes().has_suffix(b"\r\n\r\n") {
               break
             }

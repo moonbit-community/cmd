@@ -74,7 +74,7 @@ async fn main {
       guard section_open && !records.contains(line) else {
         fail("duplicate or unsectioned public suffix rule: " + line)
       }
-      records.add(line)
+      records.insert(line)
       let (kind, rule) = if line.has_prefix("!") {
         (2, line[1:].to_owned())
       } else if line.has_prefix("*.") {
@@ -96,12 +96,12 @@ async fn main {
           answers.push("1")
         }
         match kind {
-          0 => exact.add(spelling)
+          0 => exact.insert(spelling)
           1 => {
-            wildcard.add(spelling)
-            exact.add(spelling)
+            wildcard.insert(spelling)
+            exact.insert(spelling)
           }
-          _ => exception.add(spelling)
+          _ => exception.insert(spelling)
         }
       }
     }

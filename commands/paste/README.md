@@ -26,4 +26,6 @@ Join parallel records with tabs by default. -s processes each file serially; sup
 | `--version` | Show the version. |
 <!-- END GENERATED OPTIONS -->
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

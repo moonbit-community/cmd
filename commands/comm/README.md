@@ -33,7 +33,7 @@ Print three columns: records unique to the first file, unique to the second, and
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Inputs must use C-locale byte ordering. Order-check options control diagnostics; they do not sort the files.
 

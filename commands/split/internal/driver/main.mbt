@@ -72,7 +72,7 @@ pub async fn run_main() -> Unit {
   let parsed = parse_args(@env.args()[1:]) catch {
     @cli.CliError(message~, option~, ..) => {
       @stdio.stderr.write("split: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -98,11 +98,11 @@ pub async fn run_main() -> Unit {
   } catch {
     SplitError(status, message) => {
       @stdio.stderr.write("split: \{message}\n")
-      @sys.exit(status)
+      @env.exit(status)
     }
     error => {
       @stdio.stderr.write("split: \{error}\n")
-      @sys.exit(1)
+      @env.exit(1)
     }
   }
 }

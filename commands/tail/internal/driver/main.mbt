@@ -327,7 +327,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("tail: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -352,7 +352,7 @@ pub async fn run_main() -> Unit {
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -364,7 +364,7 @@ pub async fn run_main() -> Unit {
   } catch {
     CliError(msg) => {
       @stdio.stderr.write("\{msg}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -414,6 +414,6 @@ pub async fn run_main() -> Unit {
     follow_files(follow_states, interval_ms, show_headers, sources.length() - 1)
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

@@ -34,4 +34,6 @@ Print ten lines by default. Use -n for lines or -c for bytes; negative counts om
 
 - Counts and supported size suffixes must fit the command's Int64 range.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -141,7 +141,7 @@ async fn lookup_variable(
         }
         raise MakeError("recursive variable '\{name}' references itself")
       }
-      state.active.add(name)
+      state.active.insert(name)
       defer state.active.remove(name)
       expand(value, variables, automatic, depth + 1, cwd~, exported~, state~)
     }
@@ -934,7 +934,7 @@ async fn run(arguments : Array[String]) -> Unit {
     serial_children: true,
   }
   for name in ["SHELL", ".SHELLFLAGS", "MAKE"] {
-    database.exported.defaults.add(name)
+    database.exported.defaults.insert(name)
   }
   if original_environment.contains("SHELL") {
     database.exported.remove("SHELL")
@@ -1081,7 +1081,7 @@ pub async fn run_main() -> Unit {
   run(@env.args()[1:].to_owned()) catch {
     ExpansionFailure(message) => {
       @stdio.stderr.write("make: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
     }
     MakeError(message) => {
       if message == "unexpected endif" {
@@ -1089,11 +1089,11 @@ pub async fn run_main() -> Unit {
       } else {
         @stdio.stderr.write("make: \{message}\n")
       }
-      @sys.exit(2)
+      @env.exit(2)
     }
     err => {
       @stdio.stderr.write("make: \{err}\n")
-      @sys.exit(2)
+      @env.exit(2)
     }
   }
 }

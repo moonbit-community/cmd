@@ -36,4 +36,6 @@ Use `--help` for the complete option list.
 - Child execution requires launcher permission. Arbitrary invalid byte sequences cannot always be transported as host arguments.
 - Default tokenization interprets quoting and backslashes; use -0 for NUL-separated filenames.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

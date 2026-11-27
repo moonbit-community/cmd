@@ -36,4 +36,6 @@ Use `--help` for the complete option list.
 
 - Physical resolution requires readable link targets. Lexical mode does not establish physical containment.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

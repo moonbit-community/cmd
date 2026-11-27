@@ -8,7 +8,7 @@ pub async fn run_main() -> Unit {
   let parsed = parse_args(args) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("sort: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -27,6 +27,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

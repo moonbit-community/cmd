@@ -52,7 +52,7 @@ pub async fn run_main() -> Unit {
     }
     Failed(error) => {
       @stdio.stderr.write(diagnostic(error))
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -75,11 +75,11 @@ pub async fn run_main() -> Unit {
   } catch {
     UsageError(message) => {
       @stdio.stderr.write("serve: " + message + "\n")
-      @sys.exit(1)
+      @env.exit(1)
     }
     error => {
       @stdio.stderr.write("serve: " + diagnostic(error) + "\n")
-      @sys.exit(1)
+      @env.exit(1)
     }
   }
 }

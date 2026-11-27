@@ -117,7 +117,7 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "od: option requires an argument -- 'S'\nTry 'od --help' for more information.\n",
       )
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     args.push(
@@ -133,7 +133,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("od: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -148,7 +148,7 @@ pub async fn run_main() -> Unit {
   let state = settings(parsed) catch {
     OdError(message) => {
       @stdio.stderr.write("od: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -163,7 +163,7 @@ pub async fn run_main() -> Unit {
   let (files, old_skip, label) = traditional_operands(parsed) catch {
     OdError(message) => {
       @stdio.stderr.write("od: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -178,7 +178,7 @@ pub async fn run_main() -> Unit {
     ) catch {
       OdError(message) => {
         @stdio.stderr.write("od: \{message}\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
     }
@@ -217,7 +217,7 @@ pub async fn run_main() -> Unit {
     }
     if !opened {
       if failed {
-        @sys.exit(1)
+        @env.exit(1)
       }
       return
     }
@@ -226,7 +226,7 @@ pub async fn run_main() -> Unit {
       failed = true
     }
     if failed {
-      @sys.exit(1)
+      @env.exit(1)
     }
     return
   }
@@ -255,13 +255,13 @@ pub async fn run_main() -> Unit {
   }
   if !opened {
     if failed {
-      @sys.exit(1)
+      @env.exit(1)
     }
     return
   }
   if state.skip > 0L {
     @stdio.stderr.write("od: cannot skip past end of combined input\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if !state.pending.is_empty() {
@@ -273,6 +273,6 @@ pub async fn run_main() -> Unit {
     )
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

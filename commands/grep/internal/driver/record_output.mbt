@@ -27,14 +27,14 @@ fn GrepInput::collect_records(
         run_start = at
       }
     } else if run_start >= 0 {
-      buffer.write_bytes(self.bytes[run_start:at])
+      buffer.write_bytesview(self.bytes[run_start:at])
       run_start = -1
     }
     at = end + 1
     records += 1L
   }
   if run_start >= 0 {
-    buffer.write_bytes(self.bytes[run_start:at])
+    buffer.write_bytesview(self.bytes[run_start:at])
   }
   self.consume_records(at, records)
   selected

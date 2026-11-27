@@ -225,7 +225,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("cat: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -282,6 +282,6 @@ pub async fn run_main() -> Unit {
     @stdio.stdout.write(renderer.flush(false))
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

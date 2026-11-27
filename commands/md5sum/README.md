@@ -36,4 +36,6 @@ Use `--help` for the complete option list.
 
 - Binary/text flags select manifest markers without translating input bytes. --ignore-missing still requires a successfully checked file.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

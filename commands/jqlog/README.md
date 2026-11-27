@@ -26,7 +26,7 @@ Apply the filter to each valid JSON line and emit compact JSON. Read stdin by de
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Invalid JSON lines are skipped. A failed filter emits no results for that line, preserves earlier successful output and exits 2.
 - Module loading and input/inputs are unavailable. Filters use jq's shared value-filter engine.

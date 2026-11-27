@@ -65,12 +65,12 @@ pub async fn run_with_deadline(
       })
       let out_task = group.spawn(() => {
         while read_stream(reader_out) is Some(bytes) {
-          stdout_buffer.write_bytes(bytes)
+          stdout_buffer.write_bytesview(bytes)
         }
       })
       let err_task = group.spawn(() => {
         while read_stream(reader_err) is Some(bytes) {
-          stderr_buffer.write_bytes(bytes)
+          stderr_buffer.write_bytesview(bytes)
         }
       })
       let input_task = group.spawn(() => {

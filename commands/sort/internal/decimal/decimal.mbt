@@ -83,8 +83,8 @@ pub fn encode(key : BytesView) -> Bytes {
   )
   output.write_byte(if number.negative { b'\x01' } else { b'\x00' })
   output.write_int_le(number.integer.length())
-  output.write_bytes(number.integer)
-  output.write_bytes(number.fraction)
+  output.write_bytesview(number.integer)
+  output.write_bytesview(number.fraction)
   output.to_bytes()
 }
 

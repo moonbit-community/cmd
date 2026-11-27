@@ -32,4 +32,6 @@ Use `--help` for the complete option list.
 
 - Corrupt input can produce a valid prefix before failure. Named-file replacement and metadata preservation have filesystem limits.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

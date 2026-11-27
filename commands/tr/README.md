@@ -32,4 +32,6 @@ Read stdin and write stdout. Sets support ranges, byte escapes and C-locale char
 
 - Operations are byte-oriented, without Unicode case conversion or multibyte character classes.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

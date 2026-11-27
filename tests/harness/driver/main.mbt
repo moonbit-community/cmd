@@ -11,7 +11,7 @@ async fn main {
   run_driver() catch {
     error => {
       @stdio.stderr.write("infrastructure: " + error.to_string() + "\n")
-      @sys.exit(1)
+      @env.exit(1)
     }
   }
 }
@@ -71,14 +71,14 @@ async fn run_driver() -> Unit {
     }
     let status = @harness.run_option_child(raw[1:])
     if status != 0 {
-      @sys.exit(status)
+      @env.exit(status)
     }
     return
   }
   let oracle_options = @harness.parse_oracle_options(@env.args()[1:]) catch {
     error => {
       @stdio.stderr.write(error.to_string() + "\n" + usage() + "\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -96,7 +96,7 @@ async fn run_driver() -> Unit {
     return
   }
   if args.length() == 4 && args[0] == "--https-server" {
-    @sys.exit(run_external_https_fixture(args))
+    @env.exit(run_external_https_fixture(args))
     return
   }
   let project_root = workspace_root()
@@ -232,7 +232,7 @@ async fn run_driver() -> Unit {
   } catch {
     error => {
       @stdio.stderr.write(error.to_string() + "\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -644,7 +644,7 @@ async fn run_driver() -> Unit {
     "semantic passes: \{reports.filter(item => item.semantic_pass()).length()}; report: \{report_dir}",
   )
   if reports.any(item => item.result == "fail" || item.result == "infra") {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }
 

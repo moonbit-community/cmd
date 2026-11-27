@@ -101,7 +101,7 @@ async fn make_fifo_scenario(root : String, work : String) -> Unit {
         })
         let selected = ready[0]
         @fs.write_file(directory + "/" + selected + ".ack", "ack")
-        acknowledged.add(selected)
+        acknowledged.insert(selected)
         while !@fs.exists(directory + "/" + selected + ".done") {
           @async.sleep(5)
         }
@@ -169,7 +169,7 @@ async fn jobserver_bridge(work : String) -> Unit {
     @fs.read_file(work + "/bridge.ack").text(),
     radix=10,
   )
-  @sys.exit(status)
+  @env.exit(status)
 }
 
 ///|

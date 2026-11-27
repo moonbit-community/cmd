@@ -39,7 +39,7 @@ fn DumpState::row(self : DumpState) -> Bytes {
           )
         }
         Custom(format) =>
-          out.write_bytes(
+          out.write_bytesview(
             @format.render_custom(
               format,
               data[:],
@@ -72,7 +72,7 @@ fn DumpState::feed(self : DumpState, chunk : BytesView) -> Bytes {
       self.remaining = Some(n - 1L)
     }
     if self.pending.length() == self.program.block_size {
-      out.write_bytes(self.row()[:])
+      out.write_bytesview(self.row()[:])
     }
   }
   out.to_bytes()

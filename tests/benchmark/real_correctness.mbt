@@ -20,13 +20,13 @@ async fn real_selected_commands(
   let result : Set[String] = Set([])
   if options.contains("--commands") {
     for row in rows {
-      result.add(row.command)
+      result.insert(row.command)
     }
     return result
   }
   let coverage = real_coverage(options)
   for row in real_array(real_field(coverage, "commands")) {
-    result.add(real_text(real_field(row, "command")))
+    result.insert(real_text(real_field(row, "command")))
   }
   result
 }
@@ -142,7 +142,7 @@ async fn run_real_local_contracts(
           is [definition] else {
           fail("ambiguous local correctness identity: " + real_text(id))
         }
-        cases.add(definition.id)
+        cases.insert(definition.id)
       }
     }
   }

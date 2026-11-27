@@ -33,7 +33,7 @@ Read a script operand, -e expressions or -f files. Print pattern space by defaul
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Supports the documented BRE/ERE, hold-space, branch and multiline profile. In-place -i editing and the complete GNU script grammar are unsupported.
 - Memory can grow with script-controlled pattern and hold spaces.

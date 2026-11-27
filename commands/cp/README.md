@@ -37,4 +37,6 @@ Use `--help` for the complete option list.
 - Existing-file replacement, default mode preservation and archive copies are unsupported. Parsed -f, -i and backup options do not enable these operations.
 - Source-link traversal must be selected explicitly where needed. Cycles and destinations inside the source are rejected.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

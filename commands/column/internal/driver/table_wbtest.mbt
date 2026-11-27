@@ -79,7 +79,7 @@ async test "column table cursors bound expanded rows and resume inside UTF-8 out
         for ;; {
           let complete = row.fill(chunk, limit~)
           assert_true(chunk.length() <= limit)
-          actual.write_bytes(chunk.to_bytes())
+          actual.write_bytesview(chunk.to_bytes())
           chunk.reset()
           if complete {
             break

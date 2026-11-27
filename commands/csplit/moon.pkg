@@ -1,6 +1,5 @@
 import {
   "cli/csplit/internal/driver",
-  "moonbitlang/async",
 }
 
 supported_targets = "wasm"

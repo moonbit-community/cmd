@@ -39,4 +39,6 @@ See the [library example](static_files/README.md).
 - There is no directory listing, SPA fallback, upload, range, compression or TLS support. Paths and symlink targets must stay under the selected root.
 - Use numeric IP addresses; port 0 selects an available port. Launcher policy must allow reading the directory and binding the address.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

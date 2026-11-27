@@ -34,7 +34,7 @@ async fn load() -> Array[TestCase] {
     guard !row.name.is_empty() && !names.contains(row.name) else {
       fail("empty or duplicate regex corpus case: " + row.name)
     }
-    names.add(row.name)
+    names.insert(row.name)
     cases.push({
       name: row.name,
       regex: row.regex,

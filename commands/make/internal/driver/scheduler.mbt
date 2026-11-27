@@ -19,7 +19,7 @@ async fn plan_target(
   if visiting.contains(target) {
     raise MakeError("dependency cycle detected at '\{target}'")
   }
-  visiting.add(target)
+  visiting.insert(target)
   let rule = match database.rules.get(target) {
     Some(rule) => Some(rule)
     None => {
@@ -42,7 +42,7 @@ async fn plan_target(
     plan_target(dependency, database, visiting, planned, order)
   }
   visiting.remove(target)
-  planned.add(target)
+  planned.insert(target)
   order.push({ target, rule, dependencies, })
 }
 

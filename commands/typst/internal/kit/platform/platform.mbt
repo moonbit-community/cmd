@@ -315,7 +315,7 @@ pub fn now_ms() -> Int64 {
 pub fn exit(code : Int32) -> Unit {
   flush_stdout()
   flush_stderr()
-  @sys.exit(code)
+  @env.exit(code)
 }
 
 ///|

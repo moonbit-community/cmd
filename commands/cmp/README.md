@@ -35,4 +35,6 @@ Report the first difference by default. Exit 0 for equal input, 1 for difference
 
 - -s suppresses diagnostics; -l lists differing bytes. Skip offsets and comparison limits are byte counts.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

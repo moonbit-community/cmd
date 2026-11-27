@@ -1,6 +1,6 @@
 name = "cli/join"
 
-version = "0.2.8"
+version = "0.2.9"
 
 readme = "README.md"
 
@@ -17,5 +17,4 @@ description = "join command for MoonX."
 import {
   "cli/core@0.11.1",
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
 }
