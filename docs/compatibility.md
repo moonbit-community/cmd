@@ -80,6 +80,12 @@ identify the principal refusals and platform differences.
 
 | Command | Supported behavior | Limits |
 | --- | --- | --- |
+| [df](../commands/df/README.md) | Linux mount source, type and mount point for named paths. | Requires procfs. Capacity needs filesystem statistics. |
+| [du](../commands/du/README.md) | Recursive apparent bytes and inode counts, per-file or summary output, rounded units, totals and POSIX duplicate suppression. | Allocated sizes unavailable. Windows trees require physical traversal and -l. |
+| [stat](../commands/stat/README.md) | File types, names, entry sizes, integer timestamps and dereference. | Requires a selected format. macOS directory size is unavailable. |
+| [readlink](../commands/readlink/README.md) | Existing, all-but-last and missing-component canonicalization, NUL and no-newline output. | Stored targets and unresolved symbolic links need readlink. |
+| [install](../commands/install/README.md) | POSIX file installation, including unlinking and recreating distinct regular destinations, numeric modes and directories. | Caller-controlled directories. Equal or unavailable identities, destination links and Windows modes excluded. |
+| [truncate](../commands/truncate/README.md) | Path-based zero truncation, sparse creation and extension, relative size and rounding. | Reducing an already-open file needs handle truncation. Growth assumes exclusive access. |
 | [tar](../commands/tar/README.md) | GNU tar create, list, extract and stdout profiles for ustar and gzip. | UTF-8 names, regular files and directories, fixed archive metadata, new files only. |
 | [zip](../commands/zip/README.md) | Info-ZIP recursive archive creation, stored entries and Deflate levels 1–9. | New archives, relative names, synthetic metadata. |
 | [unzip](../commands/unzip/README.md) | Info-ZIP name listing, verification, stdout and named-directory extraction. | Exact selections, regular files and directories, no overwrite or metadata restoration. |

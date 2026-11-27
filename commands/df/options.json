@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "command": "df",
+  "help": "Usage: df --output=FIELDS FILE...\n{{help:output:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nLinux --output=source,fstype,target reads /proc/self/mountinfo. Choose one or more unique columns and supply at least one path. Capacity, allocation and non-Linux mounts require a filesystem-statistics API.\n",
+  "catalog_options": [
+    "output",
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "output",
+      "aliases": [
+        "--output"
+      ],
+      "value": "required",
+      "description": "Print source, fstype or target columns.",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  --output=FIELDS  Print source, fstype or target columns."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "output",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

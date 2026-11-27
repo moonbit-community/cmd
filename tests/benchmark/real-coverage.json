@@ -1379,6 +1379,66 @@
       "local_case_ids": [
         "archive-unzip-extract"
       ]
+    },
+    {
+      "command": "df",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-df-mount-type"
+      ]
+    },
+    {
+      "command": "du",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-du-bytes"
+      ]
+    },
+    {
+      "command": "install",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-install-file"
+      ]
+    },
+    {
+      "command": "readlink",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-readlink-existing"
+      ]
+    },
+    {
+      "command": "stat",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-stat-file"
+      ]
+    },
+    {
+      "command": "truncate",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-truncate-zero"
+      ]
     }
   ],
   "remaining_facets": [
@@ -3972,5 +4032,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 40
+  "not_timed_command_count": 46
 }

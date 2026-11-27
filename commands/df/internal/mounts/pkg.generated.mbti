@@ -1,0 +1,20 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/df/internal/mounts"
+
+// Values
+pub fn columns(String) -> Array[Column] raise
+
+pub async fn table(ArrayView[Column], ArrayView[String]) -> String
+
+// Errors
+
+// Types and methods
+pub(all) enum Column {
+  Source
+  Type
+  Target
+}
+
+// Type aliases
+
+// Traits

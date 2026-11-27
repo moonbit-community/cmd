@@ -294,6 +294,24 @@
     },
     {
       "name": "unzip"
+    },
+    {
+      "name": "df"
+    },
+    {
+      "name": "du"
+    },
+    {
+      "name": "install"
+    },
+    {
+      "name": "readlink"
+    },
+    {
+      "name": "stat"
+    },
+    {
+      "name": "truncate"
     }
   ],
   "cases": [],
@@ -395,6 +413,12 @@
     "serve.json",
     "tar.json",
     "zip.json",
-    "unzip.json"
+    "unzip.json",
+    "df.json",
+    "du.json",
+    "install.json",
+    "readlink.json",
+    "stat.json",
+    "truncate.json"
   ]
 }

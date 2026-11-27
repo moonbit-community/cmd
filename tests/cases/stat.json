@@ -1,0 +1,319 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "fs-stat-file",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%n %s %F %%",
+        "sample",
+        "empty"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "empty",
+          "content_text": ""
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "sample 4 regular file %\nempty 0 regular empty file %\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-directory",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%F",
+        "out"
+      ],
+      "files": [
+        {
+          "path": "out",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "directory\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-timestamp",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%X %Y",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff",
+          "atime": "202001010000.00",
+          "mtime": "202101010000.00"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "1577836800 1609459200\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-symlink",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%F",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "symbolic link\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-dereference",
+      "command": "stat",
+      "args": [
+        "-Lc",
+        "%s %F",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "sample"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "4 regular file\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format",
+        "dereference"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-unavailable",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%i",
+        "missing"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "stat: unsupported format directive: %i\n",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ]
+    },
+    {
+      "id": "fs-stat-help",
+      "command": "stat",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Usage: stat [-L] -c FORMAT FILE...\n  -c, --format VALUE  Print the selected fields and a newline.\n  -L, --dereference  Follow symbolic links.\n  --help  Show command help.\n  --version  Show the package version.\n\nUse --format with %n, %F, %s, %X, %Y, %Z and %%. Size uses the host's entry-size observation, including POSIX symbolic links. macOS directory sizes, raw mode, ownership, inode numbers and allocated blocks require additional metadata.\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ]
+    },
+    {
+      "id": "fs-stat-version",
+      "command": "stat",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "stat 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "fs-stat-link-bytes",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%s %F",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "7 symbolic link\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-proc-size",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%s",
+        "/proc"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "host_platforms": [
+        "linux"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-stat-mac-directory-size",
+      "command": "stat",
+      "args": [
+        "-c",
+        "%s",
+        "tree"
+      ],
+      "files": [
+        {
+          "path": "tree",
+          "kind": "directory"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "stat: tree: entry size is unavailable\n",
+      "comparison": "contract",
+      "coverage": [
+        "format"
+      ],
+      "host_platforms": [
+        "macos"
+      ]
+    }
+  ]
+}

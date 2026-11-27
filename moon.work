@@ -1,4 +1,10 @@
 members = [
+  "./commands/df",
+  "./commands/stat",
+  "./commands/du",
+  "./commands/truncate",
+  "./commands/install",
+  "./commands/readlink",
   "./commands/typst",
   "./commands/rg",
   "./core",

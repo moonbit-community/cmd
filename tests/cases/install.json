@@ -1,0 +1,283 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "fs-install-file",
+      "command": "install",
+      "args": [
+        "-m",
+        "751",
+        "sample",
+        "new"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "mode"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "new",
+          "content_hex": "610062ff",
+          "mode": 489
+        }
+      ]
+    },
+    {
+      "id": "fs-install-dirs",
+      "command": "install",
+      "args": [
+        "-d",
+        "-m",
+        "700",
+        "out/sub"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "directory",
+        "mode"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "out",
+          "kind": "directory",
+          "mode": 493
+        },
+        {
+          "path": "out/sub",
+          "kind": "directory",
+          "mode": 448
+        }
+      ]
+    },
+    {
+      "id": "fs-install-leading",
+      "command": "install",
+      "args": [
+        "-D",
+        "sample",
+        "out/sub/tool"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "leading"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "out/sub/tool",
+          "content_hex": "610062ff",
+          "mode": 493
+        }
+      ]
+    },
+    {
+      "id": "fs-install-existing",
+      "command": "install",
+      "args": [
+        "-m",
+        "751",
+        "sample",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "dest",
+          "content_text": "old",
+          "mode": 384
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "dest"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "mode"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "dest",
+          "content_hex": "610062ff",
+          "mode": 489,
+          "different_identity_as": "alias"
+        },
+        {
+          "path": "alias",
+          "content_text": "old",
+          "mode": 384
+        }
+      ],
+      "oracle": true
+    },
+    {
+      "id": "fs-install-windows-mode",
+      "command": "install",
+      "args": [
+        "sample",
+        "copy"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "install: POSIX permission setting is unavailable on this host\n",
+      "comparison": "contract",
+      "coverage": [],
+      "host_platforms": [
+        "windows"
+      ],
+      "expected_files": [
+        {
+          "path": "copy",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "fs-install-help",
+      "command": "install",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "Usage: install [-D] [-m MODE] SOURCE DEST\n       install -d [-m MODE] DIRECTORY...\n  -d, --directory  Create directories.\n  -D  Create missing leading directories for the destination.\n  -m, --mode VALUE  Set the destination permission bits in octal.\n  --help  Show command help.\n  --version  Show the package version.\n\nLinux and macOS support regular file installation, existing target directories, -D leading directories and -d directories with numeric modes. A distinct regular destination is unlinked and recreated. Equal or unavailable file identities and existing symbolic links are refused. The destination tree must remain under caller control. Windows permission application requires additional APIs.\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "help"
+      ]
+    },
+    {
+      "id": "fs-install-version",
+      "command": "install",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "install 0.1.0\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "version"
+      ]
+    },
+    {
+      "id": "fs-install-same-identity",
+      "command": "install",
+      "args": [
+        "sample",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "install: sample: source and destination share a file identity: sample\n",
+      "comparison": "contract",
+      "coverage": [],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ]
+    }
+  ]
+}

@@ -190,8 +190,8 @@ fn admission_has_process_authority(manifest : String) -> Bool raise {
 ///|
 async fn check_admission(root : String, failures : Array[String]) -> Unit {
   let expected_restricted = [
-    "chmod", "curl", "env", "find", "make", "rg", "serve", "sh", "split", "timeout",
-    "typst", "wget", "xargs",
+    "chmod", "curl", "env", "find", "install", "make", "rg", "serve", "sh", "split",
+    "timeout", "typst", "wget", "xargs",
   ]
   let catalog = @catalog.commands()
   let restricted : Array[String] = []

@@ -33,6 +33,25 @@ fn contract(
 // diagnostic contracts are recorded in docs/compatibility.md and CLI cases.
 pub fn commands() -> Array[CommandContract] {
   [
+    contract("stat", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("du", Extended, NoInput, LineStream, [FileRead], exit_codes=[0, 1]),
+    contract("df", Extended, NoInput, LineStream, [FileRead], exit_codes=[0, 1]),
+    contract("readlink", Extended, NoInput, ByteStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract(
+      "install",
+      Restricted,
+      NoInput,
+      LineStream,
+      [FileRead, FileWrite, PermissionMutation],
+      exit_codes=[0, 1],
+    ),
+    contract("truncate", Extended, NoInput, LineStream, [FileRead, FileWrite], exit_codes=[
+      0, 1,
+    ]),
     contract("clear", Extended, NoInput, ByteStream, [FileRead], exit_codes=[
       0, 1, 2, 3, 4,
     ]),

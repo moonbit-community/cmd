@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "command": "truncate",
+  "help": "Usage: truncate -s SIZE|-r REFERENCE [-c] FILE...\n{{help:size:0}}\n{{help:no-create:0}}\n{{help:reference:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nZeroing and creation use filesystem open modes. Positive sizes can create or extend a regular file by writing its last byte. Shrinking an existing file to a nonzero size requires handle truncation. Growth requires exclusive access to the file while adjusting its length.\n",
+  "catalog_options": [
+    "size",
+    "no-create",
+    "help",
+    "version",
+    "reference"
+  ],
+  "options": [
+    {
+      "name": "size",
+      "aliases": [
+        "-s",
+        "--size"
+      ],
+      "value": "required",
+      "description": "Set a size or apply a signed adjustment.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -s, --size VALUE  Set a size or apply a signed adjustment."
+      ]
+    },
+    {
+      "name": "no-create",
+      "aliases": [
+        "-c",
+        "--no-create"
+      ],
+      "value": "none",
+      "description": "Skip a missing file.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c, --no-create  Skip a missing file."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    },
+    {
+      "name": "reference",
+      "aliases": [
+        "-r",
+        "--reference"
+      ],
+      "value": "required",
+      "description": "Use the length of a regular reference file.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -r, --reference FILE  Use the length of a regular reference file."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "size",
+        "no-create",
+        "help",
+        "version",
+        "reference"
+      ]
+    }
+  ]
+}

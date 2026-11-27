@@ -5538,6 +5538,170 @@
         "archive-unzip-invalid",
         "archive-unzip-help"
       ]
+    },
+    {
+      "name": "df",
+      "package_name": "cli/df",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "output",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-df-mount-type",
+        "fs-df-capacity",
+        "fs-df-other-host",
+        "fs-df-help",
+        "fs-df-version"
+      ]
+    },
+    {
+      "name": "du",
+      "package_name": "cli/du",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "bytes",
+        "apparent-size",
+        "block-size",
+        "kilobytes",
+        "all",
+        "summarize",
+        "inodes",
+        "total",
+        "count-links",
+        "dereference",
+        "null",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-du-bytes",
+        "fs-du-null-total",
+        "fs-du-block-size",
+        "fs-du-kilobyte",
+        "fs-du-hardlinks",
+        "fs-du-symlink",
+        "fs-du-allocated",
+        "fs-du-directory",
+        "fs-du-help",
+        "fs-du-version",
+        "fs-du-tree",
+        "fs-du-all",
+        "fs-du-inode-hardlinks",
+        "fs-du-link-bytes",
+        "fs-du-follow-cycle",
+        "fs-du-short-apparent"
+      ]
+    },
+    {
+      "name": "install",
+      "package_name": "cli/install",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "directory",
+        "leading",
+        "mode",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-install-file",
+        "fs-install-dirs",
+        "fs-install-leading",
+        "fs-install-existing",
+        "fs-install-windows-mode",
+        "fs-install-help",
+        "fs-install-version",
+        "fs-install-same-identity"
+      ]
+    },
+    {
+      "name": "readlink",
+      "package_name": "cli/readlink",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "canonicalize",
+        "canonicalize-existing",
+        "canonicalize-missing",
+        "zero",
+        "no-newline",
+        "verbose",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-readlink-existing",
+        "fs-readlink-missing-last",
+        "fs-readlink-missing-tree",
+        "fs-readlink-resolved-link",
+        "fs-readlink-stored-target",
+        "fs-readlink-ordinary-quiet",
+        "fs-readlink-verbose-missing",
+        "fs-readlink-help",
+        "fs-readlink-version"
+      ]
+    },
+    {
+      "name": "stat",
+      "package_name": "cli/stat",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "format",
+        "dereference",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-stat-file",
+        "fs-stat-directory",
+        "fs-stat-timestamp",
+        "fs-stat-symlink",
+        "fs-stat-dereference",
+        "fs-stat-unavailable",
+        "fs-stat-help",
+        "fs-stat-version",
+        "fs-stat-link-bytes",
+        "fs-stat-proc-size",
+        "fs-stat-mac-directory-size"
+      ]
+    },
+    {
+      "name": "truncate",
+      "package_name": "cli/truncate",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "size",
+        "no-create",
+        "help",
+        "version",
+        "reference"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-truncate-zero",
+        "fs-truncate-extend",
+        "fs-truncate-create",
+        "fs-truncate-no-create",
+        "fs-truncate-hardlink",
+        "fs-truncate-reject-shrink",
+        "fs-truncate-help",
+        "fs-truncate-version",
+        "fs-truncate-reference",
+        "fs-truncate-relative-reference",
+        "fs-truncate-absolute-reference"
+      ]
     }
   ]
 }

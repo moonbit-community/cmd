@@ -1,0 +1,8 @@
+import {
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/string",
+  "moonbitlang/x/fs" @xfs,
+  "cli/core/platform",
+}
+
+supported_targets = "wasm"

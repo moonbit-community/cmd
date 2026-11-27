@@ -54,6 +54,7 @@ fn command_options(name : String) -> Array[String] {
         "output-delimiter", "zero-terminated",
       ]
     "date" => ["utc", "date", "iso-8601", "rfc-email", "version"]
+    "df" => ["output", "help", "version"]
     "diff" =>
       [
         "brief", "report-identical-files", "text", "unified", "context", "unified-lines",
@@ -62,6 +63,11 @@ fn command_options(name : String) -> Array[String] {
         "new-file", "unidirectional-new-file",
       ]
     "dirname" => ["zero"]
+    "du" =>
+      [
+        "bytes", "apparent-size", "block-size", "kilobytes", "all", "summarize",
+        "inodes", "total", "count-links", "dereference", "null", "help", "version",
+      ]
     "echo" =>
       ["enable-escapes", "disable-escapes", "help", "no-newline", "version"]
     "env" =>
@@ -112,6 +118,7 @@ fn command_options(name : String) -> Array[String] {
       ]
     "hostname" => ["short"]
     "id" => ["user", "group", "groups", "real", "name", "zero"]
+    "install" => ["directory", "leading", "mode", "help", "version"]
     "join" =>
       [
         "1", "2", "after", "empty", "only", "output", "t", "check-order", "nocheck-order",
@@ -180,6 +187,11 @@ fn command_options(name : String) -> Array[String] {
     "printf" => ["help"]
     "ps" => ["pid", "format"]
     "pwd" => ["logical", "physical"]
+    "readlink" =>
+      [
+        "canonicalize", "canonicalize-existing", "canonicalize-missing", "zero",
+        "no-newline", "verbose", "help", "version",
+      ]
     "realpath" =>
       [
         "canonicalize", "canonicalize-existing", "canonicalize-missing", "quiet",
@@ -237,6 +249,7 @@ fn command_options(name : String) -> Array[String] {
         "bytes", "lines", "number", "line-bytes", "numeric-suffixes", "hex-suffixes",
         "suffix-length", "additional-suffix", "elide-empty-files", "filter",
       ]
+    "stat" => ["format", "dereference", "help", "version"]
     "strings" =>
       [
         "all", "bytes", "encoding", "octal", "print-file-name", "radix", "output-separator",
@@ -274,6 +287,7 @@ fn command_options(name : String) -> Array[String] {
         "human-readable", "si", "du", "color", "no-color",
       ]
     "true" => ["help", "version"]
+    "truncate" => ["size", "no-create", "help", "version", "reference"]
     "tty" => ["silent"]
     "typst" =>
       [
