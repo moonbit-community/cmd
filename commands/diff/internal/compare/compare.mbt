@@ -495,7 +495,7 @@ fn record(
     line.value
   }
   out.write_string(prefix)
-  out.bytes.write_bytes(value)
+  out.bytes.write_bytesview(value)
   out.bytes.write_byte(b'\n')
   if !line.terminated {
     out.write_string("\\ No newline at end of file\n")

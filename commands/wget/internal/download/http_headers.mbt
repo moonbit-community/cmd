@@ -36,7 +36,7 @@ fn receive_header(
           },
         )
       }
-      joined.write_bytes(bytes)
+      joined.write_bytesview(bytes)
       pending.val = Some(joined.to_bytes())
     }
     return None

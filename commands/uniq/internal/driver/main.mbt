@@ -235,7 +235,7 @@ fn write_record(
   line : BytesView,
   delimiter : Byte,
 ) -> Unit {
-  writer.write_bytes(line)
+  writer.write_bytesview(line)
   writer.write_byte(delimiter)
 }
 

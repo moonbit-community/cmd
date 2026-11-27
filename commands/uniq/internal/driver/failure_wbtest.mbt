@@ -5,7 +5,7 @@ priv struct CapturedBytes {
 
 ///|
 impl @io.Writer for CapturedBytes with fn write_once(self, bytes, offset~, len~) {
-  self.data.write_bytes(bytes[offset:offset + len])
+  self.data.write_bytesview(bytes[offset:offset + len])
   len
 }
 

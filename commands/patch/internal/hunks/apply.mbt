@@ -25,7 +25,7 @@ fn reversed_kind(kind : Char, reverse : Bool) -> Char {
 
 ///|
 fn write_line(output : @buffer.Buffer, line : RawLine) -> Unit {
-  output.write_bytes(line.value)
+  output.write_bytesview(line.value)
   if line.terminated {
     output.write_byte(b'\n')
   }

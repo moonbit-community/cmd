@@ -85,7 +85,7 @@ async fn request_body(options : Options) -> @netops.RequestBody {
       if index > 0 {
         output.write_byte(b'&')
       }
-      output.write_bytes(read_data(spec))
+      output.write_bytesview(read_data(spec))
     }
     return @netops.BytesBody(output.to_bytes())
   }

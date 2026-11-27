@@ -188,13 +188,13 @@ async test "rev wide copies preserve unaligned records tails and ASCII control b
     let line = Bytes::makei(length, index => {
       ((index * 13 + length) % 117 + 11).to_byte()
     })
-    bytes.write_bytes(line)
+    bytes.write_bytesview(line)
     bytes.write_byte(b'\n')
-    expected.write_bytes(reverse_line(line))
+    expected.write_bytesview(reverse_line(line))
     expected.write_byte(b'\n')
   }
-  bytes.write_bytes(b"tail\x00\r")
-  expected.write_bytes(b"\r\x00liat")
+  bytes.write_bytesview(b"tail\x00\r")
+  expected.write_bytesview(b"\r\x00liat")
   let input = @io.MemoryReader(writer => writer.write(bytes.to_bytes()))
   defer input.close()
   let output : RevTestWriter = { bytes: [], remaining: None, calls: 0, }

@@ -131,7 +131,7 @@ async test "line_buffer/long_records_preserve_tail_and_offsets" {
     while lb.fill(reader) {
       let length = lb.buffer_len()
       assert_true(length > 0)
-      output.write_bytes(Bytes::from_array(lb.buf[lb.pos:lb.last_lineterm]))
+      output.write_bytesview(Bytes::from_array(lb.buf[lb.pos:lb.last_lineterm]))
       lb.consume(length)
     }
     assert_eq(output.to_bytes(), input)
@@ -150,7 +150,7 @@ async test "line_buffer/long_records_preserve_binary_boundaries" {
     let output = Buffer()
     while lb.fill(reader) {
       let length = lb.buffer_len()
-      output.write_bytes(Bytes::from_array(lb.buf[lb.pos:lb.last_lineterm]))
+      output.write_bytesview(Bytes::from_array(lb.buf[lb.pos:lb.last_lineterm]))
       lb.consume(length)
     }
     assert_eq(lb.binary_byte_offset, Some(prefix.length().to_int64()))

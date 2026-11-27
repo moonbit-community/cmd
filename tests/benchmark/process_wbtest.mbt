@@ -8,7 +8,7 @@ async test "benchmark file comparison checks later chunks length and empty outpu
   for _ in 0..<65536 {
     contents.write_byte(b'a')
   }
-  contents.write_bytes(b"tail\x00\n")
+  contents.write_bytesview(b"tail\x00\n")
   let original = contents.to_bytes()
   @fs.write_file(left, original)
   @fs.write_file(right, original)
@@ -24,7 +24,7 @@ async test "benchmark file comparison checks later chunks length and empty outpu
   for _ in 0..<65536 {
     changed.write_byte(b'a')
   }
-  changed.write_bytes(b"fail\x00\n")
+  changed.write_bytesview(b"fail\x00\n")
   @fs.write_file(left, original)
   @fs.write_file(right, changed.to_bytes())
   assert_false(files_equal(left, right))

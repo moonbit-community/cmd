@@ -456,9 +456,9 @@ fn corpus_iso(n : Int32) -> Bytes {
     let sel = (x >> 56).to_int()
     let r = ((x >> 40) & 0xFFFFUL).to_int()
     if sel < 30 {
-      out.write_bytes(escapes[r % 5])
+      out.write_bytesview(escapes[r % 5])
     } else if sel < 40 {
-      out.write_bytes(escapes[5 + r % 4])
+      out.write_bytesview(escapes[5 + r % 4])
     } else if sel < 230 {
       out.write_byte((0x21 + r % 0x5E).to_byte())
     } else {

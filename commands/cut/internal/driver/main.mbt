@@ -110,7 +110,7 @@ fn cut_fields_into(
     if only_delimited {
       return false
     }
-    kept.write_bytes(line)
+    kept.write_bytesview(line)
     return true
   }
   let mut start = 0
@@ -125,9 +125,9 @@ fn cut_fields_into(
     }
     if range_index < ranges.length() && ranges[range_index].0 <= field {
       if !first {
-        kept.write_bytes(output_delimiter)
+        kept.write_bytesview(output_delimiter)
       }
-      kept.write_bytes(line[start:index])
+      kept.write_bytesview(line[start:index])
       first = false
     }
     start = index + 1
@@ -157,13 +157,13 @@ fn cut_characters_into(
       break
     }
     if !first && output_delimiter is Some(separator) {
-      out.write_bytes(separator)
+      out.write_bytesview(separator)
     }
     let end = Int32::min(hi, line.length())
     if end == lo {
       out.write_byte(line[lo - 1])
     } else {
-      out.write_bytes(line[lo - 1:end])
+      out.write_bytesview(line[lo - 1:end])
     }
     first = false
   }
@@ -335,7 +335,7 @@ async fn process_reader(
           match end - start {
             1 => output.write_byte(line[start])
             8 => output.write_uint64_le(line.unsafe_read_uint64_le(start))
-            _ => output.write_bytes(line[start:end])
+            _ => output.write_bytesview(line[start:end])
           }
         }
         output.write_byte(record_delimiter)

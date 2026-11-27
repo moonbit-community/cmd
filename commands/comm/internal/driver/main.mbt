@@ -12,8 +12,8 @@ fn help_message() -> String {
 ///|
 fn comm_record(prefix : Bytes, line : Bytes, delimiter : Byte) -> Bytes {
   let output = @buffer.Buffer(capacity=prefix.length() + line.length() + 1)
-  output.write_bytes(prefix)
-  output.write_bytes(line)
+  output.write_bytesview(prefix)
+  output.write_bytesview(line)
   output.write_byte(delimiter)
   output.to_bytes()
 }

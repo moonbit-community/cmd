@@ -64,7 +64,7 @@ impl @io.Writer for PartialWriter with fn write_once(self, bytes, offset~, len~)
 async test "flush consumes partial writes once even when cleanup runs" {
   let writer = PartialWriter::{ bytes: [], calls: 0, }
   let output = @buffer.Buffer()
-  output.write_bytes(b"abcdef")
+  output.write_bytesview(b"abcdef")
   let failed = try {
     defer @async.protect_from_cancel(() => @stream.flush_buffer(writer, output))
     @stream.flush_buffer(writer, output)
