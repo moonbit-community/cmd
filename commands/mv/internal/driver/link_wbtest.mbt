@@ -47,22 +47,81 @@ async fn assert_windows_link_type(
   expected : String,
   target? : String,
 ) -> Unit {
-  let (status, output) = @async.with_timeout(10000, () => {
-    @process.collect_stdout(
-      "powershell.exe",
-      [
-        "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference = 'Stop'; [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); $item = Get-Item -LiteralPath $env:MOONCMD_OBSERVED_LINK -Force; [pscustomobject]@{kind=$item.LinkType; target=@($item.Target)[0]} | ConvertTo-Json -Compress",
-      ],
-      extra_env=Map([("MOONCMD_OBSERVED_LINK", path)]),
-    )
-  }) catch {
-    error => fail("required Windows link observer unavailable: \{error}")
+  let trace = @fs.tmpdir(prefix="mv-link-observer-")
+  defer @fs.rmdir(trace, recursive=true)
+  let script = "$ErrorActionPreference = 'Stop'; " +
+    "[IO.File]::WriteAllText($env:MOONCMD_OBSERVER_ENTRY,[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds().ToString()); " +
+    "[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); " +
+    "$item = Get-Item -LiteralPath $env:MOONCMD_OBSERVED_LINK -Force; " +
+    "[pscustomobject]@{kind=$item.LinkType; target=@($item.Target)[0]} | ConvertTo-Json -Compress; " +
+    "[IO.File]::WriteAllText($env:MOONCMD_OBSERVER_DONE,[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds().ToString())"
+  let stderr = @process.redirect_to_file(trace + "/stderr")
+  defer stderr.close()
+  let (reader, stdout) = @process.read_from_process()
+  defer reader.close()
+  defer stdout.close()
+  let events : Map[String, Json] = {
+    "path": Json(path),
+    "launch_ms": Json(@env.now()),
   }
-  guard status == 0 else {
-    fail("required Windows link observer exited with status \{status}")
+  let result : Result[(Int32, String), Error] = Ok(
+    @async.with_timeout(10000, () => {
+      @async.with_task_group(group => {
+        let child = @process.spawn(
+          group,
+          "powershell.exe",
+          ["-NoProfile", "-NonInteractive", "-Command", script],
+          extra_env=Map([
+            ("MOONCMD_OBSERVED_LINK", path),
+            ("MOONCMD_OBSERVER_ENTRY", trace + "/entry"),
+            ("MOONCMD_OBSERVER_DONE", trace + "/done"),
+          ]),
+          stdout~,
+          stderr~,
+        )
+        events["pid"] = Json(child.pid)
+        events["launched_ms"] = Json(@env.now())
+        let exited = group.spawn(() => {
+          let status = child.wait()
+          events["exit_ms"] = Json(@env.now())
+          events["status"] = Json(status)
+          status
+        })
+        let output = reader.read_all()
+        events["stdout_eof_ms"] = Json(@env.now())
+        let text = output.text()
+        events["stdout"] = Json(text)
+        (exited.wait(), text)
+      })
+    }),
+  ) catch {
+    error => Err(error)
   }
-  let observation = @json.parse(output.text()) catch {
-    error => fail("invalid Windows link observation: \{error}")
+  events["returned_ms"] = Json(@env.now())
+  for name in ["entry", "done"] {
+    let file = trace + "/" + name
+    if @fs.exists(file) {
+      events["powershell_" + name + "_ms"] = Json(@fs.read_file(file).text())
+    }
+  }
+  events["stderr"] = Json(@fs.read_file(trace + "/stderr").text())
+  if result is Err(error) {
+    events["error"] = Json(error.to_string())
+  }
+  let receipt = Json::object(events).stringify()
+  if @env.get_env_var("GITHUB_WORKSPACE") is Some(workspace) {
+    let directory = workspace + "/test-reports/mv-link-observers"
+    @fs.mkdir(directory, recursive=true, allow_exist=true)
+    let name = trace.replace_all(old="\\", new="/").split("/").last().unwrap()
+    @fs.write_file(directory + "/" + name.to_owned() + ".json", receipt)
+  }
+  guard result is Ok((0, output)) &&
+    events.contains("powershell_entry_ms") &&
+    events.contains("powershell_done_ms") else {
+    fail("required Windows link observer failed: \{receipt}")
+  }
+  let observation = @json.parse(output) catch {
+    error => fail("invalid Windows link observation: \{error}; \{receipt}")
   }
   guard observation is { "kind": String(kind), .. } else {
     fail("required Windows link observer did not report LinkType")
@@ -82,6 +141,28 @@ async fn assert_windows_link_type(
       normalized.to_lower(),
       expected_target.replace_all(old="\\", new="/").to_lower(),
     )
+  }
+}
+
+///|
+async test "Windows link observer retains the child status and error for a missing path" {
+  guard @async.platform is Windows else { return }
+  let root = @fs.tmpdir(prefix="mv-link-missing-")
+  defer @fs.rmdir(root)
+  try assert_windows_link_type(root + "/absent", "SymbolicLink") catch {
+    e => {
+      let message = e.to_string()
+      assert_true(message.contains("required Windows link observer failed"))
+      for
+        field in [
+          "pid", "powershell_entry_ms", "stdout_eof_ms", "exit_ms", "status", "stderr",
+          "Get-Item",
+        ] {
+        assert_true(message.contains(field))
+      }
+    }
+  } noraise {
+    _ => fail("the observer accepted a missing link")
   }
 }
 
