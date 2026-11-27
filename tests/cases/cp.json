@@ -2438,6 +2438,9 @@
           "path": "kept",
           "kind": "file"
         }
+      ],
+      "observe": [
+        "mode"
       ]
     },
     {
