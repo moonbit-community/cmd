@@ -2,6 +2,28 @@
   "schema": 2,
   "cases": [
     {
+      "id": "sha1sum-windows-checksum-modes",
+      "command": "sha1sum",
+      "isolated": true,
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "coverage": [
+        "-b",
+        "-t"
+      ],
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "diagnostic_reason": "Compare raw output with MSYS2 GNU checksums for named files, redirected files and pipes.",
+      "source_version": "MSYS2 GNU coreutils on windows-2025; exact version retained with raw streams."
+    },
+    {
       "id": "checksum-sha1sum-stdin",
       "command": "sha1sum",
       "args": [],

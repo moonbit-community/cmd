@@ -9,7 +9,9 @@ pub async fn execute_scenario(
   let start = @async.now()
   // Network comparisons need the candidate and oracle wire/stream receipts
   // after success as well as failure; a suite-level pass is not that evidence.
-  let retain_success = retain_success || @network.supports(fixture.id)
+  let retain_success = retain_success ||
+    @network.supports(fixture.id) ||
+    fixture.id.has_suffix("-windows-checksum-modes")
   let report_id = "scenario:" + fixture.id
   let device_boundary = fixture.id == "diff-directory-devices-boundary"
   let tee_boundary = fixture.id == "tee-default-pipe-boundary"
@@ -57,6 +59,12 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "cksum-windows-checksum-modes"
+        | "md5sum-windows-checksum-modes"
+        | "sha1sum-windows-checksum-modes"
+        | "sha256sum-windows-checksum-modes"
+        | "sha512sum-windows-checksum-modes" =>
+          windows_checksum_scenario(root, fixture.command, work)
         "serve-static" => serve_static_scenario(root, work, false)
         "serve-policy" => serve_static_scenario(root, work, true)
         "typst-artifacts" => typst_artifacts_scenario(root, work)

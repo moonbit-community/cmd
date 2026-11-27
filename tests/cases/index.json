@@ -80,6 +80,136 @@
       "oracle_profile": ""
     },
     {
+      "behavior_id": "case:cksum-windows-checksum-modes",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "cksum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:cksum-windows-checksum-modes",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::cksum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:md5sum-windows-checksum-modes",
+      "command": "md5sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/md5sum.json",
+      "case_id": "md5sum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:md5sum-windows-checksum-modes",
+      "command": "md5sum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::md5sum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:sha1sum-windows-checksum-modes",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "sha1sum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:sha1sum-windows-checksum-modes",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::sha1sum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:sha256sum-windows-checksum-modes",
+      "command": "sha256sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha256sum.json",
+      "case_id": "sha256sum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:sha256sum-windows-checksum-modes",
+      "command": "sha256sum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::sha256sum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:sha512sum-windows-checksum-modes",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "sha512sum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:sha512sum-windows-checksum-modes",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::sha512sum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:wget-exit-network-before-http",
       "command": "wget",
       "status": "supported",
