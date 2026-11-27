@@ -14,6 +14,20 @@ async fn test_lookup_path(path : String) -> String? {
 }
 
 ///|
+async fn predicate_identity(path : String) -> @identity.FileIdentity? {
+  try {
+    guard test_lookup_path(path) is Some(path) else { return None }
+    guard @identity.identity(path) is Some(id) else {
+      raise TestError("unsupported capability: file identity for '\{path}'")
+    }
+    Some(id)
+  } catch {
+    @identity.IOError(_) | @os_error.OSError(_) => None
+    error => raise error
+  }
+}
+
+///|
 async fn test_file(operator : String, value : String) -> Bool {
   if value == "" {
     return false

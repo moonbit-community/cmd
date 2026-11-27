@@ -2,6 +2,172 @@
   "schema": 2,
   "cases": [
     {
+      "id": "test-ef-hardlink",
+      "command": "test",
+      "args": [
+        "source",
+        "-ef",
+        "alias"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "x"
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "source"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "normalizations": [],
+      "stdin_text": "",
+      "environment": {}
+    },
+    {
+      "id": "test-ef-symlink",
+      "command": "test",
+      "args": [
+        "alias",
+        "-ef",
+        "source"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "x"
+        },
+        {
+          "path": "alias",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "normalizations": [],
+      "stdin_text": "",
+      "environment": {}
+    },
+    {
+      "id": "test-ef-equal-content",
+      "command": "test",
+      "args": [
+        "a",
+        "-ef",
+        "b"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "x"
+        },
+        {
+          "path": "b",
+          "content_text": "x"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "normalizations": [],
+      "stdin_text": "",
+      "environment": {}
+    },
+    {
+      "id": "test-ef-dangling",
+      "command": "test",
+      "args": [
+        "link",
+        "-ef",
+        "link"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "files": [
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "absent"
+        }
+      ],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "normalizations": [],
+      "stdin_text": "",
+      "environment": {}
+    },
+    {
+      "id": "test-ef-missing",
+      "command": "test",
+      "args": [
+        "missing",
+        "-ef",
+        "missing"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "files": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "oracle": true,
+      "normalizations": [],
+      "stdin_text": "",
+      "environment": {}
+    },
+    {
+      "id": "test-ef-windows",
+      "command": "test",
+      "args": [
+        "a",
+        "-ef",
+        "a"
+      ],
+      "host_platforms": [
+        "windows"
+      ],
+      "files": [
+        {
+          "path": "a",
+          "content_text": "x"
+        }
+      ],
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "test: unsupported capability: comparable Windows file identities\n",
+      "comparison": "contract",
+      "oracle": false,
+      "normalizations": [],
+      "stdin_text": "",
+      "environment": {}
+    },
+    {
       "id": "phase3-test-string",
       "command": "test",
       "args": [
@@ -179,7 +345,7 @@
         "help"
       ],
       "source_version": "workspace cli/test@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n-s reads followed target metadata without opening the file; unavailable metadata exits 2.\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
+      "expected_stdout_text": "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n  FILE1 -ef FILE2  compare file identities on Linux and macOS\n-s reads followed target metadata without opening the file; unavailable metadata exits 2.\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-269"
@@ -203,7 +369,7 @@
         "version"
       ],
       "source_version": "workspace cli/test@0.2.4 metadata contract",
-      "expected_stdout_text": "test 0.2.7\n",
+      "expected_stdout_text": "test 0.2.8\n",
       "expected_stderr_text": ""
     },
     {

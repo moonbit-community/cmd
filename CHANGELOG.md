@@ -12,6 +12,10 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-28
+
+- Add POSIX file identity comparisons to the development version of `test`.
+
 ## 2026-11-27
 
 - Migrate eleven command drivers to standard-library asynchronous I/O on MoonBit
