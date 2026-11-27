@@ -1,6 +1,5 @@
 import {
   "cli/gunzip/internal/driver",
-  "moonbitlang/async",
 }
 
 supported_targets = "wasm"

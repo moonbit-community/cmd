@@ -1,6 +1,5 @@
 import {
   "cli/xargs/internal/driver",
-  "moonbitlang/async",
 }
 
 supported_targets = "wasm"

@@ -1,6 +1,5 @@
 import {
   "cli/rg/internal/driver",
-  "moonbitlang/async",
   "moonbitlang/core/env",
   "moonbitlang/x/sys",
 }
