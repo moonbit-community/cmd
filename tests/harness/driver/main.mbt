@@ -70,7 +70,9 @@ async fn run_driver() -> Unit {
       return
     }
     if raw[1:] is ["tail-rotation", program, work] {
-      @filesystem.check_tail_rotation(program, [], work)
+      // Match the candidate's polling contract for alias replacement. Linux
+      // inotify can miss an append through the new name of the same inode.
+      @filesystem.check_tail_rotation(program, ["---disable-inotify"], work)
       return
     }
     let status = @harness.run_option_child(raw[1:])
