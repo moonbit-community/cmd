@@ -2,6 +2,45 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "scenario:tail-name-rotation",
+      "command": "tail",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::tail-name-rotation",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:tail-name-rotation",
+      "command": "tail",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tail.json",
+      "case_id": "tail-name-rotation",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:tail-name-windows",
+      "command": "tail",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tail.json",
+      "case_id": "tail-name-windows",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:wc-width-c-counts",
       "command": "wc",
       "status": "supported",

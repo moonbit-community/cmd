@@ -237,7 +237,8 @@ fn command_options(name : String) -> Array[String] {
     "tac" => ["before", "regex", "separator"]
     "tail" =>
       [
-        "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose", "zero-terminated",
+        "bytes", "follow", "follow-name", "lines", "quiet", "sleep-interval", "verbose",
+        "zero-terminated",
       ]
     "tee" => ["append", "output-error"]
     "test" =>

@@ -103,7 +103,12 @@ pub async fn check_tee_modes(
 }
 
 ///|
-pub async fn check_tee_oracle(work : String, image : String) -> Unit {
+pub async fn check_helper_oracle(
+  work : String,
+  image : String,
+  mode~ : String,
+  command~ : String,
+) -> Unit {
   @fs.mkdir(work)
   let helper = @harness.option_child_path()
   let run = @harness.run_oracle_with_deadline(
@@ -123,8 +128,8 @@ pub async fn check_tee_oracle(work : String, image : String) -> Unit {
       image,
       helper,
       "--option-test-helper",
-      "tee-modes",
-      "/oracle/bin/tee",
+      mode,
+      "/oracle/bin/" + command,
       work,
     ],
     30000,
@@ -134,7 +139,7 @@ pub async fn check_tee_oracle(work : String, image : String) -> Unit {
   @fs.write_file(work + ".stdout", run.output.stdout)
   @fs.write_file(work + ".stderr", run.output.stderr)
   guard !run.timed_out && run.cleanup_error is None else {
-    fail("tee oracle lifecycle infrastructure failure")
+    fail(command + " oracle lifecycle infrastructure failure")
   }
   assert_eq(run.output.status, 0)
   assert_eq(run.output.stdout, b"")

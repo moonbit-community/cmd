@@ -118,7 +118,7 @@ identify the principal refusals and platform differences.
 | [split](../commands/split/README.md) | Line/byte/record/chunk splitting, suffixes and shell filters. | No existing-output replacement; spooling and child permissions may apply. |
 | [strings](../commands/strings/README.md) | Printable 7-bit/8-bit runs, minimum lengths, offsets and names. | No wide encodings, Unicode classes or object-section parsing. |
 | [tac](../commands/tac/README.md) | Reverse records with fixed or regex separators. | Regex mode uses whole-input memory; stdin may need temporary storage. |
-| [tail](../commands/tail/README.md) | Line/byte suffixes, start positions, headers and descriptor following. | No rotation-aware -F. |
+| [tail](../commands/tail/README.md) | Line/byte suffixes, start positions, headers, descriptor following and POSIX regular-file name following with `-F`. | Windows name following requires comparable file identities. |
 | [tee](../commands/tee/README.md) | Multiple output sinks, append and explicit output-error policies. | Default SIGPIPE behavior is unavailable. |
 | [test](../commands/test/README.md) | String/integer/file predicates, Boolean forms and POSIX `-ef` identity comparison. | Windows `-ef` and unavailable terminal, owner and mode predicates reject. |
 | [timeout](../commands/timeout/README.md) | Local-only child deadline and exit-status mapping. | Unpublished; no process-group or signal-option profile. |

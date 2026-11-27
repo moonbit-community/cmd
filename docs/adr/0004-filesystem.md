@@ -20,6 +20,12 @@ NTFS. These path observations do not make a subsequent rename atomic with
 respect to the identity check. POSIX `test -ef` follows both final links and
 compares the two observations, returning false for a failed path lookup.
 
+POSIX `tail -F` compares the current pathname with the identity of its open
+regular file. A replacement starts at offset zero and a missing name remains
+eligible for retry. Polling can miss versions that appear and disappear between
+observations. The host open API has no nonblocking flag for a concurrent
+substitution of a FIFO; this profile covers rotation among regular files.
+
 ## Mutation and identity boundaries
 
 Serve decodes URL paths once and rejects traversal, invalid UTF-8, control bytes

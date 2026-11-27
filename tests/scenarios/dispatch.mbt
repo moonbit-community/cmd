@@ -274,6 +274,21 @@ pub async fn execute_scenario(
         "network-refusal-recovery" => refused_retry_scenario(root, work)
         "network-option-effects" => network_options_scenario(root, work)
         "tail-follow-interval" => follow_interval_scenario(root, work)
+        "tail-name-rotation" => {
+          @filesystem.check_tail_rotation(
+            @harness.command_program(),
+            @harness.command_args(root, "tail", []),
+            work,
+          )
+          if oracle_image is Some(image) {
+            @filesystem.check_helper_oracle(
+              work + "/oracle",
+              image,
+              mode="tail-rotation",
+              command="tail",
+            )
+          }
+        }
         "stream-failure-prefixes" => failure_prefix_scenario(root, work)
         "ls-link-facets" => link_dereference_scenario(root, work)
         "network-auth-cookie" => network_cli_scenario(root, work, oracle_image?)
