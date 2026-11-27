@@ -2,6 +2,32 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "scenario:fs-df-proc-host",
+      "command": "df",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::fs-df-proc-host",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-df-proc-host",
+      "command": "df",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/df.json",
+      "case_id": "fs-df-proc-host",
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:awk-dynamic-getline-with-main-stdin",
       "command": "awk",
       "status": "supported",

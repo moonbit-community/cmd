@@ -80,7 +80,7 @@ identify the principal refusals and platform differences.
 
 | Command | Supported behavior | Limits |
 | --- | --- | --- |
-| [df](../commands/df/README.md) | Linux mount source, type and mount point for named paths. | Requires procfs. Capacity needs filesystem statistics. |
+| [df](../commands/df/README.md) | Linux mount source, type and mount point for named paths with GNU field widths. | Requires procfs. Capacity needs filesystem statistics. |
 | [du](../commands/du/README.md) | Recursive apparent bytes and inode counts, including unreadable directory entries, per-file or summary output, rounded units, totals and POSIX duplicate suppression. | Allocated sizes unavailable. Windows trees require physical traversal and -l. |
 | [stat](../commands/stat/README.md) | File types, names, entry sizes, integer timestamps and dereference. | Requires a selected format. macOS directory size is unavailable. |
 | [readlink](../commands/readlink/README.md) | Existing, all-but-last and missing-component canonicalization, NUL and no-newline output. | Stored targets and unresolved symbolic links need readlink. |

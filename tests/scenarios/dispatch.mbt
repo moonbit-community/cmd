@@ -82,6 +82,8 @@ pub async fn execute_scenario(
           system_reference(work, root, fixture.command, fixture.args)
         "id-fields-linux-reference" =>
           system_reference(work, root, fixture.command, fixture.args)
+        "fs-df-proc-host" =>
+          system_reference(work, root, fixture.command, fixture.args)
         "ps-fields-linux-reference" =>
           system_reference(work, root, fixture.command, fixture.args)
         "uname-linux-reference" =>

@@ -5645,8 +5645,10 @@
         "fs-df-capacity",
         "fs-df-other-host",
         "fs-df-help",
-        "fs-df-version"
-      ]
+        "fs-df-version",
+        "fs-df-proc-host"
+      ],
+      "oracle_boundary": "Mount targets depend on the mount namespace. Compare the target field with GNU df on the same Linux host."
     },
     {
       "name": "du",
