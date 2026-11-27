@@ -14,6 +14,8 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-28
 
+- Add POSIX single-file `cp --remove-destination --no-preserve=mode` with hard-link, symbolic-link and failure-side-effect checks.
+
 - Add Wasm tput, clear, redirected-input tty, signal-name lookup and the standalone test -t redirection predicate.
 - Add an unpublished Wasm awk command for UTF-8 records, pattern-action programs and local file redirection.
 

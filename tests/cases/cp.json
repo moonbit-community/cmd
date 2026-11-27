@@ -345,7 +345,7 @@
         "help"
       ],
       "source_version": "workspace cli/cp@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\nTree validation finishes before copying; existing empty directories report no copy.\nProject alias: --dereference-command-line selects -H; GNU cp exposes only the short spelling.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
+      "expected_stdout_text": "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [--remove-destination] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode. On POSIX, --remove-destination unlinks a regular file or symbolic link before copying one source. Ordinary in-place overwrite, archive and preserve modes are unsupported.\nTree validation finishes before copying; existing empty directories report no copy.\nProject alias: --dereference-command-line selects -H; GNU cp exposes only the short spelling.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-56"
@@ -369,7 +369,7 @@
         "version"
       ],
       "source_version": "workspace cli/cp@0.2.5 metadata contract",
-      "expected_stdout_text": "cp 0.2.8\n",
+      "expected_stdout_text": "cp 0.2.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -1655,6 +1655,843 @@
         {
           "path": "target",
           "content_text": "payload"
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-detach-regular",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "-v",
+        "source",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "dest",
+          "content_text": "old"
+        },
+        {
+          "path": "kept",
+          "kind": "hardlink",
+          "target": "dest"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "expected_stdout_text": "removed 'dest'\n'source' -> 'dest'\n",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "dest",
+          "kind": "file",
+          "content_text": "fresh",
+          "different_identity_as": "kept"
+        },
+        {
+          "path": "kept",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-source-hardlink",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "source",
+        "alias"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "alias",
+          "kind": "hardlink",
+          "target": "source"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "alias",
+          "kind": "file",
+          "content_text": "fresh",
+          "different_identity_as": "source"
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-same-name",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "source",
+        "./source"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: 'source' and './source' are the same file\n",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-destination-link",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "source",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "file",
+          "content_text": "fresh",
+          "different_identity_as": "source"
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-dangling-link",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "source",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "missing"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "file",
+          "content_text": "fresh"
+        },
+        {
+          "path": "missing",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-source-link-to-target",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "link",
+        "source"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: 'link' and 'source' are the same file\n",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-source-link",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "link",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        },
+        {
+          "path": "dest",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        },
+        {
+          "path": "dest",
+          "kind": "file",
+          "content_text": "fresh"
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-link-self",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "link",
+        "link"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "source"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: cannot open 'link' for reading: No such file or directory\n",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "link",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-missing-source",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "source",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "dest",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: cannot stat 'source': No such file or directory\n",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "dest",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-directory-link",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "source",
+        "out"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "actual",
+          "kind": "directory"
+        },
+        {
+          "path": "out",
+          "kind": "symlink",
+          "target": "actual"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "out",
+          "kind": "symlink",
+          "target": "actual"
+        },
+        {
+          "path": "actual/source",
+          "kind": "file",
+          "content_text": "fresh"
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-literal-directory-link",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "-T",
+        "source",
+        "out"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "actual",
+          "kind": "directory"
+        },
+        {
+          "path": "out",
+          "kind": "symlink",
+          "target": "actual"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "out",
+          "kind": "file",
+          "content_text": "fresh"
+        },
+        {
+          "path": "actual/source",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-no-clobber",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "-n",
+        "source",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "dest",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "dest",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-windows",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "source",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "dest",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: cannot copy 'source' to 'dest': removing existing destination entries requires POSIX file identity\n",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "windows"
+      ],
+      "oracle": false,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "dest",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-interactive",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "-i",
+        "source",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "dest",
+          "content_text": "old"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: --remove-destination supports one nonrecursive source without interaction or backups\n",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "oracle": false,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "unchanged": true
+        },
+        {
+          "path": "dest",
+          "kind": "file",
+          "content_text": "old",
+          "unchanged": true
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-unreadable",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "-v",
+        "source",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh",
+          "mode": 0,
+          "readable": false
+        },
+        {
+          "path": "dest",
+          "content_text": "old"
+        },
+        {
+          "path": "kept",
+          "kind": "hardlink",
+          "target": "dest"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "expected_stdout_text": "removed 'dest'\n'source' -> 'dest'\n",
+      "expected_stderr_text": "cp: cannot open 'source' for reading: Permission denied\n",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "mode": 0
+        },
+        {
+          "path": "dest",
+          "exists": false
+        },
+        {
+          "path": "kept",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "id": "cp-remove-parent-alias",
+      "command": "cp",
+      "args": [
+        "--remove-destination",
+        "--no-preserve=mode",
+        "source",
+        "via/source"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "fresh"
+        },
+        {
+          "path": "other",
+          "kind": "hardlink",
+          "target": "source"
+        },
+        {
+          "path": "via",
+          "kind": "symlink",
+          "target": "."
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C",
+        "TZ": "UTC"
+      },
+      "expected_status": 1,
+      "normalizations": [],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "cp: 'source' and 'via/source' are the same file\n",
+      "comparison": "contract",
+      "coverage": [
+        "remove-destination"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": false,
+      "expected_files": [
+        {
+          "path": "source",
+          "kind": "file",
+          "content_text": "fresh",
+          "same_identity_as": "other"
+        },
+        {
+          "path": "via",
+          "kind": "symlink",
+          "target": "."
         }
       ]
     }

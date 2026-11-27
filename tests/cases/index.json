@@ -4637,6 +4637,212 @@
       "oracle_profile": ""
     },
     {
+      "behavior_id": "case:cp-remove-detach-regular",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-detach-regular",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-source-hardlink",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-source-hardlink",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-same-name",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-same-name",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-destination-link",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-destination-link",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-dangling-link",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-dangling-link",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-source-link-to-target",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-source-link-to-target",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-source-link",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-source-link",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-link-self",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-link-self",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-missing-source",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-missing-source",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-directory-link",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-directory-link",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-literal-directory-link",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-literal-directory-link",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-no-clobber",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-no-clobber",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-windows",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-windows",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:cp-remove-interactive",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-interactive",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:cp-remove-unreadable",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-unreadable",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cp-remove-parent-alias",
+      "command": "cp",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "implementation": "json-case",
+      "source": "tests/cases/cp.json",
+      "case_id": "cp-remove-parent-alias",
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:phase4-cp-regular",
       "command": "cp",
       "status": "supported",
