@@ -4809,6 +4809,43 @@
       "oracle_profile": ""
     },
     {
+      "behavior_id": "case:mv-no-copy-rename",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "mv-no-copy-rename",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:mv-no-copy-cross-device",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "mv-no-copy-cross-device",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:mv-no-copy-cross-device",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::mv-no-copy-cross-device",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:phase4-mv-regular",
       "command": "mv",
       "status": "supported",

@@ -1,5 +1,6 @@
 ///|
 priv struct MvOptions {
+  no_copy : Bool
   no_clobber : Bool
   interactive : Bool
   no_target_directory : Bool
@@ -203,7 +204,8 @@ async fn move_one(
     None
   }
   let mut failure_message = "move did not complete"
-  errdefer (if backup is Some(path) {
+  let mut restore_on_failure = backup
+  errdefer (if restore_on_failure is Some(path) {
     restore(target, path) catch {
       recovery => {
         let recovery_message = match recovery {
@@ -217,7 +219,15 @@ async fn move_one(
     }
   })
   let committed = try {
-    rename(source, target, backup is None)
+    rename(source, target, backup is None) catch {
+      @os_error.OSError(_) as error if options.no_copy => {
+        // GNU --no-copy leaves the backed-up entry at its backup name
+        // when the final rename syscall fails.
+        restore_on_failure = None
+        raise error
+      }
+      error => raise error
+    }
     if @fsops.kind_if_exists(source) is Some(_) {
       // POSIX rename of hard-link aliases succeeds without removing the source.
       // Verify the operation's postcondition; never infer identity from contents.
@@ -291,6 +301,7 @@ pub async fn run_main() -> Unit {
     }
   }
   let options : MvOptions = {
+    no_copy: parsed.contains("no-copy"),
     no_clobber: parsed.last_occurrence(["force", "interactive", "no-clobber"]) ==
     Some("no-clobber"),
     interactive: parsed.last_occurrence(["force", "interactive", "no-clobber"]) ==

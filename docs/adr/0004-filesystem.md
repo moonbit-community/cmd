@@ -126,6 +126,12 @@ claim. This diagnostic repair ships in ln 0.2.6 and does not strengthen the file
 transaction guarantee. Reconsider cancellation rollback only with a public API
 that establishes commit state and handle-relative identity.
 
+GNU mv 9.11 preserves an explicit backup at its backup name when a final
+`--no-copy` rename fails. On Linux, compare the source and its hard link,
+the destination or backup's original identity, mode, content, and mtime across
+an actual workspace-to-tmpfs move. Default moves still restore backups on a
+failed rename. Metadata-preserving copy and source removal remain open in #143.
+
 Windows Wasm source symlink/junction moves and destination-link backups reject
 before prompting or mutation. No-clobber/update-none skips remain; regular
 sources replacing destination links without backup have separate positive

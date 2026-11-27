@@ -9,7 +9,9 @@ pub async fn execute_scenario(
   let start = @async.now()
   // Network comparisons need the candidate and oracle wire/stream receipts
   // after success as well as failure; a suite-level pass is not that evidence.
-  let retain_success = retain_success || @network.supports(fixture.id)
+  let retain_success = retain_success ||
+    @network.supports(fixture.id) ||
+    fixture.id == "mv-no-copy-cross-device"
   let report_id = "scenario:" + fixture.id
   let device_boundary = fixture.id == "diff-directory-devices-boundary"
   let tee_boundary = fixture.id == "tee-default-pipe-boundary"
@@ -57,6 +59,7 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "mv-no-copy-cross-device" => mv_cross_device_scenario(root, work)
         "serve-static" => serve_static_scenario(root, work, false)
         "serve-policy" => serve_static_scenario(root, work, true)
         "typst-artifacts" => typst_artifacts_scenario(root, work)

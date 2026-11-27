@@ -2,12 +2,13 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require comparable file identities (POSIX).\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n"
+  "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [--no-copy] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require comparable file identities (POSIX).\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n"
 }
 
 ///|
 fn option_specs() -> Array[@cli.OptionSpec] {
   [
+    @cli.flag("no-copy"),
     @cli.flag("force", short='f'),
     @cli.flag("no-clobber", short='n'),
     @cli.flag("interactive", short='i'),

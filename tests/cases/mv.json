@@ -2,6 +2,66 @@
   "schema": 2,
   "cases": [
     {
+      "id": "mv-no-copy-rename",
+      "command": "mv",
+      "args": [
+        "--no-copy",
+        "source",
+        "dest"
+      ],
+      "files": [
+        {
+          "path": "source",
+          "content_text": "payload"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {},
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "source",
+          "exists": false
+        },
+        {
+          "path": "dest",
+          "kind": "file",
+          "content_text": "payload"
+        }
+      ],
+      "coverage": [
+        "no-copy"
+      ],
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "mv-no-copy-cross-device",
+      "command": "mv",
+      "args": [],
+      "isolated": true,
+      "files": [],
+      "stdin_text": "",
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "coverage": [
+        "no-copy",
+        "backup"
+      ],
+      "host_platforms": [
+        "linux"
+      ],
+      "timeout_ms": 45000,
+      "diagnostic_reason": "Compare real cross-device rename failures, backup disposition, regular-file metadata and hard-link identity.",
+      "source_version": "Linux tmpfs and GNU host mv with --no-copy"
+    },
+    {
       "id": "mv-windows-wasm-links-boundary",
       "command": "mv",
       "isolated": true,
@@ -1104,7 +1164,7 @@
         "help"
       ],
       "source_version": "workspace cli/mv@0.2.7 metadata contract",
-      "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require comparable file identities (POSIX).\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n",
+      "expected_stdout_text": "Usage: mv [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [--no-copy] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nDeclining an interactive overwrite returns status 1 and preserves both files.\nFailed backup restoration reports both failures and the backup path.\nTimestamps describe source and destination entries, including dangling links.\nEqual-time interactive/update targets require comparable file identities (POSIX).\nWindows Wasm symlink/junction moves and link backups require a verified host fix.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\nNumbered backups advance after the highest valid positive decimal version.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-166"
@@ -1128,7 +1188,7 @@
         "version"
       ],
       "source_version": "workspace cli/mv@0.2.7 metadata contract",
-      "expected_stdout_text": "mv 0.2.10\n",
+      "expected_stdout_text": "mv 0.2.11\n",
       "expected_stderr_text": ""
     },
     {

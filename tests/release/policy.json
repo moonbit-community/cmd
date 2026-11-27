@@ -2235,6 +2235,8 @@
       "case_ids": [
         "p8-mv-update-none",
         "phase4-mv-regular",
+        "mv-no-copy-rename",
+        "mv-no-copy-cross-device",
         "repair-fs-mv-backup",
         "repair-fs-mv-same-path",
         "release-metadata-mv-help",
